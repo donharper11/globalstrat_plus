@@ -110,16 +110,13 @@ def _notify_rejected_bid(context, team, target):
     context.log.append(
         f"Acquisition bid rejected for {team.name}: {target.target_name} already acquired"
     )
-    try:
-        from core.models.messaging import TeamNotification
-        from core.models.course import SimulationInstance
-        instance = SimulationInstance.objects.filter(game_id=context.game.id).first()
-        TeamNotification.objects.create(
-            team_id=team.id,
-            round_id=context.round_number,
-            instance_id=instance.instance_id if instance else None,
-            notification_text=message,
-            is_read=False,
-        )
-    except Exception as exc:
-        logger.warning("Failed to create rejected-bid notification: %s", exc)
+    from core.models.messaging import TeamNotification
+    from core.models.course import SimulationInstance
+    instance = SimulationInstance.objects.filter(game_id=context.game.id).first()
+    TeamNotification.objects.create(
+        team_id=team.id,
+        round_id=context.round_number,
+        instance_id=instance.instance_id if instance else None,
+        notification_text=message,
+        is_read=False,
+    )
