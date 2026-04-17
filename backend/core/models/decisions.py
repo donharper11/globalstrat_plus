@@ -291,6 +291,21 @@ class DecisionPlant(models.Model):
     capacity_units = models.IntegerField(null=True, blank=True)
     contract_mfg_volume = models.IntegerField(null=True, blank=True)
 
+    # SC extensions (CC-4 §4.4.1)
+    SOURCING_NODE_ROLE_CHOICES = [
+        ('owned_manufacturing', 'Owned Manufacturing'),
+        ('contract_manufacturing', 'Contract Manufacturing'),
+        ('pure_assembly', 'Pure Assembly'),
+    ]
+    sourcing_node_role = models.CharField(
+        max_length=30, choices=SOURCING_NODE_ROLE_CHOICES,
+        default='owned_manufacturing',
+    )
+    upstream_suppliers_required = models.JSONField(default=list)
+    scope_1_co2_per_unit_kg = models.DecimalField(max_digits=7, decimal_places=3, default='0.000')
+    scope_2_co2_per_unit_kg = models.DecimalField(max_digits=7, decimal_places=3, default='0.000')
+    reverse_logistics_enabled = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'decision_plant'
 
@@ -350,6 +365,23 @@ class DecisionESG(models.Model):
     environmental_investment = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     social_investment = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     governance_commitments = models.JSONField(null=True, blank=True)
+
+    # SC extensions (CC-4 §4.4.2)
+    AUDIT_PROGRAM_CHOICES = [
+        ('none', 'None'), ('basic', 'Basic'), ('comprehensive', 'Comprehensive'),
+    ]
+    UFLPA_TIER_MAPPING_CHOICES = [
+        ('none', 'None'), ('partial', 'Partial'), ('full', 'Full'),
+    ]
+    supplier_audit_program = models.CharField(
+        max_length=20, choices=AUDIT_PROGRAM_CHOICES, default='none',
+    )
+    scope_3_emissions_tracking = models.BooleanField(default=False)
+    scope_3_investment_usd = models.IntegerField(default=0)
+    cbam_reporting_readiness = models.BooleanField(default=False)
+    uflpa_tier_mapping_investment = models.CharField(
+        max_length=20, choices=UFLPA_TIER_MAPPING_CHOICES, default='none',
+    )
 
     class Meta:
         db_table = 'decision_esg'

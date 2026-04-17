@@ -54,3 +54,23 @@ from .grading import (
     GradingComponentMappingSerializer, TeamGradeSerializer,
     StudentGradeAdjustmentSerializer,
 )
+from .sc_serializers import (
+    SupplierSerializer, ShippingLaneSerializer,
+    TradeFinanceInstrumentSerializer, ComplianceRegimeSerializer,
+    ResilienceParametersSerializer, FreightMarketSerializer,
+    SourcingAllocationReadSerializer, SourcingDecisionReadSerializer,
+    LogisticsDecisionReadSerializer, IncotermsDecisionReadSerializer,
+    CustomsClassificationDecisionReadSerializer,
+    TradeFinanceDecisionReadSerializer, SinosureEnrollmentReadSerializer,
+    FXHedgeDecisionReadSerializer, InventoryDecisionReadSerializer,
+    ContingencyPlanReadSerializer,
+    SourcingAllocationWriteSerializer, SourcingDecisionWriteSerializer,
+    LogisticsDecisionWriteSerializer, IncotermsDecisionWriteSerializer,
+    CustomsClassificationDecisionWriteSerializer,
+    TradeFinanceDecisionWriteSerializer, SinosureEnrollmentWriteSerializer,
+    FXHedgeDecisionWriteSerializer, InventoryDecisionWriteSerializer,
+    ContingencyPlanWriteSerializer,
+    SupplierStateSerializer, LaneStateSerializer,
+    SCEventInstanceSerializer, HedgePositionSerializer,
+    ResilienceScoreHistorySerializer,
+)

@@ -33,6 +33,10 @@ from core.models.cc32b_models import OrganizationalStructureType
 from core.models.cc32c_models import TaxStructureType
 from core.models.cc32d_models import AlliancePartnerProfile
 from core.models.cc32f_models import GovernmentProfile
+from core.models.sc_models import (
+    Supplier, ShippingLane, TradeFinanceInstrument, ComplianceRegime,
+    ResilienceParameters, FreightMarket,
+)
 
 
 # Abstract features used by non-customer segments (not in FeatureDefinition)
@@ -158,6 +162,15 @@ class Command(BaseCommand):
         for old in Scenario.objects.filter(name=scenario_name):
             sid = old.pk
             game_tables = [
+                # SC engine state and decisions (must precede round/team)
+                'sc_resilience_score_history', 'sc_hedge_position',
+                'sc_event_instance', 'sc_lane_state', 'sc_supplier_state',
+                'sc_contingency_plan', 'sc_inventory_decision',
+                'sc_fx_hedge_decision', 'sc_sinosure_enrollment',
+                'sc_trade_finance_decision', 'sc_customs_classification_decision',
+                'sc_incoterms_decision', 'sc_logistics_decision',
+                'sc_sourcing_allocation', 'sc_sourcing_decision',
+                # Original game tables
                 'team_product_market', 'decision_marketing', 'decision_rd_investment',
                 'decision_platform_development', 'decision_product_create', 'decision_product_retire',
                 'decision_market_entry', 'decision_financing', 'decision_talent',
@@ -187,6 +200,14 @@ class Command(BaseCommand):
                         cur.execute(f'TRUNCATE TABLE {tbl} CASCADE')
                     except Exception:
                         pass
+            # Delete SC scenario-scoped models
+            FreightMarket.objects.filter(scenario=old).delete()
+            ResilienceParameters.objects.filter(scenario=old).delete()
+            ComplianceRegime.objects.filter(scenario=old).delete()
+            TradeFinanceInstrument.objects.filter(scenario=old).delete()
+            ShippingLane.objects.filter(scenario=old).delete()
+            Supplier.objects.filter(scenario=old).delete()
+
             # Delete scenario-scoped models in reverse dependency order
             GovernmentProfile.objects.filter(scenario=old).delete()
             AlliancePartnerProfile.objects.filter(scenario=old).delete()
@@ -1052,6 +1073,134 @@ class Command(BaseCommand):
             )
             gp_count += 1
         counts['GovernmentProfile'] = gp_count
+
+        # ------- SC: Suppliers (CC-04) -------
+        supplier_objs = {}
+        for sd_item in data.get('suppliers', []):
+            obj = Supplier.objects.create(
+                scenario=scenario,
+                supplier_id=sd_item['id'],
+                name=sd_item['name'],
+                country=sd_item['country'],
+                tier=sd_item['tier'],
+                capacity_units_per_round=sd_item.get('capacity_units_per_round', 0),
+                base_unit_price_usd=_dec(sd_item.get('base_unit_price_usd', 0)),
+                quality_rating=_dec(sd_item.get('quality_rating', 0)),
+                reliability_rating=_dec(sd_item.get('reliability_rating', 0)),
+                lead_time_days_baseline=sd_item.get('lead_time_days_baseline', 0),
+                min_order_commitment=sd_item.get('min_order_commitment', 0),
+                specialization=sd_item.get('specialization', []),
+                volume_discount_tiers=sd_item.get('volume_discount_tiers', []),
+                tier_2_3_profile=sd_item.get('tier_2_3_profile', {}),
+                origin_trust_to_buyers=sd_item.get('origin_trust_to_buyers', {}),
+                certifications=sd_item.get('certifications', []),
+                accepts_trade_finance=sd_item.get('accepts_trade_finance', []),
+                political_risk_profile=sd_item.get('political_risk_profile', {}),
+                multi_source_substitutability=sd_item.get('multi_source_substitutability', []),
+            )
+            supplier_objs[sd_item['id']] = obj
+        counts['Supplier'] = len(supplier_objs)
+
+        # ------- SC: Shipping Lanes (CC-04) -------
+        lane_count = 0
+        for ln in data.get('shipping_lanes', []):
+            ShippingLane.objects.create(
+                scenario=scenario,
+                lane_id=ln['id'],
+                origin_country=ln.get('origin_country', ''),
+                origin_port=ln.get('origin_port', ''),
+                destination_country=ln.get('destination_country', ''),
+                destination_port=ln.get('destination_port', ''),
+                zone=ln.get('zone', ''),
+                modes=ln.get('modes', {}),
+                chokepoints=ln.get('chokepoints', {}),
+                disruption_exposure=ln.get('disruption_exposure', {}),
+                customs_processing_days_baseline=ln.get('customs_processing_days_baseline', 0),
+                reverse_logistics_available=ln.get('reverse_logistics_available', False),
+                reverse_logistics_cost_multiplier=_dec(ln.get('reverse_logistics_cost_multiplier', 1)),
+            )
+            lane_count += 1
+        counts['ShippingLane'] = lane_count
+
+        # ------- SC: Trade Finance Instruments (CC-04) -------
+        tf_data = data.get('trade_finance_instruments', {})
+        tf_items = tf_data if isinstance(tf_data, list) else tf_data.get('instruments', [])
+        tf_count = 0
+        for tf in tf_items:
+            TradeFinanceInstrument.objects.create(
+                scenario=scenario,
+                instrument_id=tf['id'],
+                display_name=tf.get('display_name', tf['id']),
+                cost_bps_of_transaction=tf.get('cost_bps_of_transaction'),
+                cost_pct_of_insured_value=_dec(tf.get('cost_pct_of_insured_value')) if tf.get('cost_pct_of_insured_value') is not None else None,
+                processing_lead_days=tf.get('processing_lead_days', 0),
+                seller_protection=tf.get('seller_protection', 'medium'),
+                buyer_cash_requirement=tf.get('buyer_cash_requirement', 'medium'),
+                available_in_markets=tf.get('available_in_markets', ['all']),
+                available_to_home_countries=tf.get('available_to_home_countries', ['all']),
+                rejection_probability_baseline=_dec(tf.get('rejection_probability_baseline')) if tf.get('rejection_probability_baseline') is not None else None,
+                buyer_default_probability_baseline=_dec(tf.get('buyer_default_probability_baseline')) if tf.get('buyer_default_probability_baseline') is not None else None,
+                coverage_ceiling_pct=tf.get('coverage_ceiling_pct'),
+                bri_market_premium_subsidy_pct=tf.get('bri_market_premium_subsidy_pct'),
+                tenor_options_days=tf.get('tenor_options_days', []),
+                currency_pairs_available=tf.get('currency_pairs_available', []),
+            )
+            tf_count += 1
+        counts['TradeFinanceInstrument'] = tf_count
+
+        # ------- SC: Compliance Regimes (CC-04) -------
+        cr_count = 0
+        for cr in data.get('compliance_regimes', []):
+            ComplianceRegime.objects.create(
+                scenario=scenario,
+                regime_id=cr['id'],
+                name=cr.get('name', cr['id']),
+                enforcing_market=cr.get('enforcing_market'),
+                enforcing_country=cr.get('enforcing_country'),
+                applies_to_products=cr.get('applies_to_products', []),
+                trigger_condition=cr.get('trigger_condition'),
+                trigger_threshold_pct=cr.get('trigger_threshold_pct'),
+                baseline_enforcement_probability_per_round=_dec(cr.get('baseline_enforcement_probability_per_round', 0)),
+                detention_consequence=cr.get('detention_consequence', {}),
+                mitigation_investments=cr.get('mitigation_investments', {}),
+                phase_in_schedule=cr.get('phase_in_schedule', []),
+                tariff_per_ton_co2_usd=_dec(cr.get('tariff_per_ton_co2_usd')) if cr.get('tariff_per_ton_co2_usd') is not None else None,
+                sectors_covered=cr.get('sectors_covered', []),
+                restricted_technologies=cr.get('restricted_technologies', []),
+                target_countries_baseline=cr.get('target_countries_baseline', []),
+            )
+            cr_count += 1
+        counts['ComplianceRegime'] = cr_count
+
+        # ------- SC: Resilience Parameters (CC-04) -------
+        rp = data.get('resilience_parameters', {})
+        if rp:
+            ResilienceParameters.objects.create(
+                scenario=scenario,
+                single_source_threshold_pct=rp.get('single_source_threshold_pct', 70),
+                geographic_concentration_threshold_pct=rp.get('geographic_concentration_threshold_pct', 60),
+                critical_component_buffer_days_recommended=rp.get('critical_component_buffer_days_recommended', 45),
+                bullwhip_coefficient_baseline=_dec(rp.get('bullwhip_coefficient_baseline', 1.40)),
+                resilience_score_weights=rp.get('resilience_score_weights', {}),
+                disruption_cascade_coefficient=_dec(rp.get('disruption_cascade_coefficient', 0.30)),
+                recovery_rate_with_alternatives_multiplier=_dec(rp.get('recovery_rate_with_alternatives_multiplier', 0.50)),
+            )
+            counts['ResilienceParameters'] = 1
+
+        # ------- SC: Freight Market (CC-04) -------
+        fm = data.get('freight_market', {})
+        if fm:
+            FreightMarket.objects.create(
+                scenario=scenario,
+                rate_dynamics_model=fm.get('rate_dynamics_model', 'demand_capacity_elastic'),
+                baseline_capacity_abundance=fm.get('baseline_capacity_abundance', 'normal'),
+                fuel_index_baseline_usd_per_barrel=_dec(fm.get('fuel_index_baseline_usd_per_barrel', 80)),
+                fuel_index_volatility_sigma=_dec(fm.get('fuel_index_volatility_sigma', 0.12)),
+                container_rate_volatility_sigma=_dec(fm.get('container_rate_volatility_sigma', 0.15)),
+                demand_elasticity_coefficient=_dec(fm.get('demand_elasticity_coefficient', 1.30)),
+                capacity_response_lag_rounds=fm.get('capacity_response_lag_rounds', 2),
+            )
+            counts['FreightMarket'] = 1
 
         # Summary
         self.stdout.write(self.style.SUCCESS("\n=== Scenario Load Complete ==="))
