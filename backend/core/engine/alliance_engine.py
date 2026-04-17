@@ -5,10 +5,12 @@ Evaluates each active alliance partner's satisfaction based on weighted
 feature preferences, updates partnership status, and calculates benefit
 delivery percentage. Integrated into advance_round.py between strategy
 effects (Step 4) and fit scores (Step 5).
+
+CC-3.5: post-dissolution partner-defection roll uses seeded RNG.
 """
-import random
 from decimal import Decimal, ROUND_HALF_UP
 
+from core.engine.rng import get_rng
 from core.models.cc32d_models import AlliancePartnerProfile, TeamAllianceState
 from core.models.cc31_models import TeamMarketCompliance, TalentAllocation
 from core.models.team_state import TeamPartnership, TeamMarketPresence
@@ -407,7 +409,11 @@ def _process_dissolution(alliance, team, game, round_number, context):
     )
 
     # 40% chance dissolved partner joins AI competitor
-    if random.random() < 0.4:
+    class_id = game.section_id or game.id
+    defection_rng = get_rng(
+        class_id, round_number, f"alliance_partner_defection:{alliance.id}",
+    )
+    if defection_rng.random() < 0.4:
         from core.models.scenario import AICompetitorDefinition
         ai_comp = AICompetitorDefinition.objects.filter(
             scenario=game.scenario,

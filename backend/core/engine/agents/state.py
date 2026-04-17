@@ -44,6 +44,7 @@ def build_state_snapshot(game, round_obj):
 
     return StateSnapshot(
         round_number=round_number,
+        class_id=game.section_id or game.id,  # CC-3.5: seeds deterministic agent RNG
         teams=teams,
         markets=markets,
         competitors=competitors,

@@ -238,7 +238,59 @@ Both halts are structural, not blocking for CC-3's spec scope (inventory + algor
 
 ---
 
-## Section F — Artifact Summary
+## Section F — CC-3.5 Resolution
+
+*Added 2026-04-17 — records how the two halts from §E were cleared.*
+
+### F.1 Halt #3 (seeded RNG) — resolved
+
+**Approach chosen:** Option B (broad) from §E.1 — a seeded RNG helper is consumed at every probabilistic call site, keyed off `(class_id, round_number, operation_id)`.
+
+- New utility: `core/engine/rng.py` exposes `get_rng(class_id, round_number, operation_id) -> random.Random`. Seed is `int(sha256(f"{class_id}:{round_number}:{operation_id}").hexdigest()[:16], 16)`.
+- `class_id` convention: no `Game.class_id` field exists, so call sites pass `game.section_id or game.id` (section_id is nullable on Game). Documented in `rng.py`'s module docstring.
+- **12 call sites migrated:**
+  - `events.py` × 4 — event_trigger, event_target_market, compliance_event_target_market, compliance_event_roll
+  - `costs.py` × 1 — tax_audit
+  - `alliance_engine.py` × 1 — alliance_partner_defection
+  - `agents/governments.py` × 5 — govt_regulatory_relaxation, govt_regulatory_tightening, govt_bilateral_volatility, govt_bilateral_facilitation, govt_bilateral_screening
+  - `agents/state.py` × 1 — StateSnapshot now carries `class_id` alongside `round_number`, removing redundant Game lookups in agent evaluators.
+- **Module-level `import random` removed** from every migrated file. `grep -rn "random\." core/engine/` returns zero matches.
+- **Regression tests:**
+  - `core/engine/tests/test_rng.py` — 7 unit tests for the utility itself
+  - `core/engine/tests/test_determinism.py` — 6 contract tests covering every engine call site (same keys → same draws; distinct keys → distinct streams; class/round divergence)
+  - Both modules run DB-free (`SimpleTestCase`); 13 tests total, all passing.
+
+### F.2 Halt #4 (ghost models) — partially resolved
+
+**`messaging.TeamNotification` (live ghost):** promoted to managed.
+- Migration `core/migrations/0040_cc35_promote_teamnotification.py` uses `SeparateDatabaseAndState` to (a) update Django's model state and (b) emit `CREATE TABLE team_notifications` with indexes on `team_id` and `round_id`.
+- The defensive `try/except Exception` wrapper at `acquisitions.py:117` — which had been silently swallowing every create — was removed. Notification creation is now a real failure path.
+- Verified: `\d team_notifications` reports the table; a `TeamNotification.objects.create(...)` + delete round-trip succeeds in a Django shell.
+
+**`financials.FinancialExpense` (dormant ghost):** **deferred to CC-5.** Not touched in CC-3.5 — the import remains in `preference_engine.py:22`. Rationale: CC-5 will decide whether to promote (create `financial_expenses`) or delete based on the financial-reporting spec's needs, and that decision is outside CC-3.5's scope.
+
+### F.3 Halt evaluation update
+
+| # | Condition | CC-3 | CC-3.5 |
+|---|---|---|---|
+| 3 | Event system uses seeded RNG | ❌ HALT | ✅ PASS |
+| 4 | No engine-referenced ghost models | ❌ HALT | ⚠️ PARTIAL — live ghost resolved; `FinancialExpense` dormant ghost deferred to CC-5 |
+
+### F.4 Commit trail
+
+Branch `cc-03.5-determinism-and-notification` (merged via `--no-ff`):
+1. `CC-3.5: add seeded RNG utility for deterministic engine operations`
+2. `CC-3.5: replace unseeded random.random() in event triggers with seeded RNG`
+3. `CC-3.5: replace remaining unseeded random.* calls in engine`
+4. `CC-3.5: add regression test — identical inputs produce identical round outcomes`
+5. `CC-3.5: promote messaging.TeamNotification from ghost — create team_notifications table`
+6. `CC-3.5: remove defensive try/except — TeamNotification is no longer a ghost`
+7. `CC-3.5: update inventory report with Section F resolution record`
+
+---
+
+
+## Section G — CC-3 Artifact Summary
 
 - **Report file:** `specs/reports/CC-03-engine-inventory.md` (this file)
 - **Scripts:** `/tmp/ghost_check.py` (transient — invoked via `PYTHONPATH=backend python3 /tmp/ghost_check.py`)

@@ -71,12 +71,11 @@ class TeamNotification(models.Model):
     team_id = models.IntegerField(blank=True, null=True)
     round_id = models.IntegerField(blank=True, null=True)
     notification_text = models.TextField()
-    is_read = models.BooleanField(default=False, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'team_notifications'
 
     def __str__(self):
