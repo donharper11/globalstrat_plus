@@ -2,8 +2,8 @@
 Engine Steps 1-2: Event firing and market condition updates.
 From 03-engine-logic.md Sections 1-2.
 CC-7 additions: narrative generation, event response processing.
+CC-3.5: probabilistic rolls routed through seeded RNG for replay determinism.
 """
-import random
 from decimal import Decimal
 
 from core.models.scenario import (
@@ -18,6 +18,7 @@ from core.models.team_state import TeamPartnership
 from core.engine.utils import MarketEffectiveState, SegmentEffectiveState, clamp
 from core.engine.event_conditions import evaluate_all_conditions
 from core.engine.llm_runner import build_language_instruction
+from core.engine.rng import get_rng
 from core.utils.localization import get_instructor_language
 
 
@@ -63,7 +64,9 @@ def fire_events(context):
             )
             continue
 
-        roll = random.random()
+        class_id = game.section_id or game.id
+        trigger_rng = get_rng(class_id, current_round, f"event_trigger:{template.id}")
+        roll = trigger_rng.random()
         if roll > base_prob:
             continue
 
@@ -76,7 +79,10 @@ def fire_events(context):
         elif template.target_market:
             target_markets = [template.target_market]
         else:
-            target_markets = [random.choice(all_markets)] if all_markets else []
+            target_rng = get_rng(
+                class_id, current_round, f"event_target_market:{template.id}",
+            )
+            target_markets = [target_rng.choice(all_markets)] if all_markets else []
 
         primary_target = target_markets[0] if target_markets and not template.affects_all_markets else None
 
@@ -216,7 +222,12 @@ def _fire_compliance_adjusted_event(context, template, all_markets, current_roun
     elif template.target_market:
         target_markets = [template.target_market]
     else:
-        target_markets = [random.choice(all_markets)] if all_markets else []
+        class_id = game.section_id or game.id
+        target_rng = get_rng(
+            class_id, current_round,
+            f"compliance_event_target_market:{template.id}",
+        )
+        target_markets = [target_rng.choice(all_markets)] if all_markets else []
 
     if not target_markets:
         return
@@ -268,7 +279,12 @@ def _fire_compliance_adjusted_event(context, template, all_markets, current_roun
 
         adjusted_prob = base_prob * float(1 - min(Decimal('0.50'), max_mitigation))
 
-        if random.random() < adjusted_prob:
+        class_id = game.section_id or game.id
+        roll_rng = get_rng(
+            class_id, current_round,
+            f"compliance_event_roll:{template.id}:{team.id}",
+        )
+        if roll_rng.random() < adjusted_prob:
             teams_affected.append(team)
 
     if not teams_affected:
