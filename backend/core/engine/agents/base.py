@@ -24,8 +24,13 @@ class AgentAction:
 
 @dataclass
 class StateSnapshot:
-    """Immutable snapshot of game state at the start of agent processing."""
+    """Immutable snapshot of game state at the start of agent processing.
+
+    CC-3.5: ``class_id`` seeds deterministic RNG for probabilistic agent
+    actions. Pass ``game.section_id or game.id`` at construction time.
+    """
     round_number: int
+    class_id: int                 # game.section_id or game.id — seeds deterministic RNG
     teams: Dict[int, Dict]        # team_id -> team data
     markets: Dict[str, Dict]      # market_code -> market data
     competitors: Dict[str, Dict]  # competitor_id -> competitor data
