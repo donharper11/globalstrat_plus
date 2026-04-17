@@ -1,0 +1,308 @@
+/* ── InvestorProfilePopover ── */
+.investor-popover {
+  position: fixed;
+  z-index: 1050;
+  width: 400px;
+  background: #fff;
+  border: 1px solid var(--color-surface-300, #CBD5E1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.popover-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popover-fund-name {
+  font-family: var(--font-display, 'Rajdhani', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--brand-primary, #1E3A5F);
+}
+
+.fund-type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.popover-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #94A3B8;
+  line-height: 1;
+  padding: 0 4px;
+}
+.popover-close:hover {
+  color: #1e293b;
+}
+
+.strategy-summary {
+  padding: 8px 16px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Preferences columns */
+.preferences-columns {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.pref-col {
+  flex: 1;
+  padding: 10px 16px;
+}
+
+.likes-col {
+  border-right: 1px solid #f1f5f9;
+}
+
+.pref-heading {
+  font-family: var(--font-display, 'Rajdhani', sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #64748B;
+  margin: 0 0 6px 0;
+}
+
+.pref-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+}
+
+.pref-label {
+  font-size: 12px;
+  color: #334155;
+}
+
+.dislike-label {
+  color: #64748B;
+}
+
+.pref-score {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: right;
+}
+
+.score-good { color: #16A34A; }
+.score-fair { color: #D97706; }
+.score-poor { color: #DC2626; }
+
+/* Alignment section */
+.alignment-section {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.alignment-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alignment-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.bar-track {
+  flex: 1;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.alignment-pct {
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 36px;
+  text-align: right;
+}
+
+.biggest-gap {
+  font-size: 12px;
+  color: #DC2626;
+  margin-top: 6px;
+}
+
+.quick-win {
+  font-size: 12px;
+  margin-top: 6px;
+  color: #334155;
+}
+
+.quick-win-link {
+  background: none;
+  border: none;
+  color: #16A34A;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+}
+.quick-win-link:hover {
+  text-decoration: underline;
+}
+
+.quick-win-impact {
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #16A34A;
+}
+
+/* Current Position */
+.current-position {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #64748B;
+  background: #f8fafc;
+}
+
+.sentiment-tag {
+  font-weight: 600;
+  font-size: 11px;
+}
+.sentiment-buy { color: #16A34A; }
+.sentiment-sell { color: #DC2626; }
+.sentiment-hold { color: #D97706; }
+
+/* Clickable investor name */
+.investor-name-clickable {
+  cursor: pointer;
+  color: var(--brand-primary, #1E3A5F);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-surface-400, #94A3B8);
+  transition: border-color 0.15s, color 0.15s;
+}
+.investor-name-clickable:hover {
+  color: #3B82F6;
+  border-bottom-color: #3B82F6;
+}
+
+/* ── InvestorSummaryCard ── */
+.investor-summary-card {
+  position: absolute;
+  z-index: 1050;
+  width: 340px;
+  background: #fff;
+  border: 1px solid var(--color-surface-300, #CBD5E1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  margin-top: 4px;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-title {
+  font-family: var(--font-display, 'Rajdhani', sans-serif);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--brand-primary, #1E3A5F);
+  margin: 0;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-action {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.summary-align {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+}
+
+.summary-footer {
+  padding: 6px 14px;
+  font-size: 11px;
+  color: #94A3B8;
+  text-align: center;
+}
+
+/* Mobile: popover as full-width card */
+@media (max-width: 480px) {
+  .investor-popover {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    max-height: 70vh;
+    overflow-y: auto;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .investor-summary-card {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+  }
+}

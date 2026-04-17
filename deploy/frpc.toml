@@ -1,0 +1,13 @@
+# FRP client — tunnels GlobalStrat backend (port 8002) to Alibaba ECS (port 3006)
+# Install: copy to /etc/frp/frpc-globalstrat.toml
+# Service: globalstrat-frpc.service
+
+serverAddr = "47.86.57.36"
+serverPort = 7000
+
+[[proxies]]
+name = "globalstrat-api"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8002
+remotePort = 3006

@@ -1,0 +1,7092 @@
+scenario:
+  name: Clean Energy Technology 2026
+  name_zh: 清洁能源技术 2026
+  industry_label: Clean Energy Technology
+  industry_label_zh: 清洁能源技术
+  description: |-
+    Manage a global clean energy technology company specializing in battery cells, energy storage systems, and renewable energy components. Navigate the most geopolitically charged supply chain on earth — where technology sovereignty, government subsidies, trade restrictions, and certification requirements determine market access. Compete against AI rivals and earn the confidence of institutional investors, government agencies, and industrial customers across 5 global markets.
+  description_zh: |-
+    管理一家专注于电池电芯、储能系统和可再生能源组件的全球清洁能源科技公司。驾驭全球地缘政治色彩最浓的供应链——技术主权、政府补贴、贸易壁垒和认证要求决定着市场准入。与AI竞争对手展开较量，赢得机构投资者、政府机构和工业客户在5个全球市场中的信任。
+  num_rounds: 10
+  round_duration_label: Quarter
+  round_duration_label_zh: 季度
+  starting_cash: '60000000.00'
+  currency_code: USD
+  max_platforms_per_team: 3
+  max_products_per_platform: 3
+  max_products_total: 6
+  performance_index_base: '55.00'
+  is_active: true
+  company_names:
+    - Helios Energy
+    - Solaris Power
+    - Vertex Clean Tech
+    - Nexus Renewables
+    - Aether Energy Systems
+    - Prism Solar
+    - Quantum Green
+    - Zenith Energy
+    - Eclipse Power
+    - Catalyst Energy
+    - Meridian Renewables
+    - Titan Batteries
+    - Cobalt Energy Solutions
+    - Nova Power Systems
+    - Helix Storage
+    - Stratos Energy
+config:
+  bass_default_p:
+  - '0.02'
+  - Default innovation coefficient — lower for B2B
+  bass_default_q:
+  - '0.42'
+  - Default imitation coefficient — higher for B2B reference selling
+  r_and_d_diminishing_factor:
+  - '0.15'
+  - R&D cost increase per current level
+  campaign_focus_multiplier:
+  - '0.15'
+  - Max fit bonus from campaign emphasis
+  competition_sharpness:
+  - '2.0'
+  - Market share allocation exponent
+  performance_index_sensitivity:
+  - '20.0'
+  - Max index change per round
+  learning_curve_factor:
+  - '0.05'
+  - Production cost reduction per doubling
+  debt_interest_rate:
+  - '0.06'
+  - Annual interest rate on debt
+  max_debt_to_equity_ratio:
+  - '2.0'
+  - Maximum leverage allowed
+  logistics_base_cost_per_unit:
+  - '15.00'
+  - Shipping cost per unit — heavier battery products
+  inventory_holding_cost_pct:
+  - '0.05'
+  - Holding cost as % of unit cost
+  admin_overhead_fixed:
+  - '500000'
+  - Fixed admin cost per round
+  admin_overhead_pct:
+  - '0.03'
+  - Variable admin as % of revenue
+  base_unit_cost:
+  - '120.00'
+  - Base manufacturing cost per unit — battery cells
+  brand_awareness_halflife:
+  - '10000000'
+  - Spend to reach 50% awareness
+  promotion_benchmark_per_unit:
+  - '8.00'
+  - Expected promo spend per prospect
+  distribution_investment_cap:
+  - '5000000'
+  - Max effective distribution investment
+  sales_rep_cost_per_round:
+  - '100000'
+  - Cost per sales rep per round ($)
+  capitalize_platform_development:
+  - 'false'
+  - Expense platform R&D immediately
+  allow_tax_consolidation:
+  - 'false'
+  - No cross-market loss offset
+  ai_competitors_enabled:
+  - 'true'
+  - AI benchmark competitors active
+  ai_competitor_count:
+  - '2'
+  - Number of AI competitors
+  esg_enabled:
+  - 'true'
+  - ESG decisions active
+  rag_enabled:
+  - 'false'
+  - RAG disabled until CC-11
+  high_commitment_threshold:
+  - '5000000'
+  - Investment level for coherence scoring
+  rd_base_budget:
+  - '2000000'
+  - Base R&D budget — capital-intensive industry
+  max_rd_investments_per_round:
+  - '5'
+  - Maximum number of features a team can invest in per round
+  max_platform_features:
+  - '5'
+  - Maximum number of features that can be selected (non-zero) on a platform
+  gen2_min_features_at_level:
+  - '3'
+  - Number of Gen 1 features that must reach threshold level to unlock Gen 2
+  gen2_min_feature_level:
+  - '4'
+  - Minimum feature level for Gen 2 unlock threshold
+  gen3_min_features_at_level:
+  - '4'
+  - Number of Gen 2 features that must reach threshold level to unlock Gen 3
+  gen3_min_feature_level:
+  - '6'
+  - Minimum feature level for Gen 3 unlock threshold
+  sidebar_label_platform_page:
+  - R&D Investment
+  - Label for the platform/R&D decision page
+  sidebar_label_platform_page_zh:
+  - 研发投资
+  - Label for the platform/R&D decision page
+  sidebar_label_product_page:
+  - Product Portfolio
+  - Label for the product management page
+  sidebar_label_product_page_zh:
+  - 产品组合
+  - Label for the product management page
+  sidebar_label_marketing_page:
+  - Sales & Distribution
+  - Label for B2B sales decisions page
+  sidebar_label_marketing_page_zh:
+  - 销售与分销
+  - Label for B2B sales decisions page
+  sidebar_label_corporate_strategy:
+  - Corporate Strategy
+  - Label for firm-wide strategy page
+  sidebar_label_corporate_strategy_zh:
+  - 公司战略
+  - Label for firm-wide strategy page
+  sidebar_label_market_strategy:
+  - Market Strategy
+  - Label for per-market strategy page
+  sidebar_label_market_strategy_zh:
+  - 市场战略
+  - Label for per-market strategy page
+  sidebar_label_finance_page:
+  - Finance
+  - Label for the finance/budget page
+  sidebar_label_finance_page_zh:
+  - 财务
+  - Label for the finance/budget page
+  sidebar_label_talent_page:
+  - Talent & Workforce
+  - Label for the talent decisions section
+  sidebar_label_talent_page_zh:
+  - 人才与团队
+  - Label for the talent decisions section
+  sidebar_label_news_page:
+  - Industry News
+  - Label for the market news page
+  sidebar_label_news_page_zh:
+  - 行业新闻
+  - Label for the market news page
+  sidebar_label_research_page:
+  - Market Research
+  - Label for the research console page
+  sidebar_label_research_page_zh:
+  - 市场研究
+  - Label for the research console page
+  sidebar_label_competitors_page:
+  - Competitive Intelligence
+  - Label for competitor analysis page
+  sidebar_label_competitors_page_zh:
+  - 竞争情报
+  - Label for competitor analysis page
+  sidebar_label_tools_page:
+  - Strategy Tools
+  - Label for framework templates page
+  sidebar_label_tools_page_zh:
+  - 战略工具
+  - Label for framework templates page
+  sidebar_label_financial_reports:
+  - Financial Reports
+  - Label for detailed financial reports
+  sidebar_label_financial_reports_zh:
+  - 财务报告
+  - Label for detailed financial reports
+  sidebar_label_forecast_page:
+  - Company Forecast
+  - Label for what-if projections page
+  sidebar_label_forecast_page_zh:
+  - 公司预测
+  - Label for what-if projections page
+  localization_staff_baseline:
+  - '10'
+  - Staff count for ~full localization in one market
+  compliance_scale_factor:
+  - '6000000'
+  - $6M cumulative — higher compliance burden for regulated industry
+  compliance_max_investment_per_round:
+  - '12000000'
+  - $12M compliance investment cap per round
+  min_hq_staff_percentage:
+  - '0.20'
+  - 20% of headcount must stay at HQ
+  ip_exposure_rate_jv:
+  - '0.04'
+  - IP exposure per round for JV — battery IP is more sensitive
+  ip_exposure_rate_licensing:
+  - '0.06'
+  - IP exposure per round for licensing — battery IP is more sensitive
+  ip_exposure_rate_local_partner:
+  - '0.02'
+  - IP exposure per round from local strategic partner
+  brand_preservation_overhead:
+  - '0.15'
+  - 15% market overhead for brand preservation strategy
+  dual_brand_overhead:
+  - '0.25'
+  - 25% market overhead for dual brand strategy
+  brand_preserved_trust_floor:
+  - '0.92'
+  - Minimum trust multiplier with brand preservation
+  technology_sanctions_dependency_threshold:
+  - '0.35'
+  - Lower threshold — battery tech is more sensitive to sanctions
+  home_market_options:
+  - na,ea,eu,sa,wa
+  - Available home markets for team selection
+features:
+  platform:
+  - code: energy_density
+    layer: platform
+    name: Energy Density
+    name_zh: 能量密度
+    description: Wh/kg — how much energy the battery stores per unit weight. Critical for EV range and portable applications.
+    description_zh: 每千克储存的能量（Wh/kg）。对电动汽车续航和便携式应用至关重要。
+    category: Core Chemistry
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 200000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 1
+  - code: cycle_life
+    layer: platform
+    name: Cycle Life
+    name_zh: 循环寿命
+    description: Number of charge-discharge cycles before degradation. Critical for grid storage and commercial fleet applications.
+    description_zh: 充放电循环退化前的次数。对电网储能和商用车队应用至关重要。
+    category: Core Chemistry
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 180000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 2
+  - code: charging_speed
+    layer: platform
+    name: Charging Speed
+    name_zh: 充电速度
+    description: C-rate and fast-charging capability. Minutes-to-80% metric. Critical for EV consumer acceptance.
+    description_zh: 倍率和快充能力。80%电量所需分钟数指标。对电动汽车消费者接受度至关重要。
+    category: Performance
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 160000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 3
+  - code: thermal_management
+    layer: platform
+    name: Thermal Management
+    name_zh: 热管理
+    description: Heat dissipation, thermal runaway prevention, operating temperature range. Safety-critical.
+    description_zh: 散热、热失控预防、工作温度范围。安全关键技术。
+    category: Safety & Reliability
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 190000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 4
+  - code: safety_rating
+    layer: platform
+    name: Safety Rating
+    name_zh: 安全评级
+    description: Nail penetration, crush, overcharge, and short circuit test performance. Certification prerequisite.
+    description_zh: 针刺、挤压、过充和短路测试性能。认证前提条件。
+    category: Safety & Reliability
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 170000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 5
+  - code: recyclability
+    layer: platform
+    name: Recyclability
+    name_zh: 可回收性
+    description: Design for disassembly, recycled content percentage, material recovery rate. EU Battery Regulation driver.
+    description_zh: 拆解设计、回收材料含量比例、材料回收率。欧盟电池法规驱动因素。
+    category: Sustainability
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 140000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 6
+  - code: solid_state
+    layer: platform
+    name: Solid-State Technology
+    name_zh: 固态技术
+    description: Solid electrolyte replacing liquid. Breakthrough in density and safety. The frontier technology.
+    description_zh: 固态电解质取代液态电解质。密度和安全性的突破性技术。前沿科技。
+    category: Advanced Chemistry
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 300000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 7
+  - code: smart_bms
+    layer: platform
+    name: Smart Battery Management
+    name_zh: 智能电池管理
+    description: AI-driven charge optimization, predictive maintenance, digital twin monitoring, cloud connectivity.
+    description_zh: AI驱动的充电优化、预测性维护、数字孪生监控、云端连接。
+    category: Digital & Software
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 220000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 8
+  - code: sodium_ion
+    layer: platform
+    name: Sodium-Ion Chemistry
+    name_zh: 钠离子化学
+    description: Alternative chemistry using abundant sodium instead of lithium. Lower cost, cold-weather performance, but lower density.
+    description_zh: 使用丰富钠资源替代锂的替代化学体系。成本更低，低温性能更好，但能量密度较低。
+    category: Alternative Chemistry
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 250000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 9
+  marketing:
+  - code: price_competitiveness
+    layer: marketing
+    name: Price Competitiveness
+    name_zh: 价格竞争力
+    description: How your price compares to market expectations for your positioning tier. Derived from your pricing decisions.
+    description_zh: 您的价格与定位层级的市场预期相比如何。由定价决策决定。
+    category: Pricing
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 10
+  - code: promotion_reach
+    layer: marketing
+    name: Advertising & Promotion Reach
+    name_zh: 广告与推广覆盖
+    description: How effectively your marketing reaches target customers. Derived from promotion budget relative to market size.
+    description_zh: 您的营销触达目标客户的效果如何。由促销预算相对于市场规模决定。
+    category: Promotion
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 11
+  - code: distribution_coverage
+    layer: marketing
+    name: Retail & Distribution Reach
+    name_zh: 零售与分销覆盖
+    description: How available your products are to customers. Derived from distribution strategy and investment.
+    description_zh: 您的产品对客户的可获得性如何。由分销策略和投资决定。
+    category: Distribution
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 12
+  - code: brand_awareness
+    layer: marketing
+    name: Brand Recognition & Trust
+    name_zh: 品牌知名度与信任
+    description: How well known and trusted your brand is in each market. Builds cumulatively from promotion spend over multiple rounds.
+    description_zh: 您的品牌在各市场的知名度和可信度如何。随多轮推广支出累积增长。
+    category: Brand
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 13
+  - code: product_availability
+    layer: marketing
+    name: Product Availability & Stock Levels
+    name_zh: 产品可用性与库存水平
+    description: |-
+      Whether you have enough inventory to meet demand. Derived from production volume vs actual demand. Stockouts lose customers.
+    description_zh: 您是否有足够库存满足需求。由产量与实际需求对比决定。缺货会流失客户。
+    category: Supply
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 14
+  strategy:
+  - code: long_term_investment
+    layer: strategy
+    name: Long-Term Market Investment
+    name_zh: 长期市场投资
+    description: |-
+      How committed you are to each market — capital deployed, infrastructure built, time horizon signaled. Derived from entry mode, plant investments, and cumulative spending.
+    description_zh: 您对各市场的承诺程度——部署的资本、建设的基础设施、展示的时间跨度。由进入模式、工厂投资和累计支出决定。
+    category: Market Commitment
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 20
+  - code: debt_equity_cash
+    layer: strategy
+    name: Debt-to-Equity & Cash Reserves
+    name_zh: 资产负债率与现金储备
+    description: |-
+      Your financial health — leverage ratio, cash position, and ability to weather downturns. Derived from financing decisions.
+    description_zh: 您的财务健康状况——杠杆率、现金状况和抵御下行的能力。由融资决策决定。
+    category: Financial Health
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 21
+  - code: jv_distributor
+    layer: strategy
+    name: JV & Distributor Relationships
+    name_zh: 合资与经销商关系
+    description: |-
+      Strength of your local partnerships — joint ventures, distributor agreements, and channel relationships. Derived from partnership decisions and investment levels.
+    description_zh: 您的本地合作伙伴关系的强度——合资企业、经销商协议和渠道关系。由合作决策和投资水平决定。
+    category: Partnerships
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 22
+  - code: regulatory_govt
+    layer: strategy
+    name: Regulatory & Government Engagement
+    name_zh: 监管与政府关系
+    description: |-
+      Your relationship with local regulators and government bodies. Affected by lobbying investment, compliance track record, and local manufacturing presence.
+    description_zh: 您与当地监管机构和政府部门的关系。受游说投资、合规记录和本地制造存在的影响。
+    category: Government Relations
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 23
+  - code: esg_track_record
+    layer: strategy
+    name: Environmental & Social Responsibility Track Record
+    name_zh: 环境与社会责任历史记录
+    description: |-
+      Your cumulative ESG performance — environmental investments, social programs, governance commitments. Builds over time, hard to fake.
+    description_zh: 您的累积ESG表现——环境投资、社会项目、治理承诺。需长期积累，难以伪造。
+    category: ESG
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 24
+  - code: local_manufacturing
+    layer: strategy
+    name: Local Manufacturing & Job Creation
+    name_zh: 本地制造与就业创造
+    description: |-
+      Whether you produce locally in each market. Regulators and communities reward firms that create local jobs and reduce import dependency.
+    description_zh: 您是否在各市场进行本地生产。监管机构和社区奖励创造本地就业和减少进口依赖的企业。
+    category: Operations
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 25
+    is_derived: true
+    is_market_specific: true
+  - code: acquisition_track
+    layer: strategy
+    name: Growth Through Acquisition Track Record
+    name_zh: 并购增长历史记录
+    description: |-
+      Your history of acquiring companies or assets to accelerate growth. Some investors reward aggressive acquisition strategies; others prefer organic growth.
+    description_zh: 您通过收购公司或资产加速增长的历史。部分投资者青睐激进的并购策略，其他则偏好有机增长。
+    category: Growth Strategy
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 26
+  - code: rd_talent
+    layer: strategy
+    name: R&D Team Quality
+    name_zh: 研发团队质量
+    description: |-
+      The caliber of your engineers, designers, and researchers. Higher quality means faster, cheaper feature development. Affected by salary, training investment, and retention.
+    description_zh: 您的工程师、设计师和研究人员的水平。更高质量意味着更快、更低成本的功能开发。受薪资、培训投资和留存率影响。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 30
+  - code: commercial_talent
+    layer: strategy
+    name: Sales & Marketing Team Quality
+    name_zh: 销售与市场团队质量
+    description: |-
+      The caliber of your marketing strategists, sales representatives, and business development team. Higher quality means more effective campaigns, better distribution partnerships, and stronger customer relationships.
+    description_zh: 您的营销策略师、销售代表和业务拓展团队的水平。更高质量意味着更有效的营销活动、更好的分销合作和更强的客户关系。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 31
+  - code: operations_talent
+    layer: strategy
+    name: Operations & Supply Chain Team Quality
+    name_zh: 运营与供应链团队质量
+    description: |-
+      The caliber of your manufacturing engineers, logistics managers, and supply chain specialists. Higher quality means lower production costs, less waste, and more efficient distribution.
+    description_zh: 您的制造工程师、物流经理和供应链专家的水平。更高质量意味着更低的生产成本、更少的浪费和更高效的配送。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 32
+  derived:
+  - code: financial_stability
+    layer: strategy
+    name: Financial Stability
+    name_zh: 财务稳定性
+    description: Composite of debt-to-equity ratio, cash runway, and interest coverage. Higher = more stable.
+    description_zh: 资产负债率、现金储备和利息覆盖率的综合指标。数值越高越稳定。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 40
+    is_derived: true
+  - code: dividend_consistency
+    layer: strategy
+    name: Dividend & Shareholder Returns
+    name_zh: 股息与股东回报
+    description: Based on dividend yield, payout consistency, and cumulative shareholder return.
+    description_zh: 基于股息收益率、派息一致性和累计股东回报。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 41
+    is_derived: true
+  - code: revenue_momentum
+    layer: strategy
+    name: Revenue Growth Momentum
+    name_zh: 营业收入增长动能
+    description: Based on round-over-round revenue growth rate and trend consistency.
+    description_zh: 基于逐轮营业收入增长率和趋势一致性。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 42
+    is_derived: true
+  - code: profitability
+    layer: strategy
+    name: Profitability
+    name_zh: 盈利能力
+    description: Based on net margin, ROE, and operating efficiency.
+    description_zh: 基于净利润率、净资产收益率和运营效率。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 43
+    is_derived: true
+  - code: market_expansion
+    layer: strategy
+    name: International Presence
+    name_zh: 国际化程度
+    description: Based on number of markets entered and depth of market commitment.
+    description_zh: 基于进入市场的数量和市场承诺深度。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 44
+    is_derived: true
+  - code: innovation_intensity
+    layer: strategy
+    name: Innovation & R&D Intensity
+    name_zh: 创新与研发强度
+    description: Based on R&D spend as percentage of revenue and platform generation advancement.
+    description_zh: 基于研发支出占营业收入的比例和平台代际推进。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 45
+    is_derived: true
+  - code: distribution_commitment
+    layer: strategy
+    name: Distribution & Channel Investment
+    name_zh: 分销与渠道投资
+    description: Per-market. Based on distribution investment, sales team size, and partnership status.
+    description_zh: 按市场计算。基于分销投资、销售团队规模和合作伙伴状态。
+    category: Operational
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 47
+    is_derived: true
+    is_market_specific: true
+  - code: market_tenure
+    layer: strategy
+    name: Market Tenure & Commitment
+    name_zh: 市场经营时间与承诺
+    description: Per-market. How long the team has been present and investing in this market.
+    description_zh: 按市场计算。团队在该市场的存在时间和投资持续时间。
+    category: Operational
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 48
+    is_derived: true
+    is_market_specific: true
+  - code: sustainability_commitment
+    layer: strategy
+    name: Environmental Sustainability
+    name_zh: 环境可持续性
+    description: Derived from environmental investment decisions. Regulators (especially EU) reward sustainability.
+    description_zh: 由环境投资决策决定。监管机构（尤其是欧盟）奖励可持续性。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 49
+    is_derived: true
+  - code: governance_quality
+    layer: strategy
+    name: Governance Quality
+    name_zh: 治理质量
+    description: Derived from governance commitments. Investors and regulators reward strong governance.
+    description_zh: 由治理承诺决定。投资者和监管机构奖励强大的治理。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 50
+    is_derived: true
+  - code: social_responsibility
+    layer: strategy
+    name: Social Responsibility
+    name_zh: 社会责任
+    description: Derived from social investment decisions. Communities and regulators reward social programs.
+    description_zh: 由社会投资决策决定。社区和监管机构奖励社会项目。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 51
+    is_derived: true
+platform_generations:
+- name: Gen 1 — Standard Lithium-Ion (LFP/NMC)
+  name_zh: 第一代——标准锂离子电池（LFP/NMC）
+  description: |-
+    Current mainstream lithium-ion platform using LFP and NMC chemistries. Proven, cost-effective, widely deployed. Adequate for standard applications but limited energy density and cycle life constrain premium use cases.
+  description_zh: |-
+    当前主流锂离子平台，采用LFP和NMC化学体系。技术成熟、性价比高、广泛部署。适用于标准应用，但有限的能量密度和循环寿命制约了高端应用场景。
+  generation_order: 1
+  unlock_round: 0
+  development_cost: 15000000
+  development_rounds: 0
+  license_cost: 35000000
+  annual_maintenance_cost: 1000000
+  is_starting_platform: true
+  ceilings:
+    energy_density:
+    - 7
+    - 3
+    cycle_life:
+    - 7
+    - 3
+    charging_speed:
+    - 6
+    - 2
+    thermal_management:
+    - 7
+    - 3
+    safety_rating:
+    - 6
+    - 2
+    recyclability:
+    - 4
+    - 1
+    solid_state:
+    - 0
+    - 0
+    smart_bms:
+    - 0
+    - 0
+    sodium_ion:
+    - 0
+    - 0
+- name: Gen 2 — Advanced Chemistry (LMFP/Solid-State Hybrid)
+  name_zh: 第二代——先进化学体系（LMFP/固态混合）
+  description: |-
+    Next-generation platform incorporating LMFP cathodes and solid-state hybrid electrolytes. Unlocks solid-state technology and smart battery management. Required to compete for Aerospace and premium applications.
+  description_zh: |-
+    融合LMFP正极材料和固态混合电解质的下一代平台。解锁固态技术和智能电池管理。参与航空航天和高端应用竞争的必要条件。
+  generation_order: 2
+  unlock_round: 2
+  development_cost: 25000000
+  development_rounds: 2
+  license_cost: 55000000
+  annual_maintenance_cost: 1500000
+  is_starting_platform: false
+  ceilings:
+    energy_density:
+    - 9
+    - 5
+    cycle_life:
+    - 9
+    - 5
+    charging_speed:
+    - 8
+    - 4
+    thermal_management:
+    - 9
+    - 5
+    safety_rating:
+    - 8
+    - 4
+    recyclability:
+    - 7
+    - 3
+    solid_state:
+    - 7
+    - 3
+    smart_bms:
+    - 8
+    - 3
+    sodium_ion:
+    - 0
+    - 0
+- name: Gen 3 — Next-Gen Multi-Chemistry (Solid-State + Sodium-Ion)
+  name_zh: 第三代——新一代多化学体系（固态+钠离子）
+  description: |-
+    Cutting-edge multi-chemistry platform combining solid-state lithium and sodium-ion cells. Full feature unlocks across all chemistries. The future of energy storage — but markets and supply chains may not be ready.
+  description_zh: |-
+    结合固态锂电池和钠离子电池的前沿多化学体系平台。全面解锁所有化学体系的功能。储能的未来——但市场和供应链可能尚未准备就绪。
+  generation_order: 3
+  unlock_round: 5
+  development_cost: 40000000
+  development_rounds: 2
+  license_cost: 80000000
+  annual_maintenance_cost: 2000000
+  is_starting_platform: false
+  ceilings:
+    energy_density:
+    - 10
+    - 6
+    cycle_life:
+    - 10
+    - 6
+    charging_speed:
+    - 10
+    - 5
+    thermal_management:
+    - 10
+    - 6
+    safety_rating:
+    - 10
+    - 5
+    recyclability:
+    - 10
+    - 5
+    solid_state:
+    - 10
+    - 5
+    smart_bms:
+    - 10
+    - 5
+    sodium_ion:
+    - 10
+    - 5
+markets:
+- name: North America
+  name_zh: 北美
+  code: na
+  description: |-
+    The Inflation Reduction Act has triggered a battery manufacturing boom. $369B in climate spending is reshaping the energy supply chain. FEOC rules restrict Chinese battery content in vehicles qualifying for tax credits. Massive demand from EV manufacturers and grid-scale storage. The most lucrative market — but the highest regulatory barriers for East Asian firms.
+  description_zh: |-
+    《通胀削减法案》引发了电池制造业热潮。3690亿美元的气候支出正在重塑能源供应链。FEOC规则限制了在申请税收抵免的车辆中使用中国电池内容。电动汽车制造商和电网级储能的巨大需求。最有利可图的市场——但对东亚企业的监管壁垒最高。
+  currency_code: USD
+  exchange_rate_base: '1.0000'
+  exchange_rate_volatility: '0.02'
+  base_growth_rate: '0.08'
+  entry_cost_base: 2000000
+  tariff_rate: '0.00'
+  tax_rate: '0.21'
+  regulatory_difficulty: 7
+  infrastructure_quality: 9
+  base_manufacturing_cost: '1.2'
+  allows_manufacturing: true
+  plant_build_cost: 35000000
+  plant_build_rounds: 3
+  plant_capacity_units: 50000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.30'
+  contract_mfg_capacity_cap: 30000
+  display_order: 1
+- name: East Asia
+  name_zh: 东亚
+  code: ea
+  description: |-
+    The world's largest battery market and manufacturing base. CATL, BYD, and EVE Energy dominate. Government subsidizes manufacturing capacity and controls critical mineral processing. Export controls on processing technology give EA firms a structural advantage. Fiercely competitive on cost.
+  description_zh: |-
+    全球最大的电池市场和制造基地。宁德时代、比亚迪和亿纬锂能占据主导地位。政府补贴制造产能并控制关键矿物加工。加工技术出口管制赋予东亚企业结构性优势。成本竞争极为激烈。
+  currency_code: CNY
+  exchange_rate_base: '0.1380'
+  exchange_rate_volatility: '0.04'
+  base_growth_rate: '0.10'
+  entry_cost_base: 1500000
+  tariff_rate: '0.08'
+  tax_rate: '0.25'
+  regulatory_difficulty: 6
+  infrastructure_quality: 8
+  base_manufacturing_cost: '0.8'
+  allows_manufacturing: true
+  plant_build_cost: 25000000
+  plant_build_rounds: 2
+  plant_capacity_units: 80000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.10'
+  contract_mfg_capacity_cap: 50000
+  display_order: 2
+- name: Western Europe
+  name_zh: 西欧
+  code: eu
+  description: |-
+    The EU Battery Regulation mandates carbon footprint declarations, recycled content minimums, and battery passports. Strictest ESG requirements globally. Northvolt, BASF, and Umicore are building European supply chains. Anti-subsidy investigations targeting Chinese battery imports. Premium pricing for certified, sustainable batteries.
+  description_zh: |-
+    欧盟电池法规要求碳足迹申报、回收材料最低含量和电池护照。全球最严格的ESG要求。Northvolt、巴斯夫和优美科正在构建欧洲供应链。针对中国电池进口的反补贴调查。经认证的可持续电池可获得溢价。
+  currency_code: EUR
+  exchange_rate_base: '1.0800'
+  exchange_rate_volatility: '0.02'
+  base_growth_rate: '0.07'
+  entry_cost_base: 2500000
+  tariff_rate: '0.06'
+  tax_rate: '0.22'
+  regulatory_difficulty: 9
+  infrastructure_quality: 9
+  base_manufacturing_cost: '1.3'
+  allows_manufacturing: true
+  plant_build_cost: 40000000
+  plant_build_rounds: 3
+  plant_capacity_units: 40000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.40'
+  contract_mfg_capacity_cap: 25000
+  display_order: 3
+- name: South America
+  name_zh: 南美
+  code: sa
+  description: |-
+    Chile and Argentina hold the lithium triangle — critical raw materials for battery production. Brazil's growing solar and wind installations drive energy storage demand. Government incentivizes local battery assembly through tariffs and tax zones. Complex tax system. Nationalization risk on lithium mining rights.
+  description_zh: |-
+    智利和阿根廷拥有锂三角——电池生产的关键原材料。巴西日益增长的太阳能和风能装机推动储能需求。政府通过关税和税收优惠区激励本地电池组装。税制复杂。锂矿开采权存在国有化风险。
+  currency_code: BRL
+  exchange_rate_base: '0.1700'
+  exchange_rate_volatility: '0.05'
+  base_growth_rate: '0.09'
+  entry_cost_base: 1200000
+  tariff_rate: '0.18'
+  tax_rate: '0.34'
+  regulatory_difficulty: 5
+  infrastructure_quality: 5
+  base_manufacturing_cost: '0.9'
+  allows_manufacturing: true
+  plant_build_cost: 22000000
+  plant_build_rounds: 2
+  plant_capacity_units: 35000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.20'
+  contract_mfg_capacity_cap: 20000
+  display_order: 4
+- name: West Africa
+  name_zh: 西非
+  code: wa
+  description: |-
+    130 million Nigerians lack reliable electricity. Off-grid solar and battery storage is the fastest-growing energy segment in Africa. Demand is massive but price sensitivity is extreme. Government offers incentives for local energy manufacturing. Distribution requires navigating informal market networks. The highest-growth market with the highest operational friction.
+  description_zh: |-
+    1.3亿尼日利亚人缺乏可靠电力供应。离网太阳能和电池储能是非洲增长最快的能源板块。需求巨大但价格敏感度极高。政府为本地能源制造提供激励。分销需要驾驭非正规市场网络。增长最快的市场，运营摩擦也最大。
+  currency_code: NGN
+  exchange_rate_base: '0.00063'
+  exchange_rate_volatility: '0.08'
+  base_growth_rate: '0.15'
+  entry_cost_base: 800000
+  tariff_rate: '0.12'
+  tax_rate: '0.30'
+  regulatory_difficulty: 4
+  infrastructure_quality: 3
+  base_manufacturing_cost: '0.7'
+  allows_manufacturing: true
+  plant_build_cost: 15000000
+  plant_build_rounds: 2
+  plant_capacity_units: 25000
+  contract_mfg_available: false
+  contract_mfg_cost_multiplier: '1.00'
+  contract_mfg_capacity_cap:
+  display_order: 5
+readiness_data:
+- market: na
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: na
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.10
+    3: 0.30
+    4: 0.55
+    5: 0.75
+    6: 0.90
+    7: 0.97
+    8: 1.0
+- market: na
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.08
+    6: 0.22
+    7: 0.40
+    8: 0.60
+- market: ea
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: ea
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.20
+    3: 0.45
+    4: 0.65
+    5: 0.82
+    6: 0.93
+    7: 0.98
+    8: 1.0
+- market: ea
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.12
+    6: 0.28
+    7: 0.48
+    8: 0.68
+- market: eu
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: eu
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.10
+    3: 0.25
+    4: 0.50
+    5: 0.70
+    6: 0.88
+    7: 0.95
+    8: 1.0
+- market: eu
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.06
+    6: 0.18
+    7: 0.35
+    8: 0.55
+- market: sa
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: sa
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.05
+    3: 0.20
+    4: 0.40
+    5: 0.60
+    6: 0.78
+    7: 0.90
+    8: 0.97
+- market: sa
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.04
+    6: 0.12
+    7: 0.25
+    8: 0.42
+- market: wa
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: wa
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.05
+    3: 0.15
+    4: 0.30
+    5: 0.50
+    6: 0.68
+    7: 0.82
+    8: 0.92
+- market: wa
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.03
+    6: 0.08
+    7: 0.18
+    8: 0.32
+entry_modes:
+- code: export
+  name: Export from Home Market
+  name_zh: 从母国市场出口
+  description: |-
+    Ship products from your existing North American operations. Lowest commitment, fastest to start, but highest logistics costs and full tariff exposure.
+  description_zh: |-
+    从您现有的业务发货。承诺最低，启动最快，但物流成本最高且完全承担关税。
+  capital_requirement: 500000
+  setup_rounds: 0
+  control_level: 3
+  risk_level: 2
+  local_presence_score: 1
+  logistics_cost_multiplier: '2.00'
+  tariff_applies: true
+- code: licensing
+  name: Technology Licensing Agreement
+  name_zh: 技术许可协议
+  description: |-
+    License your technology and brand to a local manufacturer. Low cost, but you lose control over quality and pricing. Partner earns most of the margin.
+  description_zh: |-
+    将您的技术和品牌授权给本地制造商或运营商。成本低，但您将失去对质量和定价的控制。合作伙伴获取大部分利润。
+  capital_requirement: 1000000
+  setup_rounds: 1
+  control_level: 2
+  risk_level: 3
+  local_presence_score: 3
+  logistics_cost_multiplier: '1.10'
+  tariff_applies: false
+- code: joint_venture
+  name: Joint Venture with Local Partner
+  name_zh: 与本地合作伙伴成立合资企业
+  description: |-
+    Partner with a local firm to share operations, costs, and market knowledge. Moderate capital, good local relationships, but shared profits and potential partner conflicts.
+  description_zh: |-
+    与本地企业合作共享运营、成本和市场知识。中等资本要求，良好的本地关系，但利润共享且存在潜在合作伙伴冲突。
+  capital_requirement: 8000000
+  setup_rounds: 1
+  control_level: 5
+  risk_level: 5
+  local_presence_score: 7
+  logistics_cost_multiplier: '1.20'
+  tariff_applies: false
+- code: acquisition
+  name: Acquire Local Company
+  name_zh: 收购本地公司
+  description: |-
+    Buy an existing local player for instant market access, customer base, and operations. Highest capital cost, but immediate presence and full control.
+  description_zh: |-
+    收购现有本地企业以获得即时市场准入、客户基础和运营能力。资本成本最高，但可立即建立存在并获得完全控制权。
+  capital_requirement: 20000000
+  setup_rounds: 0
+  control_level: 9
+  risk_level: 7
+  local_presence_score: 8
+  logistics_cost_multiplier: '1.05'
+  tariff_applies: false
+- code: subsidiary
+  name: Build Wholly-Owned Subsidiary
+  name_zh: 建立全资子公司
+  description: |-
+    Establish your own operations from scratch. Full control, full costs, full risk. Takes time to set up but provides maximum strategic flexibility long-term.
+  description_zh: |-
+    从零开始建立自有业务。完全控制、完全成本、完全风险。建设需要时间，但长期提供最大的战略灵活性。
+  capital_requirement: 15000000
+  setup_rounds: 2
+  control_level: 10
+  risk_level: 6
+  local_presence_score: 9
+  logistics_cost_multiplier: '1.00'
+  tariff_applies: false
+strategy_options:
+- category: Partnerships
+  code: distribution_partner
+  name: Distribution Partner
+  name_zh: 分销合作伙伴
+  description: Establish a relationship with a major local distributor or retailer chain.
+  description_zh: 与主要本地分销商或零售连锁建立合作关系。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- category: Partnerships
+  code: technology_partner
+  name: Technology Partner
+  name_zh: 技术合作伙伴
+  description: Co-develop technology with a local firm. Accelerates R&D but may share IP.
+  description_zh: 与本地企业共同开发技术。加速研发但可能共享知识产权。
+  capital_cost_base: 3000000
+  recurring_cost_per_round: 750000
+  time_lag_rounds: 1
+  is_reversible: true
+  reversal_cost_multiplier: '0.50'
+  effects:
+  - - jv_distributor
+    - add
+    - 1.5
+    - true
+  - - regulatory_govt
+    - add
+    - 1.0
+    - true
+- category: Government Relations
+  code: govt_advisor
+  name: Government & Regulatory Advisor
+  name_zh: 政府与监管顾问
+  description: Retain a local advisory firm to navigate regulatory requirements and build government relationships.
+  description_zh: 聘请本地咨询公司协助应对监管要求并建立政府关系。
+  capital_cost_base: 1000000
+  recurring_cost_per_round: 300000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.10'
+  effects:
+  - - regulatory_govt
+    - add
+    - 3.0
+    - true
+- category: Brand
+  code: brand_ambassador
+  name: Local Brand Ambassador
+  name_zh: 本地品牌大使
+  description: Partner with a respected local figure or organization to build brand credibility and awareness.
+  description_zh: 与受尊敬的本地人物或组织合作，建立品牌可信度和知名度。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 400000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.20'
+  effects:
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+customer_segments:
+- name: EV Manufacturers
+  name_zh: 电动汽车制造商
+  segment_type: customer
+  description: |-
+    Automotive OEMs building electric vehicles. Largest demand segment. Require automotive-grade certification, high energy density, and fast charging for consumer acceptance.
+  description_zh: |-
+    制造电动汽车的汽车OEM厂商。最大需求板块。要求汽车级认证、高能量密度和快速充电以获得消费者认可。
+  bass_p: '0.02'
+  bass_q: '0.42'
+  min_generation_required:
+  performance_index_weight: '0.05'
+  revenue_per_unit: '5000.00'
+  populations:
+    na: 80000
+    ea: 150000
+    eu: 90000
+    sa: 40000
+    wa: 10000
+  growth_rates:
+    na: '0.12'
+    ea: '0.15'
+    eu: '0.10'
+    sa: '0.08'
+    wa: '0.20'
+- name: Grid-Scale Energy Storage
+  name_zh: 电网级储能
+  segment_type: customer
+  description: |-
+    Utility companies and grid operators deploying large-scale battery systems. Prioritize cycle life and cost over density. Long procurement cycles but massive contract values.
+  description_zh: |-
+    部署大规模电池系统的公用事业公司和电网运营商。优先考虑循环寿命和成本而非密度。采购周期长但合同价值巨大。
+  bass_p: '0.02'
+  bass_q: '0.45'
+  min_generation_required:
+  performance_index_weight: '0.04'
+  revenue_per_unit: '10000.00'
+  populations:
+    na: 40000
+    ea: 60000
+    eu: 35000
+    sa: 25000
+    wa: 15000
+  growth_rates:
+    na: '0.15'
+    ea: '0.12'
+    eu: '0.10'
+    sa: '0.12'
+    wa: '0.25'
+- name: Consumer Electronics OEMs
+  name_zh: 消费电子OEM厂商
+  segment_type: customer
+  description: |-
+    Laptop, smartphone, and wearable manufacturers. Small cells, high density, premium pricing. Established relationships matter. Lower growth than EV but stable demand.
+  description_zh: |-
+    笔记本电脑、智能手机和可穿戴设备制造商。小型电芯、高密度、高端定价。既有关系很重要。增长低于电动汽车但需求稳定。
+  bass_p: '0.03'
+  bass_q: '0.40'
+  min_generation_required:
+  performance_index_weight: '0.03'
+  revenue_per_unit: '500.00'
+  populations:
+    na: 50000
+    ea: 120000
+    eu: 30000
+    sa: 20000
+    wa: 8000
+  growth_rates:
+    na: '0.04'
+    ea: '0.06'
+    eu: '0.03'
+    sa: '0.05'
+    wa: '0.10'
+- name: Aerospace & Defense
+  name_zh: 航空航天与国防
+  segment_type: customer
+  description: |-
+    Military, aerospace, and space applications. Highest quality requirements. Strictest origin restrictions. Multi-year qualification process. Only advanced chemistry platforms qualify.
+  description_zh: |-
+    军事、航空航天和太空应用。质量要求最高。原产地限制最严格。多年资质认证过程。仅先进化学体系平台符合要求。
+  bass_p: '0.01'
+  bass_q: '0.25'
+  min_generation_required: 2
+  performance_index_weight: '0.025'
+  revenue_per_unit: '25000.00'
+  populations:
+    na: 15000
+    ea: 20000
+    eu: 12000
+    sa: 5000
+    wa: 3000
+  growth_rates:
+    na: '0.06'
+    ea: '0.08'
+    eu: '0.05'
+    sa: '0.04'
+    wa: '0.06'
+- name: Off-Grid Solar & Residential Storage
+  name_zh: 离网太阳能与家庭储能
+  segment_type: customer
+  description: |-
+    Residential solar installers, mini-grid operators, and off-grid energy providers. Price-sensitive but growing fast, especially in Africa. Durability in harsh conditions is critical.
+  description_zh: |-
+    住宅太阳能安装商、微电网运营商和离网能源供应商。价格敏感但增长迅速，尤其在非洲。在恶劣条件下的耐用性至关重要。
+  bass_p: '0.04'
+  bass_q: '0.50'
+  min_generation_required:
+  performance_index_weight: '0.035'
+  revenue_per_unit: '1000.00'
+  populations:
+    na: 35000
+    ea: 45000
+    eu: 40000
+    sa: 30000
+    wa: 60000
+  growth_rates:
+    na: '0.10'
+    ea: '0.08'
+    eu: '0.12'
+    sa: '0.15'
+    wa: '0.25'
+non_customer_segments:
+- name: Velocity Capital
+  name_zh: 高速资本
+  segment_type: investor
+  market:
+  description: |-
+    Growth-focused fund backing companies with aggressive R&D, international expansion, and revenue growth in clean energy markets. Tolerates losses for compelling growth trajectory.
+  description_zh: 专注增长的基金，支持在清洁能源市场中展现积极研发、国际扩张和营业收入增长的公司。容忍亏损以换取令人信服的增长轨迹。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.11'
+  revenue_per_unit:
+- name: Granite Investments
+  name_zh: 磐石投资
+  segment_type: investor
+  market:
+  description: |-
+    Value-focused fund prioritizing stable returns, low debt, consistent dividends, and prudent risk management in the battery sector.
+  description_zh: 专注价值的基金，优先考虑电池行业的稳定回报、低负债、持续分红和审慎风险管理。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.09'
+  revenue_per_unit:
+- name: GreenHorizon Partners
+  name_zh: 绿色地平线合伙人
+  segment_type: investor
+  market:
+  description: |-
+    ESG-focused fund investing in companies demonstrating genuine sustainability, strong governance, and positive social impact in the clean energy transition.
+  description_zh: 专注ESG的基金，投资于在清洁能源转型中展现真正可持续性、强大治理和积极社会影响的公司。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.10'
+  revenue_per_unit:
+- name: US DOE & FEOC Compliance
+  name_zh: 美国能源部与FEOC合规
+  segment_type: regulator
+  market: na
+  description: US Department of Energy and FEOC compliance authority overseeing battery manufacturing standards, IRA qualification, and foreign entity restrictions.
+  description_zh: 美国能源部和FEOC合规机构，监管电池制造标准、IRA资质和外国关注实体限制。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: MIIT & Energy Administration
+  name_zh: 工信部与能源局
+  segment_type: regulator
+  market: ea
+  description: Chinese Ministry of Industry and Information Technology overseeing battery standards, export controls, and industrial policy compliance.
+  description_zh: 中国工业和信息化部，监管电池标准、出口管制和产业政策合规。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: EU Battery Regulation Authority
+  name_zh: 欧盟电池法规管理机构
+  segment_type: regulator
+  market: eu
+  description: European Battery Regulation enforcement body overseeing carbon footprint declarations, recycled content minimums, battery passports, and due diligence requirements.
+  description_zh: 欧洲电池法规执行机构，监管碳足迹申报、回收材料最低含量、电池护照和尽职调查要求。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: ANEEL & Mining Ministry
+  name_zh: ANEEL与矿业部
+  segment_type: regulator
+  market: sa
+  description: Brazilian energy regulator and mining ministry overseeing lithium extraction rights, energy policy, and environmental compliance.
+  description_zh: 巴西能源监管机构和矿业部，监管锂矿开采权、能源政策和环境合规。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Nigerian Energy Commission
+  name_zh: 尼日利亚能源委员会
+  segment_type: regulator
+  market: wa
+  description: Nigerian energy commission overseeing power sector reform, off-grid energy standards, and local content requirements.
+  description_zh: 尼日利亚能源委员会，监管电力部门改革、离网能源标准和本地含量要求。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: NA Energy Distributors
+  name_zh: 北美能源分销商
+  segment_type: channel
+  market: na
+  description: North American battery and energy storage distribution network serving EV manufacturers and grid operators.
+  description_zh: 北美电池和储能分销网络，服务电动汽车制造商和电网运营商。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: EA Industrial Supply Chains
+  name_zh: 东亚工业供应链
+  segment_type: channel
+  market: ea
+  description: East Asian industrial supply chain network connecting battery manufacturers to OEMs and system integrators.
+  description_zh: 东亚工业供应链网络，连接电池制造商与OEM厂商和系统集成商。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: EU Energy System Integrators
+  name_zh: 欧盟能源系统集成商
+  segment_type: channel
+  market: eu
+  description: European energy system integrators connecting battery suppliers to automotive, grid, and residential markets.
+  description_zh: 欧洲能源系统集成商，连接电池供应商与汽车、电网和住宅市场。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: SA Industrial & Solar Distributors
+  name_zh: 南美工业与太阳能分销商
+  segment_type: channel
+  market: sa
+  description: South American industrial distribution network for battery and solar storage products.
+  description_zh: 南美电池和太阳能储能产品的工业分销网络。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: WA Off-Grid Distribution Networks
+  name_zh: 西非离网分销网络
+  segment_type: channel
+  market: wa
+  description: West African off-grid energy distribution network operating through local agents and community partnerships.
+  description_zh: 西非离网太阳能和储能分销网络。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+segment_preferences:
+  EV Manufacturers:
+    na:
+    - - energy_density
+      - 7.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - cycle_life
+      - 6.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.15
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.07
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    ea:
+    - - energy_density
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 6.0
+      - 0.045
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.045
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.045
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.15
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.07
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    eu:
+    - - energy_density
+      - 7.0
+      - 0.06
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.045
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.03
+      - 3.0
+    - - cycle_life
+      - 6.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.15
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.07
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    sa:
+    - - energy_density
+      - 7.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 6.0
+      - 0.06
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.045
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.15
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.07
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    wa:
+    - - cycle_life
+      - 6.0
+      - 0.075
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 7.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.15
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.07
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+  Grid-Scale Energy Storage:
+    na:
+    - - cycle_life
+      - 8.0
+      - 0.09
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.045
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.18
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    ea:
+    - - cycle_life
+      - 8.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.06
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.045
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.18
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    eu:
+    - - cycle_life
+      - 8.0
+      - 0.075
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.18
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    sa:
+    - - cycle_life
+      - 8.0
+      - 0.09
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.045
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.18
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    wa:
+    - - cycle_life
+      - 8.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 5.0
+      - 0.015
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.18
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.09
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 6.0
+      - 0.06
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+  Consumer Electronics OEMs:
+    na:
+    - - energy_density
+      - 8.0
+      - 0.09
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.075
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - cycle_life
+      - 5.0
+      - 0.015
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.14
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    ea:
+    - - energy_density
+      - 8.0
+      - 0.09
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - cycle_life
+      - 5.0
+      - 0.015
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.14
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    eu:
+    - - energy_density
+      - 8.0
+      - 0.075
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.06
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.045
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.03
+      - 3.0
+    - - cycle_life
+      - 5.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.14
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    sa:
+    - - energy_density
+      - 8.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 7.0
+      - 0.06
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - cycle_life
+      - 5.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.14
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    wa:
+    - - safety_rating
+      - 7.0
+      - 0.075
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.075
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 5.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 7.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.14
+      - 3.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.05
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+  Aerospace & Defense:
+    na:
+    - - safety_rating
+      - 9.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 8.0
+      - 0.075
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - recyclability
+      - 3.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 4.0
+      - 0.06
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 7.0
+      - 0.10
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.07
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    ea:
+    - - safety_rating
+      - 9.0
+      - 0.075
+      - 3.0
+    - - thermal_management
+      - 8.0
+      - 0.075
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.075
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - recyclability
+      - 3.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 4.0
+      - 0.06
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 7.0
+      - 0.10
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.07
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    eu:
+    - - safety_rating
+      - 9.0
+      - 0.075
+      - 3.0
+    - - thermal_management
+      - 8.0
+      - 0.06
+      - 3.0
+    - - recyclability
+      - 3.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 4.0
+      - 0.06
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 7.0
+      - 0.10
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.07
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    sa:
+    - - safety_rating
+      - 9.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 8.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.06
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 3.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 4.0
+      - 0.06
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 7.0
+      - 0.10
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.07
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    wa:
+    - - safety_rating
+      - 9.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 8.0
+      - 0.075
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 8.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - recyclability
+      - 3.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 4.0
+      - 0.06
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - regulatory_govt
+      - 7.0
+      - 0.10
+      - 5.0
+    - - local_manufacturing
+      - 6.0
+      - 0.07
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+  Off-Grid Solar & Residential Storage:
+    na:
+    - - safety_rating
+      - 6.0
+      - 0.075
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.075
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.045
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 15.0
+      - 0.20
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    ea:
+    - - cycle_life
+      - 7.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 6.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 15.0
+      - 0.20
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    eu:
+    - - recyclability
+      - 4.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 6.0
+      - 0.075
+      - 3.0
+    - - cycle_life
+      - 7.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.045
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 15.0
+      - 0.20
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    sa:
+    - - cycle_life
+      - 7.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 6.0
+      - 0.06
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.045
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.03
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 15.0
+      - 0.20
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+    wa:
+    - - cycle_life
+      - 7.0
+      - 0.09
+      - 3.0
+    - - thermal_management
+      - 6.0
+      - 0.075
+      - 3.0
+    - - safety_rating
+      - 6.0
+      - 0.06
+      - 3.0
+    - - energy_density
+      - 5.0
+      - 0.03
+      - 3.0
+    - - charging_speed
+      - 4.0
+      - 0.03
+      - 3.0
+    - - recyclability
+      - 4.0
+      - 0.015
+      - 3.0
+    - - solid_state
+      - 4.0
+      - 0.01
+      - 4.0
+    - - smart_bms
+      - 4.0
+      - 0.01
+      - 4.0
+    - - sodium_ion
+      - 3.0
+      - 0.01
+      - 4.0
+    - - price_competitiveness
+      - 15.0
+      - 0.20
+      - 2.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 3.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.06
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - regulatory_govt
+      - 6.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 5.0
+  Velocity Capital:
+    __global__:
+    - - revenue_momentum
+      - 9.0
+      - 0.18
+      - 2.5
+    - - innovation_intensity
+      - 8.0
+      - 0.16
+      - 2.5
+    - - market_expansion
+      - 8.0
+      - 0.14
+      - 3.0
+    - - profitability
+      - 7.0
+      - 0.1
+      - 3.0
+    - - financial_stability
+      - 5.0
+      - 0.08
+      - 3.5
+    - - dividend_consistency
+      - 3.0
+      - 0.04
+      - 5.0
+    - - rd_talent
+      - 7.0
+      - 0.1
+      - 2.5
+    - - commercial_talent
+      - 6.0
+      - 0.06
+      - 3.0
+    - - governance_quality
+      - 5.0
+      - 0.04
+      - 4.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 8.0
+      - 0.02
+      - 5.0
+    - - operations_talent
+      - 6.0
+      - 0.02
+      - 5.0
+  Granite Investments:
+    __global__:
+    - - financial_stability
+      - 9.0
+      - 0.22
+      - 2.0
+    - - dividend_consistency
+      - 8.0
+      - 0.18
+      - 2.0
+    - - profitability
+      - 7.0
+      - 0.14
+      - 2.5
+    - - governance_quality
+      - 8.0
+      - 0.14
+      - 2.0
+    - - revenue_momentum
+      - 6.0
+      - 0.06
+      - 3.0
+    - - market_expansion
+      - 6.0
+      - 0.04
+      - 4.0
+    - - innovation_intensity
+      - 5.0
+      - 0.04
+      - 4.0
+    - - operations_talent
+      - 7.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 14.0
+      - 0.03
+      - 4.0
+  GreenHorizon Partners:
+    __global__:
+    - - sustainability_commitment
+      - 9.0
+      - 0.20
+      - 2.0
+    - - governance_quality
+      - 8.0
+      - 0.16
+      - 2.0
+    - - social_responsibility
+      - 8.0
+      - 0.14
+      - 2.5
+    - - esg_track_record
+      - 9.0
+      - 0.12
+      - 2.0
+    - - profitability
+      - 6.0
+      - 0.08
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.06
+      - 3.5
+    - - innovation_intensity
+      - 7.0
+      - 0.06
+      - 3.0
+    - - revenue_momentum
+      - 6.0
+      - 0.04
+      - 4.0
+    - - market_expansion
+      - 6.0
+      - 0.04
+      - 4.0
+    - - operations_talent
+      - 6.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+    - - brand_awareness
+      - 7.0
+      - 0.03
+      - 5.0
+  US DOE & FEOC Compliance:
+    na:
+    - - governance_quality
+      - 7.0
+      - 0.2
+      - 2.5
+    - - sustainability_commitment
+      - 6.0
+      - 0.15
+      - 3.0
+    - - local_manufacturing
+      - 8.0
+      - 0.12
+      - 2.0
+    - - operations_talent
+      - 6.0
+      - 0.1
+      - 3.0
+    - - social_responsibility
+      - 5.0
+      - 0.08
+      - 3.5
+    - - market_tenure
+      - 6.0
+      - 0.07
+      - 3.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - esg_track_record
+      - 8.0
+      - 0.06
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.05
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+    - - safety_rating
+      - 14.0
+      - 0.02
+      - 4.0
+  MIIT & Energy Administration:
+    ea:
+    - - local_manufacturing
+      - 8.0
+      - 0.2
+      - 2.0
+    - - market_tenure
+      - 7.0
+      - 0.15
+      - 2.5
+    - - governance_quality
+      - 6.0
+      - 0.12
+      - 3.0
+    - - operations_talent
+      - 6.0
+      - 0.1
+      - 3.0
+    - - sustainability_commitment
+      - 5.0
+      - 0.08
+      - 4.0
+    - - social_responsibility
+      - 5.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.05
+      - 4.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+  EU Battery Regulation Authority:
+    eu:
+    - - sustainability_commitment
+      - 9.0
+      - 0.25
+      - 2.0
+    - - governance_quality
+      - 8.0
+      - 0.2
+      - 2.0
+    - - social_responsibility
+      - 7.0
+      - 0.12
+      - 2.5
+    - - local_manufacturing
+      - 6.0
+      - 0.08
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.08
+      - 2.5
+    - - market_tenure
+      - 5.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.08
+      - 3.0
+    - - esg_track_record
+      - 16.0
+      - 0.06
+      - 3.0
+    - - recyclability
+      - 16.0
+      - 0.04
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.04
+      - 4.0
+  ANEEL & Mining Ministry:
+    sa:
+    - - local_manufacturing
+      - 9.0
+      - 0.22
+      - 2.0
+    - - governance_quality
+      - 6.0
+      - 0.15
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - social_responsibility
+      - 6.0
+      - 0.1
+      - 3.0
+    - - market_tenure
+      - 7.0
+      - 0.08
+      - 3.0
+    - - sustainability_commitment
+      - 4.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - distribution_coverage
+      - 10.0
+      - 0.05
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.03
+      - 5.0
+  Nigerian Energy Commission:
+    wa:
+    - - local_manufacturing
+      - 9.0
+      - 0.22
+      - 2.0
+    - - governance_quality
+      - 6.0
+      - 0.15
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - social_responsibility
+      - 6.0
+      - 0.1
+      - 3.0
+    - - market_tenure
+      - 7.0
+      - 0.08
+      - 3.0
+    - - sustainability_commitment
+      - 4.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - distribution_coverage
+      - 10.0
+      - 0.05
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.03
+      - 5.0
+  NA Energy Distributors:
+    na:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  EA Industrial Supply Chains:
+    ea:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  EU Energy System Integrators:
+    eu:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  SA Industrial & Solar Distributors:
+    sa:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  WA Off-Grid Distribution Networks:
+    wa:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+events:
+- name: Critical Mineral Export Ban
+  name_zh: 关键矿物出口禁令
+  description_template: |-
+    The government of {market} has restricted exports of processed graphite and lithium compounds, citing national security. Companies dependent on imported raw materials face supply disruptions and cost increases.
+  description_template_zh: |-
+    {market}政府以国家安全为由限制了加工石墨和锂化合物的出口。依赖进口原材料的企业面临供应中断和成本上升。
+  category: Political
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: ea
+  response_required: false
+  rag_source_tags: trade_policy,critical_minerals,supply_chain,geopolitics
+  impacts:
+  - - cost_change
+    - ea
+    - 
+    - 
+    - tariff_rate
+    - 0.10
+    - 3
+  - - demand_shock
+    - ea
+    - EV Manufacturers
+    - 
+    - 0.85
+    - 2
+- name: FEOC Compliance Review
+  name_zh: FEOC合规审查
+  description_template: |-
+    The US Department of Energy has launched a Foreign Entity of Concern review affecting battery firms with East Asian supply chain dependencies. Non-compliant firms face exclusion from IRA tax credits.
+  description_template_zh: |-
+    美国能源部针对具有东亚供应链依赖的电池企业启动了外国关注实体审查。不合规企业面临被排除在IRA税收抵免之外的风险。
+  category: Regulatory
+  severity: high
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: na
+  response_required: false
+  rag_source_tags: regulation,ira,feoc,compliance,battery
+  impacts:
+  - - preference_shift
+    - na
+    - US DOE & FEOC Compliance
+    - local_manufacturing
+    - 2.0
+    - 0
+  - - cost_change
+    - na
+    - 
+    - 
+    - tariff_rate
+    - 0.05
+    - 3
+- name: Lithium Price Spike
+  name_zh: 锂价飙升
+  description_template: |-
+    Global lithium carbonate prices have surged {value}% due to supply constraints. All manufacturers face higher input costs. Firms with vertical integration or alternative chemistries are partially shielded.
+  description_template_zh: |-
+    由于供应受限，全球碳酸锂价格飙升{value}%。所有制造商面临更高的原材料成本。具有垂直整合或替代化学体系的企业受到部分保护。
+  category: Economic
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 2
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: lithium,commodity,supply_chain,cost_pressure
+  impacts:
+  - - cost_change
+    - 
+    - 
+    - 
+    - logistics_cost
+    - 0.30
+    - 2
+- name: EU Battery Regulation Enforcement
+  name_zh: 欧盟电池法规执行
+  description_template: |-
+    The EU has accelerated enforcement of battery passport requirements and recycled content minimums. Firms without high recyclability face sales restrictions in Western Europe.
+  description_template_zh: |-
+    欧盟加速了电池护照要求和回收材料最低含量的执行。可回收性不高的企业在西欧面临销售限制。
+  category: Regulatory
+  severity: high
+  probability_per_round: '0.25'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: eu
+  response_required: false
+  rag_source_tags: regulation,eu_battery_regulation,sustainability,recyclability
+  impacts:
+  - - preference_shift
+    - eu
+    - EU Battery Regulation Authority
+    - recyclability
+    - 2.5
+    - 0
+  - - demand_shock
+    - eu
+    - EV Manufacturers
+    - 
+    - 0.90
+    - 2
+- name: IRA Subsidy Award
+  name_zh: IRA补贴授予
+  description_template: |-
+    Teams manufacturing in North America with qualifying domestic content have been awarded IRA production tax credits worth $10/kWh. First qualifying firms receive the highest allocation.
+  description_template_zh: |-
+    在北美制造且满足国产含量要求的团队获得了IRA生产税收抵免，每千瓦时$10。首批合格企业获得最高分配额度。
+  category: Political
+  severity: medium
+  probability_per_round: '0.30'
+  earliest_round: 2
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code: na
+  response_required: false
+  rag_source_tags: ira,subsidy,tax_credit,domestic_manufacturing
+  impacts:
+  - - cost_change
+    - na
+    - 
+    - 
+    - tariff_rate
+    - -0.05
+    - 4
+  - - demand_shock
+    - na
+    - Grid-Scale Energy Storage
+    - 
+    - 1.15
+    - 2
+- name: 'Trade War: Battery Tariffs'
+  name_zh: 贸易战：电池关税
+  description_template: |-
+    Retaliatory tariffs between North America and East Asia on battery products. Cross-border costs spike. Firms with local manufacturing in both markets are shielded.
+  description_template_zh: |-
+    北美和东亚之间对电池产品实施报复性关税。跨境成本飙升。在两个市场均有本地制造的企业受到保护。
+  category: Political
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: trade_war,tariffs,protectionism,battery
+  target_type: MARKET_WIDE
+  trigger_condition:
+  affected_markets:
+  - na
+  - ea
+  impacts:
+  - - cost_change
+    - na
+    - 
+    - 
+    - tariff_rate
+    - 0.08
+    - 3
+  - - cost_change
+    - ea
+    - 
+    - 
+    - tariff_rate
+    - 0.08
+    - 3
+- name: Currency Crisis
+  name_zh: 货币危机
+  description_template: |-
+    The {market} currency has experienced a sharp devaluation against the US dollar. Import costs surge, but local manufacturing becomes more cost-competitive for export.
+  description_template_zh: |-
+    {market}货币兑美元大幅贬值。进口成本飙升，但本地制造的出口竞争力增强。
+  category: Economic
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: wa
+  response_required: false
+  rag_source_tags: currency,exchange_rate,financial_risk,emerging_market
+  impacts:
+  - - exchange_rate
+    - wa
+    - 
+    - 
+    - exchange_rate
+    - -0.25
+    - 3
+- name: Data Localization Requirements
+  name_zh: 数据本地化要求
+  description_template: |-
+    New data sovereignty regulations in {market} require all battery management system data to be stored on local servers. Compliance investment needed.
+  description_template_zh: |-
+    {market}的新数据主权法规要求所有电池管理系统数据存储在本地服务器上。需要合规投资。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: ea
+  response_required: false
+  rag_source_tags: regulation,data_sovereignty,bms,compliance
+  impacts:
+  - - cost_change
+    - ea
+    - 
+    - 
+    - logistics_cost
+    - 0.15
+    - 0
+  - - preference_shift
+    - ea
+    - MIIT & Energy Administration
+    - regulatory_govt
+    - 1.0
+    - 0
+- name: Local Content Requirements
+  name_zh: 本地含量要求
+  description_template: |-
+    The {market} government has imposed minimum local content requirements for battery products sold domestically. Firms without local manufacturing face penalties.
+  description_template_zh: |-
+    {market}政府对国内销售的电池产品实施了最低本地含量要求。没有本地制造的企业面临处罚。
+  category: Political
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: sa
+  response_required: false
+  rag_source_tags: regulation,local_content,trade_policy,protectionism
+  impacts:
+  - - preference_shift
+    - sa
+    - ANEEL & Mining Ministry
+    - local_manufacturing
+    - 2.0
+    - 0
+  - - cost_change
+    - sa
+    - 
+    - 
+    - tariff_rate
+    - 0.05
+    - 0
+- name: Breakthrough in Solid-State Technology
+  name_zh: 固态技术突破
+  description_template: |-
+    A research breakthrough has reduced solid-state electrolyte manufacturing costs by 30%. Firms investing in solid-state technology gain a competitive advantage.
+  description_template_zh: |-
+    一项研究突破将固态电解质制造成本降低了30%。投资固态技术的企业获得竞争优势。
+  category: Technological
+  severity: medium
+  probability_per_round: '0.15'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: solid_state,technology,innovation,battery
+  impacts:
+  - - preference_shift
+    - 
+    - EV Manufacturers
+    - solid_state
+    - 1.5
+    - 0
+  - - preference_shift
+    - 
+    - Aerospace & Defense
+    - solid_state
+    - 2.0
+    - 0
+ai_competitors:
+- name: PowerCore Energy
+  name_zh: 动力核心能源
+  description: |-
+    Chinese battery giant with massive scale advantage. Cost leader globally. Dominant in East Asia, expanding aggressively into South America and West Africa. Faces trust barriers in North America and Europe. Competes primarily on cycle life and cost.
+  description_zh: |-
+    中国电池巨头，拥有巨大的规模优势。全球成本领先者。在东亚占据主导地位，积极向南美和西非扩张。在北美和欧洲面临信任壁垒。主要在循环寿命和成本方面竞争。
+- name: EuroCell Industries
+  name_zh: 欧电工业
+  description: |-
+    European battery champion with strong ESG credentials and EU government backing. Premium positioning focused on sustainable, certified batteries. Strong in EU, moderate in NA. Weak in price-sensitive markets.
+  description_zh: |-
+    欧洲电池冠军企业，拥有强大的ESG资质和欧盟政府支持。专注于可持续、经认证电池的高端定位。在欧盟市场强势，北美中等。在价格敏感市场偏弱。
+ai_competitor_fit_data:
+  market_affinity:
+    PowerCore Energy:
+      na: 0.25
+      ea: 0.60
+      eu: 0.30
+      sa: 0.40
+      wa: 0.35
+    EuroCell Industries:
+      na: 0.35
+      ea: 0.10
+      eu: 0.50
+      sa: 0.15
+      wa: 0.05
+  segment_affinity:
+    PowerCore Energy:
+      EV Manufacturers: 0.10
+      Grid-Scale Energy Storage: 0.15
+      Consumer Electronics OEMs: 0.05
+      Aerospace & Defense: -0.15
+      Off-Grid Solar & Residential Storage: 0.10
+    EuroCell Industries:
+      EV Manufacturers: 0.15
+      Grid-Scale Energy Storage: 0.05
+      Consumer Electronics OEMs: 0.00
+      Aerospace & Defense: 0.15
+      Off-Grid Solar & Residential Storage: 0.05
+  growth_per_round: 0.02
+  fit_min: 0.10
+  fit_max: 0.85
+ai_behaviors:
+- ai_competitor: PowerCore Energy
+  strategy_type: aggressive
+  price_sensitivity: '0.70'
+  innovation_rate: '0.45'
+  market_entry_threshold: '0.0300'
+  primary_segments:
+  - ev_manufacturers
+  - grid_storage
+- ai_competitor: EuroCell Industries
+  strategy_type: defensive
+  price_sensitivity: '0.30'
+  innovation_rate: '0.40'
+  market_entry_threshold: '0.0800'
+  primary_segments:
+  - ev_manufacturers
+  - aerospace_defense
+acquisition_targets:
+- market: na
+  target_name: SolidPower Dynamics
+  target_name_zh: 固能动力
+  description: |-
+    US solid-state battery startup with breakthrough electrolyte technology. Technology acquisition providing aerospace credentials and NA certifications. No manufacturing plant.
+  description_zh: |-
+    美国固态电池初创企业，拥有突破性电解质技术。技术收购可获得航空航天资质和北美认证。不含制造工厂。
+  base_acquisition_cost: '30000000'
+  market_share_gained: '0.0500'
+  includes_plant: false
+  plant_capacity: 0
+  includes_distribution: false
+  distribution_reach_bonus: '0.0800'
+  talent_bonus:
+    rd: 0.6
+    operations: 0.3
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2500000'
+- market: ea
+  target_name: Shenzhen CellTech
+  target_name_zh: 深圳赛尔科技
+  description: |-
+    Mid-size Chinese cell manufacturer with cost-competitive production and established OEM relationships. Includes large manufacturing plant and domestic distribution.
+  description_zh: |-
+    中型中国电芯制造商，拥有成本竞争力的生产和成熟的OEM关系。包含大型制造工厂和国内分销网络。
+  base_acquisition_cost: '20000000'
+  market_share_gained: '0.0800'
+  includes_plant: true
+  plant_capacity: 80000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1500'
+  talent_bonus:
+    operations: 0.5
+    commercial: 0.3
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '1500000'
+- market: eu
+  target_name: Rhine Battery GmbH
+  target_name_zh: 莱茵电池有限公司
+  description: |-
+    German premium battery manufacturer with full EU Battery Regulation compliance, automotive certifications, and strong ESG credentials. Plant and EU distribution included.
+  description_zh: |-
+    德国高端电池制造商，完全符合欧盟电池法规，拥有汽车认证和强大的ESG资质。包含工厂和欧盟分销网络。
+  base_acquisition_cost: '35000000'
+  market_share_gained: '0.0600'
+  includes_plant: true
+  plant_capacity: 30000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1000'
+  talent_bonus:
+    rd: 0.4
+    operations: 0.4
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 3
+  integration_cost_per_round: '3000000'
+- market: sa
+  target_name: LitioSul Energia
+  target_name_zh: 南锂能源
+  description: |-
+    Brazilian lithium processor and battery assembler with raw material access, local distribution, and established relationships with South American solar installers.
+  description_zh: |-
+    巴西锂加工商和电池组装商，拥有原材料获取渠道、本地分销和与南美太阳能安装商的成熟关系。
+  base_acquisition_cost: '25000000'
+  market_share_gained: '0.0700'
+  includes_plant: true
+  plant_capacity: 25000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1200'
+  talent_bonus:
+    operations: 0.4
+    commercial: 0.4
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2000000'
+- market: wa
+  target_name: SolarStore Nigeria
+  target_name_zh: 尼日利亚太阳储能
+  description: |-
+    Nigerian off-grid solar and storage installer with extensive distribution network, local brand recognition, and community relationships across West Africa.
+  description_zh: |-
+    尼日利亚离网太阳能和储能安装商，拥有广泛的分销网络、本地品牌知名度和遍布西非的社区关系。
+  base_acquisition_cost: '12000000'
+  market_share_gained: '0.0700'
+  includes_plant: false
+  plant_capacity: 0
+  includes_distribution: true
+  distribution_reach_bonus: '0.2000'
+  talent_bonus:
+    commercial: 0.6
+    operations: 0.2
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '1000000'
+starter_profiles:
+- profile_name: The Density Leader
+  profile_name_zh: 密度领先者
+  description: |-
+    Founded by ex-Tesla battery engineers. Strong in energy density and charging speed. Two products targeting EV manufacturers — a premium high-density pack and a standard module.
+  description_zh: |-
+    由前特斯拉电池工程师创立。在能量密度和充电速度方面表现突出。两款产品面向电动汽车制造商——一款高端高密度电池包和一款标准模组。
+  home_market: na
+  starting_cash: '60000000'
+  starting_debt: '8000000'
+  starting_revenue: '25000000'
+  platforms:
+    alpha:
+      energy_density: 6
+      charging_speed: 5
+      thermal_management: 3
+      cycle_life: 2
+      safety_rating: 2
+    beta:
+      energy_density: 3
+      thermal_management: 4
+      cycle_life: 4
+      safety_rating: 3
+      recyclability: 2
+  products:
+  - [VoltPack Pro, premium, '6500.00', na, 3000, '0.04', alpha]
+  - [VoltPack Standard, mainstream, '4200.00', na, 5000, '0.06', beta]
+- profile_name: The Endurance Specialist
+  profile_name_zh: 耐久性专家
+  description: |-
+    Spun off from a utility company's R&D lab. Optimized for cycle life and safety — the choice for grid storage operators. Two products targeting utility-scale and commercial storage.
+  description_zh: |-
+    从公用事业公司研发实验室分拆而来。针对循环寿命和安全性进行了优化——电网储能运营商的首选。两款产品面向公用事业级和商业储能。
+  home_market: ea
+  starting_cash: '60000000'
+  starting_debt: '6000000'
+  starting_revenue: '30000000'
+  platforms:
+    alpha:
+      energy_density: 2
+      charging_speed: 2
+      thermal_management: 3
+      cycle_life: 6
+      safety_rating: 5
+    beta:
+      energy_density: 4
+      charging_speed: 3
+      thermal_management: 4
+      cycle_life: 3
+      safety_rating: 2
+  products:
+  - [GridCell Max, premium, '12000.00', ea, 2000, '0.03', alpha]
+  - [GridCell Standard, mainstream, '8000.00', ea, 3500, '0.05', beta]
+- profile_name: The Safety Champion
+  profile_name_zh: 安全冠军
+  description: |-
+    Former aerospace supplier pivoting to commercial batteries. Unmatched safety rating and thermal management. Targeting aerospace qualification and premium automotive.
+  description_zh: |-
+    前航空航天供应商转型为商用电池。无与伦比的安全评级和热管理。瞄准航空航天资质和高端汽车市场。
+  home_market: eu
+  starting_cash: '60000000'
+  starting_debt: '10000000'
+  starting_revenue: '20000000'
+  platforms:
+    alpha:
+      energy_density: 2
+      charging_speed: 1
+      thermal_management: 6
+      cycle_life: 2
+      safety_rating: 6
+    beta:
+      energy_density: 4
+      charging_speed: 3
+      thermal_management: 3
+      cycle_life: 4
+      safety_rating: 3
+  products:
+  - [SafeCell Premium, premium, '8000.00', eu, 2000, '0.04', alpha]
+  - [SafeCell EV, mainstream, '5500.00', eu, 3000, '0.05', beta]
+- profile_name: The Green Pioneer
+  profile_name_zh: 绿色先锋
+  description: |-
+    Founded by sustainability-focused entrepreneurs. Highest recyclability and strong cycle life. EU Battery Regulation-ready from day one. Targeting European and residential storage markets.
+  description_zh: |-
+    由关注可持续发展的创业者创立。最高的可回收性和强劲的循环寿命。从第一天起就符合欧盟电池法规。瞄准欧洲和家庭储能市场。
+  home_market: eu
+  starting_cash: '60000000'
+  starting_debt: '5000000'
+  starting_revenue: '22000000'
+  platforms:
+    alpha:
+      energy_density: 2
+      thermal_management: 2
+      cycle_life: 5
+      safety_rating: 2
+      recyclability: 4
+    beta:
+      energy_density: 4
+      charging_speed: 3
+      thermal_management: 3
+      cycle_life: 3
+      safety_rating: 4
+  products:
+  - [EcoCell Home, mainstream, '1200.00', eu, 8000, '0.06', beta]
+  - [EcoCell Grid, premium, '9000.00', eu, 1500, '0.03', alpha]
+market_conditions:
+  na:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Stable North American market. IRA incentives driving strong battery investment pipeline.
+  - - 2
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.05'
+    - IRA production tax credits taking effect. Battery factory announcements accelerating. FEOC reviews beginning.
+  - - 3
+    - '0.01'
+    - '0.01'
+    - '0.00'
+    - '1.08'
+    - FEOC enforcement tightening. Domestic manufacturing premium emerging. Grid storage demand surging.
+  - - 4
+    - '0.00'
+    - '0.00'
+    - '0.02'
+    - '1.10'
+    - Election year policy uncertainty. Tariff discussions on imported battery components. Strong underlying demand.
+  - - 5
+    - '-0.01'
+    - '0.01'
+    - '0.01'
+    - '1.05'
+    - Post-election policy transition. Some IRA provisions under review. Market adjusting to new regulations.
+  - - 6
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.12'
+    - Policy clarity restored. Massive utility-scale storage buildout underway. EV adoption accelerating.
+  - - 7
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.15'
+    - North American battery supply chain maturing. Domestic production reaching scale. Export opportunities emerging.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.18'
+    - Battery ecosystem fully established. Competition intensifying among domestic producers. Premium for certified supply chains.
+  ea:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - World's largest battery market. CATL and BYD expanding capacity. Intense domestic competition.
+  - - 2
+    - '0.02'
+    - '-0.01'
+    - '0.00'
+    - '1.05'
+    - Government announces new battery export incentives. Yuan under mild pressure. Domestic EV sales booming.
+  - - 3
+    - '0.03'
+    - '-0.02'
+    - '0.02'
+    - '1.10'
+    - Critical mineral export controls tightened. Trade tensions rising. Domestic consolidation accelerating.
+  - - 4
+    - '0.01'
+    - '0.01'
+    - '0.01'
+    - '1.08'
+    - Overcapacity concerns emerging. Price war among domestic producers. Government steering toward quality over quantity.
+  - - 5
+    - '-0.02'
+    - '-0.01'
+    - '0.00'
+    - '1.03'
+    - Industry consolidation wave. Smaller manufacturers struggling. Export market critical for growth.
+  - - 6
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.06'
+    - Next-generation chemistry investments paying off. Solid-state pilots in production. Market stabilizing.
+  - - 7
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.10'
+    - Chinese battery technology leadership solidifying. Global expansion of EA-based manufacturers continuing.
+  - - 8
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.12'
+    - Mature market with established global supply chains. Technology leadership in advanced chemistries.
+  eu:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - EU Battery Regulation implementation phase. Manufacturers preparing for compliance deadlines.
+  - - 2
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.03'
+    - Carbon footprint declaration requirements taking effect. Early movers gaining competitive advantage.
+  - - 3
+    - '0.00'
+    - '0.01'
+    - '0.02'
+    - '1.05'
+    - Anti-subsidy investigations on Chinese battery imports. EU domestic battery production incentives announced.
+  - - 4
+    - '-0.01'
+    - '0.00'
+    - '0.01'
+    - '1.02'
+    - Recycled content minimums becoming binding. Some manufacturers struggling with compliance costs.
+  - - 5
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.06'
+    - Battery passport system fully operational. Premium for EU-manufactured, fully traceable batteries.
+  - - 6
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - European gigafactory pipeline maturing. Green premium established for certified sustainable batteries.
+  - - 7
+    - '0.01'
+    - '0.01'
+    - '0.00'
+    - '1.12'
+    - EU battery ecosystem fully operational. Strong demand from automotive and grid sectors.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.15'
+    - Regulatory framework mature. EU batteries commanding premium pricing globally for sustainability credentials.
+  sa:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Lithium triangle attracting global investment. Brazil's solar boom driving storage demand.
+  - - 2
+    - '0.02'
+    - '-0.02'
+    - '0.00'
+    - '1.05'
+    - Lithium prices rising. Government reviewing mining royalty structures. Currency under pressure.
+  - - 3
+    - '0.01'
+    - '-0.01'
+    - '0.02'
+    - '1.03'
+    - Local content requirements introduced. Mercosur tariff adjustments. Battery assembly incentives.
+  - - 4
+    - '-0.01'
+    - '-0.03'
+    - '0.01'
+    - '0.98'
+    - Political uncertainty. Nationalization rumors on lithium mining rights. Foreign investment cautious.
+  - - 5
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.05'
+    - New government clarifies mining policy. Foreign investment stabilizing. Solar installations accelerating.
+  - - 6
+    - '0.03'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - South American battery supply chain developing. Lithium processing capacity expanding.
+  - - 7
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.12'
+    - Regional battery market maturing. Cross-border trade within Mercosur growing.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.15'
+    - Established position in global lithium supply chain. Growing domestic battery manufacturing base.
+  wa:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Off-grid solar and storage demand exploding. Energy access crisis driving massive market growth.
+  - - 2
+    - '0.03'
+    - '-0.03'
+    - '0.00'
+    - '1.08'
+    - Government announces rural electrification program. Naira under pressure. Off-grid demand surging.
+  - - 3
+    - '0.02'
+    - '-0.02'
+    - '0.01'
+    - '1.10'
+    - Local content requirements introduced. Currency volatility complicating import economics.
+  - - 4
+    - '0.01'
+    - '-0.05'
+    - '0.00'
+    - '1.05'
+    - Currency crisis impacts. Import costs spike. Local manufacturing becomes more attractive.
+  - - 5
+    - '0.03'
+    - '0.02'
+    - '0.00'
+    - '1.12'
+    - Currency stabilizing. Government energy subsidies taking effect. Mini-grid deployments accelerating.
+  - - 6
+    - '0.04'
+    - '0.00'
+    - '0.00'
+    - '1.20'
+    - Fastest-growing energy market globally. Pay-as-you-go solar-plus-storage model scaling rapidly.
+  - - 7
+    - '0.03'
+    - '-0.01'
+    - '0.00'
+    - '1.25'
+    - West African energy market transformation underway. Battery storage becoming infrastructure backbone.
+  - - 8
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.30'
+    - Massive unmet demand persists. Market growth continues. Distribution network critical competitive advantage.
+ai_investor_funds:
+- name: Velocity Capital
+  name_zh: 高速资本
+  code: velocity
+  description: |-
+    Growth-focused fund that invests in clean energy companies demonstrating strong revenue growth, aggressive R&D investment, and international expansion. They accept short-term losses if the growth trajectory is compelling.
+  description_zh: |-
+    专注增长的基金，投资于展现强劲营业收入增长、积极研发投入和国际扩张的企业。如果增长轨迹令人信服，可接受短期亏损。
+  investment_philosophy: growth
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.35'
+  profile:
+    fund_type: Growth Fund
+    fund_type_zh: 增长型基金
+    strategy_summary: |-
+      Aggressive growth investing. Backs companies that invest in innovation, expand into new markets, and pursue revenue growth over short-term profitability.
+    strategy_summary_zh: |-
+      激进增长投资。支持那些投资创新、拓展新市场、以营业收入增长优先于短期盈利的企业。
+    dislikes:
+    - label: Stagnant revenue
+    - label: Low R&D spending
+    - label: Single-market focus
+    - label: Technology dependency
+  preferences:
+  - feature_code: revenue_growth_rate
+    feature_label: Revenue Growth Rate
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.5
+  - feature_code: rd_intensity
+    feature_label: R&D as % of Revenue
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: market_expansion
+    feature_label: Market Presence Breadth
+    ideal_value: 8
+    weight: 0.15
+    tolerance: 3.0
+  - feature_code: talent_rd_quality
+    feature_label: R&D Talent Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+  - feature_code: platform_generation
+    feature_label: Technology Generation
+    ideal_value: 8
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: revenue_scale
+    feature_label: Revenue Scale
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 3.0
+- name: Granite Investments
+  name_zh: 磐石投资
+  code: granite
+  description: |-
+    Value-oriented fund that prioritizes financial discipline, strong margins, low leverage, and consistent shareholder returns. They avoid battery technology companies with aggressive debt-funded growth strategies.
+  description_zh: |-
+    价值导向型基金，优先考虑财务纪律、健康利润率、低杠杆和持续的股东回报。回避以激进举债驱动增长的公司。
+  investment_philosophy: value
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.18'
+  min_holding_pct: '0.03'
+  trade_aggressiveness: '0.25'
+  profile:
+    fund_type: Value Fund
+    fund_type_zh: 价值型基金
+    strategy_summary: |-
+      Conservative value investing. Seeks financially disciplined companies with strong governance, healthy margins, and consistent shareholder returns.
+    strategy_summary_zh: |-
+      保守价值投资。寻找财务纪律严明、治理健全、利润率健康且股东回报持续的企业。
+    dislikes:
+    - label: High leverage
+    - label: Volatile earnings
+    - label: No dividend policy
+    - label: Weak governance
+    - label: Cash burn
+  preferences:
+  - feature_code: financial_leverage_inv
+    feature_label: Financial Prudence (Low Debt)
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.0
+  - feature_code: dividend_consistency
+    feature_label: Dividend Yield
+    ideal_value: 6
+    weight: 0.18
+    tolerance: 3.0
+  - feature_code: net_margin_score
+    feature_label: Net Profit Margin
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: cash_runway_score
+    feature_label: Cash Stability
+    ideal_value: 8
+    weight: 0.12
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Operations Efficiency
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+- name: GreenHorizon Partners
+  name_zh: 绿色地平线合伙人
+  code: greenhorizon
+  description: |-
+    ESG-focused fund that allocates capital to clean energy companies with strong environmental commitment, social responsibility, and governance practices. They divest from firms with poor ESG track records.
+  description_zh: |-
+    专注ESG的基金，将资金配置给具有强大环境承诺、社会责任感和良好治理实践的企业。会撤出ESG记录不良的企业投资。
+  investment_philosophy: esg
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.30'
+  profile:
+    fund_type: ESG Fund
+    fund_type_zh: ESG基金
+    strategy_summary: |-
+      Impact-focused ESG investing. Backs companies demonstrating genuine commitment to environmental sustainability, social responsibility, and governance quality.
+    strategy_summary_zh: |-
+      影响力导向的ESG投资。支持在环境可持续性、社会责任和治理质量方面展现真正承诺的企业。
+    dislikes:
+    - label: ESG neglect
+    - label: Weak governance
+    - label: Environmental risk exposure
+    - label: No social investment
+  preferences:
+  - feature_code: esg_composite
+    feature_label: ESG Composite Score
+    ideal_value: 8
+    weight: 0.35
+    tolerance: 2.0
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 8
+    weight: 0.2
+    tolerance: 2.0
+  - feature_code: sustainability_level
+    feature_label: Sustainability Commitment
+    ideal_value: 9
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Responsible Operations
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: market_diversity
+    feature_label: Geographic Diversity
+    ideal_value: 6
+    weight: 0.15
+    tolerance: 3.0
+cultural_distance:
+- - na
+  - na
+  - HOME
+  - '1.00'
+  - '0.00'
+- - na
+  - ea
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - na
+  - eu
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - na
+  - sa
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - na
+  - wa
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - ea
+  - na
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - ea
+  - ea
+  - HOME
+  - '1.00'
+  - '0.00'
+- - ea
+  - eu
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - ea
+  - sa
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - ea
+  - wa
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - eu
+  - na
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - eu
+  - ea
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - eu
+  - eu
+  - HOME
+  - '1.00'
+  - '0.00'
+- - eu
+  - sa
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - eu
+  - wa
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - sa
+  - na
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - sa
+  - ea
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - sa
+  - eu
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - sa
+  - sa
+  - HOME
+  - '1.00'
+  - '0.00'
+- - sa
+  - wa
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - na
+  - VERY_HIGH
+  - '0.55'
+  - '0.07'
+- - wa
+  - ea
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - wa
+  - eu
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - sa
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - wa
+  - HOME
+  - '1.00'
+  - '0.00'
+origin_trust:
+- - na
+  - na
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - na
+  - ea
+  - '0.85'
+  - '-0.30'
+  - '0.02'
+- - na
+  - eu
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - na
+  - sa
+  - '0.90'
+  - '-0.10'
+  - '0.02'
+- - na
+  - wa
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - ea
+  - na
+  - '0.72'
+  - '-0.50'
+  - '0.015'
+- - ea
+  - ea
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - ea
+  - eu
+  - '0.78'
+  - '-0.40'
+  - '0.02'
+- - ea
+  - sa
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - ea
+  - wa
+  - '0.85'
+  - '-0.10'
+  - '0.025'
+- - eu
+  - na
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - eu
+  - ea
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - eu
+  - eu
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - eu
+  - sa
+  - '0.92'
+  - '0.00'
+  - '0.03'
+- - eu
+  - wa
+  - '0.85'
+  - '-0.10'
+  - '0.02'
+- - sa
+  - na
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - sa
+  - ea
+  - '0.80'
+  - '-0.30'
+  - '0.02'
+- - sa
+  - eu
+  - '0.88'
+  - '-0.10'
+  - '0.025'
+- - sa
+  - sa
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - sa
+  - wa
+  - '0.90'
+  - '0.00'
+  - '0.025'
+- - wa
+  - na
+  - '0.70'
+  - '-0.50'
+  - '0.015'
+- - wa
+  - ea
+  - '0.75'
+  - '-0.40'
+  - '0.015'
+- - wa
+  - eu
+  - '0.72'
+  - '-0.40'
+  - '0.02'
+- - wa
+  - sa
+  - '0.80'
+  - '-0.20'
+  - '0.02'
+- - wa
+  - wa
+  - '1.00'
+  - '0.00'
+  - '0.00'
+local_strategic_partners:
+- market: na
+  category: Partnerships
+  code: local_strategic_na
+  name: Volta Strategic Alliance
+  name_zh: 沃特战略联盟
+  description: US-based clean energy advisory firm with DOE and IRA program connections, utility relationships, and automotive industry network.
+  description_zh: 美国清洁能源咨询公司，拥有能源部和IRA项目关系、公用事业关系和汽车工业网络。
+  capital_cost_base: 3500000
+  recurring_cost_per_round: 900000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 2.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: ea
+  category: Partnerships
+  code: local_strategic_ea
+  name: Yangtze Battery Alliance
+  name_zh: 长江电池联盟
+  description: Shanghai-based industrial conglomerate with deep government relationships, supply chain access, and OEM distribution network.
+  description_zh: 总部位于上海的工业集团，拥有深厚的政府关系、供应链渠道和OEM分销网络。
+  capital_cost_base: 2500000
+  recurring_cost_per_round: 700000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.5
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: eu
+  category: Partnerships
+  code: local_strategic_eu
+  name: European Battery Alliance
+  name_zh: 欧洲电池联盟
+  description: Brussels-based industry consortium connecting battery manufacturers with EU institutional funding, automotive OEMs, and regulatory compliance networks.
+  description_zh: 总部位于布鲁塞尔的行业联盟，连接电池制造商与欧盟机构资金、汽车OEM和监管合规网络。
+  capital_cost_base: 4000000
+  recurring_cost_per_round: 1000000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 1.5
+    - true
+  - - regulatory_govt
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: sa
+  category: Partnerships
+  code: local_strategic_sa
+  name: Litio Andina Partners
+  name_zh: 安第斯锂业合伙人
+  description: Chilean-Brazilian mining and energy partnership providing lithium supply chain access, local regulatory navigation, and Mercosur distribution.
+  description_zh: 智利-巴西矿业和能源合作伙伴，提供锂供应链渠道、本地监管导航和南方共同市场分销。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 600000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.5
+    - true
+- market: wa
+  category: Partnerships
+  code: local_strategic_wa
+  name: Sahel Energy Gateway
+  name_zh: 萨赫勒能源门户
+  description: Nigerian energy distribution company with community-level reach across West Africa, government relationships, and pay-as-you-go infrastructure.
+  description_zh: 尼日利亚能源分销公司，拥有遍及西非的社区级覆盖、政府关系和按用付费基础设施。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 3.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+governance_commitments:
+- code: board_diversity
+  name: Board Diversity
+  name_zh: 董事会多元化
+  description: |-
+    Commit to a diverse board of directors including gender, ethnic, and international representation. Requires ongoing investment in board recruitment and advisory services.
+  description_zh: |-
+    承诺建设多元化的董事会，包括性别、种族和国际代表性。需要持续投资董事招聘和顾问服务。
+  ongoing_cost_per_round: 200000
+  benefits:
+  - target: governance_quality
+    boost: 0.2
+  - target: esg_investor_satisfaction
+    boost: 0.15
+  - target: regulator_satisfaction
+    boost: 0.08
+    markets:
+    - eu
+    - na
+  interactions: []
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.1
+    esg_investor_extra_penalty: -0.15
+    regulator_penalty: -0.05
+    news_headline: reverses board diversity commitment — governance concerns mount
+  prerequisite:
+  amplifier:
+  display_order: 1
+- code: pay_transparency
+  name: Pay Transparency
+  name_zh: 薪酬透明
+  description: |-
+    Publish compensation data across all levels. Builds trust but exposes any pay gaps. If salaries are below market rate, transparency will temporarily increase turnover until compensation is competitive.
+  description_zh: |-
+    公开所有层级的薪酬数据。建立信任但暴露薪酬差距。如果工资低于市场水平，透明化将暂时增加人员流失，直到薪酬具有竞争力。
+  ongoing_cost_per_round: 150000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: talent_turnover_reduction
+    boost: 0.03
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: salary_level_any_pool
+      operator: <
+      value: 2
+    effect:
+      type: talent_turnover_increase
+      magnitude: 0.05
+      duration: while_condition_true
+      description: Pay transparency exposes below-market salaries — turnover increases until compensation is competitive
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    talent_turnover_spike: 0.04
+    news_headline: ends pay transparency program — employee trust shaken
+  prerequisite:
+  amplifier:
+  display_order: 2
+- code: anti_corruption
+  name: Anti-Corruption
+  name_zh: 反腐败
+  description: |-
+    Implement comprehensive anti-corruption program: compliance officers, whistleblower systems, third-party auditing, and zero-tolerance policy. Reduces regulatory event risk but increases JV operating costs.
+  description_zh: |-
+    实施全面的反腐败项目：合规官、举报人制度、第三方审计和零容忍政策。降低监管事件风险但增加合资运营成本。
+  ongoing_cost_per_round: 300000
+  benefits:
+  - target: governance_quality
+    boost: 0.25
+  - target: value_investor_satisfaction
+    boost: 0.12
+  - target: esg_investor_satisfaction
+    boost: 0.1
+  - target: regulator_satisfaction
+    boost: 0.12
+    markets:
+    - wa
+    - sa
+  - target: regulatory_event_probability_reduction
+    boost: 0.1
+  interactions:
+  - condition:
+      attribute: entry_mode_in_any_market
+      operator: ==
+      value: jv
+    effect:
+      type: jv_monitoring_cost
+      magnitude: 100000
+      per: jv_market
+      description: Anti-corruption compliance monitoring required for each JV partner
+  revocation_penalty:
+    duration_rounds: 3
+    investor_confidence_drop: -0.15
+    regulator_penalty: -0.1
+    regulatory_event_probability_increase: 0.08
+    news_headline: dismantles anti-corruption program — regulatory scrutiny expected
+  prerequisite:
+  amplifier:
+  display_order: 3
+- code: supply_chain_audit
+  name: Supply Chain Audit
+  name_zh: 供应链审计
+  description: |-
+    Commission independent audits of your entire supply chain. Identifies cost inefficiencies but may expose reputational risks at contract manufacturing partners.
+  description_zh: |-
+    委托对整个供应链进行独立审计。可发现成本低效，但可能暴露合同制造合作伙伴的声誉风险。
+  ongoing_cost_per_round: 250000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: cogs_reduction
+    boost: 0.015
+  - target: operations_effectiveness_boost
+    boost: 0.05
+  - target: esg_investor_satisfaction
+    boost: 0.12
+  - target: supply_chain_event_protection
+    boost: 0.15
+  interactions:
+  - condition:
+      attribute: uses_contract_manufacturing
+      operator: ==
+      value: true
+    effect:
+      type: contract_mfg_reputation_risk
+      probability_per_round: 0.15
+      impact:
+        type: reputation_event
+        magnitude: -0.08
+        duration: 1
+        description: Supply chain audit reveals labor concerns at contract manufacturer
+      description: Audit may expose unfavorable conditions at contract manufacturing facilities
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    cogs_reduction_lost: true
+    news_headline: cancels supply chain auditing — transparency concerns raised
+  prerequisite:
+  amplifier:
+  display_order: 4
+- code: public_esg_reporting
+  name: Public ESG Reporting
+  name_zh: 公开ESG报告
+  description: |-
+    Publish comprehensive quarterly ESG reports. Amplifies the visibility of all other ESG investments to stakeholders. But reporting without substance will be seen as greenwashing.
+  description_zh: |-
+    发布全面的季度ESG报告。放大所有其他ESG投资对利益相关者的可见度。但没有实质内容的报告将被视为漂绿行为。
+  ongoing_cost_per_round: 100000
+  benefits:
+  - target: governance_quality
+    boost: 0.1
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: total_esg_investment
+      operator: <
+      value: 1000000
+    effect:
+      type: greenwashing_penalty
+      impact:
+        esg_investor_penalty: -0.2
+        regulator_penalty: -0.08
+        customer_trust_penalty: -0.03
+      description: Public ESG reporting with minimal actual investment seen as greenwashing
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.05
+    esg_investor_extra_penalty: -0.1
+    news_headline: stops publishing ESG reports — transparency regresses
+  prerequisite:
+  amplifier:
+    target: esg_investment_visibility
+    multiplier: 1.3
+    description: All ESG investments produce 30% more stakeholder satisfaction with public reporting
+  display_order: 5
+tax_structures:
+- code: direct
+  name: Direct Structure
+  name_zh: 直接结构
+  description: |-
+    Profits flow directly from each market subsidiary to headquarters. Simple, transparent, and fully compliant. No tax optimization but no audit risk. Regulators and ESG investors approve of the transparency.
+  description_zh: |-
+    利润从各市场子公司直接流向总部。简单、透明、完全合规。没有税务优化但没有审计风险。监管机构和ESG投资者认可其透明度。
+  setup_cost: 0
+  annual_maintenance_cost: 0
+  effective_tax_reduction_pct: '0.00'
+  repatriation_cost_reduction_pct: '0.00'
+  audit_probability_per_round: '0.00'
+  audit_penalty_multiplier: '1.0'
+  value_investor_modifier: '0.03'
+  esg_investor_modifier: '0.05'
+  regulator_modifier: '0.05'
+  anti_corruption_conflict: false
+  display_order: 1
+- code: regional_hub
+  name: Regional Hub Structure
+  name_zh: 区域枢纽结构
+  description: |-
+    Route profits through a regional holding entity in a favorable tax jurisdiction. Reduces effective tax rate and repatriation friction. Standard practice among multinationals — moderate audit risk. Requires ongoing legal and accounting infrastructure.
+  description_zh: |-
+    通过优惠税收管辖区的区域控股实体转移利润。降低有效税率和资金回流摩擦。跨国公司的标准做法——中等审计风险。需要持续的法律和会计基础设施。
+  setup_cost: 2000000
+  annual_maintenance_cost: 400000
+  effective_tax_reduction_pct: '0.04'
+  repatriation_cost_reduction_pct: '0.40'
+  audit_probability_per_round: '0.06'
+  audit_penalty_multiplier: '1.5'
+  value_investor_modifier: '0.02'
+  esg_investor_modifier: '-0.03'
+  regulator_modifier: '-0.03'
+  anti_corruption_conflict: false
+  display_order: 2
+- code: aggressive
+  name: Aggressive Tax Optimization
+  name_zh: 激进税务优化
+  description: |-
+    Maximize profit shifting through transfer pricing, IP licensing structures, and multi-layered holding entities. Significant tax savings but high audit risk, regulatory scrutiny, and reputational exposure. Creates visible conflict with Anti-Corruption and ESG governance commitments.
+  description_zh: |-
+    通过转让定价、知识产权授权结构和多层控股实体最大化利润转移。节税显著但审计风险高、监管审查严格且存在声誉风险。与反腐败和ESG治理承诺存在明显冲突。
+  setup_cost: 4000000
+  annual_maintenance_cost: 800000
+  effective_tax_reduction_pct: '0.08'
+  repatriation_cost_reduction_pct: '0.70'
+  audit_probability_per_round: '0.15'
+  audit_penalty_multiplier: '2.5'
+  value_investor_modifier: '0.05'
+  esg_investor_modifier: '-0.15'
+  regulator_modifier: '-0.10'
+  anti_corruption_conflict: true
+  display_order: 3
+communication_assignments:
+- code: expansion_memo_r2
+  name: 'Board Memo: International Expansion Strategy'
+  name_zh: 董事会备忘录：国际扩张战略
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 2
+  audience: BOARD
+  prompt_text: |-
+    Your board of directors has requested a brief memo outlining your international expansion strategy.
+
+    You've completed two quarters as the leadership team of a clean energy battery technology company. The board wants to understand:
+    - Which markets are you targeting and why?
+    - What entry modes have you chosen and what's the rationale?
+    - How are you managing the risks of operating in foreign battery markets (tariffs, FEOC compliance, local content requirements)?
+    - What's your talent and localization strategy?
+    - How does this expansion plan connect to your overall competitive strategy in the energy storage industry?
+
+    Write a board memo (max 300 words) that justifies your international strategy. The board is sophisticated — they'll notice if your stated strategy contradicts your actual decisions.
+  prompt_text_zh: |-
+    您的董事会要求提交一份简要备忘录，概述您的国际扩张战略。
+
+    作为清洁能源电池技术公司的领导团队，您已完成两个季度的运营。董事会希望了解：
+    - 您瞄准了哪些市场，为什么？
+    - 您选择了什么进入模式，理由是什么？
+    - 您如何管理在外国电池市场运营的风险（关税、FEOC合规、本地含量要求）？
+    - 您的人才和本地化策略是什么？
+    - 该扩张计划如何与您在储能行业的整体竞争战略相联系？
+
+    撰写一份董事会备忘录（最多300字），论证您的国际战略。董事会成员经验丰富——如果您的书面战略与实际决策相矛盾，他们会察觉。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the memo match the team's actual market entry decisions, talent allocation, and compliance investment?
+  - criterion: stakeholder_awareness
+    weight: 0.2
+    description: 'Does it address board concerns: risk, ROI timeline, competitive positioning?'
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the memo well-structured, concise, and convincing?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge origin trust challenges, currency risk, and competitive threats?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference relevant frameworks (CAGE distance, Uppsala model, OLI paradigm)?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 1
+- code: investor_letter_r4
+  name: 'Investor Letter: Quarterly Strategy Update'
+  name_zh: 投资者信函：季度战略更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 4
+  audience: INVESTORS
+  prompt_text: |-
+    Your three major institutional investors — Velocity Capital (Growth), Granite Investments (Value), and GreenHorizon Partners (ESG) — expect a quarterly update letter.
+
+    Each fund has different priorities. Your letter will be read by all three.
+
+    Address:
+    - How is your battery technology strategy performing against expectations?
+    - What's your technology roadmap (Gen 2/3 progression in energy density, cycle life, safety)?
+    - How are you managing financial health (debt, margins, dividends)?
+    - What ESG commitments have you made and what returns are they generating?
+    - What's your outlook for the next 4 quarters in the clean energy market?
+
+    Write a shareholder letter (max 300 words). Remember: Velocity wants growth signals, Granite wants discipline signals, GreenHorizon wants sustainability signals. You can't optimize for all three — but you need to maintain confidence across the board.
+  prompt_text_zh: |-
+    您的三家主要机构投资者——高速资本（增长型）、磐石投资（价值型）和绿色地平线合伙人（ESG型）——期待收到季度更新信函。
+
+    每只基金都有不同的优先事项。您的信函将被三方共同阅读。
+
+    请涵盖：
+    - 您的电池技术战略表现如何？
+    - 您的技术路线图是什么（第二代/第三代在能量密度、循环寿命、安全性方面的进展）？
+    - 您如何管理财务健康（债务、利润率、股息）？
+    - 您做出了哪些ESG承诺，产生了什么回报？
+    - 您对清洁能源市场未来4个季度的展望是什么？
+
+    撰写一封股东信函（最多300字）。请记住：高速资本寻求增长信号，磐石投资寻求纪律信号，绿色地平线寻求可持续性信号。您无法同时满足三方——但需要维持全面的信心。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.3
+    description: Does the letter match actual financial performance, R&D investment, and ESG commitments?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address the specific concerns of all three investor archetypes?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the letter professional, balanced, and confidence-inspiring?
+  - criterion: risk_acknowledgment
+    weight: 0.1
+    description: Does it acknowledge challenges honestly rather than only highlighting positives?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference strategic rationale grounded in frameworks or industry analysis?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 2
+- code: crisis_statement
+  name: 'Press Statement: Crisis Response'
+  name_zh: 新闻声明：危机应对
+  trigger_type: EVENT_BASED
+  trigger_condition:
+    event_category:
+    - GEOPOLITICAL
+    - SANCTIONS
+  audience: PUBLIC
+  prompt_text: |-
+    A major event has affected your battery operations: {event_name}.
+
+    {event_description}
+
+    The media is asking for a statement. Your customers, investors, regulators, and employees are watching.
+
+    Draft a press statement (max 200 words) that:
+    - Acknowledges the situation
+    - Explains your response
+    - Reassures stakeholders
+    - Positions your clean energy company constructively
+
+    Avoid empty platitudes. Stakeholders can see your actual decisions — if you claim to be 'committed to compliance' but your compliance investment is zero, they'll know.
+  prompt_text_zh: |-
+    一项重大事件影响了您的电池业务：{event_name}。
+
+    {event_description}
+
+    媒体正在要求发表声明。您的客户、投资者、监管机构和员工都在关注。
+
+    起草一份新闻声明（最多200字），需要：
+    - 承认情况
+    - 解释您的应对
+    - 安抚利益相关者
+    - 建设性地定位您的清洁能源公司
+
+    避免空洞的套话。利益相关者可以看到您的实际决策——如果您声称"致力于合规"但合规投资为零，他们会知道的。
+  word_limit: 200
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the statement match the team's actual response to the event and their broader strategy?
+  - criterion: stakeholder_awareness
+    weight: 0.25
+    description: Does it address the concerns of affected stakeholders (customers, regulators, investors)?
+  - criterion: clarity_and_persuasion
+    weight: 0.25
+    description: Is the statement clear, professional, and appropriate in tone?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge the impact honestly without being defensive?
+  is_mandatory: false
+  coherence_weight: '0.03'
+  display_order: 10
+- code: employee_message_r6
+  name: 'Employee Town Hall: Global Operations Update'
+  name_zh: 员工全体大会：全球运营更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 6
+  audience: EMPLOYEES
+  prompt_text: |-
+    You're addressing your global workforce — headquartered in {home_market} with battery manufacturing and sales operations in {active_markets}.
+
+    Employees are asking:
+    - Is the company financially healthy?
+    - Are jobs secure in each market?
+    - What's the growth plan for our energy storage business?
+    - How does the company's ESG commitment affect them?
+    - If you've made governance commitments (pay transparency, board diversity), what do they mean for employees?
+
+    Write a town hall message (max 250 words). Your workforce spans multiple cultures and markets. Some are at headquarters, some are recent local hires in foreign markets. They need to feel included and informed — not just managed.
+  prompt_text_zh: |-
+    您正在向全球员工发言——总部设在{home_market}，电池制造和销售业务遍及{active_markets}。
+
+    员工们在问：
+    - 公司财务健康吗？
+    - 各市场的工作岗位安全吗？
+    - 储能业务的增长计划是什么？
+    - 公司的ESG承诺对他们意味着什么？
+    - 如果您做出了治理承诺（薪酬透明、董事会多元化），对员工有什么影响？
+
+    撰写一份全体大会致辞（最多250字）。您的员工遍布多个文化和市场。有些在总部，有些是外国市场的新近本地雇员。他们需要感到被包容和知情——而不仅仅是被管理。
+  word_limit: 250
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the message align with actual talent decisions, salary levels, and localization investment?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address employee concerns across different markets and roles?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is it authentic, inclusive, and motivating rather than corporate boilerplate?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it honestly address challenges the company is facing?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it connect to organizational values and strategic direction?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 3
+- code: final_review_r8
+  name: 'Board Presentation: 8-Quarter Strategic Review'
+  name_zh: 董事会报告：8个季度战略回顾
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 8
+  audience: BOARD
+  prompt_text: |-
+    This is your final quarterly board presentation. Looking back over 8 quarters of leadership in the clean energy battery technology sector:
+
+    - What was your strategy and how did it evolve?
+    - What worked and what didn't?
+    - How did you navigate origin trust challenges, competitive dynamics, and market conditions?
+    - What's the state of your global operations — financial health, market positions, stakeholder relationships?
+    - If you had 4 more quarters, what would you do differently?
+
+    Write your strategic review (max 400 words). This is your legacy document — it should demonstrate strategic thinking, honest self-assessment, and the ability to learn from results. The board has seen every number. They want to know if you understand WHY the numbers look the way they do.
+  prompt_text_zh: |-
+    这是您最后一次季度董事会报告。回顾清洁能源电池技术行业8个季度的领导历程：
+
+    - 您的战略是什么？如何演变的？
+    - 什么奏效了，什么没有？
+    - 您如何应对原产地信任挑战、竞争态势和市场条件？
+    - 您的全球业务现状如何——财务健康、市场地位、利益相关者关系？
+    - 如果再给您4个季度，您会做什么不同的事？
+
+    撰写您的战略回顾（最多400字）。这是您的总结文件——应当展现战略思维、诚实的自我评估和从结果中学习的能力。董事会看过每一个数字。他们想知道您是否理解数字背后的原因。
+  word_limit: 400
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the review accurately reflect what happened and why?
+  - criterion: stakeholder_awareness
+    weight: 0.15
+    description: Does it show awareness of all stakeholder perspectives?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the review well-structured, insightful, and professionally written?
+  - criterion: risk_acknowledgment
+    weight: 0.2
+    description: Does it honestly assess failures and missed opportunities?
+  - criterion: framework_grounding
+    weight: 0.2
+    description: Does it demonstrate application of strategic frameworks to analyze outcomes?
+  is_mandatory: true
+  coherence_weight: '0.08'
+  display_order: 4
+org_structures:
+- code: centralized
+  name: Centralized
+  name_zh: 集权式
+  description: |-
+    All strategic and operational decisions flow through headquarters. Fast decision-making and strong alignment, but local adaptation suffers as geographic scope increases. Works well for 1-2 markets, strains beyond 3.
+  description_zh: |-
+    所有战略和运营决策由总部统一制定。决策迅速、协调一致，但随地理范围扩大，本地适应性受限。适用于1-2个市场，超过3个则面临压力。
+  base_overhead_per_round: '100000'
+  per_market_coordination_cost: '50000'
+  hq_talent_effectiveness_modifier: '1.15'
+  local_talent_effectiveness_modifier: '0.80'
+  innovation_modifier: '1.10'
+  coordination_efficiency: '1.05'
+  decision_speed_modifier: '1.10'
+  optimal_market_range_min: 1
+  optimal_market_range_max: 3
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.08'
+  transition_cost: '0'
+  transition_disruption_rounds: 0
+  display_order: 1
+- code: regional
+  name: Regional
+  name_zh: 区域式
+  description: |-
+    Each region operates semi-autonomously with local leadership, budgets, and decision authority. Excellent local adaptation but risk of strategic fragmentation and duplication. Ideal for 3-5 markets.
+  description_zh: |-
+    每个区域拥有本地领导层、预算和决策权限的半自主运营。本地适应性优秀，但存在战略碎片化和重复建设风险。适用于3-5个市场。
+  base_overhead_per_round: '300000'
+  per_market_coordination_cost: '100000'
+  hq_talent_effectiveness_modifier: '0.90'
+  local_talent_effectiveness_modifier: '1.20'
+  innovation_modifier: '0.90'
+  coordination_efficiency: '0.85'
+  decision_speed_modifier: '1.05'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '100000'
+  overextension_effectiveness_penalty: '0.04'
+  transition_cost: '1500000'
+  transition_disruption_rounds: 1
+  display_order: 2
+- code: matrix
+  name: Matrix
+  name_zh: 矩阵式
+  description: |-
+    Dual reporting structure combining product/functional expertise with geographic knowledge. Best of both worlds in theory — highest overhead in practice. Requires strong organizational culture and communication.
+  description_zh: |-
+    结合产品/职能专业知识和地理知识的双重汇报结构。理论上两全其美——实践中管理成本最高。需要强大的组织文化和沟通。
+  base_overhead_per_round: '500000'
+  per_market_coordination_cost: '150000'
+  hq_talent_effectiveness_modifier: '1.05'
+  local_talent_effectiveness_modifier: '1.10'
+  innovation_modifier: '1.05'
+  coordination_efficiency: '1.15'
+  decision_speed_modifier: '0.85'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.06'
+  transition_cost: '2500000'
+  transition_disruption_rounds: 2
+  display_order: 3
+- code: networked
+  name: Networked
+  name_zh: 网络式
+  description: |-
+    Flat, project-based structure with fluid team composition across geographies. Highly innovative and adaptable, but requires exceptional talent and strong culture. Chaotic without both. Least effective for operational efficiency.
+  description_zh: |-
+    扁平化、基于项目的结构，团队成员跨地区灵活组合。高度创新和适应性强，但需要卓越的人才和强大的文化。缺乏这两者则混乱。运营效率最低。
+  base_overhead_per_round: '200000'
+  per_market_coordination_cost: '75000'
+  hq_talent_effectiveness_modifier: '1.00'
+  local_talent_effectiveness_modifier: '1.00'
+  innovation_modifier: '1.25'
+  coordination_efficiency: '0.80'
+  decision_speed_modifier: '1.15'
+  optimal_market_range_min: 2
+  optimal_market_range_max: 4
+  overextension_cost_per_market: '150000'
+  overextension_effectiveness_penalty: '0.07'
+  transition_cost: '1000000'
+  transition_disruption_rounds: 2
+  display_order: 4
+alliance_partner_profiles:
+- partnership_code: local_strategic_na
+  market: na
+  name: Volta Strategic Alliance
+  name_zh: 沃特战略联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Major US clean energy advisory firm with deep DOE regulatory connections and utility industry network. Values governance, professional standards, and long-term relationship building.
+  description_zh: 美国大型清洁能源咨询公司，拥有深厚的能源部监管关系和公用事业行业网络。重视治理、职业标准和长期关系建设。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US market?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary partner here?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_ea
+  market: ea
+  name: Yangtze Battery Alliance
+  name_zh: 长江电池联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Shanghai-based industrial conglomerate with deep government relationships across Chinese battery and EV industry. Values technology sharing, local commitment, and mutual revenue growth.
+  description_zh: 总部位于上海的工业集团，在中国电池和电动汽车行业拥有深厚的政府关系。重视技术共享、本地承诺和双方营业收入增长。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.25
+    description: Are you sharing technology appropriately?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in East Asia?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the venture profitable for both sides?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_eu
+  market: eu
+  name: European Battery Alliance
+  name_zh: 欧洲电池联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Brussels-based industry consortium with strong EU Battery Regulation compliance expertise and sustainability focus. Values governance, ESG commitment, and long-term market presence.
+  description_zh: 总部位于布鲁塞尔的行业联盟，拥有强大的欧盟电池法规合规专业知识和可持续发展关注。重视治理、ESG承诺和长期市场存在。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU governance standards?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you invested in local operations?
+  - feature: market_investment
+    weight: 0.2
+    description: Are you committed to the EU market?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary EU partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: local_strategic_sa
+  market: sa
+  name: Litio Andina Partners
+  name_zh: 安第斯锂业合伙人
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Chilean-Brazilian mining and energy partnership with lithium supply chain access and Mercosur distribution. Values revenue growth and local investment.
+  description_zh: 智利-巴西矿业和能源合作伙伴，拥有锂供应链渠道和南方共同市场分销。重视营业收入增长和本地投资。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Are we both making money?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in South America?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: technology_sharing
+    weight: 0.15
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_wa
+  market: wa
+  name: Sahel Energy Gateway
+  name_zh: 萨赫勒能源门户
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Nigerian energy distribution company with strong government connections, community-level distribution networks, and local market intelligence. Values local commitment, revenue growth, and respect for local practices.
+  description_zh: 尼日利亚能源分销公司，拥有强大的政府关系、社区级分销网络和本地市场情报。重视本地承诺、营业收入增长和尊重本地惯例。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring Nigerians?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in West Africa?
+  - feature: revenue_share
+    weight: 0.25
+    description: Are we both making money?
+  - feature: technology_sharing
+    weight: 0.1
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: na
+  name: NA Energy Distribution Alliance
+  name_zh: 北美能源分销联盟
+  partner_type: DISTRIBUTION
+  description: Major US energy storage distribution and utility channel partner. Values consistent volume and market commitment.
+  description_zh: 美国主要储能分销和公用事业渠道合作伙伴。重视稳定的出货量和市场承诺。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to this market?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary distributor?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate ethically?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: ea
+  name: EA Energy Distribution Alliance
+  name_zh: 东亚能源分销联盟
+  partner_type: DISTRIBUTION
+  description: Pan-Asian battery distribution network covering China, Japan, and Southeast Asia.
+  description_zh: 覆盖中国、日本和东南亚的泛亚洲电池分销网络。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to East Asia?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: eu
+  name: EU Energy Distribution Alliance
+  name_zh: 欧盟能源分销联盟
+  partner_type: DISTRIBUTION
+  description: German-headquartered battery distribution firm with coverage across EU member states.
+  description_zh: 总部位于德国的电池分销公司，覆盖欧盟成员国。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU compliance standards?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume consistent?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to EU?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: sa
+  name: SA Energy Distribution Alliance
+  name_zh: 南美能源分销联盟
+  partner_type: DISTRIBUTION
+  description: Brazilian-based logistics firm with battery and solar distribution reach across South America.
+  description_zh: 总部位于巴西的物流公司，电池和太阳能分销覆盖南美。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Are shipments growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to South America?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: wa
+  name: WA Energy Distribution Alliance
+  name_zh: 西非能源分销联盟
+  partner_type: DISTRIBUTION
+  description: Pan-African energy logistics and last-mile distribution network based in Lagos.
+  description_zh: 总部位于拉各斯的泛非能源物流和最后一公里分销网络。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you building local capacity?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: na
+  name: NA Battery Technology Partners
+  name_zh: 北美电池技术合作伙伴
+  partner_type: TECHNOLOGY
+  description: US battery R&D partnership for co-development of next-generation chemistries. Values IP protection and mutual innovation.
+  description_zh: 美国电池研发合作伙伴，共同开发下一代化学体系。重视知识产权保护和协同创新。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you investing in R&D with us?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you protect shared IP?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: ea
+  name: EA Battery Technology Partners
+  name_zh: 东亚电池技术合作伙伴
+  partner_type: TECHNOLOGY
+  description: Shenzhen-based battery manufacturing and R&D partner. Values deep technology sharing.
+  description_zh: 总部位于深圳的电池制造和研发合作伙伴。重视深度技术共享。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.4
+    description: Are you sharing technology deeply?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in East Asia R&D?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership profitable?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: eu
+  name: EU Battery Technology Partners
+  name_zh: 欧盟电池技术合作伙伴
+  partner_type: TECHNOLOGY
+  description: Scandinavian R&D firm focused on sustainable battery technology development and recycling processes.
+  description_zh: 斯堪的纳维亚研发公司，专注于可持续电池技术开发和回收工艺。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing R&D insights?
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet ethical IP standards?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: sa
+  name: SA Battery Technology Partners
+  name_zh: 南美电池技术合作伙伴
+  partner_type: TECHNOLOGY
+  description: Brazilian lithium processing and battery R&D lab with expertise in raw material chemistry.
+  description_zh: 巴西锂加工和电池研发实验室，专长于原材料化学。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you collaborating on R&D?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the venture generating value?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in SA tech?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: wa
+  name: WA Battery Technology Partners
+  name_zh: 西非电池技术合作伙伴
+  partner_type: TECHNOLOGY
+  description: West African solar and storage technology hub with off-grid system development expertise.
+  description_zh: 西非太阳能和储能技术中心，拥有离网系统开发专业知识。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing knowledge?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local tech capacity?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa tech?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: govt_advisory_partner
+  market: na
+  name: Washington Energy Policy Group
+  name_zh: 华盛顿能源政策集团
+  partner_type: GOVERNMENT
+  description: Washington DC energy regulatory advisory firm. Values compliance and ethical governance in the clean energy sector.
+  description_zh: 华盛顿特区能源监管咨询公司。重视清洁能源领域的合规和道德治理。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Are you operating ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the advisory fee justified?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary advisor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: ea
+  name: Beijing Energy Policy Advisors
+  name_zh: 北京能源政策顾问
+  partner_type: GOVERNMENT
+  description: Regional government relations firm with connections across Chinese energy regulatory bodies and MIIT.
+  description_zh: 区域性政府关系公司，与中国能源监管机构和工信部有广泛联系。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you respect local regulations?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring locally?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to East Asia?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the advisory fee justified?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: eu
+  name: Brussels Battery Regulatory Consultants
+  name_zh: 布鲁塞尔电池监管顾问
+  partner_type: GOVERNMENT
+  description: EU regulatory specialists with expertise in Battery Regulation compliance, sustainability standards, and trade policy.
+  description_zh: 欧盟监管专家，擅长电池法规合规、可持续性标准和贸易政策。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Do you meet EU standards?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the EU?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you building EU operations?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worth continuing?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: sa
+  name: SA Mining & Energy Regulatory Group
+  name_zh: 南美矿业与能源监管集团
+  partner_type: GOVERNMENT
+  description: Government relations firm with connections across Brazilian and Chilean mining and energy ministries.
+  description_zh: 政府关系公司，与巴西和智利矿业和能源部有广泛联系。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate transparently?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local operations?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to South America?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: wa
+  name: Abuja Energy Relations
+  name_zh: 阿布贾能源关系
+  partner_type: GOVERNMENT
+  description: Government advisory firm with connections to Nigerian and West African energy regulatory bodies.
+  description_zh: 政府咨询公司，与尼日利亚和西非能源监管机构有联系。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you operate transparently?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: brand_ambassador
+  market: na
+  name: CleanEnergy America
+  name_zh: 清洁能源美国
+  partner_type: BRAND
+  description: US clean energy brand advocacy and industry influencer network. Values consistent messaging and market presence.
+  description_zh: 美国清洁能源品牌倡导和行业影响力网络。重视一致的信息传递和市场存在。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in marketing?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.2
+    description: Is the brand reputation clean?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary brand partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: ea
+  name: CleanEnergy Asia
+  name_zh: 清洁能源亚洲
+  partner_type: BRAND
+  description: Shanghai-based clean energy brand agency with pan-Asian reach and cultural expertise.
+  description_zh: 总部位于上海的清洁能源品牌机构，拥有泛亚洲覆盖和文化专业知识。
+  preferences:
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in EA marketing?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Is the brand culturally adapted?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: eu
+  name: CleanEnergy Europe
+  name_zh: 清洁能源欧洲
+  partner_type: BRAND
+  description: European clean energy brand consultancy emphasizing sustainability and ethical messaging.
+  description_zh: 欧洲清洁能源品牌咨询公司，强调可持续性和道德信息传递。
+  preferences:
+  - feature: governance_quality
+    weight: 0.35
+    description: Is the brand ethically positioned?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in EU marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Is the brand locally adapted?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: brand_ambassador
+  market: sa
+  name: CleanEnergy South America
+  name_zh: 清洁能源南美
+  partner_type: BRAND
+  description: Brazilian clean energy brand and influencer agency with South American reach.
+  description_zh: 巴西清洁能源品牌和影响力机构，覆盖南美。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand selling?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in SA marketing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Is the brand culturally adapted?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: wa
+  name: CleanEnergy West Africa
+  name_zh: 清洁能源西非
+  partner_type: BRAND
+  description: Pan-African clean energy media and brand agency with expertise in community-focused marketing.
+  description_zh: 泛非清洁能源媒体和品牌机构，专长于社区导向营销。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Is the brand locally resonant?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in African marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.1
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+government_profiles:
+- market: na
+  name: US DOE & IRA Administration
+  name_zh: 美国能源部与IRA管理
+  description: |-
+    Focus on domestic manufacturing, technology sovereignty, and climate goals. IRA incentivizes battery production. FEOC rules restrict Chinese-linked entities. Rewards local job creation and R&D investment.
+  description_zh: |-
+    聚焦国内制造、技术主权和气候目标。IRA激励电池生产。FEOC规则限制与中国相关的实体。奖励本地就业创造和研发投资。
+  policy_priorities:
+  - objective: local_manufacturing
+    weight: 0.30
+  - objective: esg_compliance
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.20
+  - objective: technology_transfer
+    weight: 0.10
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.70'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.20'
+  max_incentive_value_per_round: '3000000'
+  procurement_budget_per_round: '5000000'
+  procurement_frequency: 2
+  policy_volatility: '0.10'
+  patience_rounds: 2
+- market: ea
+  name: Chinese MIIT
+  name_zh: 中国工信部
+  description: |-
+    Industrial policy focused on maintaining global battery dominance. Controls critical mineral processing. Subsidizes domestic capacity. Wants technology transfer from foreign firms. Most tolerant of foreign entrants that bring technology.
+  description_zh: |-
+    以维持全球电池主导地位为核心的产业政策。控制关键矿物加工。补贴国内产能。希望外国企业进行技术转让。对带来技术的外国进入者最为宽容。
+  policy_priorities:
+  - objective: technology_transfer
+    weight: 0.15
+  - objective: local_manufacturing
+    weight: 0.30
+  - objective: export_contribution
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.15
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: esg_compliance
+    weight: 0.05
+  incentive_threshold: '0.65'
+  warning_threshold: '0.30'
+  restriction_threshold: '0.18'
+  max_incentive_value_per_round: '2500000'
+  procurement_budget_per_round: '4000000'
+  procurement_frequency: 2
+  policy_volatility: '0.06'
+  patience_rounds: 3
+- market: eu
+  name: EU Battery Regulation Authority
+  name_zh: 欧盟电池法规管理机构
+  description: |-
+    Strictest regulatory framework globally. Battery Regulation mandates carbon footprint, recycled content, and battery passports. Anti-subsidy investigations. Highest ESG standards. Slow to forgive compliance failures.
+  description_zh: |-
+    全球最严格的监管框架。电池法规要求碳足迹、回收材料含量和电池护照。反补贴调查。最高ESG标准。对合规失败很难宽恕。
+  policy_priorities:
+  - objective: esg_compliance
+    weight: 0.35
+  - objective: local_manufacturing
+    weight: 0.20
+  - objective: local_employment
+    weight: 0.15
+  - objective: technology_transfer
+    weight: 0.10
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.10
+  incentive_threshold: '0.75'
+  warning_threshold: '0.40'
+  restriction_threshold: '0.25'
+  max_incentive_value_per_round: '2000000'
+  procurement_budget_per_round: '3000000'
+  procurement_frequency: 3
+  policy_volatility: '0.05'
+  patience_rounds: 1
+- market: sa
+  name: Brazilian Mining & Energy Ministry
+  name_zh: 巴西矿业与能源部
+  description: |-
+    Focus on capturing value from lithium resources. Tax revenue from mining royalties is central. Local manufacturing incentivized through tariffs. Nationalization risk exists. Values local employment and technology transfer.
+  description_zh: |-
+    聚焦从锂资源中获取价值。采矿特许权使用费的税收收入是核心。通过关税激励本地制造。存在国有化风险。重视本地就业和技术转让。
+  policy_priorities:
+  - objective: local_manufacturing
+    weight: 0.30
+  - objective: tax_revenue
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.20
+  - objective: technology_transfer
+    weight: 0.15
+  - objective: esg_compliance
+    weight: 0.05
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.68'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.20'
+  max_incentive_value_per_round: '1500000'
+  procurement_budget_per_round: '2000000'
+  procurement_frequency: 3
+  policy_volatility: '0.12'
+  patience_rounds: 2
+- market: wa
+  name: Nigerian Energy Commission
+  name_zh: 尼日利亚能源委员会
+  description: |-
+    Energy access is the top priority. Local employment weighted highest. Wants technology transfer for local capacity building. Government is the biggest buyer of off-grid storage. Highest procurement frequency.
+  description_zh: |-
+    能源可及性是首要优先事项。本地就业权重最高。希望技术转让以建设本地能力。政府是离网储能的最大买家。采购频率最高。
+  policy_priorities:
+  - objective: local_employment
+    weight: 0.35
+  - objective: technology_transfer
+    weight: 0.25
+  - objective: local_manufacturing
+    weight: 0.20
+  - objective: esg_compliance
+    weight: 0.05
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.60'
+  warning_threshold: '0.30'
+  restriction_threshold: '0.18'
+  max_incentive_value_per_round: '1000000'
+  procurement_budget_per_round: '3000000'
+  procurement_frequency: 1
+  policy_volatility: '0.15'
+  patience_rounds: 3

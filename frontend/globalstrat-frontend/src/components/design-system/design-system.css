@@ -1,0 +1,864 @@
+/* ============================================================
+   GlobalStrat Design System — Component Styles
+   ============================================================ */
+
+/* ── Global Font Overrides ── */
+body {
+  font-family: var(--font-body) !important;
+  background: var(--color-surface-50);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Override Ant Design font to use Source Sans 3 */
+.ant-typography, .ant-btn, .ant-input, .ant-select, .ant-table,
+.ant-card, .ant-tabs, .ant-tag, .ant-modal, .ant-form, .ant-statistic,
+.ant-descriptions, .ant-list, .ant-menu, .ant-alert, .ant-collapse,
+.ant-drawer, .ant-dropdown, .ant-popover, .ant-input-number {
+  font-family: var(--font-body) !important;
+}
+
+/* ── Typography ── */
+.ds-page-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.section-header {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-inverse);
+}
+
+.ds-metric-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.ds-table-header {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* ── PanelCard ── */
+.panel-card {
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+.panel-header {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+}
+
+.panel-body {
+  padding: 16px;
+  background: #FFFFFF;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ── MetricCard ── */
+.ds-metric-card {
+  padding: 12px 16px;
+  border-right: 1px solid var(--color-surface-300);
+}
+
+.ds-metric-card:last-child {
+  border-right: none;
+}
+
+.ds-metric-value.metric-large {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ds-metric-value.metric-medium {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ds-metric-value.metric-small {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ds-metric-trend {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.ds-metric-trend.trend-up { color: var(--color-positive); }
+.ds-metric-trend.trend-down { color: var(--color-negative); }
+
+/* ── MetricRow ── */
+.ds-metric-row {
+  display: flex;
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+.ds-metric-row > .ds-metric-card {
+  flex: 1;
+}
+
+/* ── DataTable ── */
+.ds-data-table-wrapper {
+  overflow-x: auto;
+}
+
+.ds-data-table-wrapper.sticky-header {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.ds-data-table-wrapper.sticky-header thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-surface-50);
+}
+
+.ds-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+}
+
+.ds-data-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-secondary);
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--color-surface-300);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ds-data-table td {
+  font-size: 13px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-surface-200);
+  color: var(--color-text-primary);
+}
+
+.ds-data-table.compact td {
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+.ds-data-table tbody tr:hover {
+  background: var(--color-surface-200);
+}
+
+.ds-data-table .highlight-row {
+  background: var(--color-primary-light);
+}
+
+.ds-data-table .highlight-row:hover {
+  background: var(--color-primary-light);
+}
+
+.ds-data-table .text-right {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+.ds-data-table .editable-cell {
+  background: var(--color-input-editable);
+  border: 1px solid var(--color-surface-300);
+  border-radius: 3px;
+  padding: 4px 8px;
+}
+
+/* Expandable row detail (no hover bg on the detail row) */
+.ds-data-table tbody tr[style*="cursor: pointer"]:hover {
+  background: var(--color-surface-100);
+}
+
+/* ── DeltaValue ── */
+.delta-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.delta-current {
+  font-family: var(--font-mono);
+}
+
+.delta-change {
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.delta-change.positive { color: var(--color-positive); background: #DCFCE7; }
+.delta-change.negative { color: var(--color-negative); background: #FEE2E2; }
+.delta-change.neutral { color: var(--color-neutral); background: var(--color-surface-200); }
+
+/* ── StatusBadge ── */
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ── SeverityIndicator ── */
+.severity-indicator {
+  position: relative;
+  height: 8px;
+  background: var(--color-surface-200);
+  border-radius: 4px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.severity-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.severity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.severity-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  min-width: 100px;
+}
+
+.severity-value {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* ── InputField ── */
+.ds-input-field {
+  margin-bottom: var(--space-sm);
+}
+
+.ds-input-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.ds-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ds-input-control {
+  background: var(--color-input-editable);
+  border: 1px solid var(--color-surface-300);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.ds-input-control:focus {
+  border-color: var(--color-input-focus);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.ds-input-control:disabled {
+  background: var(--color-surface-200);
+  color: var(--color-surface-500);
+  cursor: not-allowed;
+}
+
+.ds-input-prefix, .ds-input-suffix {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  padding: 0 6px;
+}
+
+.ds-input-helper {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.ds-input-field.disabled .ds-input-label {
+  color: var(--color-surface-400);
+}
+
+/* Green tint on Ant Design inputs in decision contexts */
+.ds-editable .ant-input-number,
+.ds-editable .ant-input,
+.ds-editable .ant-select-selector {
+  background: var(--color-input-editable) !important;
+}
+
+/* ── TopBar ── */
+.ds-topbar {
+  height: 56px;
+  background: var(--topbar-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--topbar-border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 0;
+  width: 100%;
+}
+
+.ds-topbar-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ds-topbar-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--topbar-border);
+  margin: 0 16px;
+  flex-shrink: 0;
+}
+
+.ds-topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ds-topbar-logo-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.3));
+}
+
+.ds-topbar-logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--topbar-text);
+  line-height: 1;
+}
+
+.ds-topbar-scenario {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--topbar-text-secondary);
+}
+
+.ds-topbar-round {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--topbar-text);
+}
+
+.ds-topbar-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: 8px;
+}
+
+.ds-topbar-status.draft {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.ds-topbar-status.locked {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.ds-topbar-budget-chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--topbar-text-secondary);
+}
+
+.ds-topbar-budget-chip strong {
+  color: var(--topbar-text);
+}
+
+.ds-topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ds-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--topbar-text);
+  font-size: 13px;
+}
+
+.ds-topbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.ds-topbar-action {
+  color: var(--topbar-text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 16px;
+  transition: color 0.15s;
+}
+
+.ds-topbar-action:hover {
+  color: var(--topbar-text) !important;
+}
+
+/* ── Colored Tabs ── */
+.ds-colored-tabs .ant-tabs-tab {
+  border-radius: 6px 6px 0 0 !important;
+  padding: 6px 16px !important;
+  margin: 0 2px 0 0 !important;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff !important;
+}
+
+.ds-colored-tabs .ant-tabs-tab:nth-child(1) { background: var(--color-header-financial) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(2) { background: var(--color-header-strategic) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(3) { background: var(--color-header-market) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(4) { background: var(--color-header-decision) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(5) { background: var(--color-header-results) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(6) { background: var(--color-header-neutral) !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(7) { background: #b91c1c !important; }
+.ds-colored-tabs .ant-tabs-tab:nth-child(8) { background: #0369a1 !important; }
+
+.ds-colored-tabs .ant-tabs-tab:not(.ant-tabs-tab-active) {
+  opacity: 0.6;
+  filter: brightness(1.2);
+}
+
+.ds-colored-tabs .ant-tabs-tab-active {
+  opacity: 1 !important;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.ds-colored-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  color: #fff !important;
+}
+
+.ds-colored-tabs .ant-tabs-ink-bar {
+  display: none !important;
+}
+
+.ds-colored-tabs .ant-tabs-nav::before {
+  border-bottom-color: var(--color-surface-300) !important;
+}
+
+/* ── PageHeader ── */
+.ds-page-header {
+  margin-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--color-surface-300);
+  padding-bottom: var(--space-lg);
+}
+
+.ds-page-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ds-page-header-subtitle {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── BudgetBar (design system version) ── */
+.ds-budget-bar {
+  display: flex;
+  gap: var(--space-lg);
+  padding: 12px 16px;
+  background: var(--color-surface-100);
+  border: 1px solid var(--color-surface-300);
+  border-radius: 6px;
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.ds-budget-item {
+  flex: 1;
+  min-width: 150px;
+}
+
+.ds-budget-item-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.ds-budget-item-bar {
+  height: 6px;
+  background: var(--color-surface-200);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.ds-budget-item-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.ds-budget-item-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* ── Layout Grid ── */
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.panel-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.panel-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.panel-full-width {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1024px) {
+  .panel-grid { grid-template-columns: 1fr; }
+  .panel-grid-3col { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .panel-grid-3col, .panel-grid-2col { grid-template-columns: 1fr; }
+
+  /* Content area — tighter on tablet */
+  .ds-content-area {
+    padding: 16px;
+  }
+
+  /* MetricRow — wrap on tablet */
+  .ds-metric-row {
+    flex-wrap: wrap;
+  }
+  .ds-metric-row > .ds-metric-card {
+    flex: 1 1 calc(50% - 1px);
+    min-width: 0;
+    border-bottom: 1px solid var(--color-surface-300);
+  }
+
+  /* PageHeader — stack on tablet */
+  .ds-page-header-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* BudgetBar — smaller gap */
+  .ds-budget-bar {
+    gap: var(--space-sm);
+    padding: 10px 12px;
+  }
+  .ds-budget-item {
+    min-width: 120px;
+  }
+
+  /* Colored tabs — scrollable, smaller text */
+  .ds-colored-tabs .ant-tabs-tab {
+    padding: 5px 10px !important;
+    font-size: 12px;
+  }
+
+  /* TopBar — tighter */
+  .ds-topbar {
+    padding: 0 10px;
+    height: 50px;
+  }
+  .ds-topbar-divider {
+    margin: 0 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Content area — compact on phone */
+  .ds-content-area {
+    padding: 10px;
+  }
+
+  /* MetricRow — single column */
+  .ds-metric-row {
+    flex-direction: column;
+  }
+  .ds-metric-row > .ds-metric-card {
+    flex: 1 1 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-surface-300);
+  }
+  .ds-metric-row > .ds-metric-card:last-child {
+    border-bottom: none;
+  }
+
+  /* TopBar — minimal */
+  .ds-topbar {
+    padding: 0 8px;
+    height: 46px;
+  }
+  .ds-topbar-logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .ds-topbar-action {
+    padding: 4px 6px;
+    font-size: 14px;
+  }
+  .ds-topbar-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  /* BudgetBar — stack */
+  .ds-budget-bar {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .ds-budget-item {
+    min-width: 100%;
+  }
+
+  /* Colored tabs — compact */
+  .ds-colored-tabs .ant-tabs-tab {
+    padding: 4px 8px !important;
+    font-size: 11px;
+  }
+
+  /* PanelCard — tighter */
+  .panel-header {
+    padding: 6px 10px;
+  }
+  .panel-body {
+    padding: 10px;
+  }
+
+  /* PageHeader — compact */
+  .ds-page-title {
+    font-size: 18px;
+  }
+  .ds-page-header {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+  }
+
+  /* Severity rows — tighter */
+  .severity-label {
+    min-width: 70px;
+    font-size: 11px;
+  }
+}
+
+/* ── Content Area ── */
+.ds-content-area {
+  padding: 20px 24px;
+  max-width: 1400px;
+  background: var(--color-surface-50);
+  min-height: calc(100vh - 56px);
+}
+
+/* ── Sidebar overrides ── */
+.ds-sidebar {
+  background: var(--color-surface-800) !important;
+}
+
+.ds-sidebar .ant-layout-sider-children {
+  background: var(--color-surface-800);
+}
+
+.ds-sidebar .ant-menu {
+  background: transparent !important;
+}
+
+.ds-sidebar-header {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ds-sidebar-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ds-sidebar-meta {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: block;
+  line-height: 1.4;
+}
+
+.ds-sidebar-round {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 3px 10px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #10B981;
+}
+
+.ds-sidebar-round-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-positive);
+}
+
+/* Sidebar section group labels */
+.ds-sidebar .ant-menu-item-group-title {
+  font-family: var(--font-display) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: #64748B !important;
+  padding: 16px 16px 4px !important;
+}
+
+/* Sidebar nav items */
+.ds-sidebar .ant-menu-item,
+.ds-sidebar .ant-menu-submenu-title {
+  font-family: var(--font-body) !important;
+  font-size: 14px !important;
+  color: #CBD5E1 !important;
+}
+
+.ds-sidebar .ant-menu-item:hover,
+.ds-sidebar .ant-menu-submenu-title:hover {
+  color: #FFFFFF !important;
+}
+
+.ds-sidebar .ant-menu-item-selected {
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #10B981 !important;
+}
+
+/* ── Utility classes ── */
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.font-mono { font-family: var(--font-mono); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-secondary { color: var(--color-text-secondary); }
+.text-positive { color: var(--color-positive); }
+.text-negative { color: var(--color-negative); }
+.text-warning { color: var(--color-warning); }

@@ -1,0 +1,13 @@
+[Unit]
+Description=FRP Client — GlobalStrat API Tunnel to ECS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ubuntu
+ExecStart=/home/ubuntu/frp_0.61.1_linux_amd64/frpc -c /etc/frp/frpc-globalstrat.toml
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

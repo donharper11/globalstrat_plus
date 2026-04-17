@@ -1,0 +1,7275 @@
+scenario:
+  name: Consumer Electronics 2026
+  name_zh: 消费电子 2026
+  industry_label: Consumer Electronics
+  industry_label_zh: 消费电子
+  description: |-
+    You are the executive team of a mid-size consumer electronics company headquartered in North America. Your firm has a solid domestic presence with two established product lines, but the board is pushing for international expansion. Three global markets await — each with different customer preferences, regulatory environments, and competitive dynamics. Over 10 rounds (each representing one quarter), you must develop your technology platform, launch products, enter new markets, and build a sustainable global business. Your competitors are doing the same.
+  description_zh: |-
+    管理一家全球消费电子公司，设计、制造和销售智能手机、可穿戴设备和智能家居产品。在快速技术迭代、激烈价格竞争和复杂全球供应链中导航。与AI竞争对手展开较量，赢得机构投资者、政府机构和消费者在5个全球市场中的信任。
+  num_rounds: 10
+  round_duration_label: Quarter
+  round_duration_label_zh: 季度
+  starting_cash: '50000000.00'
+  currency_code: USD
+  max_platforms_per_team: 3
+  max_products_per_platform: 3
+  max_products_total: 6
+  performance_index_base: '55.00'
+  is_active: true
+  company_names:
+    - Apex Devices
+    - Vertex Electronics
+    - Prism Tech
+    - Helix Digital
+    - Solaris Consumer
+    - Cipher Systems
+    - Quantum Edge
+    - Nova Circuit
+    - Zenith Hardware
+    - Stratos Electronics
+    - Lumen Devices
+    - Titan Micro
+    - Eclipse Gadgets
+    - Photon Labs
+    - Meridian Tech
+    - Cobalt Innovations
+config:
+  bass_default_p:
+  - '0.03'
+  - Default innovation coefficient
+  bass_default_q:
+  - '0.38'
+  - Default imitation coefficient
+  r_and_d_diminishing_factor:
+  - '0.15'
+  - R&D cost increase per current level
+  campaign_focus_multiplier:
+  - '0.15'
+  - Max fit bonus from campaign emphasis
+  competition_sharpness:
+  - '1.5'
+  - Market share allocation exponent
+  performance_index_sensitivity:
+  - '20.0'
+  - Max index change per round
+  learning_curve_factor:
+  - '0.05'
+  - Production cost reduction per doubling
+  debt_interest_rate:
+  - '0.06'
+  - Annual interest rate on debt
+  max_debt_to_equity_ratio:
+  - '2.0'
+  - Maximum leverage allowed
+  logistics_base_cost_per_unit:
+  - '5.00'
+  - Shipping cost per unit between regions
+  inventory_holding_cost_pct:
+  - '0.05'
+  - Holding cost as % of unit cost
+  admin_overhead_fixed:
+  - '500000'
+  - Fixed admin cost per round
+  admin_overhead_pct:
+  - '0.03'
+  - Variable admin as % of revenue
+  base_unit_cost:
+  - '45.00'
+  - Base manufacturing cost per unit
+  brand_awareness_halflife:
+  - '10000000'
+  - Spend to reach 50% awareness
+  promotion_benchmark_per_unit:
+  - '8.00'
+  - Expected promo spend per prospect
+  distribution_investment_cap:
+  - '5000000'
+  - Max effective distribution investment
+  sales_rep_cost_per_round:
+  - '100000'
+  - Cost per sales rep per round ($)
+  capitalize_platform_development:
+  - 'false'
+  - Expense platform R&D immediately
+  allow_tax_consolidation:
+  - 'false'
+  - No cross-market loss offset
+  ai_competitors_enabled:
+  - 'true'
+  - AI benchmark competitors active
+  ai_competitor_count:
+  - '2'
+  - Number of AI competitors
+  esg_enabled:
+  - 'true'
+  - ESG decisions active
+  rag_enabled:
+  - 'false'
+  - RAG disabled until CC-11
+  high_commitment_threshold:
+  - '5000000'
+  - Investment level for coherence scoring
+  rd_base_budget:
+  - '1500000'
+  - Base R&D budget allocation per round
+  max_rd_investments_per_round:
+  - '5'
+  - Maximum number of features a team can invest in per round
+  max_platform_features:
+  - '5'
+  - Maximum number of features that can be selected (non-zero) on a platform
+  gen2_min_features_at_level:
+  - '3'
+  - Number of Gen 1 features that must reach threshold level to unlock Gen 2
+  gen2_min_feature_level:
+  - '10'
+  - Minimum feature level for Gen 2 unlock threshold
+  gen3_min_features_at_level:
+  - '4'
+  - Number of Gen 2 features that must reach threshold level to unlock Gen 3
+  gen3_min_feature_level:
+  - '14'
+  - Minimum feature level for Gen 3 unlock threshold
+  sidebar_label_platform_page:
+  - R&D Investment
+  - Label for the platform/R&D decision page
+  sidebar_label_platform_page_zh:
+  - 研发投资
+  - Label for the platform/R&D decision page
+  sidebar_label_product_page:
+  - Product Portfolio
+  - Label for the product management page
+  sidebar_label_product_page_zh:
+  - 产品组合
+  - Label for the product management page
+  sidebar_label_marketing_page:
+  - Marketing Mix
+  - Label for the marketing decisions page
+  sidebar_label_marketing_page_zh:
+  - 营销组合
+  - Label for the marketing decisions page
+  sidebar_label_corporate_strategy:
+  - Corporate Strategy
+  - Label for firm-wide strategy page
+  sidebar_label_corporate_strategy_zh:
+  - 公司战略
+  - Label for firm-wide strategy page
+  sidebar_label_market_strategy:
+  - Market Strategy
+  - Label for per-market strategy page
+  sidebar_label_market_strategy_zh:
+  - 市场战略
+  - Label for per-market strategy page
+  sidebar_label_finance_page:
+  - Finance
+  - Label for the finance/budget page
+  sidebar_label_finance_page_zh:
+  - 财务
+  - Label for the finance/budget page
+  sidebar_label_talent_page:
+  - Talent & Workforce
+  - Label for the talent decisions section
+  sidebar_label_talent_page_zh:
+  - 人才与团队
+  - Label for the talent decisions section
+  sidebar_label_news_page:
+  - Industry News
+  - Label for the market news page
+  sidebar_label_news_page_zh:
+  - 行业新闻
+  - Label for the market news page
+  sidebar_label_research_page:
+  - Market Research
+  - Label for the research console page
+  sidebar_label_research_page_zh:
+  - 市场研究
+  - Label for the research console page
+  sidebar_label_competitors_page:
+  - Competitive Intelligence
+  - Label for competitor analysis page
+  sidebar_label_competitors_page_zh:
+  - 竞争情报
+  - Label for competitor analysis page
+  sidebar_label_tools_page:
+  - Strategy Tools
+  - Label for framework templates page
+  sidebar_label_tools_page_zh:
+  - 战略工具
+  - Label for framework templates page
+  sidebar_label_financial_reports:
+  - Financial Reports
+  - Label for detailed financial reports
+  sidebar_label_financial_reports_zh:
+  - 财务报告
+  - Label for detailed financial reports
+  sidebar_label_forecast_page:
+  - Company Forecast
+  - Label for what-if projections page
+  sidebar_label_forecast_page_zh:
+  - 公司预测
+  - Label for what-if projections page
+  localization_staff_baseline:
+  - '10'
+  - Staff count for ~full localization in one market
+  compliance_scale_factor:
+  - '5000000'
+  - $5M cumulative = ~63% compliance
+  compliance_max_investment_per_round:
+  - '10000000'
+  - $10M compliance investment cap per round
+  min_hq_staff_percentage:
+  - '0.20'
+  - 20% of headcount must stay at HQ
+  ip_exposure_rate_jv:
+  - '0.03'
+  - IP exposure per round for JV entry mode
+  ip_exposure_rate_licensing:
+  - '0.05'
+  - IP exposure per round for licensing entry mode
+  ip_exposure_rate_local_partner:
+  - '0.02'
+  - IP exposure per round from local strategic partner
+  brand_preservation_overhead:
+  - '0.15'
+  - 15% market overhead for brand preservation strategy
+  dual_brand_overhead:
+  - '0.25'
+  - 25% market overhead for dual brand strategy
+  brand_preserved_trust_floor:
+  - '0.92'
+  - Minimum trust multiplier with brand preservation
+  technology_sanctions_dependency_threshold:
+  - '0.40'
+  - Licensed dependency threshold triggering sanctions vulnerability
+features:
+  platform:
+  - code: processing_power
+    layer: platform
+    name: Processing Power
+    name_zh: 处理器性能
+    description: |-
+      Raw computing speed, multitasking capability, and benchmark scores. Higher levels mean faster processors and smoother performance.
+    description_zh: 原始计算速度、多任务处理能力和基准测试分数。更高等级意味着更快的处理器和更流畅的性能。
+    category: Core Technology
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 150000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 1
+  - code: battery_life
+    layer: platform
+    name: Battery Life
+    name_zh: 电池续航
+    description: Hours of use per charge, fast charging capability, and thermal management. Critical for mobile-first markets.
+    description_zh: 每次充电的使用时长、快充能力和散热管理。对移动优先市场至关重要。
+    category: Core Technology
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 120000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 2
+  - code: durability
+    layer: platform
+    name: Durability
+    name_zh: 耐用性
+    description: Drop resistance, scratch-proof glass, metal vs plastic chassis. Critical for enterprise and rugged use cases.
+    description_zh: 抗摔、防刮玻璃、金属与塑料机身。对企业和户外使用场景至关重要。
+    category: Core Technology
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 100000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 3
+  - code: app_ecosystem
+    layer: platform
+    name: App Ecosystem
+    name_zh: 应用生态
+    description: App store depth, cloud storage, cross-platform sync, and developer ecosystem richness.
+    description_zh: 应用商店深度、云存储、跨平台同步和开发者生态丰富度。
+    category: Software & Services
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 130000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 4
+  - code: ai_features
+    layer: platform
+    name: AI Features
+    name_zh: AI功能
+    description: Voice assistant quality, photo AI, predictive text, and smart recommendations.
+    description_zh: 语音助手质量、照片AI、预测文本和智能推荐。
+    category: Software & Services
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 180000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 5
+  - code: product_design
+    layer: platform
+    name: Product Design
+    name_zh: 产品设计
+    description: Physical aesthetics, form factor, color options, and packaging quality. The "unboxing moment" and daily usage pleasure.
+    description_zh: 外观美学、外形因素、颜色选择和包装质量。开箱体验和日常使用愉悦感。
+    category: Design
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 90000
+    time_lag_rounds: 1
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 6
+  - code: connectivity
+    layer: platform
+    name: Connectivity
+    name_zh: 连接能力
+    description: 5G speeds, WiFi standards, and Bluetooth range. Foundation for connected experiences.
+    description_zh: 5G速度、WiFi标准和蓝牙范围。互联体验的基础。
+    category: Connectivity
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 200000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 7
+  - code: iot_integration
+    layer: platform
+    name: IoT Integration
+    name_zh: 物联网集成
+    description: Cross-device pairing, smart home hub compatibility, and wearable ecosystem.
+    description_zh: 跨设备配对、智能家居中枢兼容性和可穿戴设备生态。
+    category: Connectivity
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 160000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 8
+  - code: sustainable_materials
+    layer: platform
+    name: Sustainability
+    name_zh: 可持续性
+    description: Recycled content percentage, repairability, and end-of-life recyclability. Increasingly regulated in key markets.
+    description_zh: 回收材料含量比例、可修复性和报废回收率。在关键市场日益受到监管。
+    category: Sustainability
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 80000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 9
+  marketing:
+  - code: price_competitiveness
+    layer: marketing
+    name: Price Competitiveness
+    name_zh: 价格竞争力
+    description: How your price compares to market expectations for your positioning tier. Derived from your pricing decisions.
+    description_zh: 您的价格与定位层级的市场预期相比如何。由定价决策决定。
+    category: Pricing
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 10
+  - code: promotion_reach
+    layer: marketing
+    name: Advertising & Promotion Reach
+    name_zh: 广告与推广覆盖
+    description: How effectively your marketing reaches target customers. Derived from promotion budget relative to market size.
+    description_zh: 您的营销触达目标客户的效果如何。由促销预算相对于市场规模决定。
+    category: Promotion
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 11
+  - code: distribution_coverage
+    layer: marketing
+    name: Retail & Distribution Reach
+    name_zh: 零售与分销覆盖
+    description: How available your products are to customers. Derived from distribution strategy and investment.
+    description_zh: 您的产品对客户的可获得性如何。由分销策略和投资决定。
+    category: Distribution
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 12
+  - code: brand_awareness
+    layer: marketing
+    name: Brand Recognition & Trust
+    name_zh: 品牌知名度与信任
+    description: How well known and trusted your brand is in each market. Builds cumulatively from promotion spend over multiple rounds.
+    description_zh: 您的品牌在各市场的知名度和可信度如何。随多轮推广支出累积增长。
+    category: Brand
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 13
+  - code: product_availability
+    layer: marketing
+    name: Product Availability & Stock Levels
+    name_zh: 产品可用性与库存水平
+    description: |-
+      Whether you have enough inventory to meet demand. Derived from production volume vs actual demand. Stockouts lose customers.
+    description_zh: 您是否有足够库存满足需求。由产量与实际需求对比决定。缺货会流失客户。
+    category: Supply
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 14
+  strategy:
+  - code: long_term_investment
+    layer: strategy
+    name: Long-Term Market Investment
+    name_zh: 长期市场投资
+    description: |-
+      How committed you are to each market — capital deployed, infrastructure built, time horizon signaled. Derived from entry mode, plant investments, and cumulative spending.
+    description_zh: 您对各市场的承诺程度——部署的资本、建设的基础设施、展示的时间跨度。由进入模式、工厂投资和累计支出决定。
+    category: Market Commitment
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 20
+  - code: debt_equity_cash
+    layer: strategy
+    name: Debt-to-Equity & Cash Reserves
+    name_zh: 资产负债率与现金储备
+    description: |-
+      Your financial health — leverage ratio, cash position, and ability to weather downturns. Derived from financing decisions.
+    description_zh: 您的财务健康状况——杠杆率、现金状况和抵御下行的能力。由融资决策决定。
+    category: Financial Health
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 21
+  - code: jv_distributor
+    layer: strategy
+    name: JV & Distributor Relationships
+    name_zh: 合资与经销商关系
+    description: |-
+      Strength of your local partnerships — joint ventures, distributor agreements, and channel relationships. Derived from partnership decisions and investment levels.
+    description_zh: 您的本地合作伙伴关系的强度——合资企业、经销商协议和渠道关系。由合作决策和投资水平决定。
+    category: Partnerships
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 22
+  - code: regulatory_govt
+    layer: strategy
+    name: Regulatory & Government Engagement
+    name_zh: 监管与政府关系
+    description: |-
+      Your relationship with local regulators and government bodies. Affected by lobbying investment, compliance track record, and local manufacturing presence.
+    description_zh: 您与当地监管机构和政府部门的关系。受游说投资、合规记录和本地制造存在的影响。
+    category: Government Relations
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 23
+  - code: esg_track_record
+    layer: strategy
+    name: Environmental & Social Responsibility Track Record
+    name_zh: 环境与社会责任历史记录
+    description: |-
+      Your cumulative ESG performance — environmental investments, social programs, governance commitments. Builds over time, hard to fake.
+    description_zh: 您的累积ESG表现——环境投资、社会项目、治理承诺。需长期积累，难以伪造。
+    category: ESG
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 24
+  - code: local_manufacturing
+    layer: strategy
+    name: Local Manufacturing & Job Creation
+    name_zh: 本地制造与就业创造
+    description: |-
+      Whether you produce locally in each market. Regulators and communities reward firms that create local jobs and reduce import dependency.
+    description_zh: 您是否在各市场进行本地生产。监管机构和社区奖励创造本地就业和减少进口依赖的企业。
+    category: Operations
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 25
+    is_derived: true
+    is_market_specific: true
+  - code: acquisition_track
+    layer: strategy
+    name: Growth Through Acquisition Track Record
+    name_zh: 并购增长历史记录
+    description: |-
+      Your history of acquiring companies or assets to accelerate growth. Some investors reward aggressive acquisition strategies; others prefer organic growth.
+    description_zh: 您通过收购公司或资产加速增长的历史。部分投资者青睐激进的并购策略，其他则偏好有机增长。
+    category: Growth Strategy
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 26
+  - code: rd_talent
+    layer: strategy
+    name: R&D Team Quality
+    name_zh: 研发团队质量
+    description: |-
+      The caliber of your engineers, designers, and researchers. Higher quality means faster, cheaper feature development. Affected by salary, training investment, and retention.
+    description_zh: 您的工程师、设计师和研究人员的水平。更高质量意味着更快、更低成本的功能开发。受薪资、培训投资和留存率影响。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 30
+  - code: commercial_talent
+    layer: strategy
+    name: Sales & Marketing Team Quality
+    name_zh: 销售与市场团队质量
+    description: |-
+      The caliber of your marketing strategists, sales representatives, and business development team. Higher quality means more effective campaigns, better distribution partnerships, and stronger customer relationships.
+    description_zh: 您的营销策略师、销售代表和业务拓展团队的水平。更高质量意味着更有效的营销活动、更好的分销合作和更强的客户关系。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 31
+  - code: operations_talent
+    layer: strategy
+    name: Operations & Supply Chain Team Quality
+    name_zh: 运营与供应链团队质量
+    description: |-
+      The caliber of your manufacturing engineers, logistics managers, and supply chain specialists. Higher quality means lower production costs, less waste, and more efficient distribution.
+    description_zh: 您的制造工程师、物流经理和供应链专家的水平。更高质量意味着更低的生产成本、更少的浪费和更高效的配送。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 32
+  derived:
+  - code: financial_stability
+    layer: strategy
+    name: Financial Stability
+    name_zh: 财务稳定性
+    description: Composite of debt-to-equity ratio, cash runway, and interest coverage. Higher = more stable.
+    description_zh: 资产负债率、现金储备和利息覆盖率的综合指标。数值越高越稳定。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 40
+    is_derived: true
+  - code: dividend_consistency
+    layer: strategy
+    name: Dividend & Shareholder Returns
+    name_zh: 股息与股东回报
+    description: Based on dividend yield, payout consistency, and cumulative shareholder return.
+    description_zh: 基于股息收益率、派息一致性和累计股东回报。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 41
+    is_derived: true
+  - code: revenue_momentum
+    layer: strategy
+    name: Revenue Growth Momentum
+    name_zh: 营业收入增长动能
+    description: Based on round-over-round revenue growth rate and trend consistency.
+    description_zh: 基于逐轮营业收入增长率和趋势一致性。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 42
+    is_derived: true
+  - code: profitability
+    layer: strategy
+    name: Profitability
+    name_zh: 盈利能力
+    description: Based on net margin, ROE, and operating efficiency.
+    description_zh: 基于净利润率、净资产收益率和运营效率。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 43
+    is_derived: true
+  - code: market_expansion
+    layer: strategy
+    name: International Presence
+    name_zh: 国际化程度
+    description: Based on number of markets entered and depth of market commitment.
+    description_zh: 基于进入市场的数量和市场承诺深度。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 44
+    is_derived: true
+  - code: innovation_intensity
+    layer: strategy
+    name: Innovation & R&D Intensity
+    name_zh: 创新与研发强度
+    description: Based on R&D spend as percentage of revenue and platform generation advancement.
+    description_zh: 基于研发支出占营业收入的比例和平台代际推进。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 45
+    is_derived: true
+  - code: distribution_commitment
+    layer: strategy
+    name: Distribution & Channel Investment
+    name_zh: 分销与渠道投资
+    description: Per-market. Based on distribution investment, sales team size, and partnership status.
+    description_zh: 按市场计算。基于分销投资、销售团队规模和合作伙伴状态。
+    category: Operational
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 47
+    is_derived: true
+    is_market_specific: true
+  - code: market_tenure
+    layer: strategy
+    name: Market Tenure & Commitment
+    name_zh: 市场经营时间与承诺
+    description: Per-market. How long the team has been present and investing in this market.
+    description_zh: 按市场计算。团队在该市场的存在时间和投资持续时间。
+    category: Operational
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 48
+    is_derived: true
+    is_market_specific: true
+  - code: sustainability_commitment
+    layer: strategy
+    name: Environmental Sustainability
+    name_zh: 环境可持续性
+    description: Derived from environmental investment decisions. Regulators (especially EU) reward sustainability.
+    description_zh: 由环境投资决策决定。监管机构（尤其是欧盟）奖励可持续性。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 49
+    is_derived: true
+  - code: governance_quality
+    layer: strategy
+    name: Governance Quality
+    name_zh: 治理质量
+    description: Derived from governance commitments. Investors and regulators reward strong governance.
+    description_zh: 由治理承诺决定。投资者和监管机构奖励强大的治理。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 50
+    is_derived: true
+  - code: social_responsibility
+    layer: strategy
+    name: Social Responsibility
+    name_zh: 社会责任
+    description: Derived from social investment decisions. Communities and regulators reward social programs.
+    description_zh: 由社会投资决策决定。社区和监管机构奖励社会项目。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 51
+    is_derived: true
+platform_generations:
+- name: Gen 1 — Standard Electronics
+  name_zh: 第一代——标准电子产品
+  description: |-
+    Current mainstream technology platform. Reliable, proven, cost-effective. Adequate for budget and mainstream segments but limited for premium and tech-forward customers.
+  description_zh: |-
+    当前主流技术平台。可靠、成熟、性价比高。适用于预算和主流细分市场，但对高端和技术前沿客户能力有限。
+  generation_order: 1
+  unlock_round: 0
+  development_cost: 5000000
+  development_rounds: 0
+  license_cost: 8000000
+  annual_maintenance_cost: 500000
+  is_starting_platform: true
+  ceilings:
+    processing_power:
+    - 14
+    - 8
+    battery_life:
+    - 12
+    - 4
+    durability:
+    - 14
+    - 4
+    app_ecosystem:
+    - 10
+    - 6
+    ai_features:
+    - 0
+    - 0
+    product_design:
+    - 12
+    - 2
+    connectivity:
+    - 0
+    - 0
+    iot_integration:
+    - 0
+    - 0
+    sustainable_materials:
+    - 8
+    - 2
+- name: Gen 2 — Smart Connected Platform
+  name_zh: 第二代——智能互联平台
+  description: |-
+    Next-generation platform with enhanced AI integration, 5G native, and improved software ecosystem. Required to compete for Premium and Tech Enthusiast segments in developed markets.
+  description_zh: |-
+    智能互联设备平台，解锁先进AI功能、IoT集成和跨设备生态系统。参与高端和科技爱好者市场竞争的必要条件。
+  generation_order: 2
+  unlock_round: 2
+  development_cost: 15000000
+  development_rounds: 2
+  license_cost: 35000000
+  annual_maintenance_cost: 1000000
+  is_starting_platform: false
+  ceilings:
+    processing_power:
+    - 17
+    - 10
+    battery_life:
+    - 16
+    - 8
+    durability:
+    - 16
+    - 8
+    app_ecosystem:
+    - 17
+    - 10
+    ai_features:
+    - 16
+    - 6
+    product_design:
+    - 17
+    - 10
+    connectivity:
+    - 0
+    - 0
+    iot_integration:
+    - 16
+    - 6
+    sustainable_materials:
+    - 14
+    - 6
+- name: Gen 3 — AI-Native Sustainable Platform
+  name_zh: 第三代——AI原生可持续平台
+  description: |-
+    Cutting-edge platform with on-device AI, fully circular material design, and next-gen connectivity. The future — but markets may not be ready yet.
+  description_zh: |-
+    AI原生可持续技术平台。全面解锁所有功能，包括端侧大模型和领先的可持续材料。行业的未来——但市场和供应链可能尚未准备就绪。
+  generation_order: 3
+  unlock_round: 5
+  development_cost: 25000000
+  development_rounds: 2
+  license_cost: 55000000
+  annual_maintenance_cost: 1500000
+  is_starting_platform: false
+  ceilings:
+    processing_power:
+    - 20
+    - 12
+    battery_life:
+    - 20
+    - 10
+    durability:
+    - 20
+    - 10
+    app_ecosystem:
+    - 20
+    - 14
+    ai_features:
+    - 20
+    - 14
+    product_design:
+    - 20
+    - 12
+    connectivity:
+    - 20
+    - 14
+    iot_integration:
+    - 20
+    - 12
+    sustainable_materials:
+    - 20
+    - 12
+markets:
+- name: North America
+  name_zh: 北美
+  code: NA
+  description: |-
+    Mature, high-income market. Strong brand loyalty, premium segment is large, but growth is slow. High infrastructure quality, moderate regulation. Your home market.
+  description_zh: |-
+    成熟的高收入市场。品牌忠诚度高，高端细分市场大，但增长缓慢。基础设施质量高，监管适度。您的母国市场。
+  currency_code: USD
+  exchange_rate_base: '1.0000'
+  exchange_rate_volatility: '0.02'
+  base_growth_rate: '0.03'
+  entry_cost_base: 0
+  tariff_rate: '0.00'
+  tax_rate: '0.21'
+  regulatory_difficulty: 4
+  infrastructure_quality: 9
+  base_manufacturing_cost: '1.20'
+  allows_manufacturing: true
+  plant_build_cost: 20000000
+  plant_build_rounds: 2
+  plant_capacity_units: 50000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.25'
+  contract_mfg_capacity_cap: 30000
+  display_order: 1
+- name: East Asia
+  name_zh: 东亚
+  code: APAC
+  description: |-
+    High-growth, price-sensitive market with massive volume potential. Manufacturing hub with low production costs. Strong tech adoption among urban consumers, but rural penetration is challenging. Regulatory complexity is high.
+  description_zh: |-
+    高增长、价格敏感的市场，拥有巨大的销量潜力。制造中心，生产成本低。城市消费者技术采纳度高，但农村渗透具有挑战性。监管复杂度高。
+  currency_code: CNY
+  exchange_rate_base: '0.14'
+  exchange_rate_volatility: '0.05'
+  base_growth_rate: '0.08'
+  entry_cost_base: 5000000
+  tariff_rate: '0.12'
+  tax_rate: '0.25'
+  regulatory_difficulty: 7
+  infrastructure_quality: 7
+  base_manufacturing_cost: '0.65'
+  allows_manufacturing: true
+  plant_build_cost: 12000000
+  plant_build_rounds: 2
+  plant_capacity_units: 80000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.15'
+  contract_mfg_capacity_cap: 60000
+  display_order: 2
+- name: Western Europe
+  name_zh: 西欧
+  code: EU
+  description: |-
+    Affluent, sustainability-conscious market. Strong premium segment, growing ESG regulation, and demanding environmental standards. High infrastructure but expensive operations. No local manufacturing — all imports.
+  description_zh: |-
+    富裕且注重可持续性的市场。高端细分市场强大，ESG法规不断加强，环保标准严格。基础设施优质但运营成本高。没有本地制造——全部进口。
+  currency_code: EUR
+  exchange_rate_base: '1.08'
+  exchange_rate_volatility: '0.03'
+  base_growth_rate: '0.02'
+  entry_cost_base: 8000000
+  tariff_rate: '0.08'
+  tax_rate: '0.25'
+  regulatory_difficulty: 6
+  infrastructure_quality: 9
+  base_manufacturing_cost: '1.40'
+  allows_manufacturing: false
+  plant_build_cost:
+  plant_build_rounds: 0
+  plant_capacity_units:
+  contract_mfg_available: false
+  contract_mfg_cost_multiplier: '1.30'
+  contract_mfg_capacity_cap:
+  display_order: 3
+- name: Africa
+  name_zh: 非洲
+  code: AFR
+  description: |-
+    High-growth, price-sensitive market with enormous volume potential. Young demographics and rapid mobile adoption drive demand, but infrastructure gaps and regulatory fragmentation create operational challenges. Local manufacturing is emerging but constrained. The value segment dominates.
+  description_zh: |-
+    高增长、价格敏感的市场，拥有巨大的销量潜力。年轻人口和快速的移动设备普及推动需求，但基础设施差距和监管碎片化带来运营挑战。本地制造正在兴起但受到限制。价值市场占主导地位。
+  currency_code: NGN
+  exchange_rate_base: '0.08'
+  exchange_rate_volatility: '0.06'
+  base_growth_rate: '0.10'
+  entry_cost_base: 3000000
+  tariff_rate: '0.15'
+  tax_rate: '0.30'
+  regulatory_difficulty: 8
+  infrastructure_quality: 4
+  base_manufacturing_cost: '0.55'
+  allows_manufacturing: true
+  plant_build_cost: 8000000
+  plant_build_rounds: 3
+  plant_capacity_units: 40000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.35'
+  contract_mfg_capacity_cap: 20000
+  display_order: 4
+- name: South America
+  name_zh: 南美
+  code: LATAM
+  description: |-
+    Large, urbanized middle-income market with a growing middle class. High taxation and bureaucratic complexity offset lower labor costs. Strong domestic consumer culture and brand awareness, but currency volatility and import duties make pricing strategy critical. Manufacturing is viable via free trade zones.
+  description_zh: |-
+    大型城市化中等收入市场，中产阶级不断壮大。高税负和官僚复杂性抵消了较低的劳动力成本。强大的本国消费文化和品牌意识，但货币波动和进口关税使定价策略至关重要。通过自由贸易区制造可行。
+  currency_code: BRL
+  exchange_rate_base: '0.18'
+  exchange_rate_volatility: '0.07'
+  base_growth_rate: '0.05'
+  entry_cost_base: 6000000
+  tariff_rate: '0.14'
+  tax_rate: '0.34'
+  regulatory_difficulty: 7
+  infrastructure_quality: 6
+  base_manufacturing_cost: '0.80'
+  allows_manufacturing: true
+  plant_build_cost: 14000000
+  plant_build_rounds: 2
+  plant_capacity_units: 55000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.20'
+  contract_mfg_capacity_cap: 35000
+  display_order: 5
+readiness_data:
+- market: NA
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: NA
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.15
+    3: 0.35
+    4: 0.6
+    5: 0.8
+    6: 0.92
+    7: 0.97
+    8: 1.0
+- market: NA
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.1
+    6: 0.25
+    7: 0.45
+    8: 0.65
+- market: APAC
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: APAC
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.1
+    3: 0.25
+    4: 0.45
+    5: 0.65
+    6: 0.8
+    7: 0.9
+    8: 0.95
+- market: APAC
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.05
+    6: 0.15
+    7: 0.3
+    8: 0.5
+- market: EU
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: EU
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.2
+    3: 0.45
+    4: 0.7
+    5: 0.88
+    6: 0.95
+    7: 0.98
+    8: 1.0
+- market: EU
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.12
+    6: 0.3
+    7: 0.5
+    8: 0.7
+- market: AFR
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: AFR
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.05
+    3: 0.15
+    4: 0.3
+    5: 0.5
+    6: 0.65
+    7: 0.78
+    8: 0.85
+- market: AFR
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.03
+    6: 0.1
+    7: 0.2
+    8: 0.35
+- market: LATAM
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: LATAM
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.12
+    3: 0.28
+    4: 0.5
+    5: 0.7
+    6: 0.85
+    7: 0.92
+    8: 0.97
+- market: LATAM
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.07
+    6: 0.18
+    7: 0.35
+    8: 0.55
+customer_segments:
+- name: Value Seekers
+  name_zh: 性价比追求者
+  segment_type: customer
+  description: |-
+    Price-conscious buyers who want reliable technology at an affordable price. Largest segment in emerging markets. Will switch brands easily for a better deal.
+  description_zh: |-
+    追求功能与价格平衡的消费者。在新兴市场占主导地位。关注基本功能和可靠性。
+  bass_p: '0.02'
+  bass_q: '0.35'
+  min_generation_required:
+  performance_index_weight: '0.046'
+  revenue_per_unit: '250.00'
+  populations:
+    NA: 3600000
+    APAC: 10500000
+    EU: 2400000
+    AFR: 8000000
+    LATAM: 4500000
+  growth_rates:
+    NA: '0.02'
+    APAC: '0.10'
+    EU: '0.01'
+    AFR: '0.12'
+    LATAM: '0.06'
+- name: Premium Consumers
+  name_zh: 高端消费者
+  segment_type: customer
+  description: |-
+    Affluent buyers who want the best design, materials, and status. Willing to pay top dollar. Brand loyal but demanding. Largest in North America and Europe.
+  description_zh: |-
+    追求最新技术和最佳体验的消费者。品牌忠诚度高，价格敏感度低。
+  bass_p: '0.04'
+  bass_q: '0.45'
+  min_generation_required:
+  performance_index_weight: '0.046'
+  revenue_per_unit: '800.00'
+  populations:
+    NA: 2400000
+    APAC: 1200000
+    EU: 2700000
+    AFR: 300000
+    LATAM: 1100000
+  growth_rates:
+    NA: '0.03'
+    APAC: '0.08'
+    EU: '0.02'
+    AFR: '0.10'
+    LATAM: '0.04'
+- name: Tech Enthusiasts
+  name_zh: 科技爱好者
+  segment_type: customer
+  description: |-
+    Early adopters who want cutting-edge technology — fastest processors, newest connectivity, latest AI features. Will pay a premium for innovation. Influential through reviews and social media.
+  description_zh: |-
+    关注前沿功能和创新技术的早期采用者。对AI功能、连接能力和生态系统整合有高要求。
+  bass_p: '0.08'
+  bass_q: '0.25'
+  min_generation_required: 2
+  performance_index_weight: '0.031'
+  revenue_per_unit: '650.00'
+  populations:
+    NA: 1350000
+    APAC: 1800000
+    EU: 1050000
+    AFR: 600000
+    LATAM: 900000
+  growth_rates:
+    NA: '0.05'
+    APAC: '0.12'
+    EU: '0.04'
+    AFR: '0.14'
+    LATAM: '0.07'
+- name: Enterprise & Institutional Buyers
+  name_zh: 企业与机构买家
+  segment_type: customer
+  description: |-
+    Companies, governments, and educational institutions buying in bulk. Care about durability, support contracts, and total cost of ownership. Long procurement cycles but high volume.
+  description_zh: |-
+    采购商用设备和企业移动解决方案的客户。注重安全性、耐用性和售后服务。
+  bass_p: '0.01'
+  bass_q: '0.50'
+  min_generation_required:
+  performance_index_weight: '0.038'
+  revenue_per_unit: '400.00'
+  populations:
+    NA: 1800000
+    APAC: 2400000
+    EU: 1500000
+    AFR: 1200000
+    LATAM: 1600000
+  growth_rates:
+    NA: '0.02'
+    APAC: '0.06'
+    EU: '0.01'
+    AFR: '0.08'
+    LATAM: '0.03'
+- name: Sustainability-Conscious Buyers
+  name_zh: 可持续消费者
+  segment_type: customer
+  description: |-
+    Environmentally aware consumers who prioritize recyclable materials, energy efficiency, and ethical manufacturing. Growing fast in Europe, emerging in other markets.
+  description_zh: |-
+    优先考虑环保和可持续性的消费者。愿意为使用回收材料和可修复设计的产品支付溢价。
+  bass_p: '0.03'
+  bass_q: '0.40'
+  min_generation_required:
+  performance_index_weight: '0.023'
+  revenue_per_unit: '550.00'
+  populations:
+    NA: 900000
+    APAC: 450000
+    EU: 1800000
+    AFR: 150000
+    LATAM: 500000
+  growth_rates:
+    NA: '0.08'
+    APAC: '0.15'
+    EU: '0.10'
+    AFR: '0.18'
+    LATAM: '0.12'
+non_customer_segments:
+- name: Growth-Oriented Investors
+  name_zh: 增长导向型投资者
+  segment_type: investor
+  market:
+  description: |-
+    Shareholders and analysts who reward revenue growth, market expansion, and bold strategic moves. Tolerate higher debt for faster growth.
+  description_zh: 专注增长的投资者，评估研发投入、国际扩张和营业收入增长轨迹。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.11'
+  revenue_per_unit:
+- name: Conservative Investors
+  name_zh: 保守型投资者
+  segment_type: investor
+  market:
+  description: |-
+    Shareholders who prioritize stable returns, low debt, consistent dividends, and prudent risk management. Penalize aggressive leveraging.
+  description_zh: 专注价值的投资者，优先考虑财务纪律、稳定利润率和持续股东回报。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.09'
+  revenue_per_unit:
+- name: Trade & Product Safety Regulator
+  name_zh: 贸易与产品安全监管
+  segment_type: regulator
+  market: NA
+  description: North American regulatory bodies overseeing product safety, trade compliance, and import standards.
+  description_zh: 北美市场的贸易和产品安全监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Trade & Technology Regulator
+  name_zh: 贸易与技术监管
+  segment_type: regulator
+  market: APAC
+  description: East Asian regulatory bodies with authority over technology standards, data requirements, and foreign investment rules.
+  description_zh: 东亚市场的贸易和技术监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Environmental & Data Privacy Regulator
+  name_zh: 环境与数据隐私监管
+  segment_type: regulator
+  market: EU
+  description: |-
+    European regulatory bodies enforcing strict environmental standards (carbon border tax, recycling mandates) and data privacy regulations.
+  description_zh: 西欧市场的环境和数据隐私监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Trade & Infrastructure Regulator
+  name_zh: 贸易与基础设施监管
+  segment_type: regulator
+  market: AFR
+  description: |-
+    African regulatory bodies overseeing import standards, local content requirements, and telecommunications infrastructure compliance across a fragmented multi-country landscape.
+  description_zh: 非洲市场的贸易和基础设施监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Trade & Tax Compliance Regulator
+  name_zh: 贸易与税务合规监管
+  segment_type: regulator
+  market: LATAM
+  description: |-
+    South American regulatory bodies enforcing complex tax codes, import documentation requirements, and consumer protection standards.
+  description_zh: 南美市场的贸易和税务合规监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Retail & Distribution Partners
+  name_zh: 零售与分销合作伙伴
+  segment_type: channel_partner
+  market: __per_market__
+  description: |-
+    Retailers, distributors, and e-commerce platforms who carry and promote your products. They want strong brands, good margins, and committed suppliers.
+  description_zh: 各市场的零售和分销渠道合作伙伴。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.034'
+  revenue_per_unit:
+segment_preferences:
+  Value Seekers:
+    NA:
+    - - processing_power
+      - 8.0
+      - 0.06
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.05
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.06
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.03
+      - 5.0
+    - - ai_features
+      - 4.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.02
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.01
+      - 6.0
+    - - sustainable_materials
+      - 4.0
+      - 0.02
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.3
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.01
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.0
+      - 6.0
+    APAC:
+    - - processing_power
+      - 8.0
+      - 0.06
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.05
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.06
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.03
+      - 5.0
+    - - ai_features
+      - 4.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.02
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.01
+      - 6.0
+    - - sustainable_materials
+      - 4.0
+      - 0.02
+      - 6.0
+    - - price_competitiveness
+      - 18.0
+      - 0.3
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.01
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.0
+      - 6.0
+    EU:
+    - - processing_power
+      - 8.0
+      - 0.06
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.05
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.06
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.03
+      - 5.0
+    - - ai_features
+      - 4.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.02
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.01
+      - 6.0
+    - - sustainable_materials
+      - 7.0
+      - 0.02
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.3
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.01
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.0
+      - 6.0
+    AFR:
+    - - processing_power
+      - 8.0
+      - 0.057915
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.048263
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.057915
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.028958
+      - 5.0
+    - - ai_features
+      - 4.0
+      - 0.019305
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.028958
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.019305
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.009653
+      - 6.0
+    - - sustainable_materials
+      - 4.0
+      - 0.019305
+      - 6.0
+    - - price_competitiveness
+      - 19.0
+      - 0.289575
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.07722
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.150579
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.048263
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.07722
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.019305
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.009653
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.009653
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.009653
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.009653
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.009653
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.0
+      - 6.0
+    LATAM:
+    - - processing_power
+      - 8.0
+      - 0.059259
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.049383
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.059259
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.02963
+      - 5.0
+    - - ai_features
+      - 4.0
+      - 0.019753
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.02963
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.019753
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.009877
+      - 6.0
+    - - sustainable_materials
+      - 4.0
+      - 0.019753
+      - 6.0
+    - - price_competitiveness
+      - 17.5
+      - 0.296296
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.079012
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.118519
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.061728
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.079012
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.019753
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.009877
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.009877
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.009877
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.009877
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.009877
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.0
+      - 6.0
+  Premium Consumers:
+    NA:
+    - - processing_power
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.030303
+      - 5.0
+    - - app_ecosystem
+      - 12.0
+      - 0.060606
+      - 5.0
+    - - ai_features
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - product_design
+      - 16.0
+      - 0.161616
+      - 4.0
+    - - connectivity
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - iot_integration
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - sustainable_materials
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - price_competitiveness
+      - 6.0
+      - 0.080808
+      - 5.0
+    - - promotion_reach
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - brand_awareness
+      - 14.0
+      - 0.141414
+      - 3.0
+    - - product_availability
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.030303
+      - 6.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.010101
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - esg_track_record
+      - 8.0
+      - 0.050505
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.020202
+      - 6.0
+    APAC:
+    - - processing_power
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.030303
+      - 5.0
+    - - app_ecosystem
+      - 12.0
+      - 0.060606
+      - 5.0
+    - - ai_features
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - product_design
+      - 16.0
+      - 0.161616
+      - 4.0
+    - - connectivity
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - iot_integration
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - sustainable_materials
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - price_competitiveness
+      - 8.0
+      - 0.080808
+      - 5.0
+    - - promotion_reach
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - brand_awareness
+      - 14.0
+      - 0.141414
+      - 3.0
+    - - product_availability
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.030303
+      - 6.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.010101
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - esg_track_record
+      - 8.0
+      - 0.050505
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.020202
+      - 6.0
+    EU:
+    - - processing_power
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.030303
+      - 5.0
+    - - app_ecosystem
+      - 12.0
+      - 0.060606
+      - 5.0
+    - - ai_features
+      - 8.0
+      - 0.040404
+      - 5.0
+    - - product_design
+      - 16.0
+      - 0.161616
+      - 4.0
+    - - connectivity
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - iot_integration
+      - 6.0
+      - 0.020202
+      - 6.0
+    - - sustainable_materials
+      - 11.0
+      - 0.040404
+      - 5.0
+    - - price_competitiveness
+      - 6.0
+      - 0.080808
+      - 5.0
+    - - promotion_reach
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.060606
+      - 5.0
+    - - brand_awareness
+      - 14.0
+      - 0.141414
+      - 3.0
+    - - product_availability
+      - 10.0
+      - 0.050505
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.030303
+      - 6.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.010101
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - esg_track_record
+      - 8.0
+      - 0.050505
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.010101
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.020202
+      - 6.0
+    AFR:
+    - - processing_power
+      - 10.0
+      - 0.049603
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.039683
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.029762
+      - 5.0
+    - - app_ecosystem
+      - 12.0
+      - 0.059524
+      - 5.0
+    - - ai_features
+      - 8.0
+      - 0.039683
+      - 5.0
+    - - product_design
+      - 16.0
+      - 0.15873
+      - 4.0
+    - - connectivity
+      - 6.0
+      - 0.019841
+      - 6.0
+    - - iot_integration
+      - 6.0
+      - 0.019841
+      - 6.0
+    - - sustainable_materials
+      - 8.0
+      - 0.039683
+      - 5.0
+    - - price_competitiveness
+      - 9.0
+      - 0.079365
+      - 5.0
+    - - promotion_reach
+      - 10.0
+      - 0.059524
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.077381
+      - 5.0
+    - - brand_awareness
+      - 14.0
+      - 0.138889
+      - 3.0
+    - - product_availability
+      - 10.0
+      - 0.049603
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029762
+      - 6.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.009921
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.009921
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.009921
+      - 6.0
+    - - esg_track_record
+      - 8.0
+      - 0.049603
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.009921
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.019841
+      - 6.0
+    LATAM:
+    - - processing_power
+      - 10.0
+      - 0.04878
+      - 5.0
+    - - battery_life
+      - 8.0
+      - 0.039024
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.029268
+      - 5.0
+    - - app_ecosystem
+      - 12.0
+      - 0.058537
+      - 5.0
+    - - ai_features
+      - 8.0
+      - 0.039024
+      - 5.0
+    - - product_design
+      - 16.0
+      - 0.156098
+      - 4.0
+    - - connectivity
+      - 6.0
+      - 0.019512
+      - 6.0
+    - - iot_integration
+      - 6.0
+      - 0.019512
+      - 6.0
+    - - sustainable_materials
+      - 8.0
+      - 0.039024
+      - 5.0
+    - - price_competitiveness
+      - 7.5
+      - 0.078049
+      - 5.0
+    - - promotion_reach
+      - 10.0
+      - 0.058537
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.058537
+      - 5.0
+    - - brand_awareness
+      - 14.0
+      - 0.170732
+      - 3.0
+    - - product_availability
+      - 10.0
+      - 0.04878
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029268
+      - 6.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.009756
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.009756
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.009756
+      - 6.0
+    - - esg_track_record
+      - 8.0
+      - 0.04878
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.009756
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.019512
+      - 6.0
+  Tech Enthusiasts:
+    NA:
+    - - processing_power
+      - 16.0
+      - 0.14
+      - 4.0
+    - - battery_life
+      - 8.0
+      - 0.04
+      - 5.0
+    - - durability
+      - 6.0
+      - 0.02
+      - 6.0
+    - - app_ecosystem
+      - 14.0
+      - 0.1
+      - 4.0
+    - - ai_features
+      - 16.0
+      - 0.12
+      - 4.0
+    - - product_design
+      - 8.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 14.0
+      - 0.08
+      - 4.0
+    - - iot_integration
+      - 12.0
+      - 0.06
+      - 5.0
+    - - sustainable_materials
+      - 4.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 6.0
+      - 0.06
+      - 5.0
+    - - promotion_reach
+      - 8.0
+      - 0.04
+      - 5.0
+    - - distribution_coverage
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 10.0
+      - 0.06
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.02
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 6.0
+      - 0.03
+      - 6.0
+    APAC:
+    - - processing_power
+      - 16.0
+      - 0.14
+      - 4.0
+    - - battery_life
+      - 8.0
+      - 0.04
+      - 5.0
+    - - durability
+      - 6.0
+      - 0.02
+      - 6.0
+    - - app_ecosystem
+      - 14.0
+      - 0.1
+      - 4.0
+    - - ai_features
+      - 16.0
+      - 0.12
+      - 4.0
+    - - product_design
+      - 8.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 14.0
+      - 0.08
+      - 4.0
+    - - iot_integration
+      - 12.0
+      - 0.06
+      - 5.0
+    - - sustainable_materials
+      - 4.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.06
+      - 5.0
+    - - promotion_reach
+      - 8.0
+      - 0.04
+      - 5.0
+    - - distribution_coverage
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 10.0
+      - 0.06
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.02
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 6.0
+      - 0.03
+      - 6.0
+    EU:
+    - - processing_power
+      - 16.0
+      - 0.14
+      - 4.0
+    - - battery_life
+      - 8.0
+      - 0.04
+      - 5.0
+    - - durability
+      - 6.0
+      - 0.02
+      - 6.0
+    - - app_ecosystem
+      - 14.0
+      - 0.1
+      - 4.0
+    - - ai_features
+      - 16.0
+      - 0.12
+      - 4.0
+    - - product_design
+      - 8.0
+      - 0.03
+      - 5.0
+    - - connectivity
+      - 14.0
+      - 0.08
+      - 4.0
+    - - iot_integration
+      - 12.0
+      - 0.06
+      - 5.0
+    - - sustainable_materials
+      - 7.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 6.0
+      - 0.06
+      - 5.0
+    - - promotion_reach
+      - 8.0
+      - 0.04
+      - 5.0
+    - - distribution_coverage
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 10.0
+      - 0.06
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.02
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 6.0
+      - 0.03
+      - 6.0
+    AFR:
+    - - processing_power
+      - 16.0
+      - 0.13834
+      - 4.0
+    - - battery_life
+      - 8.0
+      - 0.039526
+      - 5.0
+    - - durability
+      - 6.0
+      - 0.019763
+      - 6.0
+    - - app_ecosystem
+      - 14.0
+      - 0.098814
+      - 4.0
+    - - ai_features
+      - 16.0
+      - 0.118577
+      - 4.0
+    - - product_design
+      - 8.0
+      - 0.029644
+      - 5.0
+    - - connectivity
+      - 14.0
+      - 0.079051
+      - 4.0
+    - - iot_integration
+      - 12.0
+      - 0.059289
+      - 5.0
+    - - sustainable_materials
+      - 4.0
+      - 0.009881
+      - 6.0
+    - - price_competitiveness
+      - 9.0
+      - 0.059289
+      - 5.0
+    - - promotion_reach
+      - 8.0
+      - 0.039526
+      - 5.0
+    - - distribution_coverage
+      - 8.0
+      - 0.051383
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.039526
+      - 5.0
+    - - product_availability
+      - 10.0
+      - 0.059289
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029644
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.019763
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.019763
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.019763
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.019763
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.019763
+      - 6.0
+    - - acquisition_track
+      - 6.0
+      - 0.029644
+      - 6.0
+    LATAM:
+    - - processing_power
+      - 16.0
+      - 0.138614
+      - 4.0
+    - - battery_life
+      - 8.0
+      - 0.039604
+      - 5.0
+    - - durability
+      - 6.0
+      - 0.019802
+      - 6.0
+    - - app_ecosystem
+      - 14.0
+      - 0.09901
+      - 4.0
+    - - ai_features
+      - 16.0
+      - 0.118812
+      - 4.0
+    - - product_design
+      - 8.0
+      - 0.029703
+      - 5.0
+    - - connectivity
+      - 14.0
+      - 0.079208
+      - 4.0
+    - - iot_integration
+      - 12.0
+      - 0.059406
+      - 5.0
+    - - sustainable_materials
+      - 4.0
+      - 0.009901
+      - 6.0
+    - - price_competitiveness
+      - 7.5
+      - 0.059406
+      - 5.0
+    - - promotion_reach
+      - 8.0
+      - 0.039604
+      - 5.0
+    - - distribution_coverage
+      - 8.0
+      - 0.039604
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.049505
+      - 5.0
+    - - product_availability
+      - 10.0
+      - 0.059406
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029703
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.019802
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - acquisition_track
+      - 6.0
+      - 0.029703
+      - 6.0
+  Enterprise & Institutional Buyers:
+    NA:
+    - - processing_power
+      - 12.0
+      - 0.058366
+      - 5.0
+    - - battery_life
+      - 14.0
+      - 0.077821
+      - 4.0
+    - - durability
+      - 16.0
+      - 0.163424
+      - 4.0
+    - - app_ecosystem
+      - 8.0
+      - 0.029183
+      - 5.0
+    - - ai_features
+      - 6.0
+      - 0.019455
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.019455
+      - 6.0
+    - - connectivity
+      - 8.0
+      - 0.038911
+      - 5.0
+    - - iot_integration
+      - 6.0
+      - 0.029183
+      - 6.0
+    - - sustainable_materials
+      - 6.0
+      - 0.029183
+      - 5.0
+    - - price_competitiveness
+      - 12.0
+      - 0.116732
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.038911
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.058366
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.038911
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.077821
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.048638
+      - 5.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.048638
+      - 5.0
+    - - jv_distributor
+      - 4.0
+      - 0.019455
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.029183
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.019455
+      - 6.0
+    - - local_manufacturing
+      - 6.0
+      - 0.019455
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.019455
+      - 6.0
+    APAC:
+    - - processing_power
+      - 12.0
+      - 0.06
+      - 5.0
+    - - battery_life
+      - 14.0
+      - 0.08
+      - 4.0
+    - - durability
+      - 16.0
+      - 0.14
+      - 4.0
+    - - app_ecosystem
+      - 8.0
+      - 0.03
+      - 5.0
+    - - ai_features
+      - 6.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.02
+      - 6.0
+    - - connectivity
+      - 8.0
+      - 0.04
+      - 5.0
+    - - iot_integration
+      - 6.0
+      - 0.03
+      - 6.0
+    - - sustainable_materials
+      - 6.0
+      - 0.03
+      - 5.0
+    - - price_competitiveness
+      - 14.0
+      - 0.12
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.04
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.05
+      - 5.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.05
+      - 5.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 6.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.02
+      - 6.0
+    EU:
+    - - processing_power
+      - 12.0
+      - 0.06
+      - 5.0
+    - - battery_life
+      - 14.0
+      - 0.08
+      - 4.0
+    - - durability
+      - 16.0
+      - 0.14
+      - 4.0
+    - - app_ecosystem
+      - 8.0
+      - 0.03
+      - 5.0
+    - - ai_features
+      - 6.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.02
+      - 6.0
+    - - connectivity
+      - 8.0
+      - 0.04
+      - 5.0
+    - - iot_integration
+      - 6.0
+      - 0.03
+      - 6.0
+    - - sustainable_materials
+      - 9.0
+      - 0.03
+      - 5.0
+    - - price_competitiveness
+      - 12.0
+      - 0.12
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.04
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.05
+      - 5.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.05
+      - 5.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 6.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.02
+      - 6.0
+    AFR:
+    - - processing_power
+      - 12.0
+      - 0.058939
+      - 5.0
+    - - battery_life
+      - 14.0
+      - 0.078585
+      - 4.0
+    - - durability
+      - 16.0
+      - 0.137525
+      - 4.0
+    - - app_ecosystem
+      - 8.0
+      - 0.02947
+      - 5.0
+    - - ai_features
+      - 6.0
+      - 0.019646
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.019646
+      - 6.0
+    - - connectivity
+      - 8.0
+      - 0.039293
+      - 5.0
+    - - iot_integration
+      - 6.0
+      - 0.02947
+      - 6.0
+    - - sustainable_materials
+      - 6.0
+      - 0.02947
+      - 5.0
+    - - price_competitiveness
+      - 15.0
+      - 0.117878
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.039293
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.076621
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.039293
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.078585
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.049116
+      - 5.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.049116
+      - 5.0
+    - - jv_distributor
+      - 4.0
+      - 0.019646
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.02947
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.019646
+      - 6.0
+    - - local_manufacturing
+      - 6.0
+      - 0.019646
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.019646
+      - 6.0
+    LATAM:
+    - - processing_power
+      - 12.0
+      - 0.059406
+      - 5.0
+    - - battery_life
+      - 14.0
+      - 0.079208
+      - 4.0
+    - - durability
+      - 16.0
+      - 0.138614
+      - 4.0
+    - - app_ecosystem
+      - 8.0
+      - 0.029703
+      - 5.0
+    - - ai_features
+      - 6.0
+      - 0.019802
+      - 6.0
+    - - product_design
+      - 6.0
+      - 0.019802
+      - 6.0
+    - - connectivity
+      - 8.0
+      - 0.039604
+      - 5.0
+    - - iot_integration
+      - 6.0
+      - 0.029703
+      - 6.0
+    - - sustainable_materials
+      - 6.0
+      - 0.029703
+      - 5.0
+    - - price_competitiveness
+      - 13.5
+      - 0.118812
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.039604
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.059406
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.049505
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.079208
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.049505
+      - 5.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.049505
+      - 5.0
+    - - jv_distributor
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.029703
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.019802
+      - 6.0
+    - - local_manufacturing
+      - 6.0
+      - 0.019802
+      - 6.0
+    - - acquisition_track
+      - 4.0
+      - 0.019802
+      - 6.0
+  Sustainability-Conscious Buyers:
+    NA:
+    - - processing_power
+      - 6.0
+      - 0.03
+      - 6.0
+    - - battery_life
+      - 12.0
+      - 0.06
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.04
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.03
+      - 6.0
+    - - ai_features
+      - 4.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 10.0
+      - 0.05
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.02
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.02
+      - 6.0
+    - - sustainable_materials
+      - 16.0
+      - 0.16
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.08
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.05
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.05
+      - 5.0
+    - - brand_awareness
+      - 10.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 10.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.02
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 16.0
+      - 0.12
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.03
+      - 6.0
+    APAC:
+    - - processing_power
+      - 6.0
+      - 0.03
+      - 6.0
+    - - battery_life
+      - 12.0
+      - 0.06
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.04
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.03
+      - 6.0
+    - - ai_features
+      - 4.0
+      - 0.02
+      - 6.0
+    - - product_design
+      - 10.0
+      - 0.05
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.02
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.02
+      - 6.0
+    - - sustainable_materials
+      - 16.0
+      - 0.16
+      - 4.0
+    - - price_competitiveness
+      - 12.0
+      - 0.08
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.05
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.05
+      - 5.0
+    - - brand_awareness
+      - 10.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 10.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.02
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 16.0
+      - 0.12
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.03
+      - 6.0
+    EU:
+    - - processing_power
+      - 6.0
+      - 0.026316
+      - 6.0
+    - - battery_life
+      - 12.0
+      - 0.052632
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.035088
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.026316
+      - 6.0
+    - - ai_features
+      - 4.0
+      - 0.017544
+      - 6.0
+    - - product_design
+      - 10.0
+      - 0.04386
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.017544
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.017544
+      - 6.0
+    - - sustainable_materials
+      - 19.0
+      - 0.210526
+      - 4.0
+    - - price_competitiveness
+      - 10.0
+      - 0.070175
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.04386
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.04386
+      - 5.0
+    - - brand_awareness
+      - 10.0
+      - 0.052632
+      - 4.0
+    - - product_availability
+      - 10.0
+      - 0.04386
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.026316
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.017544
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.017544
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.026316
+      - 5.0
+    - - esg_track_record
+      - 16.0
+      - 0.157895
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.026316
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.026316
+      - 6.0
+    AFR:
+    - - processing_power
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - battery_life
+      - 12.0
+      - 0.059113
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.039409
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - ai_features
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - product_design
+      - 10.0
+      - 0.049261
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - sustainable_materials
+      - 16.0
+      - 0.157635
+      - 4.0
+    - - price_competitiveness
+      - 13.0
+      - 0.078818
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.049261
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.064039
+      - 5.0
+    - - brand_awareness
+      - 10.0
+      - 0.059113
+      - 4.0
+    - - product_availability
+      - 10.0
+      - 0.049261
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.019704
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.029557
+      - 5.0
+    - - esg_track_record
+      - 16.0
+      - 0.118227
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.029557
+      - 6.0
+    LATAM:
+    - - processing_power
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - battery_life
+      - 12.0
+      - 0.059113
+      - 5.0
+    - - durability
+      - 8.0
+      - 0.039409
+      - 5.0
+    - - app_ecosystem
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - ai_features
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - product_design
+      - 10.0
+      - 0.049261
+      - 5.0
+    - - connectivity
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - iot_integration
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - sustainable_materials
+      - 16.0
+      - 0.157635
+      - 4.0
+    - - price_competitiveness
+      - 11.5
+      - 0.078818
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.049261
+      - 5.0
+    - - distribution_coverage
+      - 10.0
+      - 0.049261
+      - 5.0
+    - - brand_awareness
+      - 10.0
+      - 0.073892
+      - 4.0
+    - - product_availability
+      - 10.0
+      - 0.049261
+      - 5.0
+    - - long_term_investment
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.019704
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.019704
+      - 6.0
+    - - regulatory_govt
+      - 6.0
+      - 0.029557
+      - 5.0
+    - - esg_track_record
+      - 16.0
+      - 0.118227
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.029557
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.029557
+      - 6.0
+  Growth-Oriented Investors:
+    __global__:
+    - - revenue_momentum
+      - 9.0
+      - 0.18
+      - 2.5
+    - - innovation_intensity
+      - 8.0
+      - 0.16
+      - 2.5
+    - - market_expansion
+      - 8.0
+      - 0.14
+      - 3.0
+    - - profitability
+      - 7.0
+      - 0.1
+      - 3.0
+    - - financial_stability
+      - 5.0
+      - 0.08
+      - 3.5
+    - - dividend_consistency
+      - 3.0
+      - 0.04
+      - 5.0
+    - - rd_talent
+      - 7.0
+      - 0.1
+      - 2.5
+    - - commercial_talent
+      - 6.0
+      - 0.06
+      - 3.0
+    - - governance_quality
+      - 5.0
+      - 0.04
+      - 4.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 8.0
+      - 0.02
+      - 5.0
+    - - operations_talent
+      - 6.0
+      - 0.02
+      - 5.0
+  Conservative Investors:
+    __global__:
+    - - financial_stability
+      - 9.0
+      - 0.22
+      - 2.0
+    - - dividend_consistency
+      - 8.0
+      - 0.18
+      - 2.0
+    - - profitability
+      - 7.0
+      - 0.14
+      - 2.5
+    - - governance_quality
+      - 8.0
+      - 0.14
+      - 2.0
+    - - revenue_momentum
+      - 6.0
+      - 0.06
+      - 3.0
+    - - market_expansion
+      - 6.0
+      - 0.04
+      - 4.0
+    - - innovation_intensity
+      - 5.0
+      - 0.04
+      - 4.0
+    - - operations_talent
+      - 7.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 14.0
+      - 0.03
+      - 4.0
+  Trade & Product Safety Regulator:
+    NA:
+    - - governance_quality
+      - 7.0
+      - 0.2
+      - 2.5
+    - - sustainability_commitment
+      - 6.0
+      - 0.15
+      - 3.0
+    - - local_manufacturing
+      - 5.0
+      - 0.1
+      - 4.0
+    - - operations_talent
+      - 6.0
+      - 0.1
+      - 3.0
+    - - social_responsibility
+      - 5.0
+      - 0.08
+      - 3.5
+    - - market_tenure
+      - 6.0
+      - 0.07
+      - 3.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - durability
+      - 14.0
+      - 0.06
+      - 4.0
+    - - esg_track_record
+      - 8.0
+      - 0.05
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+  Trade & Technology Regulator:
+    APAC:
+    - - local_manufacturing
+      - 8.0
+      - 0.2
+      - 2.0
+    - - market_tenure
+      - 7.0
+      - 0.15
+      - 2.5
+    - - governance_quality
+      - 6.0
+      - 0.12
+      - 3.0
+    - - operations_talent
+      - 6.0
+      - 0.1
+      - 3.0
+    - - sustainability_commitment
+      - 5.0
+      - 0.08
+      - 4.0
+    - - social_responsibility
+      - 5.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.05
+      - 4.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+  Environmental & Data Privacy Regulator:
+    EU:
+    - - sustainability_commitment
+      - 8.0
+      - 0.25
+      - 2.0
+    - - governance_quality
+      - 8.0
+      - 0.2
+      - 2.0
+    - - social_responsibility
+      - 7.0
+      - 0.12
+      - 2.5
+    - - local_manufacturing
+      - 6.0
+      - 0.08
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.08
+      - 2.5
+    - - market_tenure
+      - 5.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.08
+      - 3.0
+    - - esg_track_record
+      - 16.0
+      - 0.06
+      - 3.0
+    - - sustainable_materials
+      - 16.0
+      - 0.04
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.04
+      - 4.0
+  Trade & Infrastructure Regulator:
+    AFR:
+    - - local_manufacturing
+      - 9.0
+      - 0.22
+      - 2.0
+    - - governance_quality
+      - 6.0
+      - 0.15
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - social_responsibility
+      - 6.0
+      - 0.1
+      - 3.0
+    - - market_tenure
+      - 7.0
+      - 0.08
+      - 3.0
+    - - sustainability_commitment
+      - 4.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - distribution_coverage
+      - 10.0
+      - 0.05
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.03
+      - 5.0
+  Trade & Tax Compliance Regulator:
+    LATAM:
+    - - governance_quality
+      - 8.0
+      - 0.2
+      - 2.0
+    - - local_manufacturing
+      - 7.0
+      - 0.15
+      - 2.5
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.1
+      - 3.0
+    - - social_responsibility
+      - 6.0
+      - 0.08
+      - 3.5
+    - - sustainability_commitment
+      - 5.0
+      - 0.07
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - financial_stability
+      - 8.0
+      - 0.06
+      - 3.5
+    - - jv_distributor
+      - 10.0
+      - 0.05
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.03
+      - 5.0
+  Retail & Distribution Partners:
+    NA:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+    APAC:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+    EU:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+    AFR:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+    LATAM:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+ai_investor_funds:
+- name: Velocity Capital
+  name_zh: 高速资本
+  code: velocity
+  description: |-
+    Growth-focused fund that invests in companies demonstrating strong revenue growth, aggressive R&D investment, and international expansion. They accept short-term losses if the growth trajectory is compelling.
+  description_zh: |-
+    专注增长的基金，投资于展现强劲营业收入增长、积极研发投入和国际扩张的企业。如果增长轨迹令人信服，可接受短期亏损。
+  investment_philosophy: growth
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.35'
+  profile:
+    fund_type: Growth Fund
+    fund_type_zh: 增长型基金
+    strategy_summary: |-
+      Aggressive growth investing. Backs companies that invest in innovation, expand into new markets, and pursue revenue growth over short-term profitability.
+    strategy_summary_zh: |-
+      激进增长投资。支持那些投资创新、拓展新市场、以营业收入增长优先于短期盈利的企业。
+    dislikes:
+    - label: Stagnant revenue
+    - label: Low R&D spending
+    - label: Single-market focus
+    - label: Technology dependency
+  preferences:
+  - feature_code: revenue_growth_rate
+    feature_label: Revenue Growth Rate
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.5
+  - feature_code: rd_intensity
+    feature_label: R&D as % of Revenue
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: market_expansion
+    feature_label: Market Presence Breadth
+    ideal_value: 8
+    weight: 0.15
+    tolerance: 3.0
+  - feature_code: talent_rd_quality
+    feature_label: R&D Talent Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+  - feature_code: platform_generation
+    feature_label: Technology Generation
+    ideal_value: 8
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: revenue_scale
+    feature_label: Revenue Scale
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 3.0
+- name: Granite Investments
+  name_zh: 磐石投资
+  code: granite
+  description: |-
+    Value-oriented fund that prioritizes financial discipline, strong margins, low leverage, and consistent shareholder returns. They avoid companies with aggressive debt-funded growth strategies.
+  description_zh: |-
+    价值导向型基金，优先考虑财务纪律、健康利润率、低杠杆和持续的股东回报。回避以激进举债驱动增长的公司。
+  investment_philosophy: value
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.18'
+  min_holding_pct: '0.03'
+  trade_aggressiveness: '0.25'
+  profile:
+    fund_type: Value Fund
+    fund_type_zh: 价值型基金
+    strategy_summary: |-
+      Conservative value investing. Seeks financially disciplined companies with strong governance, healthy margins, and consistent shareholder returns.
+    strategy_summary_zh: |-
+      保守价值投资。寻找财务纪律严明、治理健全、利润率健康且股东回报持续的企业。
+    dislikes:
+    - label: High leverage
+    - label: Volatile earnings
+    - label: No dividend policy
+    - label: Weak governance
+    - label: Cash burn
+  preferences:
+  - feature_code: financial_leverage_inv
+    feature_label: Financial Prudence (Low Debt)
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.0
+  - feature_code: dividend_consistency
+    feature_label: Dividend Yield
+    ideal_value: 6
+    weight: 0.18
+    tolerance: 3.0
+  - feature_code: net_margin_score
+    feature_label: Net Profit Margin
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: cash_runway_score
+    feature_label: Cash Stability
+    ideal_value: 8
+    weight: 0.12
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Operations Efficiency
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+- name: GreenHorizon Partners
+  name_zh: 绿色地平线合伙人
+  code: greenhorizon
+  description: |-
+    ESG-focused fund that allocates capital to companies with strong environmental commitment, social responsibility, and governance practices. They divest from firms with poor ESG track records.
+  description_zh: |-
+    专注ESG的基金，将资金配置给具有强大环境承诺、社会责任感和良好治理实践的企业。会撤出ESG记录不良的企业投资。
+  investment_philosophy: esg
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.30'
+  profile:
+    fund_type: ESG Fund
+    fund_type_zh: ESG基金
+    strategy_summary: |-
+      Impact-focused ESG investing. Backs companies demonstrating genuine commitment to environmental sustainability, social responsibility, and governance quality.
+    strategy_summary_zh: |-
+      影响力导向的ESG投资。支持在环境可持续性、社会责任和治理质量方面展现真正承诺的企业。
+    dislikes:
+    - label: ESG neglect
+    - label: Weak governance
+    - label: Environmental risk exposure
+    - label: No social investment
+  preferences:
+  - feature_code: esg_composite
+    feature_label: ESG Composite Score
+    ideal_value: 8
+    weight: 0.35
+    tolerance: 2.0
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 8
+    weight: 0.2
+    tolerance: 2.0
+  - feature_code: sustainability_level
+    feature_label: Sustainability Commitment
+    ideal_value: 9
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Responsible Operations
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: market_diversity
+    feature_label: Geographic Diversity
+    ideal_value: 6
+    weight: 0.15
+    tolerance: 3.0
+tax_structures:
+- code: direct
+  name: Direct Structure
+  name_zh: 直接结构
+  description: |-
+    Profits flow directly from each market subsidiary to headquarters. Simple, transparent, and fully compliant. No tax optimization but no audit risk. Regulators and ESG investors approve of the transparency.
+  description_zh: |-
+    利润从各市场子公司直接流向总部。简单、透明、完全合规。没有税务优化但没有审计风险。监管机构和ESG投资者认可其透明度。
+  setup_cost: 0
+  annual_maintenance_cost: 0
+  effective_tax_reduction_pct: '0.00'
+  repatriation_cost_reduction_pct: '0.00'
+  audit_probability_per_round: '0.00'
+  audit_penalty_multiplier: '1.0'
+  value_investor_modifier: '0.03'
+  esg_investor_modifier: '0.05'
+  regulator_modifier: '0.05'
+  anti_corruption_conflict: false
+  display_order: 1
+- code: regional_hub
+  name: Regional Hub Structure
+  name_zh: 区域枢纽结构
+  description: |-
+    Route profits through a regional holding entity in a favorable tax jurisdiction. Reduces effective tax rate and repatriation friction. Standard practice among multinationals — moderate audit risk. Requires ongoing legal and accounting infrastructure.
+  description_zh: |-
+    通过优惠税收管辖区的区域控股实体转移利润。降低有效税率和资金回流摩擦。跨国公司的标准做法——中等审计风险。需要持续的法律和会计基础设施。
+  setup_cost: 2000000
+  annual_maintenance_cost: 400000
+  effective_tax_reduction_pct: '0.04'
+  repatriation_cost_reduction_pct: '0.40'
+  audit_probability_per_round: '0.06'
+  audit_penalty_multiplier: '1.5'
+  value_investor_modifier: '0.02'
+  esg_investor_modifier: '-0.03'
+  regulator_modifier: '-0.03'
+  anti_corruption_conflict: false
+  display_order: 2
+- code: aggressive
+  name: Aggressive Tax Optimization
+  name_zh: 激进税务优化
+  description: |-
+    Maximize profit shifting through transfer pricing, IP licensing structures, and multi-layered holding entities. Significant tax savings but high audit risk, regulatory scrutiny, and reputational exposure. Creates visible conflict with Anti-Corruption and ESG governance commitments.
+  description_zh: |-
+    通过转让定价、知识产权授权结构和多层控股实体最大化利润转移。节税显著但审计风险高、监管审查严格且存在声誉风险。与反腐败和ESG治理承诺存在明显冲突。
+  setup_cost: 4000000
+  annual_maintenance_cost: 800000
+  effective_tax_reduction_pct: '0.08'
+  repatriation_cost_reduction_pct: '0.70'
+  audit_probability_per_round: '0.15'
+  audit_penalty_multiplier: '2.5'
+  value_investor_modifier: '0.05'
+  esg_investor_modifier: '-0.15'
+  regulator_modifier: '-0.10'
+  anti_corruption_conflict: true
+  display_order: 3
+entry_modes:
+- code: export
+  name: Export from Home Market
+  name_zh: 从母国市场出口
+  description: |-
+    Ship products from your existing North American operations. Lowest commitment, fastest to start, but highest logistics costs and full tariff exposure.
+  description_zh: |-
+    从您现有的业务发货。承诺最低，启动最快，但物流成本最高且完全承担关税。
+  capital_requirement: 500000
+  setup_rounds: 0
+  control_level: 3
+  risk_level: 2
+  local_presence_score: 1
+  logistics_cost_multiplier: '2.00'
+  tariff_applies: true
+- code: licensing
+  name: Technology Licensing Agreement
+  name_zh: 技术许可协议
+  description: |-
+    License your technology and brand to a local manufacturer. Low cost, but you lose control over quality and pricing. Partner earns most of the margin.
+  description_zh: |-
+    将您的技术和品牌授权给本地制造商或运营商。成本低，但您将失去对质量和定价的控制。合作伙伴获取大部分利润。
+  capital_requirement: 1000000
+  setup_rounds: 1
+  control_level: 2
+  risk_level: 3
+  local_presence_score: 3
+  logistics_cost_multiplier: '1.10'
+  tariff_applies: false
+- code: joint_venture
+  name: Joint Venture with Local Partner
+  name_zh: 与本地合作伙伴成立合资企业
+  description: |-
+    Partner with a local firm to share operations, costs, and market knowledge. Moderate capital, good local relationships, but shared profits and potential partner conflicts.
+  description_zh: |-
+    与本地企业合作共享运营、成本和市场知识。中等资本要求，良好的本地关系，但利润共享且存在潜在合作伙伴冲突。
+  capital_requirement: 8000000
+  setup_rounds: 1
+  control_level: 5
+  risk_level: 5
+  local_presence_score: 7
+  logistics_cost_multiplier: '1.20'
+  tariff_applies: false
+- code: acquisition
+  name: Acquire Local Company
+  name_zh: 收购本地公司
+  description: |-
+    Buy an existing local player for instant market access, customer base, and operations. Highest capital cost, but immediate presence and full control.
+  description_zh: |-
+    收购现有本地企业以获得即时市场准入、客户基础和运营能力。资本成本最高，但可立即建立存在并获得完全控制权。
+  capital_requirement: 20000000
+  setup_rounds: 0
+  control_level: 9
+  risk_level: 7
+  local_presence_score: 8
+  logistics_cost_multiplier: '1.05'
+  tariff_applies: false
+- code: subsidiary
+  name: Build Wholly-Owned Subsidiary
+  name_zh: 建立全资子公司
+  description: |-
+    Establish your own operations from scratch. Full control, full costs, full risk. Takes time to set up but provides maximum strategic flexibility long-term.
+  description_zh: |-
+    从零开始建立自有业务。完全控制、完全成本、完全风险。建设需要时间，但长期提供最大的战略灵活性。
+  capital_requirement: 15000000
+  setup_rounds: 2
+  control_level: 10
+  risk_level: 6
+  local_presence_score: 9
+  logistics_cost_multiplier: '1.00'
+  tariff_applies: false
+strategy_options:
+- category: Partnerships
+  code: distribution_partner
+  name: Distribution Partner
+  name_zh: 分销合作伙伴
+  description: Establish a relationship with a major local distributor or retailer chain.
+  description_zh: 与主要本地分销商或零售连锁建立合作关系。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- category: Partnerships
+  code: technology_partner
+  name: Technology Partner
+  name_zh: 技术合作伙伴
+  description: Co-develop technology with a local firm. Accelerates R&D but may share IP.
+  description_zh: 与本地企业共同开发技术。加速研发但可能共享知识产权。
+  capital_cost_base: 3000000
+  recurring_cost_per_round: 750000
+  time_lag_rounds: 1
+  is_reversible: true
+  reversal_cost_multiplier: '0.50'
+  effects:
+  - - jv_distributor
+    - add
+    - 1.5
+    - true
+  - - regulatory_govt
+    - add
+    - 1.0
+    - true
+- category: Government Relations
+  code: govt_advisor
+  name: Government & Regulatory Advisor
+  name_zh: 政府与监管顾问
+  description: Retain a local advisory firm to navigate regulatory requirements and build government relationships.
+  description_zh: 聘请本地咨询公司协助应对监管要求并建立政府关系。
+  capital_cost_base: 1000000
+  recurring_cost_per_round: 300000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.10'
+  effects:
+  - - regulatory_govt
+    - add
+    - 3.0
+    - true
+- category: Brand
+  code: brand_ambassador
+  name: Local Brand Ambassador
+  name_zh: 本地品牌大使
+  description: Partner with a respected local figure or organization to build brand credibility and awareness.
+  description_zh: 与受尊敬的本地人物或组织合作，建立品牌可信度和知名度。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 400000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.20'
+  effects:
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+events:
+- name: EU Carbon Border Tax Increase
+  name_zh: 欧盟碳边境税上调
+  description_template: |-
+    The European Union has announced a {value}% increase in carbon border adjustment tariffs, effective immediately. Products with low sustainability ratings face higher import costs in Western Europe.
+  description_template_zh: |-
+    欧盟宣布碳边境调节关税上调{value}%，立即生效。可持续性评级低的产品在西欧面临更高的进口成本。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.25'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: EU
+  response_required: false
+  rag_source_tags: trade_policy,sustainability,tariff,regulation
+  impacts:
+  - - preference_shift
+    - EU
+    - Environmental & Data Privacy Regulator
+    - sustainable_materials
+    - 1.5
+    - 0
+  - - cost_change
+    - EU
+    - 
+    - 
+    - tariff_rate
+    - 0.05
+    - 3
+  - - demand_shock
+    - EU
+    - Sustainability-Conscious Buyers
+    - 
+    - 1.2
+    - 0
+- name: East Asia Supply Chain Disruption
+  name_zh: 东亚供应链中断
+  description_template: |-
+    A major port closure in East Asia has disrupted shipping routes for {value} weeks. Logistics costs spike and contract manufacturing capacity is temporarily reduced.
+  description_template_zh: |-
+    东亚地区的关键零部件供应中断影响了电子产品制造和分销。企业面临交付延迟和成本上升。
+  category: Economic
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 2
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code: APAC
+  response_required: false
+  rag_source_tags: supply_chain,logistics,disruption,risk
+  impacts:
+  - - cost_change
+    - APAC
+    - 
+    - 
+    - logistics_cost
+    - 0.5
+    - 2
+  - - market_condition
+    - APAC
+    - 
+    - 
+    - contract_mfg_capacity
+    - -20000
+    - 2
+- name: Breakthrough in Sustainable Materials
+  name_zh: 可持续材料突破
+  description_template: |-
+    A research consortium has published open-source designs for fully recyclable electronics components. Sustainability R&D costs drop significantly across the industry.
+  description_template_zh: |-
+    可持续材料技术重大突破降低了环保组件的制造成本。投资可持续性的企业获得竞争优势。
+  category: Technological
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: sustainability,technology,innovation
+  impacts:
+  - - preference_shift
+    - 
+    - Sustainability-Conscious Buyers
+    - sustainable_materials
+    - 1.0
+    - 0
+- name: Currency Crisis in East Asia
+  name_zh: 东亚货币危机
+  description_template: |-
+    A sudden currency devaluation hits East Asian markets. The local currency drops {value}% against the US dollar, affecting import costs and local purchasing power.
+  description_template_zh: |-
+    东亚货币兑美元大幅贬值。进口成本飙升，但本地制造的出口竞争力增强。
+  category: Economic
+  severity: high
+  probability_per_round: '0.10'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: APAC
+  response_required: false
+  rag_source_tags: currency,exchange_rate,financial_risk,emerging_market
+  impacts:
+  - - exchange_rate
+    - APAC
+    - 
+    - 
+    - 
+    - -0.15
+    - 3
+  - - preference_shift
+    - APAC
+    - Value Seekers
+    - price_competitiveness
+    - 1.5
+    - 3
+- name: Major Competitor Product Launch
+  name_zh: 主要竞争对手产品发布
+  description_template: |-
+    An AI competitor has launched an aggressively priced Gen 2 product in {market}. Market share dynamics shift as customers evaluate the new offering.
+  description_template_zh: |-
+    一家主要竞争对手发布了突破性产品，引发市场关注和消费者期望值提升。
+  category: Competitive
+  severity: medium
+  probability_per_round: '0.30'
+  earliest_round: 3
+  max_occurrences: 3
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: competition,market_entry,strategy
+  impacts:
+  - - demand_shock
+    - 
+    - Value Seekers
+    - 
+    - 0.9
+    - 2
+- name: Trade Agreement Between NA and APAC
+  name_zh: 北美与亚太贸易协定
+  description_template: |-
+    A new bilateral trade agreement reduces tariffs between North America and East Asia by {value}%. Electronics imports become cheaper in both directions.
+  description_template_zh: |-
+    北美和亚太地区达成新贸易协定，降低了电子产品关税和贸易壁垒。
+  category: Political
+  severity: low
+  probability_per_round: '0.15'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: APAC
+  response_required: false
+  rag_source_tags: trade_policy,tariff,international_business,globalization
+  impacts:
+  - - cost_change
+    - APAC
+    - 
+    - 
+    - tariff_rate
+    - -0.05
+    - 0
+  - - cost_change
+    - NA
+    - 
+    - 
+    - tariff_rate
+    - -0.03
+    - 0
+- name: Data Privacy Regulation Tightening
+  name_zh: 数据隐私法规收紧
+  description_template: |-
+    New data privacy regulations in {market} require significant compliance investment for cloud-connected devices. Companies with strong software ecosystems face higher scrutiny.
+  description_template_zh: |-
+    {market}加强了数据保护和隐私法规的执行力度。不合规企业面临巨额罚款和运营限制。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: regulation,data_privacy,technology,compliance
+  impacts:
+  - - preference_shift
+    - 
+    - 
+    - regulatory_govt
+    - 1.0
+    - 0
+- name: African Infrastructure Investment Boom
+  name_zh: 非洲基础设施投资热潮
+  description_template: |-
+    A major international development fund has committed ${value}B to African digital infrastructure. Internet penetration and logistics networks are improving rapidly.
+  description_template_zh: |-
+    非洲大规模基础设施投资改善了物流和电信网络。消费电子市场需求激增。
+  category: Economic
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: AFR
+  response_required: false
+  rag_source_tags: infrastructure,emerging_market,africa,investment
+  impacts:
+  - - demand_shock
+    - AFR
+    - Value Seekers
+    - 
+    - 1.15
+    - 0
+  - - demand_shock
+    - AFR
+    - Enterprise & Institutional Buyers
+    - 
+    - 1.1
+    - 0
+- name: African Currency Depreciation
+  name_zh: 非洲货币贬值
+  description_template: |-
+    A wave of currency devaluations across key African markets increases import costs by {value}%. Local manufacturing and assembly operations gain a competitive edge.
+  description_template_zh: |-
+    非洲货币大幅贬值。进口产品价格上涨，本地制造和组装变得更具竞争力。
+  category: Economic
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 2
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code: AFR
+  response_required: false
+  rag_source_tags: currency,exchange_rate,financial_risk,africa
+  impacts:
+  - - exchange_rate
+    - AFR
+    - 
+    - 
+    - 
+    - -0.2
+    - 3
+  - - preference_shift
+    - AFR
+    - Value Seekers
+    - price_competitiveness
+    - 2.0
+    - 3
+- name: African Local Content Mandate
+  name_zh: 非洲本地含量规定
+  description_template: |-
+    New local content regulations in major African markets require {value}% of components to be locally sourced or assembled. Companies without local operations face import surcharges.
+  description_template_zh: |-
+    非洲政府对电子产品实施本地含量要求。没有本地制造或组装的企业面临额外关税。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: AFR
+  response_required: false
+  rag_source_tags: regulation,trade_policy,africa,local_content
+  impacts:
+  - - cost_change
+    - AFR
+    - 
+    - 
+    - tariff_rate
+    - 0.08
+    - 0
+  - - preference_shift
+    - AFR
+    - 
+    - local_manufacturing
+    - 2.0
+    - 0
+- name: South American Tax Reform
+  name_zh: 南美税制改革
+  description_template: |-
+    Brazil announces a major tax simplification reform, reducing effective corporate tax rates by {value}% for manufacturers operating in designated economic zones.
+  description_template_zh: |-
+    南美税制重大改革影响了电子产品进口和制造的成本结构。
+  category: Political
+  severity: medium
+  probability_per_round: '0.15'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: LATAM
+  response_required: false
+  rag_source_tags: tax,regulation,political_risk,latin_america
+  impacts:
+  - - cost_change
+    - LATAM
+    - 
+    - 
+    - tariff_rate
+    - -0.04
+    - 0
+  - - demand_shock
+    - LATAM
+    - Enterprise & Institutional Buyers
+    - 
+    - 1.1
+    - 0
+- name: Latin American Currency Crisis
+  name_zh: 拉丁美洲货币危机
+  description_template: |-
+    Political uncertainty triggers a {value}% depreciation of the Brazilian Real. Import-dependent companies face surging input costs while exporters benefit.
+  description_template_zh: |-
+    拉丁美洲货币兑美元大幅贬值。进口成本飙升，但本地制造更具竞争力。
+  category: Economic
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: LATAM
+  response_required: false
+  rag_source_tags: currency,exchange_rate,financial_risk,latin_america
+  impacts:
+  - - exchange_rate
+    - LATAM
+    - 
+    - 
+    - 
+    - -0.15
+    - 3
+  - - preference_shift
+    - LATAM
+    - Value Seekers
+    - price_competitiveness
+    - 1.5
+    - 3
+- name: Mercosur Trade Liberalization
+  name_zh: 南方共同市场贸易自由化
+  description_template: |-
+    New Mercosur-EU trade agreement reduces electronics tariffs by {value}%. Cross-border trade becomes significantly cheaper for companies with regional presence.
+  description_template_zh: |-
+    南方共同市场贸易协定放宽了区域内电子产品的关税和贸易壁垒。
+  category: Political
+  severity: low
+  probability_per_round: '0.15'
+  earliest_round: 5
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: LATAM
+  response_required: false
+  rag_source_tags: trade_policy,tariff,latin_america,globalization
+  impacts:
+  - - cost_change
+    - LATAM
+    - 
+    - 
+    - tariff_rate
+    - -0.06
+    - 0
+  - - cost_change
+    - EU
+    - 
+    - 
+    - tariff_rate
+    - -0.02
+    - 0
+- name: Global Consumer Electronics Expo
+  name_zh: 全球消费电子博览会
+  description_template: |-
+    The annual Global Electronics Expo generates massive media coverage. Companies with innovative products see a temporary boost in brand awareness across all markets.
+  description_template_zh: |-
+    全球消费电子博览会引发行业关注。展示创新产品的企业获得品牌知名度提升。
+  category: Industry
+  severity: low
+  probability_per_round: '0.50'
+  earliest_round: 2
+  max_occurrences: 4
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: marketing,brand,innovation
+  impacts:
+  - - preference_shift
+    - 
+    - Tech Enthusiasts
+    - app_ecosystem
+    - 0.5
+    - 1
+  - - preference_shift
+    - 
+    - Premium Consumers
+    - product_design
+    - 0.5
+    - 1
+- name: Technology Export Restrictions
+  name_zh: 技术出口限制
+  description_template: |-
+    A major government imposes restrictions on technology component exports. Companies with high licensing dependency face feature degradation and emergency R&D costs for {value} rounds.
+  description_template_zh: |-
+    政府对关键技术实施出口限制。影响跨境技术转让和供应链。
+  category: Geopolitical
+  severity: high
+  probability_per_round: '0.12'
+  earliest_round: 3
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: technology,sanctions,export_controls,supply_chain,decoupling
+  target_type: TEAM_SPECIFIC
+  trigger_condition:
+    attribute: team.licensed_dependency_pct
+    operator: '>'
+    value: 0.4
+  affected_markets:
+  - NA
+  - APAC
+  - EU
+  impacts:
+  - - cost_change
+    - 
+    - 
+    - 
+    - logistics_cost
+    - 0.2
+    - 3
+- name: Foreign Investment Security Review
+  name_zh: 外国投资安全审查
+  description_template: |-
+    The host government initiates a security review of foreign-owned operations in {market}. Sales are restricted during the {value}-round review period.
+  description_template_zh: |-
+    {market}政府对外国投资进行安全审查。企业面临更高的合规成本和运营不确定性。
+  category: Geopolitical
+  severity: high
+  probability_per_round: '0.09'
+  earliest_round: 3
+  max_occurrences: 2
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: regulation,national_security,foreign_investment,screening
+  target_type: TEAM_SPECIFIC
+  trigger_condition:
+  - attribute: team.compliance_level
+    operator: <
+    value: 0.3
+  - attribute: team.origin_trust
+    operator: <
+    value: 0.85
+  affected_markets:
+  - NA
+  - APAC
+  - EU
+  impacts:
+  - - demand_shock
+    - 
+    - 
+    - 
+    - 0.7
+    - 1
+  - - preference_shift
+    - 
+    - 
+    - regulatory_govt
+    - -1.5
+    - 2
+- name: Trade War Tariff Escalation
+  name_zh: 贸易战关税升级
+  description_template: |-
+    Retaliatory tariff increases between North America and East Asia spike import duties by {value}%. Cross-border trade costs surge as supply chains are rerouted.
+  description_template_zh: |-
+    主要经济体之间贸易紧张局势升级，电子产品关税大幅提高。
+  category: Geopolitical
+  severity: high
+  probability_per_round: '0.07'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: trade_war,tariffs,protectionism,decoupling
+  target_type: MARKET_WIDE
+  trigger_condition:
+  affected_markets:
+  - NA
+  - APAC
+  impacts:
+  - - cost_change
+    - NA
+    - 
+    - 
+    - tariff_rate
+    - 0.1
+    - 3
+  - - cost_change
+    - APAC
+    - 
+    - 
+    - tariff_rate
+    - 0.1
+    - 3
+  - - cost_change
+    - 
+    - 
+    - 
+    - logistics_cost
+    - 0.08
+    - 2
+- name: Data Localization Mandate
+  name_zh: 数据本地化规定
+  description_template: |-
+    New data sovereignty regulation in {market} requires all user data to be stored and processed locally. Companies face a ${value}M one-time compliance cost.
+  description_template_zh: |-
+    {market}的新数据主权法规要求用户数据存储在本地服务器上。需要合规投资。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.12'
+  earliest_round: 2
+  max_occurrences: 3
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: regulation,data_privacy,sovereignty,GDPR,LGPD
+  target_type: MARKET_WIDE
+  trigger_condition:
+  affected_markets:
+  - APAC
+  - EU
+  - LATAM
+  - AFR
+  impacts:
+  - - preference_shift
+    - 
+    - 
+    - regulatory_govt
+    - 1.5
+    - 0
+ai_competitors:
+- name: TechVault Industries
+  name_zh: 科技堡垒工业
+  description: |-
+    A large established competitor with strong presence in North America and Europe. Known for reliable products and premium pricing.
+  description_zh: |-
+    大型成熟竞争对手，在北美和欧洲有强大存在。以可靠产品和高端定价著称。
+- name: NovaStar Electronics
+  name_zh: 新星电子
+  description: |-
+    An aggressive Asian manufacturer expanding globally. Competes on price and rapid innovation. Strong in East Asia, growing elsewhere.
+  description_zh: |-
+    积极扩张的亚洲制造商。以价格和快速创新竞争。在东亚市场强势，其他市场快速增长。
+ai_competitor_fit_data:
+  market_affinity:
+    TechVault Industries:
+      NA: 0.25
+      APAC: 0.18
+      EU: 0.23
+      AFR: 0.12
+      LATAM: 0.16
+    NovaStar Electronics:
+      NA: 0.18
+      APAC: 0.25
+      EU: 0.2
+      AFR: 0.2
+      LATAM: 0.15
+  segment_affinity:
+    TechVault Industries:
+      Value Seekers: -0.03
+      Premium Consumers: 0.05
+      Tech Enthusiasts: 0.02
+      Enterprise & Institutional Buyers: 0.03
+      Sustainability-Conscious Buyers: 0.0
+    NovaStar Electronics:
+      Value Seekers: 0.05
+      Premium Consumers: -0.03
+      Tech Enthusiasts: 0.03
+      Enterprise & Institutional Buyers: 0.0
+      Sustainability-Conscious Buyers: -0.02
+  growth_per_round: 0.008
+  fit_min: 0.15
+  fit_max: 0.85
+acquisition_targets:
+- market: NA
+  target_name: PioneerTech Solutions
+  target_name_zh: 先锋科技
+  description: |-
+    Mid-size North American electronics firm with strong retail distribution and a loyal enterprise customer base. Aging product line but solid brand reputation.
+  description_zh: |-
+    中型北美电子公司，拥有强大的零售分销和忠实的企业客户群。产品线老化但品牌声誉良好。
+  base_acquisition_cost: '25000000'
+  market_share_gained: '0.0600'
+  includes_plant: true
+  plant_capacity: 30000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1200'
+  talent_bonus:
+    commercial: 0.5
+    operations: 0.3
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2000000'
+- market: APAC
+  target_name: AsiaElec Manufacturing
+  target_name_zh: 亚洲电子制造
+  description: |-
+    Regional East Asian manufacturer with modern production facilities and established supplier relationships. Weak brand but excellent operational efficiency.
+  description_zh: |-
+    东亚区域制造商，拥有现代化生产设施和成熟的供应商关系。品牌弱但运营效率出色。
+  base_acquisition_cost: '18000000'
+  market_share_gained: '0.0500'
+  includes_plant: true
+  plant_capacity: 50000
+  includes_distribution: false
+  distribution_reach_bonus: '0.0000'
+  talent_bonus:
+    operations: 1.0
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '1500000'
+- market: EU
+  target_name: EuroGreen Devices
+  target_name_zh: 欧洲绿色设备
+  description: |-
+    Small European sustainability-focused electronics brand. Strong ESG credentials, premium positioning, and regulatory compliance infrastructure.
+  description_zh: |-
+    小型欧洲可持续电子品牌。强大的ESG资质，高端定位，完善的合规基础设施。
+  base_acquisition_cost: '30000000'
+  market_share_gained: '0.0400'
+  includes_plant: false
+  plant_capacity: 0
+  includes_distribution: true
+  distribution_reach_bonus: '0.0800'
+  talent_bonus:
+    commercial: 0.3
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2500000'
+- market: AFR
+  target_name: AfriConnect Mobile
+  target_name_zh: 非洲互联移动
+  description: |-
+    Fast-growing African mobile device assembler with distribution networks across West and East Africa. Strong relationships with telecom operators and mobile money platforms.
+  description_zh: |-
+    快速增长的非洲移动设备组装商，分销网络覆盖西非和东非。与电信运营商和移动支付平台关系密切。
+  base_acquisition_cost: '10000000'
+  market_share_gained: '0.0500'
+  includes_plant: true
+  plant_capacity: 25000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1500'
+  talent_bonus:
+    operations: 0.5
+    commercial: 0.4
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 3
+  integration_cost_per_round: '1000000'
+- market: LATAM
+  target_name: TechSul Eletrônicos
+  target_name_zh: 南方科技电子
+  description: |-
+    Brazilian electronics manufacturer operating from the Manaus Free Trade Zone. Tax-advantaged production, established retail partnerships, and strong brand recognition in Brazil and Argentina.
+  description_zh: |-
+    巴西电子制造商，在玛瑙斯自由贸易区运营。享有税收优惠，拥有成熟的零售合作和在巴西及阿根廷的强大品牌知名度。
+  base_acquisition_cost: '20000000'
+  market_share_gained: '0.0550'
+  includes_plant: true
+  plant_capacity: 35000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1000'
+  talent_bonus:
+    operations: 0.6
+    commercial: 0.3
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '1800000'
+ai_behaviors:
+- ai_competitor: TechVault Industries
+  strategy_type: defensive
+  price_sensitivity: '0.30'
+  innovation_rate: '0.40'
+  market_entry_threshold: '0.0800'
+  primary_segments:
+  - premium_consumers
+  - enterprise_buyers
+- ai_competitor: NovaStar Electronics
+  strategy_type: aggressive
+  price_sensitivity: '0.70'
+  innovation_rate: '0.50'
+  market_entry_threshold: '0.0300'
+  primary_segments:
+  - value_seekers
+  - tech_enthusiasts
+starter_profiles:
+- profile_name: The Innovator
+  profile_name_zh: 创新者
+  description: |-
+    Founded by engineers from a top research lab. Strong in processing power and software, weak in design and sustainability. Two products: a mainstream flagship and a budget model.
+  description_zh: |-
+    由顶级研究实验室的工程师创立。处理器性能和软件方面强势，设计和可持续性方面较弱。两款产品：一款主流旗舰和一款预算型号。
+  home_market: NA
+  starting_cash: '50000000'
+  starting_debt: '5000000'
+  starting_revenue: '30000000'
+  platforms:
+    alpha:
+      processing_power: 11
+      app_ecosystem: 8
+      product_design: 4
+      battery_life: 4
+      durability: 3
+    beta:
+      processing_power: 5
+      app_ecosystem: 4
+      product_design: 7
+      battery_life: 6
+      durability: 5
+  products:
+  - - Nexus One
+    - mainstream
+    - '450.00'
+    - NA
+    - 25000
+    - '0.08'
+    - alpha
+  - - Nexus Lite
+    - budget
+    - '220.00'
+    - NA
+    - 40000
+    - '0.05'
+    - beta
+- profile_name: The Brand Builder
+  profile_name_zh: 品牌建设者
+  description: |-
+    A lifestyle electronics company known for beautiful design and premium feel. Weak on tech specs but customers love the brand. One premium product and one mainstream.
+  description_zh: |-
+    以精美设计和高端质感著称的生活方式电子公司。技术参数偏弱但消费者喜爱该品牌。一款高端产品和一款主流产品。
+  home_market: NA
+  starting_cash: '50000000'
+  starting_debt: '3000000'
+  starting_revenue: '35000000'
+  platforms:
+    alpha:
+      product_design: 11
+      sustainable_materials: 7
+      app_ecosystem: 5
+      processing_power: 3
+      battery_life: 3
+    beta:
+      app_ecosystem: 8
+      processing_power: 5
+      battery_life: 6
+      product_design: 4
+      durability: 3
+  products:
+  - - Aura Pro
+    - premium
+    - '750.00'
+    - NA
+    - 15000
+    - '0.06'
+    - alpha
+  - - Aura SE
+    - mainstream
+    - '380.00'
+    - NA
+    - 30000
+    - '0.07'
+    - beta
+- profile_name: The Workhorse
+  profile_name_zh: 实干家
+  description: |-
+    A B2B-focused manufacturer with rugged, reliable products. Strong on durability and basic performance. Low on design flair and cutting-edge features. Sells mostly to enterprises.
+  description_zh: |-
+    专注B2B的制造商，产品坚固可靠。耐用性和基本性能突出。设计感和前沿功能不足。主要向企业客户销售。
+  home_market: NA
+  starting_cash: '50000000'
+  starting_debt: '2000000'
+  starting_revenue: '28000000'
+  platforms:
+    alpha:
+      durability: 12
+      battery_life: 9
+      processing_power: 5
+      app_ecosystem: 2
+      product_design: 2
+    beta:
+      processing_power: 7
+      app_ecosystem: 5
+      product_design: 4
+      battery_life: 5
+      durability: 4
+  products:
+  - - IronClad X
+    - mainstream
+    - '400.00'
+    - NA
+    - 30000
+    - '0.06'
+    - alpha
+  - - IronClad Field
+    - budget
+    - '250.00'
+    - NA
+    - 35000
+    - '0.04'
+    - beta
+- profile_name: The Green Pioneer
+  profile_name_zh: 绿色先锋
+  description: |-
+    A sustainability-first company with eco-friendly products. Strong in recyclable materials and energy efficiency, but lagging in raw performance and connectivity. Appeals to the growing green consumer market.
+  description_zh: |-
+    以可持续发展为使命的创业公司。可持续材料使用最高，耐用性强。在注重ESG的市场有优势但技术功能落后。
+  home_market: NA
+  starting_cash: '50000000'
+  starting_debt: '4000000'
+  starting_revenue: '25000000'
+  platforms:
+    alpha:
+      sustainable_materials: 8
+      battery_life: 8
+      durability: 6
+      product_design: 4
+      processing_power: 3
+    beta:
+      product_design: 7
+      processing_power: 6
+      battery_life: 4
+      durability: 4
+      app_ecosystem: 4
+  products:
+  - - EcoSphere
+    - mainstream
+    - '420.00'
+    - NA
+    - 20000
+    - '0.05'
+    - alpha
+  - - EcoSphere Mini
+    - budget
+    - '280.00'
+    - NA
+    - 25000
+    - '0.03'
+    - beta
+market_conditions:
+  NA:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Stable North American market. Election year may introduce policy uncertainty later.
+  - - 2
+    - '0.00'
+    - '0.01'
+    - '0.00'
+    - '1.02'
+    - Slight uptick in consumer confidence. Holiday season approaching.
+  - - 3
+    - '-0.01'
+    - '0.00'
+    - '0.00'
+    - '0.98'
+    - Post-holiday slowdown. Consumers delaying purchases ahead of anticipated new product launches.
+  - - 4
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.05'
+    - Strong spring demand. Back-to-school enterprise procurement cycles beginning.
+  - - 5
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Market stabilizing at mature growth rates.
+  - - 6
+    - '0.00'
+    - '0.02'
+    - '0.00'
+    - '1.03'
+    - Dollar strengthening. Import competitiveness improving for domestic firms.
+  - - 7
+    - '-0.01'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Slight market saturation in mainstream segment. Premium and sustainability segments still growing.
+  - - 8
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.08'
+    - Year-end rush. Enterprise buyers spending remaining budgets. Strong finish expected.
+  APAC:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - East Asian market continues rapid growth. Mobile-first consumers drive demand.
+  - - 2
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.05'
+    - Urban consumer spending surging. Tier-2 cities becoming viable markets.
+  - - 3
+    - '0.00'
+    - '-0.02'
+    - '0.00'
+    - '1.00'
+    - Currency weakness creating import cost pressure. Local manufacturers benefiting.
+  - - 4
+    - '0.01'
+    - '0.00'
+    - '-0.02'
+    - '1.03'
+    - Government incentives for foreign investment. Tariff reductions on technology imports.
+  - - 5
+    - '0.03'
+    - '0.01'
+    - '0.00'
+    - '1.10'
+    - Major government digitalization initiative boosting tech demand across all segments.
+  - - 6
+    - '0.00'
+    - '0.00'
+    - '0.02'
+    - '0.95'
+    - Regulatory tightening on foreign tech companies. New data localization requirements.
+  - - 7
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.05'
+    - Market resilience despite regulatory headwinds. Consumer appetite for innovation remains strong.
+  - - 8
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.08'
+    - Year-end festivals driving peak demand. Singles Day and year-end sales expected to set records.
+  EU:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - European market steady. Sustainability regulations dominating industry discussion.
+  - - 2
+    - '0.00'
+    - '-0.01'
+    - '0.00'
+    - '1.00'
+    - Euro weakening slightly against dollar. Import costs rising for US-based firms.
+  - - 3
+    - '0.00'
+    - '0.00'
+    - '0.03'
+    - '0.97'
+    - New carbon border adjustment mechanism announced. Higher effective tariffs on products with low ESG scores.
+  - - 4
+    - '0.01'
+    - '0.02'
+    - '0.00'
+    - '1.05'
+    - Consumer spending recovering. Premium segment particularly strong in Northern Europe.
+  - - 5
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Market in equilibrium. Competition intensifying in mainstream segment.
+  - - 6
+    - '-0.01'
+    - '-0.01'
+    - '0.00'
+    - '0.95'
+    - Economic headwinds in Southern Europe dampening overall demand. Northern Europe remains strong.
+  - - 7
+    - '0.01'
+    - '0.01'
+    - '0.00'
+    - '1.03'
+    - Recovery underway. Green consumer segment growing faster than forecast.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '-0.01'
+    - '1.05'
+    - Year-end demand. EU trade negotiations yielding slight tariff improvements.
+  AFR:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - African tech market buzzing with mobile-first consumer demand. Infrastructure remains the key bottleneck.
+  - - 2
+    - '0.03'
+    - '0.00'
+    - '0.00'
+    - '1.08'
+    - Urbanization accelerating. Lagos, Nairobi, and Accra emerging as tech hubs with surging demand.
+  - - 3
+    - '0.00'
+    - '-0.03'
+    - '0.00'
+    - '1.00'
+    - Currency depreciation hitting import costs hard. Local assembly operations gaining cost advantage.
+  - - 4
+    - '0.02'
+    - '0.00'
+    - '-0.02'
+    - '1.05'
+    - AfCFTA trade agreement reducing cross-border barriers. Regional distribution becoming more viable.
+  - - 5
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - Government digital inclusion programs boosting demand in tier-2 cities. Value segment surging.
+  - - 6
+    - '0.00'
+    - '-0.02'
+    - '0.02'
+    - '0.95'
+    - Political instability in key markets. New local content requirements raising compliance costs.
+  - - 7
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.08'
+    - Mobile money penetration unlocking new consumer segments. Fintech partnerships enabling rural distribution.
+  - - 8
+    - '0.03'
+    - '0.00'
+    - '0.00'
+    - '1.12'
+    - Year-end demand surge. Young demographics driving record adoption rates across the continent.
+  LATAM:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - South American market stable. Middle class expansion continuing but inflation concerns linger.
+  - - 2
+    - '0.01'
+    - '-0.02'
+    - '0.00'
+    - '1.02'
+    - Real weakening against dollar. Import-dependent firms facing margin pressure.
+  - - 3
+    - '0.00'
+    - '0.00'
+    - '0.01'
+    - '0.98'
+    - New Mercosur import regulations adding compliance costs. Manaus free trade zone remains attractive.
+  - - 4
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.05'
+    - Consumer confidence rising. Brazil and Mexico driving regional growth with strong retail demand.
+  - - 5
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Market settling into steady growth. Competition from Chinese imports intensifying in value segment.
+  - - 6
+    - '-0.01'
+    - '-0.01'
+    - '0.00'
+    - '0.97'
+    - Inflationary pressure dampening consumer spending. Premium segment resilient in major urban centers.
+  - - 7
+    - '0.01'
+    - '0.02'
+    - '-0.01'
+    - '1.03'
+    - Currency recovery improving import economics. Government incentives for local manufacturing announced.
+  - - 8
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.06'
+    - Year-end holiday spending strong. Black Friday and Christmas driving peak demand across the region.
+cultural_distance:
+- - NA
+  - NA
+  - HOME
+  - '1.00'
+  - '0.00'
+- - NA
+  - APAC
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - NA
+  - EU
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - NA
+  - LATAM
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - NA
+  - AFR
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - APAC
+  - NA
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - APAC
+  - APAC
+  - HOME
+  - '1.00'
+  - '0.00'
+- - APAC
+  - EU
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - APAC
+  - LATAM
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - APAC
+  - AFR
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - EU
+  - NA
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - EU
+  - APAC
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - EU
+  - EU
+  - HOME
+  - '1.00'
+  - '0.00'
+- - EU
+  - LATAM
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - EU
+  - AFR
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - LATAM
+  - NA
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - LATAM
+  - APAC
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - LATAM
+  - EU
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - LATAM
+  - LATAM
+  - HOME
+  - '1.00'
+  - '0.00'
+- - LATAM
+  - AFR
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - AFR
+  - NA
+  - VERY_HIGH
+  - '0.55'
+  - '0.07'
+- - AFR
+  - APAC
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - AFR
+  - EU
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - AFR
+  - LATAM
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - AFR
+  - AFR
+  - HOME
+  - '1.00'
+  - '0.00'
+origin_trust:
+- - NA
+  - NA
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - NA
+  - APAC
+  - '0.85'
+  - '-0.30'
+  - '0.02'
+- - NA
+  - EU
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - NA
+  - LATAM
+  - '0.90'
+  - '-0.10'
+  - '0.02'
+- - NA
+  - AFR
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - APAC
+  - NA
+  - '0.72'
+  - '-0.50'
+  - '0.015'
+- - APAC
+  - APAC
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - APAC
+  - EU
+  - '0.78'
+  - '-0.40'
+  - '0.02'
+- - APAC
+  - LATAM
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - APAC
+  - AFR
+  - '0.85'
+  - '-0.10'
+  - '0.025'
+- - EU
+  - NA
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - EU
+  - APAC
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - EU
+  - EU
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - EU
+  - LATAM
+  - '0.92'
+  - '0.00'
+  - '0.03'
+- - EU
+  - AFR
+  - '0.85'
+  - '-0.10'
+  - '0.02'
+- - LATAM
+  - NA
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - LATAM
+  - APAC
+  - '0.80'
+  - '-0.30'
+  - '0.02'
+- - LATAM
+  - EU
+  - '0.88'
+  - '-0.10'
+  - '0.025'
+- - LATAM
+  - LATAM
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - LATAM
+  - AFR
+  - '0.90'
+  - '0.00'
+  - '0.025'
+- - AFR
+  - NA
+  - '0.70'
+  - '-0.50'
+  - '0.015'
+- - AFR
+  - APAC
+  - '0.75'
+  - '-0.40'
+  - '0.015'
+- - AFR
+  - EU
+  - '0.72'
+  - '-0.40'
+  - '0.02'
+- - AFR
+  - LATAM
+  - '0.80'
+  - '-0.20'
+  - '0.02'
+- - AFR
+  - AFR
+  - '1.00'
+  - '0.00'
+  - '0.00'
+local_strategic_partners:
+- market: NA
+  category: Partnerships
+  code: local_strategic_na
+  name: Apex Business Alliance
+  name_zh: 顶点商业联盟
+  description: US-based strategic consulting and business alliance firm with deep government and enterprise relationships.
+  description_zh: 美国战略咨询和商业联盟公司，拥有深厚的政府和企业关系。
+  capital_cost_base: 3000000
+  recurring_cost_per_round: 800000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: APAC
+  category: Partnerships
+  code: local_strategic_apac
+  name: Zhongguancun Innovation Group
+  name_zh: 中关村创新集团
+  description: Beijing-based technology alliance with deep relationships across Chinese government, telecoms, and retail channels.
+  description_zh: 总部位于北京的科技联盟，与中国政府、电信和零售渠道有深厚关系。
+  capital_cost_base: 2500000
+  recurring_cost_per_round: 700000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 3.0
+    - true
+  - - regulatory_govt
+    - add
+    - 2.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: EU
+  category: Partnerships
+  code: local_strategic_eu
+  name: European Commerce Partners
+  name_zh: 欧洲商务伙伴
+  description: Pan-European business network with strong regulatory compliance expertise and retail distribution relationships.
+  description_zh: 总部位于布鲁塞尔的商务伙伴，拥有欧盟合规专业知识和可持续发展网络。
+  capital_cost_base: 3500000
+  recurring_cost_per_round: 900000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - esg_track_record
+    - add
+    - 1.0
+    - true
+- market: LATAM
+  category: Partnerships
+  code: local_strategic_latam
+  name: Grupo Alvorada Negócios
+  name_zh: 阿尔沃拉达商业集团
+  description: São Paulo-based conglomerate with retail, distribution, and government relationships across Brazil and Argentina.
+  description_zh: 巴西商业集团，拥有南美市场的分销网络和政府关系。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 600000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 3.0
+    - true
+  - - regulatory_govt
+    - add
+    - 2.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: AFR
+  category: Partnerships
+  code: local_strategic_afr
+  name: Sahel Gateway Enterprises
+  name_zh: 萨赫勒门户企业
+  description: |-
+    Lagos-based business group with distribution networks across West and East Africa. Strong government and telecom operator relationships.
+  description_zh: 尼日利亚商业企业，拥有西非市场的分销网络和社区关系。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 3.5
+    - true
+  - - regulatory_govt
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.5
+    - true
+alliance_partner_profiles:
+- partnership_code: local_strategic_na
+  market: NA
+  name: Apex Business Alliance
+  name_zh: 顶点商业联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Major US business advisory firm with deep regulatory connections and Fortune 500 network. Values governance, professional standards, and long-term relationship building.
+  description_zh: 美国大型商业咨询公司，在消费电子行业拥有广泛的政府和行业网络。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US market?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary partner here?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_apac
+  market: APAC
+  name: Zhongguancun Innovation Group
+  name_zh: 中关村创新集团
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Beijing-based technology alliance with deep relationships across Chinese government, telecoms, and retail. Values technology sharing, local commitment, and mutual revenue growth.
+  description_zh: 总部位于北京的科技创新集团，在中国消费电子行业拥有深厚的政府关系和产业链资源。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.25
+    description: Are you sharing technology appropriately?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Asia-Pacific?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the venture profitable for both sides?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_eu
+  market: EU
+  name: European Commerce Partners
+  name_zh: 欧洲商务伙伴
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Pan-European business network with strong regulatory compliance expertise and sustainability focus. Values governance, ESG commitment, and long-term market presence.
+  description_zh: 总部位于布鲁塞尔的商业联盟，拥有欧盟合规专业知识和可持续发展网络。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU governance standards?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you invested in local operations?
+  - feature: market_investment
+    weight: 0.2
+    description: Are you committed to the EU market?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary EU partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: local_strategic_latam
+  market: LATAM
+  name: Grupo Alvorada Negócios
+  name_zh: 阿尔沃拉达商业集团
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    São Paulo-based conglomerate with retail, distribution, and government relationships across Brazil and Argentina. Values revenue growth and local investment.
+  description_zh: 巴西商业集团，拥有南美市场的分销网络和政府关系。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Are we both making money?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Latin America?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: technology_sharing
+    weight: 0.15
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_afr
+  market: AFR
+  name: Sahel Gateway Enterprises
+  name_zh: 萨赫勒门户企业
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Lagos-based business group with strong government connections, distribution networks, and local market intelligence. Values local commitment, revenue growth, and respect for local practices.
+  description_zh: 尼日利亚商业集团，拥有西非市场的分销网络和社区关系。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring Nigerians?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in West Africa?
+  - feature: revenue_share
+    weight: 0.25
+    description: Are we both making money?
+  - feature: technology_sharing
+    weight: 0.1
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: NA
+  name: Continental Logistics Network
+  name_zh: 大陆物流网络
+  partner_type: DISTRIBUTION
+  description: Major US distribution and retail channel partner. Values consistent volume and market commitment.
+  description_zh: 北美大型物流和零售分销网络。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to this market?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary distributor?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate ethically?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: APAC
+  name: Pacific Rim Distributors
+  name_zh: 太平洋沿岸分销商
+  partner_type: DISTRIBUTION
+  description: Pan-Asian distribution network covering China, Japan, and Southeast Asia.
+  description_zh: 泛亚洲电子产品分销网络，覆盖中国、日本和东南亚。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to APAC?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: EU
+  name: EuroChannel GmbH
+  name_zh: 欧洲渠道有限公司
+  partner_type: DISTRIBUTION
+  description: German-headquartered distribution firm with coverage across EU member states.
+  description_zh: 总部位于德国的欧洲消费电子分销公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU compliance standards?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume consistent?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to EU?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: LATAM
+  name: Mercado Express Logistics
+  name_zh: 市场快递物流
+  partner_type: DISTRIBUTION
+  description: Brazilian-based logistics firm with distribution reach across Latin America.
+  description_zh: 巴西物流公司，覆盖南美消费电子分销。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Are shipments growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to LATAM?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: AFR
+  name: AfriConnect Distribution
+  name_zh: 非洲互联分销
+  partner_type: DISTRIBUTION
+  description: Pan-African logistics and last-mile distribution network based in Lagos.
+  description_zh: 泛非电子产品物流和最后一公里分销网络。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you building local capacity?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: NA
+  name: Silicon Valley Innovation Labs
+  name_zh: 硅谷创新实验室
+  partner_type: TECHNOLOGY
+  description: Bay Area R&D partnership for co-development. Values IP protection and mutual innovation.
+  description_zh: 美国消费电子研发合作伙伴。重视知识产权保护和协同创新。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you investing in R&D with us?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you protect shared IP?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: APAC
+  name: Shenzhen Advanced Tech Co.
+  name_zh: 深圳先进技术公司
+  partner_type: TECHNOLOGY
+  description: Shenzhen-based manufacturing and R&D partner. Values deep technology sharing.
+  description_zh: 深圳消费电子制造和研发合作伙伴。重视深度技术共享。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.4
+    description: Are you sharing technology deeply?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in APAC R&D?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership profitable?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: EU
+  name: Nordic Innovation Partners
+  name_zh: 北欧创新合作伙伴
+  partner_type: TECHNOLOGY
+  description: Scandinavian R&D firm focused on sustainable technology development.
+  description_zh: 斯堪的纳维亚研发公司，专注可持续电子技术开发。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing R&D insights?
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet ethical IP standards?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: LATAM
+  name: TechSul Pesquisa
+  name_zh: 南方科技研究
+  partner_type: TECHNOLOGY
+  description: Brazilian tech R&D lab with expertise in mobile and payment technology.
+  description_zh: 巴西消费电子研发实验室。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you collaborating on R&D?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the venture generating value?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in LATAM tech?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: AFR
+  name: Nairobi TechHub Alliance
+  name_zh: 内罗毕科技中心联盟
+  partner_type: TECHNOLOGY
+  description: East African technology hub with mobile-first development expertise.
+  description_zh: 东非科技创新中心，拥有移动设备开发专业知识。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing knowledge?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local tech capacity?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa tech?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: govt_advisor
+  market: NA
+  name: Capitol Regulatory Group
+  name_zh: 国会监管集团
+  partner_type: GOVERNMENT
+  description: Washington DC regulatory advisory firm. Values compliance and ethical governance.
+  description_zh: 华盛顿特区消费电子监管咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Are you operating ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the advisory fee justified?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary advisor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisor
+  market: APAC
+  name: Asia Policy Advisors
+  name_zh: 亚洲政策顾问
+  partner_type: GOVERNMENT
+  description: Regional government relations firm with connections across APAC regulatory bodies.
+  description_zh: 区域性政府关系公司，与亚太地区监管机构有广泛联系。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you respect local regulations?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring locally?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to APAC?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the advisory fee justified?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisor
+  market: EU
+  name: Brussels Regulatory Consultants
+  name_zh: 布鲁塞尔监管顾问
+  partner_type: GOVERNMENT
+  description: EU regulatory specialists with expertise in GDPR, sustainability regulations, and trade policy.
+  description_zh: 欧盟消费电子监管专家。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Do you meet EU standards?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the EU?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you building EU operations?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worth continuing?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisor
+  market: LATAM
+  name: Relaciones Gubernamentales SA
+  name_zh: 南美政府关系
+  partner_type: GOVERNMENT
+  description: Government relations firm with connections across Brazilian and Argentine ministries.
+  description_zh: 南美政府关系咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate transparently?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local operations?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to LATAM?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: govt_advisor
+  market: AFR
+  name: Abuja Government Relations
+  name_zh: 阿布贾政府关系
+  partner_type: GOVERNMENT
+  description: Government advisory firm with connections to Nigerian and West African regulatory bodies.
+  description_zh: 尼日利亚和西非政府关系咨询公司。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you operate transparently?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: brand_ambassador
+  market: NA
+  name: Stellar Brand Advocates
+  name_zh: 星耀品牌倡导
+  partner_type: BRAND
+  description: US brand advocacy and influencer network. Values consistent messaging and market presence.
+  description_zh: 北美消费电子品牌推广和影响力网络。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in marketing?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.2
+    description: Is the brand reputation clean?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary brand partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: APAC
+  name: Rising Sun Brand Agency
+  name_zh: 旭日品牌机构
+  partner_type: BRAND
+  description: Tokyo-based brand agency with pan-Asian reach and cultural expertise.
+  description_zh: 东亚消费电子品牌机构，拥有泛亚洲覆盖。
+  preferences:
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in APAC marketing?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Is the brand culturally adapted?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: EU
+  name: EuroBrand Collective
+  name_zh: 欧洲品牌联合
+  partner_type: BRAND
+  description: European brand consultancy emphasizing sustainability and ethical messaging.
+  description_zh: 欧洲消费电子品牌咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.35
+    description: Is the brand ethically positioned?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in EU marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Is the brand locally adapted?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: brand_ambassador
+  market: LATAM
+  name: Marca Viva Agency
+  name_zh: 活力品牌机构
+  partner_type: BRAND
+  description: São Paulo-based brand and influencer agency with Latin American reach.
+  description_zh: 巴西消费电子品牌和影响力机构。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand selling?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in LATAM marketing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Is the brand culturally adapted?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: AFR
+  name: AfriVoice Media Group
+  name_zh: 非洲之声媒体集团
+  partner_type: BRAND
+  description: Pan-African media and brand agency with expertise in mobile-first marketing.
+  description_zh: 泛非消费电子媒体和品牌机构。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Is the brand locally resonant?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in African marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.1
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+government_profiles:
+- market: NA
+  name: United States Federal Government
+  name_zh: 美国联邦政府
+  description: |-
+    Focus on national security, technology leadership, and fair competition. Suspicious of foreign state-backed firms. Rewards investment and job creation.
+  description_zh: |-
+    聚焦国家安全、技术领先和公平竞争。对外国政府支持的企业持怀疑态度。奖励投资和就业创造。
+  policy_priorities:
+  - objective: local_employment
+    weight: 0.2
+  - objective: technology_transfer
+    weight: 0.15
+  - objective: tax_revenue
+    weight: 0.2
+  - objective: esg_compliance
+    weight: 0.15
+  - objective: local_manufacturing
+    weight: 0.2
+  - objective: export_contribution
+    weight: 0.1
+  incentive_threshold: '0.72'
+  warning_threshold: '0.38'
+  restriction_threshold: '0.22'
+  max_incentive_value_per_round: '2000000'
+  procurement_budget_per_round: '3000000'
+  procurement_frequency: 3
+  policy_volatility: '0.08'
+  patience_rounds: 2
+- market: APAC
+  name: Chinese State Council
+  name_zh: 中国国务院
+  description: |-
+    Strong industrial policy focused on technology self-sufficiency, local manufacturing, and employment. Actively manages foreign firm access. Rewards technology transfer and local investment heavily.
+  description_zh: |-
+    强大的产业政策聚焦技术自主可控、本地制造和就业。积极管理外国企业准入。大力奖励技术转让和本地投资。
+  policy_priorities:
+  - objective: technology_transfer
+    weight: 0.3
+  - objective: local_manufacturing
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.2
+  - objective: tax_revenue
+    weight: 0.15
+  - objective: export_contribution
+    weight: 0.1
+  incentive_threshold: '0.65'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.20'
+  max_incentive_value_per_round: '3000000'
+  procurement_budget_per_round: '5000000'
+  procurement_frequency: 2
+  policy_volatility: '0.12'
+  patience_rounds: 2
+- market: EU
+  name: European Commission
+  name_zh: 欧盟委员会
+  description: |-
+    Regulatory-first approach. ESG compliance and governance quality are paramount. Data sovereignty, environmental standards, and labor rights non-negotiable. Most likely to tighten regulations. Generous green subsidies.
+  description_zh: |-
+    监管优先的方针。ESG合规和治理质量至关重要。数据主权、环保标准和劳工权利不可妥协。最可能收紧法规。提供慷慨的绿色补贴。
+  policy_priorities:
+  - objective: esg_compliance
+    weight: 0.3
+  - objective: local_employment
+    weight: 0.2
+  - objective: tax_revenue
+    weight: 0.15
+  - objective: technology_transfer
+    weight: 0.1
+  - objective: local_manufacturing
+    weight: 0.15
+  - objective: export_contribution
+    weight: 0.1
+  incentive_threshold: '0.75'
+  warning_threshold: '0.42'
+  restriction_threshold: '0.28'
+  max_incentive_value_per_round: '2500000'
+  procurement_budget_per_round: '2000000'
+  procurement_frequency: 3
+  policy_volatility: '0.06'
+  patience_rounds: 3
+- market: LATAM
+  name: Brazilian Federal Government
+  name_zh: 巴西联邦政府
+  description: |-
+    Complex regulatory environment with strong protectionist instincts. Local manufacturing heavily incentivized through tariffs and tax zones. Environmental awareness growing. Tax compliance strictly enforced.
+  description_zh: |-
+    复杂的监管环境，具有强烈的保护主义倾向。通过关税和税收优惠区大力激励本地制造。环保意识不断增强。税务合规要求严格。
+  policy_priorities:
+  - objective: local_manufacturing
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.25
+  - objective: tax_revenue
+    weight: 0.2
+  - objective: esg_compliance
+    weight: 0.15
+  - objective: technology_transfer
+    weight: 0.15
+  incentive_threshold: '0.65'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.22'
+  max_incentive_value_per_round: '1500000'
+  procurement_budget_per_round: '2000000'
+  procurement_frequency: 2
+  policy_volatility: '0.15'
+  patience_rounds: 2
+- market: AFR
+  name: Nigerian Federal Government
+  name_zh: 尼日利亚联邦政府
+  description: |-
+    Aggressively courting foreign investment while demanding local employment and technology transfer. Highest procurement budgets relative to market size. Least concerned with ESG, most concerned with jobs and industrialization. Willing to offer large incentives for factories.
+  description_zh: |-
+    积极吸引外国投资，同时要求本地就业和技术转让。相对于市场规模，采购预算最高。对ESG关注最少，对就业和工业化关注最多。愿意为建厂提供大额激励。
+  policy_priorities:
+  - objective: local_employment
+    weight: 0.35
+  - objective: local_manufacturing
+    weight: 0.25
+  - objective: technology_transfer
+    weight: 0.2
+  - objective: tax_revenue
+    weight: 0.15
+  - objective: esg_compliance
+    weight: 0.05
+  incentive_threshold: '0.60'
+  warning_threshold: '0.30'
+  restriction_threshold: '0.18'
+  max_incentive_value_per_round: '2000000'
+  procurement_budget_per_round: '4000000'
+  procurement_frequency: 2
+  policy_volatility: '0.18'
+  patience_rounds: 3
+governance_commitments:
+- code: board_diversity
+  name: Board Diversity
+  name_zh: 董事会多元化
+  description: |-
+    Commit to a diverse board of directors including gender, ethnic, and international representation. Requires ongoing investment in board recruitment and advisory services.
+  description_zh: |-
+    承诺建设多元化的董事会，包括性别、种族和国际代表性。需要持续投资董事招聘和顾问服务。
+  ongoing_cost_per_round: 200000
+  benefits:
+  - target: governance_quality
+    boost: 0.2
+  - target: esg_investor_satisfaction
+    boost: 0.15
+  - target: regulator_satisfaction
+    boost: 0.08
+    markets:
+    - eu
+    - na
+  interactions: []
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.1
+    esg_investor_extra_penalty: -0.15
+    regulator_penalty: -0.05
+    news_headline: reverses board diversity commitment — governance concerns mount
+  prerequisite:
+  amplifier:
+  display_order: 1
+- code: pay_transparency
+  name: Pay Transparency
+  name_zh: 薪酬透明
+  description: |-
+    Publish compensation data across all levels. Builds trust but exposes any pay gaps. If salaries are below market rate, transparency will temporarily increase turnover until compensation is competitive.
+  description_zh: |-
+    公开所有层级的薪酬数据。建立信任但暴露薪酬差距。如果工资低于市场水平，透明化将暂时增加人员流失，直到薪酬具有竞争力。
+  ongoing_cost_per_round: 150000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: talent_turnover_reduction
+    boost: 0.03
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: salary_level_any_pool
+      operator: <
+      value: 2
+    effect:
+      type: talent_turnover_increase
+      magnitude: 0.05
+      duration: while_condition_true
+      description: Pay transparency exposes below-market salaries — turnover increases until compensation is competitive
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    talent_turnover_spike: 0.04
+    news_headline: ends pay transparency program — employee trust shaken
+  prerequisite:
+  amplifier:
+  display_order: 2
+- code: anti_corruption
+  name: Anti-Corruption
+  name_zh: 反腐败
+  description: |-
+    Implement comprehensive anti-corruption program: compliance officers, whistleblower systems, third-party auditing, and zero-tolerance policy. Reduces regulatory event risk but increases JV operating costs.
+  description_zh: |-
+    实施全面的反腐败项目：合规官、举报人制度、第三方审计和零容忍政策。降低监管事件风险但增加合资运营成本。
+  ongoing_cost_per_round: 300000
+  benefits:
+  - target: governance_quality
+    boost: 0.25
+  - target: value_investor_satisfaction
+    boost: 0.12
+  - target: esg_investor_satisfaction
+    boost: 0.1
+  - target: regulator_satisfaction
+    boost: 0.12
+    markets:
+    - wa
+    - sa
+  - target: regulatory_event_probability_reduction
+    boost: 0.1
+  interactions:
+  - condition:
+      attribute: entry_mode_in_any_market
+      operator: ==
+      value: jv
+    effect:
+      type: jv_monitoring_cost
+      magnitude: 100000
+      per: jv_market
+      description: Anti-corruption compliance monitoring required for each JV partner
+  revocation_penalty:
+    duration_rounds: 3
+    investor_confidence_drop: -0.15
+    regulator_penalty: -0.1
+    regulatory_event_probability_increase: 0.08
+    news_headline: dismantles anti-corruption program — regulatory scrutiny expected
+  prerequisite:
+  amplifier:
+  display_order: 3
+- code: supply_chain_audit
+  name: Supply Chain Audit
+  name_zh: 供应链审计
+  description: |-
+    Commission independent audits of your entire supply chain. Identifies cost inefficiencies but may expose reputational risks at contract manufacturing partners.
+  description_zh: |-
+    委托对整个供应链进行独立审计。可发现成本低效，但可能暴露合同制造合作伙伴的声誉风险。
+  ongoing_cost_per_round: 250000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: cogs_reduction
+    boost: 0.015
+  - target: operations_effectiveness_boost
+    boost: 0.05
+  - target: esg_investor_satisfaction
+    boost: 0.12
+  - target: supply_chain_event_protection
+    boost: 0.15
+  interactions:
+  - condition:
+      attribute: uses_contract_manufacturing
+      operator: ==
+      value: true
+    effect:
+      type: contract_mfg_reputation_risk
+      probability_per_round: 0.15
+      impact:
+        type: reputation_event
+        magnitude: -0.08
+        duration: 1
+        description: Supply chain audit reveals labor concerns at contract manufacturer
+      description: Audit may expose unfavorable conditions at contract manufacturing facilities
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    cogs_reduction_lost: true
+    news_headline: cancels supply chain auditing — transparency concerns raised
+  prerequisite:
+  amplifier:
+  display_order: 4
+- code: public_esg_reporting
+  name: Public ESG Reporting
+  name_zh: 公开ESG报告
+  description: |-
+    Publish comprehensive quarterly ESG reports. Amplifies the visibility of all other ESG investments to stakeholders. But reporting without substance will be seen as greenwashing.
+  description_zh: |-
+    发布全面的季度ESG报告。放大所有其他ESG投资对利益相关者的可见度。但没有实质内容的报告将被视为漂绿行为。
+  ongoing_cost_per_round: 100000
+  benefits:
+  - target: governance_quality
+    boost: 0.1
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: total_esg_investment
+      operator: <
+      value: 1000000
+    effect:
+      type: greenwashing_penalty
+      impact:
+        esg_investor_penalty: -0.2
+        regulator_penalty: -0.08
+        customer_trust_penalty: -0.03
+      description: Public ESG reporting with minimal actual investment seen as greenwashing
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.05
+    esg_investor_extra_penalty: -0.1
+    news_headline: stops publishing ESG reports — transparency regresses
+  prerequisite:
+  amplifier:
+    target: esg_investment_visibility
+    multiplier: 1.3
+    description: All ESG investments produce 30% more stakeholder satisfaction with public reporting
+  display_order: 5
+communication_assignments:
+- code: expansion_memo_r2
+  name: 'Board Memo: International Expansion Strategy'
+  name_zh: 董事会备忘录：国际扩张战略
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 2
+  audience: BOARD
+  prompt_text: |-
+    Your board of directors has requested a brief memo outlining your international expansion strategy.
+
+    You've completed two quarters as the leadership team. The board wants to understand:
+    - Which markets are you targeting and why?
+    - What entry modes have you chosen and what's the rationale?
+    - How are you managing the risks of operating in foreign markets?
+    - What's your talent and localization strategy?
+    - How does this expansion plan connect to your overall competitive strategy?
+
+    Write a board memo (max 300 words) that justifies your international strategy. The board is sophisticated — they'll notice if your stated strategy contradicts your actual decisions.
+  prompt_text_zh: |-
+    您的董事会要求提交一份简要备忘录，概述您的国际扩张战略。
+
+    作为领导团队，您已完成两个季度的运营。董事会希望了解：
+    - 您瞄准了哪些市场，为什么？
+    - 您选择了什么进入模式，理由是什么？
+    - 您如何管理在外国市场运营的风险？
+    - 您的人才和本地化策略是什么？
+    - 该扩张计划如何与您的整体竞争战略相联系？
+
+    撰写一份董事会备忘录（最多300字），论证您的国际战略。董事会成员经验丰富——如果您的书面战略与实际决策相矛盾，他们会察觉。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the memo match the team's actual market entry decisions, talent allocation, and compliance investment?
+  - criterion: stakeholder_awareness
+    weight: 0.2
+    description: 'Does it address board concerns: risk, ROI timeline, competitive positioning?'
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the memo well-structured, concise, and convincing?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge origin trust challenges, currency risk, and competitive threats?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference relevant frameworks (CAGE distance, Uppsala model, OLI paradigm)?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 1
+- code: investor_letter_r4
+  name: 'Investor Letter: Quarterly Strategy Update'
+  name_zh: 投资者信函：季度战略更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 4
+  audience: INVESTORS
+  prompt_text: |-
+    Your three major institutional investors — Velocity Capital (Growth), Granite Investments (Value), and GreenHorizon Partners (ESG) — expect a quarterly update letter.
+
+    Each fund has different priorities. Your letter will be read by all three.
+
+    Address:
+    - How is your strategy performing against expectations?
+    - What's your technology roadmap (Gen 2/3 progression)?
+    - How are you managing financial health (debt, margins, dividends)?
+    - What ESG commitments have you made and what returns are they generating?
+    - What's your outlook for the next 4 quarters?
+
+    Write a shareholder letter (max 300 words). Remember: Velocity wants growth signals, Granite wants discipline signals, GreenHorizon wants sustainability signals. You can't optimize for all three — but you need to maintain confidence across the board.
+  prompt_text_zh: |-
+    您的主要机构投资者期待收到季度更新信函。
+
+    请涵盖：
+    - 您的消费电子战略表现如何？
+    - 您的技术和产品路线图是什么？
+    - 您如何管理财务健康（债务、利润率、股息）？
+    - 您做出了哪些ESG承诺？
+    - 您对未来4个季度的展望是什么？
+
+    撰写一封股东信函（最多300字）。增长型投资者寻求增长信号，价值型投资者寻求纪律信号。您需要维持全面的信心。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.3
+    description: Does the letter match actual financial performance, R&D investment, and ESG commitments?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address the specific concerns of all three investor archetypes?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the letter professional, balanced, and confidence-inspiring?
+  - criterion: risk_acknowledgment
+    weight: 0.1
+    description: Does it acknowledge challenges honestly rather than only highlighting positives?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference strategic rationale grounded in frameworks or industry analysis?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 2
+- code: crisis_statement
+  name: 'Press Statement: Crisis Response'
+  name_zh: 新闻声明：危机应对
+  trigger_type: EVENT_BASED
+  trigger_condition:
+    event_category:
+    - GEOPOLITICAL
+    - SANCTIONS
+  audience: PUBLIC
+  prompt_text: |-
+    A major event has affected your operations: {event_name}.
+
+    {event_description}
+
+    The media is asking for a statement. Your customers, investors, regulators, and employees are watching.
+
+    Draft a press statement (max 200 words) that:
+    - Acknowledges the situation
+    - Explains your response
+    - Reassures stakeholders
+    - Positions your company constructively
+
+    Avoid empty platitudes. Stakeholders can see your actual decisions — if you claim to be 'committed to compliance' but your compliance investment is zero, they'll know.
+  prompt_text_zh: |-
+    一项重大事件影响了您的业务：{event_name}。
+
+    {event_description}
+
+    媒体正在要求发表声明。您的客户、投资者、监管机构和员工都在关注。
+
+    起草一份新闻声明（最多200字），需要：
+    - 承认情况
+    - 解释您的应对
+    - 安抚利益相关者
+    - 建设性地定位您的公司
+
+    避免空洞的套话。利益相关者可以看到您的实际决策。
+  word_limit: 200
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the statement match the team's actual response to the event and their broader strategy?
+  - criterion: stakeholder_awareness
+    weight: 0.25
+    description: Does it address the concerns of affected stakeholders (customers, regulators, investors)?
+  - criterion: clarity_and_persuasion
+    weight: 0.25
+    description: Is the statement clear, professional, and appropriate in tone?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge the impact honestly without being defensive?
+  is_mandatory: false
+  coherence_weight: '0.03'
+  display_order: 10
+- code: employee_message_r6
+  name: 'Employee Town Hall: Global Operations Update'
+  name_zh: 员工全体大会：全球运营更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 6
+  audience: EMPLOYEES
+  prompt_text: |-
+    You're addressing your global workforce — headquartered in {home_market} with operations in {active_markets}.
+
+    Employees are asking:
+    - Is the company financially healthy?
+    - Are jobs secure in each market?
+    - What's the growth plan?
+    - How does the company's ESG commitment affect them?
+    - If you've made governance commitments (pay transparency, board diversity), what do they mean for employees?
+
+    Write a town hall message (max 250 words). Your workforce spans multiple cultures and markets. Some are at headquarters, some are recent local hires in foreign markets. They need to feel included and informed — not just managed.
+  prompt_text_zh: |-
+    您正在向全球员工发言——总部设在{home_market}，业务遍及{active_markets}。
+
+    员工们在问：
+    - 公司财务健康吗？
+    - 各市场的工作岗位安全吗？
+    - 业务的增长计划是什么？
+    - 公司的ESG承诺对他们意味着什么？
+
+    撰写一份全体大会致辞（最多250字）。您的员工遍布多个文化和市场。他们需要感到被包容和知情——而不仅仅是被管理。
+  word_limit: 250
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the message align with actual talent decisions, salary levels, and localization investment?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address employee concerns across different markets and roles?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is it authentic, inclusive, and motivating rather than corporate boilerplate?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it honestly address challenges the company is facing?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it connect to organizational values and strategic direction?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 3
+- code: final_review_r8
+  name: 'Board Presentation: 8-Quarter Strategic Review'
+  name_zh: 董事会报告：8个季度战略回顾
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 8
+  audience: BOARD
+  prompt_text: |-
+    This is your final quarterly board presentation. Looking back over 8 quarters of leadership:
+
+    - What was your strategy and how did it evolve?
+    - What worked and what didn't?
+    - How did you navigate origin trust challenges, competitive dynamics, and market conditions?
+    - What's the state of your global operations — financial health, market positions, stakeholder relationships?
+    - If you had 4 more quarters, what would you do differently?
+
+    Write your strategic review (max 400 words). This is your legacy document — it should demonstrate strategic thinking, honest self-assessment, and the ability to learn from results. The board has seen every number. They want to know if you understand WHY the numbers look the way they do.
+  prompt_text_zh: |-
+    这是您最后一次季度董事会报告。回顾8个季度的领导历程：
+
+    - 您的战略是什么？如何演变的？
+    - 什么奏效了，什么没有？
+    - 您如何应对竞争态势和市场条件？
+    - 您的全球业务现状如何——财务健康、市场地位、利益相关者关系？
+    - 如果再给您4个季度，您会做什么不同的事？
+
+    撰写您的战略回顾（最多400字）。董事会看过每一个数字。他们想知道您是否理解数字背后的原因。
+  word_limit: 400
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the review accurately reflect what happened and why?
+  - criterion: stakeholder_awareness
+    weight: 0.15
+    description: Does it show awareness of all stakeholder perspectives?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the review well-structured, insightful, and professionally written?
+  - criterion: risk_acknowledgment
+    weight: 0.2
+    description: Does it honestly assess failures and missed opportunities?
+  - criterion: framework_grounding
+    weight: 0.2
+    description: Does it demonstrate application of strategic frameworks to analyze outcomes?
+  is_mandatory: true
+  coherence_weight: '0.08'
+  display_order: 4
+org_structures:
+- code: centralized
+  name: Centralized
+  name_zh: 集权式
+  description: |-
+    All strategic and operational decisions flow through headquarters. Fast decision-making and strong alignment, but local adaptation suffers as geographic scope increases. Works well for 1-2 markets, strains beyond 3.
+  description_zh: |-
+    所有战略和运营决策由总部统一制定。决策迅速、协调一致，但随地理范围扩大，本地适应性受限。适用于1-2个市场，超过3个则面临压力。
+  base_overhead_per_round: '100000'
+  per_market_coordination_cost: '50000'
+  hq_talent_effectiveness_modifier: '1.15'
+  local_talent_effectiveness_modifier: '0.80'
+  innovation_modifier: '1.10'
+  coordination_efficiency: '1.05'
+  decision_speed_modifier: '1.10'
+  optimal_market_range_min: 1
+  optimal_market_range_max: 3
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.08'
+  transition_cost: '0'
+  transition_disruption_rounds: 0
+  display_order: 1
+- code: regional
+  name: Regional
+  name_zh: 区域式
+  description: |-
+    Each region operates semi-autonomously with local leadership, budgets, and decision authority. Excellent local adaptation but risk of strategic fragmentation and duplication. Ideal for 3-5 markets.
+  description_zh: |-
+    每个区域拥有本地领导层、预算和决策权限的半自主运营。本地适应性优秀，但存在战略碎片化和重复建设风险。适用于3-5个市场。
+  base_overhead_per_round: '300000'
+  per_market_coordination_cost: '100000'
+  hq_talent_effectiveness_modifier: '0.90'
+  local_talent_effectiveness_modifier: '1.20'
+  innovation_modifier: '0.90'
+  coordination_efficiency: '0.85'
+  decision_speed_modifier: '1.05'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '100000'
+  overextension_effectiveness_penalty: '0.04'
+  transition_cost: '1500000'
+  transition_disruption_rounds: 1
+  display_order: 2
+- code: matrix
+  name: Matrix
+  name_zh: 矩阵式
+  description: |-
+    Dual reporting structure combining product/functional expertise with geographic knowledge. Best of both worlds in theory — highest overhead in practice. Requires strong organizational culture and communication.
+  description_zh: |-
+    结合产品/职能专业知识和地理知识的双重汇报结构。理论上两全其美——实践中管理成本最高。需要强大的组织文化和沟通。
+  base_overhead_per_round: '500000'
+  per_market_coordination_cost: '150000'
+  hq_talent_effectiveness_modifier: '1.05'
+  local_talent_effectiveness_modifier: '1.10'
+  innovation_modifier: '1.05'
+  coordination_efficiency: '1.15'
+  decision_speed_modifier: '0.85'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.06'
+  transition_cost: '2500000'
+  transition_disruption_rounds: 2
+  display_order: 3
+- code: networked
+  name: Networked
+  name_zh: 网络式
+  description: |-
+    Flat, project-based structure with fluid team composition across geographies. Highly innovative and adaptable, but requires exceptional talent and strong culture. Chaotic without both. Least effective for operational efficiency.
+  description_zh: |-
+    扁平化、基于项目的结构，团队成员跨地区灵活组合。高度创新和适应性强，但需要卓越的人才和强大的文化。缺乏这两者则混乱。运营效率最低。
+  base_overhead_per_round: '200000'
+  per_market_coordination_cost: '75000'
+  hq_talent_effectiveness_modifier: '1.00'
+  local_talent_effectiveness_modifier: '1.00'
+  innovation_modifier: '1.25'
+  coordination_efficiency: '0.80'
+  decision_speed_modifier: '1.15'
+  optimal_market_range_min: 2
+  optimal_market_range_max: 4
+  overextension_cost_per_market: '150000'
+  overextension_effectiveness_penalty: '0.07'
+  transition_cost: '1000000'
+  transition_disruption_rounds: 2
+  display_order: 4

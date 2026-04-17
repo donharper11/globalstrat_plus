@@ -1,0 +1,7145 @@
+scenario:
+  name: Global Media & Entertainment 2026
+  name_zh: 全球媒体与娱乐 2026
+  industry_label: Global Media & Entertainment
+  industry_label_zh: 媒体与娱乐
+  description: |-
+    Lead the executive team of a mid-size global media and entertainment company. Content is your asset — not factories. Navigate fragmented audiences, censorship walls, local content quotas, and AI-driven disruption across 5 global markets. Build streaming platforms, acquire IP, localize content, and compete with algorithm-driven rivals. Over 10 rounds (each representing one quarter), develop your content portfolio, expand internationally, and earn the confidence of subscribers, investors, and regulators.
+  description_zh: |-
+    管理一家全球媒体与娱乐公司，涵盖流媒体内容、互动娱乐和数字媒体平台。在AI生成内容、版权监管、文化本地化和平台经济的变革中导航。与AI竞争对手展开较量，赢得机构投资者、政府机构和全球观众在5个市场中的信任。
+  num_rounds: 10
+  round_duration_label: Quarter
+  round_duration_label_zh: 季度
+  starting_cash: '45000000.00'
+  currency_code: USD
+  max_platforms_per_team: 3
+  max_products_per_platform: 3
+  max_products_total: 6
+  performance_index_base: '55.00'
+  is_active: true
+  company_names:
+    - Lumina Studios
+    - Vantage Media
+    - Nexus Content
+    - Aether Entertainment
+    - Solaris Pictures
+    - Helix Streaming
+    - Prism Media Group
+    - Zenith Creative
+    - Eclipse Networks
+    - Parallax Studios
+    - Nova Digital Media
+    - Cipher Entertainment
+    - Meridian Productions
+    - Catalyst Content
+    - Vertex Broadcasting
+    - Stratos Media
+config:
+  bass_default_p:
+  - '0.04'
+  - Default innovation coefficient — media adoption is faster, consumers subscribe impulsively
+  bass_default_q:
+  - '0.40'
+  - Default imitation coefficient — social sharing drives media adoption
+  r_and_d_diminishing_factor:
+  - '0.15'
+  - R&D cost increase per current level
+  campaign_focus_multiplier:
+  - '0.15'
+  - Max fit bonus from campaign emphasis
+  competition_sharpness:
+  - '1.8'
+  - Market share allocation exponent
+  performance_index_sensitivity:
+  - '20.0'
+  - Max index change per round
+  learning_curve_factor:
+  - '0.05'
+  - Production cost reduction per doubling
+  debt_interest_rate:
+  - '0.06'
+  - Annual interest rate on debt
+  max_debt_to_equity_ratio:
+  - '2.0'
+  - Maximum leverage allowed
+  logistics_base_cost_per_unit:
+  - '2.00'
+  - Distribution cost per unit — digital distribution is cheap
+  inventory_holding_cost_pct:
+  - '0.05'
+  - Holding cost as % of unit cost
+  admin_overhead_fixed:
+  - '500000'
+  - Fixed admin cost per round
+  admin_overhead_pct:
+  - '0.03'
+  - Variable admin as % of revenue
+  base_unit_cost:
+  - '15.00'
+  - Base content marginal cost per unit — streaming delivery
+  brand_awareness_halflife:
+  - '8000000'
+  - Spend to reach 50% awareness
+  promotion_benchmark_per_unit:
+  - '8.00'
+  - Expected promo spend per prospect
+  distribution_investment_cap:
+  - '5000000'
+  - Max effective distribution investment
+  sales_rep_cost_per_round:
+  - '100000'
+  - Cost per sales rep per round ($)
+  capitalize_platform_development:
+  - 'false'
+  - Expense platform R&D immediately
+  allow_tax_consolidation:
+  - 'false'
+  - No cross-market loss offset
+  ai_competitors_enabled:
+  - 'true'
+  - AI benchmark competitors active
+  ai_competitor_count:
+  - '2'
+  - Number of AI competitors
+  esg_enabled:
+  - 'true'
+  - ESG decisions active
+  rag_enabled:
+  - 'false'
+  - RAG disabled until CC-11
+  high_commitment_threshold:
+  - '5000000'
+  - Investment level for coherence scoring
+  rd_base_budget:
+  - '1200000'
+  - Base content development budget
+  max_rd_investments_per_round:
+  - '5'
+  - Maximum number of features a team can invest in per round
+  max_platform_features:
+  - '5'
+  - Maximum number of features that can be selected (non-zero) on a platform
+  gen2_min_features_at_level:
+  - '3'
+  - Number of Gen 1 features that must reach threshold level to unlock Gen 2
+  gen2_min_feature_level:
+  - '4'
+  - Minimum feature level for Gen 2 unlock threshold
+  gen3_min_features_at_level:
+  - '4'
+  - Number of Gen 2 features that must reach threshold level to unlock Gen 3
+  gen3_min_feature_level:
+  - '6'
+  - Minimum feature level for Gen 3 unlock threshold
+  sidebar_label_platform_page:
+  - Platform & Content Development
+  - Label for the platform/R&D decision page
+  sidebar_label_platform_page_zh:
+  - 平台与内容开发
+  - Label for the platform/R&D decision page
+  sidebar_label_product_page:
+  - Content Portfolio
+  - Label for the product management page
+  sidebar_label_product_page_zh:
+  - 内容组合
+  - Label for the product management page
+  sidebar_label_marketing_page:
+  - Content & Distribution
+  - Label for content distribution decisions page
+  sidebar_label_marketing_page_zh:
+  - 内容与分销
+  - Label for content distribution decisions page
+  sidebar_label_corporate_strategy:
+  - Corporate Strategy
+  - Label for firm-wide strategy page
+  sidebar_label_corporate_strategy_zh:
+  - 公司战略
+  - Label for firm-wide strategy page
+  sidebar_label_market_strategy:
+  - Market Strategy
+  - Label for per-market strategy page
+  sidebar_label_market_strategy_zh:
+  - 市场战略
+  - Label for per-market strategy page
+  sidebar_label_finance_page:
+  - Finance
+  - Label for the finance/budget page
+  sidebar_label_finance_page_zh:
+  - 财务
+  - Label for the finance/budget page
+  sidebar_label_talent_page:
+  - Talent & Workforce
+  - Label for the talent decisions section
+  sidebar_label_talent_page_zh:
+  - 人才与团队
+  - Label for the talent decisions section
+  sidebar_label_news_page:
+  - Industry News
+  - Label for the market news page
+  sidebar_label_news_page_zh:
+  - 行业新闻
+  - Label for the market news page
+  sidebar_label_research_page:
+  - Market Research
+  - Label for the research console page
+  sidebar_label_research_page_zh:
+  - 市场研究
+  - Label for the research console page
+  sidebar_label_competitors_page:
+  - Competitive Intelligence
+  - Label for competitor analysis page
+  sidebar_label_competitors_page_zh:
+  - 竞争情报
+  - Label for competitor analysis page
+  sidebar_label_tools_page:
+  - Strategy Tools
+  - Label for framework templates page
+  sidebar_label_tools_page_zh:
+  - 战略工具
+  - Label for framework templates page
+  sidebar_label_financial_reports:
+  - Financial Reports
+  - Label for detailed financial reports
+  sidebar_label_financial_reports_zh:
+  - 财务报告
+  - Label for detailed financial reports
+  sidebar_label_forecast_page:
+  - Company Forecast
+  - Label for what-if projections page
+  sidebar_label_forecast_page_zh:
+  - 公司预测
+  - Label for what-if projections page
+  localization_staff_baseline:
+  - '10'
+  - Staff count for ~full localization in one market
+  compliance_scale_factor:
+  - '5000000'
+  - $5M cumulative — content compliance burden
+  compliance_max_investment_per_round:
+  - '10000000'
+  - $10M compliance investment cap per round
+  min_hq_staff_percentage:
+  - '0.20'
+  - 20% of headcount must stay at HQ
+  ip_exposure_rate_jv:
+  - '0.04'
+  - IP exposure per round for JV — content IP is very sensitive
+  ip_exposure_rate_licensing:
+  - '0.06'
+  - IP exposure per round for licensing — content IP is very sensitive
+  ip_exposure_rate_local_partner:
+  - '0.02'
+  - IP exposure per round from local strategic partner
+  brand_preservation_overhead:
+  - '0.15'
+  - 15% market overhead for brand preservation strategy
+  dual_brand_overhead:
+  - '0.25'
+  - 25% market overhead for dual brand strategy
+  brand_preserved_trust_floor:
+  - '0.92'
+  - Minimum trust multiplier with brand preservation
+  technology_sanctions_dependency_threshold:
+  - '0.35'
+  - Lower threshold — content and algorithm tech is sensitive to sanctions
+  home_market_options:
+  - na,ea,eu,sa,wa
+  - Available home markets for team selection
+features:
+  platform:
+  - code: content_quality
+    layer: platform
+    name: Content Quality
+    name_zh: 内容质量
+    description: Production values, writing quality, acting talent, cinematography. The core differentiator — great content drives subscribers and retention.
+    description_zh: 原创内容的制作水准、叙事深度和艺术价值。吸引高端订阅者和广告商的核心指标。
+    category: Core Content
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 200000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 1
+  - code: platform_technology
+    layer: platform
+    name: Platform Technology
+    name_zh: 平台技术
+    description: Streaming infrastructure, UX design, recommendation algorithms, video quality, and cross-device experience. The technical foundation.
+    description_zh: 流媒体技术基础设施、视频编码、自适应码率和多设备兼容性。用户体验的技术基础。
+    category: Technology
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 180000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 2
+  - code: ip_portfolio
+    layer: platform
+    name: IP Portfolio Strength
+    name_zh: 知识产权组合实力
+    description: Owned franchises, original IP libraries, exclusive licensing deals. Reduces dependency on third-party content and creates moats.
+    description_zh: 原创IP的开发、管理和跨媒体变现能力。长期价值和衍生收入的来源。
+    category: Core Content
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 250000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 3
+  - code: audience_engagement
+    layer: platform
+    name: Audience Engagement
+    name_zh: 观众参与度
+    description: Social features, community building, interactivity, second-screen experiences, and fan engagement tools. Drives retention and word-of-mouth.
+    description_zh: 用户互动、社交功能、直播互动和社区建设。提升用户粘性和留存率。
+    category: Engagement
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 140000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 4
+  - code: localization_quality
+    layer: platform
+    name: Localization Quality
+    name_zh: 本地化质量
+    description: Dubbing quality, subtitle accuracy, cultural adaptation, local talent integration. Critical for non-English markets and regulatory compliance.
+    description_zh: 多语言配音、字幕、文化适配和本地内容制作能力。全球扩张的必要条件。
+    category: Localization
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 120000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 5
+  - code: content_safety
+    layer: platform
+    name: Content Safety & Compliance
+    name_zh: 内容安全与合规
+    description: Censorship adaptation, age rating systems, regulatory compliance tools. Mandatory for market access in regulated markets like East Asia.
+    description_zh: 内容审核、年龄分级、监管合规和品牌安全。在各市场运营的监管门槛。
+    category: Compliance
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: diminishing
+    cost_base: 100000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.00'
+    display_order: 6
+  - code: ai_personalization
+    layer: platform
+    name: AI-Powered Personalization
+    name_zh: AI驱动的个性化
+    description: Algorithmic content curation, AI-generated content tools, predictive recommendations, personalized thumbnails. The future of content discovery.
+    description_zh: AI推荐算法、个性化用户界面和智能内容发现。用户满意度和观看时长的关键驱动力。
+    category: AI & Intelligence
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 220000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '3.00'
+    display_order: 7
+  - code: immersive_media
+    layer: platform
+    name: Interactive & Immersive Media
+    name_zh: 互动与沉浸式媒体
+    description: VR/AR content, interactive storytelling, choose-your-own-adventure, gaming integration. Next-generation entertainment formats.
+    description_zh: VR/AR内容、互动叙事、游戏化元素和沉浸式体验。下一代娱乐形式。
+    category: Innovation
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 190000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 8
+  - code: creator_economy
+    layer: platform
+    name: Creator Economy Platform
+    name_zh: 创作者经济平台
+    description: UGC monetization tools, creator revenue sharing, live commerce integration, fan subscription tiers. Enables platform flywheel effects.
+    description_zh: 创作者工具、分成机制、MCN管理和用户生成内容基础设施。平台生态活力的来源。
+    category: Creator Tools
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: exponential
+    cost_base: 160000
+    time_lag_rounds: 1
+    is_licensable: true
+    license_cost_multiplier: '2.50'
+    display_order: 9
+  marketing:
+  - code: price_competitiveness
+    layer: marketing
+    name: Price Competitiveness
+    name_zh: 价格竞争力
+    description: How your price compares to market expectations for your positioning tier. Derived from your pricing decisions.
+    description_zh: 您的价格与定位层级的市场预期相比如何。由定价决策决定。
+    category: Pricing
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 10
+  - code: promotion_reach
+    layer: marketing
+    name: Advertising & Promotion Reach
+    name_zh: 广告与推广覆盖
+    description: How effectively your marketing reaches target customers. Derived from promotion budget relative to market size.
+    description_zh: 您的营销触达目标客户的效果如何。由促销预算相对于市场规模决定。
+    category: Promotion
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 11
+  - code: distribution_coverage
+    layer: marketing
+    name: Retail & Distribution Reach
+    name_zh: 零售与分销覆盖
+    description: How available your products are to customers. Derived from distribution strategy and investment.
+    description_zh: 您的产品对客户的可获得性如何。由分销策略和投资决定。
+    category: Distribution
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 12
+  - code: brand_awareness
+    layer: marketing
+    name: Brand Recognition & Trust
+    name_zh: 品牌知名度与信任
+    description: How well known and trusted your brand is in each market. Builds cumulatively from promotion spend over multiple rounds.
+    description_zh: 您的品牌在各市场的知名度和可信度如何。随多轮推广支出累积增长。
+    category: Brand
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 13
+  - code: product_availability
+    layer: marketing
+    name: Product Availability & Stock Levels
+    name_zh: 产品可用性与库存水平
+    description: |-
+      Whether you have enough inventory to meet demand. Derived from production volume vs actual demand. Stockouts lose customers.
+    description_zh: 您是否有足够库存满足需求。由产量与实际需求对比决定。缺货会流失客户。
+    category: Supply
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 14
+  strategy:
+  - code: long_term_investment
+    layer: strategy
+    name: Long-Term Market Investment
+    name_zh: 长期市场投资
+    description: |-
+      How committed you are to each market — capital deployed, infrastructure built, time horizon signaled. Derived from entry mode, plant investments, and cumulative spending.
+    description_zh: 您对各市场的承诺程度——部署的资本、建设的基础设施、展示的时间跨度。由进入模式、工厂投资和累计支出决定。
+    category: Market Commitment
+    min_value: 0
+    max_value: 20
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 20
+  - code: debt_equity_cash
+    layer: strategy
+    name: Debt-to-Equity & Cash Reserves
+    name_zh: 资产负债率与现金储备
+    description: |-
+      Your financial health — leverage ratio, cash position, and ability to weather downturns. Derived from financing decisions.
+    description_zh: 您的财务健康状况——杠杆率、现金状况和抵御下行的能力。由融资决策决定。
+    category: Financial Health
+    min_value: 0
+    max_value: 20
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 21
+  - code: jv_distributor
+    layer: strategy
+    name: JV & Distributor Relationships
+    name_zh: 合资与经销商关系
+    description: |-
+      Strength of your local partnerships — joint ventures, distributor agreements, and channel relationships. Derived from partnership decisions and investment levels.
+    description_zh: 您的本地合作伙伴关系的强度——合资企业、经销商协议和渠道关系。由合作决策和投资水平决定。
+    category: Partnerships
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 22
+  - code: regulatory_govt
+    layer: strategy
+    name: Regulatory & Government Engagement
+    name_zh: 监管与政府关系
+    description: |-
+      Your relationship with local regulators and government bodies. Affected by lobbying investment, compliance track record, and local manufacturing presence.
+    description_zh: 您与当地监管机构和政府部门的关系。受游说投资、合规记录和本地制造存在的影响。
+    category: Government Relations
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 23
+  - code: esg_track_record
+    layer: strategy
+    name: Environmental & Social Responsibility Track Record
+    name_zh: 环境与社会责任历史记录
+    description: |-
+      Your cumulative ESG performance — environmental investments, social programs, governance commitments. Builds over time, hard to fake.
+    description_zh: 您的累积ESG表现——环境投资、社会项目、治理承诺。需长期积累，难以伪造。
+    category: ESG
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 24
+  - code: local_manufacturing
+    layer: strategy
+    name: Local Manufacturing & Job Creation
+    name_zh: 本地制造与就业创造
+    description: |-
+      Whether you produce locally in each market. Regulators and communities reward firms that create local jobs and reduce import dependency.
+    description_zh: 您是否在各市场进行本地生产。监管机构和社区奖励创造本地就业和减少进口依赖的企业。
+    category: Operations
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 25
+    is_derived: true
+    is_market_specific: true
+  - code: acquisition_track
+    layer: strategy
+    name: Growth Through Acquisition Track Record
+    name_zh: 并购增长历史记录
+    description: |-
+      Your history of acquiring companies or assets to accelerate growth. Some investors reward aggressive acquisition strategies; others prefer organic growth.
+    description_zh: 您通过收购公司或资产加速增长的历史。部分投资者青睐激进的并购策略，其他则偏好有机增长。
+    category: Growth Strategy
+    min_value: 0
+    max_value: 20
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 26
+  - code: rd_talent
+    layer: strategy
+    name: R&D Team Quality
+    name_zh: 研发团队质量
+    description: |-
+      The caliber of your engineers, designers, and researchers. Higher quality means faster, cheaper feature development. Affected by salary, training investment, and retention.
+    description_zh: 您的工程师、设计师和研究人员的水平。更高质量意味着更快、更低成本的功能开发。受薪资、培训投资和留存率影响。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 30
+  - code: commercial_talent
+    layer: strategy
+    name: Sales & Marketing Team Quality
+    name_zh: 销售与市场团队质量
+    description: |-
+      The caliber of your marketing strategists, sales representatives, and business development team. Higher quality means more effective campaigns, better distribution partnerships, and stronger customer relationships.
+    description_zh: 您的营销策略师、销售代表和业务拓展团队的水平。更高质量意味着更有效的营销活动、更好的分销合作和更强的客户关系。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 31
+  - code: operations_talent
+    layer: strategy
+    name: Operations & Supply Chain Team Quality
+    name_zh: 运营与供应链团队质量
+    description: |-
+      The caliber of your manufacturing engineers, logistics managers, and supply chain specialists. Higher quality means lower production costs, less waste, and more efficient distribution.
+    description_zh: 您的制造工程师、物流经理和供应链专家的水平。更高质量意味着更低的生产成本、更少的浪费和更高效的配送。
+    category: Talent & Workforce
+    min_value: 1
+    max_value: 20
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 32
+  derived:
+  - code: financial_stability
+    layer: strategy
+    name: Financial Stability
+    name_zh: 财务稳定性
+    description: Composite of debt-to-equity ratio, cash runway, and interest coverage. Higher = more stable.
+    description_zh: 资产负债率、现金储备和利息覆盖率的综合指标。数值越高越稳定。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 40
+    is_derived: true
+  - code: dividend_consistency
+    layer: strategy
+    name: Dividend & Shareholder Returns
+    name_zh: 股息与股东回报
+    description: Based on dividend yield, payout consistency, and cumulative shareholder return.
+    description_zh: 基于股息收益率、派息一致性和累计股东回报。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 41
+    is_derived: true
+  - code: revenue_momentum
+    layer: strategy
+    name: Revenue Growth Momentum
+    name_zh: 营业收入增长动能
+    description: Based on round-over-round revenue growth rate and trend consistency.
+    description_zh: 基于逐轮营业收入增长率和趋势一致性。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 42
+    is_derived: true
+  - code: profitability
+    layer: strategy
+    name: Profitability
+    name_zh: 盈利能力
+    description: Based on net margin, ROE, and operating efficiency.
+    description_zh: 基于净利润率、净资产收益率和运营效率。
+    category: Financial Health
+    min_value: 1
+    max_value: 10
+    default_value: 5
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 43
+    is_derived: true
+  - code: market_expansion
+    layer: strategy
+    name: International Presence
+    name_zh: 国际化程度
+    description: Based on number of markets entered and depth of market commitment.
+    description_zh: 基于进入市场的数量和市场承诺深度。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 44
+    is_derived: true
+  - code: innovation_intensity
+    layer: strategy
+    name: Innovation & R&D Intensity
+    name_zh: 创新与研发强度
+    description: Based on R&D spend as percentage of revenue and platform generation advancement.
+    description_zh: 基于研发支出占营业收入的比例和平台代际推进。
+    category: Strategic Posture
+    min_value: 1
+    max_value: 10
+    default_value: 3
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 45
+    is_derived: true
+  - code: distribution_commitment
+    layer: strategy
+    name: Distribution & Channel Investment
+    name_zh: 分销与渠道投资
+    description: Per-market. Based on distribution investment, sales team size, and partnership status.
+    description_zh: 按市场计算。基于分销投资、销售团队规模和合作伙伴状态。
+    category: Operational
+    min_value: 1
+    max_value: 10
+    default_value: 1
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 47
+    is_derived: true
+    is_market_specific: true
+  - code: market_tenure
+    layer: strategy
+    name: Market Tenure & Commitment
+    name_zh: 市场经营时间与承诺
+    description: Per-market. How long the team has been present and investing in this market.
+    description_zh: 按市场计算。团队在该市场的存在时间和投资持续时间。
+    category: Operational
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 48
+    is_derived: true
+    is_market_specific: true
+  - code: sustainability_commitment
+    layer: strategy
+    name: Environmental Sustainability
+    name_zh: 环境可持续性
+    description: Derived from environmental investment decisions. Regulators (especially EU) reward sustainability.
+    description_zh: 由环境投资决策决定。监管机构（尤其是欧盟）奖励可持续性。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 49
+    is_derived: true
+  - code: governance_quality
+    layer: strategy
+    name: Governance Quality
+    name_zh: 治理质量
+    description: Derived from governance commitments. Investors and regulators reward strong governance.
+    description_zh: 由治理承诺决定。投资者和监管机构奖励强大的治理。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 50
+    is_derived: true
+  - code: social_responsibility
+    layer: strategy
+    name: Social Responsibility
+    name_zh: 社会责任
+    description: Derived from social investment decisions. Communities and regulators reward social programs.
+    description_zh: 由社会投资决策决定。社区和监管机构奖励社会项目。
+    category: ESG
+    min_value: 0
+    max_value: 10
+    default_value: 0
+    cost_curve_type: linear
+    cost_base: 0
+    time_lag_rounds: 0
+    is_licensable: false
+    license_cost_multiplier: '1.00'
+    display_order: 51
+    is_derived: true
+platform_generations:
+- name: Gen 1 — Traditional Media Platform
+  name_zh: 第一代——传统媒体平台
+  description: |-
+    Current mainstream streaming and linear content platform. Reliable delivery, broad content library, standard recommendation engine. Adequate for mass market and premium subscribers but limited for interactive and AI-powered experiences.
+  description_zh: |-
+    标准流媒体和内容分发平台。技术成熟，适用于基本的视频点播和直播服务。功能上限制约了互动和沉浸式体验。
+  generation_order: 1
+  unlock_round: 0
+  development_cost: 8000000
+  development_rounds: 0
+  license_cost: 18000000
+  annual_maintenance_cost: 600000
+  is_starting_platform: true
+  ceilings:
+    content_quality:
+    - 7
+    - 3
+    platform_technology:
+    - 7
+    - 3
+    ip_portfolio:
+    - 6
+    - 2
+    audience_engagement:
+    - 6
+    - 2
+    localization_quality:
+    - 5
+    - 2
+    content_safety:
+    - 4
+    - 1
+    ai_personalization:
+    - 0
+    - 0
+    immersive_media:
+    - 0
+    - 0
+    creator_economy:
+    - 0
+    - 0
+- name: Gen 2 — AI-Enhanced Entertainment Platform
+  name_zh: 第二代——AI增强娱乐平台
+  description: |-
+    Next-generation platform with AI-powered personalization and interactive media capabilities. Unlocks algorithmic curation and immersive content formats. Required to compete for Gen Z Digital Natives.
+  description_zh: |-
+    AI增强的娱乐平台，解锁高级个性化、互动功能和创作者经济工具。参与高端订阅和广告市场竞争的必要条件。
+  generation_order: 2
+  unlock_round: 2
+  development_cost: 18000000
+  development_rounds: 2
+  license_cost: 40000000
+  annual_maintenance_cost: 1000000
+  is_starting_platform: false
+  ceilings:
+    content_quality:
+    - 9
+    - 5
+    platform_technology:
+    - 9
+    - 5
+    ip_portfolio:
+    - 8
+    - 4
+    audience_engagement:
+    - 9
+    - 5
+    localization_quality:
+    - 8
+    - 4
+    content_safety:
+    - 7
+    - 3
+    ai_personalization:
+    - 8
+    - 3
+    immersive_media:
+    - 7
+    - 3
+    creator_economy:
+    - 0
+    - 0
+- name: Gen 3 — Creator-Powered Ecosystem
+  name_zh: 第三代——创作者驱动生态系统
+  description: |-
+    Cutting-edge platform combining UGC monetization, live commerce, and fully immersive entertainment. Full feature unlocks across all capabilities. The future of media — but audiences and infrastructure may not be ready.
+  description_zh: |-
+    创作者驱动的全生态平台。全面解锁沉浸式媒体、AI内容工具和去中心化创作者经济。行业的未来——但市场接受度和版权框架可能尚未成熟。
+  generation_order: 3
+  unlock_round: 5
+  development_cost: 30000000
+  development_rounds: 2
+  license_cost: 65000000
+  annual_maintenance_cost: 1500000
+  is_starting_platform: false
+  ceilings:
+    content_quality:
+    - 10
+    - 6
+    platform_technology:
+    - 10
+    - 6
+    ip_portfolio:
+    - 10
+    - 5
+    audience_engagement:
+    - 10
+    - 6
+    localization_quality:
+    - 10
+    - 5
+    content_safety:
+    - 10
+    - 5
+    ai_personalization:
+    - 10
+    - 5
+    immersive_media:
+    - 10
+    - 5
+    creator_economy:
+    - 10
+    - 5
+markets:
+- name: North America
+  name_zh: 北美
+  code: na
+  description: |-
+    Mature, saturated streaming market with the highest ARPU globally. Netflix, Disney+, and Amazon dominate. Content spending arms race. Cord-cutting complete. Premium subscribers willing to pay for quality originals but churn is high. FCC regulation is moderate. $45B total market. Growth 3%.
+  description_zh: |-
+    全球最大的流媒体和娱乐市场。Netflix、Disney+和YouTube主导。内容创作人才集中。广告技术领先。消费者对内容质量要求高。版权保护体系成熟。好莱坞仍是全球内容引擎。
+  currency_code: USD
+  exchange_rate_base: '1.0000'
+  exchange_rate_volatility: '0.02'
+  base_growth_rate: '0.03'
+  entry_cost_base: 2000000
+  tariff_rate: '0.00'
+  tax_rate: '0.21'
+  regulatory_difficulty: 5
+  infrastructure_quality: 10
+  base_manufacturing_cost: '1.0'
+  allows_manufacturing: true
+  plant_build_cost: 15000000
+  plant_build_rounds: 2
+  plant_capacity_units: 80000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.20'
+  contract_mfg_capacity_cap: 50000
+  display_order: 1
+- name: East Asia
+  name_zh: 东亚
+  code: ea
+  description: |-
+    Massive market but the most heavily censored content environment globally. All content must pass NRTA review. Douyin, Tencent Video, and Bilibili dominate. Foreign content severely restricted. Short-form video is dominant format. Content Safety & Compliance is MANDATORY for market access. Growth 8%.
+  description_zh: |-
+    全球最大的游戏市场和增长最快的流媒体市场。本土平台强势——抖音、B站、爱奇艺。内容审查要求严格。文化出口能力强（K-pop、动漫、网文）。用户付费意愿提升中。
+  currency_code: CNY
+  exchange_rate_base: '0.1380'
+  exchange_rate_volatility: '0.04'
+  base_growth_rate: '0.08'
+  entry_cost_base: 1500000
+  tariff_rate: '0.10'
+  tax_rate: '0.25'
+  regulatory_difficulty: 9
+  infrastructure_quality: 8
+  base_manufacturing_cost: '0.7'
+  allows_manufacturing: true
+  plant_build_cost: 12000000
+  plant_build_rounds: 2
+  plant_capacity_units: 100000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.10'
+  contract_mfg_capacity_cap: 60000
+  display_order: 2
+- name: Western Europe
+  name_zh: 西欧
+  code: eu
+  description: |-
+    Fragmented by language with 24+ language markets. EU Digital Services Act and AVMSD mandate 30% European content quotas. GDPR restricts personalization algorithms. Privacy-conscious consumers. Strong public broadcasters. Premium content commands loyalty. Growth 4%.
+  description_zh: |-
+    成熟的媒体市场，强调文化多样性和本地内容。欧盟数字服务法和视听媒体服务指令设定市场规则。公共广播传统强大。多语言市场需要深度本地化。版权法规严格。
+  currency_code: EUR
+  exchange_rate_base: '1.0800'
+  exchange_rate_volatility: '0.02'
+  base_growth_rate: '0.04'
+  entry_cost_base: 2500000
+  tariff_rate: '0.05'
+  tax_rate: '0.22'
+  regulatory_difficulty: 7
+  infrastructure_quality: 9
+  base_manufacturing_cost: '1.2'
+  allows_manufacturing: true
+  plant_build_cost: 20000000
+  plant_build_rounds: 2
+  plant_capacity_units: 60000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.30'
+  contract_mfg_capacity_cap: 40000
+  display_order: 3
+- name: South America
+  name_zh: 南美
+  code: sa
+  description: |-
+    Portuguese-language dominated market (Brazil). Globo dominance in broadcast. Growing streaming adoption driven by smartphone penetration. Telenovela culture means strong local content preference. ANCINE film agency oversees quotas. Currency volatility affects subscription pricing. Growth 7%.
+  description_zh: |-
+    拉丁美洲流媒体市场快速增长。葡萄牙语和西班牙语内容需求大。电信运营商捆绑销售是重要渠道。价格敏感但对本地内容热情高。广告支持的免费模式受欢迎。
+  currency_code: BRL
+  exchange_rate_base: '0.1700'
+  exchange_rate_volatility: '0.05'
+  base_growth_rate: '0.07'
+  entry_cost_base: 1200000
+  tariff_rate: '0.12'
+  tax_rate: '0.34'
+  regulatory_difficulty: 5
+  infrastructure_quality: 6
+  base_manufacturing_cost: '0.8'
+  allows_manufacturing: true
+  plant_build_cost: 10000000
+  plant_build_rounds: 2
+  plant_capacity_units: 50000
+  contract_mfg_available: true
+  contract_mfg_cost_multiplier: '1.15'
+  contract_mfg_capacity_cap: 30000
+  display_order: 4
+- name: West Africa
+  name_zh: 西非
+  code: wa
+  description: |-
+    Nollywood is the world's 2nd largest film industry by volume. Mobile-first consumption dominates — data costs limit streaming quality. Massive youth population hungry for content. Local creators are cultural powerhouses. Distribution requires mobile-optimized delivery. Highest growth market (15%) with highest operational friction.
+  description_zh: |-
+    非洲娱乐产业中心——尼莱坞是全球第二大电影产业。移动优先的内容消费。数据成本限制流媒体发展。本地内容有巨大需求。音乐产业（Afrobeats）全球影响力上升。
+  currency_code: NGN
+  exchange_rate_base: '0.00063'
+  exchange_rate_volatility: '0.08'
+  base_growth_rate: '0.15'
+  entry_cost_base: 800000
+  tariff_rate: '0.08'
+  tax_rate: '0.30'
+  regulatory_difficulty: 4
+  infrastructure_quality: 3
+  base_manufacturing_cost: '0.5'
+  allows_manufacturing: true
+  plant_build_cost: 5000000
+  plant_build_rounds: 2
+  plant_capacity_units: 40000
+  contract_mfg_available: false
+  contract_mfg_cost_multiplier: '1.00'
+  contract_mfg_capacity_cap:
+  display_order: 5
+readiness_data:
+- market: na
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: na
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.10
+    3: 0.30
+    4: 0.55
+    5: 0.75
+    6: 0.90
+    7: 0.97
+    8: 1.0
+- market: na
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.08
+    6: 0.22
+    7: 0.40
+    8: 0.60
+- market: ea
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: ea
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.20
+    3: 0.45
+    4: 0.65
+    5: 0.82
+    6: 0.93
+    7: 0.98
+    8: 1.0
+- market: ea
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.12
+    6: 0.28
+    7: 0.48
+    8: 0.68
+- market: eu
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: eu
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.10
+    3: 0.25
+    4: 0.50
+    5: 0.70
+    6: 0.88
+    7: 0.95
+    8: 1.0
+- market: eu
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.06
+    6: 0.18
+    7: 0.35
+    8: 0.55
+- market: sa
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: sa
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.05
+    3: 0.20
+    4: 0.40
+    5: 0.60
+    6: 0.78
+    7: 0.90
+    8: 0.97
+- market: sa
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.04
+    6: 0.12
+    7: 0.25
+    8: 0.42
+- market: wa
+  generation: 1
+  rounds:
+    0: 1.0
+    1: 1.0
+    2: 1.0
+    3: 1.0
+    4: 1.0
+    5: 1.0
+    6: 1.0
+    7: 1.0
+    8: 1.0
+- market: wa
+  generation: 2
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.05
+    3: 0.15
+    4: 0.30
+    5: 0.50
+    6: 0.68
+    7: 0.82
+    8: 0.92
+- market: wa
+  generation: 3
+  rounds:
+    0: 0.0
+    1: 0.0
+    2: 0.0
+    3: 0.0
+    4: 0.0
+    5: 0.03
+    6: 0.08
+    7: 0.18
+    8: 0.32
+entry_modes:
+- code: export
+  name: Export from Home Market
+  name_zh: 从母国市场出口
+  description: |-
+    Ship products from your existing North American operations. Lowest commitment, fastest to start, but highest logistics costs and full tariff exposure.
+  description_zh: |-
+    从您现有的业务发货。承诺最低，启动最快，但物流成本最高且完全承担关税。
+  capital_requirement: 500000
+  setup_rounds: 0
+  control_level: 3
+  risk_level: 2
+  local_presence_score: 1
+  logistics_cost_multiplier: '2.00'
+  tariff_applies: true
+- code: licensing
+  name: Technology Licensing Agreement
+  name_zh: 技术许可协议
+  description: |-
+    License your technology and brand to a local manufacturer. Low cost, but you lose control over quality and pricing. Partner earns most of the margin.
+  description_zh: |-
+    将您的技术和品牌授权给本地制造商或运营商。成本低，但您将失去对质量和定价的控制。合作伙伴获取大部分利润。
+  capital_requirement: 1000000
+  setup_rounds: 1
+  control_level: 2
+  risk_level: 3
+  local_presence_score: 3
+  logistics_cost_multiplier: '1.10'
+  tariff_applies: false
+- code: joint_venture
+  name: Joint Venture with Local Partner
+  name_zh: 与本地合作伙伴成立合资企业
+  description: |-
+    Partner with a local firm to share operations, costs, and market knowledge. Moderate capital, good local relationships, but shared profits and potential partner conflicts.
+  description_zh: |-
+    与本地企业合作共享运营、成本和市场知识。中等资本要求，良好的本地关系，但利润共享且存在潜在合作伙伴冲突。
+  capital_requirement: 8000000
+  setup_rounds: 1
+  control_level: 5
+  risk_level: 5
+  local_presence_score: 7
+  logistics_cost_multiplier: '1.20'
+  tariff_applies: false
+- code: acquisition
+  name: Acquire Local Company
+  name_zh: 收购本地公司
+  description: |-
+    Buy an existing local player for instant market access, customer base, and operations. Highest capital cost, but immediate presence and full control.
+  description_zh: |-
+    收购现有本地企业以获得即时市场准入、客户基础和运营能力。资本成本最高，但可立即建立存在并获得完全控制权。
+  capital_requirement: 20000000
+  setup_rounds: 0
+  control_level: 9
+  risk_level: 7
+  local_presence_score: 8
+  logistics_cost_multiplier: '1.05'
+  tariff_applies: false
+- code: subsidiary
+  name: Build Wholly-Owned Subsidiary
+  name_zh: 建立全资子公司
+  description: |-
+    Establish your own operations from scratch. Full control, full costs, full risk. Takes time to set up but provides maximum strategic flexibility long-term.
+  description_zh: |-
+    从零开始建立自有业务。完全控制、完全成本、完全风险。建设需要时间，但长期提供最大的战略灵活性。
+  capital_requirement: 15000000
+  setup_rounds: 2
+  control_level: 10
+  risk_level: 6
+  local_presence_score: 9
+  logistics_cost_multiplier: '1.00'
+  tariff_applies: false
+strategy_options:
+- category: Partnerships
+  code: distribution_partner
+  name: Content Licensing Partner
+  name_zh: 内容授权合作伙伴
+  description: Establish a relationship with a major local content distributor, telecom bundle partner, or app store.
+  description_zh: 与本地内容提供商建立授权合作。快速获取本地内容库。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- category: Partnerships
+  code: technology_partner
+  name: Cloud & AI Technology Partner
+  name_zh: 云与AI技术合作伙伴
+  description: Co-develop streaming infrastructure or AI recommendation technology with a local tech firm.
+  description_zh: 与本地技术企业合作开发云基础设施和AI能力。加速技术部署。
+  capital_cost_base: 3000000
+  recurring_cost_per_round: 750000
+  time_lag_rounds: 1
+  is_reversible: true
+  reversal_cost_multiplier: '0.50'
+  effects:
+  - - jv_distributor
+    - add
+    - 1.5
+    - true
+  - - regulatory_govt
+    - add
+    - 1.0
+    - true
+- category: Government Relations
+  code: govt_advisor
+  name: Government & Regulatory Advisor
+  name_zh: 政府与监管顾问
+  description: Retain a local advisory firm to navigate regulatory requirements and build government relationships.
+  description_zh: 聘请本地咨询公司协助应对内容监管要求并建立政府关系。
+  capital_cost_base: 1000000
+  recurring_cost_per_round: 300000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.10'
+  effects:
+  - - regulatory_govt
+    - add
+    - 3.0
+    - true
+- category: Brand
+  code: brand_ambassador
+  name: Local Talent & Celebrity Partner
+  name_zh: 本地人才与明星合作伙伴
+  description: Partner with a respected local creator, actor, or media personality to build brand credibility.
+  description_zh: 与本地明星和创作者合作，建立品牌可信度和内容吸引力。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 400000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.20'
+  effects:
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+customer_segments:
+- name: Mass Entertainment Viewers
+  name_zh: 大众娱乐观众
+  segment_type: customer
+  description: |-
+    Price-conscious viewers who want broad content libraries at affordable subscription prices. Largest segment in every market. Will churn quickly if content doesn't refresh. Sensitive to price increases. Mobile-first in emerging markets.
+  description_zh: |-
+    寻求多样化内容的大众观众。价格敏感，广告容忍度中等。本地内容偏好强。
+  bass_p: '0.04'
+  bass_q: '0.40'
+  min_generation_required:
+  performance_index_weight: '0.05'
+  revenue_per_unit: '120.00'
+  populations:
+    na: 4000000
+    ea: 12000000
+    eu: 5000000
+    sa: 6000000
+    wa: 8000000
+  growth_rates:
+    na: '0.02'
+    ea: '0.10'
+    eu: '0.03'
+    sa: '0.08'
+    wa: '0.18'
+- name: Premium Content Subscribers
+  name_zh: 高端内容订阅者
+  segment_type: customer
+  description: |-
+    Willing to pay for premium originals, exclusive content, and ad-free experiences. Less price-sensitive. Want quality over quantity. Brand loyal to platforms with strong original programming and IP.
+  description_zh: |-
+    愿意为优质独家内容支付高价的订阅者。对内容质量、原创性和无广告体验有高要求。
+  bass_p: '0.04'
+  bass_q: '0.42'
+  min_generation_required:
+  performance_index_weight: '0.05'
+  revenue_per_unit: '240.00'
+  populations:
+    na: 2500000
+    ea: 1500000
+    eu: 2800000
+    sa: 1000000
+    wa: 300000
+  growth_rates:
+    na: '0.03'
+    ea: '0.08'
+    eu: '0.04'
+    sa: '0.06'
+    wa: '0.12'
+- name: Gen Z Digital Natives
+  name_zh: Z世代数字原住民
+  segment_type: customer
+  description: |-
+    Demand interactivity, AI-powered personalization, short-form content, and creator-driven experiences. Fastest adoption curve. Influential through social media. Won't engage with traditional media formats.
+  description_zh: |-
+    在数字环境中成长的年轻用户。偏好短视频、互动内容和社交功能。对创作者经济参与度高。
+  bass_p: '0.06'
+  bass_q: '0.50'
+  min_generation_required: 2
+  performance_index_weight: '0.035'
+  revenue_per_unit: '180.00'
+  populations:
+    na: 1800000
+    ea: 3000000
+    eu: 1500000
+    sa: 2000000
+    wa: 3500000
+  growth_rates:
+    na: '0.05'
+    ea: '0.12'
+    eu: '0.06'
+    sa: '0.10'
+    wa: '0.20'
+- name: Enterprise & Institutional
+  name_zh: 企业与机构客户
+  segment_type: customer
+  description: |-
+    Corporate training platforms, educational institutions, government media licensing. Long procurement cycles but stable contracts. Require compliance, reliability, and content safety certifications.
+  description_zh: |-
+    采购企业培训内容、广告版位和数据分析服务的商业客户。注重品牌安全和精准定向。
+  bass_p: '0.02'
+  bass_q: '0.35'
+  min_generation_required:
+  performance_index_weight: '0.03'
+  revenue_per_unit: '500.00'
+  populations:
+    na: 800000
+    ea: 1200000
+    eu: 600000
+    sa: 400000
+    wa: 200000
+  growth_rates:
+    na: '0.03'
+    ea: '0.06'
+    eu: '0.02'
+    sa: '0.05'
+    wa: '0.08'
+- name: Cultural Enthusiasts
+  name_zh: 文化爱好者
+  segment_type: customer
+  description: |-
+    Niche content lovers — documentary, art house, local language cinema, world music, cultural programming. Highest in EU (strong public broadcasting culture), smallest in WA. Value localization quality and content depth over technology.
+  description_zh: |-
+    追求高质量文化内容的观众。偏好纪录片、艺术电影、古典音乐和文学改编。重视本地化质量。
+  bass_p: '0.03'
+  bass_q: '0.38'
+  min_generation_required:
+  performance_index_weight: '0.025'
+  revenue_per_unit: '200.00'
+  populations:
+    na: 600000
+    ea: 800000
+    eu: 1800000
+    sa: 500000
+    wa: 150000
+  growth_rates:
+    na: '0.04'
+    ea: '0.06'
+    eu: '0.05'
+    sa: '0.07'
+    wa: '0.10'
+non_customer_segments:
+- name: Velocity Capital
+  name_zh: 高速资本
+  segment_type: investor
+  market:
+  description: |-
+    Growth-focused fund backing media companies with aggressive content investment, subscriber growth, and international expansion. Tolerates losses for compelling audience trajectory.
+  description_zh: 专注增长的基金，支持展现积极内容投入、国际扩张和用户增长的公司。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.11'
+  revenue_per_unit:
+- name: Granite Investments
+  name_zh: 磐石投资
+  segment_type: investor
+  market:
+  description: |-
+    Value-focused fund prioritizing stable subscriber revenue, controlled content spending, low leverage, and consistent shareholder returns in the media sector.
+  description_zh: 专注价值的基金，优先考虑稳定回报、低负债和持续分红。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.09'
+  revenue_per_unit:
+- name: GreenHorizon Partners
+  name_zh: 绿色地平线合伙人
+  segment_type: investor
+  market:
+  description: |-
+    ESG-focused fund investing in media companies demonstrating content diversity, responsible AI usage, strong governance, and positive cultural impact.
+  description_zh: 专注ESG的基金，投资于展现内容多元化、社会责任和治理质量的公司。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.10'
+  revenue_per_unit:
+- name: FCC & Content Standards Board
+  name_zh: 联邦通信委员会与内容标准委员会
+  segment_type: regulator
+  market: na
+  description: US FCC and content standards oversight covering broadcast standards, content ratings, and digital platform regulation.
+  description_zh: 北美市场的内容和通信标准监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: NRTA Content Authority
+  name_zh: 广电总局内容管理局
+  segment_type: regulator
+  market: ea
+  description: China's National Radio and Television Administration — the strictest content control authority globally. All content must pass NRTA review for market access.
+  description_zh: 东亚市场的内容审核和广播电视监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: EU Digital Services & AVMSD Authority
+  name_zh: 欧盟数字服务与视听媒体服务指令管理机构
+  segment_type: regulator
+  market: eu
+  description: European audiovisual regulation enforcing Digital Services Act, AVMSD content quotas (30% European content), GDPR data privacy, and AI transparency requirements.
+  description_zh: 欧洲数字服务和视听媒体监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: ANCINE Film & Broadcast Agency
+  name_zh: ANCINE电影与广播局
+  segment_type: regulator
+  market: sa
+  description: Brazilian film and broadcast regulator overseeing local content requirements, Portuguese-language quotas, and media licensing.
+  description_zh: 巴西国家电影和广播监管机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: Nigerian Film & Video Censors Board
+  name_zh: 尼日利亚电影与视频审查委员会
+  segment_type: regulator
+  market: wa
+  description: Nigerian media regulator focused on local content investment, Nollywood development, and community media standards.
+  description_zh: 尼日利亚电影和视频内容审查机构。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.05'
+  revenue_per_unit:
+- name: NA Content Distribution Networks
+  name_zh: 北美内容分销网络
+  segment_type: channel
+  market: na
+  description: North American content distribution and telecom bundling partners serving streaming platforms and linear broadcasters.
+  description_zh: 北美内容分发和流媒体分销网络。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: EA Digital Distribution Platforms
+  name_zh: 东亚数字分销平台
+  segment_type: channel
+  market: ea
+  description: East Asian digital distribution platforms connecting content providers to mobile and smart TV audiences.
+  description_zh: 东亚数字内容分发平台。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: EU Broadcast & Streaming Partners
+  name_zh: 欧盟广播与流媒体合作伙伴
+  segment_type: channel
+  market: eu
+  description: European broadcast networks and streaming aggregators distributing content across EU member states.
+  description_zh: 欧洲广播和流媒体分销合作伙伴。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: SA Telecom & Media Distributors
+  name_zh: 南美电信与媒体分销商
+  segment_type: channel
+  market: sa
+  description: South American telecom and media distribution network serving streaming and broadcast audiences.
+  description_zh: 南美电信运营商和媒体分销网络。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+- name: WA Mobile Content Networks
+  name_zh: 西非移动内容网络
+  segment_type: channel
+  market: wa
+  description: West African mobile content distribution network optimized for low-bandwidth, pay-per-view, and USSD-based content delivery.
+  description_zh: 西非移动内容分发网络。
+  population_size: 1
+  bass_p: '0'
+  bass_q: '0'
+  performance_index_weight: '0.04'
+  revenue_per_unit:
+segment_preferences:
+  Mass Entertainment Viewers:
+    na:
+    - - content_quality
+      - 8.0
+      - 0.08
+      - 4.0
+    - - platform_technology
+      - 7.0
+      - 0.05
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - localization_quality
+      - 3.0
+      - 0.02
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.25
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.02
+      - 6.0
+    ea:
+    - - content_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 8.0
+      - 0.05
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.02
+      - 5.0
+    - - audience_engagement
+      - 6.0
+      - 0.03
+      - 5.0
+    - - localization_quality
+      - 8.0
+      - 0.05
+      - 4.0
+    - - content_safety
+      - 8.0
+      - 0.04
+      - 4.0
+    - - ai_personalization
+      - 5.0
+      - 0.02
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.22
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.07
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 6.0
+    - - regulatory_govt
+      - 5.0
+      - 0.03
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.02
+      - 6.0
+    eu:
+    - - content_quality
+      - 8.0
+      - 0.07
+      - 4.0
+    - - platform_technology
+      - 7.0
+      - 0.05
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - localization_quality
+      - 7.0
+      - 0.04
+      - 4.0
+    - - content_safety
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 15.0
+      - 0.23
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.02
+      - 6.0
+    sa:
+    - - content_quality
+      - 7.0
+      - 0.07
+      - 4.0
+    - - platform_technology
+      - 6.0
+      - 0.04
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - localization_quality
+      - 7.0
+      - 0.05
+      - 4.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.24
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.08
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.05
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.03
+      - 6.0
+    wa:
+    - - content_quality
+      - 6.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 5.0
+      - 0.04
+      - 4.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - localization_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 4.0
+      - 0.02
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.27
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.07
+      - 5.0
+    - - distribution_coverage
+      - 14.0
+      - 0.12
+      - 3.0
+    - - brand_awareness
+      - 6.0
+      - 0.04
+      - 5.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 2.0
+      - 0.02
+      - 6.0
+  Premium Content Subscribers:
+    na:
+    - - content_quality
+      - 12.0
+      - 0.12
+      - 3.0
+    - - ip_portfolio
+      - 10.0
+      - 0.08
+      - 3.0
+    - - platform_technology
+      - 8.0
+      - 0.07
+      - 4.0
+    - - audience_engagement
+      - 6.0
+      - 0.04
+      - 5.0
+    - - localization_quality
+      - 3.0
+      - 0.02
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 5.0
+      - 0.02
+      - 5.0
+    - - immersive_media
+      - 4.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.07
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 5.0
+    ea:
+    - - content_quality
+      - 10.0
+      - 0.10
+      - 3.0
+    - - ip_portfolio
+      - 8.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 8.0
+      - 0.06
+      - 4.0
+    - - audience_engagement
+      - 6.0
+      - 0.04
+      - 5.0
+    - - localization_quality
+      - 8.0
+      - 0.05
+      - 4.0
+    - - content_safety
+      - 10.0
+      - 0.05
+      - 4.0
+    - - ai_personalization
+      - 5.0
+      - 0.02
+      - 5.0
+    - - immersive_media
+      - 4.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.07
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 5.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 5.0
+    eu:
+    - - content_quality
+      - 11.0
+      - 0.12
+      - 3.0
+    - - ip_portfolio
+      - 9.0
+      - 0.08
+      - 3.0
+    - - platform_technology
+      - 8.0
+      - 0.06
+      - 4.0
+    - - audience_engagement
+      - 6.0
+      - 0.04
+      - 5.0
+    - - localization_quality
+      - 9.0
+      - 0.06
+      - 4.0
+    - - content_safety
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 4.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.07
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - regulatory_govt
+      - 5.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 5.0
+    sa:
+    - - content_quality
+      - 10.0
+      - 0.11
+      - 3.0
+    - - ip_portfolio
+      - 8.0
+      - 0.07
+      - 4.0
+    - - platform_technology
+      - 7.0
+      - 0.06
+      - 4.0
+    - - audience_engagement
+      - 6.0
+      - 0.04
+      - 5.0
+    - - localization_quality
+      - 8.0
+      - 0.06
+      - 4.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.12
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.07
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.04
+      - 5.0
+    wa:
+    - - content_quality
+      - 9.0
+      - 0.10
+      - 3.0
+    - - ip_portfolio
+      - 7.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 6.0
+      - 0.05
+      - 4.0
+    - - audience_engagement
+      - 5.0
+      - 0.04
+      - 5.0
+    - - localization_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 12.0
+      - 0.14
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.04
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 5.0
+  Gen Z Digital Natives:
+    na:
+    - - ai_personalization
+      - 10.0
+      - 0.10
+      - 3.0
+    - - audience_engagement
+      - 10.0
+      - 0.10
+      - 3.0
+    - - platform_technology
+      - 9.0
+      - 0.08
+      - 4.0
+    - - immersive_media
+      - 7.0
+      - 0.06
+      - 5.0
+    - - content_quality
+      - 6.0
+      - 0.05
+      - 5.0
+    - - creator_economy
+      - 5.0
+      - 0.03
+      - 5.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - localization_quality
+      - 3.0
+      - 0.01
+      - 6.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 12.0
+      - 0.12
+      - 3.0
+    - - promotion_reach
+      - 10.0
+      - 0.08
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 3.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 6.0
+    - - local_manufacturing
+      - 3.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 6.0
+    ea:
+    - - ai_personalization
+      - 12.0
+      - 0.12
+      - 3.0
+    - - audience_engagement
+      - 10.0
+      - 0.10
+      - 3.0
+    - - platform_technology
+      - 9.0
+      - 0.08
+      - 4.0
+    - - immersive_media
+      - 7.0
+      - 0.05
+      - 5.0
+    - - content_quality
+      - 6.0
+      - 0.04
+      - 5.0
+    - - creator_economy
+      - 5.0
+      - 0.03
+      - 5.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - localization_quality
+      - 6.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 6.0
+      - 0.02
+      - 5.0
+    - - price_competitiveness
+      - 12.0
+      - 0.12
+      - 3.0
+    - - promotion_reach
+      - 10.0
+      - 0.07
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 3.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 6.0
+    eu:
+    - - ai_personalization
+      - 8.0
+      - 0.09
+      - 4.0
+    - - audience_engagement
+      - 9.0
+      - 0.09
+      - 3.0
+    - - platform_technology
+      - 8.0
+      - 0.07
+      - 4.0
+    - - immersive_media
+      - 7.0
+      - 0.06
+      - 5.0
+    - - content_quality
+      - 7.0
+      - 0.05
+      - 5.0
+    - - creator_economy
+      - 5.0
+      - 0.03
+      - 5.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - localization_quality
+      - 6.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 4.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 12.0
+      - 0.12
+      - 3.0
+    - - promotion_reach
+      - 10.0
+      - 0.08
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.02
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 4.0
+      - 0.02
+      - 6.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 6.0
+    - - local_manufacturing
+      - 3.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 6.0
+    sa:
+    - - ai_personalization
+      - 9.0
+      - 0.10
+      - 3.0
+    - - audience_engagement
+      - 9.0
+      - 0.09
+      - 3.0
+    - - platform_technology
+      - 8.0
+      - 0.07
+      - 4.0
+    - - immersive_media
+      - 6.0
+      - 0.05
+      - 5.0
+    - - content_quality
+      - 6.0
+      - 0.04
+      - 5.0
+    - - creator_economy
+      - 6.0
+      - 0.04
+      - 5.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - localization_quality
+      - 5.0
+      - 0.02
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 14.0
+      - 0.14
+      - 3.0
+    - - promotion_reach
+      - 10.0
+      - 0.08
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 4.0
+      - 0.02
+      - 6.0
+    - - regulatory_govt
+      - 3.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 3.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.05
+      - 6.0
+    wa:
+    - - ai_personalization
+      - 8.0
+      - 0.08
+      - 4.0
+    - - audience_engagement
+      - 9.0
+      - 0.09
+      - 3.0
+    - - platform_technology
+      - 7.0
+      - 0.06
+      - 4.0
+    - - immersive_media
+      - 5.0
+      - 0.04
+      - 5.0
+    - - content_quality
+      - 5.0
+      - 0.04
+      - 5.0
+    - - creator_economy
+      - 7.0
+      - 0.06
+      - 4.0
+    - - ip_portfolio
+      - 3.0
+      - 0.02
+      - 5.0
+    - - localization_quality
+      - 6.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 16.0
+      - 0.16
+      - 3.0
+    - - promotion_reach
+      - 10.0
+      - 0.07
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 4.0
+      - 0.03
+      - 6.0
+    - - debt_equity_cash
+      - 6.0
+      - 0.01
+      - 6.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 6.0
+    - - regulatory_govt
+      - 3.0
+      - 0.01
+      - 6.0
+    - - esg_track_record
+      - 2.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 6.0
+  Enterprise & Institutional:
+    na:
+    - - content_safety
+      - 10.0
+      - 0.12
+      - 3.0
+    - - content_quality
+      - 8.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 8.0
+      - 0.06
+      - 4.0
+    - - localization_quality
+      - 5.0
+      - 0.04
+      - 5.0
+    - - ip_portfolio
+      - 6.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.12
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.06
+      - 4.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 5.0
+    - - regulatory_govt
+      - 8.0
+      - 0.10
+      - 4.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 6.0
+    ea:
+    - - content_safety
+      - 14.0
+      - 0.15
+      - 3.0
+    - - content_quality
+      - 8.0
+      - 0.05
+      - 4.0
+    - - platform_technology
+      - 8.0
+      - 0.05
+      - 4.0
+    - - localization_quality
+      - 8.0
+      - 0.06
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.02
+      - 5.0
+    - - audience_engagement
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.10
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.06
+      - 4.0
+    - - promotion_reach
+      - 6.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 10.0
+      - 0.10
+      - 3.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 6.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.01
+      - 6.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 6.0
+    eu:
+    - - content_safety
+      - 10.0
+      - 0.12
+      - 3.0
+    - - content_quality
+      - 8.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 8.0
+      - 0.06
+      - 4.0
+    - - localization_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - ip_portfolio
+      - 6.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 8.0
+      - 0.10
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 10.0
+      - 0.06
+      - 4.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 5.0
+    - - regulatory_govt
+      - 8.0
+      - 0.08
+      - 4.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 6.0
+    sa:
+    - - content_safety
+      - 8.0
+      - 0.10
+      - 4.0
+    - - content_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 7.0
+      - 0.06
+      - 4.0
+    - - localization_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - ip_portfolio
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 4.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.12
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 5.0
+    - - regulatory_govt
+      - 8.0
+      - 0.10
+      - 4.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.01
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 6.0
+    wa:
+    - - content_safety
+      - 8.0
+      - 0.10
+      - 4.0
+    - - content_quality
+      - 6.0
+      - 0.05
+      - 4.0
+    - - platform_technology
+      - 6.0
+      - 0.05
+      - 4.0
+    - - localization_quality
+      - 7.0
+      - 0.06
+      - 4.0
+    - - ip_portfolio
+      - 4.0
+      - 0.02
+      - 5.0
+    - - audience_engagement
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.12
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.10
+      - 3.0
+    - - distribution_coverage
+      - 10.0
+      - 0.06
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - promotion_reach
+      - 6.0
+      - 0.04
+      - 5.0
+    - - regulatory_govt
+      - 8.0
+      - 0.10
+      - 4.0
+    - - debt_equity_cash
+      - 10.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 6.0
+    - - acquisition_track
+      - 3.0
+      - 0.01
+      - 6.0
+  Cultural Enthusiasts:
+    na:
+    - - localization_quality
+      - 8.0
+      - 0.10
+      - 4.0
+    - - content_quality
+      - 10.0
+      - 0.12
+      - 3.0
+    - - ip_portfolio
+      - 8.0
+      - 0.08
+      - 4.0
+    - - platform_technology
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.05
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 4.0
+      - 0.03
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    ea:
+    - - localization_quality
+      - 9.0
+      - 0.12
+      - 3.0
+    - - content_quality
+      - 9.0
+      - 0.10
+      - 3.0
+    - - ip_portfolio
+      - 7.0
+      - 0.07
+      - 4.0
+    - - platform_technology
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 7.0
+      - 0.04
+      - 5.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.06
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 5.0
+      - 0.04
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    eu:
+    - - localization_quality
+      - 12.0
+      - 0.15
+      - 3.0
+    - - content_quality
+      - 10.0
+      - 0.12
+      - 3.0
+    - - ip_portfolio
+      - 8.0
+      - 0.08
+      - 4.0
+    - - platform_technology
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 4.0
+      - 0.02
+      - 5.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 10.0
+      - 0.10
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.06
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.02
+      - 5.0
+    - - regulatory_govt
+      - 5.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 6.0
+      - 0.04
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.02
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+    sa:
+    - - localization_quality
+      - 10.0
+      - 0.14
+      - 3.0
+    - - content_quality
+      - 9.0
+      - 0.11
+      - 3.0
+    - - ip_portfolio
+      - 7.0
+      - 0.07
+      - 4.0
+    - - platform_technology
+      - 5.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 3.0
+      - 0.01
+      - 6.0
+    - - price_competitiveness
+      - 12.0
+      - 0.12
+      - 4.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.07
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.02
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.03
+      - 5.0
+    wa:
+    - - localization_quality
+      - 8.0
+      - 0.12
+      - 4.0
+    - - content_quality
+      - 8.0
+      - 0.10
+      - 3.0
+    - - ip_portfolio
+      - 6.0
+      - 0.06
+      - 4.0
+    - - platform_technology
+      - 4.0
+      - 0.03
+      - 5.0
+    - - audience_engagement
+      - 5.0
+      - 0.03
+      - 5.0
+    - - content_safety
+      - 3.0
+      - 0.01
+      - 6.0
+    - - ai_personalization
+      - 3.0
+      - 0.01
+      - 6.0
+    - - immersive_media
+      - 3.0
+      - 0.01
+      - 6.0
+    - - creator_economy
+      - 4.0
+      - 0.02
+      - 6.0
+    - - price_competitiveness
+      - 14.0
+      - 0.14
+      - 3.0
+    - - promotion_reach
+      - 8.0
+      - 0.06
+      - 5.0
+    - - distribution_coverage
+      - 12.0
+      - 0.08
+      - 3.0
+    - - brand_awareness
+      - 8.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 14.0
+      - 0.07
+      - 3.0
+    - - long_term_investment
+      - 6.0
+      - 0.04
+      - 5.0
+    - - debt_equity_cash
+      - 8.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 5.0
+      - 0.03
+      - 5.0
+    - - regulatory_govt
+      - 4.0
+      - 0.03
+      - 5.0
+    - - esg_track_record
+      - 3.0
+      - 0.02
+      - 5.0
+    - - local_manufacturing
+      - 4.0
+      - 0.04
+      - 5.0
+    - - acquisition_track
+      - 3.0
+      - 0.02
+      - 5.0
+  Velocity Capital:
+    __global__:
+    - - revenue_momentum
+      - 9.0
+      - 0.18
+      - 2.5
+    - - innovation_intensity
+      - 8.0
+      - 0.16
+      - 2.5
+    - - market_expansion
+      - 8.0
+      - 0.14
+      - 3.0
+    - - profitability
+      - 7.0
+      - 0.1
+      - 3.0
+    - - financial_stability
+      - 5.0
+      - 0.08
+      - 3.5
+    - - dividend_consistency
+      - 3.0
+      - 0.04
+      - 5.0
+    - - rd_talent
+      - 7.0
+      - 0.1
+      - 2.5
+    - - commercial_talent
+      - 6.0
+      - 0.06
+      - 3.0
+    - - governance_quality
+      - 5.0
+      - 0.04
+      - 4.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+    - - acquisition_track
+      - 8.0
+      - 0.02
+      - 5.0
+    - - operations_talent
+      - 6.0
+      - 0.02
+      - 5.0
+  Granite Investments:
+    __global__:
+    - - financial_stability
+      - 9.0
+      - 0.22
+      - 2.0
+    - - dividend_consistency
+      - 8.0
+      - 0.18
+      - 2.0
+    - - profitability
+      - 7.0
+      - 0.14
+      - 2.5
+    - - governance_quality
+      - 8.0
+      - 0.14
+      - 2.0
+    - - revenue_momentum
+      - 6.0
+      - 0.06
+      - 3.0
+    - - market_expansion
+      - 6.0
+      - 0.04
+      - 4.0
+    - - innovation_intensity
+      - 5.0
+      - 0.04
+      - 4.0
+    - - operations_talent
+      - 7.0
+      - 0.08
+      - 3.0
+    - - long_term_investment
+      - 8.0
+      - 0.04
+      - 5.0
+    - - brand_awareness
+      - 8.0
+      - 0.03
+      - 5.0
+    - - debt_equity_cash
+      - 14.0
+      - 0.03
+      - 4.0
+  GreenHorizon Partners:
+    __global__:
+    - - sustainability_commitment
+      - 9.0
+      - 0.20
+      - 2.0
+    - - governance_quality
+      - 8.0
+      - 0.16
+      - 2.0
+    - - social_responsibility
+      - 8.0
+      - 0.14
+      - 2.5
+    - - esg_track_record
+      - 9.0
+      - 0.12
+      - 2.0
+    - - profitability
+      - 6.0
+      - 0.08
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.06
+      - 3.5
+    - - innovation_intensity
+      - 7.0
+      - 0.06
+      - 3.0
+    - - revenue_momentum
+      - 6.0
+      - 0.04
+      - 4.0
+    - - market_expansion
+      - 6.0
+      - 0.04
+      - 4.0
+    - - operations_talent
+      - 6.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+    - - brand_awareness
+      - 7.0
+      - 0.03
+      - 5.0
+  FCC & Content Standards Board:
+    na:
+    - - governance_quality
+      - 7.0
+      - 0.2
+      - 2.5
+    - - sustainability_commitment
+      - 6.0
+      - 0.15
+      - 3.0
+    - - local_manufacturing
+      - 8.0
+      - 0.12
+      - 2.0
+    - - operations_talent
+      - 6.0
+      - 0.1
+      - 3.0
+    - - social_responsibility
+      - 5.0
+      - 0.08
+      - 3.5
+    - - market_tenure
+      - 6.0
+      - 0.07
+      - 3.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - esg_track_record
+      - 8.0
+      - 0.06
+      - 5.0
+    - - long_term_investment
+      - 8.0
+      - 0.05
+      - 5.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+    - - content_safety
+      - 8.0
+      - 0.02
+      - 4.0
+  NRTA Content Authority:
+    ea:
+    - - content_safety
+      - 14.0
+      - 0.20
+      - 2.0
+    - - local_manufacturing
+      - 8.0
+      - 0.15
+      - 2.0
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 2.5
+    - - governance_quality
+      - 6.0
+      - 0.08
+      - 3.0
+    - - operations_talent
+      - 6.0
+      - 0.08
+      - 3.0
+    - - localization_quality
+      - 10.0
+      - 0.06
+      - 3.0
+    - - regulatory_govt
+      - 14.0
+      - 0.10
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.05
+      - 4.0
+    - - sustainability_commitment
+      - 5.0
+      - 0.05
+      - 4.0
+    - - financial_stability
+      - 6.0
+      - 0.05
+      - 4.0
+  EU Digital Services & AVMSD Authority:
+    eu:
+    - - sustainability_commitment
+      - 9.0
+      - 0.20
+      - 2.0
+    - - governance_quality
+      - 8.0
+      - 0.18
+      - 2.0
+    - - social_responsibility
+      - 7.0
+      - 0.10
+      - 2.5
+    - - localization_quality
+      - 10.0
+      - 0.10
+      - 3.0
+    - - local_manufacturing
+      - 6.0
+      - 0.08
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.06
+      - 2.5
+    - - market_tenure
+      - 5.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.08
+      - 3.0
+    - - esg_track_record
+      - 16.0
+      - 0.06
+      - 3.0
+    - - content_safety
+      - 10.0
+      - 0.05
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.04
+      - 4.0
+  ANCINE Film & Broadcast Agency:
+    sa:
+    - - local_manufacturing
+      - 9.0
+      - 0.22
+      - 2.0
+    - - governance_quality
+      - 6.0
+      - 0.15
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - social_responsibility
+      - 6.0
+      - 0.1
+      - 3.0
+    - - market_tenure
+      - 7.0
+      - 0.08
+      - 3.0
+    - - localization_quality
+      - 10.0
+      - 0.06
+      - 3.0
+    - - sustainability_commitment
+      - 4.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - distribution_coverage
+      - 10.0
+      - 0.03
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+  Nigerian Film & Video Censors Board:
+    wa:
+    - - local_manufacturing
+      - 9.0
+      - 0.22
+      - 2.0
+    - - governance_quality
+      - 6.0
+      - 0.15
+      - 3.0
+    - - operations_talent
+      - 7.0
+      - 0.12
+      - 2.5
+    - - social_responsibility
+      - 6.0
+      - 0.1
+      - 3.0
+    - - market_tenure
+      - 7.0
+      - 0.08
+      - 3.0
+    - - localization_quality
+      - 10.0
+      - 0.06
+      - 3.0
+    - - sustainability_commitment
+      - 4.0
+      - 0.05
+      - 4.0
+    - - regulatory_govt
+      - 14.0
+      - 0.1
+      - 3.0
+    - - jv_distributor
+      - 12.0
+      - 0.06
+      - 4.0
+    - - distribution_coverage
+      - 10.0
+      - 0.03
+      - 4.0
+    - - long_term_investment
+      - 8.0
+      - 0.03
+      - 5.0
+  NA Content Distribution Networks:
+    na:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  EA Digital Distribution Platforms:
+    ea:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  EU Broadcast & Streaming Partners:
+    eu:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  SA Telecom & Media Distributors:
+    sa:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+  WA Mobile Content Networks:
+    wa:
+    - - distribution_commitment
+      - 8.0
+      - 0.22
+      - 2.0
+    - - commercial_talent
+      - 7.0
+      - 0.18
+      - 2.5
+    - - brand_awareness
+      - 7.0
+      - 0.15
+      - 2.5
+    - - market_tenure
+      - 7.0
+      - 0.12
+      - 3.0
+    - - financial_stability
+      - 6.0
+      - 0.08
+      - 3.5
+    - - revenue_momentum
+      - 6.0
+      - 0.05
+      - 4.0
+    - - promotion_reach
+      - 12.0
+      - 0.05
+      - 4.0
+    - - distribution_coverage
+      - 12.0
+      - 0.05
+      - 4.0
+    - - product_availability
+      - 12.0
+      - 0.04
+      - 4.0
+    - - long_term_investment
+      - 10.0
+      - 0.03
+      - 5.0
+    - - jv_distributor
+      - 10.0
+      - 0.03
+      - 5.0
+events:
+- name: Content Censorship Order
+  name_zh: 内容审查令
+  description_template: |-
+    The NRTA has ordered the removal of content deemed culturally inappropriate from all streaming platforms in {market}. Teams with low Content Safety & Compliance face immediate catalog restrictions and subscriber loss.
+  description_template_zh: |-
+    {market}政府对特定类型内容发布审查令。平台面临内容下架和合规调整压力。
+  category: Regulatory
+  severity: high
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: ea
+  response_required: false
+  rag_source_tags: censorship,content_regulation,nrta,china
+  impacts:
+  - - preference_shift
+    - ea
+    - NRTA Content Authority
+    - content_safety
+    - 2.5
+    - 0
+  - - demand_shock
+    - ea
+    - Mass Entertainment Viewers
+    - 
+    - 0.85
+    - 2
+- name: Data Privacy Enforcement
+  name_zh: 数据隐私执法
+  description_template: |-
+    The EU has escalated GDPR enforcement against AI-powered personalization algorithms. Platforms using personalization without adequate privacy compliance face feature degradation and fines in Western Europe.
+  description_template_zh: |-
+    {market}加强了数据保护法规的执行力度。用户数据收集和广告定向能力受到限制。
+  category: Regulatory
+  severity: high
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: eu
+  response_required: false
+  rag_source_tags: gdpr,privacy,ai,personalization,regulation
+  impacts:
+  - - preference_shift
+    - eu
+    - EU Digital Services & AVMSD Authority
+    - content_safety
+    - 2.0
+    - 0
+  - - cost_change
+    - eu
+    - 
+    - 
+    - logistics_cost
+    - 0.15
+    - 2
+- name: Creator Exodus
+  name_zh: 创作者出走
+  description_template: |-
+    Top content creators are leaving platforms that underinvest in creator tools and revenue sharing. Platforms with low Creator Economy and Audience Engagement investment lose subscriber engagement across all markets.
+  description_template_zh: |-
+    主要创作者从平台大规模流失，转向竞争对手或自建渠道。内容供应和用户注意力重新分配。
+  category: Technological
+  severity: medium
+  probability_per_round: '0.15'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: creators,ugc,platform,engagement
+  impacts:
+  - - preference_shift
+    - 
+    - Gen Z Digital Natives
+    - creator_economy
+    - 1.5
+    - 0
+  - - preference_shift
+    - 
+    - Mass Entertainment Viewers
+    - audience_engagement
+    - 1.0
+    - 0
+- name: Content Licensing Dispute
+  name_zh: 内容授权纠纷
+  description_template: |-
+    A major IP holder has revoked streaming rights for its content library. Platforms dependent on licensed content (not owned IP) face catalog shrinkage and subscriber churn.
+  description_template_zh: |-
+    关键内容授权合同出现纠纷。影响{market}的内容库完整性和用户满意度。
+  category: Economic
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 2
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: licensing,ip,content,streaming
+  impacts:
+  - - preference_shift
+    - 
+    - Premium Content Subscribers
+    - ip_portfolio
+    - 2.0
+    - 0
+  - - demand_shock
+    - 
+    - Premium Content Subscribers
+    - 
+    - 0.90
+    - 2
+- name: Local Content Quota Enforcement
+  name_zh: 本地内容配额执行
+  description_template: |-
+    The government of {market} has mandated that streaming platforms carry a minimum percentage of locally-produced content. Platforms without Localization Quality investment face content restrictions and fines.
+  description_template_zh: |-
+    {market}政府强制执行本地内容配额要求。本地化投资不足的平台面临处罚。
+  category: Political
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: eu
+  response_required: false
+  rag_source_tags: regulation,local_content,avmsd,quota
+  impacts:
+  - - preference_shift
+    - eu
+    - EU Digital Services & AVMSD Authority
+    - localization_quality
+    - 2.0
+    - 0
+  - - cost_change
+    - eu
+    - 
+    - 
+    - tariff_rate
+    - 0.05
+    - 3
+- name: Currency Crisis
+  name_zh: 货币危机
+  description_template: |-
+    The {market} currency has experienced a sharp devaluation against the US dollar. Subscription pricing becomes unaffordable for many consumers. Local content production costs decrease but imported content costs surge.
+  description_template_zh: |-
+    {market}货币兑美元大幅贬值。订阅收入换算为美元后缩水。本地内容制作成本相对降低。
+  category: Economic
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: wa
+  response_required: false
+  rag_source_tags: currency,exchange_rate,financial_risk,emerging_market
+  impacts:
+  - - exchange_rate
+    - wa
+    - 
+    - 
+    - exchange_rate
+    - -0.25
+    - 3
+- name: 'Trade War: Content Licensing Tariffs'
+  name_zh: 贸易战：内容授权关税
+  description_template: |-
+    Retaliatory restrictions between North America and East Asia on content licensing and distribution rights. Cross-border content costs spike. Platforms with strong local content libraries are shielded.
+  description_template_zh: |-
+    国际紧张局势导致内容授权和分发面临新的贸易壁垒。跨境内容交易成本上升。
+  category: Political
+  severity: high
+  probability_per_round: '0.15'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code:
+  response_required: false
+  rag_source_tags: trade_war,tariffs,content_licensing,geopolitics
+  target_type: MARKET_WIDE
+  trigger_condition:
+  affected_markets:
+  - na
+  - ea
+  impacts:
+  - - cost_change
+    - na
+    - 
+    - 
+    - tariff_rate
+    - 0.08
+    - 3
+  - - cost_change
+    - ea
+    - 
+    - 
+    - tariff_rate
+    - 0.08
+    - 3
+- name: Data Sovereignty Requirements
+  name_zh: 数据主权要求
+  description_template: |-
+    New data sovereignty regulations in {market} require all user data and content recommendation algorithms to be stored and processed on local servers. Compliance investment needed.
+  description_template_zh: |-
+    {market}的新数据主权法规要求用户数据和内容推荐算法在本地服务器上运行。需要大量合规投资。
+  category: Regulatory
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: ea
+  response_required: false
+  rag_source_tags: regulation,data_sovereignty,algorithm,compliance
+  impacts:
+  - - cost_change
+    - ea
+    - 
+    - 
+    - logistics_cost
+    - 0.15
+    - 0
+  - - preference_shift
+    - ea
+    - NRTA Content Authority
+    - regulatory_govt
+    - 1.0
+    - 0
+- name: AI Content Generation Breakthrough
+  name_zh: AI内容生成突破
+  description_template: |-
+    A breakthrough in AI content generation has dramatically reduced production costs. Platforms investing in AI Personalization gain competitive advantage. Traditional content producers face margin pressure.
+  description_template_zh: |-
+    AI内容生成技术重大突破，大幅降低了内容制作成本。投资AI内容工具的企业获得竞争优势。但引发版权和原创性争议。
+  category: Technological
+  severity: medium
+  probability_per_round: '0.15'
+  earliest_round: 4
+  max_occurrences: 1
+  affects_all_markets: true
+  target_market_code:
+  response_required: false
+  rag_source_tags: ai,content_generation,technology,innovation
+  impacts:
+  - - preference_shift
+    - 
+    - Gen Z Digital Natives
+    - ai_personalization
+    - 1.5
+    - 0
+  - - preference_shift
+    - 
+    - Mass Entertainment Viewers
+    - ai_personalization
+    - 1.0
+    - 0
+- name: Nollywood Content Quota
+  name_zh: 尼莱坞内容配额
+  description_template: |-
+    The Nigerian Film & Video Censors Board has imposed minimum Nollywood content requirements for all streaming platforms operating in West Africa. Platforms without local content face restrictions.
+  description_template_zh: |-
+    西非政府要求流媒体平台提高本地尼莱坞内容的占比。本地化引擎投资的重要性上升。
+  category: Political
+  severity: medium
+  probability_per_round: '0.20'
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: false
+  target_market_code: wa
+  response_required: false
+  rag_source_tags: regulation,nollywood,local_content,nigeria
+  impacts:
+  - - preference_shift
+    - wa
+    - Nigerian Film & Video Censors Board
+    - localization_quality
+    - 2.0
+    - 0
+  - - cost_change
+    - wa
+    - 
+    - 
+    - tariff_rate
+    - 0.05
+    - 0
+ai_competitors:
+- name: StreamVault Global
+  name_zh: 流媒体金库全球
+  description: |-
+    Netflix/Disney analog. Premium content powerhouse with massive original IP library. Dominant in North America and Western Europe. Weak in East Asia due to censorship barriers. Strong content quality and IP portfolio, but low localization and slow AI adoption. Defensive strategy focused on content moats.
+  description_zh: |-
+    北美流媒体巨头，拥有庞大的内容库和先进的AI推荐引擎。在北美和欧洲占据主导地位。内容投入极高。
+- name: ByteWave Entertainment
+  name_zh: 字节浪潮娱乐
+  description: |-
+    TikTok/Tencent analog. Algorithm-driven entertainment platform dominant in East Asia, expanding aggressively into South America and West Africa via short-form content and AI personalization. Weak on premium long-form content. Strong platform technology and AI, but poor content safety compliance outside home market.
+  description_zh: |-
+    东亚数字娱乐集团，以短视频和互动内容见长。在东亚市场主导地位，全球扩张迅速。
+ai_competitor_fit_data:
+  market_affinity:
+    StreamVault Global:
+      na: 0.55
+      ea: 0.10
+      eu: 0.45
+      sa: 0.25
+      wa: 0.10
+    ByteWave Entertainment:
+      na: 0.20
+      ea: 0.60
+      eu: 0.15
+      sa: 0.35
+      wa: 0.40
+  segment_affinity:
+    StreamVault Global:
+      Mass Entertainment Viewers: 0.05
+      Premium Content Subscribers: 0.20
+      Gen Z Digital Natives: -0.10
+      Enterprise & Institutional: 0.10
+      Cultural Enthusiasts: 0.10
+    ByteWave Entertainment:
+      Mass Entertainment Viewers: 0.10
+      Premium Content Subscribers: -0.10
+      Gen Z Digital Natives: 0.20
+      Enterprise & Institutional: -0.15
+      Cultural Enthusiasts: -0.05
+  growth_per_round: 0.02
+  fit_min: 0.10
+  fit_max: 0.85
+ai_behaviors:
+- ai_competitor: StreamVault Global
+  strategy_type: defensive
+  price_sensitivity: '0.30'
+  innovation_rate: '0.35'
+  market_entry_threshold: '0.0800'
+  primary_segments:
+  - premium_subscribers
+  - enterprise
+- ai_competitor: ByteWave Entertainment
+  strategy_type: aggressive
+  price_sensitivity: '0.70'
+  innovation_rate: '0.55'
+  market_entry_threshold: '0.0300'
+  primary_segments:
+  - gen_z_natives
+  - mass_entertainment
+acquisition_targets:
+- market: na
+  target_name: Indie Studios Collective
+  target_name_zh: 独立工作室联合体
+  description: |-
+    Premium content library with award-winning originals, Hollywood talent relationships, and established IP franchises. No streaming platform — pure content play. Instant credibility with Premium Content Subscribers.
+  description_zh: |-
+    美国独立内容制作工作室联合体，拥有获奖创作团队和高质量IP。
+  base_acquisition_cost: '28000000'
+  market_share_gained: '0.0600'
+  includes_plant: false
+  plant_capacity: 0
+  includes_distribution: false
+  distribution_reach_bonus: '0.0800'
+  talent_bonus:
+    rd: 0.6
+    operations: 0.2
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2500000'
+- market: ea
+  target_name: Guangzhou Digital Media
+  target_name_zh: 广州数字传媒
+  description: |-
+    NRTA-approved content catalog with full censorship compliance expertise. Local distribution relationships and established government connections. Includes content production studio and distribution network.
+  description_zh: |-
+    中国数字内容制作公司，拥有动画制作能力和庞大的中文内容库。
+  base_acquisition_cost: '18000000'
+  market_share_gained: '0.0800'
+  includes_plant: true
+  plant_capacity: 80000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1500'
+  talent_bonus:
+    operations: 0.5
+    commercial: 0.4
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '1500000'
+- market: eu
+  target_name: Nordic Noir Productions
+  target_name_zh: 北欧黑色制作
+  description: |-
+    Award-winning European content studio with multi-language library, EU AVMSD compliance, and strong relationships with European public broadcasters. Includes EU content production facility.
+  description_zh: |-
+    斯堪的纳维亚内容制作公司，以高质量犯罪剧和纪录片闻名。拥有欧洲发行网络。
+  base_acquisition_cost: '22000000'
+  market_share_gained: '0.0600'
+  includes_plant: true
+  plant_capacity: 40000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1000'
+  talent_bonus:
+    rd: 0.5
+    operations: 0.3
+  min_round_available: 3
+  requires_market_presence: true
+  integration_rounds: 3
+  integration_cost_per_round: '2000000'
+- market: sa
+  target_name: Globo Digital Ventures
+  target_name_zh: 环球数字创投
+  description: |-
+    Portuguese-language content empire with telenovela IP library, Brazilian celebrity network, and Globo broadcast distribution partnerships. Includes content studio and SA distribution.
+  description_zh: |-
+    巴西数字媒体公司，拥有拉丁美洲西班牙语和葡萄牙语内容库。
+  base_acquisition_cost: '25000000'
+  market_share_gained: '0.0700'
+  includes_plant: true
+  plant_capacity: 50000
+  includes_distribution: true
+  distribution_reach_bonus: '0.1200'
+  talent_bonus:
+    commercial: 0.5
+    operations: 0.3
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '2000000'
+- market: wa
+  target_name: Nollywood Digital
+  target_name_zh: 尼莱坞数字
+  description: |-
+    Largest Nollywood streaming catalog with mobile-optimized distribution network, creator relationships, and community-level reach across West Africa. No production facility — pure distribution and content licensing.
+  description_zh: |-
+    尼日利亚数字影视制作公司，拥有非洲最大的在线内容库和本地明星资源。
+  base_acquisition_cost: '10000000'
+  market_share_gained: '0.0800'
+  includes_plant: false
+  plant_capacity: 0
+  includes_distribution: true
+  distribution_reach_bonus: '0.2000'
+  talent_bonus:
+    commercial: 0.6
+    operations: 0.2
+  min_round_available: 2
+  requires_market_presence: true
+  integration_rounds: 2
+  integration_cost_per_round: '800000'
+starter_profiles:
+- profile_name: The Content King
+  profile_name_zh: 内容之王
+  description: |-
+    Former HBO/BBC executive team. Strong in content quality and IP portfolio. Traditional media approach — believe great content wins. Two content products targeting premium subscribers.
+  description_zh: |-
+    由好莱坞资深制片人创立。在内容质量和IP组合方面表现突出。两款产品面向高端订阅市场。
+  home_market: na
+  starting_cash: '45000000'
+  starting_debt: '6000000'
+  starting_revenue: '20000000'
+  platforms:
+    alpha:
+      content_quality: 6
+      ip_portfolio: 5
+      platform_technology: 2
+      localization_quality: 2
+      audience_engagement: 2
+    beta:
+      content_quality: 3
+      ip_portfolio: 2
+      platform_technology: 4
+      localization_quality: 3
+      audience_engagement: 3
+  products:
+  - - Premium Originals
+    - premium
+    - '280.00'
+    - na
+    - 3000
+    - '0.04'
+    - alpha
+  - - Mainstream Library
+    - mainstream
+    - '130.00'
+    - na
+    - 6000
+    - '0.06'
+    - beta
+- profile_name: The Algorithm
+  profile_name_zh: 算法大师
+  description: |-
+    Founded by ex-Netflix/Spotify engineers. Strong in platform technology and audience engagement. Tech-first approach — believe the best algorithm wins. Two products focused on personalized entertainment.
+  description_zh: |-
+    硅谷数据科学家创立的技术驱动平台。在平台技术和AI个性化方面领先。两款产品面向技术导向的用户。
+  home_market: na
+  starting_cash: '45000000'
+  starting_debt: '7000000'
+  starting_revenue: '18000000'
+  platforms:
+    alpha:
+      content_quality: 2
+      ip_portfolio: 2
+      platform_technology: 6
+      audience_engagement: 5
+      content_safety: 2
+    beta:
+      content_quality: 4
+      ip_portfolio: 2
+      platform_technology: 3
+      localization_quality: 3
+      audience_engagement: 3
+  products:
+  - - SmartStream Pro
+    - premium
+    - '220.00'
+    - na
+    - 4000
+    - '0.05'
+    - alpha
+  - - SmartStream Basic
+    - mainstream
+    - '100.00'
+    - na
+    - 7000
+    - '0.07'
+    - beta
+- profile_name: The Localizer
+  profile_name_zh: 本地化专家
+  description: |-
+    Former international broadcast executive team. Strong in localization quality and content safety compliance. Market adaptation specialists. Two products designed for regulated and multilingual markets.
+  description_zh: |-
+    区域媒体集团转型。在本地化质量和内容安全合规方面有独特优势。两款产品面向本地市场观众。
+  home_market: eu
+  starting_cash: '45000000'
+  starting_debt: '5000000'
+  starting_revenue: '16000000'
+  platforms:
+    alpha:
+      content_quality: 3
+      ip_portfolio: 2
+      localization_quality: 5
+      audience_engagement: 2
+      content_safety: 4
+    beta:
+      content_quality: 4
+      ip_portfolio: 3
+      platform_technology: 3
+      localization_quality: 3
+      audience_engagement: 3
+  products:
+  - - WorldView Premium
+    - premium
+    - '250.00'
+    - eu
+    - 2500
+    - '0.04'
+    - alpha
+  - - WorldView Standard
+    - mainstream
+    - '120.00'
+    - eu
+    - 5000
+    - '0.06'
+    - beta
+- profile_name: The Disruptor
+  profile_name_zh: 颠覆者
+  description: |-
+    Social media and gaming veterans. Strong in audience engagement and platform technology. Growth hacking approach — viral content and community-driven discovery. Two products targeting young, mobile-first audiences.
+  description_zh: |-
+    社交媒体背景的初创公司。在互动功能和创作者经济平台方面突出。两款产品面向年轻受众和创作者。
+  home_market: ea
+  starting_cash: '45000000'
+  starting_debt: '8000000'
+  starting_revenue: '22000000'
+  platforms:
+    alpha:
+      content_quality: 2
+      platform_technology: 4
+      localization_quality: 2
+      audience_engagement: 6
+      content_safety: 3
+    beta:
+      content_quality: 3
+      ip_portfolio: 2
+      platform_technology: 5
+      localization_quality: 2
+      audience_engagement: 3
+  products:
+  - - ViralStream
+    - mainstream
+    - '90.00'
+    - ea
+    - 10000
+    - '0.08'
+    - beta
+  - - ViralStream+
+    - premium
+    - '180.00'
+    - ea
+    - 4000
+    - '0.05'
+    - alpha
+market_conditions:
+  na:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Stable North American streaming market. Content spending arms race continues among incumbents.
+  - - 2
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.03'
+    - Cord-cutting accelerating. Premium subscriber ARPU rising. FCC reviewing digital platform standards.
+  - - 3
+    - '0.00'
+    - '0.01'
+    - '0.00'
+    - '1.05'
+    - Streaming consolidation wave. Smaller platforms merging. Content licensing costs escalating.
+  - - 4
+    - '-0.01'
+    - '0.00'
+    - '0.01'
+    - '1.03'
+    - Subscriber fatigue emerging. Churn rates rising. AI-generated content controversy sparks regulatory debate.
+  - - 5
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.06'
+    - Interactive and immersive content gaining traction. Creator economy platforms disrupting traditional models.
+  - - 6
+    - '0.01'
+    - '0.01'
+    - '0.00'
+    - '1.08'
+    - Premium content renaissance. Award-winning originals driving subscriber growth. Ad-supported tiers expanding.
+  - - 7
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - Market maturation. Profitability becoming priority over subscriber growth. Content ROI scrutiny increasing.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.12'
+    - Established streaming ecosystem. Competition on content quality and technology differentiation.
+  ea:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Massive East Asian content market. Short-form video dominant. NRTA content review requirements strict.
+  - - 2
+    - '0.02'
+    - '-0.01'
+    - '0.00'
+    - '1.05'
+    - Government tightens content censorship rules. Foreign content restrictions increase. Domestic platforms thriving.
+  - - 3
+    - '0.03'
+    - '-0.02'
+    - '0.02'
+    - '1.10'
+    - Algorithm-driven content discovery becomes standard. AI personalization investment surging. Data sovereignty laws enacted.
+  - - 4
+    - '0.01'
+    - '0.01'
+    - '0.01'
+    - '1.08'
+    - Content quality expectations rising. Premium long-form gaining market share alongside short-form. Censorship enforcement wave.
+  - - 5
+    - '-0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.05'
+    - Market oversaturation in short-form. Consolidation among smaller platforms. Export push for content IP.
+  - - 6
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - Next-generation immersive entertainment piloting. VR/AR content studios emerging. Strong domestic demand.
+  - - 7
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.12'
+    - East Asian content becoming global export commodity. Creator economy platforms scaling rapidly.
+  - - 8
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.15'
+    - Mature but still growing. Technology leadership in AI-driven content. Global content licensing expanding.
+  eu:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Fragmented European market. AVMSD content quotas being enforced. GDPR constraining personalization.
+  - - 2
+    - '0.01'
+    - '0.00'
+    - '0.00'
+    - '1.03'
+    - Digital Services Act enforcement beginning. 30% European content quota compliance deadlines approaching.
+  - - 3
+    - '0.00'
+    - '0.01'
+    - '0.02'
+    - '1.05'
+    - Anti-algorithm sentiment growing. Privacy-first streaming platforms gaining traction. Cultural subsidies increasing.
+  - - 4
+    - '-0.01'
+    - '0.00'
+    - '0.01'
+    - '1.02'
+    - Compliance costs weighing on margins. Some platforms withdrawing from smaller EU language markets.
+  - - 5
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.06'
+    - European content golden age. Local language productions commanding premium pricing. Public broadcaster partnerships.
+  - - 6
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.08'
+    - EU cultural funding programs boosting local content. Compliant platforms rewarded with subscriber loyalty.
+  - - 7
+    - '0.01'
+    - '0.01'
+    - '0.00'
+    - '1.10'
+    - Mature regulatory framework. Premium for compliant, localized content. Cross-border EU content distribution growing.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.12'
+    - Established market with clear regulatory expectations. Quality and localization define competitive advantage.
+  sa:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Growing South American streaming market. Telenovela culture drives local content demand. Globo dominates broadcast.
+  - - 2
+    - '0.02'
+    - '-0.02'
+    - '0.00'
+    - '1.05'
+    - Smartphone penetration driving streaming adoption. Real under pressure. ANCINE reviewing content quotas.
+  - - 3
+    - '0.01'
+    - '-0.01'
+    - '0.02'
+    - '1.03'
+    - Local content requirements introduced. Portuguese-language content premium emerging. Telecom bundles expanding.
+  - - 4
+    - '-0.01'
+    - '-0.03'
+    - '0.01'
+    - '0.98'
+    - Currency crisis impacts subscription affordability. Ad-supported models gaining traction. Political uncertainty.
+  - - 5
+    - '0.02'
+    - '0.01'
+    - '0.00'
+    - '1.05'
+    - Currency stabilizing. Telenovela streaming boom. Brazilian content becoming global export.
+  - - 6
+    - '0.03'
+    - '0.00'
+    - '0.00'
+    - '1.10'
+    - Creator economy thriving in Brazil. Mobile-first content formats growing. Regional content partnerships.
+  - - 7
+    - '0.01'
+    - '-0.01'
+    - '0.00'
+    - '1.12'
+    - South American content market maturing. Cross-border Latin American content distribution growing.
+  - - 8
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.15'
+    - Established market with strong local content ecosystem. Distribution partnerships critical for scale.
+  wa:
+  - - 1
+    - '0.00'
+    - '0.00'
+    - '0.00'
+    - '1.00'
+    - Nollywood content exploding. Mobile-first consumption dominant. Data costs limit streaming quality.
+  - - 2
+    - '0.03'
+    - '-0.03'
+    - '0.00'
+    - '1.08'
+    - Youth population driving content demand. Naira under pressure. Local creators gaining global attention.
+  - - 3
+    - '0.02'
+    - '-0.02'
+    - '0.01'
+    - '1.10'
+    - Nollywood content quota discussions. Mobile money integration enabling subscription models. Currency volatility.
+  - - 4
+    - '0.01'
+    - '-0.05'
+    - '0.00'
+    - '1.05'
+    - Currency crisis impacts. Imported content costs spike. Local content production becomes more cost-competitive.
+  - - 5
+    - '0.03'
+    - '0.02'
+    - '0.00'
+    - '1.12'
+    - Currency stabilizing. Government media investment programs. Nollywood international recognition growing.
+  - - 6
+    - '0.04'
+    - '0.00'
+    - '0.00'
+    - '1.20'
+    - Fastest-growing content market globally. Mobile-optimized platforms scaling. Creator economy booming.
+  - - 7
+    - '0.03'
+    - '-0.01'
+    - '0.00'
+    - '1.25'
+    - West African content transformation underway. Nollywood becoming Africa's cultural export powerhouse.
+  - - 8
+    - '0.02'
+    - '0.00'
+    - '0.00'
+    - '1.30'
+    - Massive unmet content demand. Market growth continues. Mobile distribution network critical advantage.
+ai_investor_funds:
+- name: Velocity Capital
+  name_zh: 高速资本
+  code: velocity
+  description: |-
+    Growth-focused fund that invests in media companies demonstrating strong subscriber growth, aggressive content investment, and international expansion. They accept short-term losses if the audience trajectory is compelling.
+  description_zh: |-
+    专注增长的基金，投资于展现强劲营业收入增长、积极研发投入和国际扩张的企业。如果增长轨迹令人信服，可接受短期亏损。
+  investment_philosophy: growth
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.35'
+  profile:
+    fund_type: Growth Fund
+    fund_type_zh: 增长型基金
+    strategy_summary: |-
+      Aggressive growth investing. Backs media companies that invest in content, expand into new markets, and pursue subscriber growth over short-term profitability.
+    strategy_summary_zh: |-
+      激进增长投资。支持那些投资创新、拓展新市场、以营业收入增长优先于短期盈利的企业。
+    dislikes:
+    - label: Stagnant subscribers
+    - label: Low content spending
+    - label: Single-market focus
+    - label: Technology dependency
+  preferences:
+  - feature_code: revenue_growth_rate
+    feature_label: Revenue Growth Rate
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.5
+  - feature_code: rd_intensity
+    feature_label: Content Investment as % of Revenue
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: market_expansion
+    feature_label: Market Presence Breadth
+    ideal_value: 8
+    weight: 0.15
+    tolerance: 3.0
+  - feature_code: talent_rd_quality
+    feature_label: Creative Talent Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+  - feature_code: platform_generation
+    feature_label: Technology Generation
+    ideal_value: 8
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: revenue_scale
+    feature_label: Revenue Scale
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 3.0
+- name: Granite Investments
+  name_zh: 磐石投资
+  code: granite
+  description: |-
+    Value-oriented fund that prioritizes subscriber retention, controlled content spending, low leverage, and consistent shareholder returns. They avoid media companies with unsustainable content arms races.
+  description_zh: |-
+    价值导向型基金，优先考虑财务纪律、健康利润率、低杠杆和持续的股东回报。回避以激进举债驱动增长的公司。
+  investment_philosophy: value
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.18'
+  min_holding_pct: '0.03'
+  trade_aggressiveness: '0.25'
+  profile:
+    fund_type: Value Fund
+    fund_type_zh: 价值型基金
+    strategy_summary: |-
+      Conservative value investing. Seeks financially disciplined media companies with strong governance, healthy margins, and consistent shareholder returns.
+    strategy_summary_zh: |-
+      保守价值投资。寻找财务纪律严明、治理健全、利润率健康且股东回报持续的企业。
+    dislikes:
+    - label: High leverage
+    - label: Volatile earnings
+    - label: No dividend policy
+    - label: Weak governance
+    - label: Cash burn
+  preferences:
+  - feature_code: financial_leverage_inv
+    feature_label: Financial Prudence (Low Debt)
+    ideal_value: 8
+    weight: 0.25
+    tolerance: 2.0
+  - feature_code: dividend_consistency
+    feature_label: Dividend Yield
+    ideal_value: 6
+    weight: 0.18
+    tolerance: 3.0
+  - feature_code: net_margin_score
+    feature_label: Net Profit Margin
+    ideal_value: 7
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: cash_runway_score
+    feature_label: Cash Stability
+    ideal_value: 8
+    weight: 0.12
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Operations Efficiency
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 7
+    weight: 0.15
+    tolerance: 2.0
+- name: GreenHorizon Partners
+  name_zh: 绿色地平线合伙人
+  code: greenhorizon
+  description: |-
+    ESG-focused fund that allocates capital to media companies demonstrating content diversity, responsible AI practices, strong governance, and positive cultural impact. They divest from firms with poor ESG track records.
+  description_zh: |-
+    专注ESG的基金，将资金配置给具有强大环境承诺、社会责任感和良好治理实践的企业。会撤出ESG记录不良的企业投资。
+  investment_philosophy: esg
+  initial_holding_pct: '0.10'
+  max_holding_pct: '0.20'
+  min_holding_pct: '0.02'
+  trade_aggressiveness: '0.30'
+  profile:
+    fund_type: ESG Fund
+    fund_type_zh: ESG基金
+    strategy_summary: |-
+      Impact-focused ESG investing. Backs media companies demonstrating genuine commitment to content diversity, responsible AI, and governance quality.
+    strategy_summary_zh: |-
+      影响力导向的ESG投资。支持在环境可持续性、社会责任和治理质量方面展现真正承诺的企业。
+    dislikes:
+    - label: ESG neglect
+    - label: Weak governance
+    - label: AI ethics violations
+    - label: No social investment
+  preferences:
+  - feature_code: esg_composite
+    feature_label: ESG Composite Score
+    ideal_value: 8
+    weight: 0.35
+    tolerance: 2.0
+  - feature_code: governance_quality
+    feature_label: Governance Quality
+    ideal_value: 8
+    weight: 0.2
+    tolerance: 2.0
+  - feature_code: sustainability_level
+    feature_label: Sustainability Commitment
+    ideal_value: 9
+    weight: 0.2
+    tolerance: 2.5
+  - feature_code: talent_operations_quality
+    feature_label: Responsible Operations
+    ideal_value: 6
+    weight: 0.1
+    tolerance: 2.5
+  - feature_code: market_diversity
+    feature_label: Geographic Diversity
+    ideal_value: 6
+    weight: 0.15
+    tolerance: 3.0
+cultural_distance:
+- - na
+  - na
+  - HOME
+  - '1.00'
+  - '0.00'
+- - na
+  - ea
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - na
+  - eu
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - na
+  - sa
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - na
+  - wa
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - ea
+  - na
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - ea
+  - ea
+  - HOME
+  - '1.00'
+  - '0.00'
+- - ea
+  - eu
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - ea
+  - sa
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - ea
+  - wa
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - eu
+  - na
+  - MEDIUM
+  - '0.75'
+  - '0.02'
+- - eu
+  - ea
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - eu
+  - eu
+  - HOME
+  - '1.00'
+  - '0.00'
+- - eu
+  - sa
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - eu
+  - wa
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - sa
+  - na
+  - HIGH
+  - '0.65'
+  - '0.04'
+- - sa
+  - ea
+  - VERY_HIGH
+  - '0.55'
+  - '0.05'
+- - sa
+  - eu
+  - MEDIUM
+  - '0.75'
+  - '0.03'
+- - sa
+  - sa
+  - HOME
+  - '1.00'
+  - '0.00'
+- - sa
+  - wa
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - na
+  - VERY_HIGH
+  - '0.55'
+  - '0.07'
+- - wa
+  - ea
+  - VERY_HIGH
+  - '0.55'
+  - '0.06'
+- - wa
+  - eu
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - sa
+  - HIGH
+  - '0.65'
+  - '0.05'
+- - wa
+  - wa
+  - HOME
+  - '1.00'
+  - '0.00'
+origin_trust:
+- - na
+  - na
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - na
+  - ea
+  - '0.85'
+  - '-0.30'
+  - '0.02'
+- - na
+  - eu
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - na
+  - sa
+  - '0.90'
+  - '-0.10'
+  - '0.02'
+- - na
+  - wa
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - ea
+  - na
+  - '0.65'
+  - '-0.60'
+  - '0.01'
+- - ea
+  - ea
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - ea
+  - eu
+  - '0.72'
+  - '-0.50'
+  - '0.015'
+- - ea
+  - sa
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - ea
+  - wa
+  - '0.85'
+  - '-0.10'
+  - '0.025'
+- - eu
+  - na
+  - '0.95'
+  - '0.00'
+  - '0.03'
+- - eu
+  - ea
+  - '0.88'
+  - '-0.20'
+  - '0.02'
+- - eu
+  - eu
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - eu
+  - sa
+  - '0.92'
+  - '0.00'
+  - '0.03'
+- - eu
+  - wa
+  - '0.85'
+  - '-0.10'
+  - '0.02'
+- - sa
+  - na
+  - '0.82'
+  - '-0.20'
+  - '0.02'
+- - sa
+  - ea
+  - '0.80'
+  - '-0.30'
+  - '0.02'
+- - sa
+  - eu
+  - '0.88'
+  - '-0.10'
+  - '0.025'
+- - sa
+  - sa
+  - '1.00'
+  - '0.00'
+  - '0.00'
+- - sa
+  - wa
+  - '0.90'
+  - '0.00'
+  - '0.025'
+- - wa
+  - na
+  - '0.70'
+  - '-0.50'
+  - '0.015'
+- - wa
+  - ea
+  - '0.75'
+  - '-0.40'
+  - '0.015'
+- - wa
+  - eu
+  - '0.72'
+  - '-0.40'
+  - '0.02'
+- - wa
+  - sa
+  - '0.80'
+  - '-0.20'
+  - '0.02'
+- - wa
+  - wa
+  - '1.00'
+  - '0.00'
+  - '0.00'
+local_strategic_partners:
+- market: na
+  category: Partnerships
+  code: local_strategic_na
+  name: Hollywood Talent Alliance
+  name_zh: 好莱坞人才联盟
+  description: US-based entertainment advisory firm with studio relationships, talent agency connections, and FCC regulatory navigation.
+  description_zh: 美国娱乐产业人才和制作资源网络。拥有好莱坞顶级制作人和创作者关系。
+  capital_cost_base: 3500000
+  recurring_cost_per_round: 900000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 2.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: ea
+  category: Partnerships
+  code: local_strategic_ea
+  name: Shanghai Media Alliance
+  name_zh: 上海媒体联盟
+  description: Shanghai-based media conglomerate with deep NRTA relationships, content distribution network, and censorship compliance expertise.
+  description_zh: 总部位于上海的媒体集团，拥有中国娱乐行业的深厚政府关系和内容分发网络。
+  capital_cost_base: 2500000
+  recurring_cost_per_round: 700000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.5
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: eu
+  category: Partnerships
+  code: local_strategic_eu
+  name: European Broadcast Alliance
+  name_zh: 欧洲广播联盟
+  description: Brussels-based media consortium connecting content platforms with EU public broadcasters, AVMSD compliance networks, and cultural funding institutions.
+  description_zh: 欧洲广播和流媒体行业联盟，拥有欧盟视听媒体法规合规专业知识。
+  capital_cost_base: 4000000
+  recurring_cost_per_round: 1000000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 1.5
+    - true
+  - - regulatory_govt
+    - add
+    - 2.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+- market: sa
+  category: Partnerships
+  code: local_strategic_sa
+  name: Globo Media Partners
+  name_zh: 环球媒体合伙人
+  description: Brazilian media and entertainment partnership providing telenovela production access, Portuguese-language distribution, and ANCINE regulatory navigation.
+  description_zh: 巴西媒体集团，拥有拉丁美洲最大的电视和流媒体分发网络。
+  capital_cost_base: 2000000
+  recurring_cost_per_round: 600000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 2.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.5
+    - true
+  - - long_term_investment
+    - add
+    - 1.5
+    - true
+- market: wa
+  category: Partnerships
+  code: local_strategic_wa
+  name: Nollywood Gateway Partners
+  name_zh: 尼莱坞门户合伙人
+  description: Lagos-based entertainment company with Nollywood creator relationships, mobile distribution infrastructure, and community-level reach across West Africa.
+  description_zh: 尼日利亚电影产业网络，拥有非洲最大的影视制作和分发能力。
+  capital_cost_base: 1500000
+  recurring_cost_per_round: 500000
+  time_lag_rounds: 0
+  is_reversible: true
+  reversal_cost_multiplier: '0.30'
+  effects:
+  - - jv_distributor
+    - add
+    - 3.0
+    - true
+  - - regulatory_govt
+    - add
+    - 1.0
+    - true
+  - - long_term_investment
+    - add
+    - 1.0
+    - true
+governance_commitments:
+- code: board_diversity
+  name: Board Diversity
+  name_zh: 董事会多元化
+  description: |-
+    Commit to a diverse board of directors including gender, ethnic, and international representation. Requires ongoing investment in board recruitment and advisory services.
+  description_zh: |-
+    承诺建设多元化的董事会，包括性别、种族和国际代表性。需要持续投资董事招聘和顾问服务。
+  ongoing_cost_per_round: 200000
+  benefits:
+  - target: governance_quality
+    boost: 0.2
+  - target: esg_investor_satisfaction
+    boost: 0.15
+  - target: regulator_satisfaction
+    boost: 0.08
+    markets:
+    - eu
+    - na
+  interactions: []
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.1
+    esg_investor_extra_penalty: -0.15
+    regulator_penalty: -0.05
+    news_headline: reverses board diversity commitment — governance concerns mount
+  prerequisite:
+  amplifier:
+  display_order: 1
+- code: pay_transparency
+  name: Pay Transparency
+  name_zh: 薪酬透明
+  description: |-
+    Publish compensation data across all levels. Builds trust but exposes any pay gaps. If salaries are below market rate, transparency will temporarily increase turnover until compensation is competitive.
+  description_zh: |-
+    公开所有层级的薪酬数据。建立信任但暴露薪酬差距。如果工资低于市场水平，透明化将暂时增加人员流失，直到薪酬具有竞争力。
+  ongoing_cost_per_round: 150000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: talent_turnover_reduction
+    boost: 0.03
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: salary_level_any_pool
+      operator: <
+      value: 2
+    effect:
+      type: talent_turnover_increase
+      magnitude: 0.05
+      duration: while_condition_true
+      description: Pay transparency exposes below-market salaries — turnover increases until compensation is competitive
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    talent_turnover_spike: 0.04
+    news_headline: ends pay transparency program — employee trust shaken
+  prerequisite:
+  amplifier:
+  display_order: 2
+- code: anti_corruption
+  name: Anti-Corruption
+  name_zh: 反腐败
+  description: |-
+    Implement comprehensive anti-corruption program: compliance officers, whistleblower systems, third-party auditing, and zero-tolerance policy. Reduces regulatory event risk but increases JV operating costs.
+  description_zh: |-
+    实施全面的反腐败项目：合规官、举报人制度、第三方审计和零容忍政策。降低监管事件风险但增加合资运营成本。
+  ongoing_cost_per_round: 300000
+  benefits:
+  - target: governance_quality
+    boost: 0.25
+  - target: value_investor_satisfaction
+    boost: 0.12
+  - target: esg_investor_satisfaction
+    boost: 0.1
+  - target: regulator_satisfaction
+    boost: 0.12
+    markets:
+    - wa
+    - sa
+  - target: regulatory_event_probability_reduction
+    boost: 0.1
+  interactions:
+  - condition:
+      attribute: entry_mode_in_any_market
+      operator: ==
+      value: jv
+    effect:
+      type: jv_monitoring_cost
+      magnitude: 100000
+      per: jv_market
+      description: Anti-corruption compliance monitoring required for each JV partner
+  revocation_penalty:
+    duration_rounds: 3
+    investor_confidence_drop: -0.15
+    regulator_penalty: -0.1
+    regulatory_event_probability_increase: 0.08
+    news_headline: dismantles anti-corruption program — regulatory scrutiny expected
+  prerequisite:
+  amplifier:
+  display_order: 3
+- code: supply_chain_audit
+  name: Supply Chain Audit
+  name_zh: 供应链审计
+  description: |-
+    Commission independent audits of your entire supply chain. Identifies cost inefficiencies but may expose reputational risks at contract manufacturing partners.
+  description_zh: |-
+    委托对整个供应链进行独立审计。可发现成本低效，但可能暴露合同制造合作伙伴的声誉风险。
+  ongoing_cost_per_round: 250000
+  benefits:
+  - target: governance_quality
+    boost: 0.15
+  - target: cogs_reduction
+    boost: 0.015
+  - target: operations_effectiveness_boost
+    boost: 0.05
+  - target: esg_investor_satisfaction
+    boost: 0.12
+  - target: supply_chain_event_protection
+    boost: 0.15
+  interactions:
+  - condition:
+      attribute: uses_contract_manufacturing
+      operator: ==
+      value: true
+    effect:
+      type: contract_mfg_reputation_risk
+      probability_per_round: 0.15
+      impact:
+        type: reputation_event
+        magnitude: -0.08
+        duration: 1
+        description: Supply chain audit reveals labor concerns at contract manufacturer
+      description: Audit may expose unfavorable conditions at contract manufacturing facilities
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.08
+    cogs_reduction_lost: true
+    news_headline: cancels supply chain auditing — transparency concerns raised
+  prerequisite:
+  amplifier:
+  display_order: 4
+- code: public_esg_reporting
+  name: Public ESG Reporting
+  name_zh: 公开ESG报告
+  description: |-
+    Publish comprehensive quarterly ESG reports. Amplifies the visibility of all other ESG investments to stakeholders. But reporting without substance will be seen as greenwashing.
+  description_zh: |-
+    发布全面的季度ESG报告。放大所有其他ESG投资对利益相关者的可见度。但没有实质内容的报告将被视为漂绿行为。
+  ongoing_cost_per_round: 100000
+  benefits:
+  - target: governance_quality
+    boost: 0.1
+  - target: esg_investor_satisfaction
+    boost: 0.08
+  - target: regulator_satisfaction
+    boost: 0.05
+  interactions:
+  - condition:
+      attribute: total_esg_investment
+      operator: <
+      value: 1000000
+    effect:
+      type: greenwashing_penalty
+      impact:
+        esg_investor_penalty: -0.2
+        regulator_penalty: -0.08
+        customer_trust_penalty: -0.03
+      description: Public ESG reporting with minimal actual investment seen as greenwashing
+  revocation_penalty:
+    duration_rounds: 2
+    investor_confidence_drop: -0.05
+    esg_investor_extra_penalty: -0.1
+    news_headline: stops publishing ESG reports — transparency regresses
+  prerequisite:
+  amplifier:
+    target: esg_investment_visibility
+    multiplier: 1.3
+    description: All ESG investments produce 30% more stakeholder satisfaction with public reporting
+  display_order: 5
+tax_structures:
+- code: direct
+  name: Direct Structure
+  name_zh: 直接结构
+  description: |-
+    Profits flow directly from each market subsidiary to headquarters. Simple, transparent, and fully compliant. No tax optimization but no audit risk. Regulators and ESG investors approve of the transparency.
+  description_zh: |-
+    利润从各市场子公司直接流向总部。简单、透明、完全合规。没有税务优化但没有审计风险。监管机构和ESG投资者认可其透明度。
+  setup_cost: 0
+  annual_maintenance_cost: 0
+  effective_tax_reduction_pct: '0.00'
+  repatriation_cost_reduction_pct: '0.00'
+  audit_probability_per_round: '0.00'
+  audit_penalty_multiplier: '1.0'
+  value_investor_modifier: '0.03'
+  esg_investor_modifier: '0.05'
+  regulator_modifier: '0.05'
+  anti_corruption_conflict: false
+  display_order: 1
+- code: regional_hub
+  name: Regional Hub Structure
+  name_zh: 区域枢纽结构
+  description: |-
+    Route profits through a regional holding entity in a favorable tax jurisdiction. Reduces effective tax rate and repatriation friction. Standard practice among multinationals — moderate audit risk. Requires ongoing legal and accounting infrastructure.
+  description_zh: |-
+    通过优惠税收管辖区的区域控股实体转移利润。降低有效税率和资金回流摩擦。跨国公司的标准做法——中等审计风险。需要持续的法律和会计基础设施。
+  setup_cost: 2000000
+  annual_maintenance_cost: 400000
+  effective_tax_reduction_pct: '0.04'
+  repatriation_cost_reduction_pct: '0.40'
+  audit_probability_per_round: '0.06'
+  audit_penalty_multiplier: '1.5'
+  value_investor_modifier: '0.02'
+  esg_investor_modifier: '-0.03'
+  regulator_modifier: '-0.03'
+  anti_corruption_conflict: false
+  display_order: 2
+- code: aggressive
+  name: Aggressive Tax Optimization
+  name_zh: 激进税务优化
+  description: |-
+    Maximize profit shifting through transfer pricing, IP licensing structures, and multi-layered holding entities. Significant tax savings but high audit risk, regulatory scrutiny, and reputational exposure. Creates visible conflict with Anti-Corruption and ESG governance commitments.
+  description_zh: |-
+    通过转让定价、知识产权授权结构和多层控股实体最大化利润转移。节税显著但审计风险高、监管审查严格且存在声誉风险。与反腐败和ESG治理承诺存在明显冲突。
+  setup_cost: 4000000
+  annual_maintenance_cost: 800000
+  effective_tax_reduction_pct: '0.08'
+  repatriation_cost_reduction_pct: '0.70'
+  audit_probability_per_round: '0.15'
+  audit_penalty_multiplier: '2.5'
+  value_investor_modifier: '0.05'
+  esg_investor_modifier: '-0.15'
+  regulator_modifier: '-0.10'
+  anti_corruption_conflict: true
+  display_order: 3
+communication_assignments:
+- code: expansion_memo_r2
+  name: 'Board Memo: International Content Expansion Strategy'
+  name_zh: 董事会备忘录：国际内容扩张战略
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 2
+  audience: BOARD
+  prompt_text: |-
+    Your board of directors has requested a brief memo outlining your international content expansion strategy.
+
+    You've completed two quarters as the leadership team of a global media and entertainment company. The board wants to understand:
+    - Which markets are you targeting and why?
+    - What entry modes have you chosen and what's the rationale?
+    - How are you managing the risks of operating in foreign media markets (censorship, content quotas, local content requirements)?
+    - What's your content localization and talent strategy?
+    - How does this expansion plan connect to your overall competitive strategy in the entertainment industry?
+
+    Write a board memo (max 300 words) that justifies your international strategy. The board is sophisticated — they'll notice if your stated strategy contradicts your actual decisions.
+  prompt_text_zh: |-
+    您的董事会要求提交一份简要备忘录，概述您的国际内容扩张战略。
+
+    作为媒体与娱乐公司的领导团队，您已完成两个季度的运营。董事会希望了解：
+    - 您瞄准了哪些市场，为什么？
+    - 您选择了什么进入模式，理由是什么？
+    - 您如何管理内容监管和本地化风险？
+    - 您的人才和内容本地化策略是什么？
+    - 该扩张计划如何与您的整体竞争战略相联系？
+
+    撰写一份董事会备忘录（最多300字），论证您的国际战略。董事会成员经验丰富——如果您的书面战略与实际决策相矛盾，他们会察觉。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the memo match the team's actual market entry decisions, talent allocation, and compliance investment?
+  - criterion: stakeholder_awareness
+    weight: 0.2
+    description: 'Does it address board concerns: risk, ROI timeline, competitive positioning?'
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the memo well-structured, concise, and convincing?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge origin trust challenges, currency risk, and competitive threats?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference relevant frameworks (CAGE distance, Uppsala model, OLI paradigm)?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 1
+- code: investor_letter_r4
+  name: 'Investor Letter: Quarterly Media Strategy Update'
+  name_zh: 投资者信函：季度媒体战略更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 4
+  audience: INVESTORS
+  prompt_text: |-
+    Your three major institutional investors — Velocity Capital (Growth), Granite Investments (Value), and GreenHorizon Partners (ESG) — expect a quarterly update letter.
+
+    Each fund has different priorities. Your letter will be read by all three.
+
+    Address:
+    - How is your media content strategy performing against expectations?
+    - What's your technology roadmap (Gen 2/3 progression in AI personalization, immersive media, creator tools)?
+    - How are you managing financial health (debt, margins, dividends)?
+    - What ESG commitments have you made and what returns are they generating?
+    - What's your outlook for the next 4 quarters in the global entertainment market?
+
+    Write a shareholder letter (max 300 words). Remember: Velocity wants growth signals, Granite wants discipline signals, GreenHorizon wants sustainability signals. You can't optimize for all three — but you need to maintain confidence across the board.
+  prompt_text_zh: |-
+    您的三家主要机构投资者——高速资本（增长型）、磐石投资（价值型）和绿色地平线合伙人（ESG型）——期待收到季度更新信函。
+
+    请涵盖：
+    - 您的媒体战略表现如何？
+    - 您的内容和技术路线图是什么？
+    - 您如何管理财务健康（债务、利润率、股息）？
+    - 您做出了哪些ESG承诺？
+    - 您对未来4个季度的展望是什么？
+
+    撰写一封股东信函（最多300字）。高速资本寻求增长信号，磐石投资寻求纪律信号，绿色地平线寻求可持续性信号。
+  word_limit: 300
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.3
+    description: Does the letter match actual financial performance, content investment, and ESG commitments?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address the specific concerns of all three investor archetypes?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the letter professional, balanced, and confidence-inspiring?
+  - criterion: risk_acknowledgment
+    weight: 0.1
+    description: Does it acknowledge challenges honestly rather than only highlighting positives?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it reference strategic rationale grounded in frameworks or industry analysis?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 2
+- code: crisis_statement
+  name: 'Press Statement: Crisis Response'
+  name_zh: 新闻声明：危机应对
+  trigger_type: EVENT_BASED
+  trigger_condition:
+    event_category:
+    - GEOPOLITICAL
+    - SANCTIONS
+  audience: PUBLIC
+  prompt_text: |-
+    A major event has affected your media operations: {event_name}.
+
+    {event_description}
+
+    The media is asking for a statement. Your subscribers, investors, regulators, and employees are watching.
+
+    Draft a press statement (max 200 words) that:
+    - Acknowledges the situation
+    - Explains your response
+    - Reassures stakeholders
+    - Positions your entertainment company constructively
+
+    Avoid empty platitudes. Stakeholders can see your actual decisions — if you claim to be 'committed to compliance' but your compliance investment is zero, they'll know.
+  prompt_text_zh: |-
+    一项重大事件影响了您的媒体业务：{event_name}。
+
+    {event_description}
+
+    媒体正在要求发表声明。您的用户、投资者、监管机构和员工都在关注。
+
+    起草一份新闻声明（最多200字），需要：
+    - 承认情况
+    - 解释您的应对
+    - 安抚利益相关者
+    - 建设性地定位您的公司
+
+    避免空洞的套话。利益相关者可以看到您的实际决策。
+  word_limit: 200
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.35
+    description: Does the statement match the team's actual response to the event and their broader strategy?
+  - criterion: stakeholder_awareness
+    weight: 0.25
+    description: Does it address the concerns of affected stakeholders (subscribers, regulators, investors)?
+  - criterion: clarity_and_persuasion
+    weight: 0.25
+    description: Is the statement clear, professional, and appropriate in tone?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it acknowledge the impact honestly without being defensive?
+  is_mandatory: false
+  coherence_weight: '0.03'
+  display_order: 10
+- code: employee_message_r6
+  name: 'Employee Town Hall: Global Media Operations Update'
+  name_zh: 员工全体大会：全球媒体运营更新
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 6
+  audience: EMPLOYEES
+  prompt_text: |-
+    You're addressing your global workforce — headquartered in {home_market} with content production and distribution operations in {active_markets}.
+
+    Employees are asking:
+    - Is the company financially healthy?
+    - Are jobs secure in each market?
+    - What's the growth plan for our media and entertainment business?
+    - How does the company's ESG commitment affect them?
+    - If you've made governance commitments (pay transparency, board diversity), what do they mean for employees?
+
+    Write a town hall message (max 250 words). Your workforce spans multiple cultures and markets. Some are at headquarters, some are recent local hires in foreign markets. They need to feel included and informed — not just managed.
+  prompt_text_zh: |-
+    您正在向全球员工发言——总部设在{home_market}，媒体业务遍及{active_markets}。
+
+    员工们在问：
+    - 公司财务健康吗？
+    - 各市场的工作岗位安全吗？
+    - 媒体业务的增长计划是什么？
+    - 公司的ESG承诺对他们意味着什么？
+
+    撰写一份全体大会致辞（最多250字）。您的员工遍布多个文化和市场。他们需要感到被包容和知情。
+  word_limit: 250
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the message align with actual talent decisions, salary levels, and localization investment?
+  - criterion: stakeholder_awareness
+    weight: 0.3
+    description: Does it address employee concerns across different markets and roles?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is it authentic, inclusive, and motivating rather than corporate boilerplate?
+  - criterion: risk_acknowledgment
+    weight: 0.15
+    description: Does it honestly address challenges the company is facing?
+  - criterion: framework_grounding
+    weight: 0.1
+    description: Does it connect to organizational values and strategic direction?
+  is_mandatory: true
+  coherence_weight: '0.05'
+  display_order: 3
+- code: final_review_r8
+  name: 'Board Presentation: 8-Quarter Strategic Review'
+  name_zh: 董事会报告：8个季度战略回顾
+  trigger_type: ROUND_MILESTONE
+  trigger_condition:
+    round: 8
+  audience: BOARD
+  prompt_text: |-
+    This is your final quarterly board presentation. Looking back over 8 quarters of leadership in the global media and entertainment sector:
+
+    - What was your strategy and how did it evolve?
+    - What worked and what didn't?
+    - How did you navigate censorship barriers, content quotas, competitive dynamics, and market conditions?
+    - What's the state of your global operations — financial health, market positions, stakeholder relationships?
+    - If you had 4 more quarters, what would you do differently?
+
+    Write your strategic review (max 400 words). This is your legacy document — it should demonstrate strategic thinking, honest self-assessment, and the ability to learn from results. The board has seen every number. They want to know if you understand WHY the numbers look the way they do.
+  prompt_text_zh: |-
+    这是您最后一次季度董事会报告。回顾媒体与娱乐行业8个季度的领导历程：
+
+    - 您的战略是什么？如何演变的？
+    - 什么奏效了，什么没有？
+    - 您如何应对内容监管、竞争态势和市场条件？
+    - 您的全球业务现状如何——财务健康、市场地位、利益相关者关系？
+    - 如果再给您4个季度，您会做什么不同的事？
+
+    撰写您的战略回顾（最多400字）。董事会看过每一个数字。他们想知道您是否理解数字背后的原因。
+  word_limit: 400
+  evaluation_criteria:
+  - criterion: strategic_consistency
+    weight: 0.25
+    description: Does the review accurately reflect what happened and why?
+  - criterion: stakeholder_awareness
+    weight: 0.15
+    description: Does it show awareness of all stakeholder perspectives?
+  - criterion: clarity_and_persuasion
+    weight: 0.2
+    description: Is the review well-structured, insightful, and professionally written?
+  - criterion: risk_acknowledgment
+    weight: 0.2
+    description: Does it honestly assess failures and missed opportunities?
+  - criterion: framework_grounding
+    weight: 0.2
+    description: Does it demonstrate application of strategic frameworks to analyze outcomes?
+  is_mandatory: true
+  coherence_weight: '0.08'
+  display_order: 4
+org_structures:
+- code: centralized
+  name: Centralized
+  name_zh: 集权式
+  description: |-
+    All strategic and operational decisions flow through headquarters. Fast decision-making and strong alignment, but local adaptation suffers as geographic scope increases. Works well for 1-2 markets, strains beyond 3.
+  description_zh: |-
+    所有战略和运营决策由总部统一制定。决策迅速、协调一致，但随地理范围扩大，本地适应性受限。适用于1-2个市场，超过3个则面临压力。
+  base_overhead_per_round: '100000'
+  per_market_coordination_cost: '50000'
+  hq_talent_effectiveness_modifier: '1.15'
+  local_talent_effectiveness_modifier: '0.80'
+  innovation_modifier: '1.10'
+  coordination_efficiency: '1.05'
+  decision_speed_modifier: '1.10'
+  optimal_market_range_min: 1
+  optimal_market_range_max: 3
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.08'
+  transition_cost: '0'
+  transition_disruption_rounds: 0
+  display_order: 1
+- code: regional
+  name: Regional
+  name_zh: 区域式
+  description: |-
+    Each region operates semi-autonomously with local leadership, budgets, and decision authority. Excellent local adaptation but risk of strategic fragmentation and duplication. Ideal for 3-5 markets.
+  description_zh: |-
+    每个区域拥有本地领导层、预算和决策权限的半自主运营。本地适应性优秀，但存在战略碎片化和重复建设风险。适用于3-5个市场。
+  base_overhead_per_round: '300000'
+  per_market_coordination_cost: '100000'
+  hq_talent_effectiveness_modifier: '0.90'
+  local_talent_effectiveness_modifier: '1.20'
+  innovation_modifier: '0.90'
+  coordination_efficiency: '0.85'
+  decision_speed_modifier: '1.05'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '100000'
+  overextension_effectiveness_penalty: '0.04'
+  transition_cost: '1500000'
+  transition_disruption_rounds: 1
+  display_order: 2
+- code: matrix
+  name: Matrix
+  name_zh: 矩阵式
+  description: |-
+    Dual reporting structure combining product/functional expertise with geographic knowledge. Best of both worlds in theory — highest overhead in practice. Requires strong organizational culture and communication.
+  description_zh: |-
+    结合产品/职能专业知识和地理知识的双重汇报结构。理论上两全其美——实践中管理成本最高。需要强大的组织文化和沟通。
+  base_overhead_per_round: '500000'
+  per_market_coordination_cost: '150000'
+  hq_talent_effectiveness_modifier: '1.05'
+  local_talent_effectiveness_modifier: '1.10'
+  innovation_modifier: '1.05'
+  coordination_efficiency: '1.15'
+  decision_speed_modifier: '0.85'
+  optimal_market_range_min: 3
+  optimal_market_range_max: 5
+  overextension_cost_per_market: '200000'
+  overextension_effectiveness_penalty: '0.06'
+  transition_cost: '2500000'
+  transition_disruption_rounds: 2
+  display_order: 3
+- code: networked
+  name: Networked
+  name_zh: 网络式
+  description: |-
+    Flat, project-based structure with fluid team composition across geographies. Highly innovative and adaptable, but requires exceptional talent and strong culture. Chaotic without both. Least effective for operational efficiency.
+  description_zh: |-
+    扁平化、基于项目的结构，团队成员跨地区灵活组合。高度创新和适应性强，但需要卓越的人才和强大的文化。缺乏这两者则混乱。运营效率最低。
+  base_overhead_per_round: '200000'
+  per_market_coordination_cost: '75000'
+  hq_talent_effectiveness_modifier: '1.00'
+  local_talent_effectiveness_modifier: '1.00'
+  innovation_modifier: '1.25'
+  coordination_efficiency: '0.80'
+  decision_speed_modifier: '1.15'
+  optimal_market_range_min: 2
+  optimal_market_range_max: 4
+  overextension_cost_per_market: '150000'
+  overextension_effectiveness_penalty: '0.07'
+  transition_cost: '1000000'
+  transition_disruption_rounds: 2
+  display_order: 4
+alliance_partner_profiles:
+- partnership_code: local_strategic_na
+  market: na
+  name: Hollywood Talent Alliance
+  name_zh: 好莱坞人才联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Major US entertainment advisory firm with deep studio relationships, talent agency connections, and FCC regulatory navigation. Values governance, professional standards, and long-term relationship building.
+  description_zh: 美国娱乐产业人才和制作资源网络。重视内容质量和知识产权保护。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US market?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary partner here?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_ea
+  market: ea
+  name: Shanghai Media Alliance
+  name_zh: 上海媒体联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Shanghai-based media conglomerate with deep NRTA relationships, content distribution network, and censorship compliance expertise. Values technology sharing, local commitment, and mutual revenue growth.
+  description_zh: 总部位于上海的媒体集团。重视内容本地化、技术共享和政府关系。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.25
+    description: Are you sharing technology appropriately?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in East Asia?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the venture profitable for both sides?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_eu
+  market: eu
+  name: European Broadcast Alliance
+  name_zh: 欧洲广播联盟
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Brussels-based media consortium with strong AVMSD compliance expertise and sustainability focus. Values governance, ESG commitment, and long-term market presence.
+  description_zh: 欧洲广播和流媒体行业联盟。重视合规、内容多元化和长期合作。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU governance standards?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you invested in local operations?
+  - feature: market_investment
+    weight: 0.2
+    description: Are you committed to the EU market?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.1
+    description: Are we your primary EU partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: local_strategic_sa
+  market: sa
+  name: Globo Media Partners
+  name_zh: 环球媒体合伙人
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Brazilian media and entertainment partnership with telenovela production access and Portuguese-language distribution. Values revenue growth and local investment.
+  description_zh: 巴西媒体集团。重视营业收入增长和本地内容投入。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Are we both making money?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in South America?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: technology_sharing
+    weight: 0.15
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: local_strategic_wa
+  market: wa
+  name: Nollywood Gateway Partners
+  name_zh: 尼莱坞门户合伙人
+  partner_type: LOCAL_STRATEGIC
+  description: |-
+    Lagos-based entertainment company with Nollywood creator relationships, mobile distribution infrastructure, and community-level reach. Values local commitment, revenue growth, and respect for local practices.
+  description_zh: 尼日利亚电影产业网络。重视本地承诺和内容共同制作。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring Nigerians?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in West Africa?
+  - feature: revenue_share
+    weight: 0.25
+    description: Are we both making money?
+  - feature: technology_sharing
+    weight: 0.1
+    description: Are you sharing knowledge?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: na
+  name: NA Content Distribution Network
+  name_zh: 北美内容分销网络
+  partner_type: DISTRIBUTION
+  description: Major US content distribution and telecom bundling partner. Values consistent volume and market commitment.
+  description_zh: 北美内容分发和流媒体分销合作伙伴。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to this market?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary distributor?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate ethically?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: ea
+  name: EA Digital Platforms
+  name_zh: 东亚数字平台
+  partner_type: DISTRIBUTION
+  description: Pan-Asian digital content distribution network covering China and Southeast Asia.
+  description_zh: 东亚数字内容分发平台。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to East Asia?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you hiring locally?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: eu
+  name: EU Broadcast Partners
+  name_zh: 欧盟广播合作伙伴
+  partner_type: DISTRIBUTION
+  description: European broadcast and streaming aggregator with coverage across EU member states.
+  description_zh: 欧洲广播和流媒体分销合作伙伴。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet EU compliance standards?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume consistent?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to EU?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary distributor?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: distribution_partner
+  market: sa
+  name: SA Telecom Media
+  name_zh: 南美电信媒体
+  partner_type: DISTRIBUTION
+  description: Brazilian telecom and media distribution firm with streaming and broadcast reach across South America.
+  description_zh: 南美电信运营商和媒体分销网络。
+  preferences:
+  - feature: revenue_share
+    weight: 0.35
+    description: Are shipments growing?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you committed to South America?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.15
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: distribution_partner
+  market: wa
+  name: WA Mobile Content
+  name_zh: 西非移动内容
+  partner_type: DISTRIBUTION
+  description: Pan-African mobile content and last-mile distribution network based in Lagos.
+  description_zh: 西非移动内容分发和合作伙伴。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is volume growing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Are you building local capacity?
+  - feature: governance_quality
+    weight: 0.1
+    description: Do you operate transparently?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: na
+  name: NA Cloud & AI Partners
+  name_zh: 北美云与AI合作伙伴
+  partner_type: TECHNOLOGY
+  description: US cloud and AI technology partnership for streaming infrastructure and recommendation algorithms. Values IP protection and mutual innovation.
+  description_zh: 北美云基础设施和AI技术合作伙伴。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you investing in R&D with us?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you protect shared IP?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: ea
+  name: EA Algorithm Partners
+  name_zh: 东亚算法合作伙伴
+  partner_type: TECHNOLOGY
+  description: Shenzhen-based AI and algorithm development partner. Values deep technology sharing.
+  description_zh: 东亚AI和推荐算法技术合作伙伴。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.4
+    description: Are you sharing technology deeply?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in East Asia R&D?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership profitable?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: eu
+  name: EU Privacy-Safe Tech
+  name_zh: 欧盟隐私安全技术
+  partner_type: TECHNOLOGY
+  description: European privacy-focused technology firm specializing in GDPR-compliant AI and streaming infrastructure.
+  description_zh: 欧洲隐私合规技术合作伙伴。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing R&D insights?
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you meet ethical IP standards?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the partnership generating value?
+  - feature: exclusivity_respect
+    weight: 0.2
+    description: Are we your primary tech partner?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: technology_partner
+  market: sa
+  name: SA Digital Infrastructure
+  name_zh: 南美数字基础设施
+  partner_type: TECHNOLOGY
+  description: Brazilian digital infrastructure and streaming technology lab with mobile-first expertise.
+  description_zh: 南美数字基础设施和技术合作伙伴。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.35
+    description: Are you collaborating on R&D?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the venture generating value?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in SA tech?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Are you hiring local engineers?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: technology_partner
+  market: wa
+  name: WA Mobile Tech
+  name_zh: 西非移动技术
+  partner_type: TECHNOLOGY
+  description: West African mobile technology hub with low-bandwidth streaming and USSD content delivery expertise.
+  description_zh: 西非移动技术和基础设施合作伙伴。
+  preferences:
+  - feature: technology_sharing
+    weight: 0.3
+    description: Are you sharing knowledge?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local tech capacity?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa tech?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the partnership generating value?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+- partnership_code: govt_advisory_partner
+  market: na
+  name: Washington Media Policy Group
+  name_zh: 华盛顿媒体政策集团
+  partner_type: GOVERNMENT
+  description: Washington DC media regulatory advisory firm. Values compliance and ethical governance in the entertainment sector.
+  description_zh: 华盛顿特区媒体和内容政策咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Are you operating ethically?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the US?
+  - feature: revenue_share
+    weight: 0.2
+    description: Is the advisory fee justified?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary advisor?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: ea
+  name: Beijing NRTA Advisors
+  name_zh: 北京广电总局顾问
+  partner_type: GOVERNMENT
+  description: Regional government relations firm with connections across Chinese media regulatory bodies and NRTA.
+  description_zh: 中国广电总局和内容监管政策咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you respect local regulations?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you hiring locally?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to East Asia?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the advisory fee justified?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: eu
+  name: Brussels AVMSD Consultants
+  name_zh: 布鲁塞尔AVMSD顾问
+  partner_type: GOVERNMENT
+  description: EU regulatory specialists with expertise in AVMSD compliance, digital services regulation, and GDPR.
+  description_zh: 欧盟视听媒体服务指令合规专家。
+  preferences:
+  - feature: governance_quality
+    weight: 0.4
+    description: Do you meet EU standards?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to the EU?
+  - feature: localization_commitment
+    weight: 0.2
+    description: Are you building EU operations?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worth continuing?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: sa
+  name: SA ANCINE Regulatory Group
+  name_zh: 南美ANCINE监管集团
+  partner_type: GOVERNMENT
+  description: Government relations firm with connections across Brazilian and South American media and film regulatory bodies.
+  description_zh: 巴西国家电影局监管咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.3
+    description: Do you operate transparently?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Are you building local operations?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you committed to South America?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: govt_advisory_partner
+  market: wa
+  name: Abuja Film Relations
+  name_zh: 阿布贾电影关系
+  partner_type: GOVERNMENT
+  description: Government advisory firm with connections to Nigerian and West African media regulatory bodies.
+  description_zh: 尼日利亚电影和内容产业政府关系咨询公司。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Are you hiring locally?
+  - feature: governance_quality
+    weight: 0.25
+    description: Do you operate transparently?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in Africa?
+  - feature: revenue_share
+    weight: 0.15
+    description: Is the relationship worthwhile?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: BINARY
+- partnership_code: brand_ambassador
+  market: na
+  name: MediaBrand America
+  name_zh: 媒体品牌美国
+  partner_type: BRAND
+  description: US entertainment brand advocacy and media influencer network. Values consistent messaging and market presence.
+  description_zh: 北美媒体和娱乐品牌推广网络。
+  preferences:
+  - feature: market_investment
+    weight: 0.35
+    description: Are you investing in marketing?
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.2
+    description: Is the brand reputation clean?
+  - feature: exclusivity_respect
+    weight: 0.15
+    description: Are we your primary brand partner?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: ea
+  name: MediaBrand Asia
+  name_zh: 媒体品牌亚洲
+  partner_type: BRAND
+  description: Shanghai-based entertainment brand agency with pan-Asian reach and cultural expertise.
+  description_zh: 东亚媒体品牌机构，拥有泛亚洲覆盖。
+  preferences:
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in EA marketing?
+  - feature: localization_commitment
+    weight: 0.3
+    description: Is the brand culturally adapted?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.30'
+  renegotiation_threshold: '0.50'
+  patience_rounds: 2
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: eu
+  name: MediaBrand Europe
+  name_zh: 媒体品牌欧洲
+  partner_type: BRAND
+  description: European entertainment brand consultancy emphasizing cultural sensitivity and ethical messaging.
+  description_zh: 欧洲媒体品牌咨询公司。
+  preferences:
+  - feature: governance_quality
+    weight: 0.35
+    description: Is the brand ethically positioned?
+  - feature: market_investment
+    weight: 0.25
+    description: Are you investing in EU marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: localization_commitment
+    weight: 0.15
+    description: Is the brand locally adapted?
+  satisfaction_floor: '0.35'
+  renegotiation_threshold: '0.55'
+  patience_rounds: 2
+  benefit_curve: THRESHOLD
+- partnership_code: brand_ambassador
+  market: sa
+  name: MediaBrand South America
+  name_zh: 媒体品牌南美
+  partner_type: BRAND
+  description: Brazilian entertainment brand and influencer agency with South American reach.
+  description_zh: 南美媒体品牌和影响力机构。
+  preferences:
+  - feature: revenue_share
+    weight: 0.3
+    description: Is the brand selling?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in SA marketing?
+  - feature: localization_commitment
+    weight: 0.25
+    description: Is the brand culturally adapted?
+  - feature: governance_quality
+    weight: 0.15
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: LINEAR
+- partnership_code: brand_ambassador
+  market: wa
+  name: MediaBrand West Africa
+  name_zh: 媒体品牌西非
+  partner_type: BRAND
+  description: Pan-African entertainment media and brand agency with expertise in community-focused marketing.
+  description_zh: 泛非媒体品牌机构，专长于非洲娱乐市场。
+  preferences:
+  - feature: localization_commitment
+    weight: 0.35
+    description: Is the brand locally resonant?
+  - feature: market_investment
+    weight: 0.3
+    description: Are you investing in African marketing?
+  - feature: revenue_share
+    weight: 0.25
+    description: Is the brand growing?
+  - feature: governance_quality
+    weight: 0.1
+    description: Is the brand reputation clean?
+  satisfaction_floor: '0.25'
+  renegotiation_threshold: '0.45'
+  patience_rounds: 3
+  benefit_curve: THRESHOLD
+government_profiles:
+- market: na
+  name: FCC & Content Standards Administration
+  name_zh: 联邦通信委员会与内容标准管理局
+  description: |-
+    Focus on local employment and tax revenue from content production. FCC regulates broadcast standards. Moderate content regulation. Rewards local content production and studio investment. No censorship wall.
+  description_zh: |-
+    聚焦内容标准、言论自由和市场竞争。重视知识产权保护和技术创新。对外国内容平台保持审慎监管。
+  policy_priorities:
+  - objective: local_employment
+    weight: 0.25
+  - objective: tax_revenue
+    weight: 0.25
+  - objective: local_manufacturing
+    weight: 0.20
+  - objective: esg_compliance
+    weight: 0.15
+  - objective: technology_transfer
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.70'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.20'
+  max_incentive_value_per_round: '3000000'
+  procurement_budget_per_round: '5000000'
+  procurement_frequency: 2
+  policy_volatility: '0.10'
+  patience_rounds: 2
+- market: ea
+  name: NRTA Content Authority
+  name_zh: 广电总局内容管理局
+  description: |-
+    STRICTEST content control globally. All content must pass NRTA review. Content Safety is weighted 0.35. Foreign content quotas strictly enforced. Algorithm sharing demands. Teams that don't comply lose market access entirely.
+  description_zh: |-
+    严格的内容审核和管理体系。重视意识形态安全和文化价值导向。外国内容平台需获得特别许可。
+  policy_priorities:
+  - objective: esg_compliance
+    weight: 0.35
+  - objective: local_manufacturing
+    weight: 0.25
+  - objective: technology_transfer
+    weight: 0.20
+  - objective: local_employment
+    weight: 0.10
+  - objective: tax_revenue
+    weight: 0.05
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.60'
+  warning_threshold: '0.25'
+  restriction_threshold: '0.15'
+  max_incentive_value_per_round: '2500000'
+  procurement_budget_per_round: '4000000'
+  procurement_frequency: 2
+  policy_volatility: '0.06'
+  patience_rounds: 1
+- market: eu
+  name: EU Digital Services & AVMSD Authority
+  name_zh: 欧盟数字服务与视听媒体服务指令管理机构
+  description: |-
+    EU Digital Services Act and AVMSD enforcement. ESG compliance 0.25, local content quotas 0.25, data privacy 0.25. Generous cultural subsidies for compliant firms. 30% European content mandate.
+  description_zh: |-
+    全球最严格的数字内容监管框架。要求内容多元化、本地内容配额和数据保护。对不合规行为处罚严厉。
+  policy_priorities:
+  - objective: esg_compliance
+    weight: 0.25
+  - objective: local_manufacturing
+    weight: 0.25
+  - objective: local_employment
+    weight: 0.20
+  - objective: technology_transfer
+    weight: 0.10
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.10
+  incentive_threshold: '0.75'
+  warning_threshold: '0.40'
+  restriction_threshold: '0.25'
+  max_incentive_value_per_round: '2000000'
+  procurement_budget_per_round: '3000000'
+  procurement_frequency: 3
+  policy_volatility: '0.05'
+  patience_rounds: 1
+- market: sa
+  name: ANCINE Brazilian Film Agency
+  name_zh: 巴西国家电影局
+  description: |-
+    Local content incentives and Portuguese-language requirements. Moderate regulation. Values local employment, content production, and cultural preservation. Tax incentives for local production.
+  description_zh: |-
+    聚焦本地内容产业发展和文化保护。通过税收激励和配额要求推动本地内容制作。
+  policy_priorities:
+  - objective: local_manufacturing
+    weight: 0.30
+  - objective: local_employment
+    weight: 0.25
+  - objective: tax_revenue
+    weight: 0.20
+  - objective: technology_transfer
+    weight: 0.15
+  - objective: esg_compliance
+    weight: 0.05
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.68'
+  warning_threshold: '0.35'
+  restriction_threshold: '0.20'
+  max_incentive_value_per_round: '1500000'
+  procurement_budget_per_round: '2000000'
+  procurement_frequency: 3
+  policy_volatility: '0.12'
+  patience_rounds: 2
+- market: wa
+  name: Nigerian Film & Video Censors Board
+  name_zh: 尼日利亚电影与视频审查委员会
+  description: |-
+    Focus on local employment (0.35) and technology transfer (0.25). Wants Nollywood investment, local creator development, and mobile infrastructure. Government is a significant buyer for educational media.
+  description_zh: |-
+    聚焦内容审查和本地产业保护。希望外国平台投资本地尼莱坞内容制作。
+  policy_priorities:
+  - objective: local_employment
+    weight: 0.35
+  - objective: technology_transfer
+    weight: 0.25
+  - objective: local_manufacturing
+    weight: 0.20
+  - objective: esg_compliance
+    weight: 0.05
+  - objective: tax_revenue
+    weight: 0.10
+  - objective: export_contribution
+    weight: 0.05
+  incentive_threshold: '0.60'
+  warning_threshold: '0.30'
+  restriction_threshold: '0.18'
+  max_incentive_value_per_round: '1000000'
+  procurement_budget_per_round: '3000000'
+  procurement_frequency: 1
+  policy_volatility: '0.15'
+  patience_rounds: 3
