@@ -1,0 +1,1687 @@
+/* ============================================================
+   GlobalStrat Design System
+   IBM Plex Sans · Zero border-radius · Left-border accents
+   No shadows · Geometric enterprise financial platform
+   ============================================================ */
+
+/* ============================================================
+   CSS Custom Properties
+   ============================================================ */
+:root {
+  /* Primary */
+  --color-primary: #1E40AF;
+  --color-primary-hover: #1E3A8A;
+  --color-primary-light: #DBEAFE;
+
+  /* Accent colors (left-border on metric cards) */
+  --accent-green: #22C55E;
+  --accent-blue: #3B82F6;
+  --accent-purple: #8B5CF6;
+  --accent-amber: #F59E0B;
+  --accent-red: #EF4444;
+  --accent-teal: #06B6D4;
+  --accent-navy: #1E40AF;
+
+  /* Legacy accent aliases */
+  --accent-environmental: #22C55E;
+  --accent-financial: #3B82F6;
+  --accent-social: #F59E0B;
+  --accent-governance: #8B5CF6;
+  --accent-performance: #06B6D4;
+  --accent-expense: #EF4444;
+  --accent-growth: #22C55E;
+
+  /* Backgrounds */
+  --bg-content: #F1F5F9;
+  --bg-card: #FFFFFF;
+  --bg-table-header: #F8FAFC;
+  --bg-table-alt: #FAFAFA;
+  --bg-highlight-row: #EFF6FF;
+  --bg-footer-row: #F8FAFC;
+
+  /* Sidebar */
+  --sidebar-bg: #0F1724;
+  --sidebar-active: #1E293B;
+  --sidebar-hover: #1E293B;
+  --sidebar-text: #94A3B8;
+  --sidebar-text-active: #E2E8F0;
+  --sidebar-section: #475569;
+  --sidebar-accent: #3B82F6;
+
+  /* Text */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-hint: #94A3B8;
+  --text-link: #1E40AF;
+
+  /* Borders */
+  --card-border: #E2E8F0;
+  --table-border: #E2E8F0;
+
+  /* Status */
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  --font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --topbar-height: 48px;
+  --navy-strip-height: 36px;
+  --sidebar-width: 220px;
+
+  /* Dashboard dark theme */
+  --dash-bg: #1A1F2E;
+  --dash-card-bg: #222838;
+  --dash-card-border: #2E3446;
+  --dash-text: #E6EDF3;
+  --dash-text-muted: #8B949E;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family) !important;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-content);
+}
+
+code {
+  font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Force IBM Plex Sans + zero radius everywhere */
+.ant-typography, .ant-btn, .ant-input, .ant-select, .ant-table,
+.ant-card, .ant-tabs, .ant-tag, .ant-modal, .ant-form, .ant-statistic,
+.ant-descriptions, .ant-list, .ant-menu, .ant-alert, .ant-collapse,
+.ant-drawer, .ant-dropdown, .ant-popover {
+  font-family: var(--font-family) !important;
+}
+
+/* ============================================================
+   ZERO BORDER-RADIUS — Sharp geometric edges everywhere
+   ============================================================ */
+.ant-card,
+.ant-btn,
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number,
+.ant-input-number-input,
+.ant-tag,
+.ant-alert,
+.ant-modal-content,
+.ant-drawer-content,
+.ant-collapse,
+.ant-collapse-item,
+.ant-dropdown-menu,
+.ant-popover-inner,
+.ant-tooltip-inner,
+.ant-notification-notice,
+.ant-message-notice-content,
+.ant-badge-count,
+.ant-pagination-item,
+.ant-steps-item-icon,
+.ant-switch,
+.ant-table-wrapper .ant-table-container,
+.ant-table-wrapper .ant-table,
+.ant-select-dropdown,
+.ant-cascader-dropdown,
+.ant-picker-dropdown,
+.ant-progress-inner,
+.ant-progress-bg {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+h1.ant-typography, .ant-typography h1 {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 8px !important;
+}
+h2.ant-typography, .ant-typography h2 {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 4px !important;
+}
+h3.ant-typography, .ant-typography h3 {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 4px !important;
+  line-height: 1.3 !important;
+}
+h4.ant-typography, .ant-typography h4 {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+.ant-typography p,
+.ant-typography.ant-typography-secondary {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Section label — 10px uppercase with letter-spacing and accent color */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+  display: block;
+}
+
+/* Category label (legacy alias) */
+.category-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  display: block;
+  color: var(--text-muted);
+}
+
+/* Page header */
+.page-header .section-label {
+  margin-bottom: 4px;
+}
+.page-header .page-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.page-header .page-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Metric Card Grid — CSS Grid for guaranteed equal heights
+   ============================================================ */
+.metric-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.metric-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.metric-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.metric-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.metric-grid-5 { grid-template-columns: repeat(5, 1fr); }
+
+@media (max-width: 1024px) {
+  .metric-grid-4, .metric-grid-5 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .metric-grid-3, .metric-grid-4, .metric-grid-5 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .metric-grid-2, .metric-grid-3, .metric-grid-4, .metric-grid-5 { grid-template-columns: 1fr; }
+}
+
+/* Section card grid (2-column below metrics) */
+.section-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.section-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.section-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 768px) {
+  .section-grid-2, .section-grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   Metric Card — Left-border accent, compact KPI style
+   ============================================================ */
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--card-border);
+  border-radius: 0;
+  padding: 16px 18px;
+  box-shadow: none;
+}
+.metric-card .metric-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.metric-card .metric-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.metric-card .metric-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Metric card accent variants (left border) */
+.metric-card-green { border-left: 4px solid var(--accent-green); }
+.metric-card-blue { border-left: 4px solid var(--accent-blue); }
+.metric-card-purple { border-left: 4px solid var(--accent-purple); }
+.metric-card-amber { border-left: 4px solid var(--accent-amber); }
+.metric-card-red { border-left: 4px solid var(--accent-red); }
+.metric-card-teal { border-left: 4px solid var(--accent-teal); }
+.metric-card-navy { border-left: 4px solid var(--accent-navy); }
+
+/* ============================================================
+   Section Cards — Colored section label header
+   ============================================================ */
+.section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--card-border);
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: none;
+}
+.section-card .section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Cards — Ant Design overrides (sharp, flat, no shadow)
+   ============================================================ */
+.ant-card {
+  border-radius: 0 !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: none !important;
+  background: var(--bg-card) !important;
+}
+.ant-card:hover {
+  box-shadow: none !important;
+}
+.ant-card .ant-card-head {
+  border-bottom: 1px solid var(--card-border) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  min-height: 44px !important;
+  padding: 0 20px !important;
+  border-radius: 0 !important;
+}
+.ant-card .ant-card-body {
+  padding: 20px !important;
+}
+.ant-card-small .ant-card-body {
+  padding: 16px !important;
+}
+
+/* Card accent left-border variants (Ant Design Card) */
+.accent-left-green { border-left: 4px solid var(--accent-green) !important; }
+.accent-left-blue { border-left: 4px solid var(--accent-blue) !important; }
+.accent-left-purple { border-left: 4px solid var(--accent-purple) !important; }
+.accent-left-amber { border-left: 4px solid var(--accent-amber) !important; }
+.accent-left-red { border-left: 4px solid var(--accent-red) !important; }
+.accent-left-teal { border-left: 4px solid var(--accent-teal) !important; }
+.accent-left-navy { border-left: 4px solid var(--accent-navy) !important; }
+
+/* Legacy top-border aliases */
+.accent-top-green { border-top: 4px solid var(--accent-green) !important; }
+.accent-top-blue { border-top: 4px solid var(--accent-blue) !important; }
+.accent-top-orange { border-top: 4px solid var(--accent-amber) !important; }
+.accent-top-purple { border-top: 4px solid var(--accent-purple) !important; }
+.accent-top-cyan { border-top: 4px solid var(--accent-teal) !important; }
+.accent-top-red { border-top: 4px solid var(--accent-red) !important; }
+
+/* Ant Statistic */
+.ant-statistic .ant-statistic-title {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 8px !important;
+}
+.ant-statistic .ant-statistic-content {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+.ant-statistic .ant-statistic-content-value {
+  font-family: var(--font-family) !important;
+}
+
+/* ============================================================
+   Tables — Compact, alternating, right-aligned numbers
+   ============================================================ */
+.ant-table {
+  font-size: 13px !important;
+  font-family: var(--font-family) !important;
+}
+.ant-table-wrapper .ant-table-container {
+  border: 1px solid var(--table-border) !important;
+  border-radius: 0 !important;
+}
+.ant-table-thead > tr > th,
+.ant-table-thead > tr > td {
+  background: var(--bg-table-header) !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  padding: 10px 16px !important;
+  border-bottom: 1px solid var(--table-border) !important;
+  border-right: none !important;
+  border-radius: 0 !important;
+}
+.ant-table-tbody > tr > td {
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+  border-right: none !important;
+  vertical-align: middle !important;
+}
+.ant-table-tbody > tr:nth-child(even) > td {
+  background: var(--bg-table-alt) !important;
+}
+.ant-table-tbody > tr:hover > td {
+  background: var(--bg-highlight-row) !important;
+}
+
+/* Current round / highlighted row */
+.ant-table-tbody > tr.highlight-row > td,
+.ant-table-tbody > tr.current-round-row > td {
+  background: var(--bg-highlight-row) !important;
+  color: var(--text-link) !important;
+  font-weight: 600 !important;
+}
+
+/* Summary / cumulative footer row */
+.ant-table-tbody > tr.summary-row > td {
+  background: var(--bg-footer-row) !important;
+  font-size: 12px !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  border-top: 1px solid var(--table-border) !important;
+}
+
+/* Right-aligned numeric columns */
+.numeric-col {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Remove all default borders except bottom */
+.ant-table-bordered .ant-table-container,
+.ant-table-bordered .ant-table-cell {
+  border-right: none !important;
+}
+
+/* Mini progress bars under table values */
+.mini-progress {
+  height: 3px;
+  width: 60px;
+  background: #E2E8F0;
+  margin: 4px auto 0;
+  border-radius: 0;
+}
+.mini-progress .mini-progress-fill {
+  height: 100%;
+  border-radius: 0;
+}
+
+/* ============================================================
+   Buttons — Sharp rectangular
+   ============================================================ */
+.ant-btn {
+  border-radius: 0 !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  height: 36px !important;
+  font-family: var(--font-family) !important;
+  box-shadow: none !important;
+}
+.ant-btn-primary {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.ant-btn-primary:hover {
+  background: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+.ant-btn-default {
+  border-color: var(--card-border) !important;
+  color: var(--text-secondary) !important;
+}
+.ant-btn-default:hover {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+.ant-btn-sm {
+  height: 28px !important;
+  font-size: 12px !important;
+  padding: 0 12px !important;
+}
+
+/* ============================================================
+   Inputs — Sharp rectangular
+   ============================================================ */
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number {
+  border-radius: 0 !important;
+  border-color: var(--card-border) !important;
+  font-family: var(--font-family) !important;
+}
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1) !important;
+}
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================================
+   Tags — Sharp, compact
+   ============================================================ */
+.ant-tag {
+  border-radius: 0 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  font-family: var(--font-family) !important;
+  padding: 2px 8px !important;
+}
+
+/* ============================================================
+   Tabs — Design system style
+   ============================================================ */
+.ant-tabs-tab {
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  font-size: 13px !important;
+}
+.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-primary) !important;
+  font-weight: 500 !important;
+}
+.ant-tabs-ink-bar {
+  background: var(--color-primary) !important;
+  height: 2px !important;
+}
+.ant-tabs-nav {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ============================================================
+   Status Badges — Semantic colors
+   ============================================================ */
+.status-compliant {
+  background: #DCFCE7;
+  color: #166534;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-risk {
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-danger {
+  background: #FEF2F2;
+  color: #991B1B;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-pending {
+  background: #F1F5F9;
+  color: #64748B;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-active {
+  background: #DCFCE7;
+  color: #166534;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+.status-info {
+  background: #DBEAFE;
+  color: #1E40AF;
+  font-size: 10px;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 0;
+  display: inline-block;
+}
+
+/* Trend badges */
+.trend-up { color: #22C55E; font-size: 11px; }
+.trend-down { color: #EF4444; font-size: 11px; }
+.trend-neutral { color: #64748B; font-size: 11px; }
+
+.trend-badge-positive {
+  background: #DCFCE7;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #166534;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.trend-badge-warning {
+  background: #FEF3C7;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #92400E;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.trend-badge-negative {
+  background: #FEF2F2;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #991B1B;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ============================================================
+   Decision Checklist items
+   ============================================================ */
+.checklist-done {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+}
+.checklist-pending {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+
+/* ============================================================
+   Progress bars — flat, no radius
+   ============================================================ */
+.progress-bar {
+  height: 4px;
+  background: #E2E8F0;
+  border-radius: 0;
+}
+.progress-bar .progress-fill {
+  height: 100%;
+  border-radius: 0;
+}
+.progress-bar-lg { height: 6px; }
+
+/* ============================================================
+   SDG Grid
+   ============================================================ */
+.sdg-icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  border-radius: 1px;
+}
+.sdg-icon-inactive {
+  background: #E5E7EB;
+  color: #9CA3AF;
+}
+
+/* ============================================================
+   Framework Compliance Cards
+   ============================================================ */
+.framework-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid var(--card-border);
+}
+.framework-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Modal & Drawer — Sharp
+   ============================================================ */
+.ant-modal-content {
+  border-radius: 0 !important;
+}
+.ant-modal-header {
+  border-bottom: 1px solid var(--card-border) !important;
+  border-radius: 0 !important;
+  padding: 16px 24px !important;
+}
+.ant-modal-title {
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+.ant-drawer-content {
+  border-radius: 0 !important;
+}
+.ant-drawer-header {
+  border-bottom: 1px solid var(--card-border) !important;
+}
+
+/* ============================================================
+   Progress
+   ============================================================ */
+.ant-progress-text {
+  font-family: var(--font-family) !important;
+  font-weight: 600 !important;
+}
+
+/* ============================================================
+   Descriptions
+   ============================================================ */
+.ant-descriptions-item-label {
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  font-size: 12px !important;
+}
+
+/* ============================================================
+   Alert — Sharp
+   ============================================================ */
+.ant-alert {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   Divider
+   ============================================================ */
+.ant-divider {
+  border-color: #E2E8F0 !important;
+}
+
+/* ============================================================
+   List
+   ============================================================ */
+.ant-list-item {
+  border-bottom-color: #F1F5F9 !important;
+}
+
+/* ============================================================
+   Enterprise Sidebar — Dark #0F1724
+   ============================================================ */
+.enterprise-sidebar {
+  background: var(--sidebar-bg) !important;
+  border-right: 1px solid #1E293B !important;
+}
+.enterprise-sidebar .sidebar-header {
+  padding: 12px 20px 20px;
+  border-bottom: none;
+}
+.enterprise-sidebar .sidebar-brand {
+  font-size: 12px;
+  font-weight: 400;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+  display: block;
+}
+.enterprise-sidebar .sidebar-team {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sidebar-text-active);
+  display: block;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.enterprise-sidebar .sidebar-round-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #0F291A;
+  color: #22C55E;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.enterprise-sidebar .sidebar-round-dot {
+  width: 6px;
+  height: 6px;
+  background: #22C55E;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Menu */
+.enterprise-sidebar .ant-menu {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 0 !important;
+}
+.enterprise-sidebar .ant-menu-submenu-title {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  color: var(--sidebar-section) !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  margin: 2px 0 0 !important;
+  padding-left: 20px !important;
+}
+.enterprise-sidebar .ant-menu-submenu {
+  border-bottom: none;
+  padding-bottom: 4px;
+  margin-bottom: 2px;
+}
+.enterprise-sidebar .ant-menu-item {
+  height: 32px !important;
+  line-height: 32px !important;
+  margin: 0 !important;
+  padding-left: 20px !important;
+  border-radius: 0 !important;
+  font-size: 13px !important;
+  color: var(--sidebar-text) !important;
+}
+.enterprise-sidebar .ant-menu-item svg {
+  font-size: 13px !important;
+  width: 13px !important;
+}
+.enterprise-sidebar .ant-menu-item:hover {
+  background: var(--sidebar-hover) !important;
+  color: var(--sidebar-text-active) !important;
+}
+.enterprise-sidebar .ant-menu-item-selected {
+  background: var(--sidebar-active) !important;
+  color: var(--sidebar-text-active) !important;
+  border-left: 3px solid var(--sidebar-accent) !important;
+  padding-left: 17px !important;
+  font-weight: 500 !important;
+}
+.enterprise-sidebar .ant-menu-submenu-arrow {
+  color: var(--sidebar-section) !important;
+  font-size: 10px !important;
+}
+.enterprise-sidebar .ant-menu-sub {
+  background: transparent !important;
+}
+.enterprise-sidebar.ant-layout-sider-collapsed .ant-menu-item {
+  padding-left: 0 !important;
+  text-align: center;
+  margin: 1px 4px !important;
+  border-left: none !important;
+}
+
+/* ============================================================
+   Enterprise TopBar — White, minimal
+   ============================================================ */
+.enterprise-topbar {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  box-shadow: none !important;
+  height: var(--topbar-height) !important;
+  line-height: var(--topbar-height) !important;
+  padding: 0 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  z-index: 10;
+  position: sticky;
+  top: 0;
+}
+.enterprise-topbar .topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.enterprise-topbar .topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.enterprise-topbar .topbar-toggle {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid var(--card-border) !important;
+  color: var(--text-muted) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.enterprise-topbar .topbar-toggle:hover {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.enterprise-topbar .topbar-breadcrumb {
+  font-size: 12px;
+  color: var(--text-hint);
+}
+.enterprise-topbar .topbar-breadcrumb-active {
+  font-size: 13px;
+  color: #1E293B;
+  font-weight: 500;
+}
+.enterprise-topbar .topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  cursor: default;
+}
+.enterprise-topbar .topbar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+.enterprise-topbar .topbar-user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.enterprise-topbar .topbar-action {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--text-muted) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+.enterprise-topbar .topbar-action:hover {
+  background: var(--bg-content) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Deadline badge */
+.deadline-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 2px;
+  font-size: 11px;
+}
+.deadline-badge-safe {
+  background: #DCFCE7;
+  color: #166534;
+}
+.deadline-badge-warning {
+  background: #FEF3C7;
+  color: #92400E;
+}
+.deadline-badge-danger {
+  background: #FEF2F2;
+  color: #991B1B;
+}
+
+/* ============================================================
+   Navy Accent Strip
+   ============================================================ */
+.navy-accent-strip {
+  background: var(--sidebar-bg);
+  height: var(--navy-strip-height);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navy-accent-strip .strip-title {
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.navy-accent-strip .strip-breadcrumb {
+  color: #94A3B8;
+  font-size: 12px;
+}
+.navy-accent-strip .strip-separator {
+  color: #475569;
+  font-size: 10px;
+}
+
+/* ============================================================
+   Content Area
+   ============================================================ */
+.enterprise-content {
+  padding: 0 !important;
+  background: var(--bg-content) !important;
+  min-height: calc(100vh - var(--topbar-height) - var(--navy-strip-height)) !important;
+  overflow: auto;
+}
+
+/* Page wrapper — light pages */
+.page-wrapper {
+  padding: 28px 32px;
+  background: var(--bg-content);
+  min-height: calc(100vh - var(--topbar-height) - var(--navy-strip-height));
+}
+
+/* ============================================================
+   DASHBOARD DARK THEME
+   ============================================================ */
+.dashboard-dark {
+  padding: 28px 32px;
+  background: var(--dash-bg);
+  min-height: calc(100vh - var(--topbar-height) - var(--navy-strip-height));
+}
+
+/* Dark cards on dashboard */
+.dashboard-dark .ant-card {
+  background: var(--dash-card-bg) !important;
+  border: 1px solid var(--dash-card-border) !important;
+  box-shadow: none !important;
+}
+.dashboard-dark .ant-card:hover {
+  box-shadow: none !important;
+}
+.dashboard-dark .ant-card .ant-card-head {
+  border-bottom: 1px solid var(--dash-card-border) !important;
+  color: var(--dash-text) !important;
+}
+.dashboard-dark .ant-card .ant-card-head-title {
+  color: var(--dash-text) !important;
+}
+
+/* Dark typography */
+.dashboard-dark h3.ant-typography,
+.dashboard-dark .ant-typography h3,
+.dashboard-dark h2.ant-typography,
+.dashboard-dark .ant-typography h2 {
+  color: var(--dash-text) !important;
+}
+.dashboard-dark .ant-typography p,
+.dashboard-dark .ant-typography.ant-typography-secondary {
+  color: var(--dash-text-muted) !important;
+}
+.dashboard-dark .ant-typography {
+  color: var(--dash-text) !important;
+}
+
+/* Dark statistic */
+.dashboard-dark .ant-statistic .ant-statistic-title {
+  color: var(--dash-text-muted) !important;
+}
+.dashboard-dark .ant-statistic .ant-statistic-content {
+  color: var(--dash-text) !important;
+}
+.dashboard-dark .ant-statistic .ant-statistic-content-value {
+  color: var(--dash-text) !important;
+}
+.dashboard-dark .ant-statistic .ant-statistic-content-prefix {
+  color: var(--dash-text) !important;
+}
+
+/* Dark table */
+.dashboard-dark .ant-table {
+  background: var(--dash-card-bg) !important;
+}
+.dashboard-dark .ant-table-wrapper .ant-table-container {
+  border-color: var(--dash-card-border) !important;
+}
+.dashboard-dark .ant-table-thead > tr > th {
+  background: #2A3040 !important;
+  color: var(--dash-text-muted) !important;
+  border-bottom-color: var(--dash-card-border) !important;
+}
+.dashboard-dark .ant-table-tbody > tr > td {
+  background: var(--dash-card-bg) !important;
+  color: var(--dash-text) !important;
+  border-bottom-color: var(--dash-card-border) !important;
+}
+.dashboard-dark .ant-table-tbody > tr:nth-child(even) > td {
+  background: #1E2535 !important;
+}
+.dashboard-dark .ant-table-tbody > tr:hover > td {
+  background: #2A3550 !important;
+}
+
+/* Dark metric cards */
+.dashboard-dark .metric-card {
+  background: var(--dash-card-bg);
+  border-color: var(--dash-card-border);
+}
+.dashboard-dark .metric-card .metric-label {
+  color: var(--dash-text-muted);
+}
+.dashboard-dark .metric-card .metric-value {
+  color: var(--dash-text);
+}
+.dashboard-dark .metric-card .metric-sub {
+  color: var(--dash-text-muted);
+}
+
+/* Dark progress */
+.dashboard-dark .ant-progress-text {
+  color: var(--dash-text) !important;
+}
+
+/* Dark descriptions */
+.dashboard-dark .ant-descriptions-item-label {
+  color: var(--dash-text-muted) !important;
+}
+.dashboard-dark .ant-descriptions-item-content {
+  color: var(--dash-text) !important;
+}
+
+/* Dark tags */
+.dashboard-dark .ant-tag {
+  border-color: var(--dash-card-border) !important;
+}
+
+/* Dark divider */
+.dashboard-dark .ant-divider {
+  border-color: var(--dash-card-border) !important;
+}
+
+/* Category label on dark bg */
+.dashboard-dark .category-label,
+.dashboard-dark .section-label {
+  opacity: 0.9;
+}
+
+/* ============================================================
+   Recharts
+   ============================================================ */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: #E2E8F0 !important;
+  stroke-dasharray: 3 3 !important;
+}
+.recharts-cartesian-axis-tick-value {
+  font-family: var(--font-family) !important;
+  font-size: 11px !important;
+  fill: var(--text-muted) !important;
+}
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  border-radius: 0 !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: none !important;
+  font-family: var(--font-family) !important;
+  font-size: 12px !important;
+}
+
+/* Dark chart overrides */
+.dashboard-dark .recharts-cartesian-grid-horizontal line,
+.dashboard-dark .recharts-cartesian-grid-vertical line {
+  stroke: #2E3446 !important;
+}
+.dashboard-dark .recharts-cartesian-axis-tick-value {
+  fill: var(--dash-text-muted) !important;
+}
+
+/* ============================================================
+   Scrollbar
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+.enterprise-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================================
+   Print
+   ============================================================ */
+@media print {
+  .enterprise-sidebar,
+  .enterprise-topbar,
+  .navy-accent-strip {
+    display: none !important;
+  }
+  .page-wrapper, .dashboard-dark {
+    padding: 0 !important;
+    background: white !important;
+  }
+}
+
+/* ============================================================
+   Empty State Illustrations
+   ============================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+.empty-state img {
+  max-width: 280px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+.empty-state h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+.empty-state p {
+  font-size: 13px;
+  color: #64748B;
+  max-width: 400px;
+}
+.empty-state .action-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #1E40AF;
+  color: #FFF;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 0;
+}
+.empty-state .action-btn:hover {
+  background: #1E3A8A;
+}
+
+/* Compact feature columns for workbench tables */
+.compact-feature-table .ant-table-thead > tr > th {
+  padding: 8px 4px !important;
+}
+.compact-feature-table .ant-table-tbody > tr > td {
+  padding: 6px 4px !important;
+}
+
+/* ============================================================
+   Login Page
+   ============================================================ */
+.login-layout {
+  display: flex;
+  min-height: 100vh;
+}
+.login-hero {
+  width: 55%;
+  position: relative;
+  overflow: hidden;
+  background: #0F1724;
+}
+.login-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  display: block;
+}
+.login-hero-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 36, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 60px;
+}
+.login-hero-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.2;
+}
+.login-form-panel {
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F1F5F9;
+}
+
+@media (max-width: 768px) {
+  .login-layout {
+    flex-direction: column;
+  }
+  .login-hero {
+    width: 100%;
+    min-height: 200px;
+    max-height: 260px;
+  }
+  .login-hero-overlay {
+    padding: 0 24px;
+  }
+  .login-hero-title {
+    font-size: 26px;
+  }
+  .login-form-panel {
+    width: 100%;
+    flex: 1;
+    padding: 24px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-hero {
+    min-height: 160px;
+    max-height: 200px;
+  }
+  .login-hero-overlay {
+    padding: 0 16px;
+  }
+  .login-hero-title {
+    font-size: 22px;
+  }
+}
+
+/* ============================================================
+   MOBILE SIDEBAR DRAWER
+   ============================================================ */
+.mobile-sidebar-drawer .ant-drawer-body {
+  background: var(--sidebar-bg) !important;
+  padding: 0 !important;
+}
+.mobile-sidebar-drawer .enterprise-sidebar {
+  position: static !important;
+  height: 100% !important;
+  min-height: 100vh;
+}
+.mobile-sidebar-drawer .enterprise-sidebar.ant-layout-sider {
+  max-width: 100% !important;
+  min-width: 100% !important;
+  width: 100% !important;
+  flex: 1 !important;
+}
+
+/* ============================================================
+   RESPONSIVE — TABLET (max-width: 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Page padding */
+  .page-wrapper {
+    padding: 16px;
+  }
+  .dashboard-dark {
+    padding: 16px;
+  }
+
+  /* TopBar */
+  .enterprise-topbar {
+    padding: 0 12px !important;
+  }
+
+  /* Navy strip */
+  .navy-accent-strip {
+    padding: 0 12px;
+    height: 30px;
+  }
+  .navy-accent-strip .strip-title {
+    font-size: 12px;
+  }
+
+  /* Page header */
+  .page-header .page-title {
+    font-size: 18px;
+  }
+
+  /* Tables: horizontal scroll */
+  .ant-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ant-table-wrapper .ant-table {
+    min-width: 600px;
+  }
+  .ant-table-thead > tr > th,
+  .ant-table-thead > tr > td {
+    padding: 8px 10px !important;
+  }
+  .ant-table-tbody > tr > td {
+    padding: 8px 10px !important;
+  }
+
+  /* Modals: near full-width */
+  .ant-modal {
+    max-width: calc(100vw - 16px) !important;
+    margin: 8px auto !important;
+    top: 8px !important;
+  }
+  .ant-modal-body {
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+  }
+
+  /* Tabs: scrollable */
+  .ant-tabs-nav-list {
+    flex-wrap: nowrap;
+  }
+  .ant-tabs-nav {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Metric card value */
+  .metric-card .metric-value {
+    font-size: 18px;
+  }
+
+  /* Section card */
+  .section-card {
+    padding: 14px;
+  }
+
+  /* Descriptions */
+  .ant-descriptions-view {
+    overflow-x: auto;
+  }
+
+  /* Ant Card body */
+  .ant-card .ant-card-body {
+    padding: 14px !important;
+  }
+  .ant-card .ant-card-head {
+    padding: 0 14px !important;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 30px 16px;
+  }
+  .empty-state img {
+    max-width: 200px;
+  }
+
+  /* Recharts responsive */
+  .recharts-wrapper {
+    font-size: 10px;
+  }
+
+  /* Ant Design Col: 4-column (span=6) → 2-column on tablet */
+  .ant-col-6 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  /* Ant Design Col: 3-column (span=8) → 2-column on tablet */
+  .ant-col-8 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — PHONE (max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  /* Page padding */
+  .page-wrapper {
+    padding: 12px;
+  }
+  .dashboard-dark {
+    padding: 12px;
+  }
+
+  /* Page header */
+  .page-header .page-title {
+    font-size: 16px;
+  }
+  .page-header .section-label {
+    font-size: 9px;
+  }
+
+  /* TopBar compact */
+  .enterprise-topbar {
+    padding: 0 8px !important;
+    height: 42px !important;
+    line-height: 42px !important;
+  }
+  .enterprise-topbar .topbar-right {
+    gap: 4px;
+  }
+  .enterprise-topbar .topbar-action {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .enterprise-topbar .topbar-toggle {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .enterprise-topbar .topbar-user-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+  }
+
+  /* Navy strip */
+  .navy-accent-strip {
+    height: 26px;
+    padding: 0 8px;
+  }
+  .navy-accent-strip .strip-title {
+    font-size: 11px;
+  }
+  .navy-accent-strip .strip-breadcrumb {
+    display: none;
+  }
+  .navy-accent-strip .strip-separator {
+    display: none;
+  }
+
+  /* Metric cards */
+  .metric-card {
+    padding: 10px 12px;
+  }
+  .metric-card .metric-value {
+    font-size: 16px;
+  }
+  .metric-card .metric-label {
+    font-size: 9px;
+  }
+  .metric-card .metric-sub {
+    font-size: 10px;
+  }
+
+  /* Section card */
+  .section-card {
+    padding: 12px;
+  }
+  .section-card .section-title {
+    font-size: 14px;
+  }
+
+  /* Typography */
+  h1.ant-typography, .ant-typography h1 {
+    font-size: 20px !important;
+  }
+  h2.ant-typography, .ant-typography h2 {
+    font-size: 17px !important;
+  }
+  h3.ant-typography, .ant-typography h3 {
+    font-size: 17px !important;
+  }
+
+  /* Buttons: full-width in form contexts */
+  .ant-modal-footer .ant-btn {
+    font-size: 12px !important;
+  }
+
+  /* Modals: full screen */
+  .ant-modal {
+    max-width: 100vw !important;
+    margin: 0 !important;
+    top: 0 !important;
+    padding: 0 !important;
+  }
+  .ant-modal-content {
+    min-height: 100vh;
+  }
+  .ant-modal-header {
+    padding: 12px 16px !important;
+  }
+  .ant-modal-body {
+    padding: 12px 16px !important;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+  }
+  .ant-modal-footer {
+    padding: 8px 16px !important;
+  }
+
+  /* Tables: tighter on phone */
+  .ant-table-wrapper .ant-table {
+    min-width: 500px;
+  }
+
+  /* Ant Card */
+  .ant-card .ant-card-body {
+    padding: 12px !important;
+  }
+  .ant-card .ant-card-head {
+    padding: 0 12px !important;
+    min-height: 36px !important;
+  }
+
+  /* Statistic */
+  .ant-statistic .ant-statistic-content {
+    font-size: 18px !important;
+  }
+
+  /* Status badges */
+  .status-compliant, .status-risk, .status-danger,
+  .status-pending, .status-active, .status-info {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 20px 12px;
+  }
+  .empty-state img {
+    max-width: 150px;
+  }
+  .empty-state h3 {
+    font-size: 14px;
+  }
+  .empty-state p {
+    font-size: 12px;
+  }
+
+  /* Framework cards */
+  .framework-card {
+    padding: 8px 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Checklist items */
+  .checklist-done, .checklist-pending {
+    padding: 6px 8px;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  /* Progress */
+  .ant-progress-text {
+    font-size: 11px !important;
+  }
+
+  /* Deadline badge */
+  .deadline-badge {
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  /* SDG icons */
+  .sdg-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 7px;
+  }
+
+  /* Ant Design Col: 4-column (span=6) → full-width on phone */
+  .ant-col-6 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  /* Ant Design Col: 3-column (span=8) → full-width on phone */
+  .ant-col-8 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  /* Ant Design Col: split layout (span=14/10) → full-width on phone */
+  .ant-col-14,
+  .ant-col-10 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
