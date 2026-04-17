@@ -3,8 +3,7 @@ import hashlib
 from rest_framework import serializers
 from core.models import (
     Team, User, Round, SimulationState,
-    SimulationSettings, SimulationParameters, ComponentStatus,
-)
+    SimulationSettings, SimulationParameters, )
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -42,12 +41,6 @@ class SimulationSettingsSerializer(serializers.ModelSerializer):
 class SimulationParametersSerializer(serializers.ModelSerializer):
     class Meta:
         model = SimulationParameters
-        fields = '__all__'
-
-
-class ComponentStatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ComponentStatus
         fields = '__all__'
 
 

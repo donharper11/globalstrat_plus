@@ -83,18 +83,3 @@ class InstructorScenarioCustomization(models.Model):
 
     def __str__(self):
         return f"Customization {self.customization_id}: Instructor {self.instructor_id}"
-
-
-class AdminAction(models.Model):
-    action_id = models.AutoField(primary_key=True)
-    user_id = models.IntegerField(blank=True, null=True)
-    action_type = models.CharField(max_length=255, blank=True, null=True)
-    action_details = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'admin_actions'
-
-    def __str__(self):
-        return f"AdminAction {self.action_id}: {self.action_type}"
