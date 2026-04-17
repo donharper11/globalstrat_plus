@@ -204,7 +204,7 @@ LOGGING = {
 # RAG Configuration (CC-7)
 QDRANT_HOST = os.environ.get('QDRANT_HOST', '192.168.50.186')
 QDRANT_PORT = int(os.environ.get('QDRANT_PORT', 6333))
-QDRANT_COLLECTION = os.environ.get('QDRANT_COLLECTION', 'globalstrat_articles')
+QDRANT_COLLECTION = os.environ.get('QDRANT_COLLECTION', 'globalstrat_plus_articles')
 
 # Embedding model
 EMBEDDING_MODEL = os.environ.get('EMBEDDING_MODEL', '/home/ubuntu/models/all-MiniLM-L6-v2')
