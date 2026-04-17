@@ -104,6 +104,46 @@ grep -rn "path=" frontend/src/App.jsx frontend/src/routes/
 
 Confirm component name, file location, and prop signature.
 
+### 1.8 Model-to-table verification
+
+Before any code or spec operation that references an existing Django model, confirm the model has a physical database table behind it. Django's model registry (`apps.get_models()`, `_meta.get_fields()`) reports every model declared in any `models.py`, including models declared with `managed: False` that were never physically created. Such **ghost models** are static-inspection-clean but runtime-broken: any query fails with `relation does not exist`.
+
+```bash
+# Enumerate Django-registered models
+python manage.py shell <<'PY'
+from django.apps import apps
+for m in apps.get_models():
+    print(f"{m._meta.label}\t{m._meta.db_table}\t{m._meta.managed}")
+PY
+
+# Enumerate physical tables
+python manage.py dbshell -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name;"
+
+# Compute the delta
+# Ghost = registered in Django, absent from physical tables
+```
+
+A ghost model being the target of an operation — EXTEND, subclass, query, bulk import, migration dependency — is a MISMATCH halt condition per §3. Resolution belongs to the spec author (typically via a fork audit pass), not to Claude Code inline.
+
+This rule was added after CC-01 Amendment A1 documented 40 ghost models in the forked GlobalStrat codebase. See `specs/reports/CC-01-deviations.md` D2 for full context.
+
+### 1.9 Database client version alignment
+
+Before any version-sensitive database client operation — `pg_dump`, `pg_restore`, major schema diff tools, point-in-time recovery utilities — verify client and server major versions match. Older clients against newer servers can produce silently incomplete or malformed output with no error at execution time; the failure only surfaces later at restore or replay.
+
+```bash
+# Server version
+psql -h <host> -U <user> -d <db> -c "SELECT version();"
+
+# Client version
+pg_dump --version
+pg_restore --version
+```
+
+If client major version is older than server major version, install a matching client before proceeding. Do not attempt the operation with mismatched versions, even if it appears to succeed — the output is not trustworthy. If the tool chain cannot be updated in the current environment, halt and escalate.
+
+This rule was added after CC-01 Amendment A1 documented a pg_dump 14 vs. server 16 mismatch during CC-1 execution. See `specs/reports/CC-01-deviations.md` D3.
+
 ---
 
 ## 2. No Invented Names
