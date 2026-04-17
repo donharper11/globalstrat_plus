@@ -9,8 +9,7 @@ from .core import (
     Game, Team, TeamMember, Round,
     User,
     SimulationState, SimulationSettings, SimulationParameters,
-    ComponentStatus,
-)
+    )
 from .team_state import (
     TeamPlatform, TeamPlatformFeatureLevel, PendingFeatureGain,
     TeamProduct, TeamProductMarket,
@@ -43,7 +42,7 @@ from .scoring import (
 from .financials import (
     TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow, TeamResources,
     FinancialRevenue, FinancialExpense,
-    CumulativeSales, NewSalesByRound,
+    NewSalesByRound,
 )
 from .events import (
     TriggeredEvent,
@@ -58,8 +57,7 @@ from .results_financials import (
 from .instructor import (
     InstructorAction, InstructorEvaluation, InstructorNote,
     InstructorFeedbackTemplate, InstructorScenarioCustomization,
-    AdminAction,
-)
+    )
 from .gamification import (
     Achievement, GamificationBadge, PlayerProgress,
     TeamAchievement, TeamBadge,
@@ -67,8 +65,7 @@ from .gamification import (
 from .messaging import (
     Message, MessageResponse, MessageThread,
     NotificationLog, TeamNotification,
-    Feedback,
-)
+    )
 from .course import Course, Section, SimulationInstance, Enrollment
 from .grading import (
     GradingRubric, GradingRubricCategory, GradingComponentMapping,

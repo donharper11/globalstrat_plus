@@ -2,13 +2,13 @@ from rest_framework import viewsets
 from core.models import (
     TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow,
     TeamResources, FinancialRevenue, FinancialExpense,
-    CumulativeSales, NewSalesByRound,
+    NewSalesByRound,
 )
 from core.serializers import (
     TeamIncomeStatementSerializer, TeamBalanceSheetSerializer,
     TeamCashFlowSerializer, TeamResourcesSerializer,
     FinancialRevenueSerializer, FinancialExpenseSerializer,
-    CumulativeSalesSerializer, NewSalesByRoundSerializer,
+    NewSalesByRoundSerializer,
 )
 from core.views.mixins import InstanceScopedMixin
 
@@ -102,24 +102,6 @@ class FinancialExpenseViewSet(viewsets.ReadOnlyModelViewSet):
         program_id = self.request.query_params.get('program_id')
         if team_id:
             qs = qs.filter(team_id=team_id)
-        if round_id:
-            qs = qs.filter(round_id=round_id)
-        if program_id:
-            qs = qs.filter(program_id=program_id)
-        return qs
-
-
-class CumulativeSalesViewSet(InstanceScopedMixin, viewsets.ReadOnlyModelViewSet):
-    queryset = CumulativeSales.objects.all()
-    serializer_class = CumulativeSalesSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        customer_id = self.request.query_params.get('customer_id')
-        round_id = self.request.query_params.get('round_id')
-        program_id = self.request.query_params.get('program_id')
-        if customer_id:
-            qs = qs.filter(customer_id=customer_id)
         if round_id:
             qs = qs.filter(round_id=round_id)
         if program_id:

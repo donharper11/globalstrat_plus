@@ -11,13 +11,11 @@ from core.permissions import IsInstructor, IsInstructorOrReadOnly
 from core.views.mixins import InstanceScopedMixin
 from core.models import (
     Team, User, Round, SimulationState,
-    SimulationSettings, SimulationParameters, ComponentStatus,
-)
+    SimulationSettings, SimulationParameters, )
 from core.serializers import (
     TeamSerializer, RoundSerializer,
     SimulationStateSerializer, SimulationSettingsSerializer,
-    SimulationParametersSerializer, ComponentStatusSerializer,
-    DashboardSerializer,
+    SimulationParametersSerializer, DashboardSerializer,
     UserSerializer, UserWriteSerializer,
 )
 
@@ -156,18 +154,6 @@ class SimulationSettingsViewSet(viewsets.ReadOnlyModelViewSet):
 class SimulationParametersViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SimulationParameters.objects.all()
     serializer_class = SimulationParametersSerializer
-
-
-class ComponentStatusViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ComponentStatus.objects.all()
-    serializer_class = ComponentStatusSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        team_id = self.request.query_params.get('team_id')
-        if team_id:
-            qs = qs.filter(team_id=team_id)
-        return qs
 
 
 class DashboardViewSet(viewsets.ViewSet):

@@ -110,22 +110,6 @@ class FinancialExpense(models.Model):
         return f"Expense {self.cost_amount} ({self.expense_type}, Team {self.team_id})"
 
 
-class CumulativeSales(models.Model):
-    round_id = models.IntegerField(primary_key=True)
-    customer_id = models.IntegerField()
-    program_id = models.IntegerField()
-    cumulative_adopters = models.IntegerField(blank=True, null=True)
-    instance_id = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'cumulative_sales'
-        unique_together = (('round_id', 'customer_id', 'program_id'),)
-
-    def __str__(self):
-        return f"Sales: Customer {self.customer_id}, Program {self.program_id}, Round {self.round_id}"
-
-
 class NewSalesByRound(models.Model):
     round_id = models.IntegerField(primary_key=True)
     customer_id = models.IntegerField()

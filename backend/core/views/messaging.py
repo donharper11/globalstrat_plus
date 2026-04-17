@@ -3,14 +3,12 @@ from core.views.mixins import InstanceScopedMixin
 
 from core.models.messaging import (
     Message, MessageResponse, MessageThread,
-    NotificationLog, TeamNotification, Feedback,
-)
+    NotificationLog, TeamNotification, )
 from core.serializers.messaging import (
     MessageSerializer, MessageResponseSerializer,
     MessageThreadSerializer,
     NotificationLogSerializer, TeamNotificationSerializer,
-    FeedbackSerializer,
-)
+    )
 
 
 class MessageViewSet(InstanceScopedMixin, viewsets.ReadOnlyModelViewSet):
@@ -101,21 +99,6 @@ class NotificationLogViewSet(InstanceScopedMixin, viewsets.ReadOnlyModelViewSet)
         round_id = self.request.query_params.get('round_id')
         if recipient_id:
             qs = qs.filter(recipient_id=recipient_id)
-        if round_id:
-            qs = qs.filter(round_id=round_id)
-        return qs
-
-
-class FeedbackViewSet(InstanceScopedMixin, viewsets.ModelViewSet):
-    queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        team_id = self.request.query_params.get('team_id')
-        round_id = self.request.query_params.get('round_id')
-        if team_id:
-            qs = qs.filter(team_id=team_id)
         if round_id:
             qs = qs.filter(round_id=round_id)
         return qs
