@@ -91,3 +91,17 @@ from .cc32c_models import TaxStructureType, TeamTaxStructure
 from .cc32d_models import AlliancePartnerProfile, TeamAllianceState
 from .cc32e_models import AgentCycleLog
 from .cc32f_models import GovernmentProfile, GovernmentSatisfaction, GovernmentAction
+from .sc_models import (
+    Supplier, ShippingLane, TradeFinanceInstrument, ComplianceRegime,
+    ResilienceParameters, FreightMarket,
+)
+from .sc_decisions import (
+    SourcingAllocation, SourcingDecision, LogisticsDecision,
+    IncotermsDecision, CustomsClassificationDecision,
+    TradeFinanceDecision, SinosureEnrollment, FXHedgeDecision,
+    InventoryDecision, ContingencyPlan,
+)
+from .sc_state import (
+    SupplierState, LaneState, SCEventInstance,
+    HedgePosition, ResilienceScoreHistory,
+)
