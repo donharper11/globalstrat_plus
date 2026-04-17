@@ -7,10 +7,14 @@ and restrictions to low performers, award procurement contracts competitively,
 and shift bilateral trade policies based on aggregate firm behavior.
 
 Plugs into CC-32E Agent Orchestrator as a standard AgentBase implementation.
+
+CC-3.5: probabilistic policy actions use seeded RNG keyed by
+(class_id, round_number, operation_id) via ``core.engine.rng.get_rng``.
 """
 import logging
-import random
 from decimal import Decimal
+
+from core.engine.rng import get_rng
 
 from .base import AgentBase, AgentAction, StateSnapshot
 
@@ -401,8 +405,17 @@ class GovernmentAgent(AgentBase):
             sum(s['overall'] for s in team_scores.values()) / len(team_scores)
         )
 
+        relax_rng = get_rng(
+            snapshot.class_id, snapshot.round_number,
+            f"govt_regulatory_relaxation:{market_code}",
+        )
+        tighten_rng = get_rng(
+            snapshot.class_id, snapshot.round_number,
+            f"govt_regulatory_tightening:{market_code}",
+        )
+
         if avg_satisfaction > 0.75:
-            if random.random() < 0.15:
+            if relax_rng.random() < 0.15:
                 actions.append(AgentAction(
                     agent_class="government",
                     agent_id=f"govt_{market_code}",
@@ -421,7 +434,7 @@ class GovernmentAgent(AgentBase):
                 ))
 
         elif avg_satisfaction < 0.35:
-            if random.random() < 0.20:
+            if tighten_rng.random() < 0.20:
                 actions.append(AgentAction(
                     agent_class="government",
                     agent_id=f"govt_{market_code}",
@@ -451,7 +464,11 @@ class GovernmentAgent(AgentBase):
         actions = []
 
         volatility = govt_data.get('policy_volatility', 0.10)
-        if random.random() > volatility:
+        volatility_rng = get_rng(
+            snapshot.class_id, snapshot.round_number,
+            f"govt_bilateral_volatility:{market_code}",
+        )
+        if volatility_rng.random() > volatility:
             return actions
 
         for origin_code in snapshot.markets:
@@ -472,7 +489,16 @@ class GovernmentAgent(AgentBase):
                 for _, tdata in origin_teams
             ) / len(origin_teams)
 
-            if avg_compliance > 0.60 and random.random() < 0.3:
+            facilitation_rng = get_rng(
+                snapshot.class_id, snapshot.round_number,
+                f"govt_bilateral_facilitation:{market_code}:{origin_code}",
+            )
+            screening_rng = get_rng(
+                snapshot.class_id, snapshot.round_number,
+                f"govt_bilateral_screening:{market_code}:{origin_code}",
+            )
+
+            if avg_compliance > 0.60 and facilitation_rng.random() < 0.3:
                 actions.append(AgentAction(
                     agent_class="government",
                     agent_id=f"govt_{market_code}",
@@ -494,7 +520,7 @@ class GovernmentAgent(AgentBase):
                     dependencies=['tariff_change'],
                 ))
 
-            elif avg_compliance < 0.20 and random.random() < 0.3:
+            elif avg_compliance < 0.20 and screening_rng.random() < 0.3:
                 actions.append(AgentAction(
                     agent_class="government",
                     agent_id=f"govt_{market_code}",

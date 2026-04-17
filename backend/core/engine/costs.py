@@ -908,8 +908,9 @@ def process_tax_structure_costs(context):
     CC-32C: Process tax structure maintenance costs, setup costs for newly
     adopted structures, and audit rolls.
     Called after tax + repatriation in the engine pipeline.
+    CC-3.5: audit rolls use seeded RNG for replay determinism.
     """
-    import random
+    from core.engine.rng import get_rng
     from core.models.cc32c_models import TeamTaxStructure, TaxStructureType
 
     context.tax_audit_penalties = {}  # team_id → Decimal
@@ -963,7 +964,11 @@ def process_tax_structure_costs(context):
                 ) / compliance_records.count()
                 audit_prob *= (1 - avg_compliance * 0.2)
 
-            if random.random() < audit_prob:
+            class_id = context.game.section_id or context.game.id
+            audit_rng = get_rng(
+                class_id, context.round_number, f"tax_audit:{team.id}",
+            )
+            if audit_rng.random() < audit_prob:
                 # AUDIT TRIGGERED — calculate back-taxes from recent savings
                 recent_savings = tts.cumulative_tax_savings or D('0')
                 # Approximate last 3 rounds of savings
