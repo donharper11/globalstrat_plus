@@ -54,6 +54,12 @@ from core.views.scenario_views import (
     GameTeamsView, GameActivateView, GamePauseView, GameResumeView, GameResetView,
     GameArchiveView, GameDeleteView,
 )
+from core.views.sc_views import (
+    SourcingView, LogisticsView, TradeFinanceView, InventoryView,
+    ScenarioSuppliersView, ScenarioLanesView,
+    ScenarioTradeFinanceInstrumentsView, ScenarioComplianceRegimesView,
+    ResilienceScoreView, HedgePositionsView, SCEventsView,
+)
 
 from core.views.onboarding import OnboardingDataView, OnboardingCompleteView
 
@@ -399,4 +405,32 @@ urlpatterns = [
     path('games/<int:game_id>/archive/', GameArchiveView.as_view(), name='game-archive'),
     path('games/<int:game_id>/delete/', GameDeleteView.as_view(), name='game-delete'),
     path('games/<int:game_id>/round-schedule/', GameRoundScheduleView.as_view(), name='game-round-schedule'),
+
+    # ---- CC-04: Supply Chain Decision Endpoints ----
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sourcing/',
+         SourcingView.as_view(), name='sc-sourcing'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/logistics/',
+         LogisticsView.as_view(), name='sc-logistics'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/trade-finance/',
+         TradeFinanceView.as_view(), name='sc-trade-finance'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/inventory/',
+         InventoryView.as_view(), name='sc-inventory'),
+
+    # ---- CC-04: Supply Chain Scenario Content ----
+    path('scenarios/<int:scenario_id>/suppliers/',
+         ScenarioSuppliersView.as_view(), name='sc-suppliers'),
+    path('scenarios/<int:scenario_id>/lanes/',
+         ScenarioLanesView.as_view(), name='sc-lanes'),
+    path('scenarios/<int:scenario_id>/trade-finance-instruments/',
+         ScenarioTradeFinanceInstrumentsView.as_view(), name='sc-trade-finance-instruments'),
+    path('scenarios/<int:scenario_id>/compliance-regimes/',
+         ScenarioComplianceRegimesView.as_view(), name='sc-compliance-regimes'),
+
+    # ---- CC-04: Supply Chain State Retrieval ----
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/resilience-score/',
+         ResilienceScoreView.as_view(), name='sc-resilience-score'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/hedge-positions/',
+         HedgePositionsView.as_view(), name='sc-hedge-positions'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sc-events/',
+         SCEventsView.as_view(), name='sc-events'),
 ]
