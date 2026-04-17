@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'globalstrat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'globalstrat_db'),
+        'NAME': os.environ.get('DB_NAME', 'globalstrat_plus'),
         'USER': os.environ.get('DB_USER', 'donwh'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'donwhhostingroot'),
         'HOST': os.environ.get('DB_HOST', '192.168.50.38'),
