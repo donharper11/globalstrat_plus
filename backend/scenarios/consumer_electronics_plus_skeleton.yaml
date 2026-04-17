@@ -1,0 +1,203 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Consumer Electronics — globalstrat+ skeleton scenario
+#
+# Purpose (CC-01, §10 acceptance criterion #6):
+#   Demonstrate the globalstrat+ supply-chain schema structure. One example
+#   per NEW section (6.1–6.7) and one example of each EXTEND field addition
+#   (5.1–5.3). Full seed data is produced in a later CC bundle; this file
+#   intentionally ships stub values.
+#
+# Not production-ready. Do not use for gameplay.
+# ─────────────────────────────────────────────────────────────────────────────
+
+metadata:
+  scenario_id: consumer_electronics_plus_skeleton
+  name_en: "Consumer Electronics (globalstrat+ skeleton)"
+  name_zh: "消费电子(globalstrat+ 骨架)"
+  industry: consumer_electronics
+  version: 0.1.0
+  parent_scenario: consumer_electronics_2026   # Full scenario this skeleton will grow from
+  status: skeleton                             # Signals scenario loader to permit missing full-coverage fields
+
+# ─── EXTEND: §5.1 markets — compliance regime bindings ───────────────────────
+markets:
+  - id: us_market
+    # (existing GlobalStrat fields live here in the real scenario)
+    # NEW (§5.1):
+    compliance_regimes: [uflpa, us_bis_entity_list]
+    customs_enforcement_intensity: 0.75
+    processing_trade_recognition: false
+
+# ─── EXTEND: §5.2 plants — sourcing node integration ─────────────────────────
+plants:
+  - id: own_shenzhen_plant
+    # (existing DecisionPlant fields live here)
+    # NEW (§5.2):
+    sourcing_node_role: owned_manufacturing
+    upstream_suppliers_required: [semiconductors, displays, batteries]
+    output_feeds_lanes: [cn_shanghai_to_us_long_beach]
+    scope_1_co2_per_unit_kg: 2.4
+    scope_2_co2_per_unit_kg: 1.8
+    accepts_reverse_logistics: true
+
+# ─── EXTEND: §5.3 esg — supplier and Scope 3 extensions ──────────────────────
+esg:
+  # (existing esg fields retained)
+  # NEW (§5.3):
+  supplier_audit_program:
+    investment_tiers:
+      - level: basic
+        annual_cost_usd: 200000
+        tier_1_visibility: full
+        tier_2_visibility: partial
+  scope_3_emissions_tracking:
+    enabled: true
+    supplier_reporting_investment_usd: 150000
+  cbam_reporting_readiness:
+    investment_usd: 300000
+    reduces_cbam_processing_friction: true
+
+# ─── NEW: §6.1 suppliers ─────────────────────────────────────────────────────
+suppliers:
+  - id: tsmc_taiwan
+    name: "Taiwan Semiconductor Manufacturing Company"
+    country: TW
+    tier: 1
+    specialization: [semiconductors, advanced_chips]
+    capacity_units_per_round: 500000
+    base_unit_price_usd: 45.00
+    quality_rating: 0.95
+    reliability_rating: 0.92
+    lead_time_days_baseline: 45
+    min_order_commitment: 10000
+    volume_discount_tiers:
+      - threshold_units: 50000
+        discount_pct: 3
+    tier_2_3_profile:
+      transparency_default: 0.6
+      geographic_concentration:
+        TW: 0.40
+        CN: 0.30
+        JP: 0.20
+        KR: 0.10
+      risk_flags:
+        xinjiang_adjacent: false
+        conflict_minerals: low
+        forced_labor_exposure: low
+    origin_trust_to_buyers:
+      NA: -0.15
+      EU: -0.05
+      APAC: 0.10
+      LATAM: 0.00
+    certifications: [ISO_9001, ISO_14001, IATF_16949]
+    accepts_trade_finance: [letter_of_credit, documentary_collection, open_account]
+    political_risk_profile:
+      geopolitical_exposure: [cross_strait_tension, us_export_controls]
+      expropriation_risk: low
+      sanctions_exposure: low
+    multi_source_substitutability:
+      - supplier_id: samsung_foundry_korea
+        substitution_fraction: 0.7
+
+# ─── NEW: §6.2 shipping_lanes ────────────────────────────────────────────────
+shipping_lanes:
+  - id: cn_shanghai_to_us_long_beach
+    origin_country: CN
+    origin_port: shanghai
+    destination_country: US
+    destination_port: long_beach
+    zone: transpacific
+    modes:
+      sea:
+        baseline_cost_per_teu_usd: 2500
+        baseline_lead_time_days: 28
+        capacity_abundance: normal
+        fuel_pass_through_pct: 60
+      air:
+        baseline_cost_per_kg_usd: 8.50
+        baseline_lead_time_days: 3
+        capacity_abundance: constrained
+        fuel_pass_through_pct: 85
+      rail:
+        available: false
+      road:
+        available: false
+    chokepoints:
+      panama_canal: false
+      suez_canal: false
+      malacca_strait: true
+    disruption_exposure:
+      typhoon_season_months: [7, 8, 9, 10]
+      port_congestion_baseline_prob: 0.15
+      geopolitical_incidents: [taiwan_strait_tension]
+    customs_processing_days_baseline: 4
+    reverse_logistics_available: true
+    reverse_logistics_cost_multiplier: 1.8
+
+# ─── NEW: §6.3 trade_finance_instruments ─────────────────────────────────────
+trade_finance_instruments:
+  letter_of_credit:
+    display_name: "Letter of Credit"
+    cost_bps_of_transaction: 150
+    processing_lead_days: 7
+    seller_protection: high
+    buyer_cash_requirement: high
+    available_in_markets: [all]
+    rejection_probability_baseline: 0.02
+    documentation_discipline_sensitivity: high
+
+# ─── NEW: §6.4 compliance_regimes ────────────────────────────────────────────
+compliance_regimes:
+  - id: uflpa
+    name: "Uyghur Forced Labor Prevention Act"
+    enforcing_market: US
+    applies_to_products: [electronics, textiles, solar_panels, automotive_components]
+    trigger_condition: tier_2_3_xinjiang_exposure_above_threshold
+    trigger_threshold_pct: 5
+    baseline_enforcement_probability_per_round: 0.15
+    detention_consequence:
+      shipment_value_loss_pct: 100
+      remediation_cost_usd: 500000
+      market_access_freeze_rounds: 2
+    mitigation_investments:
+      tier_2_mapping:
+        cost_usd: 800000
+        reduces_enforcement_probability_pct: 70
+
+# ─── NEW: §6.5 supply chain event templates ──────────────────────────────────
+events:
+  # (existing GlobalStrat event templates retained in the full scenario)
+  - id: taiwan_earthquake_semiconductor
+    category: supply_chain
+    trigger_probability_per_round: 0.03
+    affected_suppliers: [tsmc_taiwan]
+    capacity_reduction_pct: 40
+    recovery_rounds: 3
+    teaches: single_source_risk
+    teams_affected: all_with_exposure
+
+# ─── NEW: §6.6 resilience_parameters ─────────────────────────────────────────
+resilience_parameters:
+  single_source_threshold_pct: 70
+  geographic_concentration_threshold_pct: 60
+  critical_component_buffer_days_recommended: 45
+  bullwhip_coefficient_baseline: 1.4
+  resilience_score_weights:
+    multi_sourcing: 0.25
+    geographic_diversity: 0.20
+    buffer_inventory_adequacy: 0.15
+    modal_flexibility: 0.15
+    tier_2_visibility: 0.15
+    supplier_financial_health: 0.10
+  disruption_cascade_coefficient: 0.3
+  recovery_rate_with_alternatives_multiplier: 0.5
+
+# ─── NEW: §6.7 freight_market ────────────────────────────────────────────────
+freight_market:
+  rate_dynamics_model: demand_capacity_elastic
+  baseline_capacity_abundance: normal
+  fuel_index_baseline_usd_per_barrel: 80
+  fuel_index_volatility_sigma: 0.12
+  container_rate_volatility_sigma: 0.15
+  demand_elasticity_coefficient: 1.3
+  capacity_response_lag_rounds: 2
