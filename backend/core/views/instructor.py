@@ -4,14 +4,12 @@ from core.views.mixins import InstanceScopedMixin
 from core.models.instructor import (
     InstructorAction, InstructorEvaluation, InstructorNote,
     InstructorFeedbackTemplate, InstructorScenarioCustomization,
-    AdminAction,
-)
+    )
 from core.serializers.instructor import (
     InstructorActionSerializer, InstructorEvaluationSerializer,
     InstructorNoteSerializer, InstructorFeedbackTemplateSerializer,
     InstructorScenarioCustomizationSerializer,
-    AdminActionSerializer,
-)
+    )
 from core.permissions import IsInstructor
 
 
@@ -82,17 +80,4 @@ class InstructorScenarioCustomizationViewSet(viewsets.ModelViewSet):
         instructor_id = self.request.query_params.get('instructor_id')
         if instructor_id:
             qs = qs.filter(instructor_id=instructor_id)
-        return qs
-
-
-class AdminActionViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsInstructor]
-    queryset = AdminAction.objects.all()
-    serializer_class = AdminActionSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        user_id = self.request.query_params.get('user_id')
-        if user_id:
-            qs = qs.filter(user_id=user_id)
         return qs

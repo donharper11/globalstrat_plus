@@ -23,7 +23,7 @@ class Message(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'messages'
 
     def __str__(self):
@@ -42,7 +42,7 @@ class MessageResponse(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'message_responses'
 
     def __str__(self):
@@ -59,7 +59,7 @@ class MessageThread(models.Model):
     round_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'message_threads'
 
     def __str__(self):
@@ -92,24 +92,8 @@ class NotificationLog(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'notification_logs'
 
     def __str__(self):
         return f"NotificationLog {self.notification_id}: {self.recipient_type} {self.recipient_id}"
-
-
-class Feedback(models.Model):
-    feedback_id = models.AutoField(primary_key=True)
-    team_id = models.IntegerField(blank=True, null=True)
-    round_id = models.IntegerField(blank=True, null=True)
-    feedback_text = models.TextField()
-    created_at = models.DateTimeField(blank=True, null=True)
-    instance_id = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'feedback'
-
-    def __str__(self):
-        return f"Feedback {self.feedback_id}: Team {self.team_id}"

@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from core.models.messaging import (
     Message, MessageResponse, MessageThread,
-    NotificationLog, TeamNotification, Feedback,
-)
+    NotificationLog, TeamNotification, )
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -32,10 +31,4 @@ class TeamNotificationSerializer(serializers.ModelSerializer):
 class NotificationLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationLog
-        fields = '__all__'
-
-
-class FeedbackSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Feedback
         fields = '__all__'

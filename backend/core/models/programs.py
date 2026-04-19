@@ -11,7 +11,7 @@ class ProgramType(models.Model):
     economy_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'program_types'
 
     def __str__(self):
@@ -39,7 +39,7 @@ class Program(models.Model):
     development_started_round = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'programs'
 
     def __str__(self):
@@ -58,7 +58,7 @@ class ProgramPortfolio(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'program_portfolio'
 
     def __str__(self):
@@ -74,7 +74,7 @@ class ProgramFeature(models.Model):
     program_portfolio_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'program_features'
 
     def __str__(self):
@@ -91,7 +91,7 @@ class Decision(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'decisions'
 
     def __str__(self):

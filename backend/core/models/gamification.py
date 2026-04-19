@@ -9,7 +9,7 @@ class Achievement(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'achievements'
 
     def __str__(self):
@@ -24,7 +24,7 @@ class GamificationBadge(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'gamification_badges'
 
     def __str__(self):
@@ -41,7 +41,7 @@ class PlayerProgress(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'player_progress'
 
     def __str__(self):
@@ -57,7 +57,7 @@ class TeamAchievement(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_achievements'
 
     def __str__(self):
@@ -73,7 +73,7 @@ class TeamBadge(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_badges'
 
     def __str__(self):
