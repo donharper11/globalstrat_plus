@@ -25,7 +25,7 @@ from core.models.core import Game, Team, Round
 from core.models.overrides import (
     ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride,
 )
-from core.models.scenario import Scenario, FirmStarterProfile
+from core.models.scenario import Scenario, FirmStarterProfile, MarketDefinition
 from core.models.sc_models import ResilienceParameters
 from core.permissions import IsInstructor
 from core.serializers.overrides import (
@@ -56,14 +56,26 @@ BASELINE_WEIGHTS = {
 
 
 def _build_game_team_round(user):
-    scenario = Scenario.objects.create(name='Test Scenario')
+    scenario = Scenario.objects.create(
+        name='Test Scenario', starting_cash=Decimal('1000000.00'),
+    )
     ResilienceParameters.objects.create(
         scenario=scenario,
         resilience_score_weights=dict(BASELINE_WEIGHTS),
     )
+    market = MarketDefinition.objects.create(
+        scenario=scenario, name='Home', code='HOME',
+        description='test', currency_code='USD',
+        exchange_rate_base=Decimal('1.000'),
+        base_growth_rate=Decimal('0.05'),
+        entry_cost_base=Decimal('100.00'),
+        tax_rate=Decimal('0.25'),
+        regulatory_difficulty=Decimal('5.0'),
+        infrastructure_quality=Decimal('5.0'),
+    )
     profile = FirmStarterProfile.objects.create(
-        scenario=scenario, profile_id='SC-TEST', name='Test Profile',
-        home_country_id=1,
+        scenario=scenario, profile_name='Test Profile',
+        description='test profile', home_market=market,
     )
     game = Game.objects.create(
         scenario=scenario, name='Test Game', created_by=user,
@@ -128,11 +140,17 @@ class WriteSerializerDisclosureTests(TestCase):
         return data
 
     def test_payment_terms_locked_at_round_2_without_override(self):
+        # Call validate() directly on model instances; bypasses DRF field-level
+        # "required" checks for supplier/critical_input_category FKs that are
+        # outside this test's concern.
         _, team, rounds = _build_game_team_round(self.user)
-        data = self._payload(team, rounds[2], payment_terms='letter_of_credit')
-        serializer = SourcingAllocationWriteSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-        self.assertIn('sourcing.payment_terms', str(serializer.errors))
+        serializer = SourcingAllocationWriteSerializer()
+        with self.assertRaises(Exception) as ctx:
+            serializer.validate({
+                'team': team, 'round': rounds[2],
+                'payment_terms': 'letter_of_credit',
+            })
+        self.assertIn('sourcing.payment_terms', str(ctx.exception))
 
     def test_payment_terms_unlocked_at_round_2_with_override(self):
         game, team, rounds = _build_game_team_round(self.user)
@@ -140,21 +158,30 @@ class WriteSerializerDisclosureTests(TestCase):
             game=game, field_path='sourcing.payment_terms',
             override_unlock_round=2, created_by=self.user,
         )
-        data = self._payload(team, rounds[2], payment_terms='letter_of_credit')
-        serializer = SourcingAllocationWriteSerializer(data=data)
-        serializer.is_valid()
-        self.assertNotIn('sourcing.payment_terms', str(serializer.errors))
+        serializer = SourcingAllocationWriteSerializer()
+        # Should NOT raise for the disclosure rule now that override exists.
+        result = serializer.validate({
+            'team': team, 'round': rounds[2],
+            'payment_terms': 'letter_of_credit',
+        })
+        self.assertEqual(result['payment_terms'], 'letter_of_credit')
 
     def test_modal_mix_locked_at_round_2_without_override(self):
         _, team, rounds = _build_game_team_round(self.user)
-        data = {
-            'team': team.pk, 'round': rounds[2].pk,
-            'mode_sea_pct': 60, 'mode_air_pct': 0,
-            'mode_rail_pct': 0, 'mode_road_pct': 40,
-        }
-        serializer = LogisticsDecisionWriteSerializer(data=data)
-        self.assertFalse(serializer.is_valid())
-        self.assertIn('logistics.modal_mix', str(serializer.errors))
+        # Minimal fake lane object — LogisticsDecision.validate checks
+        # lane.modes.get(mode,{}).get('available',False). We don't reach
+        # that branch because disclosure rejects first.
+        class _Lane:
+            lane_id = 'TEST_LANE'
+            modes = {}
+        serializer = LogisticsDecisionWriteSerializer()
+        with self.assertRaises(Exception) as ctx:
+            serializer.validate({
+                'team': team, 'round': rounds[2], 'lane': _Lane(),
+                'mode_sea_pct': 60, 'mode_air_pct': 0,
+                'mode_rail_pct': 0, 'mode_road_pct': 40,
+            })
+        self.assertIn('logistics.modal_mix', str(ctx.exception))
 
 
 class WeightOverrideSumValidatorTests(TestCase):
