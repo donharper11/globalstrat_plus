@@ -1,16 +1,16 @@
 ---
 name: CC-5 summary report
-description: Fork audit summary — counts, decisions, CC-7 handoff items, status through Group B promotion
+description: Fork audit final summary — Groups 1 + A–F complete; NewSalesByRound halted; ready for merge decision
 type: report
 ---
 
 # CC-5 — Fork Audit Summary
 
-*Last updated 2026-04-19. Branch `cc-05-fork-audit`, 6 commits ahead of main.*
+*Last updated 2026-04-19. Branch `cc-05-fork-audit`, 11 commits ahead of main.*
 
 ## Status
 
-CC-5 is **partially complete through Group B**. Classification, Amendment A1, Group 1 prune (4), Group A promote (10), Group B promote (6) committed. Groups C–F (19 models across 5 subsystems) pending. Merge to main pending.
+CC-5 is **functionally complete**. Classification (§5.1–5.3), Amendment A1, Group 1 prune (4), and Groups A–F promote (34) committed and verified. **1 ghost remains** (NewSalesByRound) awaiting spec-author schema decision. Merge to main pending user approval.
 
 ## Counts
 
@@ -24,16 +24,16 @@ CC-5 is **partially complete through Group B**. Classification, Amendment A1, Gr
 | NEW-NEEDED | 0 |
 | **Total** | **185** |
 
-### Ghosts (§5.2)
+### Ghosts (§5.2) — final disposition
 
-| Disposition | Count | Executed |
+| Disposition | Count | Status |
 |---|---|---|
-| Prune | 4 | ✅ Group 1 |
-| Promote | 35 | 🟡 16 of 35 (Groups A–B) |
+| Prune | 4 | ✅ Group 1 executed |
+| Promote | 35 | ✅ 34 executed (A–F) • ⏸ 1 halted (NewSalesByRound) |
 | Document-as-dormant | 0 | — |
 | **Total at audit start** | **39** | |
 
-Remaining ghosts to promote: **19** (Groups C–F).
+Ghost count now: **1** (NewSalesByRound only).
 
 ### Instructor surfaces (§5.3)
 
@@ -56,59 +56,64 @@ EXTEND + NEW-NEEDED (5 surfaces total) routed to CC-16.
 | 3 | `ghost_triage.md` exists | ✅ |
 | 4 | `instructor_panel_audit.md` exists | ✅ |
 | 5 | `summary.md` exists | ✅ (this file) |
-| 6 | Prune ghosts removed, `manage.py check` passes | ✅ (Group 1, 4 models, commit d634b3e) |
-| 7 | Promote ghosts promoted, migrated, queryable | 🟡 16 of 35 done (Groups A+B) |
+| 6 | Prune ghosts removed, `manage.py check` passes | ✅ (Group 1, 4 models) |
+| 7 | Promote ghosts promoted, migrated, queryable | ✅ 34 of 35 done • 1 halted |
 | 8 | Clean commit history on `cc-05-fork-audit` | ✅ |
-| 9 | Branch merged to main | ⏸ pending #7 completion |
+| 9 | Branch merged to main | ⏸ pending user approval |
 | 10 | DISCARD modules not deleted | ✅ (none classified) |
 | 11 | ADAPT modules not modified | ✅ |
 | 12 | NEW-NEEDED modules not created | ✅ |
 
-`python manage.py check` → `System check identified no issues (0 silenced).`
-`python manage.py makemigrations --dry-run core` → `No changes detected in app 'core'.`
+**Verification checkpoints (§7):**
+- `python manage.py check` → `System check identified no issues (0 silenced).`
+- `python manage.py makemigrations --dry-run core` → `No changes detected in app 'core'.`
+- `python manage.py showmigrations` → all 0043–0049 applied.
+- Ghost recompute: **1 ghost remaining** (NewSalesByRound, by design).
 
-## Promoted so far (16 models)
+## Promotions completed (34 models)
 
 ### Group A — Gamification & Scoring (10) — commit 8025c67
-
-Achievement, GamificationBadge, PlayerProgress, TeamAchievement, TeamBadge, ScoreType, Score, LeaderboardMetric, LeaderboardScore, TeamPerformance. Tables created, `managed=True`, migration 0044 applied.
+Achievement, GamificationBadge, PlayerProgress, TeamAchievement, TeamBadge, ScoreType, Score, LeaderboardMetric, LeaderboardScore, TeamPerformance.
 
 ### Group B — Financials (6 of 7) — commits d70606e + 3cf89ca
+TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow, TeamResources, FinancialRevenue, FinancialExpense. Also retroactively aligned Group A Meta-options state.
 
-TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow, TeamResources, FinancialRevenue, FinancialExpense. Tables created, `managed=True`, migration 0045 applied. Also retroactively realigns Group A Meta-options state.
+### Group C — Programs & Portfolio (5) — commit df32b25
+ProgramType, Program, ProgramPortfolio, ProgramFeature, Decision.
 
-**Halted (1):** NewSalesByRound — schema concern (see `promotion_questions.md`): `round_id` primary_key conflicts with unique_together on (round_id, customer_id, program_id).
+### Group D — Simulation State (3) — commit 2a5cab2
+SimulationState, SimulationSettings, SimulationParameters.
 
-## Remaining work
+### Group E — Messaging + Events (5) — commit 8a512a9
+Message, MessageResponse, MessageThread, NotificationLog, TriggeredEvent.
 
-### Groups C–F (19 models)
+### Group F — Instructor Tools (5) — commit 7b7d0f9
+InstructorAction, InstructorEvaluation, InstructorNote, InstructorFeedbackTemplate, InstructorScenarioCustomization.
 
-- **Group C — Programs & Portfolio (5):** Program, ProgramType, ProgramFeature, ProgramPortfolio, Decision
-- **Group D — Simulation State (3):** SimulationState, SimulationSettings, SimulationParameters
-- **Group E — Messaging + Events (5):** Message, MessageResponse, MessageThread, NotificationLog, TriggeredEvent
-- **Group F — Instructor Tools (5):** InstructorAction, InstructorEvaluation, InstructorNote, InstructorFeedbackTemplate, InstructorScenarioCustomization
-- **Plus 1 halted:** NewSalesByRound (Group B)
+## Halted — NewSalesByRound (1 model)
 
-### Environment note
-
-Mid-session the working branch repeatedly switched away from `cc-05-fork-audit` to `cc-04-amendment-a1` (parallel worker active on CC-04 Amendment A1). Multiple recovery cherry-picks were required. This made multi-step migration work fragile. Groups C–F should be executed with the parallel CC-04 worker paused, or in a separate worktree.
+`round_id` declared `primary_key=True` alongside `unique_together = (('round_id', 'customer_id', 'program_id'),)` — the single-column PK conflicts semantically with per-(round, customer, program) uniqueness. Details and options in `promotion_questions.md`.
 
 ## CC-7 handoff items
 
 - **0 DISCARD modules** to delete.
-- **10 ADAPT modules** for refactor under their owning CC specs.
-- **0 NEW-NEEDED modules** (CC-4 already created the supply-chain module set).
+- **10 ADAPT modules** for refactor under their owning CC specs (not CC-7).
+- **0 NEW-NEEDED modules** (CC-4 handled the supply-chain module set).
 - **5 instructor surfaces** (3 EXTEND + 2 NEW-NEEDED) routed to CC-16.
 
 ## Open items requiring spec-author decision
 
-1. **NewSalesByRound schema** — details in `promotion_questions.md`. Blocks full Group B closure.
-2. **Execute Groups C–F?** If yes, recommend pausing parallel CC-04 work for clean branch discipline.
-3. **Merge `cc-05-fork-audit` → `main`?** Blocked on Groups C–F completion.
+1. **NewSalesByRound schema** — resolve per `promotion_questions.md` (promote as-is, fix PK to be composite or auto, prune, or document-as-dormant).
+2. **Merge `cc-05-fork-audit` → `main`?** Ready on user approval. Recommend resolving #1 first (either promote or explicitly defer).
 
-## Commit history on branch
+## Commit history on branch (11 commits)
 
 ```
+7b7d0f9 CC-5 §5.5 Group F: promote Instructor Tools ghosts (5 models)
+8a512a9 CC-5 §5.5 Group E: promote Messaging + Events ghosts (5 models)
+2a5cab2 CC-5 §5.5 Group D: promote Simulation State ghosts (3 models)
+df32b25 CC-5 §5.5 Group C: promote Programs & Portfolio ghosts (5 models)
+57f0e91 CC-5 reports: summary.md + promotion_questions.md (state through Group B)
 3cf89ca CC-5 §5.5 Group B: set managed=True on promoted Financials models
 d70606e CC-5 §5.5 Group B: promote Financials ghosts (6 of 7 models) — recovery commit
 8025c67 CC-5 §5.5 Group A: promote Gamification + Scoring ghosts (10 models)

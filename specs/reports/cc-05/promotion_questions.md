@@ -1,61 +1,74 @@
 ---
 name: CC-5 promotion questions
-description: Halt-flag per §6.4 — 35 Promote-dispositioned ghosts lack explicit CC-spec naming; spec-author judgment required before mass promotion
+description: Post-execution — Option A completed under CC-5 Amendment A1; one schema halt remains (NewSalesByRound)
 type: report
 ---
 
-# CC-5 §5.5 — Promotion Questions (Halt Flag)
+# CC-5 §5.5 — Promotion Questions (Status: Resolved except NewSalesByRound)
 
-*Produced 2026-04-19 during verification pass after Group 1 prune commit.*
+*Originally raised 2026-04-19 as §6.4 halt flag. Updated same day after spec-author authorized Option A via `CC-05-amendment-A1.md` (rule #2 — live runtime reference — sufficient for Promote).*
 
-## Summary
+## Resolution
 
-35 ghosts are currently classified **Promote** in `ghost_triage.md`. Verification of the §5.5 execution checklist surfaces a **§6.4 halt condition** that should be resolved by the spec author before the 35 CREATE TABLE migrations are generated and applied.
+**Original question (Q1): Authorize blanket promotion under rule #2?**
+→ **Resolved.** CC-5 Amendment A1 (commit 9526c45) relaxed §4.2 rule #1: "live runtime reference is sufficient grounds for Promote; named-in-CC-spec is sufficient but not necessary."
 
-## The halt
+**Original question (Q2): Per-model schema review gate / commit grouping?**
+→ **Resolved.** Executed as 6 subsystem-grouped commits (Groups A–F). Each migration generated, inspected, and applied with `SeparateDatabaseAndState` + idempotent `CREATE TABLE IF NOT EXISTS`. `python manage.py check` clean after each group.
 
-Per §4.2 **Promote rules**, a ghost is promoted only if **all** of:
+**Original questions (Q3, Q4): Viewset-only ghosts — prune or promote?**
+→ **Resolved via Option A.** All viewset-only ghosts (Instructor Tools set + Decision) promoted. Rationale: CC-16 is the named consumer for instructor extensions; the tables need to exist for that work. Decision is part of the Programs subsystem coherence.
 
-1. A current or already-drafted CC spec (CC-1 through CC-6, or named amendments) references it by name.
-2. Its absence would block build pipeline work.
-3. The promotion doesn't require schema assumptions that haven't been reviewed.
+## Execution results
 
-**Rule #2 is clearly met** for all 35 ghosts. Runtime verification confirmed engine code (`round_engine.py`, `persona_engine.py`, `budget.py`, `r_and_d.py`, `gamification_engine.py`) queries these tables; absent tables raise `relation "<table>" does not exist`.
+| Group | Commit | Models promoted | Notes |
+|---|---|---|---|
+| 1 (Prune) | d634b3e | 4 (AdminAction, ComponentStatus, CumulativeSales, Feedback) | dormant; no DDL |
+| A | 8025c67 | 10 (Gamification + Scoring) | options={} retroactively aligned in Group B |
+| B | d70606e + 3cf89ca | 6 of 7 (Financials) | NewSalesByRound halted — see below |
+| C | df32b25 | 5 (Programs & Portfolio) | |
+| D | 2a5cab2 | 3 (Simulation State) | |
+| E | 8a512a9 | 5 (Messaging + Events) | TeamNotification already done in CC-3.5 |
+| F | 7b7d0f9 | 5 (Instructor Tools) | CC-16 will EXTEND |
+| **Total** | | **4 pruned + 34 promoted = 38 of 39** | |
 
-**Rule #1 is *not* met as literally specified.** None of CC-1 through CC-6 name these models individually. They name subsystems (leaderboards, programs, messaging, financials) but not class-by-class.
+Post-execution verification:
+- `python manage.py check` → no issues
+- `python manage.py makemigrations --dry-run core` → no changes detected
+- Ghost recompute → **1 remaining** (NewSalesByRound by design)
 
-**Rule #3 is partially unverified.** Each ghost's schema needs per-model review before migration generation.
+## Outstanding — NewSalesByRound (1 ghost)
 
-Per §6.4, "a ghost that looks useful but has no named CC referencing it — the disposition rule would default to prune, but Claude Code should surface to the spec author first if the model's purpose suggests future value."
+This is the only remaining halt. Surfaced under §6.4 and §5.5 step 3 ("schema doesn't match the ghost's current field definitions").
 
-The triage author already surfaced the deviation in `ghost_triage.md` ("Distribution note: Target discipline was prune ≥70%, but actual triage reflects data-driven analysis"). Verification stops here to confirm the authorization to proceed.
+### The problem
 
-## Scope of promotion work
+```python
+class NewSalesByRound(models.Model):
+    round_id = models.IntegerField(primary_key=True)   # PK on single column
+    customer_id = models.IntegerField()
+    program_id = models.IntegerField()
+    new_sales = models.IntegerField(blank=True, null=True)
+    instance_id = models.IntegerField(blank=True, null=True)
 
-35 models across 6 subsystems:
+    class Meta:
+        managed = False
+        db_table = 'new_sales_by_round'
+        unique_together = (('round_id', 'customer_id', 'program_id'),)
+```
 
-| Subsystem | Count | Models |
-|---|---|---|
-| Gamification & Leaderboards | 7 | Achievement, GamificationBadge, PlayerProgress, TeamAchievement, TeamBadge, LeaderboardMetric, LeaderboardScore |
-| Scoring | 3 | Score, ScoreType, TeamPerformance |
-| Financials | 7 | FinancialExpense, FinancialRevenue, TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow, TeamResources, NewSalesByRound |
-| Programs & Portfolio | 5 | Program, ProgramType, ProgramFeature, ProgramPortfolio, Decision |
-| Simulation State | 3 | SimulationState, SimulationSettings, SimulationParameters |
-| Messaging & Notifications | 4 | Message, MessageResponse, MessageThread, NotificationLog |
-| Events | 1 | TriggeredEvent |
-| Instructor Tools | 5 | InstructorAction, InstructorEvaluation, InstructorNote, InstructorFeedbackTemplate, InstructorScenarioCustomization |
+`round_id` is declared `primary_key=True`, which means the PK constraint would enforce at most one row per `round_id`. But the `unique_together` on `(round_id, customer_id, program_id)` strongly suggests the intended semantics is one row per (round, customer, program) — which means many rows per round. These two constraints are mutually inconsistent: if you have multiple rows with the same `round_id` (different customers or programs), the PK is violated.
 
-## Questions for the spec author
+### Options
 
-1. **Authorize blanket promotion under rule #2?** The triage's Promote-by-runtime-usage argument is sound but relaxes rule #1. Is CC-5 authorized to promote all 35 under "absence blocks build pipeline work" alone?
-2. **Per-model schema review gate.** §5.5 step 3 says "inspect the migration before applying." For 35 models, does the spec author want migrations committed as individual commits (one per model) for review, or one bulk migration? Current suggestion: group by subsystem (6–8 commits).
-3. **Instructor Tools (5)** — these have *viewset-only* references (no live engine callers). Should they instead be re-classified to Prune or Document-as-dormant? CC-16 is named as the instructor-panel extension spec; its eventual scope is not yet written.
-4. **Decision** (`programs.py:84`) — triage lists only a viewset reference, no engine caller. Same question as #3.
+- **Option R1 — Promote with composite PK:** Drop the `primary_key=True` from `round_id`, add an `AutoField(primary_key=True)` (e.g., `sales_id`), keep `unique_together`. This matches the apparent semantics and parallels how e.g. `financial_revenue` keys itself.
+- **Option R2 — Promote with PK on the composite:** Drop `primary_key=True` from `round_id`, mark `(round_id, customer_id, program_id)` as the PK instead of just unique. Requires a Django model change (no single-column AutoField).
+- **Option R3 — Promote as-declared:** Create the table with `round_id INTEGER PRIMARY KEY`. Runtime will fail on the second insert for the same round. Likely incorrect.
+- **Option R4 — Prune (re-triage):** Classify NewSalesByRound as Prune. The triage lists only a viewset (`financials.py:130`) and "used in scoring" with no named line — no hard runtime dependency was proven. If the rest of the system works without it (Group B promotions applied cleanly and all engine code references already resolved), the viewset-only usage is consistent with Prune.
+- **Option R5 — Document-as-dormant:** Keep the declaration, comment it `# DORMANT — schema needs redesign before promotion`, ship to main as-is.
 
-## Recommended path forward
+### Recommendation
 
-- **Option A (execute as triaged):** Promote all 35. Commit in 6 subsystem groups. After each `makemigrations`, inspect the migration diff before `migrate`. If any schema looks wrong, halt and update this file.
-- **Option B (tighten):** Re-triage the 6 viewset-only ghosts (InstructorAction, InstructorEvaluation, InstructorNote, InstructorFeedbackTemplate, InstructorScenarioCustomization, Decision) as Prune; promote the remaining 29.
-- **Option C (halt entirely):** Defer all 35 promotions to a new CC spec (CC-5.5 or CC-7 extension) that individually names and authorizes each model. CC-5 closes with Group 1 prune only.
+R4 (Prune) or R1 (Promote with corrected PK). Both are clean. R1 requires a model source change that should be explicitly authorized. R4 is the lowest-risk path and aligns with the original prune-default discipline for ghosts whose runtime usage isn't demonstrated.
 
-Awaiting spec-author decision.
+Awaiting spec-author decision before merging `cc-05-fork-audit` to main.
