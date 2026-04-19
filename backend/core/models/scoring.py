@@ -8,7 +8,7 @@ class ScoreType(models.Model):
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'score_types'
 
     def __str__(self):
@@ -26,7 +26,7 @@ class Score(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'scores'
 
     def __str__(self):
@@ -40,7 +40,7 @@ class LeaderboardMetric(models.Model):
     weight = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'leaderboard_metrics'
 
     def __str__(self):
@@ -56,7 +56,7 @@ class LeaderboardScore(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'leaderboard_scores'
 
     def __str__(self):
@@ -73,7 +73,7 @@ class TeamPerformance(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_performance'
 
     def __str__(self):
