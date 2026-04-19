@@ -16,8 +16,7 @@ from core.models import (
     FinancialRevenue, FinancialExpense,
     TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow,
     TeamPerformance, LeaderboardScore, LeaderboardMetric,
-    NewSalesByRound, CumulativeSales,
-    Score,
+    NewSalesByRound, Score,
 )
 from core.services.scoring import (
     distribute_adoption, rollup_esg_scores,

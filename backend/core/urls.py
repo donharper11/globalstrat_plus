@@ -67,8 +67,7 @@ from .views import (
     # Core
     TeamViewSet, UserViewSet, RoundViewSet,
     SimulationStateViewSet, SimulationSettingsViewSet,
-    SimulationParametersViewSet, ComponentStatusViewSet,
-    DashboardViewSet,
+    SimulationParametersViewSet, DashboardViewSet,
     # Round deadline management
     RoundLockView, RoundUnlockView, RoundExtendView,
     RoundScheduleSetView, BulkScheduleView,
@@ -85,7 +84,7 @@ from .views import (
     IncomeStatementViewSet, BalanceSheetViewSet, CashFlowViewSet,
     TeamResourcesViewSet,
     FinancialRevenueViewSet, FinancialExpenseViewSet,
-    CumulativeSalesViewSet, NewSalesByRoundViewSet,
+    NewSalesByRoundViewSet,
     # Events
     TriggeredEventViewSet,
     FireEventsViewSet,
@@ -93,7 +92,6 @@ from .views import (
     InstructorActionViewSet, InstructorEvaluationViewSet,
     InstructorNoteViewSet, InstructorFeedbackTemplateViewSet,
     InstructorScenarioCustomizationViewSet,
-    AdminActionViewSet,
     # Gamification
     AchievementViewSet, GamificationBadgeViewSet,
     PlayerProgressViewSet, TeamAchievementViewSet,
@@ -102,7 +100,6 @@ from .views import (
     MessageViewSet, MessageResponseViewSet,
     MessageThreadViewSet,
     NotificationLogViewSet, TeamNotificationViewSet,
-    FeedbackViewSet,
     # Persona Engine
     PersonaReplyView, PersonaConsultView, PersonaListView,
     ThreadMessagesView, ConsultationUsageView,
@@ -138,7 +135,6 @@ router.register(r'rounds', RoundViewSet, basename='rounds')
 router.register(r'simulation-state', SimulationStateViewSet, basename='simulation-state')
 router.register(r'simulation-settings', SimulationSettingsViewSet, basename='simulation-settings')
 router.register(r'simulation-parameters', SimulationParametersViewSet, basename='simulation-parameters')
-router.register(r'component-status', ComponentStatusViewSet, basename='component-status')
 router.register(r'dashboard', DashboardViewSet, basename='dashboard')
 
 # ---- Programs (placeholder — platforms/products in CC-2) ----
@@ -162,7 +158,6 @@ router.register(r'cash-flows', CashFlowViewSet, basename='cash-flows')
 router.register(r'team-resources', TeamResourcesViewSet, basename='team-resources')
 router.register(r'financial-revenue', FinancialRevenueViewSet, basename='financial-revenue')
 router.register(r'financial-expenses', FinancialExpenseViewSet, basename='financial-expenses')
-router.register(r'cumulative-sales', CumulativeSalesViewSet, basename='cumulative-sales')
 router.register(r'new-sales-by-round', NewSalesByRoundViewSet, basename='new-sales-by-round')
 
 # ---- Events ----
@@ -175,7 +170,6 @@ router.register(r'instructor-evaluations', InstructorEvaluationViewSet, basename
 router.register(r'instructor-notes', InstructorNoteViewSet, basename='instructor-notes')
 router.register(r'instructor-feedback-templates', InstructorFeedbackTemplateViewSet, basename='instructor-feedback-templates')
 router.register(r'instructor-scenario-customizations', InstructorScenarioCustomizationViewSet, basename='instructor-scenario-customizations')
-router.register(r'admin-actions', AdminActionViewSet, basename='admin-actions')
 
 # ---- Gamification ----
 router.register(r'achievements', AchievementViewSet, basename='achievements')
@@ -190,7 +184,6 @@ router.register(r'message-responses', MessageResponseViewSet, basename='message-
 router.register(r'message-threads', MessageThreadViewSet, basename='message-threads')
 router.register(r'notification-logs', NotificationLogViewSet, basename='notification-logs')
 router.register(r'team-notifications', TeamNotificationViewSet, basename='team-notifications')
-router.register(r'feedback', FeedbackViewSet, basename='feedback')
 
 # ---- Grading ----
 router.register(r'grading-rubrics', GradingRubricViewSet, basename='grading-rubrics')

@@ -12,7 +12,7 @@ class TriggeredEvent(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'triggered_events'
 
     def __str__(self):
