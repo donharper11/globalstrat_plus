@@ -105,3 +105,6 @@ from .sc_state import (
     SupplierState, LaneState, SCEventInstance,
     HedgePosition, ResilienceScoreHistory,
 )
+from .overrides import (
+    ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride,
+)
