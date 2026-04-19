@@ -111,14 +111,15 @@ class FinancialExpense(models.Model):
 
 
 class NewSalesByRound(models.Model):
-    round_id = models.IntegerField(primary_key=True)
+    sales_id = models.AutoField(primary_key=True)
+    round_id = models.IntegerField()
     customer_id = models.IntegerField()
     program_id = models.IntegerField()
     new_sales = models.IntegerField(blank=True, null=True)
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'new_sales_by_round'
         unique_together = (('round_id', 'customer_id', 'program_id'),)
 
