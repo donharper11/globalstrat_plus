@@ -13,7 +13,7 @@ class TeamIncomeStatement(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_income_statements'
 
     def __str__(self):
@@ -32,7 +32,7 @@ class TeamBalanceSheet(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_balance_sheets'
 
     def __str__(self):
@@ -52,7 +52,7 @@ class TeamCashFlow(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_cash_flows'
 
     def __str__(self):
@@ -69,7 +69,7 @@ class TeamResources(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'team_resources'
 
     def __str__(self):
@@ -86,7 +86,7 @@ class FinancialRevenue(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'financial_revenue'
 
     def __str__(self):
@@ -103,7 +103,7 @@ class FinancialExpense(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'financial_expenses'
 
     def __str__(self):
