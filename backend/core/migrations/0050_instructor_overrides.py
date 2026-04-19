@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0042_decision_plant_sc_extensions'),
+        ('core', '0049_cc05_promote_group_f_instructor'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

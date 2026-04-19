@@ -11,7 +11,7 @@
 | # | Criterion | Status | Evidence |
 |---|---|---|---|
 | 1 | `ClassProgressiveDisclosureOverride` and `ClassResilienceWeightOverride` models exist with §3.1 / §3.2 schemas | ✅ | `backend/core/models/overrides.py` (commit `d51fd44`) |
-| 2 | Migration applied cleanly | ✅ | `0043_instructor_overrides` applied in commit `d51fd44`; `manage.py check` clean |
+| 2 | Migration applied cleanly | ✅ | Originally landed as `0043_instructor_overrides` in `d51fd44`; renamed to `0050_instructor_overrides` during merge with `cc-05-fork-audit` to follow CC-5's 0043–0049 chain (see §4.1). `manage.py migrate --plan` reports no pending migrations; `manage.py check` clean. |
 | 3 | `manage.py check` reports zero issues | ✅ | Verified after every commit on branch |
 | 4 | Override endpoints respond (create, list, delete) | ✅ | Endpoint tests in `test_cc04_a1_overrides.py` `OverrideEndpointTests` class (see §3 note on test-DB blocker) |
 | 5 | Sum-to-1.0 validator rejects constraint violations | ✅ | `WeightOverrideSumValidatorTests` covers: default-value pass, sum-break reject, paired-overrides-that-preserve-sum pass, ceiling reject, zero reject |
@@ -77,9 +77,9 @@ The codebase has no `ClassInstance` model. The class-scope candidates are `Cours
 
 ## 4. Coordination notes
 
-### 4.1 Migration-number collision with CC-5
+### 4.1 Migration-number collision with CC-5 — resolved
 
-CC-5 is in parallel flight on branch `cc-05-fork-audit` and holds migration `0043_cc05_prune_ghost_models` (plus newer numbered migrations 0044, 0045, ...). This amendment holds `0043_instructor_overrides`. Whichever branch merges to `main` second must renumber its own `0043` migration to follow the other branch's tail. Recommend: merge CC-5 first (broader blast radius), then renumber this amendment's migration to `0046` (or whatever the next free number is at that moment) and merge.
+CC-5 (`cc-05-fork-audit`) landed migrations 0043–0049. This amendment originally numbered its migration `0043_instructor_overrides`. The collision was resolved during the `cc-05-fork-audit` → `cc-04-amendment-a1` merge: the amendment's migration was renamed `0043_instructor_overrides.py` → `0050_instructor_overrides.py`, and its `dependencies` was updated from `('core', '0042_decision_plant_sc_extensions')` to `('core', '0049_cc05_promote_group_f_instructor')`. `manage.py migrate --plan` and `makemigrations --check --dry-run` are clean on the merged branch. The combined branch is ready for a single `--no-ff` merge to `main`.
 
 ### 4.2 Test-suite blocker (pre-existing)
 
@@ -102,7 +102,7 @@ CC-5 is in parallel flight on branch `cc-05-fork-audit` and holds migration `004
 python3 -c "from core.models.overrides import ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride; print('ok')"
 
 # 2. Migration applied
-python3 manage.py showmigrations core | grep 0043_instructor_overrides
+python3 manage.py showmigrations core | grep 0050_instructor_overrides
 
 # 3. Helper + registry
 python3 -c "from core.utils.disclosure import DEFAULT_UNLOCK_ROUNDS, get_effective_unlock_round; print(len(DEFAULT_UNLOCK_ROUNDS), 'field paths registered')"

@@ -1,8 +1,7 @@
 from .core import (
     TeamViewSet, UserViewSet, RoundViewSet,
     SimulationStateViewSet, SimulationSettingsViewSet,
-    SimulationParametersViewSet, ComponentStatusViewSet,
-    DashboardViewSet,
+    SimulationParametersViewSet, DashboardViewSet,
 )
 from .programs import (
     ProgramViewSet, ProgramTypeViewSet,
@@ -19,7 +18,7 @@ from .financials import (
     IncomeStatementViewSet, BalanceSheetViewSet, CashFlowViewSet,
     TeamResourcesViewSet,
     FinancialRevenueViewSet, FinancialExpenseViewSet,
-    CumulativeSalesViewSet, NewSalesByRoundViewSet,
+    NewSalesByRoundViewSet,
 )
 from .events import (
     TriggeredEventViewSet,
@@ -29,8 +28,7 @@ from .instructor import (
     InstructorActionViewSet, InstructorEvaluationViewSet,
     InstructorNoteViewSet, InstructorFeedbackTemplateViewSet,
     InstructorScenarioCustomizationViewSet,
-    AdminActionViewSet,
-)
+    )
 from .gamification import (
     AchievementViewSet, GamificationBadgeViewSet,
     PlayerProgressViewSet, TeamAchievementViewSet,
@@ -40,8 +38,7 @@ from .messaging import (
     MessageViewSet, MessageResponseViewSet,
     MessageThreadViewSet,
     NotificationLogViewSet, TeamNotificationViewSet,
-    FeedbackViewSet,
-)
+    )
 from .persona_engine import (
     PersonaReplyView, PersonaConsultView, PersonaListView,
     ThreadMessagesView, ConsultationUsageView,

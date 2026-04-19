@@ -2,7 +2,7 @@ from rest_framework import serializers
 from core.models import (
     TeamIncomeStatement, TeamBalanceSheet, TeamCashFlow,
     TeamResources, FinancialRevenue, FinancialExpense,
-    CumulativeSales, NewSalesByRound,
+    NewSalesByRound,
 )
 from core.models.core import Round
 
@@ -57,12 +57,6 @@ class FinancialRevenueSerializer(serializers.ModelSerializer):
 class FinancialExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancialExpense
-        fields = '__all__'
-
-
-class CumulativeSalesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CumulativeSales
         fields = '__all__'
 
 
