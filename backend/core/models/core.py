@@ -182,7 +182,7 @@ class SimulationState(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'simulation_state'
 
     def __str__(self):
@@ -196,7 +196,7 @@ class SimulationSettings(models.Model):
     description = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'simulation_settings'
 
     def __str__(self):
@@ -211,23 +211,8 @@ class SimulationParameters(models.Model):
     updated_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'simulation_parameters'
 
     def __str__(self):
         return self.parameter_name
-
-
-class ComponentStatus(models.Model):
-    team_id = models.IntegerField(primary_key=True)
-    component_name = models.CharField(max_length=50)
-    is_unlocked = models.BooleanField(blank=True, null=True)
-    unlock_round = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'component_status'
-        unique_together = (('team_id', 'component_name'),)
-
-    def __str__(self):
-        return f"{self.component_name} (Team {self.team_id})"
