@@ -60,6 +60,10 @@ from core.views.sc_views import (
     ScenarioTradeFinanceInstrumentsView, ScenarioComplianceRegimesView,
     ResilienceScoreView, HedgePositionsView, SCEventsView,
 )
+from core.views.overrides import (
+    DisclosureOverrideListCreateView, DisclosureOverrideDeleteView,
+    ResilienceWeightOverrideListCreateView, ResilienceWeightOverrideDeleteView,
+)
 
 from core.views.onboarding import OnboardingDataView, OnboardingCompleteView
 
@@ -426,4 +430,14 @@ urlpatterns = [
          HedgePositionsView.as_view(), name='sc-hedge-positions'),
     path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sc-events/',
          SCEventsView.as_view(), name='sc-events'),
+
+    # ---- CC-04 Amendment A1: Instructor Override Endpoints ----
+    path('games/<int:game_id>/disclosure-overrides/',
+         DisclosureOverrideListCreateView.as_view(), name='disclosure-overrides'),
+    path('games/<int:game_id>/disclosure-overrides/<int:override_id>/',
+         DisclosureOverrideDeleteView.as_view(), name='disclosure-override-detail'),
+    path('games/<int:game_id>/resilience-weight-overrides/',
+         ResilienceWeightOverrideListCreateView.as_view(), name='resilience-weight-overrides'),
+    path('games/<int:game_id>/resilience-weight-overrides/<int:override_id>/',
+         ResilienceWeightOverrideDeleteView.as_view(), name='resilience-weight-override-detail'),
 ]
