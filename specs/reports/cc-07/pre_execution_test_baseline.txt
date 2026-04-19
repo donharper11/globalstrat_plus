@@ -1,0 +1,246 @@
+Creating test database for alias 'default' ('test_globalstrat_plus')...
+Found 86 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: corsheaders, messages, rest_framework, staticfiles
+  Apply all migrations: admin, auth, contenttypes, core, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying core.0000_users_bootstrap... OK
+  Applying core.0001_initial... OK
+  Applying core.0002_game_state_indexes... OK
+  Applying core.0003_decision_models... OK
+  Applying core.0004_results_and_event_fk... OK
+  Applying core.0005_result_indexes... OK
+  Applying core.0006_cc06_financial_results... OK
+  Applying core.0007_cc06_indexes... OK
+  Applying core.0008_researchquerylog... OK
+  Applying core.0009_widen_ratio_fields... OK
+  Applying core.0010_forecastscenario_teamframeworkanalysis... OK
+  Applying core.0011_decisionmarketing_sales_team_count_and_more... OK
+  Applying core.0012_decisiontalent_teamtalentstate... OK
+  Applying core.0013_add_platform_name_and_feature_levels... OK
+  Applying core.0014_add_distribution_channel_detail... OK
+  Applying core.0015_cc20_mna_esg_ai... OK
+  Applying core.0016_cc21_instructor_alerts_change_log... OK
+  Applying core.0017_add_team_platform_name... OK
+  Applying core.0018_cc24_strategic_economics... OK
+  Applying core.0019_cc25_derived_features... OK
+  Applying core.0020_cc26_capital_markets... OK
+  Applying core.0021_allow_null_market_on_adoption... OK
+  Applying core.0022_remove_research_budget_requirement... OK
+  Applying core.0023_cc27_strategic_briefing... OK
+  Applying core.0024_cc27_per_user_read_status... OK
+  Applying core.0025_channel_margin_fields... OK
+  Applying core.0026_decisionmarketentry_integration_strategy_and_more... OK
+  Applying core.0027_cc31e_event_targeting... OK
+  Applying core.0028_cc31g_investor_fund_profile... OK
+  Applying core.0029_cc31j_governance_commitments... OK
+  Applying core.0030_cc32a_communications... OK
+  Applying core.0031_cc32b_org_design... OK
+  Applying core.0032_cc32d_alliance_partners... OK
+  Applying core.0033_cc32e_agent_cycle_log... OK
+  Applying core.0034_cc32f_government_agents... OK
+  Applying core.0035_cc32h_round_processing_status... OK
+  Applying core.0036_dual_platform_starter... OK
+  Applying core.0037_add_archived_game_status... OK
+  Applying core.0038_acquisitiontarget_description_zh_and_more... OK
+  Applying core.0039_update_num_rounds_default_to_10... OK
+  Applying core.0040_cc35_promote_teamnotification... OK
+  Applying core.0041_sc_scenario_content... OK
+  Applying core.0042_decision_plant_sc_extensions... OK
+  Applying core.0043_cc05_prune_ghost_models... OK
+  Applying core.0044_cc05_promote_group_a_gamification_scoring... OK
+  Applying core.0045_cc05_promote_group_b_financials... OK
+  Applying core.0046_cc05_promote_group_c_programs... OK
+  Applying core.0047_cc05_promote_group_d_simulation_state... OK
+  Applying core.0048_cc05_promote_group_e_messaging_events... OK
+  Applying core.0049_cc05_promote_group_f_instructor... OK
+  Applying core.0050_cc05_promote_new_sales_by_round... OK
+  Applying core.0051_instructor_overrides... OK
+  Applying sessions.0001_initial...test_default_when_no_override (core.tests.test_cc04_a1_overrides.GetEffectiveUnlockRoundTests) ... ok
+test_override_wins (core.tests.test_cc04_a1_overrides.GetEffectiveUnlockRoundTests) ... ok
+test_unknown_field_falls_to_one (core.tests.test_cc04_a1_overrides.GetEffectiveUnlockRoundTests) ... ok
+test_create_disclosure_override (core.tests.test_cc04_a1_overrides.OverrideEndpointTests) ... ok
+test_create_disclosure_override_rejects_unknown_field (core.tests.test_cc04_a1_overrides.OverrideEndpointTests) ... ok
+test_create_weight_override_that_breaks_sum_returns_400 (core.tests.test_cc04_a1_overrides.OverrideEndpointTests) ... ok
+test_delete_disclosure_override (core.tests.test_cc04_a1_overrides.OverrideEndpointTests) ... ok
+test_list_disclosure_overrides_empty (core.tests.test_cc04_a1_overrides.OverrideEndpointTests) ... ok
+test_override_value_above_ceiling_rejected (core.tests.test_cc04_a1_overrides.WeightOverrideSumValidatorTests) ... ok
+test_override_value_zero_rejected (core.tests.test_cc04_a1_overrides.WeightOverrideSumValidatorTests) ... ok
+test_paired_overrides_that_preserve_sum_valid (core.tests.test_cc04_a1_overrides.WeightOverrideSumValidatorTests) ... ok
+test_single_override_at_default_value_valid (core.tests.test_cc04_a1_overrides.WeightOverrideSumValidatorTests) ... ok
+test_single_override_that_breaks_sum_rejected (core.tests.test_cc04_a1_overrides.WeightOverrideSumValidatorTests) ... ok
+test_modal_mix_locked_at_round_2_without_override (core.tests.test_cc04_a1_overrides.WriteSerializerDisclosureTests) ... ok
+test_payment_terms_locked_at_round_2_without_override (core.tests.test_cc04_a1_overrides.WriteSerializerDisclosureTests) ... ok
+test_payment_terms_unlocked_at_round_2_with_override (core.tests.test_cc04_a1_overrides.WriteSerializerDisclosureTests) ... ok
+test_assign_tags_fallback_general (core.tests.test_engine.TestArticleIngestion)
+No keyword matches → 'general' tag. ... ok
+test_assign_tags_market_entry (core.tests.test_engine.TestArticleIngestion)
+Market entry keywords produce market_entry tag. ... ok
+test_assign_tags_multiple (core.tests.test_engine.TestArticleIngestion)
+Multiple keyword matches produce multiple tags. ... ok
+test_chunk_article_small (core.tests.test_engine.TestArticleIngestion)
+Small text produces a single chunk. ... ok
+test_chunk_article_with_sections (core.tests.test_engine.TestArticleIngestion)
+Text with section headers is chunked by section. ... ok
+test_coherence_rag_disabled (core.tests.test_engine.TestArticleIngestion)
+RAG coherence returns None when RAG disabled. ... ok
+test_compile_decision_summary_empty (core.tests.test_engine.TestArticleIngestion)
+Empty decisions produce fallback summary. ... ok
+test_enhance_query_market_expansion (core.tests.test_engine.TestArticleIngestion)
+Query with 'asia' gets APAC expansion. ... ok
+test_enhance_query_no_expansion (core.tests.test_engine.TestArticleIngestion)
+Query without market keyword returns original. ... ok
+test_fallback_brief (core.tests.test_engine.TestArticleIngestion)
+Fallback brief returns structured excerpts. ... ok
+test_ingest_module_imports (core.tests.test_engine.TestArticleIngestion)
+CC-11 ingestion module imports. ... ok
+test_above_max (core.tests.test_engine.TestClamp) ... ok
+test_at_boundaries (core.tests.test_engine.TestClamp) ... ok
+test_below_min (core.tests.test_engine.TestClamp) ... ok
+test_within_range (core.tests.test_engine.TestClamp) ... ok
+test_aligned_pricing (core.tests.test_engine.TestCoherenceScoring)
+Price within positioning range → full score. ... ok
+test_budget_mass_retail_alignment (core.tests.test_engine.TestCoherenceScoring) ... ok
+test_distribution_alignment_matrix (core.tests.test_engine.TestCoherenceScoring)
+Premium + exclusive = 1.0, premium + mass = 0.2. ... ok
+test_misaligned_pricing (core.tests.test_engine.TestCoherenceScoring)
+Premium price in budget range → out of range. ... ok
+test_ultra_premium_mass_retail_misalignment (core.tests.test_engine.TestCoherenceScoring) ... ok
+test_advance_round_no_open_round (core.tests.test_engine.TestEngineIntegration)
+advance_round raises ValueError if no open round. ... ok
+test_advance_round_unlocked_team (core.tests.test_engine.TestEngineIntegration)
+advance_round raises ValueError if a team hasn't locked. ... 2026-04-19 12:50:58,951 INFO agent_orchestrator Agent cycle starting: Round 1, 1 teams, 1 markets
+2026-04-19 12:50:58,951 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-04-19 12:50:58,951 INFO agent_orchestrator   investor: proposed 0 actions
+2026-04-19 12:50:58,951 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-04-19 12:50:58,951 INFO agent_orchestrator   government: proposed 0 actions
+2026-04-19 12:50:58,951 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-04-19 12:50:58,951 INFO agent_orchestrator   Converged after 1 iterations
+2026-04-19 12:50:58,955 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-04-19 12:50:58,979 INFO engine Phase 1 complete: 0.2s
+2026-04-19 12:50:58,982 INFO engine Phase 2 dispatched to background thread
+FAIL
+test_imports (core.tests.test_engine.TestEngineIntegration)
+All engine modules (CC-5 + CC-6 + CC-7 + CC-11) import without error. ... ok
+test_round_context_initialization (core.tests.test_engine.TestEngineIntegration)
+RoundContext initializes with correct structure. ... ok
+2026-04-19 12:50:58,997 ERROR engine Phase 2 failed: Game matching query does not exist.
+test_generate_event_context_cost_change (core.tests.test_engine.TestEventNarrativeGeneration)
+Context generation for cost change. ... ok
+test_generate_event_context_demand_shock (core.tests.test_engine.TestEventNarrativeGeneration)
+Context generation for demand shock. ... ok
+test_generate_event_context_max_sentences (core.tests.test_engine.TestEventNarrativeGeneration)
+Context limited to 3 sentences max. ... ok
+test_generate_event_narrative_market_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {market} placeholder resolved to market name. ... ok
+test_generate_event_narrative_no_market (core.tests.test_engine.TestEventNarrativeGeneration)
+No target market → 'global markets'. ... ok
+test_generate_event_narrative_round_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {round} resolved to round number. ... ok
+test_generate_event_narrative_value_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {value} resolved from impact. ... ok
+test_imports (core.tests.test_engine.TestEventResponseProcessing)
+CC-7 event functions import without error. ... ok
+test_process_event_responses_no_events (core.tests.test_engine.TestEventResponseProcessing)
+process_event_responses with empty events_fired does nothing. ... ok
+test_coherence_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_leaderboard_entry_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_market_intelligence_brief_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_performance_index_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_round_result_financials_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_always_between_zero_and_one (core.tests.test_engine.TestGaussianFit)
+Fit should always be in [0, 1]. ... ok
+test_distance_decay (core.tests.test_engine.TestGaussianFit)
+actual far from ideal → fit approaches 0 ... ok
+test_exact_match (core.tests.test_engine.TestGaussianFit)
+actual == ideal → fit = 1.0 ... ok
+test_high_tolerance_gentle_decay (core.tests.test_engine.TestGaussianFit)
+High tolerance → gentle decay ... ok
+test_symmetric (core.tests.test_engine.TestGaussianFit)
+Fit is symmetric around ideal. ... ok
+test_zero_tolerance_exact_only (core.tests.test_engine.TestGaussianFit)
+Zero tolerance → exact match only ... ok
+test_diminishing_higher_level_less_gain (core.tests.test_engine.TestLevelGain)
+Diminishing: higher current level → less gain per dollar ... ok
+test_exponential_higher_level_less_gain (core.tests.test_engine.TestLevelGain)
+Exponential: much steeper cost growth ... ok
+test_gain_never_negative (core.tests.test_engine.TestLevelGain)
+Gain should never be negative ... ok
+test_linear_gain (core.tests.test_engine.TestLevelGain)
+Linear curve: gain = investment / cost_base ... ok
+test_negative_investment_returns_zero (core.tests.test_engine.TestLevelGain)
+Negative investment → zero gain. ... ok
+test_step_discrete_levels (core.tests.test_engine.TestLevelGain)
+Step: gain is always an integer (floored). ... ok
+test_unknown_curve_fallback (core.tests.test_engine.TestLevelGain)
+Unknown curve type falls back to linear. ... ok
+test_zero_cost_base_returns_zero (core.tests.test_engine.TestLevelGain)
+Zero cost_base → no gain (avoid divide by zero). ... ok
+test_rag_client_import (core.tests.test_engine.TestRAGInfrastructure)
+Qdrant client module imports. ... ok
+test_rag_embeddings_import (core.tests.test_engine.TestRAGInfrastructure)
+Embedding module imports. ... ok
+test_rag_model_import (core.tests.test_engine.TestRAGInfrastructure)
+ResearchQueryLog model imports. ... ok
+test_rag_views_import (core.tests.test_engine.TestRAGInfrastructure)
+RAG views import. ... ok
+test_research_query_log_create (core.tests.test_engine.TestRAGInfrastructure)
+ResearchQueryLog can be created. ... ok
+test_class_to_class_streams_diverge (core.engine.tests.test_determinism.TestEngineDeterminismContract)
+Different class_id (section) must yield different streams — ... ok
+test_distinct_call_sites_use_distinct_streams (core.engine.tests.test_determinism.TestEngineDeterminismContract)
+Different operation_ids must produce independent streams — ... ok
+test_every_call_site_is_deterministic (core.engine.tests.test_determinism.TestEngineDeterminismContract)
+For each migrated call site, replaying the same keys gives ... ok
+test_round_to_round_streams_diverge (core.engine.tests.test_determinism.TestEngineDeterminismContract)
+Same class_id + operation_id, different round, different stream. ... ok
+test_high_probability_event_fires_low_does_not (core.engine.tests.test_determinism.TestSimulatedRoundReplay)
+Sanity: prob 0.99 fires, prob 0.01 does not — deterministically. ... ok
+test_identical_inputs_reproduce_identical_outcomes (core.engine.tests.test_determinism.TestSimulatedRoundReplay)
+The whole probabilistic surface of a round is replayable. ... ok
+test_different_class_different_stream (core.engine.tests.test_rng.TestGetRNG) ... ok
+test_different_operation_different_stream (core.engine.tests.test_rng.TestGetRNG) ... ok
+test_different_round_different_stream (core.engine.tests.test_rng.TestGetRNG) ... ok
+test_draws_in_expected_range (core.engine.tests.test_rng.TestGetRNG) ... ok
+test_returns_random_Random_instance (core.engine.tests.test_rng.TestGetRNG) ... ok
+test_same_triple_same_stream (core.engine.tests.test_rng.TestGetRNG)
+Same (class_id, round_number, operation_id) returns identical draws. ... ok
+test_string_class_id_accepted (core.engine.tests.test_rng.TestGetRNG)
+class_id can be any stringifiable value. ... ok
+
+======================================================================
+FAIL: test_advance_round_unlocked_team (core.tests.test_engine.TestEngineIntegration)
+advance_round raises ValueError if a team hasn't locked.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/globalstrat+/backend/core/tests/test_engine.py", line 242, in test_advance_round_unlocked_team
+    with self.assertRaises(ValueError) as ctx:
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 86 tests in 5.638s
+
+FAILED (failures=1)
+Destroying test database for alias 'default' ('test_globalstrat_plus')...
+ OK
+System check identified no issues (0 silenced).
