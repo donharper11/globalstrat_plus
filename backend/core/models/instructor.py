@@ -11,7 +11,7 @@ class InstructorAction(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'instructor_actions'
 
     def __str__(self):
@@ -31,7 +31,7 @@ class InstructorEvaluation(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'instructor_evaluations'
 
     def __str__(self):
@@ -48,7 +48,7 @@ class InstructorNote(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'instructor_notes'
 
     def __str__(self):
@@ -63,7 +63,7 @@ class InstructorFeedbackTemplate(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'instructor_feedback_templates'
 
     def __str__(self):
@@ -78,7 +78,7 @@ class InstructorScenarioCustomization(models.Model):
     modified_challenge = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'instructor_scenario_customization'
 
     def __str__(self):
