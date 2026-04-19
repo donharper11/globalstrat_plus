@@ -2,7 +2,7 @@
 
 **Amends:** `specs/CC-04-data-model.md`
 **Parent decisions:** `specs/CC-06-pedagogical-design-note.md` §3.2 and §3.3
-**Status:** Drafted. **Execution deferred until CC-4 merges.**
+**Status:** **Executed on branch `cc-04-amendment-a1`**. Merged twice with `cc-05-fork-audit` as CC-5's migration chain grew; migration renumbered 0043 → 0050 → `0051_instructor_overrides`. Test suite: 16 of 16 pass on fresh DB. Acceptance report: `specs/reports/cc-04/amendment_a1_acceptance_report.md`. Pending merge to `main`.
 **Observes:** `specs/STANDING-DISCIPLINE.md`
 
 ---

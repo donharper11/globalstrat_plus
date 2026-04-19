@@ -2,7 +2,9 @@
 Supply Chain DRF serializers (CC-04 §6).
 
 Read serializers return all fields. Write serializers enforce progressive
-disclosure and validation rules.
+disclosure and validation rules. Progressive-disclosure enforcement consults
+`core.utils.disclosure.get_effective_unlock_round`, which honours per-class
+overrides (CC-04 Amendment A1).
 """
 from rest_framework import serializers
 from core.models.sc_models import (
@@ -19,6 +21,27 @@ from core.models.sc_state import (
     SupplierState, LaneState, SCEventInstance,
     HedgePosition, ResilienceScoreHistory,
 )
+from core.utils.disclosure import get_effective_unlock_round
+
+
+def _reject_locked_fields(data, game, round_number, field_specs):
+    """
+    Raise ValidationError if any field in `field_specs` is locked for this
+    (game, round_number).
+
+    `field_specs` is an iterable of (data_key, field_path) pairs: data_key is
+    the serializer input key; field_path is the CC-2 dot-notation path. A
+    field is "submitted" when its data_key is present with a truthy value.
+    """
+    for data_key, field_path in field_specs:
+        if not data.get(data_key):
+            continue
+        unlock = get_effective_unlock_round(game, field_path)
+        if round_number < unlock:
+            raise serializers.ValidationError(
+                f"{field_path} not yet unlocked at round {round_number} "
+                f"for this class (unlocks at round {unlock})."
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -141,6 +164,15 @@ class SourcingAllocationWriteSerializer(serializers.ModelSerializer):
             'allocation_pct', 'volume_commitment_units', 'payment_terms',
         ]
 
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('payment_terms', 'sourcing.payment_terms'),
+            ('volume_commitment_units', 'sourcing.volume_commitments'),
+        ])
+        return data
+
 
 class SourcingDecisionWriteSerializer(serializers.ModelSerializer):
     allocations = SourcingAllocationWriteSerializer(many=True, write_only=True, required=False)
@@ -151,6 +183,15 @@ class SourcingDecisionWriteSerializer(serializers.ModelSerializer):
             'team', 'round', 'tier_2_3_visibility_investment',
             'multi_sourcing_strategy', 'allocations',
         ]
+
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('tier_2_3_visibility_investment', 'sourcing.tier_2_3_visibility_investment'),
+            ('multi_sourcing_strategy', 'sourcing.multi_sourcing_strategy'),
+        ])
+        return data
 
     def create(self, validated_data):
         allocations_data = validated_data.pop('allocations', [])
@@ -172,6 +213,22 @@ class LogisticsDecisionWriteSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+
+        # Progressive disclosure — modal mix (round 3) and volume commitment (round 5)
+        modal_unlock = get_effective_unlock_round(game, 'logistics.modal_mix')
+        if round_number < modal_unlock and any(
+            data.get(f) for f in ['mode_sea_pct', 'mode_air_pct', 'mode_rail_pct', 'mode_road_pct']
+        ):
+            raise serializers.ValidationError(
+                f"logistics.modal_mix not yet unlocked at round {round_number} "
+                f"for this class (unlocks at round {modal_unlock})."
+            )
+        _reject_locked_fields(data, game, round_number, [
+            ('volume_commitment_teu', 'logistics.volume_commitment_teu'),
+        ])
+
         total = sum([
             data.get('mode_sea_pct', 0),
             data.get('mode_air_pct', 0),
@@ -197,6 +254,15 @@ class IncotermsDecisionWriteSerializer(serializers.ModelSerializer):
         model = IncotermsDecision
         fields = ['team', 'round', 'destination_market', 'incoterms', 'insurance_coverage_pct']
 
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('incoterms', 'logistics.incoterms'),
+            ('insurance_coverage_pct', 'logistics.insurance_coverage_pct'),
+        ])
+        return data
+
 
 class CustomsClassificationDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -205,6 +271,16 @@ class CustomsClassificationDecisionWriteSerializer(serializers.ModelSerializer):
             'team', 'round', 'destination_market', 'classification',
             'reverse_logistics_capacity_pct', 'reverse_logistics_hub_market',
         ]
+
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('classification', 'logistics.customs_classification'),
+            ('reverse_logistics_capacity_pct', 'logistics.reverse_logistics'),
+            ('reverse_logistics_hub_market', 'logistics.reverse_logistics'),
+        ])
+        return data
 
 
 class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
@@ -215,11 +291,28 @@ class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
             'buyer_payment_instrument', 'lc_doc_prep_investment',
         ]
 
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('buyer_payment_instrument', 'trade_finance.buyer_payment_instrument'),
+            ('lc_doc_prep_investment', 'trade_finance.lc_doc_prep_investment'),
+        ])
+        return data
+
 
 class SinosureEnrollmentWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SinosureEnrollment
         fields = ['team', 'round', 'market', 'coverage_pct']
+
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('coverage_pct', 'trade_finance.sinosure_coverage'),
+        ])
+        return data
 
 
 class FXHedgeDecisionWriteSerializer(serializers.ModelSerializer):
@@ -227,11 +320,29 @@ class FXHedgeDecisionWriteSerializer(serializers.ModelSerializer):
         model = FXHedgeDecision
         fields = ['team', 'round', 'currency_pair', 'hedge_ratio', 'tenor_days']
 
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('hedge_ratio', 'trade_finance.fx_hedging'),
+            ('tenor_days', 'trade_finance.fx_hedging'),
+        ])
+        return data
+
 
 class InventoryDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryDecision
         fields = ['team', 'round', 'product', 'market', 'buffer_days', 'safety_stock_trigger_pct']
+
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('buffer_days', 'inventory.buffer_days'),
+            ('safety_stock_trigger_pct', 'inventory.safety_stock_trigger_pct'),
+        ])
+        return data
 
 
 class ContingencyPlanWriteSerializer(serializers.ModelSerializer):
@@ -241,6 +352,16 @@ class ContingencyPlanWriteSerializer(serializers.ModelSerializer):
             'team', 'round', 'disruption_response_playbook',
             'alt_supplier_activation_rules', 'mode_switch_triggers',
         ]
+
+    def validate(self, data):
+        game = data['team'].game
+        round_number = data['round'].round_number
+        _reject_locked_fields(data, game, round_number, [
+            ('disruption_response_playbook', 'inventory.contingency_plans'),
+            ('alt_supplier_activation_rules', 'inventory.contingency_plans'),
+            ('mode_switch_triggers', 'inventory.contingency_plans'),
+        ])
+        return data
 
 
 # ---------------------------------------------------------------------------
