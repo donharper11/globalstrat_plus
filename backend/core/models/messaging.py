@@ -23,7 +23,7 @@ class Message(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'messages'
 
     def __str__(self):
@@ -42,7 +42,7 @@ class MessageResponse(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'message_responses'
 
     def __str__(self):
@@ -59,7 +59,7 @@ class MessageThread(models.Model):
     round_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'message_threads'
 
     def __str__(self):
@@ -92,7 +92,7 @@ class NotificationLog(models.Model):
     instance_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'notification_logs'
 
     def __str__(self):
