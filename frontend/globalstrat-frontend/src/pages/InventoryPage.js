@@ -12,6 +12,13 @@ import { getInventory, saveInventory, getMarkets } from '../api/sc';
 import { getProductContext } from '../api/decisions';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import { StateBadge, pageState } from '../components/sc/scState';
+
+const canonical = (rows, playbook, altRules, modeTriggers) => JSON.stringify({
+  rows: (rows || []).map((r) => ({ p: r.product, m: r.market,
+    b: r.buffer_days, s: r.safety_stock_trigger_pct })),
+  playbook, altRules, modeTriggers,
+});
 
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -56,6 +63,7 @@ const InventoryPage = () => {
   const [altRules, setAltRules] = useState('');
   const [modeTriggers, setModeTriggers] = useState('');
   const [serverErrors, setServerErrors] = useState([]);
+  const [snap, setSnap] = useState(null);
 
   const load = useCallback(async () => {
     if (!gameId || !teamId || !scenarioId || !currentRound) { setLoading(false); return; }
@@ -67,14 +75,19 @@ const InventoryPage = () => {
       ]);
       setProducts(prodRes.data?.products || []);
       setMarkets(mktRes.data || []);
-      setRows((invRes.data?.inventory || []).map((it) => ({
+      const loadedRows = (invRes.data?.inventory || []).map((it) => ({
         key: `inv-${seq++}`, product: it.product, market: it.market,
         buffer_days: it.buffer_days ?? 30, safety_stock_trigger_pct: it.safety_stock_trigger_pct ?? 20,
-      })));
+      }));
+      setRows(loadedRows);
       const cp = invRes.data?.contingency;
-      setPlaybook(cp?.disruption_response_playbook || '');
-      setAltRules(listToLines(cp?.alt_supplier_activation_rules));
-      setModeTriggers(listToLines(cp?.mode_switch_triggers));
+      const pb = cp?.disruption_response_playbook || '';
+      const ar = listToLines(cp?.alt_supplier_activation_rules);
+      const mt = listToLines(cp?.mode_switch_triggers);
+      setPlaybook(pb);
+      setAltRules(ar);
+      setModeTriggers(mt);
+      setSnap(canonical(loadedRows, pb, ar, mt));
     } catch { message.error('Unable to load inventory data.'); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
@@ -123,6 +136,8 @@ const InventoryPage = () => {
   if (loading) return <LoadingSpinner />;
   const invLocked = round < UNLOCK.buffer_days;
   const cpLocked = round < UNLOCK.contingency_plans;
+  const dirty = snap !== null && canonical(rows, playbook, altRules, modeTriggers) !== snap;
+  const st = pageState({ locked, editable, dirty });
 
   return (
     <div style={{ maxWidth: 1050, width: '100%' }}>
@@ -131,6 +146,7 @@ const InventoryPage = () => {
         subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Set buffer inventory by product/market and prepare disruption contingencies.</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
+          <StateBadge state={st} />
           <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
           <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
         </Space>} />

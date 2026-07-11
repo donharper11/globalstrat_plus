@@ -10,10 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../contexts/GameContext';
 import {
   getSuppliers, getLanes, getComplianceRegimes, getSourcing, getLogistics,
-  getTradeFinance, getInventory, getResilienceScore, getSCEvents,
+  getTradeFinance, getInventory, getResilienceScore, getSCEvents, getHedgePositions,
 } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import { StateLegend, StateBadge } from '../components/sc/scState';
 
 const { Text, Paragraph } = Typography;
 
@@ -43,15 +44,17 @@ const SupplyChainDashboard = () => {
     setLoading(true);
     const safe = (p) => p.then((r) => r.data).catch(() => null);
     try {
-      const [suppliers, lanes, regimes, sourcing, logistics, tf, inventory, resilience, events] = await Promise.all([
+      const [suppliers, lanes, regimes, sourcing, logistics, tf, inventory, resilience, events, hedges] = await Promise.all([
         safe(getSuppliers(scenarioId)), safe(getLanes(scenarioId)), safe(getComplianceRegimes(scenarioId)),
         safe(getSourcing(gameId, teamId, currentRound)), safe(getLogistics(gameId, teamId, currentRound)),
         safe(getTradeFinance(gameId, teamId, currentRound)), safe(getInventory(gameId, teamId, currentRound)),
         safe(getResilienceScore(gameId, teamId, currentRound)), safe(getSCEvents(gameId, teamId, currentRound)),
+        safe(getHedgePositions(gameId, teamId)),
       ]);
       setD({ suppliers: suppliers || [], lanes: lanes || [], regimes: regimes || [],
         sourcing: sourcing || {}, logistics: logistics || {}, tf: tf || {},
-        inventory: inventory || {}, resilience: resilience || {}, events: events || [] });
+        inventory: inventory || {}, resilience: resilience || {}, events: events || [],
+        hedges: hedges || [] });
     } catch { message.error('Unable to load dashboard.'); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
@@ -107,6 +110,7 @@ const SupplyChainDashboard = () => {
   const tfRows = d.tf.trade_finance || [];
   const sinosure = d.tf.sinosure || [];
   const fxHedges = d.tf.fx_hedges || [];
+  const hedgePositions = d.hedges || []; // engine-generated open hedge lifecycle (HedgePosition)
 
   // 6. Inventory buffer
   const invRows = d.inventory.inventory || [];
@@ -125,6 +129,8 @@ const SupplyChainDashboard = () => {
         subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · A read-only summary of your supply-chain posture. Use the links to edit decisions.</Text>}
         actions={<Button icon={<ReloadOutlined />} onClick={load}>Reload</Button>}
       />
+
+      <StateLegend />
 
       <Row gutter={16}>
         {/* Resilience score */}
@@ -207,7 +213,7 @@ const SupplyChainDashboard = () => {
             <Paragraph style={{ marginBottom: 4 }}><Text strong>Payment instruments:</Text> {tfRows.length}</Paragraph>
             <Space wrap>{[...new Set(tfRows.map((t) => t.buyer_payment_instrument).filter(Boolean))].map((i) => <Tag key={i}>{i}</Tag>)}</Space>
             <Paragraph style={{ margin: '8px 0 4px' }}><Text strong>Sinosure markets:</Text> {sinosure.length}</Paragraph>
-            <Paragraph style={{ margin: '0 0 4px' }}><Text strong>FX hedges:</Text> {fxHedges.length}</Paragraph>
+            <Paragraph style={{ margin: '0 0 4px' }}><Text strong>FX hedge decisions:</Text> {fxHedges.length}</Paragraph>
             <Space wrap>{fxHedges.map((h) => <Tag key={h.currency_pair}>{h.currency_pair} {h.hedge_ratio}%</Tag>)}</Space>
           </SCCard>
         </Col>
@@ -237,6 +243,42 @@ const SupplyChainDashboard = () => {
           </SCCard>
         </Col>
       </Row>
+
+      {/* Engine-generated operational state: models exist but are populated by the
+          round-processing engine. Shown honestly as "not generated yet" gaps —
+          no fabricated operational values (CC-23A §6). */}
+      <PanelCard headerColor="neutral" title="Operational State (engine-generated)" style={{ marginBottom: 16 }}>
+        <Paragraph type="secondary" style={{ fontSize: 12 }}>
+          These categories are backed by models but are produced by the round-processing engine.
+          Until an engine/state bundle populates them, they are shown as unavailable — never faked.
+        </Paragraph>
+        <Row gutter={16}>
+          <Col xs={24} md={6}>
+            <Space direction="vertical" size={4}>
+              <Space><Text strong>Shipment / lane movement</Text> <StateBadge state="unavailable" /></Space>
+              <Text type="secondary" style={{ fontSize: 12 }}>No simulated lane disruption/movement state yet (model: <code>LaneState</code>; populated on round processing).</Text>
+            </Space>
+          </Col>
+          <Col xs={24} md={6}>
+            <Space direction="vertical" size={4}>
+              <Space><Text strong>Supplier disruption / recovery</Text> <StateBadge state={events.length ? 'current' : 'unavailable'} /></Space>
+              <Text type="secondary" style={{ fontSize: 12 }}>{events.length ? `${events.length} active SC event(s) this round.` : 'No active supplier disruptions (model: SupplierState + SCEventInstance).'}</Text>
+            </Space>
+          </Col>
+          <Col xs={24} md={6}>
+            <Space direction="vertical" size={4}>
+              <Space><Text strong>Open FX positions</Text> <StateBadge state={hedgePositions.length ? 'current' : 'unavailable'} /></Space>
+              <Text type="secondary" style={{ fontSize: 12 }}>{hedgePositions.length ? `${hedgePositions.length} open hedge position(s).` : 'No open hedge positions (model: HedgePosition; opened/settled by the engine).'}</Text>
+            </Space>
+          </Col>
+          <Col xs={24} md={6}>
+            <Space direction="vertical" size={4}>
+              <Space><Text strong>Inventory on-hand / on-order</Text> <StateBadge state="unavailable" /></Space>
+              <Text type="secondary" style={{ fontSize: 12 }}>Not modeled yet — no engine inventory-position state. Routed to an engine/state bundle (gap).</Text>
+            </Space>
+          </Col>
+        </Row>
+      </PanelCard>
     </div>
   );
 };

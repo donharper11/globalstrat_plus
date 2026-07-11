@@ -30,6 +30,8 @@ export const getResilienceScore = (gameId, teamId, roundNumber) =>
   client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/resilience-score/`);
 export const getSCEvents = (gameId, teamId, roundNumber) =>
   client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/sc-events/`);
+export const getHedgePositions = (gameId, teamId) =>
+  client.get(`/games/${gameId}/teams/${teamId}/sc/hedge-positions/`);
 
 // ---- Sourcing (CC-10) ----
 export const getSourcing = (gameId, teamId, roundNumber) =>
