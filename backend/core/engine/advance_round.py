@@ -119,6 +119,16 @@ def _run_phase_1(game_id):
     # Step 2.5: Process event responses (CC-7)
     process_event_responses(context)
 
+    # CC-19B: Generate SC disruption state (fire SC events, carry recovery forward)
+    # and compute each team's production capacity factor BEFORE revenue, so
+    # Channel-1 lost sales throttle units in calculate_revenue. Best-effort.
+    try:
+        from core.engine.sc_engine import run_sc_state
+        run_sc_state(context)
+    except Exception as e:
+        logger.exception('CC-19B SC state generation failed')
+        context.log.append(f'CC-19B SC state failed: {e}')
+
     from core.engine.rd_processing import process_rd
     process_rd(context)
 
@@ -193,6 +203,15 @@ def _run_phase_1(game_id):
         context.log.append(f'CC-32C tax structure processing failed: {e}')
     calculate_inventory_costs(context)
     calculate_retirement_costs(context)
+
+    # CC-19B Channel 2: supply-chain disruption costs (freight surcharge +
+    # mitigation premiums) — a real operating expense booked in operating_income
+    # by generate_financial_statements. Best-effort. Must run before financials.
+    try:
+        from core.engine.sc_engine import calculate_sc_disruption_costs
+        calculate_sc_disruption_costs(context)
+    except Exception as e:
+        context.log.append(f'CC-19B SC disruption costs failed: {e}')
 
     # Step 12: Financial statements
     from core.engine.financials import generate_financial_statements
@@ -280,14 +299,15 @@ def _run_phase_1(game_id):
 
     game.save()
 
-    # CC-19: Supply-chain engine — fire SC events, execute contingency rules,
-    # score resilience. Best-effort: must never crash round processing.
+    # CC-19/CC-19B: Score supply-chain resilience and record per-team disruption
+    # impact (lost sales + costs already flowed through the P&L above). Read-only;
+    # best-effort — must never crash round processing.
     try:
-        from core.engine.sc_engine import run_sc_engine
-        run_sc_engine(context)
+        from core.engine.sc_engine import score_sc_resilience
+        score_sc_resilience(context)
     except Exception as e:
-        logger.exception('CC-19 SC engine failed')
-        context.log.append(f'CC-19 SC engine failed: {e}')
+        logger.exception('CC-19 SC resilience scoring failed')
+        context.log.append(f'CC-19 SC resilience scoring failed: {e}')
 
     logger.info(f'Phase 1 complete: {phase_1_time:.1f}s')
     context.log.append(f'Round {current_round} processed (Phase 1: {phase_1_time:.1f}s)')

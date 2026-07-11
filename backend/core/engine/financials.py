@@ -118,11 +118,14 @@ def generate_financial_statements(context):
         tax_structure_maintenance = getattr(context, 'tax_structure_maintenance', {}).get(team.id, D('0'))
         # CC-32C: Audit penalties (one-off cost)
         tax_audit_penalty = getattr(context, 'tax_audit_penalties', {}).get(team.id, D('0'))
+        # CC-19B Channel 2: supply-chain disruption costs (freight surcharge +
+        # backup/expedite mitigation premiums) — a real operating expenditure.
+        sc_disruption_cost = getattr(context, 'sc_disruption_costs', {}).get(team.id, D('0'))
 
         # Include depreciation and retirement costs in operating income
         operating_income = (gross_profit - total_opex - logistics_tariff
                             - inventory_expense - depreciation - retirement_expense
-                            - tax_structure_maintenance)
+                            - tax_structure_maintenance - sc_disruption_cost)
         pre_tax_income = operating_income - interest
         net_income = pre_tax_income - tax - tax_audit_penalty
 
