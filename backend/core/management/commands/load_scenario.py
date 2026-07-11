@@ -56,6 +56,86 @@ def _dec(val):
     return Decimal(str(val))
 
 
+def _validate_supply_chain(data, market_codes):
+    """
+    CC-1 §8 supply-chain cross-reference validation. Only runs when the scenario
+    declares a `suppliers` section, so non-SC scenarios are unaffected. Returns a
+    list of structured error strings; a non-empty list halts the load.
+    """
+    errors = []
+    suppliers = data.get('suppliers') or []
+    if not suppliers:
+        return errors
+
+    supplier_ids = {s.get('id') for s in suppliers}
+    lane_origins = {ln.get('origin_country') for ln in data.get('shipping_lanes', []) or []}
+    lane_ids = {ln.get('id') for ln in data.get('shipping_lanes', []) or []}
+    regime_ids = {r.get('id') for r in data.get('compliance_regimes', []) or []}
+
+    # Trade finance instruments: list-with-id OR dict-with-'instruments' OR mapping.
+    tf = data.get('trade_finance_instruments')
+    if isinstance(tf, list):
+        tf_ids = {i.get('id') for i in tf}
+    elif isinstance(tf, dict):
+        tf_ids = {i.get('id') for i in tf.get('instruments', [])} if 'instruments' in tf else set(tf.keys())
+    else:
+        tf_ids = set()
+
+    # Specializations → suppliers, for rule 7.
+    spec_counts = {}
+    for s in suppliers:
+        for sp in (s.get('specialization') or []):
+            spec_counts[sp] = spec_counts.get(sp, 0) + 1
+
+    # Rule 1: every supplier country is a declared lane origin.
+    for s in suppliers:
+        if s.get('country') not in lane_origins:
+            errors.append(f"Supplier '{s.get('id')}' country '{s.get('country')}' is not a declared shipping_lane origin.")
+    # Rule 2: origin_trust_to_buyers markets exist.
+    for s in suppliers:
+        for mk in (s.get('origin_trust_to_buyers') or {}):
+            if mk not in market_codes:
+                errors.append(f"Supplier '{s.get('id')}' origin_trust_to_buyers references unknown market '{mk}'.")
+    # Rule 3: markets.*.compliance_regimes exist.
+    for m in data.get('markets', []):
+        for rg in (m.get('compliance_regimes') or []):
+            if rg not in regime_ids:
+                errors.append(f"Market '{m.get('code')}' references unknown compliance_regime '{rg}'.")
+    # Rule 4: plants.upstream_suppliers_required specializations are resolvable.
+    for p in data.get('plants', []) or []:
+        for sp in (p.get('upstream_suppliers_required') or []):
+            if sp not in spec_counts:
+                errors.append(f"Plant '{p.get('id')}' upstream_suppliers_required '{sp}' has no supplier with that specialization.")
+    # Rule 5: accepts_trade_finance instruments exist.
+    for s in suppliers:
+        for inst in (s.get('accepts_trade_finance') or []):
+            if tf_ids and inst not in tf_ids:
+                errors.append(f"Supplier '{s.get('id')}' accepts_trade_finance references unknown instrument '{inst}'.")
+    # Rule 6: lanes referenced in events exist.
+    for e in data.get('events', []) or []:
+        for ln in (e.get('affected_lanes') or []):
+            if ln not in lane_ids:
+                errors.append(f"Event '{e.get('name', e.get('id'))}' affected_lanes references unknown lane '{ln}'.")
+    # Rule 7: every critical input category (specialization) has >= 2 suppliers.
+    for sp, n in spec_counts.items():
+        if n < 2:
+            errors.append(f"Critical input category '{sp}' has only {n} supplier(s); at least 2 required (multi-sourcing).")
+    # Rule 8: resilience_score_weights sum to 1.0 (±0.01).
+    rp = data.get('resilience_parameters') or {}
+    weights = rp.get('resilience_score_weights') or {}
+    if weights:
+        total = sum(float(v) for v in weights.values())
+        if abs(total - 1.0) > 0.01:
+            errors.append(f"resilience_score_weights sum to {total:.4f}; must be 1.0 (±0.01).")
+    # Rule 9: multi_source_substitutability supplier_ids resolve.
+    for s in suppliers:
+        for sub in (s.get('multi_source_substitutability') or []):
+            sid = sub.get('supplier_id')
+            if sid not in supplier_ids:
+                errors.append(f"Supplier '{s.get('id')}' multi_source_substitutability references unknown supplier '{sid}'.")
+    return errors
+
+
 def validate_scenario_yaml(data):
     """Check required sections and cross-references."""
     errors = []
@@ -79,6 +159,9 @@ def validate_scenario_yaml(data):
             errors.append(f"Origin trust references unknown market: {ot[0]}")
         if ot[1] not in market_codes:
             errors.append(f"Origin trust references unknown market: {ot[1]}")
+
+    # CC-1 §8: supply-chain cross-reference validation (runs only when SC present)
+    errors.extend(_validate_supply_chain(data, market_codes))
 
     return errors
 
