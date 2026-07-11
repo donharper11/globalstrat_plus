@@ -44,6 +44,24 @@ def _reject_locked_fields(data, game, round_number, field_specs):
             )
 
 
+def mode_is_available(lane, mode):
+    """
+    True if `mode` is usable on `lane`.
+
+    Lane mode entries take two shapes in the scenario YAML (CC-8):
+      - sea/air carry real parameters (baseline_cost_*, baseline_lead_time_days)
+        and have no `available` key -> treated as available.
+      - rail/road are declared as {'available': true|false}, and rail may also
+        carry real parameters when a corridor exists.
+    A mode is available when its entry exists and is not explicitly
+    `available: false`.
+    """
+    entry = lane.modes.get(mode)
+    if not entry:
+        return False
+    return entry.get('available', True) is not False
+
+
 # ---------------------------------------------------------------------------
 # Scenario-content serializers (read-only for teams)
 # ---------------------------------------------------------------------------
@@ -157,6 +175,13 @@ class ContingencyPlanReadSerializer(serializers.ModelSerializer):
 # ---------------------------------------------------------------------------
 
 class SourcingAllocationWriteSerializer(serializers.ModelSerializer):
+    # Optional / progressive-disclosure-gated fields; the model has no DB
+    # default, so declare them optional here (the old view defaulted them).
+    payment_terms = serializers.CharField(
+        required=False, allow_blank=True, default='', max_length=100,
+    )
+    volume_commitment_units = serializers.IntegerField(required=False, default=0)
+
     class Meta:
         model = SourcingAllocation
         fields = [
@@ -191,6 +216,22 @@ class SourcingDecisionWriteSerializer(serializers.ModelSerializer):
             ('tier_2_3_visibility_investment', 'sourcing.tier_2_3_visibility_investment'),
             ('multi_sourcing_strategy', 'sourcing.multi_sourcing_strategy'),
         ])
+
+        # Allocation percentages must sum to 100 per critical input category
+        # (a category is only validated when it appears in the payload).
+        allocations = data.get('allocations', [])
+        totals = {}
+        for alloc in allocations:
+            cat = alloc.get('critical_input_category')
+            totals[cat] = totals.get(cat, 0) + (alloc.get('allocation_pct') or 0)
+        bad = {cat: tot for cat, tot in totals.items() if tot != 100}
+        if bad:
+            raise serializers.ValidationError({
+                'allocations': [
+                    f"Allocation percentages must sum to 100 per critical input "
+                    f"category; got {bad}."
+                ]
+            })
         return data
 
     def create(self, validated_data):
@@ -241,7 +282,7 @@ class LogisticsDecisionWriteSerializer(serializers.ModelSerializer):
         lane = data['lane']
         for mode in ['sea', 'air', 'rail', 'road']:
             pct = data.get(f'mode_{mode}_pct', 0)
-            if pct > 0 and not lane.modes.get(mode, {}).get('available', False):
+            if pct > 0 and not mode_is_available(lane, mode):
                 raise serializers.ValidationError(
                     f"Mode {mode} not available on lane {lane.lane_id}"
                 )
@@ -284,6 +325,11 @@ class CustomsClassificationDecisionWriteSerializer(serializers.ModelSerializer):
 
 
 class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
+    # Progressive-disclosure-gated; model has no DB default (old view used '').
+    buyer_payment_instrument = serializers.CharField(
+        required=False, allow_blank=True, default='', max_length=100,
+    )
+
     class Meta:
         model = TradeFinanceDecision
         fields = [
@@ -298,6 +344,23 @@ class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
             ('buyer_payment_instrument', 'trade_finance.buyer_payment_instrument'),
             ('lc_doc_prep_investment', 'trade_finance.lc_doc_prep_investment'),
         ])
+
+        # Validate the payment instrument against the scenario catalog, but
+        # only when the scenario actually declares instruments (CC-9 §3.10).
+        instrument = data.get('buyer_payment_instrument')
+        if instrument:
+            valid_ids = set(
+                TradeFinanceInstrument.objects
+                .filter(scenario=game.scenario)
+                .values_list('instrument_id', flat=True)
+            )
+            if valid_ids and instrument not in valid_ids:
+                raise serializers.ValidationError({
+                    'buyer_payment_instrument': [
+                        f"Unknown trade finance instrument '{instrument}'. "
+                        f"Allowed: {sorted(valid_ids)}."
+                    ]
+                })
         return data
 
 
@@ -327,6 +390,22 @@ class FXHedgeDecisionWriteSerializer(serializers.ModelSerializer):
             ('hedge_ratio', 'trade_finance.fx_hedging'),
             ('tenor_days', 'trade_finance.fx_hedging'),
         ])
+
+        # Validate the currency pair against the scenario's FX instruments,
+        # but only when the scenario declares available pairs (CC-9 §3.10).
+        pair = data.get('currency_pair')
+        if pair:
+            valid_pairs = set()
+            for inst in TradeFinanceInstrument.objects.filter(scenario=game.scenario):
+                for p in (inst.currency_pairs_available or []):
+                    valid_pairs.add(p)
+            if valid_pairs and pair not in valid_pairs:
+                raise serializers.ValidationError({
+                    'currency_pair': [
+                        f"Unknown currency pair '{pair}'. "
+                        f"Allowed: {sorted(valid_pairs)}."
+                    ]
+                })
         return data
 
 
