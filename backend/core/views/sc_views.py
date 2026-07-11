@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.models.core import Game, Team, Round
-from core.models.scenario import Scenario
+from core.models.scenario import Scenario, MarketDefinition, SegmentDefinition
 from core.models.sc_models import (
     Supplier, ShippingLane, TradeFinanceInstrument, ComplianceRegime,
 )
@@ -341,6 +341,34 @@ class ScenarioComplianceRegimesView(APIView):
     def get(self, request, scenario_id):
         regimes = ComplianceRegime.objects.filter(scenario_id=scenario_id)
         return Response(ComplianceRegimeSerializer(regimes, many=True).data)
+
+
+class ScenarioMarketsView(APIView):
+    """CC-12/14 enablement: lightweight market list (id/code/name) so the SC
+    decision pages can populate destination-market selectors."""
+    def get(self, request, scenario_id):
+        markets = MarketDefinition.objects.filter(
+            scenario_id=scenario_id).order_by('display_order')
+        return Response([
+            {'id': m.id, 'code': m.code, 'name': m.name,
+             'currency_code': m.currency_code}
+            for m in markets
+        ])
+
+
+class ScenarioSegmentsView(APIView):
+    """CC-13 enablement: lightweight segment list for the trade-finance page's
+    segment/market buyer-instrument selectors. Optional ?segment_type= filter."""
+    def get(self, request, scenario_id):
+        segments = SegmentDefinition.objects.filter(scenario_id=scenario_id)
+        seg_type = request.query_params.get('segment_type')
+        if seg_type:
+            segments = segments.filter(segment_type=seg_type)
+        return Response([
+            {'id': s.id, 'name': s.name, 'segment_type': s.segment_type,
+             'market_id': s.market_id}
+            for s in segments.order_by('display_order')
+        ])
 
 
 # ---------------------------------------------------------------------------
