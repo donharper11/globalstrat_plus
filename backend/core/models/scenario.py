@@ -391,6 +391,10 @@ class EventTemplateDefinition(models.Model):
         null=True, blank=True, default=None,
         help_text="List of market codes where this event can fire. Null = use target_market/affects_all_markets logic.",
     )
+    # CC-19: supply-chain event effect parameters (affected_suppliers/lanes,
+    # capacity_reduction_pct, recovery_rounds, additional_lead_time_days,
+    # mode_rate_multiplier, etc.). Populated by the loader for category=supply_chain.
+    sc_effects = models.JSONField(default=dict, blank=True)
 
     class Meta:
         db_table = 'event_template_definition'
