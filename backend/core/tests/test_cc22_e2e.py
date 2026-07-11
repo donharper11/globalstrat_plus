@@ -156,3 +156,18 @@ class CC22E2ETest(TestCase):
         }
         # Same YAML seed must reproduce the same fingerprint deterministically.
         self.assertEqual(fingerprint, {'suppliers': 25, 'lanes': 20, 'tf': 6, 'tsmc_price': '45.00'})
+
+    # -- UX #8: starting SC posture is seeded (fired at game start) ----------
+    def test_09_starting_posture_seed(self):
+        from core.services.sc_posture import seed_starting_posture
+        from core.models.sc_decisions import LogisticsDecision
+        r6 = Round.objects.create(game=self.game, round_number=6, status='pending')
+        self.assertEqual(SourcingAllocation.objects.filter(team=self.team, round=r6).count(), 0)
+        n = seed_starting_posture(self.game, r6)
+        self.assertEqual(n, 1)  # the game's single team
+        self.assertGreater(SourcingAllocation.objects.filter(team=self.team, round=r6).count(), 0)
+        self.assertGreater(LogisticsDecision.objects.filter(team=self.team, round=r6).count(), 0)
+        # idempotent — reseeding does not duplicate
+        before = SourcingAllocation.objects.filter(team=self.team, round=r6).count()
+        seed_starting_posture(self.game, r6)
+        self.assertEqual(SourcingAllocation.objects.filter(team=self.team, round=r6).count(), before)
