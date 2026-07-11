@@ -1,23 +1,40 @@
 """
-CC-19: Supply Chain engine — event effects, structured contingency execution,
-and resilience scoring. Runs as a Phase-1 step (see advance_round._run_phase_1).
+CC-19 / CC-19B: Supply Chain engine — event effects, structured contingency,
+and a two-channel disruption model that flows through the P&L.
 
-Deterministic: all stochastic draws use a per-(game, round, scenario) seed.
-Self-contained: writes SupplierState / LaneState / SCEventInstance /
-ResilienceScoreHistory and applies a disruption cost to team cash. It does not
-yet feed COGS/net-income (a bounded follow-up); the disruption cost is applied
-directly to team cash at the end of Phase 1.
+Pipeline placement (see advance_round._run_phase_1):
+    run_sc_state(context)        # BEFORE revenue: fire events, carry recovery
+                                 #  forward, compute per-team capacity_factor
+    calculate_revenue(...)       # Channel 1 (lost sales): throttles units by cf
+    calculate_sc_disruption_costs(context)   # Channel 2 (real costs)
+    generate_financial_statements(...)       # subtracts sc_disruption_costs
+    score_sc_resilience(context) # AFTER financials: resilience score (read-only)
+
+Two channels, both landing in net income (not a direct cash poke):
+  1. Lost sales — a supplier-capacity shortfall (Liebig weakest-link across the
+     team's critical inputs, net of contingency rerouting to healthy backups)
+     caps units sold/built. Revenue and COGS both fall; net income drops by the
+     lost contribution margin. Disruption-only: with no disruption cf == 1 and
+     nothing changes.
+  2. Real costs — freight-rate surcharge on disrupted lanes + backup-supplier /
+     expedite mitigation premiums. True expenditures booked as an operating cost
+     line, so they flow operating_income -> net_income -> cash.
+
+Determinism: all stochastic draws use a per-(game, round, scenario) seed.
 """
 import hashlib
 import random
 from collections import defaultdict
 from decimal import Decimal
 
-# $ cost of a critical input that is 100%-allocated to a supplier and fully
-# knocked out (capacity → 0) at severity 1.0. Scaled by exposure/loss/severity.
-BASE_DISRUPTION_COST = 500000.0
 SEVERITY_MULT = {'low': 0.5, 'medium': 1.0, 'high': 1.5, 'critical': 2.0}
 TV_LEVEL = {'none': 0.0, 'basic': 0.5, 'comprehensive': 1.0}
+
+# Channel-2 dollar anchors (CC-19B §5) — tunable, documented, kept modest vs
+# ~$50M starting cash. These price a real expenditure (freight that got dearer,
+# premiums paid to reroute), not a lost sale.
+FREIGHT_SURCHARGE_BASE = 200000.0     # per unit of (sea_share x rate_uplift)
+MITIGATION_PREMIUM_BASE = 150000.0    # per unit of (shifted_share) rerouted
 
 
 def _seed(game_id, round_number, scenario_id):
@@ -29,26 +46,86 @@ def _D(x):
     return Decimal(str(round(float(x), 3)))
 
 
-def run_sc_engine(context):
+def _round_state(context):
+    """Resolve (round, scenario) for the context; None round if absent."""
+    from core.models.core import Round
+    game = context.game
+    rnd = Round.objects.filter(game=game, round_number=context.round_number).first()
+    return rnd, game.scenario
+
+
+# --------------------------------------------------------------------------- #
+#  Contingency helpers                                                         #
+# --------------------------------------------------------------------------- #
+def _contingency(team, rnd):
+    from core.models.sc_decisions import ContingencyPlan
+    cp = ContingencyPlan.objects.filter(team=team, round=rnd).first()
+    alt_rules = (cp.alt_supplier_activation_rules if cp else None) or []
+    mode_rules = (cp.mode_switch_triggers if cp else None) or []
+    return alt_rules, mode_rules
+
+
+def _reroute_shift(cat, alt_rules, disrupted_sup):
+    """Fraction of a disrupted category's allocation an alt-supplier rule reroutes
+    to a *healthy* backup (0 if none applies)."""
+    shifted = 0.0
+    for r in alt_rules:
+        if r.get('input_category') == cat and r.get('backup_supplier_id'):
+            b = disrupted_sup.get(r['backup_supplier_id'])
+            if b is None or float(b.capacity_multiplier) >= 1:  # backup healthy
+                shifted = max(shifted, min(float(r.get('shift_pct', 0)) / 100.0, 1.0))
+    return shifted
+
+
+def _capacity_factor(team, rnd, disrupted_sup):
+    """Liebig weakest-link production capacity factor in [0, 1], net of
+    contingency rerouting. 1.0 when nothing the team sources is disrupted."""
+    from core.models.sc_decisions import SourcingAllocation
+    alt_rules, _ = _contingency(team, rnd)
+    by_cat = defaultdict(list)
+    for a in SourcingAllocation.objects.filter(team=team, round=rnd):
+        by_cat[a.critical_input_category].append(a)
+
+    cf = 1.0
+    detail = {}
+    for cat, items in by_cat.items():
+        total_share = sum((a.allocation_pct or 0) / 100.0 for a in items)
+        if total_share <= 0:
+            continue
+        avail = 0.0
+        for a in items:
+            share = (a.allocation_pct or 0) / 100.0
+            st = disrupted_sup.get(a.supplier_id)
+            cap = float(st.capacity_multiplier) if st else 1.0
+            if st and cap < 1:
+                shifted = _reroute_shift(cat, alt_rules, disrupted_sup)
+                cap = shifted * 1.0 + (1 - shifted) * cap  # rerouted share is healthy
+            avail += share * cap
+        avail = avail / total_share
+        detail[cat] = round(avail, 3)
+        cf = min(cf, avail)
+    return max(min(cf, 1.0), 0.0), detail
+
+
+# --------------------------------------------------------------------------- #
+#  Step 1 (early): disruption state + capacity factor                         #
+# --------------------------------------------------------------------------- #
+def run_sc_state(context):
+    """Fire SC events, carry recovery forward, and compute each team's
+    production capacity factor. Runs BEFORE calculate_revenue."""
     from core.models.core import Round
     from core.models.scenario import EventTemplateDefinition
-    from core.models.sc_models import Supplier, ShippingLane, ResilienceParameters
-    from core.models.sc_state import SCEventInstance, SupplierState, LaneState, ResilienceScoreHistory
-    from core.models.sc_decisions import (
-        SourcingAllocation, SourcingDecision, LogisticsDecision, InventoryDecision, ContingencyPlan,
-    )
-    from core.models.overrides import ClassResilienceWeightOverride
+    from core.models.sc_models import Supplier, ShippingLane
+    from core.models.sc_state import SCEventInstance, SupplierState, LaneState
 
-    game = context.game
-    round_number = context.round_number
-    rnd = Round.objects.filter(game=game, round_number=round_number).first()
+    rnd, scenario = _round_state(context)
     if rnd is None:
         return
-    scenario = game.scenario
+    game = context.game
+    round_number = context.round_number
     rng = random.Random(_seed(game.id, round_number, scenario.id))
 
     suppliers_by_code = {s.supplier_id: s for s in Supplier.objects.filter(scenario=scenario)}
-    sup_by_pk = {s.id: s for s in suppliers_by_code.values()}
     lanes_by_code = {l.lane_id: l for l in ShippingLane.objects.filter(scenario=scenario)}
 
     # 1. Carry recovering supplier disruptions forward from the prior round.
@@ -101,9 +178,94 @@ def run_sc_engine(context):
             LaneState.objects.update_or_create(round=rnd, lane=lane, defaults=dict(
                 active_disruption=tmpl.name, current_rate_modifier=_D(min(rate, 99.999))))
 
-    # 3. Per-team contingency execution + disruption cost + resilience scoring.
+    # 3. Per-team production capacity factor (Liebig, net of contingency).
     disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}
-    disrupted_lane = {ls.lane_id: ls for ls in LaneState.objects.filter(round=rnd).exclude(active_disruption__isnull=True)}
+    context.sc_fired = fired
+    context.sc_capacity_factor = {}
+    context.sc_capacity_detail = {}
+    for team in context.teams:
+        cf, detail = _capacity_factor(team, rnd, disrupted_sup)
+        context.sc_capacity_factor[team.id] = Decimal(str(round(cf, 4)))
+        context.sc_capacity_detail[team.id] = detail
+
+    context.log.append(
+        f'SC state: fired {len(fired)} SC event(s); capacity factor computed for {len(context.teams)} team(s).')
+
+
+# --------------------------------------------------------------------------- #
+#  Step 2 (cost phase): Channel-2 real costs                                   #
+# --------------------------------------------------------------------------- #
+def calculate_sc_disruption_costs(context):
+    """Freight-rate surcharge on disrupted lanes + backup/expedite mitigation
+    premiums, as a team-level operating cost. Booked in operating_income."""
+    from core.models.sc_state import SupplierState, LaneState
+    from core.models.sc_decisions import SourcingAllocation, LogisticsDecision
+
+    rnd, _ = _round_state(context)
+    context.sc_disruption_costs = {}
+    context.sc_freight_costs = {}
+    context.sc_mitigation_costs = {}
+    if rnd is None:
+        return
+
+    disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}
+    disrupted_lane = {ls.lane_id: ls for ls in
+                      LaneState.objects.filter(round=rnd).exclude(active_disruption__isnull=True)}
+
+    for team in context.teams:
+        alt_rules, mode_rules = _contingency(team, rnd)
+        logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
+        allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd))
+
+        freight = 0.0
+        for l in logs:
+            ls = disrupted_lane.get(l.lane_id)
+            if not ls:
+                continue
+            uplift = float(ls.current_rate_modifier or 1) - 1
+            if uplift > 0:
+                freight += (l.mode_sea_pct or 0) / 100.0 * uplift * FREIGHT_SURCHARGE_BASE
+
+        mitigation = 0.0
+        for a in allocs:
+            st = disrupted_sup.get(a.supplier_id)
+            if not st or float(st.capacity_multiplier) >= 1:
+                continue
+            shifted = _reroute_shift(a.critical_input_category, alt_rules, disrupted_sup)
+            if shifted > 0:
+                mitigation += shifted * (a.allocation_pct or 0) / 100.0 * MITIGATION_PREMIUM_BASE
+        for l in logs:
+            if not disrupted_lane.get(l.lane_id):
+                continue
+            for r in mode_rules:
+                if r.get('lane_id') == l.lane_id and r.get('from_mode') == 'sea':
+                    shifted = min(float(r.get('shift_pct', 0)) / 100.0, 1.0)
+                    mitigation += shifted * (l.mode_sea_pct or 0) / 100.0 * MITIGATION_PREMIUM_BASE
+
+        context.sc_freight_costs[team.id] = Decimal(str(round(freight, 2)))
+        context.sc_mitigation_costs[team.id] = Decimal(str(round(mitigation, 2)))
+        context.sc_disruption_costs[team.id] = Decimal(str(round(freight + mitigation, 2)))
+
+
+# --------------------------------------------------------------------------- #
+#  Step 3 (after financials): resilience score + per-team impact record        #
+# --------------------------------------------------------------------------- #
+def score_sc_resilience(context):
+    """Score resilience per team and record per-team disruption impact (split by
+    channel) on the fired SC event instances. Read-only over financial state."""
+    from core.models.sc_models import Supplier, ResilienceParameters
+    from core.models.sc_state import SupplierState, ResilienceScoreHistory
+    from core.models.sc_decisions import (
+        SourcingAllocation, SourcingDecision, LogisticsDecision, InventoryDecision,
+    )
+    from core.models.overrides import ClassResilienceWeightOverride
+
+    rnd, scenario = _round_state(context)
+    if rnd is None:
+        return
+    game = context.game
+    sup_by_pk = {s.id: s for s in Supplier.objects.filter(scenario=scenario)}
+    disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}
 
     rp = ResilienceParameters.objects.filter(scenario=scenario).first()
     weights = dict((rp.resilience_score_weights if rp else {}) or {})
@@ -111,59 +273,24 @@ def run_sc_engine(context):
         weights[ov.weight_name] = float(ov.override_value)
     rec_buffer = float(rp.critical_component_buffer_days_recommended) if rp else 45.0
 
+    fired = getattr(context, 'sc_fired', [])
+    lost_rev = getattr(context, 'sc_lost_revenue', {})
+    disr_cost = getattr(context, 'sc_disruption_costs', {})
+    cf_map = getattr(context, 'sc_capacity_factor', {})
+
     for team in context.teams:
         allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd))
         sdec = SourcingDecision.objects.filter(team=team, round=rnd).first()
         logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
         invs = list(InventoryDecision.objects.filter(team=team, round=rnd))
-        cp = ContingencyPlan.objects.filter(team=team, round=rnd).first()
-        alt_rules = (cp.alt_supplier_activation_rules if cp else None) or []
-        mode_rules = (cp.mode_switch_triggers if cp else None) or []
 
-        base_impact = 0.0
-        eff_impact = 0.0
-        applied = []
-        for a in allocs:
-            st = disrupted_sup.get(a.supplier_id)
-            if not st or float(st.capacity_multiplier) >= 1:
-                continue
-            raw = ((a.allocation_pct or 0) / 100.0) * (1 - float(st.capacity_multiplier)) \
-                * float(st.disruption_cost_multiplier or 1) * BASE_DISRUPTION_COST
-            base_impact += raw
-            shifted = 0.0
-            for r in alt_rules:
-                if r.get('input_category') == a.critical_input_category and r.get('backup_supplier_id'):
-                    b = disrupted_sup.get(r['backup_supplier_id'])
-                    if b is None or float(b.capacity_multiplier) >= 1:  # backup is healthy
-                        shifted = max(shifted, min(float(r.get('shift_pct', 0)) / 100.0, 1.0))
-            eff_impact += raw * (1 - shifted)
-            if shifted > 0:
-                applied.append({'type': 'alt_supplier', 'input': a.critical_input_category, 'shift_pct': int(shifted * 100)})
-        for l in logs:
-            ls = disrupted_lane.get(l.lane_id)
-            if not ls:
-                continue
-            extra = float(ls.current_rate_modifier or 1) - 1
-            if extra <= 0:
-                continue
-            raw = ((l.mode_sea_pct or 0) / 100.0) * extra * BASE_DISRUPTION_COST * 0.3
-            base_impact += raw
-            shifted = 0.0
-            for r in mode_rules:
-                if r.get('lane_id') == l.lane_id and r.get('from_mode') == 'sea':
-                    shifted = max(shifted, min(float(r.get('shift_pct', 0)) / 100.0, 1.0))
-            eff_impact += raw * (1 - shifted)
-            if shifted > 0:
-                applied.append({'type': 'mode_switch', 'lane': l.lane_id, 'shift_pct': int(shifted * 100)})
-
-        disruption_cost = round(eff_impact, 2)
-        if disruption_cost > 0:
-            team.cash_on_hand = (team.cash_on_hand or Decimal('0')) - Decimal(str(disruption_cost))
-            team.save(update_fields=['cash_on_hand'])
         for inst in fired:
             inst.resolution_data = inst.resolution_data or {}
             inst.resolution_data.setdefault('team_impact', {})[str(team.id)] = {
-                'base_impact': round(base_impact, 2), 'effective_impact': disruption_cost, 'applied': applied}
+                'lost_revenue': float(lost_rev.get(team.id, 0) or 0),
+                'disruption_cost': float(disr_cost.get(team.id, 0) or 0),
+                'capacity_factor': float(cf_map.get(team.id, 1) or 1),
+            }
             inst.save(update_fields=['resolution_data'])
 
         comp = _resilience_components(allocs, sdec, logs, invs, sup_by_pk, disrupted_sup, rec_buffer)
@@ -174,7 +301,7 @@ def run_sc_engine(context):
                 components={k: round(v, 3) for k, v in comp.items()},
                 weights_used={k: float(v) for k, v in weights.items()}))
 
-    context.log.append(f'SC engine: fired {len(fired)} SC event(s); scored resilience for {len(context.teams)} team(s).')
+    context.log.append(f'SC resilience scored for {len(context.teams)} team(s).')
 
 
 def _resilience_components(allocs, sdec, logs, invs, sup_by_pk, disrupted, rec_buffer):

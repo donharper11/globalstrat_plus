@@ -83,6 +83,20 @@ def calculate_revenue(context):
             for adoption in adoptions:
                 units_sold += adoption.new_adopters
 
+            # CC-19B Channel 1 (lost sales): a supplier-capacity shortfall (Liebig
+            # weakest link, net of contingency rerouting; see sc_engine.run_sc_state)
+            # throttles what this team can supply. Disruption-only — cf == 1 leaves
+            # normal rounds byte-identical. Both sales and production fall, so net
+            # income drops by exactly the lost contribution margin (COGS/logistics/
+            # inventory all read the throttled unit counts below).
+            sc_cf = getattr(context, 'sc_capacity_factor', {}).get(team.id, Decimal('1'))
+            sc_lost_units = Decimal('0')
+            if sc_cf < 1:
+                sc_lost_units = (units_sold * (Decimal('1') - sc_cf)).quantize(
+                    Decimal('1'), rounding=ROUND_HALF_UP,
+                )
+                units_sold -= sc_lost_units
+
             retail_price = mkt_dec.retail_price
             gross_local_revenue = units_sold * retail_price
 
@@ -106,6 +120,15 @@ def calculate_revenue(context):
             )
 
             units_produced = mkt_dec.production_volume
+            if sc_lost_units:
+                # Inputs were disrupted, so those units were never built.
+                units_produced = max(Decimal(str(units_produced)) - sc_lost_units, Decimal('0'))
+                lost_home_revenue = (sc_lost_units * retail_price
+                                     * (Decimal('1') - channel_margin_rate) * exchange_rate)
+                if not hasattr(context, 'sc_lost_revenue'):
+                    context.sc_lost_revenue = {}
+                context.sc_lost_revenue[team.id] = (
+                    context.sc_lost_revenue.get(team.id, Decimal('0')) + lost_home_revenue)
             units_unsold = max(Decimal(str(units_produced)) - units_sold, Decimal('0'))
 
             rev_key = (team.id, product.id, market.id)
@@ -122,6 +145,8 @@ def calculate_revenue(context):
                 'local_revenue': local_revenue,
                 'home_revenue': home_revenue,
                 'exchange_rate': exchange_rate,
+                'sc_capacity_factor': sc_cf,
+                'sc_lost_units': sc_lost_units,
             }
 
             # Aggregate to market level
