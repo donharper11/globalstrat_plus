@@ -634,6 +634,28 @@ class DecisionSummaryView(APIView):
     def get(self, request, game_id, team_id, round_number):
         language = get_user_language(request)
         rnd = _get_round(game_id, round_number)
+
+        # Supply-chain categories are independent of the main decision draft (UX #7).
+        from core.models.sc_decisions import (
+            SourcingAllocation as _SA, LogisticsDecision as _LD,
+            TradeFinanceDecision as _TF, SinosureEnrollment as _SE,
+            FXHedgeDecision as _FX, InventoryDecision as _INV, ContingencyPlan as _CP,
+        )
+
+        def _sc_cfg(exists):
+            return {'status': 'configured' if exists else 'empty', 'warnings': []}
+        sc_categories = {
+            'sourcing': _sc_cfg(_SA.objects.filter(team_id=team_id, round=rnd).exists()),
+            'logistics': _sc_cfg(_LD.objects.filter(team_id=team_id, round=rnd).exists()),
+            'trade_finance': _sc_cfg(
+                _TF.objects.filter(team_id=team_id, round=rnd).exists()
+                or _SE.objects.filter(team_id=team_id, round=rnd).exists()
+                or _FX.objects.filter(team_id=team_id, round=rnd).exists()),
+            'inventory': _sc_cfg(
+                _INV.objects.filter(team_id=team_id, round=rnd).exists()
+                or _CP.objects.filter(team_id=team_id, round=rnd).exists()),
+        }
+
         submission = DecisionSubmission.objects.filter(
             team_id=team_id, round=rnd,
         ).first()
@@ -641,14 +663,14 @@ class DecisionSummaryView(APIView):
         if not submission:
             return Response({
                 'submission_status': None,
-                'categories': {},
+                'categories': sc_categories,
                 'can_lock': False,
                 'lock_blockers': ['No submission created yet.'],
                 'budget_summary': None,
             })
 
         team = _get_team(team_id)
-        categories = {}
+        categories = dict(sc_categories)
         lock_blockers = []
 
         # Budget

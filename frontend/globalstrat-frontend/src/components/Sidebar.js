@@ -142,25 +142,25 @@ const Sidebar = ({ collapsed, onNavigate }) => {
         {
           key: 'sourcing',
           icon: icon(faIndustry),
-          label: sidebarLabels?.sourcing_page || 'Sourcing',
+          label: <span>{sidebarLabels?.sourcing_page || 'Sourcing'} {statusIcon(categoryStatus.sourcing)}</span>,
           onClick: () => go(`${base}/decisions/sourcing`),
         },
         {
           key: 'logistics',
           icon: icon(faTruck),
-          label: sidebarLabels?.logistics_page || 'Logistics',
+          label: <span>{sidebarLabels?.logistics_page || 'Logistics'} {statusIcon(categoryStatus.logistics)}</span>,
           onClick: () => go(`${base}/decisions/logistics`),
         },
         {
           key: 'trade-finance',
           icon: icon(faMoneyBillWave),
-          label: sidebarLabels?.trade_finance_page || 'Trade Finance',
+          label: <span>{sidebarLabels?.trade_finance_page || 'Trade Finance'} {statusIcon(categoryStatus.trade_finance)}</span>,
           onClick: () => go(`${base}/decisions/trade-finance`),
         },
         {
           key: 'inventory',
           icon: icon(faBoxesStacked),
-          label: sidebarLabels?.inventory_page || 'Inventory',
+          label: <span>{sidebarLabels?.inventory_page || 'Inventory'} {statusIcon(categoryStatus.inventory)}</span>,
           onClick: () => go(`${base}/decisions/inventory`),
         },
         {
