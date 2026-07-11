@@ -22,6 +22,15 @@ export const getSegments = (scenarioId, segmentType) =>
     params: segmentType ? { segment_type: segmentType } : {},
   });
 
+export const getComplianceRegimes = (scenarioId) =>
+  client.get(`/scenarios/${scenarioId}/compliance-regimes/`);
+
+// ---- SC engine state (read-only, CC-15 dashboard) ----
+export const getResilienceScore = (gameId, teamId, roundNumber) =>
+  client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/resilience-score/`);
+export const getSCEvents = (gameId, teamId, roundNumber) =>
+  client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/sc-events/`);
+
 // ---- Sourcing (CC-10) ----
 export const getSourcing = (gameId, teamId, roundNumber) =>
   client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/sourcing/`);
