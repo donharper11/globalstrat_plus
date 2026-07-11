@@ -27,6 +27,7 @@ import SourcingPage from './pages/SourcingPage';
 import LogisticsPage from './pages/LogisticsPage';
 import TradeFinancePage from './pages/TradeFinancePage';
 import InventoryPage from './pages/InventoryPage';
+import SupplyChainDashboard from './pages/SupplyChainDashboard';
 import FinancePage from './pages/FinancePage';
 import SummaryPage from './pages/SummaryPage';
 import LeaderboardPage from './pages/LeaderboardPage';
@@ -138,6 +139,7 @@ function App() {
                               {/* Analysis */}
                               <Route path="/games/:gameId/teams/:teamId/forecast" element={<CompanyForecastPage />} />
                               {/* Decisions */}
+                              <Route path="/games/:gameId/teams/:teamId/sc-dashboard" element={<SupplyChainDashboard />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/sourcing" element={<SourcingPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/logistics" element={<LogisticsPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/trade-finance" element={<TradeFinancePage />} />
