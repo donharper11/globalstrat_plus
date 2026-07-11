@@ -13,6 +13,13 @@ import {
 } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import { StateBadge, pageState } from '../components/sc/scState';
+
+const canonical = (tf, sino, fx) => JSON.stringify({
+  tf: (tf || []).map((r) => ({ seg: r.segment, mkt: r.market,
+    inst: r.buyer_payment_instrument, lc: r.lc_doc_prep_investment })),
+  sino, fx,
+});
 
 const { Text, Paragraph } = Typography;
 
@@ -62,6 +69,7 @@ const TradeFinancePage = () => {
   const [sino, setSino] = useState({});          // marketId -> coverage_pct
   const [fx, setFx] = useState({});              // currency_pair -> {hedge_ratio, tenor_days}
   const [serverErrors, setServerErrors] = useState([]);
+  const [snap, setSnap] = useState(null);
 
   const load = useCallback(async () => {
     if (!gameId || !teamId || !scenarioId || !currentRound) { setLoading(false); return; }
@@ -74,13 +82,15 @@ const TradeFinancePage = () => {
       setInstruments(insRes.data || []);
       setMarkets(mktRes.data || []);
       setSegments(segRes.data || []);
-      setTfRows((tfRes.data?.trade_finance || []).map((t) => ({
+      const loadedTf = (tfRes.data?.trade_finance || []).map((t) => ({
         key: `tf-${seq++}`, segment: t.segment, market: t.market,
         buyer_payment_instrument: t.buyer_payment_instrument || undefined,
         lc_doc_prep_investment: t.lc_doc_prep_investment || 'standard',
-      })));
+      }));
+      setTfRows(loadedTf);
       const s = {}; (tfRes.data?.sinosure || []).forEach((x) => { s[x.market] = x.coverage_pct; }); setSino(s);
       const f = {}; (tfRes.data?.fx_hedges || []).forEach((x) => { f[x.currency_pair] = { hedge_ratio: x.hedge_ratio, tenor_days: x.tenor_days }; }); setFx(f);
+      setSnap(canonical(loadedTf, s, f));
     } catch { message.error('Unable to load trade finance data.'); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
@@ -138,6 +148,8 @@ const TradeFinancePage = () => {
 
   if (loading) return <LoadingSpinner />;
   const tfLocked = round < UNLOCK.buyer_payment_instrument;
+  const dirty = snap !== null && canonical(tfRows, sino, fx) !== snap;
+  const st = pageState({ locked, editable, dirty });
 
   return (
     <div style={{ maxWidth: 1100, width: '100%' }}>
@@ -146,6 +158,7 @@ const TradeFinancePage = () => {
         subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Choose how overseas buyers pay you, manage credit risk, and hedge currency exposure.</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
+          <StateBadge state={st} />
           <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
           <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
         </Space>} />

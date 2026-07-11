@@ -11,6 +11,13 @@ import { useDecisions } from '../contexts/DecisionContext';
 import { getSuppliers, getSourcing, saveSourcing } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import { StateBadge, pageState } from '../components/sc/scState';
+
+const canonical = (ms, tv, rs) => JSON.stringify({
+  ms: ms || null, tv: tv || null,
+  rows: (rs || []).map((r) => ({ c: r.critical_input_category, s: r.supplier,
+    p: r.allocation_pct, pt: r.payment_terms, v: r.volume_commitment_units })),
+});
 
 const { Text } = Typography;
 
@@ -82,6 +89,7 @@ const SourcingPage = () => {
   const [rows, setRows] = useState([]);
   const [multiSourcing, setMultiSourcing] = useState(undefined);
   const [tierVisibility, setTierVisibility] = useState(undefined);
+  const [snap, setSnap] = useState(null);
   const [serverErrors, setServerErrors] = useState([]);
 
   const load = useCallback(async () => {
@@ -95,16 +103,20 @@ const SourcingPage = () => {
       setSuppliers(supRes.data || []);
       const decision = srcRes.data?.decision || null;
       const allocations = srcRes.data?.allocations || [];
-      setMultiSourcing(decision?.multi_sourcing_strategy || undefined);
-      setTierVisibility(decision?.tier_2_3_visibility_investment || undefined);
-      setRows(allocations.map((a) => ({
+      const ms = decision?.multi_sourcing_strategy || undefined;
+      const tv = decision?.tier_2_3_visibility_investment || undefined;
+      const loadedRows = allocations.map((a) => ({
         key: `row-${rowSeq++}`,
         critical_input_category: a.critical_input_category,
         supplier: a.supplier,
         allocation_pct: a.allocation_pct ?? 0,
         payment_terms: a.payment_terms || '',
         volume_commitment_units: a.volume_commitment_units ?? 0,
-      })));
+      }));
+      setMultiSourcing(ms);
+      setTierVisibility(tv);
+      setRows(loadedRows);
+      setSnap(canonical(ms, tv, loadedRows));
     } catch (err) {
       message.error('Unable to load sourcing data.');
     } finally {
@@ -204,6 +216,9 @@ const SourcingPage = () => {
   };
 
   if (loading) return <LoadingSpinner />;
+
+  const dirty = snap !== null && canonical(multiSourcing, tierVisibility, rows) !== snap;
+  const st = pageState({ locked, editable, dirty });
 
   const lockTag = (unlockRound) => (
     <Tooltip title={`Unlocks at round ${unlockRound}`}>
@@ -318,6 +333,7 @@ const SourcingPage = () => {
         status={locked ? 'locked' : 'draft'}
         actions={
           <Space>
+            <StateBadge state={st} />
             <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
             <Button type="primary" icon={<SaveOutlined />} loading={saving}
               disabled={!editable} onClick={handleSave}>
