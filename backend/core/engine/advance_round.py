@@ -86,28 +86,23 @@ def _run_phase_1(game_id):
 
     current_round = current_round_obj.round_number
 
-    # Mark processing started
-    current_round_obj.processing_status = 'PROCESSING'
-    current_round_obj.save(update_fields=['processing_status'])
-
-    # Verify all teams have locked decisions (auto-lock empty submissions)
-    teams = Team.objects.filter(game=game)
+    # Verify all teams have locked decisions before any processing starts.
+    # InstructorAdvanceRoundView can expose an explicit force path, but the
+    # engine entry point itself must not silently create or lock submissions.
+    teams = Team.objects.filter(game=game).order_by('id')
     for team in teams:
         submission = DecisionSubmission.objects.filter(
             team=team,
             round=current_round_obj,
         ).first()
-        if not submission:
-            submission = DecisionSubmission.objects.create(
-                team=team,
-                round=current_round_obj,
-                status='locked',
-                locked_at=timezone.now(),
+        if not submission or submission.status != 'locked':
+            raise ValueError(
+                f'Team "{team.name}" has not locked decisions for round {current_round}.'
             )
-        elif submission.status != 'locked':
-            submission.status = 'locked'
-            submission.locked_at = timezone.now()
-            submission.save(update_fields=['status', 'locked_at'])
+
+    # Mark processing started only after preconditions pass.
+    current_round_obj.processing_status = 'PROCESSING'
+    current_round_obj.save(update_fields=['processing_status'])
 
     # Build context
     context = RoundContext(game, current_round)
