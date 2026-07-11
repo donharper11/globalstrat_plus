@@ -823,6 +823,20 @@ class SimulationControlView(APIView):
             state.last_updated = timezone.now()
             state.save()
 
+        # UX #8: seed a starting supply-chain posture so a fresh game opens as an
+        # ongoing operation (empty pages otherwise). Best-effort — must never block
+        # the simulation from starting.
+        try:
+            from core.models.core import Game, Round
+            from core.services.sc_posture import seed_starting_posture
+            _game = Game.objects.filter(id=instance.game_id).first()
+            _round1 = Round.objects.filter(game=_game, round_number=1).first() if _game else None
+            if _game and _round1:
+                seed_starting_posture(_game, _round1)
+        except Exception:
+            import logging
+            logging.getLogger(__name__).exception('Failed to seed starting SC posture at game start')
+
         return Response({
             'instance_id': instance.instance_id,
             'status': instance.status,
