@@ -7,16 +7,16 @@ import {
 // CC-23A: one shared operational-state vocabulary used across the SC dashboard
 // and every SC decision page, so the same state concept always looks the same.
 export const SC_STATE = {
-  current: { color: 'green', icon: <CheckCircleOutlined />, label: 'Current (saved)',
-    help: 'Matches the last saved decision for this round.' },
-  draft: { color: 'gold', icon: <EditOutlined />, label: 'Draft — unsaved',
-    help: 'You have edits on screen that have not been saved yet.' },
+  current: { color: 'green', icon: <CheckCircleOutlined />, label: 'Saved',
+    help: 'This matches what you last saved.' },
+  draft: { color: 'gold', icon: <EditOutlined />, label: 'Unsaved changes',
+    help: "You've made changes that aren't saved yet." },
   locked: { color: 'default', icon: <LockOutlined />, label: 'Locked',
-    help: 'Locked for this round — not editable by students.' },
-  readonly: { color: 'default', icon: <EyeOutlined />, label: 'Read-only',
-    help: 'This round is not open for submissions.' },
-  unavailable: { color: 'blue', icon: <MinusCircleOutlined />, label: 'Not available',
-    help: 'This operational state is not generated yet (pending engine/state bundle).' },
+    help: "This is locked for the round and can't be changed." },
+  readonly: { color: 'default', icon: <EyeOutlined />, label: 'View only',
+    help: "This round isn't open for changes right now." },
+  unavailable: { color: 'blue', icon: <MinusCircleOutlined />, label: 'Not yet',
+    help: 'This updates automatically as the simulation runs each round.' },
 };
 
 export const StateBadge = ({ state, text }) => {
