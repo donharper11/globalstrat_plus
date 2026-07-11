@@ -17,6 +17,7 @@ export const GameProvider = ({ children }) => {
 
   const gameId = user?.game_id;
   const teamId = user?.team_id;
+  const scenarioId = user?.scenario_id;
 
   const refreshBudgets = useCallback(async () => {
     if (!gameId || !teamId) return;
@@ -68,7 +69,7 @@ export const GameProvider = ({ children }) => {
   return (
     <GameContext.Provider value={{
       game, team, currentRound, roundStatus, budgets, loading,
-      gameId, teamId, sidebarLabels,
+      gameId, teamId, scenarioId, sidebarLabels,
       refreshBudgets, refreshRoundInfo,
     }}>
       {children}
