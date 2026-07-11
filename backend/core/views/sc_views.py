@@ -382,7 +382,7 @@ class ResilienceScoreView(APIView):
         team, rnd = _get_team_round(self.kwargs)
         history = ResilienceScoreHistory.objects.filter(team=team, round=rnd).first()
         if not history:
-            return Response({'score': None, 'components': {}, 'weights_used': {}})
+            return Response({'score': None, 'components': {}, 'weights_used': {}, 'disruption_impact': {}})
         return Response(ResilienceScoreHistorySerializer(history).data)
 
 

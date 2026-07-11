@@ -30,11 +30,12 @@ from decimal import Decimal
 SEVERITY_MULT = {'low': 0.5, 'medium': 1.0, 'high': 1.5, 'critical': 2.0}
 TV_LEVEL = {'none': 0.0, 'basic': 0.5, 'comprehensive': 1.0}
 
-# Channel-2 dollar anchors (CC-19B §5) — tunable, documented, kept modest vs
-# ~$50M starting cash. These price a real expenditure (freight that got dearer,
-# premiums paid to reroute), not a lost sale.
-FREIGHT_SURCHARGE_BASE = 200000.0     # per unit of (sea_share x rate_uplift)
-MITIGATION_PREMIUM_BASE = 150000.0    # per unit of (shifted_share) rerouted
+# Channel-2 economic parameters (CC-19B §5) — scenario-overridable via
+# ScenarioConfig; defaults below. Costs are now priced off REAL volume/COGS, not
+# flat anchors: freight scales with units built × per-unit freight × rate uplift;
+# mitigation scales with the COGS / freight of the rerouted volume.
+DEFAULT_BACKUP_SUPPLIER_PREMIUM_PCT = 0.15   # unit-cost premium paid on rerouted input volume
+DEFAULT_AIR_MODE_PREMIUM_MULT = 2.0          # air freight ≈ 2× sea for switched volume
 
 
 def _seed(game_id, round_number, scenario_id):
@@ -197,16 +198,32 @@ def run_sc_state(context):
 # --------------------------------------------------------------------------- #
 def calculate_sc_disruption_costs(context):
     """Freight-rate surcharge on disrupted lanes + backup/expedite mitigation
-    premiums, as a team-level operating cost. Booked in operating_income."""
+    premiums, as a team-level operating cost booked in operating_income.
+
+    Priced off REAL volume/COGS (no flat anchors):
+      freight    = units_built × per-unit freight × sea_share × rate_uplift
+      mitigation = rerouted input volume × unit COGS × supplier premium %
+                 + sea→air switched volume × per-unit freight × (air_mult − 1)
+    Requires context.revenue / context.cogs (populated by the time this runs in
+    the pipeline); degrades to 0 when they are absent."""
     from core.models.sc_state import SupplierState, LaneState
     from core.models.sc_decisions import SourcingAllocation, LogisticsDecision
+    from core.engine.utils import get_config
 
-    rnd, _ = _round_state(context)
+    rnd, scenario = _round_state(context)
     context.sc_disruption_costs = {}
     context.sc_freight_costs = {}
     context.sc_mitigation_costs = {}
     if rnd is None:
         return
+
+    base_freight = float(get_config(scenario, 'logistics_base_cost_per_unit', default=5.0))
+    supplier_premium_pct = float(get_config(scenario, 'sc_backup_supplier_premium_pct',
+                                            default=DEFAULT_BACKUP_SUPPLIER_PREMIUM_PCT))
+    air_premium_mult = float(get_config(scenario, 'sc_air_mode_premium_mult',
+                                        default=DEFAULT_AIR_MODE_PREMIUM_MULT))
+    revenue = getattr(context, 'revenue', {}) or {}
+    cogs = getattr(context, 'cogs', {}) or {}
 
     disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}
     disrupted_lane = {ls.lane_id: ls for ls in
@@ -216,6 +233,9 @@ def calculate_sc_disruption_costs(context):
         alt_rules, mode_rules = _contingency(team, rnd)
         logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
         allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd))
+        # Real volume/COGS this team actually built and paid this round.
+        team_units = sum(float(r.get('units_produced') or 0) for k, r in revenue.items() if k[0] == team.id)
+        team_cogs = sum(float(c.get('total_cogs') or 0) for k, c in cogs.items() if k[0] == team.id)
 
         freight = 0.0
         for l in logs:
@@ -224,7 +244,7 @@ def calculate_sc_disruption_costs(context):
                 continue
             uplift = float(ls.current_rate_modifier or 1) - 1
             if uplift > 0:
-                freight += (l.mode_sea_pct or 0) / 100.0 * uplift * FREIGHT_SURCHARGE_BASE
+                freight += team_units * base_freight * (l.mode_sea_pct or 0) / 100.0 * uplift
 
         mitigation = 0.0
         for a in allocs:
@@ -233,14 +253,17 @@ def calculate_sc_disruption_costs(context):
                 continue
             shifted = _reroute_shift(a.critical_input_category, alt_rules, disrupted_sup)
             if shifted > 0:
-                mitigation += shifted * (a.allocation_pct or 0) / 100.0 * MITIGATION_PREMIUM_BASE
+                # Premium on the COGS of the input volume rerouted to a pricier backup.
+                mitigation += shifted * (a.allocation_pct or 0) / 100.0 * team_cogs * supplier_premium_pct
         for l in logs:
             if not disrupted_lane.get(l.lane_id):
                 continue
             for r in mode_rules:
                 if r.get('lane_id') == l.lane_id and r.get('from_mode') == 'sea':
                     shifted = min(float(r.get('shift_pct', 0)) / 100.0, 1.0)
-                    mitigation += shifted * (l.mode_sea_pct or 0) / 100.0 * MITIGATION_PREMIUM_BASE
+                    # Air premium on the freight of the switched (sea→air) volume.
+                    mitigation += (shifted * (l.mode_sea_pct or 0) / 100.0
+                                   * team_units * base_freight * (air_premium_mult - 1))
 
         context.sc_freight_costs[team.id] = Decimal(str(round(freight, 2)))
         context.sc_mitigation_costs[team.id] = Decimal(str(round(mitigation, 2)))
@@ -276,6 +299,8 @@ def score_sc_resilience(context):
     fired = getattr(context, 'sc_fired', [])
     lost_rev = getattr(context, 'sc_lost_revenue', {})
     disr_cost = getattr(context, 'sc_disruption_costs', {})
+    freight = getattr(context, 'sc_freight_costs', {})
+    mitig = getattr(context, 'sc_mitigation_costs', {})
     cf_map = getattr(context, 'sc_capacity_factor', {})
 
     for team in context.teams:
@@ -284,13 +309,20 @@ def score_sc_resilience(context):
         logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
         invs = list(InventoryDecision.objects.filter(team=team, round=rnd))
 
+        # Per-team disruption impact for THIS round — recorded on the resilience
+        # history (which exists every round), so multi-round/recovery disruptions
+        # surface even when no new SC event fired this round.
+        impact = {
+            'lost_revenue': round(float(lost_rev.get(team.id, 0) or 0), 2),
+            'disruption_cost': round(float(disr_cost.get(team.id, 0) or 0), 2),
+            'freight_cost': round(float(freight.get(team.id, 0) or 0), 2),
+            'mitigation_cost': round(float(mitig.get(team.id, 0) or 0), 2),
+            'capacity_factor': round(float(cf_map.get(team.id, 1) or 1), 4),
+        }
+        # Also stamp it onto any event that fired this round, for the event-log view.
         for inst in fired:
             inst.resolution_data = inst.resolution_data or {}
-            inst.resolution_data.setdefault('team_impact', {})[str(team.id)] = {
-                'lost_revenue': float(lost_rev.get(team.id, 0) or 0),
-                'disruption_cost': float(disr_cost.get(team.id, 0) or 0),
-                'capacity_factor': float(cf_map.get(team.id, 1) or 1),
-            }
+            inst.resolution_data.setdefault('team_impact', {})[str(team.id)] = impact
             inst.save(update_fields=['resolution_data'])
 
         comp = _resilience_components(allocs, sdec, logs, invs, sup_by_pk, disrupted_sup, rec_buffer)
@@ -299,7 +331,8 @@ def score_sc_resilience(context):
             team=team, round=rnd, defaults=dict(
                 score=Decimal(str(round(score, 3))),
                 components={k: round(v, 3) for k, v in comp.items()},
-                weights_used={k: float(v) for k, v in weights.items()}))
+                weights_used={k: float(v) for k, v in weights.items()},
+                disruption_impact=impact))
 
     context.log.append(f'SC resilience scored for {len(context.teams)} team(s).')
 

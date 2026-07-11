@@ -159,9 +159,12 @@ class CC19SCEngineTest(TestCase):
             alt_supplier_activation_rules=[{'input_category': 'semiconductor', 'trigger': 'disruption',
                                             'backup_supplier_id': self.backup.id, 'shift_pct': 50}])
         ctx = _Ctx(self.game, 8, [self.teamA], self.scenario)
+        # Real volume/COGS this round (freight scales with units built, mitigation with COGS).
+        ctx.revenue = {(self.teamA.id, 1, 1): {'units_produced': 10000}}
+        ctx.cogs = {(self.teamA.id, 1, 1): {'total_cogs': D('1000000')}}
         calculate_sc_disruption_costs(ctx)
-        self.assertGreater(ctx.sc_freight_costs[self.teamA.id], 0)      # freight surcharge
-        self.assertGreater(ctx.sc_mitigation_costs[self.teamA.id], 0)   # reroute premium
+        self.assertGreater(ctx.sc_freight_costs[self.teamA.id], 0)      # freight surcharge (volume-based)
+        self.assertGreater(ctx.sc_mitigation_costs[self.teamA.id], 0)   # reroute premium (COGS-based)
         self.assertEqual(ctx.sc_disruption_costs[self.teamA.id],
                          ctx.sc_freight_costs[self.teamA.id] + ctx.sc_mitigation_costs[self.teamA.id])
         # No disruption for Team B (no decisions) → zero cost.
@@ -173,14 +176,20 @@ class CC19SCEngineTest(TestCase):
         rnd = self._round(9)
         self._source(self.teamA, rnd, self.primary, pct=100)
         ctx = _Ctx(self.game, 9, [self.teamA], self.scenario)
-        ctx.sc_fired = []
+        ctx.sc_fired = []   # no event fired this round (recovery/ongoing disruption)
         ctx.sc_lost_revenue = {self.teamA.id: D('12345')}
         ctx.sc_disruption_costs = {self.teamA.id: D('6789')}
+        ctx.sc_freight_costs = {self.teamA.id: D('4000')}
+        ctx.sc_mitigation_costs = {self.teamA.id: D('2789')}
         ctx.sc_capacity_factor = {self.teamA.id: D('0.6')}
         score_sc_resilience(ctx)
         rs = ResilienceScoreHistory.objects.filter(team=self.teamA, round=rnd).first()
         self.assertIsNotNone(rs)
         self.assertIn('multi_sourcing', rs.components)
+        # Issue 1: per-team impact persists on the resilience row even with NO fired event.
+        self.assertEqual(rs.disruption_impact['lost_revenue'], 12345.0)
+        self.assertEqual(rs.disruption_impact['disruption_cost'], 6789.0)
+        self.assertEqual(rs.disruption_impact['capacity_factor'], 0.6)
 
     def test_seed_deterministic(self):
         self.assertEqual(_seed(1, 2, 3), _seed(1, 2, 3))
