@@ -110,6 +110,11 @@ class ResilienceScoreHistory(models.Model):
     score = models.DecimalField(max_digits=5, decimal_places=3)  # 0.000–1.000
     components = models.JSONField(default=dict)
     weights_used = models.JSONField(default=dict)
+    # CC-19B: per-team, per-round disruption impact — present every round a team
+    # is scored (not only the round an SC event fires), so multi-round/recovery
+    # disruptions surface on the dashboard. Keys: lost_revenue, disruption_cost,
+    # freight_cost, mitigation_cost, capacity_factor.
+    disruption_impact = models.JSONField(default=dict, blank=True)
 
     class Meta:
         db_table = 'sc_resilience_score_history'

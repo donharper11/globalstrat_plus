@@ -98,6 +98,12 @@ const SupplyChainPanel = () => {
   const events = d.events || [];
   const score = d.resilience?.score;
   const scoreCalculated = score !== null && score !== undefined;
+  const impact = d.resilience?.disruption_impact || {};
+  const cf = impact.capacity_factor;
+  const lostSales = Number(impact.lost_revenue || 0);
+  const disruptionCost = Number(impact.disruption_cost || 0);
+  const disrupted = (cf !== undefined && cf < 1) || lostSales > 0 || disruptionCost > 0;
+  const money = (n) => `$${Math.round(n).toLocaleString()}`;
 
   return (
     <div style={{ maxWidth: 1200, width: '100%' }}>
@@ -115,6 +121,19 @@ const SupplyChainPanel = () => {
             {scoreCalculated ? <Statistic title="This round" value={score} /> : (
               <Alert type="info" showIcon message="Not scored yet"
                 description="Your resilience score appears here once the round has been processed." />
+            )}
+            {scoreCalculated && disrupted && (
+              <Alert style={{ marginTop: 12 }} type="warning" showIcon icon={<WarningOutlined />}
+                message="Disruption impact this round"
+                description={(
+                  <Space direction="vertical" size={0} style={{ fontSize: 12 }}>
+                    {cf !== undefined && cf < 1 && (
+                      <Text>Production capacity: <Text strong>{Math.round(cf * 100)}%</Text> (input shortfall)</Text>
+                    )}
+                    {lostSales > 0 && <Text>Lost sales: <Text strong>{money(lostSales)}</Text></Text>}
+                    {disruptionCost > 0 && <Text>Disruption costs: <Text strong>{money(disruptionCost)}</Text></Text>}
+                  </Space>
+                )} />
             )}
           </SCCard>
         </Col>

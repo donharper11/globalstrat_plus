@@ -97,18 +97,32 @@ hit is the lost *contribution margin*, not gross revenue.
 disruption cost = 200,000   (freight = 200,000, mitigation = 0)  → booked in operating_income
 ```
 
-## 7. Known bounds (documented, not silent)
+## 7. Prior bounds — now closed
 
-- **Per-team impact reporting for multi-round disruptions:** the per-team
-  `{lost_revenue, disruption_cost, capacity_factor}` record is attached to the
-  `SCEventInstance` that fired that round. A disruption that persists via recovery
-  carry-forward (no new event) still causes lost sales / costs through the P&L every
-  round, but those later rounds have no instance to attach the record to, so the
-  dashboard's SC-event view shows the impact only for the firing round. Economics are
-  unaffected; this is a reporting follow-up (surface ongoing per-team impact alongside
-  the resilience score).
-- **Channel-2 anchors:** `FREIGHT_SURCHARGE_BASE` / `MITIGATION_PREMIUM_BASE` are
-  documented tunable constants (no product↔lane BOM exists to price per-shipment).
+Both bounds flagged in the first CC-19B pass are resolved (migration `0053`):
+
+- **Per-team impact for multi-round disruptions — CLOSED.** A
+  `disruption_impact` JSONField was added to `ResilienceScoreHistory` (which exists
+  every round a team is scored). `score_sc_resilience` writes
+  `{lost_revenue, disruption_cost, freight_cost, mitigation_cost, capacity_factor}`
+  there every round, so an ongoing/recovery disruption surfaces even when no new SC
+  event fires. Exposed via the resilience-score endpoint and rendered as a
+  "Disruption impact this round" panel on the SC dashboard. *Verified live:* on a
+  recovery round with **no event fired**, the resilience row still reported
+  `lost_revenue = 15,513,600, capacity_factor = 0.4`.
+- **Channel-2 anchors — CLOSED.** Freight and mitigation are now priced off **real
+  volume/COGS**, not flat dollars: `freight = units_built × per-unit freight ×
+  sea_share × rate_uplift`; supplier `mitigation = rerouted share × unit COGS ×
+  premium%`; mode-switch `mitigation = switched share × units × per-unit freight ×
+  (air_mult − 1)`. The premium %/multiplier are `ScenarioConfig`-overridable
+  (`sc_backup_supplier_premium_pct`, `sc_air_mode_premium_mult`); per-unit freight
+  reuses the existing `logistics_base_cost_per_unit` config. *Verified live:* freight
+  = 80,000 = 16,000 units (40k throttled by cf=0.4) × $5 × 100% sea × 1.0 uplift —
+  scales with actual production, no flat anchor.
+
+Remaining scope note: freight attribution stays team-level (no product↔lane BOM
+exists to split a lane's uplift across individual shipments), but it is now
+volume-scaled rather than a fixed constant.
 
 ## 8. Acceptance criteria (spec §9)
 
