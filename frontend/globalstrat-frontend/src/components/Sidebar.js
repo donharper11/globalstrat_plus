@@ -7,7 +7,7 @@ import {
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
   faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
-  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave,
+  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
@@ -65,6 +65,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   else if (pathname.includes('/decisions/sourcing')) selectedKey = 'sourcing';
   else if (pathname.includes('/decisions/logistics')) selectedKey = 'logistics';
   else if (pathname.includes('/decisions/trade-finance')) selectedKey = 'trade-finance';
+  else if (pathname.includes('/decisions/inventory')) selectedKey = 'inventory';
   else if (pathname.includes('/decisions/rd')) selectedKey = 'rd';
   else if (pathname.includes('/decisions/products')) selectedKey = 'products';
   else if (pathname.includes('/decisions/marketing')) selectedKey = 'marketing';
@@ -155,6 +156,12 @@ const Sidebar = ({ collapsed, onNavigate }) => {
           icon: icon(faMoneyBillWave),
           label: sidebarLabels?.trade_finance_page || 'Trade Finance & FX',
           onClick: () => go(`${base}/decisions/trade-finance`),
+        },
+        {
+          key: 'inventory',
+          icon: icon(faBoxesStacked),
+          label: sidebarLabels?.inventory_page || 'Inventory & Resilience',
+          onClick: () => go(`${base}/decisions/inventory`),
         },
         {
           key: 'rd',
