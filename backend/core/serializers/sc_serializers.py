@@ -183,6 +183,7 @@ class SourcingAllocationWriteSerializer(serializers.ModelSerializer):
     volume_commitment_units = serializers.IntegerField(required=False, default=0)
 
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = SourcingAllocation
         fields = [
             'team', 'round', 'critical_input_category', 'supplier',
@@ -203,6 +204,7 @@ class SourcingDecisionWriteSerializer(serializers.ModelSerializer):
     allocations = SourcingAllocationWriteSerializer(many=True, write_only=True, required=False)
 
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = SourcingDecision
         fields = [
             'team', 'round', 'tier_2_3_visibility_investment',
@@ -246,6 +248,7 @@ class SourcingDecisionWriteSerializer(serializers.ModelSerializer):
 
 class LogisticsDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = LogisticsDecision
         fields = [
             'team', 'round', 'lane',
@@ -292,6 +295,7 @@ class LogisticsDecisionWriteSerializer(serializers.ModelSerializer):
 
 class IncotermsDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = IncotermsDecision
         fields = ['team', 'round', 'destination_market', 'incoterms', 'insurance_coverage_pct']
 
@@ -307,6 +311,7 @@ class IncotermsDecisionWriteSerializer(serializers.ModelSerializer):
 
 class CustomsClassificationDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = CustomsClassificationDecision
         fields = [
             'team', 'round', 'destination_market', 'classification',
@@ -331,6 +336,7 @@ class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = TradeFinanceDecision
         fields = [
             'team', 'round', 'segment', 'market',
@@ -366,6 +372,7 @@ class TradeFinanceDecisionWriteSerializer(serializers.ModelSerializer):
 
 class SinosureEnrollmentWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = SinosureEnrollment
         fields = ['team', 'round', 'market', 'coverage_pct']
 
@@ -380,6 +387,7 @@ class SinosureEnrollmentWriteSerializer(serializers.ModelSerializer):
 
 class FXHedgeDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = FXHedgeDecision
         fields = ['team', 'round', 'currency_pair', 'hedge_ratio', 'tenor_days']
 
@@ -411,6 +419,7 @@ class FXHedgeDecisionWriteSerializer(serializers.ModelSerializer):
 
 class InventoryDecisionWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = InventoryDecision
         fields = ['team', 'round', 'product', 'market', 'buffer_days', 'safety_stock_trigger_pct']
 
@@ -426,6 +435,7 @@ class InventoryDecisionWriteSerializer(serializers.ModelSerializer):
 
 class ContingencyPlanWriteSerializer(serializers.ModelSerializer):
     class Meta:
+        validators = []  # views handle upsert via update_or_create; DB enforces uniqueness
         model = ContingencyPlan
         fields = [
             'team', 'round', 'disruption_response_playbook',
@@ -440,6 +450,49 @@ class ContingencyPlanWriteSerializer(serializers.ModelSerializer):
             ('alt_supplier_activation_rules', 'inventory.contingency_plans'),
             ('mode_switch_triggers', 'inventory.contingency_plans'),
         ])
+
+        # CC-19 §2: structured contingency rules must be executable objects, not
+        # free prose. Validate shape + references so they are engine-ready.
+        scenario = game.scenario
+        supplier_ids = set(Supplier.objects.filter(scenario=scenario).values_list('id', flat=True))
+        lane_map = {l.id: l for l in ShippingLane.objects.filter(scenario=scenario)}
+        MODES = ('sea', 'air', 'rail', 'road')
+
+        def _pct(v, label, errs):
+            if v is not None and not (0 <= v <= 100):
+                errs.append(f"{label} must be between 0 and 100.")
+
+        alt_errs = []
+        for i, r in enumerate(data.get('alt_supplier_activation_rules') or []):
+            if not isinstance(r, dict):
+                alt_errs.append(f"Rule {i + 1} must be a structured rule, not text."); continue
+            if r.get('trigger') not in ('disruption', 'delay', 'capacity_drop'):
+                alt_errs.append(f"Rule {i + 1}: unknown trigger '{r.get('trigger')}'.")
+            if r.get('backup_supplier_id') not in supplier_ids:
+                alt_errs.append(f"Rule {i + 1}: backup supplier does not exist in this scenario.")
+            _pct(r.get('shift_pct'), f"Rule {i + 1} shift %", alt_errs)
+        if alt_errs:
+            raise serializers.ValidationError({'alt_supplier_activation_rules': alt_errs})
+
+        mode_errs = []
+        for i, r in enumerate(data.get('mode_switch_triggers') or []):
+            if not isinstance(r, dict):
+                mode_errs.append(f"Rule {i + 1} must be a structured rule, not text."); continue
+            lane = lane_map.get(r.get('lane_id'))
+            if lane is None:
+                mode_errs.append(f"Rule {i + 1}: route does not exist in this scenario."); continue
+            if r.get('trigger') not in ('lead_time_exceeds', 'event'):
+                mode_errs.append(f"Rule {i + 1}: unknown trigger '{r.get('trigger')}'.")
+            if r.get('from_mode') not in MODES or r.get('to_mode') not in MODES:
+                mode_errs.append(f"Rule {i + 1}: invalid mode.")
+            else:
+                tm = (lane.modes or {}).get(r['to_mode'])
+                if not tm or tm.get('available', True) is False:
+                    mode_errs.append(f"Rule {i + 1}: '{r['to_mode']}' is not available on that route.")
+            _pct(r.get('shift_pct'), f"Rule {i + 1} shift %", mode_errs)
+        if mode_errs:
+            raise serializers.ValidationError({'mode_switch_triggers': mode_errs})
+
         return data
 
 
