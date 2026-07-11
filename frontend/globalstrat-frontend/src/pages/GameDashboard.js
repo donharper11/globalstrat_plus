@@ -23,6 +23,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import InvestorProfilePopover, { InvestorNameLink, InvestorSummaryCard } from '../components/InvestorProfilePopover';
 import OnboardingModal from '../components/OnboardingModal';
 import { getInvestorRelations } from '../api/results';
+import SupplyChainPanel from '../components/sc/SupplyChainPanel';
 
 const { Title, Text } = Typography;
 
@@ -1043,6 +1044,7 @@ const GameDashboard = () => {
     { key: 'markets', label: t('dashboard.market_results'), children: <MarketTab /> },
     { key: 'events', label: t('dashboard.events_intelligence'), children: <EventsTab /> },
     { key: 'strategic', label: t('dashboard.strategic_scorecard'), children: <StrategicScorecardTab /> },
+    { key: 'supply_chain', label: 'Supply Chain', children: <SupplyChainPanel /> },
     ...(briefing ? [{ key: 'briefing', label: t('dashboard.strategic_briefing_tab', { round: briefing.round_number }), children: <StrategicBriefingTab /> }] : []),
   ];
 
