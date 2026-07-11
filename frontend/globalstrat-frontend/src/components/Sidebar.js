@@ -7,7 +7,7 @@ import {
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
   faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
-  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked,
+  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked, faChartPie,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
@@ -62,6 +62,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   const pathname = location.pathname;
   let selectedKey = '';
   if (pathname === '/' || pathname === '/dashboard') selectedKey = 'dashboard';
+  else if (pathname.includes('/sc-dashboard')) selectedKey = 'sc-dashboard';
   else if (pathname.includes('/decisions/sourcing')) selectedKey = 'sourcing';
   else if (pathname.includes('/decisions/logistics')) selectedKey = 'logistics';
   else if (pathname.includes('/decisions/trade-finance')) selectedKey = 'trade-finance';
@@ -139,6 +140,12 @@ const Sidebar = ({ collapsed, onNavigate }) => {
       icon: icon(faClipboardCheck),
       label: t('nav.decisions'),
       children: [
+        {
+          key: 'sc-dashboard',
+          icon: icon(faChartPie),
+          label: sidebarLabels?.sc_dashboard_page || 'Supply Chain Dashboard',
+          onClick: () => go(`${base}/sc-dashboard`),
+        },
         {
           key: 'sourcing',
           icon: icon(faIndustry),
