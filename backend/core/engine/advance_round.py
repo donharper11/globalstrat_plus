@@ -280,6 +280,15 @@ def _run_phase_1(game_id):
 
     game.save()
 
+    # CC-19: Supply-chain engine — fire SC events, execute contingency rules,
+    # score resilience. Best-effort: must never crash round processing.
+    try:
+        from core.engine.sc_engine import run_sc_engine
+        run_sc_engine(context)
+    except Exception as e:
+        logger.exception('CC-19 SC engine failed')
+        context.log.append(f'CC-19 SC engine failed: {e}')
+
     logger.info(f'Phase 1 complete: {phase_1_time:.1f}s')
     context.log.append(f'Round {current_round} processed (Phase 1: {phase_1_time:.1f}s)')
 

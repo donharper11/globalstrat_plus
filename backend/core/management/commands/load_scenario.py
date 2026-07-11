@@ -731,6 +731,18 @@ class Command(BaseCommand):
             if filtered_affected is not None:
                 evt_kwargs['affected_markets'] = filtered_affected
 
+            # CC-19: capture supply-chain event effect parameters so the engine
+            # can apply them. These YAML keys are otherwise ignored by the loader.
+            if evt.get('category') == 'supply_chain':
+                evt_kwargs['sc_effects'] = {
+                    k: evt[k] for k in (
+                        'affected_suppliers', 'affected_lanes', 'capacity_reduction_pct',
+                        'recovery_rounds', 'additional_lead_time_days', 'mode_rate_multiplier',
+                        'quality_rating_degradation', 'global_rate_multiplier', 'cbam_rate_multiplier',
+                        'fx_move_pct', 'duration_rounds', 'condition', 'type', 'teaches',
+                    ) if k in evt
+                }
+
             evt_obj = EventTemplateDefinition.objects.create(**evt_kwargs)
             evt_loaded += 1
 
