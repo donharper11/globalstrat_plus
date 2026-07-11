@@ -143,6 +143,9 @@ def _user_payload(user, enrollment=None):
         from core.models.scenario import ScenarioConfig
         try:
             _game = Game.objects.select_related('scenario').get(id=game_id)
+            # CC-10: expose scenario_id so the frontend can load scenario-scoped
+            # supply-chain content (e.g. /scenarios/<id>/suppliers/).
+            payload['scenario_id'] = _game.scenario_id
             language = payload.get('language', 'en')
             raw_labels = {}
             for cfg in ScenarioConfig.objects.filter(

@@ -23,6 +23,7 @@ import ProductsPage from './pages/ProductsPage';
 import MarketingPage from './pages/MarketingPage';
 import CorporateStrategyPage from './pages/CorporateStrategyPage';
 import MarketStrategyPage from './pages/MarketStrategyPage';
+import SourcingPage from './pages/SourcingPage';
 import FinancePage from './pages/FinancePage';
 import SummaryPage from './pages/SummaryPage';
 import LeaderboardPage from './pages/LeaderboardPage';
@@ -134,6 +135,7 @@ function App() {
                               {/* Analysis */}
                               <Route path="/games/:gameId/teams/:teamId/forecast" element={<CompanyForecastPage />} />
                               {/* Decisions */}
+                              <Route path="/games/:gameId/teams/:teamId/decisions/sourcing" element={<SourcingPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/rd" element={<RDPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/products" element={<ProductsPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/marketing" element={<MarketingPage />} />
