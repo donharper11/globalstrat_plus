@@ -58,6 +58,7 @@ from core.views.sc_views import (
     SourcingView, LogisticsView, TradeFinanceView, InventoryView,
     ScenarioSuppliersView, ScenarioLanesView,
     ScenarioTradeFinanceInstrumentsView, ScenarioComplianceRegimesView,
+    ScenarioMarketsView, ScenarioSegmentsView,
     ResilienceScoreView, HedgePositionsView, SCEventsView,
 )
 from core.views.overrides import (
@@ -422,6 +423,10 @@ urlpatterns = [
          ScenarioTradeFinanceInstrumentsView.as_view(), name='sc-trade-finance-instruments'),
     path('scenarios/<int:scenario_id>/compliance-regimes/',
          ScenarioComplianceRegimesView.as_view(), name='sc-compliance-regimes'),
+    path('scenarios/<int:scenario_id>/markets/',
+         ScenarioMarketsView.as_view(), name='sc-markets'),
+    path('scenarios/<int:scenario_id>/segments/',
+         ScenarioSegmentsView.as_view(), name='sc-segments'),
 
     # ---- CC-04: Supply Chain State Retrieval ----
     path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/resilience-score/',
