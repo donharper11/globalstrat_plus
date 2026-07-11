@@ -57,6 +57,10 @@ const SummaryPage = () => {
     { key: 'marketing', label: t('summary_page.marketing_mix'), path: `${base}/decisions/marketing` },
     { key: 'strategy', label: t('summary_page.strategy_mix'), path: `${base}/decisions/strategy` },
     { key: 'financing', label: t('summary_page.financing'), path: `${base}/decisions/finance` },
+    { key: 'sourcing', label: 'Sourcing', path: `${base}/decisions/sourcing` },
+    { key: 'logistics', label: 'Logistics', path: `${base}/decisions/logistics` },
+    { key: 'trade_finance', label: 'Trade Finance', path: `${base}/decisions/trade-finance` },
+    { key: 'inventory', label: 'Inventory', path: `${base}/decisions/inventory` },
   ];
 
   const handleLock = async () => {
