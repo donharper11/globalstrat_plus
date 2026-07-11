@@ -4526,6 +4526,319 @@ strategy_options:
     - 1.0
     - true
 events:
+# --- CC-08 supply-chain event templates (category: supply_chain) ---
+- name: Taiwan Earthquake — Semiconductor Capacity Shock
+  name_zh: 台湾地震——半导体产能冲击
+  description_template: A major earthquake near Hsinchu has knocked {value}% of Taiwanese foundry capacity offline. Teams single-sourced on Taiwan face allocation cuts and multi-round recovery.
+  category: supply_chain
+  severity: critical
+  probability_per_round: 0.03
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,semiconductor,single_source
+  teaches: single_source_risk
+  affected_suppliers:
+  - tsmc_taiwan
+  - umc_taiwan
+  - auo_taiwan
+  capacity_reduction_pct: 40
+  recovery_rounds: 3
+- name: Red Sea Shipping Disruption
+  name_zh: 红海航运中断
+  description_template: Attacks on commercial vessels have closed the Red Sea / Suez corridor. Asia–Europe sea rates spike and lead times extend by ~14 days as carriers reroute via the Cape.
+  category: supply_chain
+  severity: high
+  probability_per_round: 0.08
+  earliest_round: 1
+  max_occurrences: 2
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,logistics,suez
+  teaches: modal_alternatives
+  affected_lanes:
+  - cn_shanghai_to_de_hamburg
+  - tw_kaohsiung_to_de_hamburg
+  - kr_busan_to_de_hamburg
+  - my_portklang_to_de_hamburg
+  mode_rate_multiplier:
+    sea: 2.8
+    air: 1.4
+  additional_lead_time_days: 14
+- name: Container Freight Rate Shock
+  name_zh: 集装箱运费冲击
+  description_template: A global surge in shipping demand against tight vessel capacity has pushed container spot rates up ~{value}%. Teams without freight hedges see margins compress.
+  category: supply_chain
+  severity: high
+  probability_per_round: 0.1
+  earliest_round: 1
+  max_occurrences: 2
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,freight,rates
+  teaches: hedge_freight_exposure
+  global_rate_multiplier:
+    sea: 2.2
+  duration_rounds: 3
+- name: Supplier Financial Distress
+  name_zh: 供应商财务困境
+  description_template: A key tier-1 supplier has entered financial distress; capacity is cut ~{value}% and quality degrades until the balance sheet stabilizes or teams re-source.
+  category: supply_chain
+  severity: high
+  probability_per_round: 0.04
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,supplier_health
+  teaches: supplier_health_monitoring
+  affected_supplier: scenario_specified
+  capacity_reduction_pct: 60
+  quality_rating_degradation: 0.15
+- name: Port Congestion — West Coast
+  name_zh: 港口拥堵——西海岸
+  description_template: Severe congestion at destination ports has added multi-day dwell times and demurrage costs. Transpacific lanes are most exposed.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.12
+  earliest_round: 1
+  max_occurrences: 3
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,port,congestion
+  teaches: buffer_inventory
+  affected_lanes:
+  - cn_shanghai_to_us_long_beach
+  - cn_shenzhen_to_us_long_beach
+  - tw_kaohsiung_to_us_long_beach
+  additional_lead_time_days: 8
+- name: Customs Documentation Rejection
+  name_zh: 海关单证被拒
+  description_template: Customs authorities have rejected shipments with incomplete or misclassified documentation, holding goods for {value} round and levying reclassification penalties.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.1
+  earliest_round: 1
+  max_occurrences: 3
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,customs,documentation
+  teaches: customs_discipline
+  condition: incomplete_customs_documentation
+  shipment_hold_rounds: 1
+- name: Letter of Credit Document Rejection
+  name_zh: 信用证单证不符
+  description_template: Discrepancies in LC documents have triggered bank rejection, delaying revenue recognition by one round for teams with weak documentation discipline.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.03
+  earliest_round: 1
+  max_occurrences: 2
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,trade_finance,lc
+  teaches: trade_documentation_discipline
+  condition: team_uses_lc_with_discrepancies
+  revenue_delay_rounds: 1
+- name: CNY Appreciation Shock
+  name_zh: 人民币升值冲击
+  description_template: The renminbi has appreciated ~{value}% against the USD, raising the landed cost of China-sourced components for teams without FX hedges.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.05
+  earliest_round: 1
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,fx,cny
+  teaches: fx_hedging
+  fx_move_pct: 8
+- name: UFLPA Detention Incident
+  name_zh: UFLPA扣押事件
+  description_template: US CBP has detained shipments over suspected Xinjiang-linked tier-2/3 inputs. Detained shipment value is lost and market access is frozen pending remediation.
+  category: supply_chain
+  severity: critical
+  probability_per_round: 0.1
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,compliance,uflpa
+  teaches: tier_2_visibility
+  condition: team_has_xinjiang_tier2_exposure_above_threshold
+  shipment_value_loss_pct: 100
+  reputation_impact: high
+- name: CBAM Phase-In Cost Shock
+  name_zh: CBAM分阶段成本冲击
+  description_template: The EU has advanced its Carbon Border Adjustment Mechanism phase-in, raising carbon-linked import costs for high-emission supply chains selling into Europe.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.04
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,compliance,cbam,carbon
+  teaches: carbon_intensity_management
+  cbam_rate_multiplier: 1.5
+- name: BIS Entity List Expansion
+  name_zh: BIS实体清单扩容
+  description_template: The US Bureau of Industry and Security has added firms to the Entity List. Teams sourcing restricted technology from listed suppliers face export-control exposure.
+  category: supply_chain
+  severity: high
+  probability_per_round: 0.05
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,compliance,export_control
+  teaches: export_control_risk
+  added_restricted_firms: scenario_specified
+  teams_affected: exposed
+- name: China Rare-Earth Export Licensing
+  name_zh: 中国稀土出口许可
+  description_template: China has tightened export licensing on gallium, germanium and heavy rare earths, adding ~{value} days of licensing friction for affected components.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.04
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,materials,rare_earth
+  teaches: material_dependency
+  restricted_materials:
+  - gallium
+  - germanium
+  - graphite
+  licensing_friction_days: 45
+- name: Panama Canal Drought Restrictions
+  name_zh: 巴拿马运河干旱限制
+  description_template: Low water levels have cut Panama Canal transit slots, adding delay and surcharges to lanes routed via Panama.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.04
+  earliest_round: 1
+  max_occurrences: 2
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,chokepoint,panama
+  teaches: chokepoint_exposure
+  affected_lanes:
+  - de_hamburg_to_us_long_beach
+  mode_rate_multiplier:
+    sea: 1.8
+  additional_lead_time_days: 10
+- name: Typhoon Season — South China Sea
+  name_zh: 台风季——南海
+  description_template: An active typhoon season has disrupted South China Sea and intra-Asia sailings, adding delays and blank sailings on affected lanes.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.07
+  earliest_round: 2
+  max_occurrences: 2
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,weather,logistics
+  teaches: buffer_inventory
+  affected_lanes:
+  - cn_shenzhen_to_us_long_beach
+  - tw_kaohsiung_to_cn_shanghai
+  additional_lead_time_days: 6
+- name: Air Freight Capacity Crunch
+  name_zh: 空运运力紧张
+  description_template: A surge in expedited demand has tightened air cargo capacity; air rates jump ~{value}% for teams relying on air for launch volumes.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.06
+  earliest_round: 1
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,air_freight,rates
+  teaches: modal_cost_tradeoff
+  mode_rate_multiplier:
+    air: 1.9
+  duration_rounds: 2
+- name: Cross-Strait Tension Escalation
+  name_zh: 两岸紧张升级
+  description_template: Heightened cross-strait tension has raised insurance and rerouting costs on Taiwan-origin lanes and pressured Taiwan-dependent sourcing.
+  category: supply_chain
+  severity: high
+  probability_per_round: 0.04
+  earliest_round: 3
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,geopolitical,taiwan
+  teaches: geographic_diversity
+  affected_lanes:
+  - tw_kaohsiung_to_us_long_beach
+  - tw_kaohsiung_to_de_hamburg
+  - tw_kaohsiung_to_cn_shanghai
+- name: Supplier Quality Recall
+  name_zh: 供应商质量召回
+  description_template: A quality defect at a component supplier has forced a recall, temporarily degrading effective quality and adding rework cost for exposed teams.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.05
+  earliest_round: 1
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,quality,recall
+  teaches: supplier_quality_monitoring
+  affected_supplier: scenario_specified
+  quality_rating_degradation: 0.12
+- name: CNY Depreciation Windfall
+  name_zh: 人民币贬值利好
+  description_template: The renminbi has depreciated ~{value}% against the USD, lowering the landed cost of China-sourced components — a tailwind for China-weighted supply chains.
+  category: supply_chain
+  severity: low
+  probability_per_round: 0.05
+  earliest_round: 1
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,fx,opportunity
+  teaches: fx_exposure
+  type: opportunity
+  fx_move_pct: -6
+- name: BRI Port Capacity Expansion
+  name_zh: 一带一路港口扩容
+  description_template: New Belt-and-Road port and rail capacity has lowered costs on China–Europe corridors — an opportunity for teams routed through BRI lanes.
+  category: supply_chain
+  severity: low
+  probability_per_round: 0.03
+  earliest_round: 2
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,logistics,bri,opportunity
+  teaches: institutional_logistics_advantage
+  type: opportunity
+  affected_lanes:
+  - cn_chengdu_to_de_duisburg
+  - cn_shanghai_to_de_hamburg
+  cost_reduction_pct: 15
+- name: Semiconductor Demand Surge
+  name_zh: 半导体需求激增
+  description_template: An industry-wide demand surge has tightened foundry allocation; teams without secured capacity face longer lead times and spot-price premiums.
+  category: supply_chain
+  severity: medium
+  probability_per_round: 0.06
+  earliest_round: 1
+  max_occurrences: 1
+  affects_all_markets: true
+  response_required: false
+  rag_source_tags: supply_chain,semiconductor,allocation
+  teaches: capacity_reservation
+  affected_suppliers:
+  - tsmc_taiwan
+  - samsung_foundry_korea
+  - smic_china
+  additional_lead_time_days: 12
 - name: EU Carbon Border Tax Increase
   name_zh: 欧盟碳边境税上调
   description_template: |-
@@ -7273,3 +7586,2055 @@ org_structures:
   transition_cost: '1000000'
   transition_disruption_rounds: 2
   display_order: 4
+
+# ===========================================================================
+# CC-08: Consumer Electronics supply-chain seed data (suppliers, lanes,
+# trade finance, compliance, resilience, freight market)
+# ===========================================================================
+
+suppliers:
+- id: tsmc_taiwan
+  name: Taiwan Semiconductor Manufacturing Company
+  country: TW
+  tier: 1
+  specialization:
+  - semiconductor
+  capacity_units_per_round: 500000
+  base_unit_price_usd: 45.0
+  quality_rating: 0.96
+  reliability_rating: 0.93
+  lead_time_days_baseline: 45
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      TW: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: -0.05
+    EU: 0.0
+    APAC: 0.1
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  - IATF_16949
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: samsung_foundry_korea
+    substitution_fraction: 0.7
+  - supplier_id: smic_china
+    substitution_fraction: 0.4
+- id: umc_taiwan
+  name: United Microelectronics Corporation
+  country: TW
+  tier: 1
+  specialization:
+  - semiconductor
+  capacity_units_per_round: 350000
+  base_unit_price_usd: 32.0
+  quality_rating: 0.88
+  reliability_rating: 0.9
+  lead_time_days_baseline: 40
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      TW: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: tsmc_taiwan
+    substitution_fraction: 0.6
+- id: samsung_foundry_korea
+  name: Samsung Foundry
+  country: KR
+  tier: 1
+  specialization:
+  - semiconductor
+  capacity_units_per_round: 450000
+  base_unit_price_usd: 42.0
+  quality_rating: 0.94
+  reliability_rating: 0.91
+  lead_time_days_baseline: 42
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      KR: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  - IATF_16949
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: tsmc_taiwan
+    substitution_fraction: 0.7
+- id: smic_china
+  name: Semiconductor Manufacturing International Corp.
+  country: CN
+  tier: 1
+  specialization:
+  - semiconductor
+  capacity_units_per_round: 300000
+  base_unit_price_usd: 28.0
+  quality_rating: 0.8
+  reliability_rating: 0.85
+  lead_time_days_baseline: 38
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.75
+      XJ: 0.08
+      other: 0.17
+    risk_flags:
+      xinjiang_adjacent: true
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: -0.2
+    EU: -0.1
+    APAC: 0.05
+    AFR: 0.05
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: renesas_japan
+  name: Renesas Electronics
+  country: JP
+  tier: 1
+  specialization:
+  - power_management
+  capacity_units_per_round: 280000
+  base_unit_price_usd: 30.0
+  quality_rating: 0.92
+  reliability_rating: 0.94
+  lead_time_days_baseline: 35
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      JP: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: infineon_germany
+  name: Infineon Technologies
+  country: DE
+  tier: 1
+  specialization:
+  - power_management
+  capacity_units_per_round: 260000
+  base_unit_price_usd: 34.0
+  quality_rating: 0.93
+  reliability_rating: 0.95
+  lead_time_days_baseline: 30
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      DE: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.1
+    EU: 0.15
+    APAC: 0.05
+    AFR: 0.05
+    LATAM: 0.05
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  - IATF_16949
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: samsung_display_korea
+  name: Samsung Display
+  country: KR
+  tier: 1
+  specialization:
+  - display
+  capacity_units_per_round: 400000
+  base_unit_price_usd: 38.0
+  quality_rating: 0.95
+  reliability_rating: 0.92
+  lead_time_days_baseline: 40
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      KR: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: boe_china
+    substitution_fraction: 0.6
+  - supplier_id: japan_display_japan
+    substitution_fraction: 0.5
+- id: boe_china
+  name: BOE Technology Group
+  country: CN
+  tier: 1
+  specialization:
+  - display
+  capacity_units_per_round: 500000
+  base_unit_price_usd: 22.0
+  quality_rating: 0.84
+  reliability_rating: 0.86
+  lead_time_days_baseline: 35
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.8
+      XJ: 0.06
+      other: 0.14
+    risk_flags:
+      xinjiang_adjacent: true
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: -0.15
+    EU: -0.08
+    APAC: 0.05
+    AFR: 0.05
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: japan_display_japan
+  name: Japan Display Inc.
+  country: JP
+  tier: 1
+  specialization:
+  - display
+  capacity_units_per_round: 300000
+  base_unit_price_usd: 33.0
+  quality_rating: 0.9
+  reliability_rating: 0.91
+  lead_time_days_baseline: 38
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      JP: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: auo_taiwan
+  name: AU Optronics
+  country: TW
+  tier: 1
+  specialization:
+  - display
+  capacity_units_per_round: 350000
+  base_unit_price_usd: 26.0
+  quality_rating: 0.86
+  reliability_rating: 0.88
+  lead_time_days_baseline: 36
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      TW: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: catl_china
+  name: Contemporary Amperex Technology
+  country: CN
+  tier: 1
+  specialization:
+  - battery
+  capacity_units_per_round: 600000
+  base_unit_price_usd: 18.0
+  quality_rating: 0.89
+  reliability_rating: 0.87
+  lead_time_days_baseline: 30
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.78
+      XJ: 0.04
+      other: 0.18
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: -0.12
+    EU: -0.05
+    APAC: 0.08
+    AFR: 0.05
+    LATAM: 0.05
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: lg_energy_korea
+    substitution_fraction: 0.6
+- id: lg_energy_korea
+  name: LG Energy Solution
+  country: KR
+  tier: 1
+  specialization:
+  - battery
+  capacity_units_per_round: 450000
+  base_unit_price_usd: 24.0
+  quality_rating: 0.93
+  reliability_rating: 0.9
+  lead_time_days_baseline: 34
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      KR: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: panasonic_energy_japan
+    substitution_fraction: 0.6
+- id: panasonic_energy_japan
+  name: Panasonic Energy
+  country: JP
+  tier: 1
+  specialization:
+  - battery
+  capacity_units_per_round: 380000
+  base_unit_price_usd: 26.0
+  quality_rating: 0.94
+  reliability_rating: 0.92
+  lead_time_days_baseline: 36
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      JP: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: foxconn_china
+  name: Hon Hai / Foxconn
+  country: CN
+  tier: 1
+  specialization:
+  - final_assembly
+  capacity_units_per_round: 1000000
+  base_unit_price_usd: 12.0
+  quality_rating: 0.88
+  reliability_rating: 0.89
+  lead_time_days_baseline: 25
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.85
+      XJ: 0.03
+      other: 0.12
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: compal_vietnam
+    substitution_fraction: 0.5
+  - supplier_id: flex_malaysia
+    substitution_fraction: 0.5
+- id: luxshare_china
+  name: Luxshare Precision
+  country: CN
+  tier: 1
+  specialization:
+  - final_assembly
+  capacity_units_per_round: 800000
+  base_unit_price_usd: 11.0
+  quality_rating: 0.85
+  reliability_rating: 0.86
+  lead_time_days_baseline: 24
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.82
+      XJ: 0.09
+      other: 0.09
+    risk_flags:
+      xinjiang_adjacent: true
+      conflict_minerals: low
+      forced_labor_exposure: high
+  origin_trust_to_buyers:
+    NA: -0.18
+    EU: -0.1
+    APAC: 0.05
+    AFR: 0.05
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: compal_vietnam
+  name: Compal Electronics (Vietnam)
+  country: VN
+  tier: 1
+  specialization:
+  - final_assembly
+  capacity_units_per_round: 500000
+  base_unit_price_usd: 13.0
+  quality_rating: 0.84
+  reliability_rating: 0.85
+  lead_time_days_baseline: 26
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      VN: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.05
+    EU: 0.05
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: flex_malaysia
+  name: Flex Ltd. (Malaysia)
+  country: MY
+  tier: 1
+  specialization:
+  - final_assembly
+  capacity_units_per_round: 450000
+  base_unit_price_usd: 14.0
+  quality_rating: 0.86
+  reliability_rating: 0.88
+  lead_time_days_baseline: 27
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      MY: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.05
+    EU: 0.05
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: jabil_us
+  name: Jabil Inc.
+  country: US
+  tier: 1
+  specialization:
+  - pcb
+  capacity_units_per_round: 300000
+  base_unit_price_usd: 20.0
+  quality_rating: 0.9
+  reliability_rating: 0.93
+  lead_time_days_baseline: 22
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      US: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.15
+    EU: 0.08
+    APAC: 0.0
+    AFR: 0.0
+    LATAM: 0.05
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  - IATF_16949
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: unimicron_taiwan
+  name: Unimicron Technology
+  country: TW
+  tier: 1
+  specialization:
+  - pcb
+  capacity_units_per_round: 400000
+  base_unit_price_usd: 15.0
+  quality_rating: 0.87
+  reliability_rating: 0.88
+  lead_time_days_baseline: 30
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      TW: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: shengyi_china
+  name: Shengyi Technology
+  country: CN
+  tier: 1
+  specialization:
+  - pcb
+  capacity_units_per_round: 500000
+  base_unit_price_usd: 11.0
+  quality_rating: 0.82
+  reliability_rating: 0.84
+  lead_time_days_baseline: 28
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.86
+      XJ: 0.03
+      other: 0.11
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: catcher_taiwan
+  name: Catcher Technology
+  country: TW
+  tier: 1
+  specialization:
+  - enclosure
+  capacity_units_per_round: 350000
+  base_unit_price_usd: 16.0
+  quality_rating: 0.89
+  reliability_rating: 0.9
+  lead_time_days_baseline: 32
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      TW: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: byd_china
+    substitution_fraction: 0.6
+- id: byd_electronics_china
+  name: BYD Electronics
+  country: CN
+  tier: 1
+  specialization:
+  - enclosure
+  capacity_units_per_round: 600000
+  base_unit_price_usd: 10.0
+  quality_rating: 0.83
+  reliability_rating: 0.85
+  lead_time_days_baseline: 26
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.84
+      XJ: 0.04
+      other: 0.12
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: sony_camera_japan
+  name: Sony Semiconductor Solutions
+  country: JP
+  tier: 1
+  specialization:
+  - camera_module
+  capacity_units_per_round: 320000
+  base_unit_price_usd: 28.0
+  quality_rating: 0.95
+  reliability_rating: 0.93
+  lead_time_days_baseline: 40
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      JP: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability:
+  - supplier_id: lg_innotek_korea
+    substitution_fraction: 0.6
+- id: lg_innotek_korea
+  name: LG Innotek
+  country: KR
+  tier: 1
+  specialization:
+  - camera_module
+  capacity_units_per_round: 300000
+  base_unit_price_usd: 24.0
+  quality_rating: 0.92
+  reliability_rating: 0.91
+  lead_time_days_baseline: 38
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      KR: 0.6
+      CN: 0.25
+      other: 0.15
+    risk_flags:
+      xinjiang_adjacent: false
+      conflict_minerals: low
+      forced_labor_exposure: low
+  origin_trust_to_buyers:
+    NA: 0.0
+    EU: 0.0
+    APAC: 0.05
+    AFR: 0.0
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+- id: sunny_optical_china
+  name: Sunny Optical Technology
+  country: CN
+  tier: 1
+  specialization:
+  - camera_module
+  capacity_units_per_round: 450000
+  base_unit_price_usd: 15.0
+  quality_rating: 0.85
+  reliability_rating: 0.86
+  lead_time_days_baseline: 32
+  min_order_commitment: 10000
+  volume_discount_tiers:
+  - threshold_units: 50000
+    discount_pct: 3
+  - threshold_units: 200000
+    discount_pct: 7
+  tier_2_3_profile:
+    transparency_default: 0.6
+    geographic_concentration:
+      CN: 0.8
+      XJ: 0.07
+      other: 0.13
+    risk_flags:
+      xinjiang_adjacent: true
+      conflict_minerals: low
+      forced_labor_exposure: medium
+  origin_trust_to_buyers:
+    NA: -0.14
+    EU: -0.07
+    APAC: 0.05
+    AFR: 0.05
+    LATAM: 0.0
+  certifications:
+  - ISO_9001
+  - ISO_14001
+  accepts_trade_finance:
+  - letter_of_credit
+  - documentary_collection
+  - open_account
+  political_risk_profile:
+    geopolitical_exposure: []
+    expropriation_risk: low
+    sanctions_exposure: low
+  multi_source_substitutability: []
+
+shipping_lanes:
+- id: cn_shanghai_to_us_long_beach
+  origin_country: CN
+  origin_port: shanghai
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2500
+      baseline_lead_time_days: 28
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.5
+      baseline_lead_time_days: 3
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: &id001
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: true
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.15
+    geopolitical_incidents:
+    - us_china_tariffs
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: cn_shenzhen_to_us_long_beach
+  origin_country: CN
+  origin_port: shenzhen
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2600
+      baseline_lead_time_days: 29
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.8
+      baseline_lead_time_days: 3
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: tw_kaohsiung_to_us_long_beach
+  origin_country: TW
+  origin_port: kaohsiung
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2450
+      baseline_lead_time_days: 27
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 9.0
+      baseline_lead_time_days: 3
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.13
+    geopolitical_incidents:
+    - taiwan_strait_tension
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: kr_busan_to_us_long_beach
+  origin_country: KR
+  origin_port: busan
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2400
+      baseline_lead_time_days: 26
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.2
+      baseline_lead_time_days: 3
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: jp_yokohama_to_us_long_beach
+  origin_country: JP
+  origin_port: yokohama
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2350
+      baseline_lead_time_days: 25
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.0
+      baseline_lead_time_days: 3
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: vn_haiphong_to_us_long_beach
+  origin_country: VN
+  origin_port: haiphong
+  destination_country: US
+  destination_port: long_beach
+  zone: transpacific
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2700
+      baseline_lead_time_days: 30
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 9.5
+      baseline_lead_time_days: 4
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: cn_shanghai_to_de_hamburg
+  origin_country: CN
+  origin_port: shanghai
+  destination_country: DE
+  destination_port: hamburg
+  zone: asia_europe
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 3200
+      baseline_lead_time_days: 34
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 7.8
+      baseline_lead_time_days: 4
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      baseline_cost_per_teu_usd: 4500
+      baseline_lead_time_days: 18
+      capacity_abundance: normal
+      fuel_pass_through_pct: 30
+    road:
+      available: false
+  chokepoints: &id002
+    panama_canal: false
+    suez_canal: true
+    malacca_strait: true
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    port_congestion_baseline_prob: 0.18
+    geopolitical_incidents:
+    - red_sea_disruption
+    - suez_transit
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: cn_chengdu_to_de_duisburg
+  origin_country: CN
+  origin_port: chengdu
+  destination_country: DE
+  destination_port: duisburg
+  zone: asia_europe_rail_bri
+  modes:
+    air:
+      baseline_cost_per_kg_usd: 8.4
+      baseline_lead_time_days: 5
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      baseline_cost_per_teu_usd: 4200
+      baseline_lead_time_days: 16
+      capacity_abundance: normal
+      fuel_pass_through_pct: 30
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months: []
+    port_congestion_baseline_prob: 0.06
+    geopolitical_incidents:
+    - bri_rail_corridor
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: tw_kaohsiung_to_de_hamburg
+  origin_country: TW
+  origin_port: kaohsiung
+  destination_country: DE
+  destination_port: hamburg
+  zone: asia_europe
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 3300
+      baseline_lead_time_days: 35
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.6
+      baseline_lead_time_days: 4
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id002
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: kr_busan_to_de_hamburg
+  origin_country: KR
+  origin_port: busan
+  destination_country: DE
+  destination_port: hamburg
+  zone: asia_europe
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 3250
+      baseline_lead_time_days: 34
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 8.3
+      baseline_lead_time_days: 4
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id002
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: my_portklang_to_de_hamburg
+  origin_country: MY
+  origin_port: port_klang
+  destination_country: DE
+  destination_port: hamburg
+  zone: asia_europe
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 3100
+      baseline_lead_time_days: 32
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 9.2
+      baseline_lead_time_days: 5
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id002
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: tw_kaohsiung_to_cn_shanghai
+  origin_country: TW
+  origin_port: kaohsiung
+  destination_country: CN
+  destination_port: shanghai
+  zone: intra_asia
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 900
+      baseline_lead_time_days: 6
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 4.5
+      baseline_lead_time_days: 2
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    port_congestion_baseline_prob: 0.1
+    geopolitical_incidents:
+    - taiwan_strait_tension
+  customs_processing_days_baseline: 3
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: kr_busan_to_cn_shanghai
+  origin_country: KR
+  origin_port: busan
+  destination_country: CN
+  destination_port: shanghai
+  zone: intra_asia
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 850
+      baseline_lead_time_days: 5
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 4.2
+      baseline_lead_time_days: 2
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 3
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: jp_yokohama_to_cn_shanghai
+  origin_country: JP
+  origin_port: yokohama
+  destination_country: CN
+  destination_port: shanghai
+  zone: intra_asia
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 880
+      baseline_lead_time_days: 5
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 4.3
+      baseline_lead_time_days: 2
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 3
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: vn_haiphong_to_cn_shanghai
+  origin_country: VN
+  origin_port: haiphong
+  destination_country: CN
+  destination_port: shanghai
+  zone: intra_asia
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 700
+      baseline_lead_time_days: 4
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 3.8
+      baseline_lead_time_days: 2
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 3
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: cn_shenzhen_to_ng_lagos
+  origin_country: CN
+  origin_port: shenzhen
+  destination_country: NG
+  destination_port: lagos
+  zone: asia_africa
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 3800
+      baseline_lead_time_days: 38
+      capacity_abundance: constrained
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 11.0
+      baseline_lead_time_days: 6
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: true
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 7
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 2.2
+- id: cn_shenzhen_to_br_santos
+  origin_country: CN
+  origin_port: shenzhen
+  destination_country: BR
+  destination_port: santos
+  zone: asia_south_america
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 4100
+      baseline_lead_time_days: 40
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 12.0
+      baseline_lead_time_days: 7
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 6
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 2.4
+- id: jp_yokohama_to_br_santos
+  origin_country: JP
+  origin_port: yokohama
+  destination_country: BR
+  destination_port: santos
+  zone: asia_south_america
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 4000
+      baseline_lead_time_days: 39
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 11.5
+      baseline_lead_time_days: 7
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: false
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 6
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 2.4
+- id: de_hamburg_to_us_long_beach
+  origin_country: DE
+  origin_port: hamburg
+  destination_country: US
+  destination_port: long_beach
+  zone: transatlantic
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 2100
+      baseline_lead_time_days: 20
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 6.5
+      baseline_lead_time_days: 2
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints:
+    panama_canal: true
+    suez_canal: false
+    malacca_strait: false
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 3
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+- id: us_los_angeles_to_cn_shanghai
+  origin_country: US
+  origin_port: los_angeles
+  destination_country: CN
+  destination_port: shanghai
+  zone: transpacific_eastbound
+  modes:
+    sea:
+      baseline_cost_per_teu_usd: 1800
+      baseline_lead_time_days: 24
+      capacity_abundance: normal
+      fuel_pass_through_pct: 60
+    air:
+      baseline_cost_per_kg_usd: 7.2
+      baseline_lead_time_days: 3
+      capacity_abundance: normal
+      fuel_pass_through_pct: 85
+    rail:
+      available: false
+    road:
+      available: false
+  chokepoints: *id001
+  disruption_exposure:
+    typhoon_season_months:
+    - 7
+    - 8
+    - 9
+    - 10
+    port_congestion_baseline_prob: 0.12
+    geopolitical_incidents: []
+  customs_processing_days_baseline: 4
+  reverse_logistics_available: true
+  reverse_logistics_cost_multiplier: 1.8
+
+trade_finance_instruments:
+- id: open_account
+  display_name: Open Account
+  cost_bps_of_transaction: 0
+  processing_lead_days: 0
+  seller_protection: low
+  buyer_cash_requirement: none
+  available_in_markets:
+  - EU
+  - NA
+  buyer_default_probability_baseline: 0.015
+- id: letter_of_credit
+  display_name: Letter of Credit
+  cost_bps_of_transaction: 150
+  processing_lead_days: 7
+  seller_protection: high
+  buyer_cash_requirement: high
+  available_in_markets:
+  - all
+  rejection_probability_baseline: 0.02
+  documentation_discipline_sensitivity: high
+- id: documentary_collection
+  display_name: Documentary Collection (D/P, D/A)
+  cost_bps_of_transaction: 40
+  processing_lead_days: 3
+  seller_protection: medium
+  buyer_cash_requirement: low
+  available_in_markets:
+  - all
+  rejection_probability_baseline: 0.03
+- id: advance_payment
+  display_name: Advance Payment (Cash in Advance)
+  cost_bps_of_transaction: 0
+  processing_lead_days: 1
+  seller_protection: high
+  buyer_cash_requirement: high
+  available_in_markets:
+  - all
+- id: sinosure_credit_insurance
+  display_name: Sinosure Export Credit Insurance
+  cost_pct_of_insured_value: 0.8
+  processing_lead_days: 10
+  seller_protection: high
+  buyer_cash_requirement: low
+  available_in_markets:
+  - all
+  available_to_home_countries:
+  - CN
+  coverage_ceiling_pct: 90
+  bri_market_premium_subsidy_pct: 40
+- id: fx_forward
+  display_name: FX Forward Contract
+  cost_bps_of_transaction: 25
+  processing_lead_days: 2
+  seller_protection: medium
+  buyer_cash_requirement: low
+  available_in_markets:
+  - all
+  tenor_options_days:
+  - 30
+  - 60
+  - 90
+  - 180
+  currency_pairs_available:
+  - USD_CNY
+  - EUR_CNY
+  - JPY_CNY
+  - GBP_CNY
+
+compliance_regimes:
+- id: uflpa
+  name: Uyghur Forced Labor Prevention Act
+  enforcing_market: NA
+  enforcing_country: US
+  applies_to_products:
+  - electronics
+  - batteries
+  - solar_panels
+  - textiles
+  trigger_condition: tier_2_3_xinjiang_exposure_above_threshold
+  trigger_threshold_pct: 5
+  baseline_enforcement_probability_per_round: 0.15
+  detention_consequence:
+    shipment_value_loss_pct: 100
+    remediation_cost_usd: 500000
+    market_access_freeze_rounds: 2
+  mitigation_investments:
+    tier_2_mapping:
+      cost_usd: 800000
+      reduces_enforcement_probability_pct: 70
+- id: cbam
+  name: Carbon Border Adjustment Mechanism
+  enforcing_market: EU
+  enforcing_country: DE
+  applies_to_products:
+  - electronics
+  - batteries
+  - aluminum
+  - steel
+  baseline_enforcement_probability_per_round: 0.2
+  phase_in_schedule:
+  - round: 1
+    coverage_pct: 25
+  - round: 3
+    coverage_pct: 50
+  - round: 5
+    coverage_pct: 100
+  tariff_per_ton_co2_usd: 85.0
+  sectors_covered:
+  - steel
+  - aluminum
+  - cement
+  - hydrogen
+  - electricity
+  - fertilizer
+  mitigation_investments:
+    cbam_reporting_readiness:
+      cost_usd: 300000
+      reduces_processing_friction: true
+- id: us_bis_entity_list
+  name: BIS Entity List Export Controls
+  enforcing_market: NA
+  enforcing_country: US
+  applies_to_products:
+  - advanced_semiconductors
+  - ai_chips
+  trigger_condition: sources_restricted_technology_from_listed_entity
+  baseline_enforcement_probability_per_round: 0.05
+  detention_consequence:
+    violation_penalty_usd: 10000000
+    market_access_impact: indefinite_freeze
+  restricted_technologies:
+  - advanced_semiconductors
+  - ai_chips
+  - euv_lithography
+  target_countries_baseline:
+  - CN
+  - RU
+  - IR
+  - KP
+- id: customs_documentation
+  name: Customs Documentation & Classification Compliance
+  enforcing_market: all
+  applies_to_products:
+  - electronics
+  trigger_condition: incomplete_or_misclassified_customs_documentation
+  trigger_threshold_pct: 0
+  baseline_enforcement_probability_per_round: 0.12
+  detention_consequence:
+    shipment_hold_rounds: 1
+    reclassification_penalty_usd: 120000
+  mitigation_investments:
+    customs_broker_program:
+      cost_usd: 150000
+      reduces_enforcement_probability_pct: 60
+- id: product_safety_certification
+  name: Product Safety & Certification (CE / FCC / CCC)
+  enforcing_market: all
+  applies_to_products:
+  - electronics
+  - batteries
+  - chargers
+  trigger_condition: ships_to_market_without_valid_certification
+  baseline_enforcement_probability_per_round: 0.08
+  detention_consequence:
+    market_access_freeze_rounds: 1
+    recertification_cost_usd: 200000
+  mitigation_investments:
+    certification_program:
+      cost_usd: 180000
+      reduces_enforcement_probability_pct: 75
+
+resilience_parameters:
+  single_source_threshold_pct: 70
+  geographic_concentration_threshold_pct: 60
+  critical_component_buffer_days_recommended: 45
+  bullwhip_coefficient_baseline: 1.4
+  resilience_score_weights:
+    multi_sourcing: 0.25
+    geographic_diversity: 0.2
+    buffer_inventory_adequacy: 0.15
+    modal_flexibility: 0.15
+    tier_2_visibility: 0.15
+    supplier_financial_health: 0.1
+  disruption_cascade_coefficient: 0.3
+  recovery_rate_with_alternatives_multiplier: 0.5
+
+freight_market:
+  rate_dynamics_model: demand_capacity_elastic
+  baseline_capacity_abundance: normal
+  fuel_index_baseline_usd_per_barrel: 80.0
+  fuel_index_volatility_sigma: 0.12
+  container_rate_volatility_sigma: 0.15
+  demand_elasticity_coefficient: 1.3
+  capacity_response_lag_rounds: 2
