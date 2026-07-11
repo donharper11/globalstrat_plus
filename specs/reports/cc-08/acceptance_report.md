@@ -30,6 +30,12 @@ contract), not the CC-01 prose examples:
 No MISMATCH halts were required (see §5 for two schema-shape resolutions that the
 loader itself dictated).
 
+- **Post-load cross-reference audit (CC-01 §8):** all 9 applicable rules were run
+  programmatically against the loaded ORM rows. One error was caught and fixed — a
+  dangling  on 
+  (the supplier is ). The loader's validator does not enforce
+  §8, so it had loaded silently; corrected and re-validated → 0 errors.
+
 ---
 
 ## 2. Content Counts (authored)
