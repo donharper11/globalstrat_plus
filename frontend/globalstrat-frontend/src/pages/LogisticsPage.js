@@ -9,6 +9,9 @@ import { useDecisions } from '../contexts/DecisionContext';
 import { getLanes, getMarkets, getLogistics, saveLogistics } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import { StateBadge, pageState } from '../components/sc/scState';
+
+const canonical = (mix, inco, customs) => JSON.stringify({ mix, inco, customs });
 
 const { Text } = Typography;
 
@@ -66,6 +69,7 @@ const LogisticsPage = () => {
   const [inco, setInco] = useState({});      // marketId -> {incoterms, insurance_coverage_pct}
   const [customs, setCustoms] = useState({});// marketId -> {classification, reverse_logistics_capacity_pct, reverse_logistics_hub_market}
   const [serverErrors, setServerErrors] = useState([]);
+  const [snap, setSnap] = useState(null);
 
   const load = useCallback(async () => {
     if (!gameId || !teamId || !scenarioId || !currentRound) { setLoading(false); return; }
@@ -100,6 +104,7 @@ const LogisticsPage = () => {
         };
       });
       setCustoms(cu);
+      setSnap(canonical(m, ic, cu));
     } catch {
       message.error('Unable to load logistics data.');
     } finally {
@@ -160,6 +165,9 @@ const LogisticsPage = () => {
 
   if (loading) return <LoadingSpinner />;
 
+  const dirty = snap !== null && canonical(mix, inco, customs) !== snap;
+  const st = pageState({ locked, editable, dirty });
+
   const modeCol = (mode) => ({
     title: mode.toUpperCase(), key: mode, width: 90,
     render: (_, ln) => {
@@ -197,6 +205,7 @@ const LogisticsPage = () => {
         subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Set modal mix per lane, Incoterms and customs per market.</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
+          <StateBadge state={st} />
           <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
           <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
         </Space>}
