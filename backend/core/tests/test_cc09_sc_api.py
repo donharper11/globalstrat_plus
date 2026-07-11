@@ -347,9 +347,12 @@ class InventoryTests(SCApiTestBase):
         self.assertEqual(g.data['inventory'][0]['buffer_days'], 45)
 
     def test_contingency_roundtrip(self):
+        # CC-19 §2: structured, engine-executable contingency rules.
         body = {'contingency': {
-            'disruption_response_playbook': 'switch to air on delay',
-            'alt_supplier_activation_rules': [{'if': 'delay>7', 'then': 'samsung'}],
+            'alt_supplier_activation_rules': [{
+                'input_category': 'semiconductor', 'trigger': 'disruption',
+                'backup_supplier_id': self.supplier2.pk, 'shift_pct': 50,
+            }],
             'mode_switch_triggers': [],
         }}
         resp = self._post(InventoryView, body, 5)  # contingency_plans unlocks R5
