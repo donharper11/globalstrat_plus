@@ -7,7 +7,7 @@ import {
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
   faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
-  faHome, faEdit,
+  faHome, faEdit, faIndustry,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
@@ -62,6 +62,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   const pathname = location.pathname;
   let selectedKey = '';
   if (pathname === '/' || pathname === '/dashboard') selectedKey = 'dashboard';
+  else if (pathname.includes('/decisions/sourcing')) selectedKey = 'sourcing';
   else if (pathname.includes('/decisions/rd')) selectedKey = 'rd';
   else if (pathname.includes('/decisions/products')) selectedKey = 'products';
   else if (pathname.includes('/decisions/marketing')) selectedKey = 'marketing';
@@ -135,6 +136,12 @@ const Sidebar = ({ collapsed, onNavigate }) => {
       icon: icon(faClipboardCheck),
       label: t('nav.decisions'),
       children: [
+        {
+          key: 'sourcing',
+          icon: icon(faIndustry),
+          label: sidebarLabels?.sourcing_page || 'Sourcing & Suppliers',
+          onClick: () => go(`${base}/decisions/sourcing`),
+        },
         {
           key: 'rd',
           icon: icon(faFlask),
