@@ -7,7 +7,7 @@ import {
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
   faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
-  faHome, faEdit, faIndustry, faTruck,
+  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
@@ -64,6 +64,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   if (pathname === '/' || pathname === '/dashboard') selectedKey = 'dashboard';
   else if (pathname.includes('/decisions/sourcing')) selectedKey = 'sourcing';
   else if (pathname.includes('/decisions/logistics')) selectedKey = 'logistics';
+  else if (pathname.includes('/decisions/trade-finance')) selectedKey = 'trade-finance';
   else if (pathname.includes('/decisions/rd')) selectedKey = 'rd';
   else if (pathname.includes('/decisions/products')) selectedKey = 'products';
   else if (pathname.includes('/decisions/marketing')) selectedKey = 'marketing';
@@ -148,6 +149,12 @@ const Sidebar = ({ collapsed, onNavigate }) => {
           icon: icon(faTruck),
           label: sidebarLabels?.logistics_page || 'Logistics & Distribution',
           onClick: () => go(`${base}/decisions/logistics`),
+        },
+        {
+          key: 'trade-finance',
+          icon: icon(faMoneyBillWave),
+          label: sidebarLabels?.trade_finance_page || 'Trade Finance & FX',
+          onClick: () => go(`${base}/decisions/trade-finance`),
         },
         {
           key: 'rd',
