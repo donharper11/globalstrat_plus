@@ -72,193 +72,244 @@ def _get_scenario_from_game(game_id):
 class SourcingView(APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
 
-    def get(self, request, game_id, team_id, round_number):
-        team, rnd = _get_team_round(self.kwargs)
+    @staticmethod
+    def _body(team, rnd):
         decision = SourcingDecision.objects.filter(team=team, round=rnd).first()
         allocations = SourcingAllocation.objects.filter(team=team, round=rnd)
-        return Response({
+        return {
             'decision': SourcingDecisionReadSerializer(decision).data if decision else None,
             'allocations': SourcingAllocationReadSerializer(allocations, many=True).data,
-        })
+        }
+
+    def get(self, request, game_id, team_id, round_number):
+        team, rnd = _get_team_round(self.kwargs)
+        return Response(self._body(team, rnd))
 
     @transaction.atomic
     def post(self, request, game_id, team_id, round_number):
         team, rnd = _get_team_round(self.kwargs)
-        data = request.data.copy()
-        data['team'] = team.pk
-        data['round'] = rnd.pk
+        incoming = request.data
 
-        # Upsert page-level decision
+        # Inject the team/round identity server-side; forward only the keys the
+        # client actually supplied so progressive-disclosure locks aren't tripped
+        # by server-side defaults.
+        payload = {'team': team.pk, 'round': rnd.pk}
+        for key in ('tier_2_3_visibility_investment', 'multi_sourcing_strategy'):
+            if key in incoming:
+                payload[key] = incoming[key]
+        payload['allocations'] = [
+            {**alloc, 'team': team.pk, 'round': rnd.pk}
+            for alloc in incoming.get('allocations', [])
+        ]
+
+        ser = SourcingDecisionWriteSerializer(data=payload)
+        ser.is_valid(raise_exception=True)
+        vd = ser.validated_data
+        alloc_vd = vd.pop('allocations', [])
+
         decision, _ = SourcingDecision.objects.update_or_create(
             team=team, round=rnd,
-            defaults={
-                'tier_2_3_visibility_investment': data.get('tier_2_3_visibility_investment', 'none'),
-                'multi_sourcing_strategy': data.get('multi_sourcing_strategy', 'single_source'),
-            },
+            defaults={k: v for k, v in vd.items() if k not in ('team', 'round')},
         )
 
-        # Replace allocation rows
+        # Replace allocation rows atomically from validated data.
         SourcingAllocation.objects.filter(team=team, round=rnd).delete()
-        allocations = data.get('allocations', [])
-        for alloc in allocations:
-            alloc['team'] = team.pk
-            alloc['round'] = rnd.pk
-            ser = SourcingAllocationReadSerializer(data=alloc) if False else None
+        for alloc in alloc_vd:
             SourcingAllocation.objects.create(
                 team=team, round=rnd,
                 critical_input_category=alloc['critical_input_category'],
-                supplier_id=alloc['supplier'],
-                allocation_pct=alloc.get('allocation_pct', 0),
+                supplier=alloc['supplier'],
+                allocation_pct=alloc['allocation_pct'],
                 volume_commitment_units=alloc.get('volume_commitment_units', 0),
                 payment_terms=alloc.get('payment_terms', ''),
             )
 
-        return Response(
-            SourcingDecisionReadSerializer(decision).data,
-            status=status.HTTP_201_CREATED,
-        )
+        return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
 class LogisticsView(APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
 
-    def get(self, request, game_id, team_id, round_number):
-        team, rnd = _get_team_round(self.kwargs)
+    @staticmethod
+    def _body(team, rnd):
         logistics = LogisticsDecision.objects.filter(team=team, round=rnd)
         incoterms = IncotermsDecision.objects.filter(team=team, round=rnd)
         customs = CustomsClassificationDecision.objects.filter(team=team, round=rnd)
-        return Response({
+        return {
             'logistics': LogisticsDecisionReadSerializer(logistics, many=True).data,
             'incoterms': IncotermsDecisionReadSerializer(incoterms, many=True).data,
             'customs': CustomsClassificationDecisionReadSerializer(customs, many=True).data,
-        })
+        }
+
+    def get(self, request, game_id, team_id, round_number):
+        team, rnd = _get_team_round(self.kwargs)
+        return Response(self._body(team, rnd))
 
     @transaction.atomic
     def post(self, request, game_id, team_id, round_number):
         team, rnd = _get_team_round(self.kwargs)
         data = request.data
-        created = []
 
+        # Validate every sub-collection through its write serializer BEFORE any
+        # write, so an invalid item in any group rejects the whole submission.
+        logistics_valid = []
         for item in data.get('logistics', []):
-            item['team'] = team.pk
-            item['round'] = rnd.pk
-            ser = LogisticsDecisionWriteSerializer(data=item)
+            ser = LogisticsDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
             ser.is_valid(raise_exception=True)
-            obj, _ = LogisticsDecision.objects.update_or_create(
-                team=team, round=rnd, lane_id=item['lane'],
-                defaults={k: v for k, v in ser.validated_data.items()
+            logistics_valid.append(ser.validated_data)
+
+        incoterms_valid = []
+        for item in data.get('incoterms', []):
+            ser = IncotermsDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            incoterms_valid.append(ser.validated_data)
+
+        customs_valid = []
+        for item in data.get('customs', []):
+            ser = CustomsClassificationDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            customs_valid.append(ser.validated_data)
+
+        for vd in logistics_valid:
+            LogisticsDecision.objects.update_or_create(
+                team=team, round=rnd, lane=vd['lane'],
+                defaults={k: v for k, v in vd.items()
                           if k not in ('team', 'round', 'lane')},
             )
-            created.append(obj)
 
-        for item in data.get('incoterms', []):
+        for vd in incoterms_valid:
             IncotermsDecision.objects.update_or_create(
-                team=team, round=rnd, destination_market_id=item['destination_market'],
-                defaults={
-                    'incoterms': item.get('incoterms', 'CIF'),
-                    'insurance_coverage_pct': item.get('insurance_coverage_pct', 110),
-                },
+                team=team, round=rnd, destination_market=vd['destination_market'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'destination_market')},
             )
 
-        for item in data.get('customs', []):
+        for vd in customs_valid:
             CustomsClassificationDecision.objects.update_or_create(
-                team=team, round=rnd, destination_market_id=item['destination_market'],
-                defaults={
-                    'classification': item.get('classification', 'general_trade'),
-                    'reverse_logistics_capacity_pct': item.get('reverse_logistics_capacity_pct', 0),
-                    'reverse_logistics_hub_market_id': item.get('reverse_logistics_hub_market'),
-                },
+                team=team, round=rnd, destination_market=vd['destination_market'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'destination_market')},
             )
 
-        return Response({'status': 'ok'}, status=status.HTTP_201_CREATED)
+        return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
 class TradeFinanceView(APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
 
-    def get(self, request, game_id, team_id, round_number):
-        team, rnd = _get_team_round(self.kwargs)
+    @staticmethod
+    def _body(team, rnd):
         tf = TradeFinanceDecision.objects.filter(team=team, round=rnd)
         sinosure = SinosureEnrollment.objects.filter(team=team, round=rnd)
         fx = FXHedgeDecision.objects.filter(team=team, round=rnd)
-        return Response({
+        return {
             'trade_finance': TradeFinanceDecisionReadSerializer(tf, many=True).data,
             'sinosure': SinosureEnrollmentReadSerializer(sinosure, many=True).data,
             'fx_hedges': FXHedgeDecisionReadSerializer(fx, many=True).data,
-        })
+        }
+
+    def get(self, request, game_id, team_id, round_number):
+        team, rnd = _get_team_round(self.kwargs)
+        return Response(self._body(team, rnd))
 
     @transaction.atomic
     def post(self, request, game_id, team_id, round_number):
         team, rnd = _get_team_round(self.kwargs)
         data = request.data
 
+        tf_valid, sino_valid, fx_valid = [], [], []
         for item in data.get('trade_finance', []):
-            TradeFinanceDecision.objects.update_or_create(
-                team=team, round=rnd,
-                segment_id=item['segment'], market_id=item['market'],
-                defaults={
-                    'buyer_payment_instrument': item.get('buyer_payment_instrument', ''),
-                    'lc_doc_prep_investment': item.get('lc_doc_prep_investment', 'standard'),
-                },
-            )
-
+            ser = TradeFinanceDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            tf_valid.append(ser.validated_data)
         for item in data.get('sinosure', []):
-            SinosureEnrollment.objects.update_or_create(
-                team=team, round=rnd, market_id=item['market'],
-                defaults={'coverage_pct': item.get('coverage_pct', 0)},
-            )
-
+            ser = SinosureEnrollmentWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            sino_valid.append(ser.validated_data)
         for item in data.get('fx_hedges', []):
+            ser = FXHedgeDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            fx_valid.append(ser.validated_data)
+
+        for vd in tf_valid:
+            TradeFinanceDecision.objects.update_or_create(
+                team=team, round=rnd, segment=vd['segment'], market=vd['market'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'segment', 'market')},
+            )
+        for vd in sino_valid:
+            SinosureEnrollment.objects.update_or_create(
+                team=team, round=rnd, market=vd['market'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'market')},
+            )
+        for vd in fx_valid:
             FXHedgeDecision.objects.update_or_create(
-                team=team, round=rnd, currency_pair=item['currency_pair'],
-                defaults={
-                    'hedge_ratio': item.get('hedge_ratio', 0),
-                    'tenor_days': item.get('tenor_days', 90),
-                },
+                team=team, round=rnd, currency_pair=vd['currency_pair'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'currency_pair')},
             )
 
-        return Response({'status': 'ok'}, status=status.HTTP_201_CREATED)
+        return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
 class InventoryView(APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
 
-    def get(self, request, game_id, team_id, round_number):
-        team, rnd = _get_team_round(self.kwargs)
+    @staticmethod
+    def _body(team, rnd):
         inventory = InventoryDecision.objects.filter(team=team, round=rnd)
         contingency = ContingencyPlan.objects.filter(team=team, round=rnd).first()
-        return Response({
+        return {
             'inventory': InventoryDecisionReadSerializer(inventory, many=True).data,
             'contingency': ContingencyPlanReadSerializer(contingency).data if contingency else None,
-        })
+        }
+
+    def get(self, request, game_id, team_id, round_number):
+        team, rnd = _get_team_round(self.kwargs)
+        return Response(self._body(team, rnd))
 
     @transaction.atomic
     def post(self, request, game_id, team_id, round_number):
         team, rnd = _get_team_round(self.kwargs)
         data = request.data
 
+        inv_valid = []
         for item in data.get('inventory', []):
-            InventoryDecision.objects.update_or_create(
-                team=team, round=rnd,
-                product_id=item['product'], market_id=item['market'],
-                defaults={
-                    'buffer_days': item.get('buffer_days', 30),
-                    'safety_stock_trigger_pct': item.get('safety_stock_trigger_pct', 20),
-                },
-            )
+            ser = InventoryDecisionWriteSerializer(
+                data={**item, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            inv_valid.append(ser.validated_data)
 
+        cp_valid = None
         cp_data = data.get('contingency')
         if cp_data:
-            ContingencyPlan.objects.update_or_create(
-                team=team, round=rnd,
-                defaults={
-                    'disruption_response_playbook': cp_data.get('disruption_response_playbook', ''),
-                    'alt_supplier_activation_rules': cp_data.get('alt_supplier_activation_rules', []),
-                    'mode_switch_triggers': cp_data.get('mode_switch_triggers', []),
-                },
+            ser = ContingencyPlanWriteSerializer(
+                data={**cp_data, 'team': team.pk, 'round': rnd.pk})
+            ser.is_valid(raise_exception=True)
+            cp_valid = ser.validated_data
+
+        for vd in inv_valid:
+            InventoryDecision.objects.update_or_create(
+                team=team, round=rnd, product=vd['product'], market=vd['market'],
+                defaults={k: v for k, v in vd.items()
+                          if k not in ('team', 'round', 'product', 'market')},
             )
 
-        return Response({'status': 'ok'}, status=status.HTTP_201_CREATED)
+        if cp_valid is not None:
+            ContingencyPlan.objects.update_or_create(
+                team=team, round=rnd,
+                defaults={k: v for k, v in cp_valid.items()
+                          if k not in ('team', 'round')},
+            )
+
+        return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
 # ---------------------------------------------------------------------------
