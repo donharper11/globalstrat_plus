@@ -32,9 +32,12 @@ loader itself dictated).
 
 - **Post-load cross-reference audit (CC-01 §8):** all 9 applicable rules were run
   programmatically against the loaded ORM rows. One error was caught and fixed — a
-  dangling  on 
-  (the supplier is ). The loader's validator does not enforce
-  §8, so it had loaded silently; corrected and re-validated → 0 errors.
+  dangling `multi_source_substitutability.supplier_id: byd_china` on `catcher_taiwan`
+  (the actual supplier id is `byd_electronics_china`). The loader's `validate_scenario_yaml()`
+  does not enforce §8, so it had loaded silently; corrected in the YAML, reloaded, and
+  re-validated → 0 errors. Rules confirmed: R1 (supplier country is a lane origin),
+  R5 (`accepts_trade_finance` resolves), R7 (≥2 suppliers per specialization),
+  R8 (resilience weights sum 1.0), R9 (substitutability refs resolve).
 
 ---
 
