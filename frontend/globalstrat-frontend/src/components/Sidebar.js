@@ -7,7 +7,7 @@ import {
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
   faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
-  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked, faChartPie,
+  faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
@@ -62,7 +62,6 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   const pathname = location.pathname;
   let selectedKey = '';
   if (pathname === '/' || pathname === '/dashboard') selectedKey = 'dashboard';
-  else if (pathname.includes('/sc-dashboard')) selectedKey = 'sc-dashboard';
   else if (pathname.includes('/decisions/sourcing')) selectedKey = 'sourcing';
   else if (pathname.includes('/decisions/logistics')) selectedKey = 'logistics';
   else if (pathname.includes('/decisions/trade-finance')) selectedKey = 'trade-finance';
@@ -141,33 +140,27 @@ const Sidebar = ({ collapsed, onNavigate }) => {
       label: t('nav.decisions'),
       children: [
         {
-          key: 'sc-dashboard',
-          icon: icon(faChartPie),
-          label: sidebarLabels?.sc_dashboard_page || 'Supply Chain Dashboard',
-          onClick: () => go(`${base}/sc-dashboard`),
-        },
-        {
           key: 'sourcing',
           icon: icon(faIndustry),
-          label: sidebarLabels?.sourcing_page || 'Sourcing & Suppliers',
+          label: sidebarLabels?.sourcing_page || 'Sourcing',
           onClick: () => go(`${base}/decisions/sourcing`),
         },
         {
           key: 'logistics',
           icon: icon(faTruck),
-          label: sidebarLabels?.logistics_page || 'Logistics & Distribution',
+          label: sidebarLabels?.logistics_page || 'Logistics',
           onClick: () => go(`${base}/decisions/logistics`),
         },
         {
           key: 'trade-finance',
           icon: icon(faMoneyBillWave),
-          label: sidebarLabels?.trade_finance_page || 'Trade Finance & FX',
+          label: sidebarLabels?.trade_finance_page || 'Trade Finance',
           onClick: () => go(`${base}/decisions/trade-finance`),
         },
         {
           key: 'inventory',
           icon: icon(faBoxesStacked),
-          label: sidebarLabels?.inventory_page || 'Inventory & Resilience',
+          label: sidebarLabels?.inventory_page || 'Inventory',
           onClick: () => go(`${base}/decisions/inventory`),
         },
         {
