@@ -23,13 +23,29 @@ ENVIRONMENT = os.environ.get('GLOBALSTRAT_ENV', 'development')
 IS_PRODUCTION = ENVIRONMENT == 'production'
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-9*703tq1!eqol9@=4k4v_179%p74zhk@0q5@kz6am$6tu+4ib&',
-)
+_INSECURE_SECRET_KEY = 'django-insecure-9*703tq1!eqol9@=4k4v_179%p74zhk@0q5@kz6am$6tu+4ib&'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', _INSECURE_SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not IS_PRODUCTION
+
+# Fail *closed* in production (W7). A deploy that forgets to set real secrets must
+# REFUSE TO BOOT rather than silently sign JWTs with the committed
+# django-insecure key (an auth-bypass risk, since JWT_SECRET_KEY = SECRET_KEY) or
+# connect with the default DB password. Env-overridable everywhere else.
+if IS_PRODUCTION:
+    _insecure_secrets = []
+    if os.environ.get('DJANGO_SECRET_KEY') is None or SECRET_KEY == _INSECURE_SECRET_KEY:
+        _insecure_secrets.append('DJANGO_SECRET_KEY')
+    if not os.environ.get('DB_PASSWORD'):
+        _insecure_secrets.append('DB_PASSWORD')
+    if _insecure_secrets:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            'GLOBALSTRAT_ENV=production but these secrets are unset or still at '
+            'their insecure committed defaults: ' + ', '.join(_insecure_secrets) +
+            '. Set them in the environment before starting in production.'
+        )
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -223,6 +239,15 @@ try:
     _dashscope.base_http_api_url = DASHSCOPE_BASE_URL
 except ImportError:
     pass
+
+# Supply-chain engine strictness (W6). In STRICT mode a failing SC engine step
+# re-raises and fails the round loud, so a bug surfaces in dev/test instead of
+# silently degrading to "no disruptions ever" (the fail-open risk). Default:
+# strict OFF in production (never crash a live class), ON everywhere else so
+# regressions are caught before deploy. Override with SC_ENGINE_STRICT.
+SC_ENGINE_STRICT = os.environ.get(
+    'SC_ENGINE_STRICT', 'false' if IS_PRODUCTION else 'true',
+).lower() in ('1', 'true', 'yes')
 
 # JWT Configuration (custom User model — uses PyJWT, not simplejwt)
 JWT_SECRET_KEY = SECRET_KEY  # In production, use a dedicated key

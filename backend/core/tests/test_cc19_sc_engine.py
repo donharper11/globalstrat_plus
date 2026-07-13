@@ -194,3 +194,37 @@ class CC19SCEngineTest(TestCase):
     def test_seed_deterministic(self):
         self.assertEqual(_seed(1, 2, 3), _seed(1, 2, 3))
         self.assertNotEqual(_seed(1, 2, 3), _seed(1, 3, 3))
+
+
+class CC19SCFailOpenHardeningTest(TestCase):
+    """W6: a failing SC engine step must be LOUD, not silently undisrupted."""
+
+    def setUp(self):
+        from types import SimpleNamespace
+        self.ctx = SimpleNamespace(
+            game=SimpleNamespace(id=99), round_number=3, log=[])
+
+    def _boom(self, context):
+        raise RuntimeError('forced SC failure')
+
+    def test_marker_logged_at_error_and_swallowed_when_not_strict(self):
+        from core.engine.advance_round import _run_sc_step, SC_FAILURE_MARKER
+        with self.settings(SC_ENGINE_STRICT=False):
+            with self.assertLogs('engine', level='ERROR') as cm:
+                _run_sc_step('run_sc_state', self._boom, self.ctx)  # must NOT raise
+        joined = '\n'.join(cm.output)
+        self.assertIn(SC_FAILURE_MARKER, joined)
+        self.assertIn('step=run_sc_state', joined)
+        self.assertIn('game=99', joined)
+        self.assertIn('round=3', joined)
+        # Also recorded on the round log for operator visibility.
+        self.assertTrue(any(SC_FAILURE_MARKER in line for line in self.ctx.log))
+
+    def test_strict_mode_reraises_so_round_fails_loud(self):
+        from core.engine.advance_round import _run_sc_step, SC_FAILURE_MARKER
+        with self.settings(SC_ENGINE_STRICT=True):
+            with self.assertLogs('engine', level='ERROR'):
+                with self.assertRaises(RuntimeError):
+                    _run_sc_step('score_sc_resilience', self._boom, self.ctx)
+        # The failure is still recorded before re-raising.
+        self.assertTrue(any(SC_FAILURE_MARKER in line for line in self.ctx.log))
