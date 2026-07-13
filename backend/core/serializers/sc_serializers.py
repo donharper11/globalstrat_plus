@@ -44,6 +44,18 @@ def _reject_locked_fields(data, game, round_number, field_specs):
             )
 
 
+class RoundNumberMixin(serializers.Serializer):
+    """Expose the human-readable round *number* alongside the ``round`` FK id.
+
+    The read serializers use ``fields = '__all__'``, which renders the ``round``
+    ForeignKey as its Round PK (a global id like 37), not the in-game round
+    number (1..N). Students reading a round-1 decision saw ``round: 37``, which
+    is confusing at best. This adds an explicit, non-breaking ``round_number``
+    so payloads carry both the join key and the display value.
+    """
+    round_number = serializers.IntegerField(source='round.round_number', read_only=True)
+
+
 def mode_is_available(lane, mode):
     """
     True if `mode` is usable on `lane`.
@@ -106,13 +118,13 @@ class FreightMarketSerializer(serializers.ModelSerializer):
 # Decision read serializers (return all stored fields)
 # ---------------------------------------------------------------------------
 
-class SourcingAllocationReadSerializer(serializers.ModelSerializer):
+class SourcingAllocationReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = SourcingAllocation
         fields = '__all__'
 
 
-class SourcingDecisionReadSerializer(serializers.ModelSerializer):
+class SourcingDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     allocations = SourcingAllocationReadSerializer(
         source='team.sourcing_allocations', many=True, read_only=True,
     )
@@ -122,49 +134,49 @@ class SourcingDecisionReadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LogisticsDecisionReadSerializer(serializers.ModelSerializer):
+class LogisticsDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = LogisticsDecision
         fields = '__all__'
 
 
-class IncotermsDecisionReadSerializer(serializers.ModelSerializer):
+class IncotermsDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = IncotermsDecision
         fields = '__all__'
 
 
-class CustomsClassificationDecisionReadSerializer(serializers.ModelSerializer):
+class CustomsClassificationDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = CustomsClassificationDecision
         fields = '__all__'
 
 
-class TradeFinanceDecisionReadSerializer(serializers.ModelSerializer):
+class TradeFinanceDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = TradeFinanceDecision
         fields = '__all__'
 
 
-class SinosureEnrollmentReadSerializer(serializers.ModelSerializer):
+class SinosureEnrollmentReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = SinosureEnrollment
         fields = '__all__'
 
 
-class FXHedgeDecisionReadSerializer(serializers.ModelSerializer):
+class FXHedgeDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = FXHedgeDecision
         fields = '__all__'
 
 
-class InventoryDecisionReadSerializer(serializers.ModelSerializer):
+class InventoryDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = InventoryDecision
         fields = '__all__'
 
 
-class ContingencyPlanReadSerializer(serializers.ModelSerializer):
+class ContingencyPlanReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = ContingencyPlan
         fields = '__all__'
@@ -500,19 +512,19 @@ class ContingencyPlanWriteSerializer(serializers.ModelSerializer):
 # Engine-state serializers (read-only)
 # ---------------------------------------------------------------------------
 
-class SupplierStateSerializer(serializers.ModelSerializer):
+class SupplierStateSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = SupplierState
         fields = '__all__'
 
 
-class LaneStateSerializer(serializers.ModelSerializer):
+class LaneStateSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = LaneState
         fields = '__all__'
 
 
-class SCEventInstanceSerializer(serializers.ModelSerializer):
+class SCEventInstanceSerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = SCEventInstance
         fields = '__all__'
@@ -524,7 +536,7 @@ class HedgePositionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ResilienceScoreHistorySerializer(serializers.ModelSerializer):
+class ResilienceScoreHistorySerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = ResilienceScoreHistory
         fields = '__all__'

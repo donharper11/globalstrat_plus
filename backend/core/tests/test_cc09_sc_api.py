@@ -189,6 +189,10 @@ class SourcingTests(SCApiTestBase):
         g = self._get(SourcingView, 5)
         self.assertEqual(g.data['decision']['tier_2_3_visibility_investment'], 'comprehensive')
         self.assertEqual(len(g.data['allocations']), 2)
+        # W3 oddity #1: payload exposes the human-readable round *number*, not
+        # only the Round FK pk (which can be a large global id like 37).
+        self.assertEqual(g.data['decision']['round_number'], 5)
+        self.assertEqual(g.data['allocations'][0]['round_number'], 5)
 
     def test_invalid_allocation_total_rejected(self):
         body = {'allocations': [
