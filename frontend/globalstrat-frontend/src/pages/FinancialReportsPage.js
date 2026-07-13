@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Card, Select, Typography, Row, Col, Statistic, Table, Tabs, Progress, Empty, Tag, Alert,
+  Card, Select, Typography, Row, Col, Statistic, Table, Tabs, Progress, Empty, Tag, Alert, Space,
 } from 'antd';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -11,6 +11,7 @@ import { useGame } from '../contexts/GameContext';
 import { getFinancialHistory } from '../api/cc15';
 import { getInvestorRelations } from '../api/results';
 import { getGovernmentRelations } from '../api/decisions';
+import { getHedgePositions, getTradeFinance } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader, MetricRow } from '../components/design-system';
 import InvestorProfilePopover, { InvestorNameLink } from '../components/InvestorProfilePopover';
@@ -757,6 +758,83 @@ const GovernmentRelationsTab = ({ gameId, teamId }) => {
   );
 };
 
+// Trade Finance & FX tab — the financial view of SC trade-finance decisions:
+// the FX hedge lifecycle (open -> mark-to-market -> settle -> realized P&L) plus
+// a summary of payment instruments and export-credit (Sinosure) coverage.
+// Moved here from the Supply Chain dashboard (P&L belongs with the financials).
+const TradeFinanceFXTab = ({ gameId, teamId, round }) => {
+  const { t } = useTranslation();
+  const [hedges, setHedges] = useState([]);
+  const [tf, setTf] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!gameId || !teamId) return;
+    let alive = true;
+    setLoading(true);
+    Promise.all([
+      getHedgePositions(gameId, teamId).then(r => r.data).catch(() => []),
+      round ? getTradeFinance(gameId, teamId, round).then(r => r.data).catch(() => ({})) : Promise.resolve({}),
+    ]).then(([h, d]) => { if (alive) { setHedges(h || []); setTf(d || {}); } })
+      .finally(() => { if (alive) setLoading(false); });
+    return () => { alive = false; };
+  }, [gameId, teamId, round]);
+
+  if (loading) return <LoadingSpinner />;
+  const money = (n) => (n == null ? '—' : `$${Math.round(Number(n)).toLocaleString()}`);
+  const signed = (n) => (
+    <Text type={Number(n) > 0 ? 'success' : Number(n) < 0 ? 'danger' : undefined}>
+      {Number(n) >= 0 ? '+' : ''}{Math.round(Number(n)).toLocaleString()}
+    </Text>
+  );
+  const tfRows = tf.trade_finance || [];
+  const sinosure = tf.sinosure || [];
+  const instruments = [...new Set(tfRows.map(r => r.buyer_payment_instrument).filter(Boolean))];
+
+  return (
+    <div>
+      <Title level={5} style={{ marginTop: 0 }}>Open FX hedge positions</Title>
+      <Text type="secondary" style={{ fontSize: 12 }}>
+        Hedges open against your foreign receivables at round-advance, mark to market each round, and settle
+        at maturity — realized P&amp;L flows into net income. A short receivables hedge gains when the foreign
+        currency weakens.
+      </Text>
+      {hedges.length === 0
+        ? <Empty style={{ margin: '12px 0' }} description="No FX hedge positions yet — set a hedge ratio on the Trade Finance page and advance a round." />
+        : (
+          <Table rowKey="id" size="small" pagination={false} scroll={{ x: true }} style={{ marginTop: 8 }}
+            dataSource={hedges}
+            columns={[
+              { title: 'Pair', dataIndex: 'currency_pair', render: (v) => <Text strong>{v}</Text> },
+              { title: 'Notional', dataIndex: 'notional', render: money },
+              { title: 'Locked rate', dataIndex: 'locked_rate', render: (v) => Number(v).toFixed(4) },
+              { title: 'Mark-to-market', dataIndex: 'mtm_current', render: signed },
+              { title: 'Realized P&L', dataIndex: 'realized_pnl', render: (v) => (v == null ? <Text type="secondary">—</Text> : signed(v)) },
+              { title: 'Status', dataIndex: 'status', render: (v) => <Tag color={v === 'open' ? 'blue' : v === 'matured' ? 'green' : 'default'}>{v}</Tag> },
+            ]} />
+        )}
+
+      <Title level={5} style={{ marginTop: 20 }}>Payment & export-credit posture</Title>
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          <Card size="small" title="Buyer payment instruments">
+            {instruments.length ? <Space wrap>{instruments.map(i => <Tag key={i}>{i.replace(/_/g, ' ')}</Tag>)}</Space>
+              : <Text type="secondary">None set.</Text>}
+          </Card>
+        </Col>
+        <Col xs={24} md={12}>
+          <Card size="small" title="Export-credit (Sinosure) coverage">
+            {sinosure.length
+              ? <Space direction="vertical" size={0}>{sinosure.map((s, i) => (
+                  <Text key={i}>Market {s.market}: {s.coverage_pct}%</Text>))}</Space>
+              : <Text type="secondary">No export-credit insurance set.</Text>}
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+};
+
 const FinancialReportsPage = () => {
   const { t } = useTranslation();
   const { gameId, teamId } = useGame();
@@ -910,6 +988,11 @@ const FinancialReportsPage = () => {
       key: 'products',
       label: t('financial_reports.products'),
       children: <ProductsTab current={current} rounds={rounds} fmt={fmt} pct={pct} />,
+    },
+    {
+      key: 'trade_finance',
+      label: 'Trade Finance & FX',
+      children: <TradeFinanceFXTab gameId={gameId} teamId={teamId} round={selectedRound} />,
     },
     {
       key: 'investors',
