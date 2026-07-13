@@ -404,3 +404,17 @@ class SCEventsView(APIView):
             models.Q(affects_all_teams=True) | models.Q(affected_teams=team)
         )
         return Response(SCEventInstanceSerializer(events, many=True).data)
+
+
+class ComplianceEventsView(APIView):
+    """CC-18: a team's compliance enforcement events (detentions/freezes/costs)."""
+    permission_classes = [IsTeamMember]
+
+    def get(self, request, game_id, team_id):
+        from core.models.sc_state import ComplianceEnforcementEvent
+        from core.serializers.sc_serializers import ComplianceEnforcementEventSerializer
+        team = get_object_or_404(Team, pk=team_id, game_id=game_id)
+        events = (ComplianceEnforcementEvent.objects.filter(team=team)
+                  .select_related('regime', 'market', 'round')
+                  .order_by('-round__round_number'))
+        return Response(ComplianceEnforcementEventSerializer(events, many=True).data)

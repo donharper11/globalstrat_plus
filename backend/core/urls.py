@@ -59,7 +59,7 @@ from core.views.sc_views import (
     ScenarioSuppliersView, ScenarioLanesView,
     ScenarioTradeFinanceInstrumentsView, ScenarioComplianceRegimesView,
     ScenarioMarketsView, ScenarioSegmentsView,
-    ResilienceScoreView, HedgePositionsView, SCEventsView,
+    ResilienceScoreView, HedgePositionsView, SCEventsView, ComplianceEventsView,
 )
 from core.views.overrides import (
     DisclosureOverrideListCreateView, DisclosureOverrideDeleteView,
@@ -438,6 +438,8 @@ urlpatterns = [
          HedgePositionsView.as_view(), name='sc-hedge-positions'),
     path('games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sc-events/',
          SCEventsView.as_view(), name='sc-events'),
+    path('games/<int:game_id>/teams/<int:team_id>/sc/compliance-events/',
+         ComplianceEventsView.as_view(), name='sc-compliance-events'),
 
     # ---- CC-04 Amendment A1: Instructor Override Endpoints ----
     path('games/<int:game_id>/disclosure-overrides/',

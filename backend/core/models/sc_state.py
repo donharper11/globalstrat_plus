@@ -122,3 +122,37 @@ class ResilienceScoreHistory(models.Model):
 
     def __str__(self):
         return f"{self.team} R{self.round.round_number} resilience={self.score}"
+
+
+class ComplianceEnforcementEvent(models.Model):
+    """CC-18: a compliance regime enforcement action against a team in a market.
+
+    Written by `compliance_engine.enforce_compliance` when a regime fires: it
+    records the remediation/penalty cost booked to the P&L, the market-access
+    freeze window (the market is blocked through `freeze_until_round`), the
+    reputation impact, and what triggered it — closing the
+    detention → freeze → cost → reputation loop.
+    """
+    team = models.ForeignKey(
+        'core.Team', on_delete=models.CASCADE, related_name='compliance_events',
+    )
+    round = models.ForeignKey('core.Round', on_delete=models.CASCADE)
+    regime = models.ForeignKey(
+        'core.ComplianceRegime', on_delete=models.PROTECT, related_name='enforcement_events',
+    )
+    market = models.ForeignKey(
+        'core.MarketDefinition', on_delete=models.PROTECT, null=True, blank=True,
+    )
+
+    cost_usd = models.DecimalField(max_digits=14, decimal_places=2, default='0.00')
+    freeze_until_round = models.IntegerField(default=0)  # inclusive last frozen round number
+    reputation_impact = models.DecimalField(max_digits=6, decimal_places=3, default='0.000')
+    triggered_by = models.CharField(max_length=200, blank=True)
+    mitigated = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'sc_compliance_enforcement_event'
+        indexes = [models.Index(fields=['team', 'round'])]
+
+    def __str__(self):
+        return f"{self.team} R{self.round.round_number} {self.regime.regime_id} ${self.cost_usd}"

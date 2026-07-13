@@ -9,6 +9,7 @@ import { useGame } from '../../contexts/GameContext';
 import {
   getSuppliers, getLanes, getComplianceRegimes, getSourcing, getLogistics,
   getTradeFinance, getInventory, getResilienceScore, getSCEvents, getHedgePositions,
+  getComplianceEvents,
 } from '../../api/sc';
 import LoadingSpinner from '../LoadingSpinner';
 import { PanelCard } from '../design-system';
@@ -42,16 +43,17 @@ const SupplyChainPanel = () => {
     setLoading(true);
     const safe = (p) => p.then((r) => r.data).catch(() => null);
     try {
-      const [suppliers, lanes, regimes, sourcing, logistics, tf, inventory, resilience, events, hedges] = await Promise.all([
+      const [suppliers, lanes, regimes, sourcing, logistics, tf, inventory, resilience, events, hedges, compliance] = await Promise.all([
         safe(getSuppliers(scenarioId)), safe(getLanes(scenarioId)), safe(getComplianceRegimes(scenarioId)),
         safe(getSourcing(gameId, teamId, currentRound)), safe(getLogistics(gameId, teamId, currentRound)),
         safe(getTradeFinance(gameId, teamId, currentRound)), safe(getInventory(gameId, teamId, currentRound)),
         safe(getResilienceScore(gameId, teamId, currentRound)), safe(getSCEvents(gameId, teamId, currentRound)),
-        safe(getHedgePositions(gameId, teamId)),
+        safe(getHedgePositions(gameId, teamId)), safe(getComplianceEvents(gameId, teamId)),
       ]);
       setD({ suppliers: suppliers || [], lanes: lanes || [], regimes: regimes || [],
         sourcing: sourcing || {}, logistics: logistics || {}, tf: tf || {},
-        inventory: inventory || {}, resilience: resilience || {}, events: events || [], hedges: hedges || [] });
+        inventory: inventory || {}, resilience: resilience || {}, events: events || [], hedges: hedges || [],
+        compliance: compliance || [] });
     } catch { message.error('Unable to load supply chain summary.'); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
@@ -187,6 +189,21 @@ const SupplyChainPanel = () => {
             ) : (
               <Alert style={{ marginTop: 12 }} type="success" showIcon
                 message={allocations.length ? 'None of your current suppliers are flagged for forced-labor risk.' : 'Add suppliers to see your compliance risk here.'} />
+            )}
+            {(d.compliance || []).length > 0 && (
+              <Alert style={{ marginTop: 12 }} type="error" showIcon
+                message="Compliance enforcement actions"
+                description={
+                  <Space direction="vertical" size={2}>
+                    {d.compliance.map((e) => (
+                      <Text key={e.id}>
+                        R{e.round_number}: <Text strong>{e.regime_name}</Text>
+                        {e.market_code ? ` in ${e.market_code}` : ''} — cost ${Math.round(Number(e.cost_usd)).toLocaleString()}
+                        {e.freeze_until_round >= currentRound ? `, market frozen through R${e.freeze_until_round}` : ''}
+                      </Text>
+                    ))}
+                  </Space>
+                } />
             )}
           </SCCard>
         </Col>

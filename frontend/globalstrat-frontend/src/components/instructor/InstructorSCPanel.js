@@ -115,6 +115,16 @@ const InstructorSCPanel = ({ gameId }) => {
       render: (v) => v == null ? <Text type="secondary">—</Text> : v },
     { title: 'Contingency', dataIndex: 'has_contingency', key: 'cont',
       render: (v) => v ? <Tag color="green">ready</Tag> : <Tag>none</Tag> },
+    { title: 'Compliance', dataIndex: 'compliance_events', key: 'comp', width: 200,
+      render: (evs) => (evs && evs.length)
+        ? <Space direction="vertical" size={0}>
+            {evs.map((e, i) => (
+              <Text key={i} type="danger" style={{ fontSize: 12 }}>
+                {e.regime}{e.market ? ` (${e.market})` : ''} — frozen thru R{e.freeze_until_round}
+              </Text>
+            ))}
+          </Space>
+        : <Tag color="green">clear</Tag> },
     { title: 'Disruption impact', key: 'impact', width: 170,
       render: (_, r) => {
         const i = r.resilience?.disruption_impact;

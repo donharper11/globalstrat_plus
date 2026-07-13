@@ -121,11 +121,15 @@ def generate_financial_statements(context):
         # CC-19B Channel 2: supply-chain disruption costs (freight surcharge +
         # backup/expedite mitigation premiums) — a real operating expenditure.
         sc_disruption_cost = getattr(context, 'sc_disruption_costs', {}).get(team.id, D('0'))
+        # CC-18: compliance remediation/penalty costs (detentions this round) — a
+        # real operating expenditure booked by compliance_engine.enforce_compliance.
+        compliance_cost = getattr(context, 'compliance_costs', {}).get(team.id, D('0'))
 
         # Include depreciation and retirement costs in operating income
         operating_income = (gross_profit - total_opex - logistics_tariff
                             - inventory_expense - depreciation - retirement_expense
-                            - tax_structure_maintenance - sc_disruption_cost)
+                            - tax_structure_maintenance - sc_disruption_cost
+                            - compliance_cost)
         # CC-20: realized FX hedge P&L — a non-operating financial item settled by
         # fx_engine.process_fx_hedges this round (gain > 0 lifts pre-tax income).
         fx_hedge_pnl = getattr(context, 'sc_fx_hedge_pnl', {}).get(team.id, D('0'))
