@@ -21,6 +21,41 @@ from core.engine.utils import RoundContext
 
 logger = logging.getLogger('engine')
 
+# Distinct, greppable/alertable marker for supply-chain engine failures (W6).
+SC_FAILURE_MARKER = '[SC-ENGINE-FAILURE]'
+
+
+def _run_sc_step(step_name, fn, context):
+    """Run one supply-chain engine step fail-open, but LOUD (W6).
+
+    The SC steps were best-effort try/except: a throw degraded silently to
+    ``capacity_factor=1`` / ``cost=0``, so a subtle SC bug turned into "no
+    disruptions ever" while the round still 'succeeded looking undisrupted'.
+
+    This wrapper makes every failure:
+      - log at ERROR with a distinct, alertable marker (``SC_FAILURE_MARKER``)
+        including the step, game, and round, so the regression is greppable;
+      - be recorded on the round log for operator visibility;
+      - and, in strict mode (``settings.SC_ENGINE_STRICT`` — default ON outside
+        production), RE-RAISE so the round fails loud in dev/test rather than
+        succeeding undisrupted. In production strict is off by default, so a
+        live class is never crashed by an SC bug — but the ERROR log still fires.
+    """
+    from django.conf import settings
+    try:
+        fn(context)
+    except Exception as e:
+        game_id = getattr(getattr(context, 'game', None), 'id', '?')
+        round_number = getattr(context, 'round_number', '?')
+        logger.error(
+            '%s step=%s game=%s round=%s: %s',
+            SC_FAILURE_MARKER, step_name, game_id, round_number, e,
+            exc_info=True,
+        )
+        context.log.append(f'{SC_FAILURE_MARKER} {step_name} failed: {e}')
+        if getattr(settings, 'SC_ENGINE_STRICT', False):
+            raise
+
 
 def advance_round(game_id, dry_run=False):
     """
@@ -122,12 +157,8 @@ def _run_phase_1(game_id):
     # CC-19B: Generate SC disruption state (fire SC events, carry recovery forward)
     # and compute each team's production capacity factor BEFORE revenue, so
     # Channel-1 lost sales throttle units in calculate_revenue. Best-effort.
-    try:
-        from core.engine.sc_engine import run_sc_state
-        run_sc_state(context)
-    except Exception as e:
-        logger.exception('CC-19B SC state generation failed')
-        context.log.append(f'CC-19B SC state failed: {e}')
+    from core.engine.sc_engine import run_sc_state
+    _run_sc_step('run_sc_state', run_sc_state, context)
 
     from core.engine.rd_processing import process_rd
     process_rd(context)
@@ -207,11 +238,8 @@ def _run_phase_1(game_id):
     # CC-19B Channel 2: supply-chain disruption costs (freight surcharge +
     # mitigation premiums) — a real operating expense booked in operating_income
     # by generate_financial_statements. Best-effort. Must run before financials.
-    try:
-        from core.engine.sc_engine import calculate_sc_disruption_costs
-        calculate_sc_disruption_costs(context)
-    except Exception as e:
-        context.log.append(f'CC-19B SC disruption costs failed: {e}')
+    from core.engine.sc_engine import calculate_sc_disruption_costs
+    _run_sc_step('calculate_sc_disruption_costs', calculate_sc_disruption_costs, context)
 
     # Step 12: Financial statements
     from core.engine.financials import generate_financial_statements
@@ -302,12 +330,8 @@ def _run_phase_1(game_id):
     # CC-19/CC-19B: Score supply-chain resilience and record per-team disruption
     # impact (lost sales + costs already flowed through the P&L above). Read-only;
     # best-effort — must never crash round processing.
-    try:
-        from core.engine.sc_engine import score_sc_resilience
-        score_sc_resilience(context)
-    except Exception as e:
-        logger.exception('CC-19 SC resilience scoring failed')
-        context.log.append(f'CC-19 SC resilience scoring failed: {e}')
+    from core.engine.sc_engine import score_sc_resilience
+    _run_sc_step('score_sc_resilience', score_sc_resilience, context)
 
     logger.info(f'Phase 1 complete: {phase_1_time:.1f}s')
     context.log.append(f'Round {current_round} processed (Phase 1: {phase_1_time:.1f}s)')
