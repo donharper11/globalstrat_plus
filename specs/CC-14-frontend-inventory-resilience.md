@@ -19,20 +19,6 @@ This bundle inherits `STANDING-DISCIPLINE.md`, but the following rules are repea
 5. A passing backend response alone is not proof of frontend completion. Frontend bundles require browser verification of the actual user workflow.
 
 
-## Operational State Mirror Requirement
-
-This page must not be only an inventory policy form. It must show the simulated inventory/resilience operating picture:
-
-- inventory on hand if available
-- inventory on order / committed if available
-- buffer-day posture by product/market
-- safety-stock trigger status
-- contingency plan readiness
-- open disruption flags that affect inventory or supplier continuity
-- clear distinction between current locked state and unsaved draft edits
-
-If OH/OO or shipment-derived inventory state is not yet exposed, show the policy state that exists and document the missing operational-state source in the closeout report. Do not invent fields.
-
 ---
 
 ## 1. Purpose

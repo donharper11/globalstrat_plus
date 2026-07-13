@@ -18,6 +18,22 @@ This bundle inherits `STANDING-DISCIPLINE.md`, but the following rules are repea
 4. Before calling the bundle complete, self-verify every acceptance criterion with recorded command output, API/browser evidence, and a closeout report under the bundle's `specs/reports/cc-XX/` directory.
 5. A passing backend response alone is not proof of frontend completion. Frontend bundles require browser verification of the actual user workflow.
 
+
+## Operational State API Requirement
+
+CC-9 should verify whether the existing API exposes enough state for ERP-shaped simulation screens. Decision pages need more than form payloads; they need current state, committed state, and any generated operational status available from the simulation.
+
+Before closing CC-9, produce an API state inventory covering:
+
+- supplier commitments/allocation state
+- lane/shipment or lane-status state
+- inventory OH/OO or policy state
+- trade-finance/FX decision and hedge-position state
+- compliance/event/disruption state
+- resilience score state
+
+If a required state source is absent, do not invent it casually. Record it as a named follow-up endpoint/model requirement, with exact model/table verification evidence.
+
 ---
 
 ## 1. Purpose
