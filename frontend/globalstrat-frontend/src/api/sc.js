@@ -56,3 +56,15 @@ export const getInventory = (gameId, teamId, roundNumber) =>
   client.get(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/inventory/`);
 export const saveInventory = (gameId, teamId, roundNumber, data) =>
   client.post(`/games/${gameId}/teams/${teamId}/sc/round/${roundNumber}/inventory/`, data);
+
+// ---- Instructor SC panel (CC-16) ----
+export const getInstructorSCPanel = (gameId, round) =>
+  client.get(`/games/${gameId}/instructor/sc-panel/`, { params: round ? { round } : {} });
+export const getInstructorSCEventCatalog = (gameId) =>
+  client.get(`/games/${gameId}/instructor/sc-event-catalog/`);
+export const injectSCEvent = (gameId, eventTemplateId) =>
+  client.post(`/games/${gameId}/instructor/inject-sc-event/`, { event_template_id: eventTemplateId });
+export const getResilienceWeightOverrides = (gameId) =>
+  client.get(`/games/${gameId}/resilience-weight-overrides/`);
+export const saveResilienceWeightOverride = (gameId, data) =>
+  client.post(`/games/${gameId}/resilience-weight-overrides/`, data);
