@@ -200,6 +200,18 @@ const InstructorSCPanel = ({ gameId }) => {
         )}
       </Card>
 
+      {panel?.pending_injections?.length > 0 && (
+        <Alert type="info" showIcon
+          message={`${panel.pending_injections.length} injection(s) queued — fire on next round advance`}
+          description={
+            <Space direction="vertical" size={0}>
+              {panel.pending_injections.map((p, i) => (
+                <Text key={i}>{p.event} ({p.severity}) — fires when round {p.fires_on_round} is advanced</Text>
+              ))}
+            </Space>
+          } />
+      )}
+
       {panel?.active_disruptions?.length > 0 && (
         <Alert type="warning" showIcon
           message={`${panel.active_disruptions.length} disruption(s) active this round`}

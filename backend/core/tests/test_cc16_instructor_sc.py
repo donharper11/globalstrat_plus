@@ -91,6 +91,18 @@ class CC16InstructorSCTest(TestCase):
         self.assertFalse(inst.resolution_data.get('pending'))
         self.assertTrue(inst.resolution_data.get('applied'))
 
+    def test_panel_shows_pending_injection(self):
+        # Inject, then the panel must confirm the queued (not-yet-fired) event.
+        r = self._call(InstructorInjectSCEventView, 'post', self.instructor,
+                       {'event_template_id': self.quake.id})
+        self.assertEqual(r.status_code, 201, r.data)
+        resp = self._call(InstructorSCPanelView, 'get', self.instructor)
+        self.assertEqual(len(resp.data['pending_injections']), 1)
+        self.assertTrue(resp.data['pending_injections'][0]['event'].startswith('Taiwan'))
+        self.assertEqual(resp.data['pending_injections'][0]['fires_on_round'], 1)
+        # Not counted as an active disruption yet (hasn't fired).
+        self.assertEqual(resp.data['active_disruptions'], [])
+
     # -- panel aggregation ---------------------------------------------
     def test_panel_returns_per_team_snapshot(self):
         ResilienceScoreHistory.objects.create(
