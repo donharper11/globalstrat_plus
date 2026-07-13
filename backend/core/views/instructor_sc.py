@@ -101,6 +101,21 @@ class InstructorSCPanelView(APIView):
                     'rate_modifier': float(ls.current_rate_modifier),
                 })
 
+        # Instructor-injected events queued for this round but not yet fired (they
+        # fire on the next advance) — so the panel confirms a staged injection
+        # instead of looking empty until the round is advanced.
+        pending_injections = []
+        if rnd is not None:
+            for inst in (SCEventInstance.objects
+                         .filter(round=rnd, fired_by_instructor=True)
+                         .select_related('event_template')):
+                if (inst.resolution_data or {}).get('pending'):
+                    pending_injections.append({
+                        'event': inst.event_template.name,
+                        'severity': inst.event_template.severity,
+                        'fires_on_round': rnd.round_number,
+                    })
+
         teams_out = []
         weights_used = {}
         for team in Team.objects.filter(game=game).order_by('id'):
@@ -171,6 +186,7 @@ class InstructorSCPanelView(APIView):
             'round_number': rnd.round_number if rnd else None,
             'effective_resilience_weights': weights_used,
             'active_disruptions': active_disruptions,
+            'pending_injections': pending_injections,
             'teams': teams_out,
         })
 
