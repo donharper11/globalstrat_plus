@@ -167,6 +167,34 @@ TAG_RULES = {
         'supply chain', 'logistics', 'sourcing', 'procurement',
         'transport', 'distribution channel',
     ],
+    # CC-11 SC taxonomy extensions (rework): finer supply-chain topics so the
+    # SC corpus can be topic-filtered, not just bucketed under 'supply_chain'.
+    'global_sourcing': [
+        'global sourcing', 'integrated sourcing', 'supplier selection',
+        'strategic sourcing', 'outsourcing', 'make or buy', 'supply base',
+    ],
+    'logistics': [
+        'logistics', 'freight', 'shipping', 'incoterms', 'modal', 'warehousing',
+        'container', 'lead time', 'distribution network',
+    ],
+    'trade_finance': [
+        'trade finance', 'letter of credit', 'currency hedging', 'fx hedge',
+        'export credit', 'sinosure', 'forward contract', 'import or export',
+        'payment terms',
+    ],
+    'compliance': [
+        'compliance', 'uflpa', 'cbam', 'forced labor', 'export control',
+        'customs', 'sanctions', 'entity list', 'due diligence', 'trade bloc',
+        'trade agreement',
+    ],
+    'resilience': [
+        'resilience', 'disruption', 'supply chain risk', 'business continuity',
+        'global risks', 'shock', 'vulnerability', 'contingency',
+    ],
+    'chinese_institutional': [
+        'china', 'chinese', 'belt and road', 'guanxi', 'state-owned',
+        'made in china', 'dragon',
+    ],
     'technology': [
         'technology', 'digital', 'artificial intelligence',
         'blockchain', 'information system', 'big data', 'cyber',
@@ -244,12 +272,16 @@ def ingest_article(filepath, catalog_entry, client, collection_name):
     if not pages:
         return 0, [], "No text extracted"
 
-    # Tag assignment
+    # Tag assignment: keyword auto-tags (filename + content) merged with any
+    # curated tags in the catalog. A curated `topic` (single primary subject)
+    # takes precedence; otherwise fall back to the first auto tag.
     full_text_sample = ' '.join([t for _, t in pages])[:2000]
-    tags = assign_tags(
+    auto_tags = assign_tags(
         catalog_entry.get('relative_path', catalog_entry.get('filename', '')),
         full_text_sample,
     )
+    tags = sorted(set(auto_tags) | set(catalog_entry.get('tags') or []))
+    topic = catalog_entry.get('topic') or (tags[0] if tags else 'general')
 
     # Chunk
     chunks = chunk_article(pages)
@@ -282,6 +314,7 @@ def ingest_article(filepath, catalog_entry, client, collection_name):
                 'section': chunk['label'],
                 'chunk_index': i,
                 'total_chunks': len(chunks),
+                'topic': topic,
                 'tags': tags,
                 'page_count': catalog_entry.get('page_count'),
                 'author': catalog_entry.get('author'),
