@@ -5,6 +5,7 @@ import {
 } from 'antd';
 import { ReloadOutlined, ArrowRightOutlined, WarningOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../../contexts/GameContext';
 import {
   getSuppliers, getLanes, getComplianceRegimes, getSourcing, getLogistics,
@@ -33,6 +34,7 @@ const SCCard = ({ title, color = 'strategic', onEdit, editLabel, empty, emptyTex
 
 // Supply-chain KPI panel — rendered as a tab on the main dashboard (CC-23A / UX #9).
 const SupplyChainPanel = () => {
+  const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound } = useGame();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -119,9 +121,9 @@ const SupplyChainPanel = () => {
 
       <Row gutter={16}>
         <Col xs={24} md={8}>
-          <SCCard title="Resilience Score" color="decision">
+          <SCCard title={t('sc.dashboard.resilience_score')} color="decision">
             {scoreCalculated ? <Statistic title="This round" value={score} /> : (
-              <Alert type="info" showIcon message="Not scored yet"
+              <Alert type="info" showIcon message={t('sc.dashboard.not_scored')}
                 description="Your resilience score appears here once the round has been processed." />
             )}
             {scoreCalculated && disrupted && (
@@ -140,7 +142,7 @@ const SupplyChainPanel = () => {
           </SCCard>
         </Col>
         <Col xs={24} md={16}>
-          <SCCard title="Supplier Concentration" color="strategic"
+          <SCCard title={t('sc.dashboard.supplier_concentration')} color="strategic"
             onEdit={() => go('/decisions/sourcing')} editLabel="Edit sourcing"
             empty={concentrationRows.length === 0} emptyText="You haven't allocated any suppliers yet.">
             <Table rowKey="cat" size="small" pagination={false} dataSource={concentrationRows}
@@ -179,7 +181,7 @@ const SupplyChainPanel = () => {
 
       <Row gutter={16}>
         <Col xs={24} md={12}>
-          <SCCard title="Compliance Risk" color="decision">
+          <SCCard title={t('sc.dashboard.compliance_risk')} color="decision">
             <Paragraph type="secondary" style={{ fontSize: 12 }}>Rules that apply in this market:</Paragraph>
             <Space wrap>{d.regimes.map((r) => <Tag key={r.id}>{r.name}</Tag>)}</Space>
             {flaggedNames.length > 0 ? (
@@ -192,7 +194,7 @@ const SupplyChainPanel = () => {
             )}
             {(d.compliance || []).length > 0 && (
               <Alert style={{ marginTop: 12 }} type="error" showIcon
-                message="Compliance enforcement actions"
+                message={t('sc.dashboard.enforcement_actions')}
                 description={
                   <Space direction="vertical" size={2}>
                     {d.compliance.map((e) => (

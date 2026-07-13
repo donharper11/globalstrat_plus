@@ -3,27 +3,29 @@ import { Tag, Space, Tooltip } from 'antd';
 import {
   CheckCircleOutlined, EditOutlined, LockOutlined, EyeOutlined, MinusCircleOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 // CC-23A: one shared operational-state vocabulary used across the SC dashboard
 // and every SC decision page, so the same state concept always looks the same.
+// CC-23 (i18n): labels/help live in the `sc.state.*` translation namespace
+// (EN + ZH); this module keeps only the language-neutral colour/icon + the
+// translation key for each state.
 export const SC_STATE = {
-  current: { color: 'green', icon: <CheckCircleOutlined />, label: 'Saved',
-    help: 'This matches what you last saved.' },
-  draft: { color: 'gold', icon: <EditOutlined />, label: 'Unsaved changes',
-    help: "You've made changes that aren't saved yet." },
-  locked: { color: 'default', icon: <LockOutlined />, label: 'Locked',
-    help: "This is locked for the round and can't be changed." },
-  readonly: { color: 'default', icon: <EyeOutlined />, label: 'View only',
-    help: "This round isn't open for changes right now." },
-  unavailable: { color: 'blue', icon: <MinusCircleOutlined />, label: 'Not yet',
-    help: 'This updates automatically as the simulation runs each round.' },
+  current: { color: 'green', icon: <CheckCircleOutlined />, key: 'saved' },
+  draft: { color: 'gold', icon: <EditOutlined />, key: 'unsaved' },
+  locked: { color: 'default', icon: <LockOutlined />, key: 'locked' },
+  readonly: { color: 'default', icon: <EyeOutlined />, key: 'view_only' },
+  unavailable: { color: 'blue', icon: <MinusCircleOutlined />, key: 'not_yet' },
 };
 
 export const StateBadge = ({ state, text }) => {
+  const { t } = useTranslation();
   const s = SC_STATE[state] || SC_STATE.unavailable;
   return (
-    <Tooltip title={s.help}>
-      <Tag color={s.color} icon={s.icon} style={{ margin: 0 }}>{text || s.label}</Tag>
+    <Tooltip title={t(`sc.state.${s.key}.help`)}>
+      <Tag color={s.color} icon={s.icon} style={{ margin: 0 }}>
+        {text || t(`sc.state.${s.key}.label`)}
+      </Tag>
     </Tooltip>
   );
 };
@@ -35,11 +37,16 @@ export const pageState = ({ locked, editable, dirty }) => {
   return dirty ? 'draft' : 'current';
 };
 
-export const StateLegend = () => (
-  <Space wrap size={4} style={{ marginBottom: 12 }}>
-    <span style={{ fontSize: 12, color: '#888' }}>State legend:</span>
-    {['current', 'draft', 'locked', 'readonly', 'unavailable'].map((k) => (
-      <Tag key={k} color={SC_STATE[k].color} icon={SC_STATE[k].icon}>{SC_STATE[k].label}</Tag>
-    ))}
-  </Space>
-);
+export const StateLegend = () => {
+  const { t } = useTranslation();
+  return (
+    <Space wrap size={4} style={{ marginBottom: 12 }}>
+      <span style={{ fontSize: 12, color: '#888' }}>{t('sc.state.legend')}</span>
+      {['current', 'draft', 'locked', 'readonly', 'unavailable'].map((k) => (
+        <Tag key={k} color={SC_STATE[k].color} icon={SC_STATE[k].icon}>
+          {t(`sc.state.${SC_STATE[k].key}.label`)}
+        </Tag>
+      ))}
+    </Space>
+  );
+};

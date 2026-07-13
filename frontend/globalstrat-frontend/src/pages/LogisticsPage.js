@@ -6,6 +6,7 @@ import {
 import {
   LockOutlined, SaveOutlined, ReloadOutlined, PlusOutlined, EditOutlined, DeleteOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import { getLanes, getMarkets, getLogistics, saveLogistics } from '../api/sc';
@@ -44,6 +45,7 @@ const flattenErrors = (data) => {
 const lockTag = (r) => (<Tooltip title={`Unlocks in round ${r}`}><Tag icon={<LockOutlined />} style={{ marginLeft: 6 }}>Round {r}</Tag></Tooltip>);
 
 const LogisticsPage = () => {
+  const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound, roundStatus } = useGame();
   const { locked } = useDecisions();
   const round = currentRound || 1;
@@ -74,7 +76,7 @@ const LogisticsPage = () => {
       const ic = {}; (logRes.data?.incoterms || []).forEach((x) => { ic[x.destination_market] = { incoterms: x.incoterms, insurance_coverage_pct: x.insurance_coverage_pct }; }); setInco(ic);
       const cu = {}; (logRes.data?.customs || []).forEach((x) => { cu[x.destination_market] = { classification: x.classification, reverse_logistics_capacity_pct: x.reverse_logistics_capacity_pct, reverse_logistics_hub_market: x.reverse_logistics_hub_market }; }); setCustoms(cu);
       setSnap(canonical(m, ic, cu));
-    } catch { message.error('Unable to load your logistics.'); } finally { setLoading(false); }
+    } catch { message.error(t('sc.logistics.load_error')); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
 
@@ -105,7 +107,7 @@ const LogisticsPage = () => {
     setSaving(true);
     try {
       await saveLogistics(gameId, teamId, currentRound, { logistics, incoterms, customs: customsList });
-      message.success('Logistics saved.');
+      message.success(t('sc.logistics.saved_toast'));
       await load();
       return true;
     } catch (err) {
@@ -149,8 +151,8 @@ const LogisticsPage = () => {
   return (
     <div style={{ maxWidth: 1000, width: '100%' }}>
       <PageHeader
-        title="Logistics"
-        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Set how you ship on each route, and your terms and customs by market.</Text>}
+        title={t('sc.logistics.title')}
+        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>{t('sc.common.round')} {round} · {t('sc.logistics.subtitle')}</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
@@ -158,7 +160,7 @@ const LogisticsPage = () => {
           <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
         </Space>} />
 
-      {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }} message={locked ? 'Your decisions are locked for this round.' : "This round isn't open for changes — you're viewing only."} />}
+      {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }} message={locked ? t('sc.common.locked_notice') : t('sc.common.readonly_notice')} />}
       {serverErrors.length > 0 && <Alert type="error" showIcon closable style={{ marginBottom: 16 }} onClose={() => setServerErrors([])} message="Please fix these" description={<ul style={{ margin: 0, paddingLeft: 18 }}>{serverErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>} />}
 
       <PanelCard headerColor="decision" title={<Space>Shipping Routes {round < UNLOCK.modal_mix && lockTag(UNLOCK.modal_mix)}</Space>} style={{ marginBottom: 16 }}>

@@ -7,6 +7,7 @@ import {
   PlusOutlined, DeleteOutlined, LockOutlined, SaveOutlined, ReloadOutlined,
   EditOutlined, ShopOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import { getSuppliers, getSourcing, saveSourcing } from '../api/sc';
@@ -65,6 +66,7 @@ const newRow = (category) => ({ key: `row-${rowSeq++}`, critical_input_category:
   supplier: null, allocation_pct: 0, payment_terms: '', volume_commitment_units: 0 });
 
 const SourcingPage = () => {
+  const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound, roundStatus } = useGame();
   const { locked } = useDecisions();
   const round = currentRound || 1;
@@ -99,7 +101,7 @@ const SourcingPage = () => {
       }));
       setMultiSourcing(ms); setTierVisibility(tv); setRows(loadedRows);
       setSnap(canonical(ms, tv, loadedRows));
-    } catch { message.error('Unable to load your sourcing.'); } finally { setLoading(false); }
+    } catch { message.error(t('sc.sourcing.load_error')); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
 
@@ -152,7 +154,7 @@ const SourcingPage = () => {
     setSaving(true);
     try {
       await saveSourcing(gameId, teamId, currentRound, payload);
-      message.success('Sourcing saved.');
+      message.success(t('sc.sourcing.saved_toast'));
       await load();
       return true;
     } catch (err) {
@@ -215,8 +217,8 @@ const SourcingPage = () => {
   return (
     <div style={{ maxWidth: 1000, width: '100%' }}>
       <PageHeader
-        title="Sourcing"
-        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Choose who supplies each critical input, and set your overall sourcing approach.</Text>}
+        title={t('sc.sourcing.title')}
+        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>{t('sc.common.round')} {round} · {t('sc.sourcing.subtitle')}</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
@@ -226,28 +228,28 @@ const SourcingPage = () => {
         </Space>} />
 
       {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }}
-        message={locked ? 'Your decisions are locked for this round.' : "This round isn't open for changes — you're viewing only."} />}
+        message={locked ? t('sc.common.locked_notice') : t('sc.common.readonly_notice')} />}
       {serverErrors.length > 0 && <Alert type="error" showIcon closable style={{ marginBottom: 16 }}
-        onClose={() => setServerErrors([])} message="Please fix these"
+        onClose={() => setServerErrors([])} message={t('sc.common.fix_these')}
         description={<ul style={{ margin: 0, paddingLeft: 18 }}>{serverErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>} />}
 
-      <PanelCard headerColor="neutral" title="Your Sourcing Approach" style={{ marginBottom: 16 }}>
+      <PanelCard headerColor="neutral" title={t('sc.sourcing.approach')} style={{ marginBottom: 16 }}>
         <Space size="large" wrap>
           <div>
-            <div style={{ marginBottom: 4 }}><Text strong>Multi-sourcing strategy</Text>{round < UNLOCK.multi_sourcing_strategy && lockTag(UNLOCK.multi_sourcing_strategy)}</div>
+            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.multi_strategy')}</Text>{round < UNLOCK.multi_sourcing_strategy && lockTag(UNLOCK.multi_sourcing_strategy)}</div>
             <Select style={{ width: 240 }} placeholder="Choose an approach" allowClear value={multiSourcing}
               options={MULTI_SOURCING_OPTIONS} disabled={!editable || round < UNLOCK.multi_sourcing_strategy} onChange={setMultiSourcing} />
           </div>
           <div>
-            <div style={{ marginBottom: 4 }}><Text strong>Supply-chain visibility investment</Text>{round < UNLOCK.tier_2_3_visibility_investment && lockTag(UNLOCK.tier_2_3_visibility_investment)}</div>
+            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.visibility')}</Text>{round < UNLOCK.tier_2_3_visibility_investment && lockTag(UNLOCK.tier_2_3_visibility_investment)}</div>
             <Select style={{ width: 240 }} placeholder="Choose a level" allowClear value={tierVisibility}
               options={TIER_VISIBILITY_OPTIONS} disabled={!editable || round < UNLOCK.tier_2_3_visibility_investment} onChange={setTierVisibility} />
           </div>
         </Space>
       </PanelCard>
 
-      <PanelCard headerColor="decision" title="Critical Inputs" style={{ marginBottom: 16 }}>
-        <Paragraph type="secondary" style={{ fontSize: 12 }}>For each input, click Set up / Edit to choose suppliers and split your orders. Each input's split must total 100%.</Paragraph>
+      <PanelCard headerColor="decision" title={t('sc.sourcing.critical_inputs')} style={{ marginBottom: 16 }}>
+        <Paragraph type="secondary" style={{ fontSize: 12 }}>{t('sc.sourcing.critical_inputs_help')}</Paragraph>
         {categories.length === 0
           ? <Empty description="No supplier categories in this scenario" />
           : <Table rowKey="cat" size="small" pagination={false} columns={summaryColumns} dataSource={summary} />}
@@ -275,7 +277,7 @@ const SourcingPage = () => {
       </Modal>
 
       {/* Supplier catalog modal */}
-      <Modal open={catalogOpen} title="Supplier Catalog" width={960} footer={<Button onClick={() => setCatalogOpen(false)}>Close</Button>} onCancel={() => setCatalogOpen(false)}>
+      <Modal open={catalogOpen} title={t('sc.sourcing.supplier_catalog')} width={960} footer={<Button onClick={() => setCatalogOpen(false)}>Close</Button>} onCancel={() => setCatalogOpen(false)}>
         <Table rowKey="id" size="small" pagination={{ pageSize: 10 }} dataSource={suppliers} scroll={{ x: true }}
           columns={[
             { title: 'Supplier', dataIndex: 'name', render: (v, s) => <><Text strong>{v}</Text> <Tag>{s.country}</Tag></> },

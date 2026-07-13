@@ -6,6 +6,7 @@ import {
 import {
   PlusOutlined, DeleteOutlined, LockOutlined, SaveOutlined, ReloadOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import {
@@ -56,6 +57,7 @@ const lockTag = (r) => (
 let seq = 1;
 
 const TradeFinancePage = () => {
+  const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound, roundStatus } = useGame();
   const { locked } = useDecisions();
   const round = currentRound || 1;
@@ -95,7 +97,7 @@ const TradeFinancePage = () => {
       const s = {}; (tfRes.data?.sinosure || []).forEach((x) => { s[x.market] = x.coverage_pct; }); setSino(s);
       const f = {}; (tfRes.data?.fx_hedges || []).forEach((x) => { f[x.currency_pair] = { hedge_ratio: x.hedge_ratio, tenor_days: x.tenor_days }; }); setFx(f);
       setSnap(canonical(loadedTf, s, f));
-    } catch { message.error('Unable to load trade finance data.'); } finally { setLoading(false); }
+    } catch { message.error(t('sc.trade_finance.load_error')); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
 
@@ -141,7 +143,7 @@ const TradeFinancePage = () => {
     setSaving(true);
     try {
       await saveTradeFinance(gameId, teamId, currentRound, { trade_finance, sinosure, fx_hedges });
-      message.success('Trade finance decision saved.');
+      message.success(t('sc.trade_finance.saved_toast'));
       await load();
     } catch (err) {
       if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data)); message.error('The server rejected this submission.'); }
@@ -158,8 +160,8 @@ const TradeFinancePage = () => {
   return (
     <div style={{ maxWidth: 1100, width: '100%' }}>
       <PageHeader
-        title="Trade Finance & FX"
-        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Choose how overseas buyers pay you, manage credit risk, and hedge currency exposure.</Text>}
+        title={t('sc.trade_finance.title')}
+        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>{t('sc.common.round')} {round} · {t('sc.trade_finance.subtitle')}</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
@@ -173,7 +175,7 @@ const TradeFinancePage = () => {
         onClose={() => setServerErrors([])} message="Submission errors"
         description={<ul style={{ margin: 0, paddingLeft: 18 }}>{serverErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>} />}
 
-      <PanelCard headerColor="strategic" title="Trade Finance Instruments" style={{ marginBottom: 16 }}>
+      <PanelCard headerColor="strategic" title={t('sc.trade_finance.instruments')} style={{ marginBottom: 16 }}>
         <Paragraph type="secondary" style={{ fontSize: 12 }}>
           As a Chinese firm selling into overseas markets, your choice of payment instrument trades off getting paid safely against how much cash your buyer must tie up. Sinosure export-credit insurance and FX forwards manage political/commercial and currency risk on cross-border sales.
         </Paragraph>
@@ -226,7 +228,7 @@ const TradeFinancePage = () => {
       </PanelCard>
 
       <PanelCard headerColor="strategic"
-        title={<Space>FX Hedging {round < UNLOCK.fx_hedging && lockTag(UNLOCK.fx_hedging)}</Space>} style={{ marginBottom: 16 }}>
+        title={<Space>{t('sc.trade_finance.fx_hedging')} {round < UNLOCK.fx_hedging && lockTag(UNLOCK.fx_hedging)}</Space>} style={{ marginBottom: 16 }}>
         {currencyPairs.length === 0 ? <Empty description="No FX pairs in this scenario" /> : (
           <Table rowKey="pair" size="small" pagination={false}
             dataSource={currencyPairs.map((p) => ({ pair: p }))}
@@ -243,7 +245,7 @@ const TradeFinancePage = () => {
         )}
       </PanelCard>
 
-      <PanelCard headerColor="neutral" title="Open FX hedge positions" style={{ marginBottom: 16 }}>
+      <PanelCard headerColor="neutral" title={t('sc.trade_finance.hedge_positions')} style={{ marginBottom: 16 }}>
         <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
           Hedges you set are opened at round-advance against your foreign receivables, marked to
           market each round, and settle at maturity — the realized P&amp;L flows into your income
