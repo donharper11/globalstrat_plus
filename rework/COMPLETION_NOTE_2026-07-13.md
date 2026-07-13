@@ -6,10 +6,12 @@ to `main`; the working tree is clean.
 
 ## Gates (rework §6 / §5.2)
 - `manage.py check` → **0 issues**.
-- `makemigrations --check --dry-run` → **No changes** (no model changes; all migrations applied).
-- Ghost-model delta (§1.8) → **0 ghosts** (174 registered models, all physically backed).
+- `makemigrations --check --dry-run` → **No changes** (migration `0054` for the compliance model applied).
+- Ghost-model delta (§1.8) → **0 ghosts** (175 registered models, all physically backed).
 - Frontend `react-scripts build` → **compiled** (warnings only).
-- Full backend suite → **`Ran 139 tests … OK`** (baseline was 132; +2 W6, +1 W5, +4 CC-16, and −1 net rounding from module counts... actual: 132→139 via new tests).
+- Full backend suite → **`Ran 151 tests … OK`** (baseline 132 → 151: +2 W6, +1 W5, +4 CC-16/W4, +5 W8, +7 W9).
+
+*Update:* after the initial P0+W4–W7 pass, the deferred **W8–W10 were subsequently built** (see below); this note reflects the completed state.
 
 ## P0
 - **W1 — full suite green.** Observed: `Ran 132 tests in 18.211s … OK` at baseline; **`Ran 139 tests … OK`** after all rework changes. Verbatim lines recorded in commits.
@@ -25,7 +27,9 @@ to `main`; the working tree is clean.
 
 ## P2
 - **W7 — fail-closed prod secrets.** Observed: with `GLOBALSTRAT_ENV=production` and secrets unset, `settings.py` **raises `ImproperlyConfigured`** naming the missing `DJANGO_SECRET_KEY`/`DB_PASSWORD` (refuses to boot); with secrets set, and in dev, it boots. Verified by direct import under each env.
-- **W8 (CC-20 FX hedge lifecycle), W9 (CC-18 compliance enforcement), W10 (CC-23 EN/ZH i18n) — DEFERRED with sign-off.** Not built this pass (user opted to build W4 fully and defer these). Each remains scoped in `CC-SEQUENCE-PLAN.md`; the FX decision persists but is inert in the engine, and CC-16 surfaces compliance regimes read-only only (enforcement is CC-18). No stubs or fake work were introduced for them.
+- **W8 — CC-20 FX hedge lifecycle (built).** Observed: the FX decision is no longer inert. `fx_engine.process_fx_hedges` opens a `HedgePosition` (locking the round rate on `hedge_ratio%` of foreign receivables), marks it to market each round, and settles at maturity — realized P&L booked into pre-tax income. Tests (5): open+MTM+**settle gain +100k** when USD weakens to 0.9; **settle loss −50k** when it strengthens; **P&L reaches `net_income`** through the real financials; no-basis currency skipped; zero-exposure opens nothing. Positions surfaced on the Trade Finance page. `reports/cc-20/`.
+- **W9 — CC-18 compliance enforcement (built).** Observed: the detention → freeze → cost → reputation loop is closed. `compliance_engine.enforce_compliance` fires UFLPA on Xinjiang-adjacent sourcing (**$500k**, 2-round freeze, reputation 1.0) and customs on missing docs (**$120k**, 1-round hold); mitigation reduces probability. Tests (7) incl. **freeze blocks revenue** (zero sales + lost-revenue recorded) and **cost hits `net_income`** (−120k). New model `ComplianceEnforcementEvent` (migration 0054). Surfaced on the student SC dashboard + instructor panel. `reports/cc-18/`.
+- **W10 — CC-23 EN/ZH i18n (built, SC surfaces).** Observed in-browser (puppeteer, `gs_language='zh-CN'`): the Sourcing page renders **采购 / 回合 1 / 已保存 / 您的采购策略 / 多源采购策略 / 供应链可视性投资 / 关键投入** — all correct Chinese (screenshot `reports/cc-23/`). New `sc` EN+ZH namespace wired into the shared state vocabulary + the 4 SC decision pages + dashboard. Deep per-field strings + instructor-panel i18n are documented follow-on.
 - **W11 — deferred items (explicitly listed, not silently skipped):** CC-11 RAG corpus (`globalstrat_plus_articles` empty), CC-17 LLM narratives, CC-24/25 additional scenarios. Gated/optional for a numeric v1.
 
 ## Discipline
