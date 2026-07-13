@@ -19,6 +19,8 @@ const { Text, Paragraph } = Typography;
 
 const pretty = (c) => (c || '').replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
 
+const SEV_COLOR = { critical: 'red', high: 'volcano', medium: 'gold', low: 'blue' };
+
 // Reusable KPI card: always renders (honest empty state) and links to its decision page.
 const SCCard = ({ title, color = 'strategic', onEdit, editLabel, empty, emptyText, children }) => (
   <PanelCard headerColor={color} title={title} style={{ marginBottom: 16, height: '100%' }}>
@@ -114,9 +116,12 @@ const SupplyChainPanel = () => {
     ...events.map((e) => ({
       key: `sc-${e.id}`,
       label: (
-        <Space size={6}>
-          <Tag color={e.fired_by_instructor ? 'orange' : 'blue'}>Disruption</Tag>
-          <Text>{e.affects_all_teams ? 'Affects everyone' : 'Affects your team'}</Text>
+        <Space size={6} wrap>
+          <Tag color={SEV_COLOR[e.severity] || 'blue'}>{e.severity ? pretty(e.severity) : 'Disruption'}</Tag>
+          <Text strong>{e.event_name || 'Supply-chain disruption'}</Text>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            {e.fired_by_instructor ? '· injected · ' : '· '}{e.affects_all_teams ? 'affects everyone' : 'affects your team'}
+          </Text>
         </Space>
       ),
       children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.resolution_data?.narrative || 'A supply-chain disruption occurred this round.'}</Paragraph>,
