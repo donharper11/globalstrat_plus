@@ -525,6 +525,9 @@ class LaneStateSerializer(RoundNumberMixin, serializers.ModelSerializer):
 
 
 class SCEventInstanceSerializer(RoundNumberMixin, serializers.ModelSerializer):
+    event_name = serializers.CharField(source='event_template.name', read_only=True)
+    severity = serializers.CharField(source='event_template.severity', read_only=True)
+
     class Meta:
         model = SCEventInstance
         fields = '__all__'
