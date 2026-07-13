@@ -33,13 +33,17 @@ def get_user_language(request):
 def get_team_language(team):
     """Get the language preference for a team (from first enrolled student)."""
     from core.models.course import Enrollment
+    from django.db import transaction
     try:
-        enrollment = Enrollment.objects.filter(
-            team_id=team.team_id if hasattr(team, 'team_id') else team.id,
-            is_active=True
-        ).exclude(language='').first()
-        return enrollment.language if enrollment and enrollment.language else 'en'
-    except:
+        # Savepoint so a query failure (e.g. missing enrollment table in a test
+        # DB) is contained and cannot poison the caller's transaction.
+        with transaction.atomic():
+            enrollment = Enrollment.objects.filter(
+                team_id=team.team_id if hasattr(team, 'team_id') else team.id,
+                is_active=True
+            ).exclude(language='').first()
+            return enrollment.language if enrollment and enrollment.language else 'en'
+    except Exception:
         return 'en'
 
 
@@ -50,12 +54,16 @@ def get_instructor_language(game):
     with is_active=True). Falls back to 'en' if not found.
     """
     from core.models.course import Enrollment
+    from django.db import transaction
     try:
-        instructor_user_id = game.created_by_id
-        enrollment = Enrollment.objects.filter(
-            user_id=instructor_user_id,
-            is_active=True,
-        ).exclude(language='').first()
-        return enrollment.language if enrollment and enrollment.language else 'en'
+        # Savepoint so a query failure (e.g. missing enrollment table in a test
+        # DB) is contained and cannot poison the caller's transaction.
+        with transaction.atomic():
+            instructor_user_id = game.created_by_id
+            enrollment = Enrollment.objects.filter(
+                user_id=instructor_user_id,
+                is_active=True,
+            ).exclude(language='').first()
+            return enrollment.language if enrollment and enrollment.language else 'en'
     except Exception:
         return 'en'

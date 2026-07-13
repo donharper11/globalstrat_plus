@@ -149,6 +149,8 @@ class ComplianceEnforcementEvent(models.Model):
     reputation_impact = models.DecimalField(max_digits=6, decimal_places=3, default='0.000')
     triggered_by = models.CharField(max_length=200, blank=True)
     mitigated = models.BooleanField(default=False)
+    # CC-17: Phase-2 LLM (or template-fallback) narrative describing the detention.
+    narrative = models.TextField(blank=True, default='')
 
     class Meta:
         db_table = 'sc_compliance_enforcement_event'

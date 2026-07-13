@@ -198,11 +198,16 @@ const SupplyChainPanel = () => {
                 description={
                   <Space direction="vertical" size={2}>
                     {d.compliance.map((e) => (
-                      <Text key={e.id}>
-                        R{e.round_number}: <Text strong>{e.regime_name}</Text>
-                        {e.market_code ? ` in ${e.market_code}` : ''} — cost ${Math.round(Number(e.cost_usd)).toLocaleString()}
-                        {e.freeze_until_round >= currentRound ? `, market frozen through R${e.freeze_until_round}` : ''}
-                      </Text>
+                      <div key={e.id}>
+                        <Text>
+                          R{e.round_number}: <Text strong>{e.regime_name}</Text>
+                          {e.market_code ? ` in ${e.market_code}` : ''} — cost ${Math.round(Number(e.cost_usd)).toLocaleString()}
+                          {e.freeze_until_round >= currentRound ? `, market frozen through R${e.freeze_until_round}` : ''}
+                        </Text>
+                        {e.narrative && (
+                          <Paragraph type="secondary" style={{ fontSize: 12, margin: '2px 0 0' }}>{e.narrative}</Paragraph>
+                        )}
+                      </div>
                     ))}
                   </Space>
                 } />
@@ -238,8 +243,15 @@ const SupplyChainPanel = () => {
             empty={events.length === 0} emptyText="No supply-chain disruptions this round.">
             <Paragraph type="secondary" style={{ fontSize: 12 }}>{events.length} disruption(s) this round.</Paragraph>
             {events.slice(0, 8).map((e) => (
-              <div key={e.id}><Tag color={e.fired_by_instructor ? 'orange' : 'blue'}>Disruption</Tag>
-                {e.affects_all_teams ? ' affects everyone' : ' affects your team'}</div>
+              <div key={e.id} style={{ marginBottom: 8 }}>
+                <div><Tag color={e.fired_by_instructor ? 'orange' : 'blue'}>Disruption</Tag>
+                  {e.affects_all_teams ? ' affects everyone' : ' affects your team'}</div>
+                {e.resolution_data?.narrative && (
+                  <Paragraph type="secondary" style={{ fontSize: 12, margin: '4px 0 0' }}>
+                    {e.resolution_data.narrative}
+                  </Paragraph>
+                )}
+              </div>
             ))}
           </SCCard>
         </Col>

@@ -51,6 +51,28 @@ OUTLOOK_SYSTEM_PROMPT = (
     "analytical tone. Do not cite sources by name."
 )
 
+# CC-17: supply-chain narrative voices. Both carry a hard "describe, don't
+# compute" guardrail — the deterministic engine owns every number.
+SC_EVENT_SYSTEM_PROMPT = (
+    "You are a supply-chain risk analyst writing a short briefing about a "
+    "disruption that just hit a global electronics supply chain. Write 2-3 "
+    "tight paragraphs: what happened, which inputs/suppliers are affected, and "
+    "what it means for a firm's sourcing and resilience. If a reference excerpt "
+    "is provided, ground your framing in it (do not cite it by name). "
+    "IMPORTANT: describe only — use ONLY the facts and numbers given; never "
+    "invent or compute prices, percentages, or figures beyond those provided."
+)
+
+COMPLIANCE_SYSTEM_PROMPT = (
+    "You are a trade-compliance officer issuing a concise enforcement notice to "
+    "a firm whose shipment was detained. Write 2-3 sentences: the regime, what "
+    "triggered it, and the consequence (remediation cost and any market-access "
+    "freeze), then one line on how to mitigate next time. If a reference excerpt "
+    "is provided, ground your framing in it (do not cite it by name). "
+    "IMPORTANT: describe only — use ONLY the facts and numbers given; never "
+    "invent or compute figures beyond those provided."
+)
+
 
 def generate_round_narratives(game, round_obj):
     """
@@ -106,6 +128,10 @@ def generate_round_narratives(game, round_obj):
     outlook_calls = _build_outlook_calls(game, round_number)
     calls.extend(outlook_calls)
 
+    # 5. CC-17: supply-chain event + compliance enforcement narratives
+    calls.extend(_build_sc_event_calls(game, round_obj))
+    calls.extend(_build_compliance_calls(game, round_obj))
+
     if not calls:
         logger.info("Phase 2: no LLM calls needed")
         return
@@ -118,6 +144,8 @@ def generate_round_narratives(game, round_obj):
     _store_coherence_results(game, round_number, teams, results)
     _store_coaching_results(game, round_number, teams, results)
     _store_outlook_results(game, round_number, results, outlook_calls)
+    _store_sc_event_narratives(game, round_obj, results)      # CC-17
+    _store_compliance_narratives(game, round_obj, results)    # CC-17
 
     successful = sum(1 for r in results.values() if r.get('success'))
     logger.info(f"Phase 2: {successful}/{len(calls)} LLM calls succeeded")
@@ -257,6 +285,134 @@ def _build_outlook_calls(game, round_number):
         })
 
     return calls
+
+
+# ---------------------------------------------------------------------------
+# CC-17: supply-chain event + compliance narratives (RAG-grounded)
+# ---------------------------------------------------------------------------
+
+def _rag_snippet(query, tags=None, limit=2, max_chars=700):
+    """Top corpus chunks for `query` as a grounding excerpt ('' on any failure —
+    empty corpus, no embedding model, Qdrant down)."""
+    try:
+        from core.rag.embeddings import get_embedding
+        from core.rag.client import search_articles
+        hits = search_articles(get_embedding(query), tags=tags, limit=limit)
+    except Exception as e:
+        logger.warning(f"CC-17 RAG snippet failed: {e}")
+        return ""
+    parts = [(h.get('text') or '').strip() for h in hits if (h.get('text') or '').strip()]
+    return "\n---\n".join(parts)[:max_chars]
+
+
+def _build_sc_event_calls(game, round_obj):
+    """One narrative call per SC event that fired this round."""
+    from core.models.sc_state import SCEventInstance
+    from core.models.sc_models import Supplier
+
+    language = get_instructor_language(game)
+    sup_names = {s.supplier_id: s.name for s in Supplier.objects.filter(scenario=game.scenario)}
+    calls = []
+    for inst in SCEventInstance.objects.filter(round=round_obj).select_related('event_template'):
+        tmpl = inst.event_template
+        eff = tmpl.sc_effects or {}
+        affected = ', '.join(sup_names.get(sid, sid) for sid in (eff.get('affected_suppliers') or [])) or 'multiple suppliers'
+        facts = [f"Event: {tmpl.name}", f"Severity: {tmpl.severity}"]
+        if eff.get('capacity_reduction_pct'):
+            facts.append(f"Capacity reduction: {eff['capacity_reduction_pct']}%")
+        rec = eff.get('recovery_rounds', eff.get('duration_rounds'))
+        if rec:
+            facts.append(f"Recovery window: {rec} round(s)")
+        facts.append(f"Affected suppliers: {affected}")
+        if eff.get('teaches'):
+            facts.append(f"Lesson: {str(eff['teaches']).replace('_', ' ')}")
+        snippet = _rag_snippet(
+            f"{tmpl.name} {eff.get('teaches', '')} supply chain disruption resilience",
+            tags=['supply_chain', 'resilience', 'global_sourcing'])
+        prompt = "Facts:\n" + "\n".join(facts)
+        if snippet:
+            prompt += f"\n\nReference excerpt:\n{snippet}"
+        prompt += "\n\nWrite the disruption briefing." + build_language_instruction(language)
+        calls.append({'id': f'sc_event_{inst.id}', 'prompt': prompt,
+                      'system_prompt': SC_EVENT_SYSTEM_PROMPT, 'max_tokens': 500})
+    return calls
+
+
+def _build_compliance_calls(game, round_obj):
+    """One enforcement-notice call per compliance event fired this round."""
+    from core.models.sc_state import ComplianceEnforcementEvent
+
+    calls = []
+    for ev in (ComplianceEnforcementEvent.objects.filter(round=round_obj)
+               .select_related('regime', 'market', 'team')):
+        language = get_team_language(ev.team)
+        facts = [
+            f"Regime: {ev.regime.name}",
+            f"Market: {ev.market.code if ev.market else 'all markets'}",
+            f"Trigger: {ev.triggered_by}",
+            f"Remediation/penalty cost: ${float(ev.cost_usd):,.0f}",
+        ]
+        if ev.freeze_until_round >= round_obj.round_number:
+            facts.append(f"Market access frozen through round {ev.freeze_until_round}")
+        if ev.mitigated:
+            facts.append("The firm had partial mitigation in place")
+        snippet = _rag_snippet(
+            f"{ev.regime.name} {ev.regime.regime_id} trade compliance enforcement",
+            tags=['compliance', 'trade_policy', 'regulation'])
+        prompt = "Facts:\n" + "\n".join(facts)
+        if snippet:
+            prompt += f"\n\nReference excerpt:\n{snippet}"
+        prompt += "\n\nWrite the enforcement notice." + build_language_instruction(language)
+        calls.append({'id': f'compliance_{ev.id}', 'prompt': prompt,
+                      'system_prompt': COMPLIANCE_SYSTEM_PROMPT, 'max_tokens': 350})
+    return calls
+
+
+def _sc_event_fallback(inst):
+    tmpl = inst.event_template
+    desc = (tmpl.description_template or '').strip()
+    return desc or (f"A {tmpl.severity} supply-chain event ({tmpl.name}) disrupted "
+                    f"sourcing this round.")
+
+
+def _compliance_fallback(ev, round_obj):
+    mkt = ev.market.code if ev.market else 'all markets'
+    parts = [f"{ev.regime.name} enforcement in {mkt}: {ev.triggered_by}.",
+             f"Remediation/penalty cost ${float(ev.cost_usd):,.0f}."]
+    if ev.freeze_until_round >= round_obj.round_number:
+        parts.append(f"Market access is frozen through round {ev.freeze_until_round}.")
+    return ' '.join(parts)
+
+
+def _store_sc_event_narratives(game, round_obj, results):
+    """Write the LLM narrative (or a factual template fallback) onto each SC
+    event's resolution_data."""
+    from core.models.sc_state import SCEventInstance
+    for inst in SCEventInstance.objects.filter(round=round_obj).select_related('event_template'):
+        r = results.get(f'sc_event_{inst.id}', {})
+        text = r.get('content') if r.get('success') else None
+        text = (text or _sc_event_fallback(inst)).strip()
+        try:
+            inst.resolution_data = {**(inst.resolution_data or {}), 'narrative': text}
+            inst.save(update_fields=['resolution_data'])
+        except Exception as e:
+            logger.error(f"CC-17 SC narrative store failed for event {inst.id}: {e}")
+
+
+def _store_compliance_narratives(game, round_obj, results):
+    """Write the LLM narrative (or a factual template fallback) onto each
+    compliance enforcement event."""
+    from core.models.sc_state import ComplianceEnforcementEvent
+    for ev in (ComplianceEnforcementEvent.objects.filter(round=round_obj)
+               .select_related('regime', 'market')):
+        r = results.get(f'compliance_{ev.id}', {})
+        text = r.get('content') if r.get('success') else None
+        text = (text or _compliance_fallback(ev, round_obj)).strip()
+        try:
+            ev.narrative = text
+            ev.save(update_fields=['narrative'])
+        except Exception as e:
+            logger.error(f"CC-17 compliance narrative store failed for event {ev.id}: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -539,3 +695,7 @@ def _generate_all_fallbacks(game, round_obj):
             )
         except Exception as e:
             logger.error(f"Fallback briefing failed for {team.name}: {e}")
+
+    # CC-17: SC + compliance narratives fall back to factual templates (no LLM).
+    _store_sc_event_narratives(game, round_obj, {})
+    _store_compliance_narratives(game, round_obj, {})
