@@ -83,6 +83,18 @@ def calculate_revenue(context):
             for adoption in adoptions:
                 units_sold += adoption.new_adopters
 
+            # CC-18: a compliance market-access freeze blocks all sales in this
+            # market this round — the whole demand is lost (shipment detained /
+            # market frozen), recorded for reporting.
+            if (team.id, market.id) in getattr(context, 'compliance_freezes', set()):
+                if units_sold > 0:
+                    lost = units_sold * mkt_dec.retail_price * (Decimal('1') - _get_channel_margin_rate(
+                        context.scenario, mkt_dec.distribution_strategy or 'hybrid'))
+                    context.compliance_lost_revenue = getattr(context, 'compliance_lost_revenue', {})
+                    context.compliance_lost_revenue[team.id] = (
+                        context.compliance_lost_revenue.get(team.id, Decimal('0')) + lost)
+                continue  # no revenue booked for a frozen market
+
             # CC-19B Channel 1 (lost sales): a supplier-capacity shortfall (Liebig
             # weakest link, net of contingency rerouting; see sc_engine.run_sc_state)
             # throttles what this team can supply. Disruption-only — cf == 1 leaves

@@ -100,7 +100,7 @@ from .sc_decisions import (
 )
 from .sc_state import (
     SupplierState, LaneState, SCEventInstance,
-    HedgePosition, ResilienceScoreHistory,
+    HedgePosition, ResilienceScoreHistory, ComplianceEnforcementEvent,
 )
 from .overrides import (
     ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride,

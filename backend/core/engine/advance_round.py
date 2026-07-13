@@ -160,6 +160,12 @@ def _run_phase_1(game_id):
     from core.engine.sc_engine import run_sc_state
     _run_sc_step('run_sc_state', run_sc_state, context)
 
+    # CC-18: compliance enforcement — evaluate regimes, fire detentions, and set
+    # market-access freezes BEFORE revenue so a frozen market blocks this round's
+    # sales. Books remediation/penalty cost into context.compliance_costs.
+    from core.engine.compliance_engine import enforce_compliance
+    _run_sc_step('enforce_compliance', enforce_compliance, context)
+
     from core.engine.rd_processing import process_rd
     process_rd(context)
 

@@ -19,7 +19,7 @@ from core.models.sc_decisions import (
 )
 from core.models.sc_state import (
     SupplierState, LaneState, SCEventInstance,
-    HedgePosition, ResilienceScoreHistory,
+    HedgePosition, ResilienceScoreHistory, ComplianceEnforcementEvent,
 )
 from core.utils.disclosure import get_effective_unlock_round
 
@@ -539,4 +539,14 @@ class HedgePositionSerializer(serializers.ModelSerializer):
 class ResilienceScoreHistorySerializer(RoundNumberMixin, serializers.ModelSerializer):
     class Meta:
         model = ResilienceScoreHistory
+        fields = '__all__'
+
+
+class ComplianceEnforcementEventSerializer(RoundNumberMixin, serializers.ModelSerializer):
+    regime_name = serializers.CharField(source='regime.name', read_only=True)
+    regime_id = serializers.CharField(source='regime.regime_id', read_only=True)
+    market_code = serializers.CharField(source='market.code', read_only=True, default=None)
+
+    class Meta:
+        model = ComplianceEnforcementEvent
         fields = '__all__'

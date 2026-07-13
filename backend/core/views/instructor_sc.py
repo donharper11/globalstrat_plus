@@ -24,6 +24,7 @@ from core.models.sc_decisions import (
 )
 from core.models.sc_state import (
     SupplierState, LaneState, SCEventInstance, ResilienceScoreHistory,
+    ComplianceEnforcementEvent,
 )
 from core.permissions import IsInstructor
 
@@ -116,6 +117,21 @@ class InstructorSCPanelView(APIView):
             } for a in allocs]
             single_source_flags = [cat for cat, items in by_cat.items() if len(items) == 1]
 
+            # CC-18: compliance enforcement events active at/through this round.
+            compliance = []
+            if rnd:
+                for ev in (ComplianceEnforcementEvent.objects
+                           .filter(team=team, round__round_number__lte=rnd.round_number,
+                                   freeze_until_round__gte=rnd.round_number)
+                           .select_related('regime', 'market')):
+                    compliance.append({
+                        'regime': ev.regime.name,
+                        'market': ev.market.code if ev.market else None,
+                        'cost_usd': float(ev.cost_usd),
+                        'freeze_until_round': ev.freeze_until_round,
+                        'mitigated': ev.mitigated,
+                    })
+
             sdec = SourcingDecision.objects.filter(team=team, round=rnd).first() if rnd else None
             invs = list(InventoryDecision.objects.filter(team=team, round=rnd)) if rnd else []
             buffer_avg = round(sum(i.buffer_days or 0 for i in invs) / len(invs), 1) if invs else None
@@ -145,6 +161,7 @@ class InstructorSCPanelView(APIView):
                 'single_source_flags': single_source_flags,
                 'buffer_days_avg': buffer_avg,
                 'has_contingency': has_contingency,
+                'compliance_events': compliance,
                 'resilience': resilience,
             })
 
