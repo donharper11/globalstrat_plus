@@ -65,6 +65,9 @@ from core.views.overrides import (
     DisclosureOverrideListCreateView, DisclosureOverrideDeleteView,
     ResilienceWeightOverrideListCreateView, ResilienceWeightOverrideDeleteView,
 )
+from core.views.instructor_sc import (
+    InstructorSCPanelView, InstructorSCEventCatalogView, InstructorInjectSCEventView,
+)
 
 from core.views.onboarding import OnboardingDataView, OnboardingCompleteView
 
@@ -445,4 +448,12 @@ urlpatterns = [
          ResilienceWeightOverrideListCreateView.as_view(), name='resilience-weight-overrides'),
     path('games/<int:game_id>/resilience-weight-overrides/<int:override_id>/',
          ResilienceWeightOverrideDeleteView.as_view(), name='resilience-weight-override-detail'),
+
+    # ---- CC-16: Instructor Supply-Chain Panel ----
+    path('games/<int:game_id>/instructor/sc-panel/',
+         InstructorSCPanelView.as_view(), name='instructor-sc-panel'),
+    path('games/<int:game_id>/instructor/sc-event-catalog/',
+         InstructorSCEventCatalogView.as_view(), name='instructor-sc-event-catalog'),
+    path('games/<int:game_id>/instructor/inject-sc-event/',
+         InstructorInjectSCEventView.as_view(), name='instructor-inject-sc-event'),
 ]

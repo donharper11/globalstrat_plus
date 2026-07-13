@@ -47,6 +47,40 @@ def _D(x):
     return Decimal(str(round(float(x), 3)))
 
 
+def _apply_sc_effects(tmpl, rnd, suppliers_by_code, lanes_by_code):
+    """Apply one SC event template's ``sc_effects`` to supplier/lane state for
+    ``rnd`` (shared by seeded probabilistic firing and CC-16 instructor
+    injection). Creates/updates SupplierState for affected suppliers and
+    LaneState for affected lanes."""
+    from core.models.sc_state import SupplierState, LaneState
+    eff = tmpl.sc_effects or {}
+    sev = SEVERITY_MULT.get(tmpl.severity, 1.0)
+    cap_red = float(eff.get('capacity_reduction_pct', 0) or 0)
+    for sid in (eff.get('affected_suppliers') or []):
+        sup = suppliers_by_code.get(sid)
+        if not sup:
+            continue
+        SupplierState.objects.update_or_create(round=rnd, supplier=sup, defaults=dict(
+            capacity_multiplier=_D(max(1 - cap_red / 100.0, 0)),
+            quality_modifier=_D(-(eff.get('quality_rating_degradation', 0) or 0)),
+            reliability_modifier=_D(0),
+            additional_lead_time_days=int(eff.get('additional_lead_time_days', 0) or 0),
+            disruption_cost_multiplier=_D(sev),
+            recovery_rounds_remaining=int(eff.get('recovery_rounds', eff.get('duration_rounds', 1)) or 1),
+            active_disruption_event=None))
+    rate = 1.0
+    for key in ('mode_rate_multiplier', 'global_rate_multiplier'):
+        m = eff.get(key)
+        if isinstance(m, dict):
+            rate = max(rate, float(m.get('sea', m.get('air', 1.0)) or 1.0))
+    for lid in (eff.get('affected_lanes') or []):
+        lane = lanes_by_code.get(lid)
+        if not lane:
+            continue
+        LaneState.objects.update_or_create(round=rnd, lane=lane, defaults=dict(
+            active_disruption=tmpl.name, current_rate_modifier=_D(min(rate, 99.999))))
+
+
 def _round_state(context):
     """Resolve (round, scenario) for the context; None round if absent."""
     from core.models.core import Round
@@ -141,8 +175,24 @@ def run_sc_state(context):
                     recovery_rounds_remaining=max(st.recovery_rounds_remaining - 1, 0),
                     active_disruption_event=None))
 
-    # 2. Fire SC events (seeded) and apply their effects to state.
+    # 2. Fire SC events and apply their effects to supplier/lane state.
     fired = []
+
+    # 2a. CC-16 instructor-injected events: pre-staged SCEventInstance rows for
+    # this round (fired_by_instructor=True, resolution_data.pending). Fire them
+    # deterministically — bypassing probability — so an instructor can force a
+    # disruption onto the next round advance. Same effect path as seeded events.
+    for inst in (SCEventInstance.objects
+                 .filter(round=rnd, fired_by_instructor=True)
+                 .select_related('event_template')):
+        if not (inst.resolution_data or {}).get('pending'):
+            continue
+        _apply_sc_effects(inst.event_template, rnd, suppliers_by_code, lanes_by_code)
+        inst.resolution_data = {**(inst.resolution_data or {}), 'pending': False, 'applied': True}
+        inst.save(update_fields=['resolution_data'])
+        fired.append(inst)
+
+    # 2b. Seeded probabilistic events.
     for tmpl in EventTemplateDefinition.objects.filter(scenario=scenario, category='supply_chain').order_by('id'):
         if round_number < (tmpl.earliest_round or 1):
             continue
@@ -152,32 +202,7 @@ def run_sc_state(context):
             continue
         inst = SCEventInstance.objects.create(round=rnd, event_template=tmpl, affects_all_teams=True, resolution_data={})
         fired.append(inst)
-        eff = tmpl.sc_effects or {}
-        sev = SEVERITY_MULT.get(tmpl.severity, 1.0)
-        cap_red = float(eff.get('capacity_reduction_pct', 0) or 0)
-        for sid in (eff.get('affected_suppliers') or []):
-            sup = suppliers_by_code.get(sid)
-            if not sup:
-                continue
-            SupplierState.objects.update_or_create(round=rnd, supplier=sup, defaults=dict(
-                capacity_multiplier=_D(max(1 - cap_red / 100.0, 0)),
-                quality_modifier=_D(-(eff.get('quality_rating_degradation', 0) or 0)),
-                reliability_modifier=_D(0),
-                additional_lead_time_days=int(eff.get('additional_lead_time_days', 0) or 0),
-                disruption_cost_multiplier=_D(sev),
-                recovery_rounds_remaining=int(eff.get('recovery_rounds', eff.get('duration_rounds', 1)) or 1),
-                active_disruption_event=None))
-        rate = 1.0
-        for key in ('mode_rate_multiplier', 'global_rate_multiplier'):
-            m = eff.get(key)
-            if isinstance(m, dict):
-                rate = max(rate, float(m.get('sea', m.get('air', 1.0)) or 1.0))
-        for lid in (eff.get('affected_lanes') or []):
-            lane = lanes_by_code.get(lid)
-            if not lane:
-                continue
-            LaneState.objects.update_or_create(round=rnd, lane=lane, defaults=dict(
-                active_disruption=tmpl.name, current_rate_modifier=_D(min(rate, 99.999))))
+        _apply_sc_effects(tmpl, rnd, suppliers_by_code, lanes_by_code)
 
     # 3. Per-team production capacity factor (Liebig, net of contingency).
     disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}

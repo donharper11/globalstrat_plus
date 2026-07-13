@@ -30,6 +30,7 @@ import {
 } from '../api/instructor';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader, PanelCard } from '../components/design-system';
+import InstructorSCPanel from '../components/instructor/InstructorSCPanel';
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -1995,6 +1996,7 @@ const InstructorDashboard = () => {
     // --- Game-specific (only when game is active/paused with dashboard data) ---
     ...(hasGame ? [
       { key: 'teams', label: t('instructor.team_overview'), children: teamOverviewTab },
+      { key: 'supply_chain', label: t('instructor.supply_chain', 'Supply Chain'), children: <InstructorSCPanel gameId={gameId} /> },
       { key: 'events', label: t('instructor.event_manager'), children: eventManagerTab },
       { key: 'briefings', label: t('instructor.briefings'), children: briefingsTab },
       { key: 'research', label: t('instructor.research_monitor'), children: researchMonitorTab },
