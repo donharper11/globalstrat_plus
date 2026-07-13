@@ -16,6 +16,15 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load backend/.env (gitignored) into os.environ, if present, so secrets like
+# DASHSCOPE_API_KEY survive process restarts without a systemd unit. Existing
+# environment variables always win (does not override a real env). Best-effort.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env', override=False)
+except Exception:
+    pass
+
 # ---------------------------------------------------------------------------
 # Environment toggle: set GLOBALSTRAT_ENV=production in systemd / .env
 # ---------------------------------------------------------------------------
