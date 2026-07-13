@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Row, Col, Button, Alert, Tag, Table, Progress, Empty, Typography, Space,
-  Statistic, message,
+  Row, Col, Button, Alert, Tag, Progress, Empty, Typography, Space,
+  Statistic, message, Collapse,
 } from 'antd';
 import { ReloadOutlined, ArrowRightOutlined, WarningOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../../contexts/GameContext';
 import {
-  getSuppliers, getLanes, getComplianceRegimes, getSourcing, getLogistics,
-  getTradeFinance, getInventory, getResilienceScore, getSCEvents, getHedgePositions,
-  getComplianceEvents,
+  getSuppliers, getComplianceRegimes, getSourcing, getInventory,
+  getResilienceScore, getSCEvents, getComplianceEvents,
 } from '../../api/sc';
 import LoadingSpinner from '../LoadingSpinner';
 import { PanelCard } from '../design-system';
-import { StateLegend, StateBadge } from './scState';
+import { StateLegend } from './scState';
 
 const { Text, Paragraph } = Typography;
 
@@ -32,7 +31,9 @@ const SCCard = ({ title, color = 'strategic', onEdit, editLabel, empty, emptyTex
   </PanelCard>
 );
 
-// Supply-chain KPI panel — rendered as a tab on the main dashboard (CC-23A / UX #9).
+// Supply-chain panel — a focused risk/status view (CC-15 / redesign): how healthy
+// am I, what's threatening me now, and where am I exposed. Decision echoes and
+// trade-finance P&L live on their own pages, not here.
 const SupplyChainPanel = () => {
   const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound } = useGame();
@@ -45,16 +46,14 @@ const SupplyChainPanel = () => {
     setLoading(true);
     const safe = (p) => p.then((r) => r.data).catch(() => null);
     try {
-      const [suppliers, lanes, regimes, sourcing, logistics, tf, inventory, resilience, events, hedges, compliance] = await Promise.all([
-        safe(getSuppliers(scenarioId)), safe(getLanes(scenarioId)), safe(getComplianceRegimes(scenarioId)),
-        safe(getSourcing(gameId, teamId, currentRound)), safe(getLogistics(gameId, teamId, currentRound)),
-        safe(getTradeFinance(gameId, teamId, currentRound)), safe(getInventory(gameId, teamId, currentRound)),
+      const [suppliers, regimes, sourcing, inventory, resilience, events, compliance] = await Promise.all([
+        safe(getSuppliers(scenarioId)), safe(getComplianceRegimes(scenarioId)),
+        safe(getSourcing(gameId, teamId, currentRound)), safe(getInventory(gameId, teamId, currentRound)),
         safe(getResilienceScore(gameId, teamId, currentRound)), safe(getSCEvents(gameId, teamId, currentRound)),
-        safe(getHedgePositions(gameId, teamId)), safe(getComplianceEvents(gameId, teamId)),
+        safe(getComplianceEvents(gameId, teamId)),
       ]);
-      setD({ suppliers: suppliers || [], lanes: lanes || [], regimes: regimes || [],
-        sourcing: sourcing || {}, logistics: logistics || {}, tf: tf || {},
-        inventory: inventory || {}, resilience: resilience || {}, events: events || [], hedges: hedges || [],
+      setD({ suppliers: suppliers || [], regimes: regimes || [], sourcing: sourcing || {},
+        inventory: inventory || {}, resilience: resilience || {}, events: events || [],
         compliance: compliance || [] });
     } catch { message.error('Unable to load supply chain summary.'); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
@@ -65,14 +64,18 @@ const SupplyChainPanel = () => {
 
   const base = `/games/${gameId}/teams/${teamId}`;
   const go = (p) => navigate(`${base}${p}`);
+  const money = (n) => `$${Math.round(n).toLocaleString()}`;
+
   const supplierMap = {};
   d.suppliers.forEach((s) => { supplierMap[s.id] = s; });
   const allocations = d.sourcing.allocations || [];
 
+  // --- Exposure: single-source, geographic concentration, buffer adequacy ---
   const byCat = {};
   allocations.forEach((a) => { (byCat[a.critical_input_category] = byCat[a.critical_input_category] || []).push(a); });
-  const concentrationRows = Object.entries(byCat).map(([cat, allocs]) => ({
-    cat, suppliers: allocs.length, maxPct: Math.max(...allocs.map((a) => a.allocation_pct || 0)) }));
+  const singleSourced = Object.entries(byCat)
+    .filter(([, allocs]) => allocs.length === 1 || Math.max(...allocs.map((a) => a.allocation_pct || 0)) >= 100)
+    .map(([cat]) => cat);
 
   const byCountry = {}; let totalWeight = 0;
   allocations.forEach((a) => {
@@ -82,24 +85,19 @@ const SupplyChainPanel = () => {
   const geoRows = Object.entries(byCountry)
     .map(([c, w]) => ({ country: c, pct: totalWeight ? Math.round((w / totalWeight) * 100) : 0 }))
     .sort((x, y) => y.pct - x.pct);
+  const topCountry = geoRows[0];
 
-  const laneMap = {}; d.lanes.forEach((l) => { laneMap[l.id] = l; });
-  const laneRows = (d.logistics.logistics || []).map((l) => ({
-    lane: laneMap[l.lane]?.lane_id || `#${l.lane}`,
-    split: ['sea', 'air', 'rail', 'road'].filter((m) => l[`mode_${m}_pct`] > 0)
-      .map((m) => `${m} ${l[`mode_${m}_pct`]}%`).join(' · ') || '—' }));
+  const invRows = d.inventory.inventory || [];
+  const bufferAvg = invRows.length
+    ? Math.round(invRows.reduce((s, r) => s + (Number(r.buffer_days) || 0), 0) / invRows.length) : null;
+  const thinBuffer = bufferAvg != null && bufferAvg < 30;
 
   const flagged = allocations.map((a) => supplierMap[a.supplier]).filter(Boolean)
     .filter((s) => s.tier_2_3_profile?.risk_flags?.xinjiang_adjacent
       || s.tier_2_3_profile?.risk_flags?.forced_labor_exposure === 'high');
   const flaggedNames = [...new Set(flagged.map((s) => s.name))];
 
-  const tfRows = d.tf.trade_finance || [];
-  const sinosure = d.tf.sinosure || [];
-  const fxHedges = d.tf.fx_hedges || [];
-  const hedgePositions = d.hedges || [];
-  const invRows = d.inventory.inventory || [];
-  const events = d.events || [];
+  // --- Resilience + disruption impact ---
   const score = d.resilience?.score;
   const scoreCalculated = score !== null && score !== undefined;
   const impact = d.resilience?.disruption_impact || {};
@@ -107,19 +105,51 @@ const SupplyChainPanel = () => {
   const lostSales = Number(impact.lost_revenue || 0);
   const disruptionCost = Number(impact.disruption_cost || 0);
   const disrupted = (cf !== undefined && cf < 1) || lostSales > 0 || disruptionCost > 0;
-  const money = (n) => `$${Math.round(n).toLocaleString()}`;
+
+  // --- Disruptions & alerts feed (collapsible so it never becomes a long scroll) ---
+  const events = d.events || [];
+  const compliance = (d.compliance || []).slice().sort((a, b) => (b.round_number || 0) - (a.round_number || 0));
+  const activeCompliance = compliance.filter((e) => e.freeze_until_round >= currentRound || e.round_number === currentRound);
+  const alertItems = [
+    ...events.map((e) => ({
+      key: `sc-${e.id}`,
+      label: (
+        <Space size={6}>
+          <Tag color={e.fired_by_instructor ? 'orange' : 'blue'}>Disruption</Tag>
+          <Text>{e.affects_all_teams ? 'Affects everyone' : 'Affects your team'}</Text>
+        </Space>
+      ),
+      children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.resolution_data?.narrative || 'A supply-chain disruption occurred this round.'}</Paragraph>,
+    })),
+    ...compliance.slice(0, 12).map((e) => {
+      const active = e.freeze_until_round >= currentRound || e.round_number === currentRound;
+      return {
+        key: `comp-${e.id}`,
+        label: (
+          <Space size={6} wrap>
+            <Tag color={active ? 'red' : 'default'}>Compliance</Tag>
+            <Text strong>{e.regime_name}</Text>
+            <Text type="secondary">R{e.round_number}{e.market_code ? ` · ${e.market_code}` : ''} · {money(Number(e.cost_usd))}
+              {e.freeze_until_round >= currentRound ? ` · frozen thru R${e.freeze_until_round}` : ''}</Text>
+          </Space>
+        ),
+        children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.narrative || `${e.regime_name} enforcement.`}</Paragraph>,
+      };
+    }),
+  ];
 
   return (
     <div style={{ maxWidth: 1200, width: '100%' }}>
       <Space style={{ marginBottom: 12, width: '100%', justifyContent: 'space-between' }}>
         <Text type="secondary" style={{ fontSize: 12 }}>
-          A snapshot of your supply chain this round. Use the links to change your decisions.
+          Your supply chain at a glance: how healthy you are, what's threatening you, and where you're exposed.
         </Text>
         <Button size="small" icon={<ReloadOutlined />} onClick={load}>Refresh</Button>
       </Space>
       <StateLegend />
 
       <Row gutter={16}>
+        {/* 1. Resilience + this-round disruption impact */}
         <Col xs={24} md={8}>
           <SCCard title={t('sc.dashboard.resilience_score')} color="decision">
             {scoreCalculated ? <Statistic title="This round" value={score} /> : (
@@ -141,48 +171,55 @@ const SupplyChainPanel = () => {
             )}
           </SCCard>
         </Col>
+
+        {/* 2. Your exposure — consolidated sourcing/geography/buffer risk */}
         <Col xs={24} md={16}>
-          <SCCard title={t('sc.dashboard.supplier_concentration')} color="strategic"
+          <SCCard title="Your Exposure" color="strategic"
             onEdit={() => go('/decisions/sourcing')} editLabel="Edit sourcing"
-            empty={concentrationRows.length === 0} emptyText="You haven't allocated any suppliers yet.">
-            <Table rowKey="cat" size="small" pagination={false} dataSource={concentrationRows}
-              columns={[
-                { title: 'Input', dataIndex: 'cat', render: (v) => <Text strong>{pretty(v)}</Text> },
-                { title: 'Suppliers', dataIndex: 'suppliers' },
-                { title: 'Biggest supplier', dataIndex: 'maxPct',
-                  render: (v) => <Space><Progress percent={v} size="small" style={{ width: 90 }} status={v >= 100 ? 'exception' : 'normal'} />{v >= 100 && <Tag color="red">single source</Tag>}</Space> },
-              ]} />
+            empty={allocations.length === 0 && invRows.length === 0}
+            emptyText="Set your sourcing and inventory to see where you're exposed.">
+            <Row gutter={[16, 12]}>
+              <Col xs={24} md={8}>
+                <Text type="secondary" style={{ fontSize: 12 }}>Single-source risk</Text>
+                <div style={{ marginTop: 4 }}>
+                  {singleSourced.length
+                    ? <Space wrap size={4}>{singleSourced.map((c) => <Tag color="red" key={c}>{pretty(c)}</Tag>)}</Space>
+                    : <Tag color="green">{allocations.length ? 'None' : '—'}</Tag>}
+                </div>
+              </Col>
+              <Col xs={24} md={8}>
+                <Text type="secondary" style={{ fontSize: 12 }}>Geographic concentration</Text>
+                <div style={{ marginTop: 4 }}>
+                  {topCountry
+                    ? (
+                      <Space direction="vertical" size={2} style={{ width: '100%' }}>
+                        <Space><Tag color={topCountry.pct > 50 ? 'orange' : 'default'}>{topCountry.country}</Tag>
+                          <Text strong>{topCountry.pct}%</Text>
+                          {topCountry.pct > 50 && <Text type="secondary" style={{ fontSize: 11 }}>concentrated</Text>}</Space>
+                        <Progress percent={topCountry.pct} size="small" showInfo={false} status={topCountry.pct > 50 ? 'exception' : 'normal'} style={{ width: 130 }} />
+                      </Space>
+                    ) : <Text type="secondary">—</Text>}
+                </div>
+              </Col>
+              <Col xs={24} md={8}>
+                <Text type="secondary" style={{ fontSize: 12 }}>Buffer adequacy</Text>
+                <div style={{ marginTop: 4 }}>
+                  {bufferAvg != null
+                    ? <Space><Text strong>{bufferAvg} days</Text><Tag color={thinBuffer ? 'orange' : 'green'}>{thinBuffer ? 'thin' : 'adequate'}</Tag>
+                        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>edit</Button></Space>
+                    : <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>Set inventory buffers</Button>}
+                </div>
+              </Col>
+            </Row>
           </SCCard>
         </Col>
       </Row>
 
       <Row gutter={16}>
-        <Col xs={24} md={8}>
-          <SCCard title="Where Your Suppliers Are" color="strategic"
-            onEdit={() => go('/decisions/sourcing')} editLabel="Edit sourcing"
-            empty={geoRows.length === 0} emptyText="You haven't allocated any suppliers yet.">
-            {geoRows.map((r) => (
-              <div key={r.country} style={{ marginBottom: 6 }}>
-                <Space><Tag>{r.country}</Tag><Progress percent={r.pct} size="small" style={{ width: 120 }} /></Space>
-              </div>
-            ))}
-          </SCCard>
-        </Col>
-        <Col xs={24} md={16}>
-          <SCCard title="Shipping Lanes in Use" color="neutral"
-            onEdit={() => go('/decisions/logistics')} editLabel="Edit logistics"
-            empty={laneRows.length === 0} emptyText="You haven't set up any shipping lanes yet.">
-            <Table rowKey="lane" size="small" pagination={false} dataSource={laneRows}
-              columns={[{ title: 'Lane', dataIndex: 'lane', render: (v) => <Text strong>{v}</Text> },
-                { title: 'How it ships', dataIndex: 'split' }]} />
-          </SCCard>
-        </Col>
-      </Row>
-
-      <Row gutter={16}>
-        <Col xs={24} md={12}>
+        {/* 3. Compliance exposure */}
+        <Col xs={24} md={10}>
           <SCCard title={t('sc.dashboard.compliance_risk')} color="decision">
-            <Paragraph type="secondary" style={{ fontSize: 12 }}>Rules that apply in this market:</Paragraph>
+            <Paragraph type="secondary" style={{ fontSize: 12, marginBottom: 6 }}>Rules that apply in this market:</Paragraph>
             <Space wrap>{d.regimes.map((r) => <Tag key={r.id}>{r.name}</Tag>)}</Space>
             {flaggedNames.length > 0 ? (
               <Alert style={{ marginTop: 12 }} type="warning" showIcon icon={<WarningOutlined />}
@@ -192,104 +229,21 @@ const SupplyChainPanel = () => {
               <Alert style={{ marginTop: 12 }} type="success" showIcon
                 message={allocations.length ? 'None of your current suppliers are flagged for forced-labor risk.' : 'Add suppliers to see your compliance risk here.'} />
             )}
-            {(d.compliance || []).length > 0 && (
-              <Alert style={{ marginTop: 12 }} type="error" showIcon
-                message={t('sc.dashboard.enforcement_actions')}
-                description={
-                  <Space direction="vertical" size={2}>
-                    {d.compliance.map((e) => (
-                      <div key={e.id}>
-                        <Text>
-                          R{e.round_number}: <Text strong>{e.regime_name}</Text>
-                          {e.market_code ? ` in ${e.market_code}` : ''} — cost ${Math.round(Number(e.cost_usd)).toLocaleString()}
-                          {e.freeze_until_round >= currentRound ? `, market frozen through R${e.freeze_until_round}` : ''}
-                        </Text>
-                        {e.narrative && (
-                          <Paragraph type="secondary" style={{ fontSize: 12, margin: '2px 0 0' }}>{e.narrative}</Paragraph>
-                        )}
-                      </div>
-                    ))}
-                  </Space>
-                } />
-            )}
           </SCCard>
         </Col>
-        <Col xs={24} md={12}>
-          <SCCard title="Trade Finance & FX" color="strategic"
-            onEdit={() => go('/decisions/trade-finance')} editLabel="Edit trade finance"
-            empty={tfRows.length === 0 && sinosure.length === 0 && fxHedges.length === 0}
-            emptyText="You haven't set any payment or currency decisions yet.">
-            <Paragraph style={{ marginBottom: 4 }}><Text strong>Payment methods set:</Text> {tfRows.length}</Paragraph>
-            <Space wrap>{[...new Set(tfRows.map((t) => t.buyer_payment_instrument).filter(Boolean))].map((i) => <Tag key={i}>{pretty(i)}</Tag>)}</Space>
-            <Paragraph style={{ margin: '8px 0 4px' }}><Text strong>Markets with export insurance:</Text> {sinosure.length}</Paragraph>
-            <Paragraph style={{ margin: '0 0 4px' }}><Text strong>Currency hedges set:</Text> {fxHedges.length}</Paragraph>
-            <Space wrap>{fxHedges.map((h) => <Tag key={h.currency_pair}>{h.currency_pair} {h.hedge_ratio}%</Tag>)}</Space>
+
+        {/* 4. Disruptions & alerts — the live feed (collapsible, active-first) */}
+        <Col xs={24} md={14}>
+          <SCCard title="Disruptions & Alerts" color="strategic"
+            empty={alertItems.length === 0}
+            emptyText="No active disruptions or compliance actions. This updates each round.">
+            <Paragraph type="secondary" style={{ fontSize: 12, marginBottom: 8 }}>
+              {events.length} disruption(s) this round{activeCompliance.length ? ` · ${activeCompliance.length} active compliance action(s)` : ''}. Click to read details.
+            </Paragraph>
+            <Collapse size="small" items={alertItems} />
           </SCCard>
         </Col>
       </Row>
-
-      <Row gutter={16}>
-        <Col xs={24} md={12}>
-          <SCCard title="Inventory Buffers" color="neutral"
-            onEdit={() => go('/decisions/inventory')} editLabel="Edit inventory"
-            empty={invRows.length === 0} emptyText="You haven't set any inventory buffers yet.">
-            <Table rowKey={(r) => `${r.product}-${r.market}`} size="small" pagination={false} dataSource={invRows}
-              columns={[{ title: 'Buffer (days)', dataIndex: 'buffer_days' },
-                { title: 'Reorder at (%)', dataIndex: 'safety_stock_trigger_pct' }]} />
-          </SCCard>
-        </Col>
-        <Col xs={24} md={12}>
-          <SCCard title="Recent Disruptions" color="decision"
-            empty={events.length === 0} emptyText="No supply-chain disruptions this round.">
-            <Paragraph type="secondary" style={{ fontSize: 12 }}>{events.length} disruption(s) this round.</Paragraph>
-            {events.slice(0, 8).map((e) => (
-              <div key={e.id} style={{ marginBottom: 8 }}>
-                <div><Tag color={e.fired_by_instructor ? 'orange' : 'blue'}>Disruption</Tag>
-                  {e.affects_all_teams ? ' affects everyone' : ' affects your team'}</div>
-                {e.resolution_data?.narrative && (
-                  <Paragraph type="secondary" style={{ fontSize: 12, margin: '4px 0 0' }}>
-                    {e.resolution_data.narrative}
-                  </Paragraph>
-                )}
-              </div>
-            ))}
-          </SCCard>
-        </Col>
-      </Row>
-
-      {/* Live operations — updates automatically as the simulation runs each round.
-          Shown honestly as blank/unavailable until the engine populates them; never faked. */}
-      <PanelCard headerColor="neutral" title="Live Operations" style={{ marginBottom: 16 }}>
-        <Paragraph type="secondary" style={{ fontSize: 12 }}>
-          These update automatically as the simulation runs each round. They stay blank until the first round is processed.
-        </Paragraph>
-        <Row gutter={16}>
-          <Col xs={24} md={6}>
-            <Space direction="vertical" size={4}>
-              <Space><Text strong>Shipping status</Text> <StateBadge state="unavailable" /></Space>
-              <Text type="secondary" style={{ fontSize: 12 }}>No shipping delays or disruptions right now. Updates each round.</Text>
-            </Space>
-          </Col>
-          <Col xs={24} md={6}>
-            <Space direction="vertical" size={4}>
-              <Space><Text strong>Supplier disruptions</Text> <StateBadge state={events.length ? 'current' : 'unavailable'} /></Space>
-              <Text type="secondary" style={{ fontSize: 12 }}>{events.length ? `${events.length} happening this round.` : 'No supplier problems right now. Updates each round.'}</Text>
-            </Space>
-          </Col>
-          <Col xs={24} md={6}>
-            <Space direction="vertical" size={4}>
-              <Space><Text strong>Open currency hedges</Text> <StateBadge state={hedgePositions.length ? 'current' : 'unavailable'} /></Space>
-              <Text type="secondary" style={{ fontSize: 12 }}>{hedgePositions.length ? `${hedgePositions.length} open right now.` : 'No open hedges right now. Updates each round.'}</Text>
-            </Space>
-          </Col>
-          <Col xs={24} md={6}>
-            <Space direction="vertical" size={4}>
-              <Space><Text strong>Stock on hand / on order</Text> <StateBadge state="unavailable" /></Space>
-              <Text type="secondary" style={{ fontSize: 12 }}>Live stock levels aren't tracked yet — coming in a later update.</Text>
-            </Space>
-          </Col>
-        </Row>
-      </PanelCard>
     </div>
   );
 };
