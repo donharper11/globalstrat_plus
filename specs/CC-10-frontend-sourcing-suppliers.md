@@ -18,6 +18,20 @@ This bundle inherits `STANDING-DISCIPLINE.md`, but the following rules are repea
 4. Before calling the bundle complete, self-verify every acceptance criterion with recorded command output, API/browser evidence, and a closeout report under the bundle's `specs/reports/cc-XX/` directory.
 5. A passing backend response alone is not proof of frontend completion. Frontend bundles require browser verification of the actual user workflow.
 
+
+## Operational State Mirror Requirement
+
+This page must not be only a data-entry form. It must also show the simulated operating state that makes sourcing decisions legible:
+
+- current supplier commitments by critical input category
+- proposed next-round commitments before save
+- supplier capacity, reliability, quality, and lead-time status
+- concentration risk and single-source warnings
+- any supplier disruption/compliance flags available from current API/state
+- clear distinction between current locked state and unsaved draft edits
+
+If an exact state source does not exist yet, show the best verified available state and document the missing source in the closeout report. Do not invent backend fields or payload keys.
+
 ---
 
 ## 1. Purpose

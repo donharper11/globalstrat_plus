@@ -18,6 +18,7 @@ This bundle inherits `STANDING-DISCIPLINE.md`, but the following rules are repea
 4. Before calling the bundle complete, self-verify every acceptance criterion with recorded command output, API/browser evidence, and a closeout report under the bundle's `specs/reports/cc-XX/` directory.
 5. A passing backend response alone is not proof of frontend completion. Frontend bundles require browser verification of the actual user workflow.
 
+
 ---
 
 ## 1. Purpose

@@ -8,6 +8,18 @@
 
 ---
 
+## Non-Negotiable Builder Discipline
+
+This bundle inherits `STANDING-DISCIPLINE.md`, but the following rules are repeated here because they are completion blockers:
+
+1. Verify every existing field, model, table, endpoint, route, component, settings key, and payload shape before referencing it. Use the current codebase and database, not memory or nearby names.
+2. Do not invent field names, model names, endpoint paths, YAML keys, payload keys, CSS classes, or React component names. If the expected name does not exist, halt with a MISMATCH report.
+3. Do not silently adapt the spec to whatever name seems convenient. Report the actual state and wait for instruction if the contract and implementation diverge.
+4. Before calling the bundle complete, self-verify every acceptance criterion with recorded command output, API/browser evidence, and a closeout report under the bundle's `specs/reports/cc-XX/` directory.
+5. A passing backend response alone is not proof of frontend completion. Frontend bundles require browser verification of the actual user workflow.
+
+---
+
 ## 1. Purpose
 
 Create enough Consumer Electronics supply-chain seed data for an end-to-end playable loop. Calibration realism is secondary in this bundle; the primary goal is complete, coherent data that exercises every supply-chain surface and engine input.
