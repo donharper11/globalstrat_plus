@@ -126,7 +126,10 @@ def generate_financial_statements(context):
         operating_income = (gross_profit - total_opex - logistics_tariff
                             - inventory_expense - depreciation - retirement_expense
                             - tax_structure_maintenance - sc_disruption_cost)
-        pre_tax_income = operating_income - interest
+        # CC-20: realized FX hedge P&L — a non-operating financial item settled by
+        # fx_engine.process_fx_hedges this round (gain > 0 lifts pre-tax income).
+        fx_hedge_pnl = getattr(context, 'sc_fx_hedge_pnl', {}).get(team.id, D('0'))
+        pre_tax_income = operating_income - interest + fx_hedge_pnl
         net_income = pre_tax_income - tax - tax_audit_penalty
 
         # Get financing decisions

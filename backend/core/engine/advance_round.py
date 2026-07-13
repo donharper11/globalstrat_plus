@@ -241,6 +241,12 @@ def _run_phase_1(game_id):
     from core.engine.sc_engine import calculate_sc_disruption_costs
     _run_sc_step('calculate_sc_disruption_costs', calculate_sc_disruption_costs, context)
 
+    # CC-20: FX hedge lifecycle (open -> mark-to-market -> settle). Books realized
+    # P&L into pre-tax income via context.sc_fx_hedge_pnl. Needs revenue (exposure),
+    # must run before financials. Same fail-open+strict handling as the SC steps.
+    from core.engine.fx_engine import process_fx_hedges
+    _run_sc_step('process_fx_hedges', process_fx_hedges, context)
+
     # Step 12: Financial statements
     from core.engine.financials import generate_financial_statements
     generate_financial_statements(context)

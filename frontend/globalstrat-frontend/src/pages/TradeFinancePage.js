@@ -10,6 +10,7 @@ import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import {
   getInstruments, getMarkets, getSegments, getTradeFinance, saveTradeFinance,
+  getHedgePositions,
 } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
@@ -70,15 +71,18 @@ const TradeFinancePage = () => {
   const [fx, setFx] = useState({});              // currency_pair -> {hedge_ratio, tenor_days}
   const [serverErrors, setServerErrors] = useState([]);
   const [snap, setSnap] = useState(null);
+  const [hedgePositions, setHedgePositions] = useState([]);
 
   const load = useCallback(async () => {
     if (!gameId || !teamId || !scenarioId || !currentRound) { setLoading(false); return; }
     setLoading(true);
     try {
-      const [insRes, mktRes, segRes, tfRes] = await Promise.all([
+      const [insRes, mktRes, segRes, tfRes, hpRes] = await Promise.all([
         getInstruments(scenarioId), getMarkets(scenarioId),
         getSegments(scenarioId, 'customer'), getTradeFinance(gameId, teamId, currentRound),
+        getHedgePositions(gameId, teamId).catch(() => ({ data: [] })),
       ]);
+      setHedgePositions(hpRes.data || []);
       setInstruments(insRes.data || []);
       setMarkets(mktRes.data || []);
       setSegments(segRes.data || []);
@@ -237,6 +241,35 @@ const TradeFinancePage = () => {
                   onChange={(v) => setFx((p) => ({ ...p, [r.pair]: { ...(p[r.pair] || {}), tenor_days: v } }))} /> ) },
             ]} />
         )}
+      </PanelCard>
+
+      <PanelCard headerColor="neutral" title="Open FX hedge positions" style={{ marginBottom: 16 }}>
+        <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
+          Hedges you set are opened at round-advance against your foreign receivables, marked to
+          market each round, and settle at maturity — the realized P&amp;L flows into your income
+          statement. A short receivables hedge gains when the foreign currency weakens.
+        </Text>
+        {hedgePositions.length === 0
+          ? <Empty description="No FX hedge positions yet — set a hedge ratio above and advance a round." />
+          : (
+            <Table rowKey="id" size="small" pagination={false} dataSource={hedgePositions} scroll={{ x: true }}
+              columns={[
+                { title: 'Pair', dataIndex: 'currency_pair', key: 'cp', render: (v) => <Text strong>{v}</Text> },
+                { title: 'Notional', dataIndex: 'notional', key: 'n', render: (v) => `$${Math.round(Number(v)).toLocaleString()}` },
+                { title: 'Locked rate', dataIndex: 'locked_rate', key: 'lr', render: (v) => Number(v).toFixed(4) },
+                { title: 'Mark-to-market', dataIndex: 'mtm_current', key: 'mtm', render: (v) => (
+                  <Text type={Number(v) > 0 ? 'success' : Number(v) < 0 ? 'danger' : undefined}>
+                    {Number(v) >= 0 ? '+' : ''}{Math.round(Number(v)).toLocaleString()}
+                  </Text>) },
+                { title: 'Realized P&L', dataIndex: 'realized_pnl', key: 'rp', render: (v) => (
+                  v == null ? <Text type="secondary">—</Text>
+                    : <Text type={Number(v) > 0 ? 'success' : Number(v) < 0 ? 'danger' : undefined}>
+                        {Number(v) >= 0 ? '+' : ''}{Math.round(Number(v)).toLocaleString()}
+                      </Text>) },
+                { title: 'Status', dataIndex: 'status', key: 'st', render: (v) => (
+                  <Tag color={v === 'open' ? 'blue' : v === 'matured' ? 'green' : 'default'}>{v}</Tag>) },
+              ]} />
+          )}
       </PanelCard>
     </div>
   );
