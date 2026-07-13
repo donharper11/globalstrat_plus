@@ -6,6 +6,7 @@ import {
 import {
   PlusOutlined, DeleteOutlined, LockOutlined, SaveOutlined, ReloadOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import { getInventory, saveInventory, getMarkets, getSuppliers, getLanes } from '../api/sc';
@@ -58,6 +59,7 @@ const lockTag = (r) => (<Tooltip title={`Unlocks in round ${r}`}><Tag icon={<Loc
 let seq = 1;
 
 const InventoryPage = () => {
+  const { t } = useTranslation();
   const { gameId, teamId, scenarioId, currentRound, roundStatus } = useGame();
   const { locked } = useDecisions();
   const round = currentRound || 1;
@@ -98,7 +100,7 @@ const InventoryPage = () => {
           event_type: r.event_type || 'any', from_mode: r.from_mode || 'sea', to_mode: r.to_mode || 'air', shift_pct: r.shift_pct ?? 30 }));
       setAltRules(alt); setModeRules(mr);
       setSnap(canonical(loadedRows, alt, mr));
-    } catch { message.error('Unable to load your inventory.'); } finally { setLoading(false); }
+    } catch { message.error(t('sc.inventory.load_error')); } finally { setLoading(false); }
   }, [gameId, teamId, scenarioId, currentRound]);
   useEffect(() => { load(); }, [load]);
 
@@ -153,7 +155,7 @@ const InventoryPage = () => {
     setSaving(true);
     try {
       await saveInventory(gameId, teamId, currentRound, payload);
-      message.success('Inventory saved.');
+      message.success(t('sc.inventory.saved_toast'));
       await load();
     } catch (err) {
       if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data)); message.error('The server rejected this. See the notes above.'); }
@@ -172,8 +174,8 @@ const InventoryPage = () => {
   return (
     <div style={{ maxWidth: 1080, width: '100%' }}>
       <PageHeader
-        title="Inventory"
-        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>Round {round} · Set inventory buffers, and prepare automatic backup plans for disruptions.</Text>}
+        title={t('sc.inventory.title')}
+        subtitle={<Text type="secondary" style={{ fontSize: 12 }}>{t('sc.common.round')} {round} · {t('sc.inventory.subtitle')}</Text>}
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
@@ -181,7 +183,7 @@ const InventoryPage = () => {
           <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
         </Space>} />
 
-      {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }} message={locked ? 'Your decisions are locked for this round.' : "This round isn't open for changes — you're viewing only."} />}
+      {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }} message={locked ? t('sc.common.locked_notice') : t('sc.common.readonly_notice')} />}
       {serverErrors.length > 0 && <Alert type="error" showIcon closable style={{ marginBottom: 16 }} onClose={() => setServerErrors([])} message="Please fix these" description={<ul style={{ margin: 0, paddingLeft: 18 }}>{serverErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>} />}
 
       <PanelCard headerColor="decision" title={<Space>Inventory Buffers {invLocked && lockTag(UNLOCK.buffer_days)}</Space>} style={{ marginBottom: 16 }}>
