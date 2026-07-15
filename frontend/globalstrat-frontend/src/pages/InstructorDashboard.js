@@ -16,7 +16,7 @@ import {
   getCourses, createCourse, deleteCourse,
   getSections, createSection, deleteSection,
   getRoster, uploadRoster, addStudent, removeEnrollment,
-  getTeamManagement, generateTeams, assignStudents,
+  getTeamManagement, assignStudents,
   seedRubric, calculateGrades, getGradingRubrics, getGradingCategories,
   updateGradingCategory, createGradingCategory, deleteGradingCategory,
   getComponentLabels,
