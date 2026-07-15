@@ -66,8 +66,6 @@ export const removeEnrollment = (enrollmentId) =>
 // Team management
 export const getTeamManagement = (sectionId) =>
   client.get('/team-management/', { params: { section_id: sectionId } });
-export const generateTeams = (sectionId, method = 'random') =>
-  client.post('/team-management/', { section_id: sectionId, method });
 export const assignStudents = (assignments) =>
   client.put('/team-management/', { action: 'assign', assignments });
 export const renameTeam = (teamId, name) =>

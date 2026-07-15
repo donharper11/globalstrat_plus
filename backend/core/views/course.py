@@ -42,20 +42,6 @@ from core.serializers.course import (
 )
 
 # Futuristic company names used when auto-generating teams.
-COMPANY_NAMES = [
-    'Nexus Dynamics', 'Aether Industries', 'Solaris Corp',
-    'Zenith Innovations', 'Orion Collective', 'Helios Ventures',
-    'Vantage Systems', 'Prism Technologies', 'Astra Enterprises',
-    'Vertex Global', 'Nova Synthetica', 'Quantum Forge',
-    'Eclipse Digital', 'Cipher Networks', 'Parallax Labs',
-    'Meridian Works', 'Stratos Group', 'Axiom Devices',
-    'Pulse Robotics', 'Titan Microtech', 'Lumen Industries',
-    'Catalyst Corp', 'Helix Foundry', 'Aegis Solutions',
-    'Photon Systems', 'Nebula Dynamics', 'Tesseract Inc',
-    'Arc Innovations', 'Cobalt Ventures', 'Apex Synergies',
-]
-
-
 # ---------------------------------------------------------------------------
 # Helper utilities
 # ---------------------------------------------------------------------------
@@ -500,7 +486,6 @@ class TeamManagementView(APIView):
     Manage teams within a section.
 
     GET    ?section_id=<id>                      — list teams with members
-    POST   {action: "generate", section_id, method, team_name_prefix}
     PUT    {action: "assign", assignments: [{user_id, team_id}, ...]}
     PUT    {action: "rename", team_id, team_name}
     """
@@ -572,116 +557,6 @@ class TeamManagementView(APIView):
             'teams': result,
             'unassigned': unassigned,
         })
-
-    # ---- POST: generate teams -------------------------------------------
-
-    @transaction.atomic
-    def post(self, request):
-        section_id = request.data.get('section_id')
-        method = request.data.get('method', 'random')
-        team_name_prefix = request.data.get('team_name_prefix', 'Team')
-
-        if not section_id:
-            return Response(
-                {'error': 'section_id is required.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            section = Section.objects.get(section_id=section_id)
-        except Section.DoesNotExist:
-            return Response(
-                {'error': 'Section not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        # Get the simulation instance for this section
-        sim_instance = SimulationInstance.objects.filter(
-            section_id=section_id,
-        ).first()
-        instance_id = sim_instance.instance_id if sim_instance else None
-
-        # Get active enrolled students
-        enrollments = list(
-            Enrollment.objects.filter(section_id=section_id, is_active=True)
-        )
-        student_count = len(enrollments)
-        if student_count == 0:
-            return Response(
-                {'error': 'No enrolled students in this section.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Calculate optimal team count
-        team_size_min = section.team_size_min or 3
-        team_size_max = section.team_size_max or 5
-        max_teams = section.max_teams or 8
-
-        # Ideal: as many teams as possible within min/max bounds
-        ideal_size = (team_size_min + team_size_max) / 2.0
-        team_count = round(student_count / ideal_size)
-        # Clamp so that per-team size stays within bounds
-        team_count = max(team_count, math.ceil(student_count / team_size_max))
-        team_count = min(team_count, math.floor(student_count / team_size_min))
-        # Clamp to max_teams
-        team_count = max(team_count, 1)
-        team_count = min(team_count, max_teams)
-
-        # Sort or shuffle students depending on method
-        if method == 'alphabetical':
-            # Sort by display_name (or username fallback)
-            def _sort_key(enr):
-                user = User.objects.filter(user_id=enr.user_id).first()
-                if user:
-                    return (user.display_name or user.username or '').lower()
-                return ''
-            enrollments.sort(key=_sort_key)
-        else:
-            random.shuffle(enrollments)
-
-        # Create team records with futuristic company names
-        created_teams = []
-        available_names = list(COMPANY_NAMES)
-        random.shuffle(available_names)
-        for i in range(team_count):
-            if i < len(available_names):
-                team_name = available_names[i]
-            else:
-                team_name = f"{team_name_prefix} {i + 1}"
-
-            team = Team.objects.create(
-                team_name=team_name,
-                instance_id=instance_id,
-                section_id=section_id,
-                created_at=timezone.now(),
-            )
-            created_teams.append(team)
-
-        # Distribute students evenly across teams (round-robin) — unless 'empty'
-        if method != 'empty':
-            for idx, enrollment in enumerate(enrollments):
-                assigned_team = created_teams[idx % team_count]
-                enrollment.team_id = assigned_team.team_id
-                enrollment.save()
-
-        # Build response
-        teams_data = []
-        for team in created_teams:
-            member_count = Enrollment.objects.filter(
-                section_id=section_id, team_id=team.team_id, is_active=True,
-            ).count()
-            teams_data.append({
-                'team_id': team.team_id,
-                'team_name': team.team_name,
-                'member_count': member_count,
-            })
-
-        return Response({
-            'section_id': int(section_id),
-            'teams_created': len(created_teams),
-            'student_count': student_count,
-            'teams': teams_data,
-        }, status=status.HTTP_201_CREATED)
 
     # ---- PUT: assign or rename ------------------------------------------
 
