@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.SessionHeartbeatMiddleware',
     'core.middleware.GamePauseGuardMiddleware',
+    'core.middleware.TeamScopeGuardMiddleware',
 ]
 
 ROOT_URLCONF = 'globalstrat.urls'
@@ -273,7 +274,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'core.authentication.JWTAuthentication',
     ],
+    # Default to requiring a login. This was AllowAny, and 86 of 168 view
+    # classes declared no permission_classes of their own, so they inherited it
+    # — a team's strategic briefing, round status and financial reports were
+    # readable by anyone on the internet with no credentials at all. Endpoints
+    # that are genuinely public (login) now say so explicitly.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }

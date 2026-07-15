@@ -11,9 +11,11 @@ from decimal import Decimal
 
 import yaml
 from django.test import TestCase
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
 
+from core.authentication import JWTUser
 from core.management.commands.load_scenario import validate_scenario_yaml
+from core.models import User
 from core.models.scenario import Scenario, MarketDefinition, SegmentDefinition
 from core.views.sc_views import ScenarioMarketsView, ScenarioSegmentsView
 
@@ -94,20 +96,32 @@ class ScenarioContentEndpointTests(TestCase):
             population_size=10, bass_p=Decimal('0.01'), bass_q=Decimal('0.10'),
             performance_index_weight=Decimal('1.00'), market=cls.m1, display_order=2)
         cls.f = APIRequestFactory()
+        # These endpoints are reached from the SC frontend after login, and
+        # the project default is now IsAuthenticated (it used to be AllowAny,
+        # which is why these tests originally passed an anonymous request).
+        cls.user = User.objects.create(
+            username='sc_reader', role='Student', password_hash='x',
+        )
+
+    @classmethod
+    def _get(cls, path):
+        request = cls.f.get(path)
+        force_authenticate(request, user=JWTUser(cls.user))
+        return request
 
     def test_markets_endpoint_shape(self):
-        resp = ScenarioMarketsView.as_view()(self.f.get('/x'), scenario_id=self.scenario.pk)
+        resp = ScenarioMarketsView.as_view()(self._get('/x'), scenario_id=self.scenario.pk)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, [{'id': self.m1.id, 'code': 'NA', 'name': 'North America', 'currency_code': 'USD'}])
 
     def test_segments_endpoint_and_filter(self):
-        allr = ScenarioSegmentsView.as_view()(self.f.get('/x'), scenario_id=self.scenario.pk)
+        allr = ScenarioSegmentsView.as_view()(self._get('/x'), scenario_id=self.scenario.pk)
         self.assertEqual(len(allr.data), 2)
-        cust = ScenarioSegmentsView.as_view()(self.f.get('/x?segment_type=customer'), scenario_id=self.scenario.pk)
+        cust = ScenarioSegmentsView.as_view()(self._get('/x?segment_type=customer'), scenario_id=self.scenario.pk)
         self.assertEqual([s['name'] for s in cust.data], ['Premium'])
         self.assertEqual(cust.data[0]['market_id'], self.m1.id)
 
     def test_empty_scenario_returns_empty(self):
         other = Scenario.objects.create(name='Empty', starting_cash=Decimal('1.00'))
-        resp = ScenarioMarketsView.as_view()(self.f.get('/x'), scenario_id=other.pk)
+        resp = ScenarioMarketsView.as_view()(self._get('/x'), scenario_id=other.pk)
         self.assertEqual(resp.data, [])
