@@ -16,22 +16,12 @@ from core.models import User
 class IsTeamMember(permissions.BasePermission):
     def has_permission(self, request, view):
         team_id = view.kwargs.get('team_id')
-        # Check JWT-authenticated user first
-        user = None
-        if hasattr(request, 'user') and hasattr(request.user, 'user_id') and request.user.is_authenticated:
-            try:
-                user = User.objects.get(user_id=request.user.user_id)
-            except User.DoesNotExist:
-                pass
-        # Fallback to legacy X-User-Id header
+        # Identity comes only from the signed JWT. The X-User-Id header used
+        # to be accepted here, which allowed impersonating any user.
+        from core.utils.auth_context import get_request_user
+        user = get_request_user(request)
         if not user:
-            user_id = request.headers.get('X-User-Id') or request.query_params.get('user_id')
-            if not user_id:
-                return False
-            try:
-                user = User.objects.get(user_id=int(user_id))
-            except (User.DoesNotExist, ValueError, TypeError):
-                return False
+            return False
         role = (user.role or '').lower()
         if role in ('instructor', 'admin'):
             return True

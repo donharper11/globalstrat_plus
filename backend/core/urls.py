@@ -114,7 +114,7 @@ from .views import (
     # Resources (Textbook KB)
     ResourceSearchView, ResourceContentView,
     # Auth
-    LoginView, CurrentUserView, LanguagePreferenceView,
+    LoginView, CurrentUserView, LanguagePreferenceView, LogoutView,
     # Events & RAG (CC-7)
     ActiveEventsView, EventHistoryView, ResearchQueryView,
     # Course Management
@@ -200,11 +200,43 @@ router.register(r'grading-components', GradingComponentMappingViewSet, basename=
 router.register(r'team-grades', TeamGradeViewSet, basename='team-grades')
 router.register(r'student-grade-adjustments', StudentGradeAdjustmentViewSet, basename='student-grade-adjustments')
 
+from core.views.round_control import (
+    RoundControlView, RoundCloseView, RoundReopenView,
+    RoundProcessView, RoundAdvanceView, RoundDeadlineView,
+)
+from core.views.instructor_accounts import (
+    StudentAccountListView, StudentPasswordResetView,
+    BulkPasswordResetView, ActiveSessionsView,
+)
+
 urlpatterns = [
     path('', include(router.urls)),
     # ---- Auth ----
     path('auth/login/', LoginView.as_view(), name='auth-login'),
     path('auth/me/', CurrentUserView.as_view(), name='auth-me'),
+    path('auth/logout/', LogoutView.as_view(), name='auth-logout'),
+    # ---- Instructor: round lifecycle control ----
+    path('games/<int:game_id>/round-control/', RoundControlView.as_view(),
+         name='round-control'),
+    path('games/<int:game_id>/round-control/close/', RoundCloseView.as_view(),
+         name='round-control-close'),
+    path('games/<int:game_id>/round-control/reopen/', RoundReopenView.as_view(),
+         name='round-control-reopen'),
+    path('games/<int:game_id>/round-control/process/', RoundProcessView.as_view(),
+         name='round-control-process'),
+    path('games/<int:game_id>/round-control/advance/', RoundAdvanceView.as_view(),
+         name='round-control-advance'),
+    path('games/<int:game_id>/round-control/deadline/', RoundDeadlineView.as_view(),
+         name='round-control-deadline'),
+    # ---- Instructor: student accounts & sessions ----
+    path('instructor/student-accounts/', StudentAccountListView.as_view(),
+         name='instructor-student-accounts'),
+    path('instructor/student-accounts/bulk-reset/', BulkPasswordResetView.as_view(),
+         name='instructor-bulk-password-reset'),
+    path('instructor/student-accounts/<int:user_id>/password/',
+         StudentPasswordResetView.as_view(), name='instructor-student-password'),
+    path('instructor/active-sessions/', ActiveSessionsView.as_view(),
+         name='instructor-active-sessions'),
     path('user/preferences/', LanguagePreferenceView.as_view(), name='user-preferences'),
     # ---- Onboarding ----
     path('onboarding/', OnboardingDataView.as_view(), name='onboarding-data'),

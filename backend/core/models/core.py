@@ -120,6 +120,17 @@ class Round(models.Model):
     deadline = models.DateTimeField(null=True, blank=True)
     processed_at = models.DateTimeField(null=True, blank=True)
 
+    # Set when the round stops accepting decisions — either the deadline
+    # elapsed or an instructor closed it by hand.
+    closed_at = models.DateTimeField(null=True, blank=True)
+    close_reason = models.CharField(
+        max_length=32, blank=True, default='',
+        choices=[
+            ('deadline', 'Deadline elapsed'),
+            ('manual', 'Closed by instructor'),
+        ],
+    )
+
     # CC-32H: Two-phase processing status
     processing_status = models.CharField(
         max_length=20,

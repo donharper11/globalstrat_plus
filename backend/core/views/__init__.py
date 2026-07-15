@@ -44,7 +44,7 @@ from .persona_engine import (
     ThreadMessagesView, ConsultationUsageView,
 )
 from .resources import ResourceSearchView, ResourceContentView
-from .auth import LoginView, CurrentUserView, LanguagePreferenceView
+from .auth import LoginView, CurrentUserView, LanguagePreferenceView, LogoutView
 from core.rag.views import ActiveEventsView, EventHistoryView, ResearchQueryView
 from .course import (
     CourseViewSet, SectionViewSet,

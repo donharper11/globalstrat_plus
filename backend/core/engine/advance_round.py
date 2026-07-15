@@ -57,17 +57,77 @@ def _run_sc_step(step_name, fn, context):
             raise
 
 
-def advance_round(game_id, dry_run=False):
+def get_current_round(game):
+    """The Round the game is currently sitting on, whatever its status."""
+    return Round.objects.filter(
+        game=game, round_number=game.current_round,
+    ).first()
+
+
+def close_round(game_id, reason='manual'):
     """
-    Main entry point. Runs Phase 1 synchronously, fires Phase 2 in background.
+    Stop accepting decisions for the current round.
 
-    Args:
-        game_id: The game to advance.
-        dry_run: If True, wraps everything in a transaction that gets
-                 rolled back at the end. Phase 2 is skipped in dry_run mode.
+    This is the deadline action: it locks students out but computes nothing.
+    Processing is a separate, instructor-triggered step (process_round).
+    Idempotent — closing an already-closed round is a no-op.
+    """
+    game = Game.objects.get(id=game_id)
+    round_obj = get_current_round(game)
+    if not round_obj:
+        raise ValueError(f'Game "{game.name}" has no round {game.current_round}.')
 
-    Returns:
-        dict with phase_1_time and phase_2_status.
+    if round_obj.status in ('closed', 'processed'):
+        return {'changed': False, 'round': round_obj.round_number,
+                'status': round_obj.status}
+
+    round_obj.status = 'closed'
+    round_obj.closed_at = timezone.now()
+    round_obj.close_reason = reason
+    round_obj.save(update_fields=['status', 'closed_at', 'close_reason'])
+
+    # Freeze whatever each team had at the moment of close, so late edits
+    # can't slip in and so processing sees a stable snapshot.
+    locked = _lock_all_submissions(game, round_obj)
+
+    logger.info(
+        'Closed round %s of game %s (reason=%s, %s submissions locked)',
+        round_obj.round_number, game_id, reason, locked,
+    )
+    return {'changed': True, 'round': round_obj.round_number,
+            'status': 'closed', 'submissions_locked': locked,
+            'reason': reason}
+
+
+def _lock_all_submissions(game, round_obj):
+    """Lock every team's submission for this round, creating empty ones."""
+    count = 0
+    for team in Team.objects.filter(game=game):
+        submission = DecisionSubmission.objects.filter(
+            team=team, round=round_obj,
+        ).first()
+        if not submission:
+            DecisionSubmission.objects.create(
+                team=team, round=round_obj,
+                status='locked', locked_at=timezone.now(),
+            )
+            count += 1
+        elif submission.status != 'locked':
+            submission.status = 'locked'
+            submission.locked_at = timezone.now()
+            submission.save(update_fields=['status', 'locked_at'])
+            count += 1
+    return count
+
+
+def process_round(game_id, dry_run=False):
+    """
+    Run end-of-round scoring for the current round. Does NOT advance the game.
+
+    Phase 1 (deterministic maths) runs synchronously; Phase 2 (LLM narratives)
+    is dispatched to a background thread. Afterwards the round is 'processed'
+    and results are visible, but the game stays on this round until an
+    instructor calls advance_to_next_round().
     """
     from django.db import transaction
 
@@ -85,7 +145,7 @@ def advance_round(game_id, dry_run=False):
         # Phase 2: background LLM calls
         game = Game.objects.get(id=game_id)
         round_obj = Round.objects.filter(
-            game=game, round_number=context.round_number,
+            game=game, round_number=context._round_number,
         ).first()
 
         if round_obj:
@@ -97,12 +157,92 @@ def advance_round(game_id, dry_run=False):
             thread.start()
             logger.info("Phase 2 dispatched to background thread")
 
-        return {'phase_1_time': phase_1_time, 'phase_2_status': 'dispatched'}
+        return {
+            'processed_round': context._round_number,
+            'phase_1_time': phase_1_time,
+            'phase_2_status': 'dispatched',
+        }
 
     except Exception:
         if dry_run:
             transaction.savepoint_rollback(sid)
+        _mark_failed(game_id)
         raise
+
+
+def _mark_failed(game_id):
+    """Best-effort: flag the round FAILED so the console can show it."""
+    try:
+        game = Game.objects.get(id=game_id)
+        round_obj = get_current_round(game)
+        if round_obj and round_obj.processing_status == 'PROCESSING':
+            round_obj.processing_status = 'FAILED'
+            round_obj.save(update_fields=['processing_status'])
+    except Exception:
+        pass
+
+
+def advance_to_next_round(game_id, force=False):
+    """
+    Open the next round. Requires the current round to be processed first,
+    so results always exist before the game moves on (pass force=True to
+    override).
+    """
+    game = Game.objects.get(id=game_id)
+    round_obj = get_current_round(game)
+    if not round_obj:
+        raise ValueError(f'Game "{game.name}" has no round {game.current_round}.')
+
+    if round_obj.status != 'processed' and not force:
+        raise ValueError(
+            f'Round {round_obj.round_number} is "{round_obj.status}", not '
+            f'"processed". Run post-round processing first, or force=True.'
+        )
+
+    current = round_obj.round_number
+    total = game.scenario.num_rounds if game.scenario else current
+    next_round_num = current + 1
+
+    if next_round_num > total:
+        game.status = 'completed'
+        game.save(update_fields=['status'])
+        logger.info('Game %s completed after round %s', game_id, current)
+        return {'completed_round': current, 'next_round': None,
+                'game_status': 'completed'}
+
+    next_round, created = Round.objects.get_or_create(
+        game=game, round_number=next_round_num,
+        defaults={'status': 'open', 'opened_at': timezone.now()},
+    )
+    if not created and next_round.status in ('pending', 'closed'):
+        next_round.status = 'open'
+        next_round.opened_at = timezone.now()
+        next_round.save(update_fields=['status', 'opened_at'])
+
+    game.current_round = next_round_num
+    game.save(update_fields=['current_round'])
+
+    logger.info('Game %s advanced: round %s -> %s', game_id, current, next_round_num)
+    return {'completed_round': current, 'next_round': next_round_num,
+            'game_status': game.status,
+            'next_deadline': next_round.deadline.isoformat()
+                             if next_round.deadline else None}
+
+
+def advance_round(game_id, dry_run=False):
+    """
+    Back-compat entry point: process the current round AND advance in one go.
+
+    Prefer process_round() then advance_to_next_round(), which is the flow the
+    instructor console drives.
+    """
+    result = process_round(game_id, dry_run=dry_run)
+    if dry_run:
+        return result
+
+    advance = advance_to_next_round(game_id)
+    result.update(advance)
+    return result
 
 
 def _run_phase_1(game_id):
@@ -111,13 +251,23 @@ def _run_phase_1(game_id):
 
     game = Game.objects.get(id=game_id)
 
-    # Determine current round
-    current_round_obj = Round.objects.filter(
-        game=game, status='open',
-    ).order_by('round_number').first()
+    # Process the round the game is actually on. This used to look up
+    # status='open', which broke once a deadline could close a round before
+    # processing.
+    current_round_obj = get_current_round(game)
 
     if not current_round_obj:
-        raise ValueError(f'No open round found for game "{game.name}" (ID: {game_id})')
+        raise ValueError(f'No round {game.current_round} found for game "{game.name}" (ID: {game_id})')
+
+    if current_round_obj.status == 'processed':
+        raise ValueError(
+            f'Round {current_round_obj.round_number} has already been processed.'
+        )
+    if current_round_obj.status not in ('open', 'closed'):
+        raise ValueError(
+            f'Round {current_round_obj.round_number} is "{current_round_obj.status}" '
+            f'and cannot be processed.'
+        )
 
     current_round = current_round_obj.round_number
 
@@ -315,29 +465,14 @@ def _run_phase_1(game_id):
     except Exception as e:
         context.log.append(f'Instructor alert generation failed: {e}')
 
-    # Step 17: Advance round
+    # Step 17: Mark the round processed. Opening the next round is a separate,
+    # instructor-triggered step — see advance_to_next_round().
     current_round_obj.status = 'processed'
     current_round_obj.processed_at = timezone.now()
     current_round_obj.processing_status = 'RESULTS_AVAILABLE'
     phase_1_time = time.time() - start
     current_round_obj.phase_1_duration = phase_1_time
     current_round_obj.save()
-
-    next_round_num = current_round + 1
-    if next_round_num <= game.scenario.num_rounds:
-        next_round, created = Round.objects.get_or_create(
-            game=game, round_number=next_round_num,
-            defaults={'status': 'open', 'opened_at': timezone.now()},
-        )
-        if not created and next_round.status == 'pending':
-            next_round.status = 'open'
-            next_round.opened_at = timezone.now()
-            next_round.save()
-        game.current_round = next_round_num
-    else:
-        game.status = 'completed'
-
-    game.save()
 
     # CC-19/CC-19B: Score supply-chain resilience and record per-team disruption
     # impact (lost sales + costs already flowed through the P&L above). Read-only;

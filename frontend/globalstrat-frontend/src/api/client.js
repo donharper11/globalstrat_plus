@@ -19,6 +19,10 @@ client.interceptors.request.use((config) => {
     config.headers['Accept-Language'] = lang;
   }
   // Also send legacy headers for backward compat
+  const sessionId = localStorage.getItem('gs_session_id');
+  if (sessionId) {
+    config.headers['X-Session-Id'] = sessionId;
+  }
   try {
     const stored = localStorage.getItem('gs_user');
     if (stored) {
@@ -37,6 +41,7 @@ client.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('gs_user');
+      localStorage.removeItem('gs_session_id');
       window.location.href = '/login';
     }
     return Promise.reject(error);

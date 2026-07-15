@@ -59,8 +59,10 @@ class CC16InstructorSCTest(TestCase):
         cls.factory = APIRequestFactory()
 
     def _call(self, view, method, user, data=None):
-        req = getattr(self.factory, method)('/x/', data or {}, format='json',
-                                            HTTP_X_USER_ID=str(user.user_id))
+        from core.authentication import create_access_token
+        req = getattr(self.factory, method)(
+            '/x/', data or {}, format='json',
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}')
         return view.as_view()(req, game_id=self.game.id)
 
     # -- injection actually disrupts the next round ---------------------
