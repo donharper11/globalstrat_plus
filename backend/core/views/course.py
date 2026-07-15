@@ -470,6 +470,31 @@ class RosterViewSet(APIView):
 # TeamManagementView
 # ===================================================================
 
+def _game_ids_for_section(section_id):
+    """
+    Every Game reachable from a section.
+
+    A section reaches its game two different ways and neither is reliable
+    alone: SimulationInstance.game_id, or Game.section_id. Real data uses
+    both — the pilot section has both set, while the demo section has only
+    the SimulationInstance link (its Game.section_id is NULL). Checking just
+    one silently finds no teams. _build_enrollment_context in views/auth.py
+    resolves it the same way, instance first.
+    """
+    from core.models.core import Game
+    from core.models.course import SimulationInstance
+
+    ids = set(
+        SimulationInstance.objects.filter(section_id=section_id)
+        .exclude(game_id__isnull=True)
+        .values_list('game_id', flat=True)
+    )
+    ids.update(
+        Game.objects.filter(section_id=section_id).values_list('id', flat=True)
+    )
+    return list(ids)
+
+
 class TeamManagementView(APIView):
     """
     Manage teams within a section.
@@ -491,15 +516,16 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Teams belong to a Game, and the Game belongs to a section — Team has
-        # no section_id/team_id/team_name/instance_id of its own. This block was
-        # written against the BECSR Team model and raised
+        # Teams belong to a Game, and Team has no section_id/team_id/team_name/
+        # instance_id of its own. This block was written against the BECSR Team
+        # model and raised
         #   FieldError: Cannot resolve keyword 'section_id' into field
         # on every call, so this endpoint returned 500 every time the
         # instructor console loaded. The response keys are kept as team_id /
         # team_name because the frontend reads those.
+        game_ids = _game_ids_for_section(section_id)
         teams = Team.objects.filter(
-            game__section_id=section_id,
+            game_id__in=game_ids,
         ).select_related('game', 'home_market')
 
         result = []
@@ -736,16 +762,20 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Team.team_id / Team.team_name are read-only back-compat properties,
+        # not fields: filtering on team_id raised FieldError and assigning
+        # team_name raised AttributeError, so this endpoint always 500'd.
+        # The real field names are id and name.
         try:
-            team = Team.objects.get(team_id=team_id)
+            team = Team.objects.get(id=team_id)
         except Team.DoesNotExist:
             return Response(
                 {'error': 'Team not found.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        team.team_name = team_name
-        team.save()
+        team.name = team_name
+        team.save(update_fields=['name'])
         return Response({
             'team_id': team.team_id,
             'team_name': team.team_name,

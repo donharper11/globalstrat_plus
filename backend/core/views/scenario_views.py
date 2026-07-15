@@ -705,7 +705,25 @@ def _delete_game_cascade(game):
     # Layer 1: Decision submissions (detail tables CASCADE from submission)
     DecisionSubmission.objects.filter(team_id__in=team_ids).delete()
 
-    # Layer 2: Team state (leaf tables first, then parents)
+    # Layer 2: Results FIRST — they hold protected FKs into team state.
+    # This used to run after Layer 3 below, so deleting TeamProduct raised
+    #   ProtectedError: ... referenced through protected foreign keys:
+    #   'RoundResultAdoption.best_product', 'RoundResultProductMarket.team_product'
+    # and, because the view is atomic, the whole delete rolled back. Deleting
+    # any game whose rounds had ever been processed was therefore impossible —
+    # only a game that had never run could be deleted, which is why this went
+    # unnoticed.
+    EventInstance.objects.filter(game=game).delete()
+    ActiveModifier.objects.filter(game=game).delete()
+    RoundResultAdoption.objects.filter(game=game).delete()
+    RRPM.objects.filter(game=game).delete()
+    RoundResultFinancials.objects.filter(game=game).delete()
+    RoundResultMarketRevenue.objects.filter(game=game).delete()
+    RoundResultPerformanceIndex.objects.filter(game=game).delete()
+    RoundResultCoherence.objects.filter(game=game).delete()
+    LeaderboardEntry.objects.filter(game=game).delete()
+
+    # Layer 3: Team state (leaf tables first, then parents)
     TeamProductMarket.objects.filter(team_product__team_id__in=team_ids).delete()
     TeamProduct.objects.filter(team_id__in=team_ids).delete()
     TeamPlatformFeatureLevel.objects.filter(team_platform__team_id__in=team_ids).delete()
@@ -716,17 +734,6 @@ def _delete_game_cascade(game):
     TeamPartnership.objects.filter(team_id__in=team_ids).delete()
     TeamAcquisition.objects.filter(team_id__in=team_ids).delete()
     TeamMarketModifier.objects.filter(team_id__in=team_ids).delete()
-
-    # Layer 3: Results (PROTECT on game/team)
-    EventInstance.objects.filter(game=game).delete()
-    ActiveModifier.objects.filter(game=game).delete()
-    RoundResultAdoption.objects.filter(game=game).delete()
-    RRPM.objects.filter(game=game).delete()
-    RoundResultFinancials.objects.filter(game=game).delete()
-    RoundResultMarketRevenue.objects.filter(game=game).delete()
-    RoundResultPerformanceIndex.objects.filter(game=game).delete()
-    RoundResultCoherence.objects.filter(game=game).delete()
-    LeaderboardEntry.objects.filter(game=game).delete()
 
     # Layer 4: TeamMember, then Team, then Round
     from core.models.core import TeamMember
