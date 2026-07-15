@@ -87,6 +87,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.SessionHeartbeatMiddleware',
+    'core.middleware.GamePauseGuardMiddleware',
 ]
 
 ROOT_URLCONF = 'globalstrat.urls'
@@ -265,6 +267,8 @@ JWT_ACCESS_TOKEN_LIFETIME_HOURS = 8  # Long enough for a class session
 
 # DRF: Use our custom JWT authentication.
 # Default permission is AllowAny — endpoints that need auth use explicit permission_classes.
+TEST_RUNNER = 'globalstrat.test_runner.GlobalStratTestRunner'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'core.authentication.JWTAuthentication',

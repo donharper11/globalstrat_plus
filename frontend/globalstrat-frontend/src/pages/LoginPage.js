@@ -39,6 +39,9 @@ const LoginPage = () => {
     if (data.access) {
       localStorage.setItem('access_token', data.access);
     }
+    if (data.session_id) {
+      localStorage.setItem('gs_session_id', data.session_id);
+    }
     // Mark demo users
     if (username.startsWith('demo_')) {
       data.is_demo = true;
@@ -183,6 +186,8 @@ const LoginPage = () => {
           <Form.Item
             name="password"
             label={t('login.password')}
+            rules={[{ required: true, message: t('login.password_required') }]}
+            extra={isDemo ? undefined : t('login.password_hint')}
           >
             <Input.Password
               prefix={<FontAwesomeIcon icon={faLock} style={{ color: '#94A3B8' }} />}

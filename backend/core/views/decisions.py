@@ -64,22 +64,14 @@ from core.serializers.decisions import (
 # ---------------------------------------------------------------------------
 
 def _get_user_from_header(request):
-    """Look up our custom User model from JWT auth or X-User-Id header."""
-    from core.models import User
-    # First, check JWT-authenticated user
-    if hasattr(request, 'user') and hasattr(request.user, 'user_id') and request.user.is_authenticated:
-        try:
-            return User.objects.get(user_id=request.user.user_id)
-        except User.DoesNotExist:
-            pass
-    # Fallback to legacy X-User-Id header
-    user_id = request.headers.get('X-User-Id') or request.query_params.get('user_id')
-    if not user_id:
-        return None
-    try:
-        return User.objects.get(user_id=int(user_id))
-    except (User.DoesNotExist, ValueError, TypeError):
-        return None
+    """
+    Look up our custom User model for the authenticated caller.
+
+    Name kept for back-compat; identity now comes only from the signed JWT.
+    The X-User-Id header is no longer trusted (it allowed impersonation).
+    """
+    from core.utils.auth_context import get_request_user
+    return get_request_user(request)
 
 
 class IsTeamMember(permissions.BasePermission):
@@ -106,17 +98,61 @@ class IsTeamMember(permissions.BasePermission):
 
 
 class IsRoundOpen(permissions.BasePermission):
+    """
+    Block writes unless the round is genuinely open for submissions.
+
+    Three gates, all previously missing or unenforced:
+      1. the round's status must be 'open';
+      2. the round's deadline must not have passed — checked here rather than
+         trusting cron alone, so a stalled cron can't hand students extra time;
+      3. the game must not be paused/completed/archived.
+
+    Instructors are exempt so they can still fix a team's decisions.
+    """
     message = 'The round is not currently open for submissions.'
 
     def has_permission(self, request, view):
         # Read-only methods always allowed
         if request.method in permissions.SAFE_METHODS:
             return True
+
+        from core.utils.auth_context import get_request_role
+        if get_request_role(request) in ('instructor', 'admin'):
+            return True
+
         round_number = view.kwargs.get('round_number')
         game_id = view.kwargs.get('game_id')
-        return Round.objects.filter(
-            game_id=game_id, round_number=round_number, status='open',
-        ).exists()
+
+        from core.models import Game
+        game = Game.objects.filter(pk=game_id).only('status').first()
+        if game:
+            if game.status == 'paused':
+                self.message = ('The game is paused by your instructor. '
+                                'No changes can be made right now.')
+                return False
+            if game.status in ('completed', 'archived'):
+                self.message = f'This game is {game.status}.'
+                return False
+
+        round_obj = Round.objects.filter(
+            game_id=game_id, round_number=round_number,
+        ).only('status', 'deadline').first()
+        if not round_obj:
+            return False
+
+        if round_obj.status != 'open':
+            self.message = (f'Round {round_number} is {round_obj.status} — '
+                            f'it is no longer accepting decisions.')
+            return False
+
+        if round_obj.deadline:
+            from django.utils import timezone
+            if timezone.now() >= round_obj.deadline:
+                self.message = ('The deadline for this round has passed. '
+                                'Your decisions are locked.')
+                return False
+
+        return True
 
 
 class IsInstructor(permissions.BasePermission):
@@ -297,7 +333,8 @@ class DecisionPartialUpdateView(APIView):
 
         # Log the change for team notifications
         try:
-            user_id = request.headers.get('X-User-Id') or request.META.get('HTTP_X_USER_ID')
+            from core.utils.auth_context import get_request_user_id
+            user_id = get_request_user_id(request)
             if user_id:
                 from core.models.cc21_models import DecisionChangeLog
                 from core.models.core import User as UserModel

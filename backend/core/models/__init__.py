@@ -105,3 +105,4 @@ from .sc_state import (
 from .overrides import (
     ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride,
 )
+from .auth_models import UserSession

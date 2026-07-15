@@ -1,157 +1,130 @@
 """
-Management command to check for round deadlines and auto-advance simulations.
+Close rounds whose deadline has elapsed.
 
-Run via cron every 5 minutes:
-    */5 * * * * cd /home/ubuntu/projects/globalstrat/backend && python manage.py check_round_deadlines
+Run from cron every minute:
+    * * * * * cd /home/ubuntu/projects/globalstrat/backend && \
+        /usr/bin/python3 manage.py check_round_deadlines >> /tmp/globalstrat-deadlines.log 2>&1
+
+History: this command previously queried Round.decisions_locked / auto_advance
+/ end_date — fields that exist on BECSR's Round model but not GlobalStrat's.
+It was a copy of BECSR's command and raised FieldError on the first query, so
+deadlines were never enforced. Rewritten against the real model.
+
+Policy (chosen 2026-07-15): the deadline only CLOSES the round. Scoring and
+advancing stay manual, so an instructor can inspect a round before the game
+moves on. Pass --auto-process / --auto-advance to opt a run into more.
 """
-import datetime
 import logging
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from core.models import Round, SimulationState
-from core.models.course import SimulationInstance
-from core.services.round_engine import advance_round
+from core.models.core import Game, Round
 
 logger = logging.getLogger('core.round_scheduler')
 
 
 class Command(BaseCommand):
-    help = 'Check active simulations for expired round deadlines and auto-advance.'
+    help = 'Close any open round whose deadline has passed.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--dry-run', action='store_true',
+            help='Report what would close without changing anything.',
+        )
+        parser.add_argument(
+            '--auto-process', action='store_true',
+            help='Also run post-round processing on each round that closes.',
+        )
+        parser.add_argument(
+            '--auto-advance', action='store_true',
+            help='Also open the next round after processing. Implies --auto-process.',
+        )
+        parser.add_argument(
+            '--game', type=int, default=None,
+            help='Restrict to a single game id.',
+        )
 
     def handle(self, *args, **options):
         now = timezone.now()
+        dry_run = options['dry_run']
+        auto_advance = options['auto_advance']
+        auto_process = options['auto_process'] or auto_advance
 
-        # --- Phase 1: Lock decisions for rounds past deadline ---
-        expired_rounds = Round.objects.filter(
-            deadline__lte=now,
-            decisions_locked=False,
-        ).exclude(status='completed')
+        # Only games actually in play. A paused game's deadline does not run
+        # down — pausing would otherwise silently burn the students' time.
+        games = Game.objects.filter(status='active')
+        if options['game']:
+            games = games.filter(id=options['game'])
 
-        for r in expired_rounds:
-            r.decisions_locked = True
-            r.lock_reason = 'deadline_expired'
-            r.save()
-            self.stdout.write(
-                f'Locked decisions for Round {r.round_number} '
-                f'(game {r.game_id}, deadline was {r.deadline.isoformat()})'
-            )
-            logger.info(
-                'Locked round %s (game %s) — deadline expired',
-                r.round_number, r.game_id,
-            )
+        due = []
+        for game in games:
+            round_obj = Round.objects.filter(
+                game=game, round_number=game.current_round,
+            ).first()
+            if not round_obj:
+                continue
+            if round_obj.status != 'open':
+                continue
+            if not round_obj.deadline:
+                continue
+            if now < round_obj.deadline:
+                continue
+            due.append((game, round_obj))
 
-        # --- Phase 2: Auto-advance instances whose current round is locked ---
-        instances = SimulationInstance.objects.filter(
-            status='active',
-            auto_advance=True,
-        )
-
-        if not instances.exists():
-            if not expired_rounds.exists():
-                self.stdout.write('No active auto-advance simulations found.')
+        if not due:
+            self.stdout.write(f'{now:%Y-%m-%d %H:%M:%S} — no rounds due to close.')
             return
 
-        advanced_count = 0
+        from core.engine.advance_round import (
+            close_round, process_round, advance_to_next_round,
+        )
 
-        for instance in instances:
-            state = SimulationState.objects.filter(
-                instance_id=instance.instance_id,
-                status='active',
-            ).first()
+        for game, round_obj in due:
+            label = f'game {game.id} ("{game.name}") round {round_obj.round_number}'
 
-            if not state or not state.current_round_id:
+            if dry_run:
+                self.stdout.write(
+                    f'[dry-run] would close {label} '
+                    f'(deadline {round_obj.deadline:%Y-%m-%d %H:%M})'
+                )
                 continue
-
-            current_round = Round.objects.filter(
-                round_id=state.current_round_id,
-            ).first()
-
-            if not current_round:
-                continue
-
-            # Use the new deadline field first, fall back to end_date + end_time
-            if current_round.deadline:
-                deadline = current_round.deadline
-                if timezone.is_naive(deadline):
-                    deadline = timezone.make_aware(
-                        deadline, timezone.get_current_timezone()
-                    )
-            elif current_round.end_date:
-                end_time = current_round.end_time or datetime.time(23, 59, 59)
-                deadline = datetime.datetime.combine(current_round.end_date, end_time)
-                if timezone.is_aware(now):
-                    deadline = timezone.make_aware(
-                        deadline, timezone.get_current_timezone()
-                    )
-            else:
-                continue
-
-            if now < deadline:
-                continue
-
-            # Check grace period from instance settings
-            settings = instance.settings or {}
-            grace_minutes = settings.get('grace_period_minutes', 15)
-            grace_deadline = deadline + datetime.timedelta(minutes=grace_minutes)
-
-            # Also check per-round auto_advance flag
-            round_auto = current_round.auto_advance
-
-            if not (instance.auto_advance or round_auto):
-                continue
-
-            if now < grace_deadline:
-                continue
-
-            # Deadline + grace passed — advance the round
-            self.stdout.write(
-                f'Auto-advancing instance {instance.instance_id} '
-                f'(round {current_round.round_number}, '
-                f'deadline was {deadline.isoformat()})...'
-            )
 
             try:
-                result = advance_round(state.state_id)
-                advanced_count += 1
-
-                # Sync instance current_round from the state
-                state.refresh_from_db()
-                if state.current_round_id:
-                    next_round = Round.objects.filter(
-                        round_id=state.current_round_id,
-                    ).first()
-                    if next_round:
-                        instance.current_round = next_round.round_number
-                        instance.save()
-
-                if state.status == 'completed':
-                    instance.status = 'completed'
-                    instance.completed_at = timezone.now()
-                    instance.save()
-
-                completed_round = result.get('completed_round', '?')
-                next_round_num = result.get('next_round')
+                result = close_round(game.id, reason='deadline')
                 self.stdout.write(self.style.SUCCESS(
-                    f'  Round {completed_round} completed. '
-                    f'{"Next round: " + str(next_round_num) if next_round_num else "Simulation complete."}'
+                    f'Closed {label} — deadline was '
+                    f'{round_obj.deadline:%Y-%m-%d %H:%M}, '
+                    f'{result.get("submissions_locked", 0)} submission(s) locked.'
                 ))
-
-                logger.info(
-                    'Auto-advanced instance %s: round %s -> %s',
-                    instance.instance_id, completed_round, next_round_num,
-                )
-
+                logger.info('Deadline closed %s', label)
             except Exception as e:
-                self.stdout.write(self.style.ERROR(
-                    f'  Failed to advance instance {instance.instance_id}: {e}'
-                ))
-                logger.error(
-                    'Auto-advance failed for instance %s: %s',
-                    instance.instance_id, e,
-                )
+                self.stdout.write(self.style.ERROR(f'Failed to close {label}: {e}'))
+                logger.exception('Failed to close %s', label)
+                continue
 
-        self.stdout.write(
-            f'Done. {advanced_count} simulation(s) auto-advanced.'
-        )
+            if not auto_process:
+                continue
+
+            try:
+                process_round(game.id)
+                self.stdout.write(self.style.SUCCESS(f'  Processed {label}.'))
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f'  Processing failed for {label}: {e}'))
+                logger.exception('Auto-process failed for %s', label)
+                continue
+
+            if not auto_advance:
+                continue
+
+            try:
+                adv = advance_to_next_round(game.id)
+                nxt = adv.get('next_round')
+                self.stdout.write(self.style.SUCCESS(
+                    f'  Advanced to round {nxt}.' if nxt else '  Game complete.'
+                ))
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f'  Advance failed for {label}: {e}'))
+                logger.exception('Auto-advance failed for %s', label)
+
+        self.stdout.write(f'Done. {len(due)} round(s) due.')

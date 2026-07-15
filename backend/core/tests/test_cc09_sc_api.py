@@ -11,8 +11,9 @@ Covers the cases enumerated in CC-09-decision-api-hardening.md §5:
   - writes to a non-open round rejected
   - unauthorized (non-member) user rejected
 
-Auth is exercised through the codebase's X-User-Id header path
-(`core.views.decisions._get_user_from_header`), matching production.
+Auth is exercised through a real signed JWT, matching production. The
+X-User-Id header used to be accepted as identity; it allowed anyone to act as
+any user and is no longer trusted (see core.utils.auth_context).
 """
 from decimal import Decimal
 
@@ -145,9 +146,11 @@ class SCApiTestBase(TestCase):
 
     # -- helpers ---------------------------------------------------------
     def _post(self, view, body, round_number, user=None):
+        from core.authentication import create_access_token
         user = user or self.instructor
         req = self.factory.post(
-            '/x/', body, format='json', HTTP_X_USER_ID=str(user.user_id),
+            '/x/', body, format='json',
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}',
         )
         return view.as_view()(
             req, game_id=self.game.pk, team_id=self.team.pk,
@@ -155,8 +158,10 @@ class SCApiTestBase(TestCase):
         )
 
     def _get(self, view, round_number, user=None):
+        from core.authentication import create_access_token
         user = user or self.instructor
-        req = self.factory.get('/x/', HTTP_X_USER_ID=str(user.user_id))
+        req = self.factory.get(
+            '/x/', HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}')
         return view.as_view()(
             req, game_id=self.game.pk, team_id=self.team.pk,
             round_number=round_number,
@@ -220,11 +225,22 @@ class SourcingTests(SCApiTestBase):
         resp = self._post(SourcingView, body, 1)
         self.assertEqual(resp.status_code, 201, resp.data)
 
-    def test_non_open_round_rejected(self):
+    def test_non_open_round_allows_instructor_write(self):
+        # Updated 2026-07-15 with the auth/round-lifecycle port: IsRoundOpen now
+        # exempts instructors, so they can still fix a team's decisions after a
+        # round closes. This test asserted 403, but it posts as an instructor —
+        # the gate applies to students.
+        #
+        # The student-facing gates (round status, elapsed deadline, paused game)
+        # are covered by core/tests/test_auth_rounds.py. They cannot be
+        # exercised here: `enrollment`/`team_member` are managed=False and are
+        # absent from the test migration graph, so no request in this file can
+        # authenticate as a team-member student (see the note in
+        # test_unauthorized_user_rejected below).
         self.rounds[2].status = 'pending'
         self.rounds[2].save()
         resp = self._post(SourcingView, {'allocations': []}, 2)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 201, resp.data)
 
     def test_unauthorized_user_rejected(self):
         # A request whose header does not resolve to a valid user is rejected

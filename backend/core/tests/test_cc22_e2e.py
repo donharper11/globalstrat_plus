@@ -61,7 +61,7 @@ class CC22E2ETest(TestCase):
         profile = FirmStarterProfile.objects.filter(scenario=cls.scenario).first()
         cls.game = Game.objects.create(
             scenario=cls.scenario, name='CC22 E2E Game', created_by=cls.creator,
-            status='active')
+            status='active', current_round=5)
         cls.team = Team.objects.create(
             game=cls.game, name='Team E2E', firm_starter_profile=profile,
             performance_index=Decimal('100.00'), cash_on_hand=Decimal('50000000.00'),
@@ -79,11 +79,17 @@ class CC22E2ETest(TestCase):
 
     # -- helpers ---------------------------------------------------------
     def _post(self, view, body):
-        req = self.factory.post('/x/', body, format='json', HTTP_X_USER_ID=str(self.instructor.user_id))
+        from core.authentication import create_access_token
+        req = self.factory.post(
+            '/x/', body, format='json',
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.instructor)}')
         return view.as_view()(req, game_id=self.game.pk, team_id=self.team.pk, round_number=5)
 
     def _get(self, view):
-        req = self.factory.get('/x/', HTTP_X_USER_ID=str(self.instructor.user_id))
+        from core.authentication import create_access_token
+        req = self.factory.get(
+            '/x/',
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.instructor)}')
         return view.as_view()(req, game_id=self.game.pk, team_id=self.team.pk, round_number=5)
 
     # -- §2.1 seed data present -----------------------------------------

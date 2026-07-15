@@ -1,24 +1,20 @@
-import hashlib
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from core.models import User, Enrollment, Section, SimulationInstance, Course
 from core.utils.localization import get_localized_field
+from core.utils.passwords import (
+    hash_password as _hash_password,
+    verify_password,
+    upgrade_hash_if_needed,
+)
 
 
 def _verify_password(plain, stored_hash):
-    """
-    Check a plain-text password against the stored hash.
-    Uses SHA-256 hex digest (simple but adequate for a classroom sim).
-    """
-    return hashlib.sha256(plain.encode()).hexdigest() == stored_hash
-
-
-def _hash_password(plain):
-    """Create a SHA-256 hex digest of a plain-text password."""
-    return hashlib.sha256(plain.encode()).hexdigest()
+    """Back-compat shim: True if the password matches. Prefer verify_password."""
+    ok, _ = verify_password(plain, stored_hash)
+    return ok
 
 
 def _build_enrollment_context(enrollment):
@@ -174,19 +170,26 @@ def _user_payload(user, enrollment=None):
 
 class LoginView(APIView):
     """
-    Username-only login for students.
-    Instructor and Admin accounts require a password.
-    Students/email/student_id can also be used for lookup.
+    Password login for every account, students included.
+
+    Lookup is by username, email, or student_id. Students are issued a default
+    password equal to their student_id (see core.utils.passwords).
     """
 
     def post(self, request):
         username = request.data.get('username', '').strip()
-        password = request.data.get('password', '').strip()
+        password = request.data.get('password', '')
         section_id = request.data.get('section_id')  # For multi-enrollment
 
         if not username:
             return Response(
                 {'error': 'Username is required.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not password:
+            return Response(
+                {'error': 'Password is required.', 'requires_password': True},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -203,27 +206,32 @@ class LoginView(APIView):
                 student_id=username,
             ).first()
 
+        # Generic message so login can't be used to enumerate valid usernames.
+        invalid = Response(
+            {'error': 'Invalid username or password.'},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
+
         if not user:
-            return Response(
-                {'error': 'User not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return invalid
 
         role = (user.role or '').lower()
 
-        # Instructor / Admin accounts require a password
-        if role in ('instructor', 'admin'):
-            if not password:
-                return Response(
-                    {'error': 'Password is required for instructor accounts.',
-                     'requires_password': True},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
-            if not _verify_password(password, user.password_hash):
-                return Response(
-                    {'error': 'Invalid password.'},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
+        # Every account requires a password, students included.
+        if not user.password_hash:
+            # No password on file: the account cannot be logged into until an
+            # instructor sets one. Never fall through to an unauthenticated login.
+            return Response(
+                {'error': 'No password is set for this account. '
+                          'Please ask your instructor to reset it.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        ok, needs_upgrade = verify_password(password, user.password_hash)
+        if not ok:
+            return invalid
+        if needs_upgrade:
+            upgrade_hash_if_needed(user, password)
 
         # Students must have a team assignment (check Enrollment, not User)
         if role == 'student':
@@ -247,23 +255,71 @@ class LoginView(APIView):
         from core.authentication import create_access_token
         payload = _user_payload(user, enrollment)
         payload['access'] = create_access_token(user)
+
+        # Record the session so instructors can see who is logged in.
+        try:
+            payload['session_id'] = _open_session(request, user, payload)
+        except Exception:
+            pass  # session telemetry must never block a login
+
         return Response(payload)
 
 
+def _open_session(request, user, payload):
+    """Create a UserSession row for this login. Returns its id."""
+    from core.models.auth_models import UserSession
+
+    xff = request.headers.get('X-Forwarded-For', '')
+    ip = (xff.split(',')[0].strip() if xff
+          else request.META.get('REMOTE_ADDR', '') or '')
+
+    session = UserSession.objects.create(
+        user_id=user.user_id,
+        username=user.username or '',
+        display_name=user.display_name or '',
+        role=user.role or '',
+        game_id=payload.get('game_id'),
+        team_id=payload.get('team_id'),
+        team_name=payload.get('team_name') or '',
+        ip_address=ip[:64],
+        user_agent=(request.headers.get('User-Agent', '') or '')[:300],
+    )
+    return session.id
+
+
+class LogoutView(APIView):
+    """POST — close the caller's session so they stop showing as logged in."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        from django.utils import timezone
+        from core.models.auth_models import UserSession
+
+        session_id = (request.data.get('session_id')
+                      or request.headers.get('X-Session-Id'))
+        qs = UserSession.objects.filter(
+            user_id=request.user.user_id, logout_at__isnull=True,
+        )
+        if session_id:
+            qs = qs.filter(pk=session_id)
+        closed = qs.update(logout_at=timezone.now())
+        return Response({'closed': closed})
+
+
 class CurrentUserView(APIView):
-    """Return user info by user_id (for session validation)."""
+    """
+    Return the authenticated caller's own user info (for session validation).
+
+    Previously this accepted any user_id as a query param with no
+    authentication, which let anyone read any account's full profile and
+    enrollment context. It now only ever describes the caller.
+    """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_id = request.query_params.get('user_id')
         section_id = request.query_params.get('section_id')
-        if not user_id:
-            return Response(
-                {'error': 'user_id required'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        user = User.objects.filter(
-            user_id=user_id,
-        ).first()
+
+        user = User.objects.filter(user_id=request.user.user_id).first()
         if not user:
             return Response(
                 {'error': 'User not found.'},
@@ -300,9 +356,12 @@ class LanguagePreferenceView(APIView):
         return Response({'language': language})
 
     def _get_enrollment(self, request):
+        # JWTUser exposes user_id, not id — request.user.id raised AttributeError
+        # here, so this view never resolved an enrollment.
         from core.models.course import Enrollment
-        user_id = request.user.id
-        try:
-            return Enrollment.objects.filter(user_id=user_id, is_active=True).first()
-        except:
+        user_id = getattr(request.user, 'user_id', None)
+        if not user_id:
             return None
+        return Enrollment.objects.filter(
+            user_id=user_id, is_active=True,
+        ).first()

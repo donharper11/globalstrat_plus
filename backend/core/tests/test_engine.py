@@ -221,27 +221,47 @@ class TestEngineIntegration(TestCase):
         self.assertIsInstance(context.events_fired, list)
         self.assertIsInstance(context.log, list)
 
-    def test_advance_round_no_open_round(self):
-        """advance_round raises ValueError if no open round."""
-        from core.engine.advance_round import advance_round
+    def test_process_round_with_no_current_round(self):
+        """Processing raises ValueError when the game has no current round.
+
+        Updated 2026-07-15: the engine now processes the round the game is on
+        (game.current_round) rather than searching for status='open', so a
+        deadline can close a round before it is processed. The old assertion
+        looked for the message 'No open round'.
+        """
+        from core.engine.advance_round import process_round
 
         game = self._make_game()
         with self.assertRaises(ValueError) as ctx:
-            advance_round(game.id)
-        self.assertIn('No open round', str(ctx.exception))
+            process_round(game.id)
+        self.assertIn('No round', str(ctx.exception))
 
-    def test_advance_round_unlocked_team(self):
-        """advance_round raises ValueError if a team hasn't locked."""
-        from core.engine.advance_round import advance_round
+    def test_process_round_auto_locks_an_unlocked_team(self):
+        """An unlocked team is auto-locked, not rejected.
+
+        Updated 2026-07-15: this previously asserted advance_round raised
+        'has not locked'. The engine has never raised that — it auto-locks
+        whatever a team had. The guard against advancing with teams still
+        pending lives in the instructor view, which offers a force override.
+        This test never ran before, because the test database could not be
+        created (see globalstrat.test_runner).
+        """
+        from core.engine.advance_round import close_round
         from core.models.core import Round
+        from core.models.decisions import DecisionSubmission
 
-        game = self._make_game()
-        self._make_team(game)
-        Round.objects.create(game=game, round_number=1, status='open')
+        game = self._make_game(current_round=1)
+        team = self._make_team(game)
+        rnd = Round.objects.create(game=game, round_number=1, status='open')
 
-        with self.assertRaises(ValueError) as ctx:
-            advance_round(game.id)
-        self.assertIn('has not locked', str(ctx.exception))
+        self.assertFalse(
+            DecisionSubmission.objects.filter(team=team, round=rnd).exists())
+
+        close_round(game.id)
+
+        submission = DecisionSubmission.objects.get(team=team, round=rnd)
+        self.assertEqual(submission.status, 'locked')
+        self.assertIsNotNone(submission.locked_at)
 
 
 # ---------------------------------------------------------------------------

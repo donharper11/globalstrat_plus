@@ -573,6 +573,10 @@ class InstructorDashboardView(APIView):
                 'markets_entered': markets_entered,
             })
 
+        _current_round = Round.objects.filter(
+            game=game, round_number=game.current_round,
+        ).first()
+
         # Events this round
         events_qs = EventInstance.objects.filter(
             game=game, round_number=game.current_round,
@@ -594,7 +598,16 @@ class InstructorDashboardView(APIView):
                 'total_teams': teams.count(),
                 'teams_locked': teams_locked,
                 'teams_pending': teams_pending,
-                'deadline': game.round_deadline.isoformat() if game.round_deadline else None,
+                # Read the deadline off the current Round. This used to read
+                # Game.round_deadline, which the round-schedule editor never
+                # writes, so the console always showed no deadline.
+                'deadline': (_current_round.deadline.isoformat()
+                             if _current_round and _current_round.deadline else None),
+                'round_state': _current_round.status if _current_round else None,
+                'close_reason': (_current_round.close_reason or ''
+                                 if _current_round else ''),
+                'processing_status': (_current_round.processing_status
+                                      if _current_round else None),
             },
             'events_this_round': events,
         })
@@ -674,16 +687,46 @@ class InstructorExtendDeadlineView(APIView):
         game = get_object_or_404(Game, id=game_id)
         hours = request.data.get('hours', 24)
 
-        if game.round_deadline:
-            game.round_deadline = game.round_deadline + timezone.timedelta(hours=int(hours))
-        else:
-            game.round_deadline = timezone.now() + timezone.timedelta(hours=int(hours))
+        # Extend the current Round's deadline. This used to write
+        # Game.round_deadline, a field nothing enforces and nothing else
+        # writes, so extending a deadline had no effect on the sim.
+        round_obj = Round.objects.filter(
+            game=game, round_number=game.current_round,
+        ).first()
+        if not round_obj:
+            return Response(
+                {'error': f'Game has no round {game.current_round}.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
-        game.save(update_fields=['round_deadline'])
+        base = round_obj.deadline or timezone.now()
+        if base < timezone.now():
+            # Extending an already-expired deadline should give students the
+            # full extension from now, not a window that is already spent.
+            base = timezone.now()
+        round_obj.deadline = base + timezone.timedelta(hours=int(hours))
+
+        reopened = False
+        if round_obj.status == 'closed':
+            round_obj.status = 'open'
+            round_obj.closed_at = None
+            round_obj.close_reason = ''
+            reopened = True
+            DecisionSubmission.objects.filter(
+                round=round_obj, team__in=Team.objects.filter(game=game),
+                status='locked',
+            ).update(status='draft', locked_at=None)
+
+        round_obj.save()
+
+        msg = f'Deadline extended by {hours} hour(s).'
+        if reopened:
+            msg += ' The round was closed, so it has been reopened and submissions unlocked.'
 
         return Response({
-            'message': f'Deadline extended by {hours} hours.',
-            'new_deadline': game.round_deadline.isoformat(),
+            'message': msg,
+            'reopened': reopened,
+            'new_deadline': round_obj.deadline.isoformat(),
         })
 
 

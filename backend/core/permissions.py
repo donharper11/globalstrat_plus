@@ -1,29 +1,18 @@
 """
 Role-based permissions for the GlobalStrat simulation.
 
-Since we use a simple username-based auth (no Django auth / tokens),
-the caller must pass an X-User-Id header so the backend can look up
-the user's role.  The frontend stores user_id in localStorage after
-login and attaches it to every request via an axios interceptor.
+Identity comes from the signed JWT issued at login (see core.authentication).
+An earlier version trusted an unverified X-User-Id header / ?user_id= param,
+which allowed anyone to act as any user; see core.utils.auth_context.
 """
 from rest_framework.permissions import BasePermission
-from core.models import User
+
+from core.utils.auth_context import get_request_role
 
 
 def _get_role(request):
-    """Return the lowercased role for the requesting user, or None."""
-    # First, check JWT-authenticated user
-    if hasattr(request, 'user') and hasattr(request.user, 'role') and request.user.is_authenticated:
-        return (request.user.role or '').lower()
-    # Fallback to legacy X-User-Id header
-    user_id = request.headers.get('X-User-Id') or request.query_params.get('user_id')
-    if not user_id:
-        return None
-    try:
-        user = User.objects.get(user_id=int(user_id))
-        return (user.role or '').lower()
-    except (User.DoesNotExist, ValueError, TypeError):
-        return None
+    """Return the lowercased role for the authenticated caller, or None."""
+    return get_request_role(request)
 
 
 class IsInstructor(BasePermission):
@@ -47,3 +36,36 @@ class IsInstructorOrReadOnly(BasePermission):
             return True
         role = _get_role(request)
         return role in ('instructor', 'admin')
+
+
+class GameIsNotPaused(BasePermission):
+    """
+    Block student writes while the instructor has paused the game.
+
+    Pausing previously only set Game.status='paused' — nothing read it, so
+    students could keep playing through a pause. Instructors are exempt so
+    they can still administer a paused game.
+    """
+    message = 'The game is paused by your instructor. No changes can be made right now.'
+
+    def has_permission(self, request, view):
+        if request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return True
+        if _get_role(request) in ('instructor', 'admin'):
+            return True
+
+        game_id = view.kwargs.get('game_id')
+        if not game_id:
+            return True
+
+        from core.models import Game
+        game = Game.objects.filter(pk=game_id).only('status').first()
+        if not game:
+            return True
+
+        if game.status == 'paused':
+            return False
+        if game.status in ('completed', 'archived'):
+            self.message = f'This game is {game.status}. No further changes can be made.'
+            return False
+        return True

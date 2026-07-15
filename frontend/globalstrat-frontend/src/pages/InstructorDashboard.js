@@ -29,6 +29,8 @@ import {
   updateEnrollment,
 } from '../api/instructor';
 import LoadingSpinner from '../components/LoadingSpinner';
+import RoundControlCard from '../components/RoundControlCard';
+import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
 import InstructorSCPanel from '../components/instructor/InstructorSCPanel';
 
@@ -492,6 +494,9 @@ const InstructorDashboard = () => {
           </div>
         )}
       </Card>
+
+      {/* Round lifecycle: close -> process -> advance */}
+      {hasGame && <RoundControlCard gameId={gameId} onChanged={() => { loadData(); loadRoundScheduleData(gameId); }} />}
 
       {/* Round schedule */}
       {roundSchedule && (
@@ -1992,6 +1997,7 @@ const InstructorDashboard = () => {
     ...(gameId ? [
       { key: 'control', label: t('instructor.game_control'), children: gameControlTab },
     ] : []),
+    { key: 'accounts', label: 'Students & Logins', children: <StudentAccountsPanel gameId={gameId} /> },
     { key: 'grading', label: t('instructor.grading_export'), children: gradingTab },
     // --- Game-specific (only when game is active/paused with dashboard data) ---
     ...(hasGame ? [
