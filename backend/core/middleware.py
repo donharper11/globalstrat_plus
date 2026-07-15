@@ -9,6 +9,20 @@ Game.status='paused' and nothing more; no student-facing endpoint read it, so
 students played straight through a pause. Enforcing it here rather than on
 each view means a new student-writable endpoint is covered by default instead
 of having to remember to guard it.
+
+TeamScopeGuardMiddleware — stops a student reaching another team's data. Some
+40 views take game_id/team_id straight from the URL and had no permission
+class at all, so any logged-in student could read (or write) any other team's
+briefings, results, forecasts and communications by editing the id in the URL.
+Guarding here covers every current and future team-scoped route by
+construction, rather than relying on ~40 views each remembering IsTeamMember.
+
+NOTE on identity in middleware: request.user is populated by Django's
+AuthenticationMiddleware from the *session*, and this project authenticates
+with DRF JWT inside the view — so request.user is anonymous here. Both guards
+resolve the caller through core.utils.auth_context, which decodes the bearer
+token itself when needed. Middleware that trusts request.user directly is dead
+code that silently allows everything.
 """
 import logging
 from collections import OrderedDict
@@ -186,3 +200,78 @@ class GamePauseGuardMiddleware:
         team_id = enrollment.team_id
         game = Game.objects.filter(teams__id=team_id).only('id').first()
         return game.id if game else None
+
+
+# Team-scoped routes a student may reach for a team that is not theirs.
+# Nothing today; kept explicit so an exemption is a deliberate act.
+TEAM_SCOPE_EXEMPT_PREFIXES = ()
+
+
+class TeamScopeGuardMiddleware:
+    """Reject a student touching a team they are not a member of."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        team_id = view_kwargs.get('team_id')
+        if team_id is None:
+            return None
+
+        path = request.path or ''
+        if not path.startswith('/api/'):
+            return None
+        if any(path.startswith(p) for p in TEAM_SCOPE_EXEMPT_PREFIXES):
+            return None
+
+        try:
+            return self._check(request, team_id)
+        except Exception as e:
+            # Never take the API down over this; the view's own permission
+            # classes still apply.
+            logger.warning('Team scope check failed for %s: %s', path, e)
+            return None
+
+    def _check(self, request, team_id):
+        from core.utils.auth_context import get_request_role, get_request_user_id
+
+        role = get_request_role(request)
+        if role is None:
+            # Not authenticated — let DRF answer with 401/403.
+            return None
+        if role in ('instructor', 'admin'):
+            return None
+
+        user_id = get_request_user_id(request)
+        if user_id is None:
+            return None
+
+        if _is_team_member(user_id, team_id):
+            return None
+
+        return JsonResponse(
+            {'detail': 'You do not have access to this team.'},
+            status=403,
+        )
+
+
+def _is_team_member(user_id, team_id):
+    """True if this user belongs to the team, via Enrollment or TeamMember."""
+    from core.models import Enrollment
+    from core.models.core import TeamMember
+
+    try:
+        team_id = int(team_id)
+    except (TypeError, ValueError):
+        return False
+
+    if Enrollment.objects.filter(
+        user_id=user_id, team_id=team_id, is_active=True,
+    ).exists():
+        return True
+    return TeamMember.objects.filter(
+        team_id=team_id, user_id=user_id,
+    ).exists()

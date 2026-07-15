@@ -26,15 +26,21 @@ class IsInstructor(BasePermission):
 
 class IsInstructorOrReadOnly(BasePermission):
     """
-    Anyone can read (GET, HEAD, OPTIONS).
+    Any authenticated user can read (GET, HEAD, OPTIONS).
     Only Instructor/Admin can write (POST, PUT, PATCH, DELETE).
+
+    Reads used to return True unconditionally, which meant "anyone" literally
+    — including anonymous callers, since this permission short-circuits the
+    project default. /api/teams/ served every team's cash position, debt and
+    equity to the open internet. A read now still requires a login.
     """
     message = 'Instructor or Admin access required for write operations.'
 
     def has_permission(self, request, view):
-        if request.method in ('GET', 'HEAD', 'OPTIONS'):
-            return True
         role = _get_role(request)
+        if request.method in ('GET', 'HEAD', 'OPTIONS'):
+            # Authenticated, any role.
+            return role is not None
         return role in ('instructor', 'admin')
 
 

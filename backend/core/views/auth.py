@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from core.models import User, Enrollment, Section, SimulationInstance, Course
 from core.utils.localization import get_localized_field
 from core.utils.passwords import (
@@ -175,6 +175,10 @@ class LoginView(APIView):
     Lookup is by username, email, or student_id. Students are issued a default
     password equal to their student_id (see core.utils.passwords).
     """
+
+    # The one genuinely public endpoint: you cannot hold a token before you
+    # log in. Explicit because the project default is now IsAuthenticated.
+    permission_classes = [AllowAny]
 
     def post(self, request):
         username = request.data.get('username', '').strip()
