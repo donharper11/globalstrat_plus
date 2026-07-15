@@ -11,6 +11,7 @@ each view means a new student-writable endpoint is covered by default instead
 of having to remember to guard it.
 """
 import logging
+from collections import OrderedDict
 
 from django.http import JsonResponse
 from django.utils import timezone
@@ -20,9 +21,20 @@ logger = logging.getLogger(__name__)
 # Don't write more than once per this many seconds per session.
 TOUCH_INTERVAL_SECONDS = 60
 
-# In-process cache: {session_id: last_write_monotonic}. Per gunicorn worker,
-# which is fine — worst case each worker writes once per interval.
-_last_touch = {}
+# In-process throttle cache: {session_key: last_write_monotonic}. Per gunicorn
+# worker, which is fine — worst case each worker writes once per interval.
+# Bounded because gunicorn workers are long-lived and this would otherwise
+# grow by one entry per login for the life of the process.
+_MAX_TRACKED_SESSIONS = 2048
+_last_touch = OrderedDict()
+
+
+def _remember_touch(key, now):
+    """Record a write time, evicting the least recently used entry if full."""
+    _last_touch[key] = now
+    _last_touch.move_to_end(key)
+    while len(_last_touch) > _MAX_TRACKED_SESSIONS:
+        _last_touch.popitem(last=False)
 
 
 class SessionHeartbeatMiddleware:
@@ -80,7 +92,7 @@ class SessionHeartbeatMiddleware:
         if session is None:
             return
 
-        _last_touch[cache_key] = now
+        _remember_touch(cache_key, now)
         UserSession.objects.filter(pk=session.pk).update(
             last_seen_at=timezone.now(),
         )

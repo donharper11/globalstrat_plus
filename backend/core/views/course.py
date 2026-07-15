@@ -491,11 +491,21 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        teams = Team.objects.filter(section_id=section_id)
+        # Teams belong to a Game, and the Game belongs to a section — Team has
+        # no section_id/team_id/team_name/instance_id of its own. This block was
+        # written against the BECSR Team model and raised
+        #   FieldError: Cannot resolve keyword 'section_id' into field
+        # on every call, so this endpoint returned 500 every time the
+        # instructor console loaded. The response keys are kept as team_id /
+        # team_name because the frontend reads those.
+        teams = Team.objects.filter(
+            game__section_id=section_id,
+        ).select_related('game', 'home_market')
+
         result = []
         for team in teams:
             enrollments = Enrollment.objects.filter(
-                section_id=section_id, team_id=team.team_id, is_active=True,
+                section_id=section_id, team_id=team.id, is_active=True,
             )
             members = []
             for enr in enrollments:
@@ -508,9 +518,10 @@ class TeamManagementView(APIView):
                     'email': user.email if user else None,
                 })
             result.append({
-                'team_id': team.team_id,
-                'team_name': team.team_name,
-                'instance_id': team.instance_id,
+                'team_id': team.id,
+                'team_name': team.name,
+                'game_id': team.game_id,
+                'home_market': team.home_market.code if team.home_market else None,
                 'member_count': len(members),
                 'members': members,
             })
