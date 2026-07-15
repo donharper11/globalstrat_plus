@@ -24,8 +24,16 @@ def _visible_users_qs(request):
     Students an instructor may administer.
 
     Admins see everyone. An instructor sees students enrolled in sections of
-    the courses they own — this stops one instructor resetting another
-    cohort's passwords. Instructors who own no courses see nobody.
+    the courses they own, so one instructor can't reset another cohort's
+    passwords.
+
+    Courses with no instructor_id are treated as unowned and are visible to
+    any instructor. Course.instructor_id is nullable and is genuinely NULL in
+    practice — the GS-PILOT course carrying the live 15-student cohort has no
+    owner. Scoping strictly to owned courses therefore made the pilot's
+    students administrable by nobody, which is worse than the isolation it
+    buys: an unowned course is already visible to every instructor through
+    the unfiltered /courses/ endpoint.
     """
     role = (getattr(request.user, 'role', '') or '').lower()
     qs = User.objects.exclude(role__iexact='admin')
@@ -33,9 +41,11 @@ def _visible_users_qs(request):
     if role == 'admin':
         return qs
 
+    from django.db.models import Q
     from core.models.course import Course
+
     course_ids = Course.objects.filter(
-        instructor_id=request.user.user_id,
+        Q(instructor_id=request.user.user_id) | Q(instructor_id__isnull=True),
     ).values_list('course_id', flat=True)
     section_ids = Section.objects.filter(
         course_id__in=list(course_ids),

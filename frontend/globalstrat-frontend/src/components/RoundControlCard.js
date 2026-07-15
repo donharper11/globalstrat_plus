@@ -60,6 +60,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
 
   const load = useCallback(async () => {
     if (!gameId) return;
+    setLoading(true);
     try {
       const res = await getRoundControl(gameId);
       setData(res.data);
@@ -68,6 +69,8 @@ export default function RoundControlCard({ gameId, onChanged }) {
       if (err.response?.status !== 404) {
         message.error(err.response?.data?.error || 'Could not load round status');
       }
+    } finally {
+      setLoading(false);
     }
   }, [gameId]);
 

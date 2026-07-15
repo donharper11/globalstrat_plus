@@ -218,6 +218,28 @@ class ComponentLabelsView(APIView):
         ])
 
 
+def _rubric_for_instance(instance_id):
+    """
+    The active rubric for the course behind a simulation instance.
+
+    instance -> section -> course -> rubric, matching how
+    core/services/grading.py resolves it (course_id + is_active).
+    """
+    from core.models.course import SimulationInstance, Section
+
+    instance = SimulationInstance.objects.filter(
+        instance_id=instance_id,
+    ).first()
+    if not instance:
+        return None
+    section = Section.objects.filter(section_id=instance.section_id).first()
+    if not section:
+        return None
+    return GradingRubric.objects.filter(
+        course_id=section.course_id, is_active=True,
+    ).first()
+
+
 class ExportTeamGradesCsvView(APIView):
     """GET — download team grades as CSV."""
     permission_classes = [IsInstructor]
@@ -234,9 +256,21 @@ class ExportTeamGradesCsvView(APIView):
 
         from core.models import Team
 
-        categories = GradingRubricCategory.objects.filter(
-            rubric__is_active=True,
-        ).order_by('sort_order')
+        # Scope the columns to THIS instance's course rubric. This filtered
+        # only on rubric__is_active, so it pulled categories from every course
+        # in the system: with two courses seeded, the CSV grew a duplicate
+        # "Performance Index" column. Worse, the per-team lookup below is keyed
+        # by category NAME, so identically-named categories from another
+        # course's rubric collide and repeat the same score, and differently-
+        # named ones would render as 0.0 — a team appearing to score zero on a
+        # category belonging to a different course entirely.
+        rubric = _rubric_for_instance(instance_id)
+        if rubric is None:
+            categories = GradingRubricCategory.objects.none()
+        else:
+            categories = GradingRubricCategory.objects.filter(
+                rubric_id=rubric.rubric_id,
+            ).order_by('sort_order')
         cat_names = [c.category_name for c in categories]
 
         grades = TeamGrade.objects.filter(instance_id=instance_id)
