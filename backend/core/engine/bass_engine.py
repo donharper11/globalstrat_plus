@@ -74,6 +74,11 @@ def run_bass_adoption(context):
         # Human teams
         for team in context.teams:
             key = (team.id, segment.id, market.id)
+            if (team.id, market.id) in getattr(context, 'compliance_freezes', set()):
+                context.adjusted_fit_scores[key] = 0.0
+                team_attractiveness[('team', team.id)] = 0.0
+                continue
+
             fit = context.fit_scores.get(key, 0.0)
             # Use adjusted fit if available (post-campaign)
             fit = context.adjusted_fit_scores.get(key, fit)
@@ -131,6 +136,12 @@ def run_bass_adoption(context):
                 key, context.fit_scores.get(key, 0.0),
             )
             product = context.best_products.get(key)
+            frozen = (team.id, market.id) in getattr(context, 'compliance_freezes', set())
+            if frozen:
+                fit = 0.0
+                product = None
+                context.best_products[key] = None
+
             attract = team_attractiveness.get(('team', team.id), 0.0)
 
             if total_attractiveness == 0:
@@ -160,6 +171,8 @@ def run_bass_adoption(context):
                 readiness_pct = context.readiness.get(
                     (team.id, product.id, market.id), 1.0,
                 )
+            if frozen:
+                readiness_pct = 0.0
 
             # Store adoption result
             context.adoption[key] = team_new_adopters
