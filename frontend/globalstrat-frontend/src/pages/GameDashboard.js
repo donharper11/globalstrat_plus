@@ -226,6 +226,14 @@ const GameDashboard = () => {
     { key: 'summary', label: t('dashboard.step_review'), path: `${base}/decisions/summary` },
   ];
 
+  const decisionStatus = (page) => categories[page.key] || categories[page.altKey] || {};
+  const nextDecisionPage = decisionPages.find((page) => {
+    if (page.key === 'summary') return false;
+    const status = decisionStatus(page).status;
+    return status !== 'configured';
+  }) || decisionPages.find(page => page.key === 'summary');
+
+
   // === Scorecard data ===
   const fin = scorecard?.financial || {};
   const cust = scorecard?.customer || {};
@@ -540,14 +548,31 @@ const GameDashboard = () => {
         <PanelCard title={t('dashboard.budget_overview')} headerColor="financial">
           <BudgetBar budgets={budgets} />
         </PanelCard>
+        <PanelCard title="NEXT REQUIRED ACTION" headerColor="decision">
+          {nextDecisionPage ? (
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              <Text strong>{nextDecisionPage.label}</Text>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                Continue here first. The checklist below updates as each draft decision is saved.
+              </Text>
+              <Button type="primary" onClick={() => navigate(nextDecisionPage.path)}>
+                Continue to {nextDecisionPage.label}
+              </Button>
+            </Space>
+          ) : (
+            <Text type="secondary">Open Review & Submit to check the round.</Text>
+          )}
+        </PanelCard>
         <PanelCard title={t('dashboard.decision_checklist')} headerColor="neutral">
           <Space direction="vertical" style={{ width: '100%' }}>
             {decisionPages.map(p => {
-              const cat = categories[p.key] || categories[p.altKey] || {};
+              const cat = decisionStatus(p);
+              const done = cat.status === 'configured';
+              const statusText = done ? 'Complete' : cat.status === 'partial' ? 'Needs review' : cat.status === 'error' ? 'Blocked' : 'Not started';
               return (
-                <div key={p.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Button type="link" onClick={() => navigate(p.path)} style={{ padding: 0, fontSize: 13 }}>{p.label}</Button>
-                  <StatusBadge status={cat.status || 'pending'} label={cat.status || 'empty'} />
+                <div key={p.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                  <Button type="link" onClick={() => navigate(p.path)} style={{ padding: 0, fontSize: 13, textAlign: 'left' }}>{p.label}</Button>
+                  <StatusBadge status={cat.status || 'pending'} label={statusText} />
                 </div>
               );
             })}
