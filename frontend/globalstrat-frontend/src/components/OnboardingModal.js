@@ -96,6 +96,8 @@ const OnboardingModal = () => {
     if (!user || !gameId || !teamId) return;
     if (user.role === 'instructor' || user.role === 'admin') return;
     if (user.onboarding_completed) return;
+    const demoDismissKey = `gs_onboarding_dismissed_${user.user_id}_${gameId}_${teamId}`;
+    if (user.is_demo && sessionStorage.getItem(demoDismissKey) === '1') return;
 
     getOnboardingData(gameId, teamId)
       .then(res => {
@@ -109,8 +111,10 @@ const OnboardingModal = () => {
 
   const handleDismiss = async () => {
     setVisible(false);
-    // Demo users always see onboarding on each login — don't persist completion
-    if (user.is_demo) return;
+    if (user.is_demo) {
+      sessionStorage.setItem(`gs_onboarding_dismissed_${user.user_id}_${gameId}_${teamId}`, '1');
+      return;
+    }
     try {
       await completeOnboarding(user.user_id, user.section_id);
       const stored = localStorage.getItem('gs_user');
@@ -315,7 +319,8 @@ const OnboardingModal = () => {
       open={visible}
       title={null}
       footer={null}
-      closable={false}
+      closable
+      onCancel={handleDismiss}
       width={640}
       centered
       styles={{
