@@ -1,7 +1,7 @@
-# Gunicorn configuration for GlobalStrat backend
+# Gunicorn configuration for GlobalStrat+ backend
 # Usage: gunicorn -c gunicorn.conf.py globalstrat.wsgi:application
 
-bind = '0.0.0.0:8012'
+bind = '0.0.0.0:8002'
 workers = 3
 worker_class = 'sync'
 timeout = 120

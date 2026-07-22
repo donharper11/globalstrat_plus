@@ -1,9 +1,9 @@
 // globalstrat+ frontend server: serves the CRA build and proxies /api to the
-// globalstrat+ backend (gunicorn on :8012). Same-origin, so the app's relative
+// globalstrat+ backend (gunicorn on :8002). Same-origin, so the app's relative
 // '/api' calls and the real login flow work unchanged.
 const http = require('http'); const fs = require('fs'); const path = require('path');
 const BUILD = '/home/ubuntu/projects/globalstrat+/frontend/globalstrat-frontend/build';
-const PORT = 8014; const BACKEND = { host: '127.0.0.1', port: 8012 };
+const PORT = Number(process.env.GLOBALSTRAT_PLUS_FRONTEND_PORT || 8014); const BACKEND = { host: '127.0.0.1', port: Number(process.env.GLOBALSTRAT_PLUS_BACKEND_PORT || 8002) };
 const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css',
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg',
   '.ico': 'image/x-icon', '.map': 'application/json', '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };

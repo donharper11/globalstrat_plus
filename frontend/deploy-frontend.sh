@@ -1,6 +1,6 @@
 #!/bin/bash
 # ─── GlobalStrat Frontend Deploy ─────────────────────────────────────────
-# Run from: ~/projects/globalstrat/frontend/
+# Run from: ~/projects/globalstrat+/frontend/
 #
 # Usage:
 #   ./deploy-frontend.sh              # Build + deploy
@@ -15,10 +15,10 @@ ECS_USER="root"
 ECS_PATH="/var/www/globalstrat/build"
 SSH_KEY="/home/ubuntu/.ssh/alibaba2.pem"
 
-CF_TOKEN="3U8awlMRlSKvNNPADbpLoFAiaLMdP_SC5Uf6TpCg"
-CF_ZONE="fafa0995894f903b99c9d9812005e487"
+CF_TOKEN="${CF_TOKEN:-}"
+CF_ZONE="${CF_ZONE:-fafa0995894f903b99c9d9812005e487}"
 
-FRONTEND_DIR="$HOME/projects/globalstrat/frontend/globalstrat-frontend"
+FRONTEND_DIR="$HOME/projects/globalstrat+/frontend/globalstrat-frontend"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -124,7 +124,9 @@ echo ""
 
 log "Purging Cloudflare cache..."
 if $DRY_RUN; then
-  echo "   Would POST purge_cache to Cloudflare zone $CF_ZONE"
+  echo "   Would POST purge_cache to Cloudflare zone $CF_ZONE when CF_TOKEN is set"
+elif [ -z "$CF_TOKEN" ]; then
+  warn "Skipping Cloudflare purge — set CF_TOKEN in the environment to purge cache"
 else
   CF_RESPONSE=$(curl -s -X POST \
     "https://api.cloudflare.com/client/v4/zones/${CF_ZONE}/purge_cache" \
@@ -145,7 +147,11 @@ echo ""
 
 echo -e "${BLUE}───────────────────────────────────────────────────${NC}"
 echo ""
-echo "  Deploy complete — cache purged automatically"
+if [ -n "$CF_TOKEN" ]; then
+  echo "  Deploy complete — cache purge requested"
+else
+  echo "  Deploy complete — Cloudflare cache purge skipped"
+fi
 echo ""
 echo "  Verify: https://globalstrat.camdani.com"
 echo ""
