@@ -1,4 +1,4 @@
-# GSP-R1-03 — Instructor Control Center Readiness
+# GSP-R1-03 - Instructor Control Center Readiness
 
 **Status:** Ready for builder dispatch.
 **Scope owner:** Instructor Round 1 browser workflow.

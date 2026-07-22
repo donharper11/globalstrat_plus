@@ -1,4 +1,4 @@
-# GSP-R1-Audit — Round 1 Browser Re-Audit
+# GSP-R1-Audit - Round 1 Browser Re-Audit
 
 **Status:** Run only after GSP-R1-01, GSP-R1-02, and GSP-R1-03 builders report complete.
 **Scope owner:** independent verification / coordinator.

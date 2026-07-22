@@ -1,4 +1,4 @@
-# GSP-R1-02 — Student Decision Page Readiness
+# GSP-R1-02 - Student Decision Page Readiness
 
 **Status:** Ready for builder dispatch.
 **Scope owner:** Round 1 student decision pages.
