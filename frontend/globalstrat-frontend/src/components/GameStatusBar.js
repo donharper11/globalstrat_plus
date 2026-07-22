@@ -14,13 +14,22 @@ const fmt = (v) => {
   return `$${n.toFixed(0)}`;
 };
 
+const roundStatusLabel = (roundStatus, locked) => {
+  if (locked) return { text: 'LOCKED', color: 'green' };
+  if (roundStatus === 'open') return { text: 'DRAFT OPEN', color: 'blue' };
+  if (roundStatus === 'closed') return { text: 'ROUND CLOSED', color: 'orange' };
+  if (roundStatus === 'processed') return { text: 'RESULTS AVAILABLE', color: 'purple' };
+  if (roundStatus === 'pending') return { text: 'NOT OPEN YET', color: 'default' };
+  if (roundStatus === 'in_progress') return { text: 'DRAFT OPEN', color: 'blue' };
+  return { text: 'ROUND STATUS UNKNOWN', color: 'default' };
+};
+
 const GameStatusBar = () => {
   const { t } = useTranslation();
-  const { team, currentRound, budgets } = useGame();
+  const { team, currentRound, totalRounds, roundStatus, budgets } = useGame();
   const { locked, saving, lastSaved } = useDecisions();
 
-  const statusColor = locked ? 'green' : 'blue';
-  const statusText = locked ? t('game_status.locked') : t('game_status.in_progress');
+  const status = roundStatusLabel(roundStatus, locked);
 
   return (
     <div style={{
@@ -35,8 +44,8 @@ const GameStatusBar = () => {
       gap: 8,
     }}>
       <Space size={16}>
-        <Text strong>{t('game_status.round_of', { current: currentRound || '—', total: 8 })}</Text>
-        <Tag color={statusColor}>{statusText}</Tag>
+        <Text strong>{t('game_status.round_of', { current: currentRound || '—', total: totalRounds || '—' })}</Text>
+        <Tag color={status.color}>{status.text}</Tag>
         <Text>{t('game_status.team', { name: team?.name || '—' })}</Text>
       </Space>
       <Space size={16}>
