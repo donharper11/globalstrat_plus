@@ -6,6 +6,7 @@ import { GameProvider } from './contexts/GameContext';
 import { DecisionProvider } from './contexts/DecisionContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
+import ShallowRouteRecovery from './components/ShallowRouteRecovery';
 import { DSTopBar } from './components/design-system';
 import BudgetAlert from './components/BudgetAlert';
 import DemoBanner from './components/DemoBanner';
@@ -152,6 +153,8 @@ function App() {
                               <Route path="/games/:gameId/teams/:teamId/decisions/summary" element={<SummaryPage />} />
                               <Route path="/games/:gameId/leaderboard" element={<LeaderboardPage />} />
                               <Route path="/leaderboard" element={<LeaderboardPage />} />
+                              {/* GSP-R1-01: recover shallow/unknown student routes into the active game/team */}
+                              <Route path="*" element={<ShallowRouteRecovery />} />
                             </Routes>
                           </Content>
                         </Layout>
