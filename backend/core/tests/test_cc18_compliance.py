@@ -15,19 +15,20 @@ from django.test import TestCase
 from core.models.core import Game, Team, Round
 from core.models.scenario import (
     Scenario, MarketDefinition, SegmentDefinition, FirmStarterProfile,
-    PlatformGenerationDefinition,
+    PlatformGenerationDefinition, EntryModeDefinition,
 )
 from core.models.sc_models import Supplier, ComplianceRegime
 from core.models.sc_decisions import (
     SourcingDecision, SourcingAllocation, CustomsClassificationDecision,
 )
 from core.models.sc_state import ComplianceEnforcementEvent
-from core.models.team_state import TeamPlatform, TeamProduct
+from core.models.team_state import TeamMarketPresence, TeamPlatform, TeamProduct
 from core.models.decisions import DecisionSubmission, DecisionMarketing
 from core.models.results import RoundResultAdoption
 from core.engine.compliance_engine import enforce_compliance, _trigger_applies, _mitigation_reduction_pct
 from core.engine.revenue import calculate_revenue
 from core.engine.bass_engine import run_bass_adoption
+from core.engine.performance import calculate_performance_index
 
 
 class _Ctx:
@@ -194,3 +195,72 @@ class CC18ComplianceTest(TestCase):
         generate_financial_statements(ctx)
         fin = RoundResultFinancials.objects.get(game=self.game, team=self.team, round_number=2)
         self.assertEqual(fin.net_income, D('-120000.00'))        # cost only → negative net income
+
+    def test_performance_index_composite_rewards_financials_and_penalizes_freeze(self):
+        from core.models.results_financials import RoundResultPerformanceIndex
+
+        rnd = self._round(3)
+        peer = Team.objects.create(
+            game=self.game, name='Peer', firm_starter_profile=self.team.firm_starter_profile,
+            performance_index=D('100'), cash_on_hand=D('50000000'), total_equity=D('50000000'),
+        )
+        entry_mode = EntryModeDefinition.objects.filter(scenario=self.scenario).first()
+        TeamMarketPresence.objects.create(
+            team=self.team, market=self.na, entry_mode=entry_mode, established_round=1,
+            initial_investment=D('0'), status='active',
+        )
+        TeamMarketPresence.objects.create(
+            team=peer, market=self.na, entry_mode=entry_mode, established_round=1,
+            initial_investment=D('0'), status='active',
+        )
+
+        ctx = _Ctx(self.game, 3, [self.team, peer], self.scenario)
+        ctx.fit_scores = {}
+        ctx.adjusted_fit_scores = {}
+        ctx.financials = {
+            self.team.id: {
+                'total_revenue': D('10000000'), 'net_income': D('3000000'),
+                'debt_to_equity': D('0.40'),
+            },
+            peer.id: {
+                'total_revenue': D('2000000'), 'net_income': D('-1000000'),
+                'debt_to_equity': D('0.40'),
+            },
+        }
+        ctx.compliance_freezes = set()
+        ctx.compliance_costs = {}
+        ctx.sc_capacity_factor = {}
+        ctx.sc_disruption_costs = {}
+
+        for segment in SegmentDefinition.objects.filter(scenario=self.scenario):
+            market_id = segment.market_id if segment.market_id == self.na.id else None
+            if segment.market_id and segment.market_id != self.na.id and segment.segment_type == 'customer':
+                continue
+            key_self = (self.team.id, segment.id, market_id)
+            key_peer = (peer.id, segment.id, market_id)
+            ctx.fit_scores[key_self] = 0.7
+            ctx.adjusted_fit_scores[key_self] = 0.7
+            ctx.fit_scores[key_peer] = 0.7
+            ctx.adjusted_fit_scores[key_peer] = 0.7
+
+        calculate_performance_index(ctx)
+        high_result = RoundResultPerformanceIndex.objects.get(game=self.game, round_number=3, team=self.team)
+        peer_result = RoundResultPerformanceIndex.objects.get(game=self.game, round_number=3, team=peer)
+        self.assertGreater(high_result.index_value, peer_result.index_value)
+        unfrozen_high_index = high_result.index_value
+
+        self.team.performance_index = D('100')
+        self.team.save()
+        peer.performance_index = D('100')
+        peer.save()
+        RoundResultPerformanceIndex.objects.filter(game=self.game, round_number=3).delete()
+        ctx.compliance_freezes = {(self.team.id, self.na.id)}
+        ctx.compliance_costs = {self.team.id: D('2000000')}
+        for segment in SegmentDefinition.objects.filter(
+            scenario=self.scenario, market=self.na, segment_type='customer',
+        ):
+            ctx.adjusted_fit_scores[(self.team.id, segment.id, self.na.id)] = 0.0
+
+        calculate_performance_index(ctx)
+        frozen_result = RoundResultPerformanceIndex.objects.get(game=self.game, round_number=3, team=self.team)
+        self.assertLess(frozen_result.index_value, unfrozen_high_index)
