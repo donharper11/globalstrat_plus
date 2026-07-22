@@ -46,7 +46,9 @@ const SummaryPage = () => {
   useEffect(() => { loadSummary(); }, [loadSummary]);
 
   const categories = summary?.categories || {};
-  const canLock = summary?.can_lock && !locked;
+  const requiredForLock = ['budget', 'products', 'marketing', 'strategy'];
+  const hasIncompleteRequired = requiredForLock.some(key => categories[key]?.status !== 'configured');
+  const canLock = summary?.can_lock && !hasIncompleteRequired && !locked;
   const blockers = summary?.lock_blockers || [];
   const budgetSummary = summary?.budget_summary || {};
 
@@ -73,6 +75,7 @@ const SummaryPage = () => {
   const guidanceFor = (item, cat) => {
     const messages = [...(cat.errors || []), ...(cat.warnings || [])];
     if (messages.length > 0) return messages;
+    if (cat.optional && cat.status === 'configured') return cat.warnings?.length ? cat.warnings : ['No action required this round.'];
     if (cat.status === 'configured') return ['This requirement has draft work saved.'];
     if (item.key === 'rd') return ['Open R&D Investment and either upgrade an existing feature or create an affordable platform.'];
     if (item.key === 'budget') return ['Open Finance and allocate R&D, Marketing, and Strategy budgets.'];
@@ -160,7 +163,7 @@ const SummaryPage = () => {
                           {cat.configured_count} / {cat.total_required} {t("summary_page.configured")}
                         </Text>
                       )}
-                      {cat.status !== 'configured' && (
+                      {cat.status !== 'configured' && !cat.optional && (
                         <Button size="small" onClick={() => navigate(item.path)}>
                           Fix in {item.label}
                         </Button>
