@@ -392,11 +392,19 @@ const InstructorDashboard = () => {
     <div>
       {/* Status summary */}
       <Row gutter={[16, 16]}>
-        <Col xs={12} md={6}><Card><Statistic title={t('instructor.game')} value={createGameName || dashboard?.game_name || t('instructor.game')} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title={t('instructor.current_round')} value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${roundSchedule?.total_rounds || '—'}`} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title={t('instructor.status')} value={gameStatus || dashboard?.status || 'setup'} valueStyle={{ color: gameStatus === 'active' ? '#52c41a' : gameStatus === 'paused' ? '#faad14' : gameStatus === 'archived' ? '#8c8c8c' : '#1890ff' }} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title={t('instructor.game')} value={createGameName || dashboard?.game_name || t('instructor.game')} suffix={gameId ? `#${gameId}` : undefined} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title="Decision round" value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${roundSchedule?.total_rounds || '—'}`} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title="Lifecycle status" value={gameStatus || dashboard?.status || 'setup'} valueStyle={{ color: gameStatus === 'active' ? '#52c41a' : gameStatus === 'paused' ? '#faad14' : gameStatus === 'archived' ? '#8c8c8c' : '#1890ff' }} /></Card></Col>
         <Col xs={12} md={6}><Card><Statistic title={t('instructor.teams')} value={createdGameTeams.length || rs.total_teams || 0} suffix={hasGame ? `(${rs.teams_locked || 0} ${t('instructor.locked')})` : undefined} /></Card></Col>
       </Row>
+
+      <Alert
+        showIcon
+        type="info"
+        message={`Monitoring ${createGameName || dashboard?.game_name || t('instructor.game')}${gameId ? ` (#${gameId})` : ''}`}
+        description={`Decision round ${dashboard?.current_round ?? 0} of ${roundSchedule?.total_rounds || 'unknown'} is currently ${gameStatus || dashboard?.status || 'setup'}. Latest processed results round: ${Math.max((dashboard?.current_round || 1) - 1, 0)}.`}
+        style={{ marginTop: 16 }}
+      />
 
       {/* Lifecycle controls */}
       <Card title={t('instructor.game_lifecycle')} style={{ marginTop: 16 }}>
