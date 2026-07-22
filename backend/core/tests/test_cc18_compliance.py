@@ -27,6 +27,7 @@ from core.models.decisions import DecisionSubmission, DecisionMarketing
 from core.models.results import RoundResultAdoption
 from core.engine.compliance_engine import enforce_compliance, _trigger_applies, _mitigation_reduction_pct
 from core.engine.revenue import calculate_revenue
+from core.engine.bass_engine import run_bass_adoption
 
 
 class _Ctx:
@@ -147,6 +148,39 @@ class CC18ComplianceTest(TestCase):
         # No revenue booked for the frozen market; lost revenue recorded.
         self.assertNotIn((self.team.id, self.product.id, self.na.id), ctx.revenue)
         self.assertGreater(ctx.compliance_lost_revenue[self.team.id], 0)
+
+    def test_freeze_blocks_customer_adoption_credit(self):
+        from core.engine.utils import RoundContext, SegmentEffectiveState
+
+        rnd = self._round(2)
+        segment = SegmentDefinition.objects.filter(
+            scenario=self.scenario, market=self.na, segment_type='customer'
+        ).first()
+        sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
+        DecisionMarketing.objects.create(submission=sub, team_product=self.product, market=self.na,
+            retail_price=D('500'), promotion_budget=D('0'), campaign_focus_feature_ids=[],
+            channel_digital_pct=D('1'), channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+            distribution_strategy='hybrid', distribution_investment=D('0'), demand_estimate=1000,
+            production_volume=1000, production_source_market=self.na)
+        ctx = RoundContext(self.game, 2)
+        ctx.teams = [self.team]
+        ctx.segments = {segment.id: SegmentEffectiveState(segment)}
+        key = (self.team.id, segment.id, self.na.id)
+        ctx.fit_scores[key] = 0.9
+        ctx.adjusted_fit_scores[key] = 0.9
+        ctx.best_products[key] = self.product
+        ctx.readiness[(self.team.id, self.product.id, self.na.id)] = 1.0
+        ctx.compliance_freezes = {(self.team.id, self.na.id)}
+
+        run_bass_adoption(ctx)
+
+        adoption = RoundResultAdoption.objects.get(
+            game=self.game, round_number=2, team=self.team, segment=segment, market=self.na,
+        )
+        self.assertEqual(adoption.new_adopters, D('0.00'))
+        self.assertEqual(adoption.adjusted_fit_score, D('0.0000'))
+        self.assertIsNone(adoption.best_product)
+        self.assertEqual(ctx.adjusted_fit_scores[key], 0.0)
 
     def test_compliance_cost_hits_net_income(self):
         from core.engine.financials import generate_financial_statements
