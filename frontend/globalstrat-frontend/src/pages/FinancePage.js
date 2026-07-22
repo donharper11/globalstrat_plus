@@ -36,13 +36,15 @@ const FinancePage = () => {
   const [context, setContext] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [saveState, setSaveState] = useState({ status: 'idle', message: '' });
   const [budgetAllocation, setBudgetAllocation] = useState({
     rd_budget: 0, marketing_budget: 0, strategy_budget: 0,
   });
   const [financing, setFinancing] = useState({
     new_debt: 0, debt_repayment: 0, new_equity: 0, dividend_per_share: 0,
   });
-  const saveTimer = useRef(null);
+  const budgetSaveTimer = useRef(null);
+  const financingSaveTimer = useRef(null);
   const [taxData, setTaxData] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState('direct');
   const [taxSaving, setTaxSaving] = useState(false);
@@ -81,44 +83,88 @@ const FinancePage = () => {
       .catch(() => {});
   }, [gameId, teamId]);
 
-  const autoSaveBudget = useCallback(() => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
+  const normalizeMoneyInput = (value) => {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) && numeric >= 0 ? numeric : 0;
+  };
+
+  const formatMoneyInput = (value) => {
+    if (value === undefined || value === null || value === '') return '';
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? `$ ${numeric.toLocaleString('en-US')}` : value;
+  };
+
+  const parseMoneyInput = (value) => {
+    if (typeof value !== 'string') return value;
+    const normalized = value.trim().toLowerCase();
+    const multiplier = normalized.endsWith('m') ? 1000000 : normalized.endsWith('k') ? 1000 : 1;
+    const numeric = Number(normalized.replace(/[^0-9.]/g, ''));
+    return Number.isFinite(numeric) ? numeric * multiplier : 0;
+  };
+
+  const saveErrorMessage = (error, fallback) => {
+    const data = error?.response?.data;
+    if (!data) return fallback;
+    if (typeof data.detail === 'string') return data.detail;
+    if (Array.isArray(data.non_field_errors)) return data.non_field_errors.join(' ');
+    const firstField = Object.keys(data)[0];
+    const firstValue = firstField ? data[firstField] : null;
+    if (Array.isArray(firstValue)) return `${firstField}: ${firstValue.join(' ')}`;
+    return fallback;
+  };
+
+  const autoSaveBudget = useCallback((nextBudgetAllocation) => {
+    clearTimeout(budgetSaveTimer.current);
+    setSaveState({ status: 'pending', message: 'Unsaved budget changes' });
+    budgetSaveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
+      setSaveState({ status: 'saving', message: 'Saving budget...' });
       try {
         await patchDecision(gameId, teamId, currentRound, 'budget', {
-          budget_allocation: budgetAllocation,
+          budget_allocation: nextBudgetAllocation,
         });
-        refreshBudgets();
-      } catch { /* ignore */ }
-      setSaving(false);
-    }, 2000);
-  }, [gameId, teamId, currentRound, locked, budgetAllocation, refreshBudgets]);
+        await refreshBudgets();
+        setSaveState({ status: 'saved', message: 'Budget saved' });
+      } catch (error) {
+        setSaveState({ status: 'error', message: saveErrorMessage(error, 'Budget save failed') });
+      } finally {
+        setSaving(false);
+      }
+    }, 700);
+  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
 
-  const autoSaveFinancing = useCallback(() => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
+  const autoSaveFinancing = useCallback((nextFinancing) => {
+    clearTimeout(financingSaveTimer.current);
+    setSaveState({ status: 'pending', message: 'Unsaved financing changes' });
+    financingSaveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
+      setSaveState({ status: 'saving', message: 'Saving financing...' });
       try {
         await patchDecision(gameId, teamId, currentRound, 'financing', {
-          financing,
+          financing: nextFinancing,
         });
-        refreshBudgets();
-      } catch { /* ignore */ }
-      setSaving(false);
-    }, 2000);
-  }, [gameId, teamId, currentRound, locked, financing, refreshBudgets]);
+        await refreshBudgets();
+        setSaveState({ status: 'saved', message: 'Financing saved' });
+      } catch (error) {
+        setSaveState({ status: 'error', message: saveErrorMessage(error, 'Financing save failed') });
+      } finally {
+        setSaving(false);
+      }
+    }, 700);
+  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
 
   const updateBudget = (field, value) => {
-    setBudgetAllocation(prev => ({ ...prev, [field]: value || 0 }));
-    autoSaveBudget();
+    const next = { ...budgetAllocation, [field]: normalizeMoneyInput(value) };
+    setBudgetAllocation(next);
+    autoSaveBudget(next);
   };
 
   const updateFinancing = (field, value) => {
-    setFinancing(prev => ({ ...prev, [field]: value || 0 }));
-    autoSaveFinancing();
+    const next = { ...financing, [field]: normalizeMoneyInput(value) };
+    setFinancing(next);
+    autoSaveFinancing(next);
   };
 
   const handleTaxChange = async (code) => {
@@ -197,6 +243,8 @@ const FinancePage = () => {
   const totalAllocated = budgetAllocation.rd_budget + budgetAllocation.marketing_budget +
     budgetAllocation.strategy_budget;
   const cashAvailable = Number(financial.cash_on_hand || 0);
+  const operatingBudgetAvailable = Number(budgetStatus.total_budget_available || cashAvailable || 0);
+  const allocationRemaining = operatingBudgetAvailable - totalAllocated;
 
   const reactionTag = (reaction) => {
     if (reaction === 'positive') return <Tag color="green">{t('finance.favorable')}</Tag>;
@@ -233,8 +281,16 @@ const FinancePage = () => {
       </PanelCard>
 
       <PanelCard headerColor="decision" title={t('finance.budget_allocation').toUpperCase()}>
-        {totalAllocated > cashAvailable && (
-          <WarningBanner message={t('finance.exceeds_cash', { allocated: fmt(totalAllocated), cash: fmt(cashAvailable) })} type="error" />
+        {saveState.message && (
+          <Alert
+            showIcon
+            type={saveState.status === 'error' ? 'error' : saveState.status === 'saved' ? 'success' : 'info'}
+            message={saveState.message}
+            style={{ marginBottom: 12 }}
+          />
+        )}
+        {totalAllocated > operatingBudgetAvailable && (
+          <WarningBanner message={`Allocated budget ${fmt(totalAllocated)} exceeds the Round ${currentRound} operating budget ${fmt(operatingBudgetAvailable)}.`} type="error" />
         )}
         <Row gutter={[16, 16]}>
           {[
@@ -245,8 +301,10 @@ const FinancePage = () => {
             <Col xs={12} md={6} key={b.key}>
               <Text style={{ display: 'block', marginBottom: 4 }}>{b.label}</Text>
               <InputNumber
-                prefix="$" min={0} step={100000}
+                min={0} step={100000}
                 value={budgetAllocation[b.key]} disabled={locked}
+                formatter={formatMoneyInput}
+                parser={parseMoneyInput}
                 onChange={v => updateBudget(b.key, v)}
                 style={{ width: '100%' }}
               />
@@ -255,10 +313,13 @@ const FinancePage = () => {
         </Row>
         <div style={{ marginTop: 12 }}>
           <Text type="secondary">
-            {t('finance.total_allocated')}: {fmt(totalAllocated)} | {t('finance.unallocated')}: {fmt(cashAvailable - totalAllocated)}
+            {t('finance.total_allocated')}: {fmt(totalAllocated)} | Round {currentRound} budget remaining: {fmt(allocationRemaining)}
           </Text>
           {budgetAllocation.rd_budget === 0 && <WarningBanner message={t('finance.rd_budget_zero')} style={{ marginTop: 8 }} />}
           {budgetAllocation.marketing_budget === 0 && <WarningBanner message={t('finance.marketing_budget_zero')} style={{ marginTop: 8 }} />}
+          <Text type="secondary" style={{ display: 'block', marginTop: 8, fontSize: 12 }}>
+            Enter dollar amounts directly. Examples: 2500000, $2,500,000, or 2.5M.
+          </Text>
         </div>
       </PanelCard>
     </div>
@@ -282,8 +343,10 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.loan_amount')}</Text>
             <InputNumber
-              prefix="$" min={0} step={1000000}
+              min={0} step={1000000}
               value={financing.new_debt} disabled={locked}
+              formatter={formatMoneyInput}
+              parser={parseMoneyInput}
               onChange={v => updateFinancing('new_debt', v)}
               style={{ width: '100%' }}
             />
@@ -321,8 +384,10 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.repayment_amount')}</Text>
             <InputNumber
-              prefix="$" min={0} max={Number(financial.total_debt || 0)} step={1000000}
+              min={0} max={Number(financial.total_debt || 0)} step={1000000}
               value={financing.debt_repayment} disabled={locked}
+              formatter={formatMoneyInput}
+              parser={parseMoneyInput}
               onChange={v => updateFinancing('debt_repayment', v)}
               style={{ width: '100%' }}
             />
@@ -355,8 +420,10 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.amount_to_raise')}</Text>
             <InputNumber
-              prefix="$" min={0} step={1000000}
+              min={0} step={1000000}
               value={financing.new_equity} disabled={locked}
+              formatter={formatMoneyInput}
+              parser={parseMoneyInput}
               onChange={v => updateFinancing('new_equity', v)}
               style={{ width: '100%' }}
             />
@@ -391,8 +458,10 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.dividend_per_share')}</Text>
             <InputNumber
-              prefix="$" min={0} step={0.50}
+              min={0} step={0.50}
               value={financing.dividend_per_share} disabled={locked}
+              formatter={formatMoneyInput}
+              parser={parseMoneyInput}
               onChange={v => updateFinancing('dividend_per_share', v)}
               style={{ width: '100%' }}
             />
@@ -642,7 +711,7 @@ const FinancePage = () => {
         title={t('finance.title')}
         subtitle={`${t('common.round')} ${currentRound} · ${t('finance.capital_management')} & ${t('finance.budget_allocation')}`}
         status={locked ? 'locked' : 'draft'}
-        actions={saving ? <Tag color="processing">{t('finance.saving')}</Tag> : null}
+        actions={saveState.message ? <Tag color={saveState.status === 'error' ? 'red' : saveState.status === 'saved' ? 'green' : 'processing'}>{saveState.message}</Tag> : saving ? <Tag color="processing">{t('finance.saving')}</Tag> : null}
       />
 
       {/* Financial Position Summary */}
