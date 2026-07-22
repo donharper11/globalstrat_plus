@@ -75,6 +75,7 @@ const CreatePlatformModal = ({ open, onClose, onCreated, context, gameId, teamId
   if (!platformName.trim()) missingFields.push(t('rd.platform_name'));
   if (!selectedGenId) missingFields.push(t('rd.technology_base'));
   if (saving) missingFields.push('Saving...');
+  if (overBudget) missingFields.push('Cost exceeds R&D budget');
   if (selectedGen?.prerequisites_met === false && selectedGen?.generation_order !== 1) missingFields.push(t('rd.prerequisites_not_met'));
   const canCreate = missingFields.length === 0;
 
@@ -297,6 +298,7 @@ const RDPage = () => {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [savingInvestment, setSavingInvestment] = useState(null);
 
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) { setLoading(false); return; }
@@ -313,6 +315,9 @@ const RDPage = () => {
   if (!context) return <Alert message={t('rd.unable_to_load')} type="error" />;
 
   const rdBudget = Number(context?.rd_budget || 0);
+  const rdRemaining = Number(context?.rd_budget_remaining ?? rdBudget);
+  const investmentSlots = context.investment_slots || {};
+  const currentInvestments = context.current_investments || [];
   const ownedPlatforms = context.owned_platforms || [];
   const platformDevDecisions = context.platform_dev_decisions || [];
 
@@ -366,6 +371,58 @@ const RDPage = () => {
   // Gather feature names from the first active platform for column headers
   const activePlatform = ownedPlatforms.find(p => p.status === 'active');
   const featureList = activePlatform?.features || [];
+
+  const currentInvestmentPayload = currentInvestments.map(inv => ({
+    team_platform: inv.team_platform_id,
+    feature: inv.feature_id,
+    method: inv.method || 'in_house',
+    amount: inv.cost,
+    target_level: inv.target_level,
+    calculated_cost: inv.cost,
+  }));
+
+  const investInNextLevel = async (feature) => {
+    if (!activePlatform || locked) return;
+    const current = Math.floor(feature.current_level);
+    const nextCost = (feature.cost_schedule || []).find(e => e.level === current + 1);
+    if (!nextCost) return;
+    const cost = Number(nextCost.incremental_cost || nextCost.cumulative_from_current || 0);
+    const alreadyInvested = currentInvestments.some(inv => inv.feature_id === feature.feature_id);
+    if (!alreadyInvested && Number(investmentSlots.remaining || 0) <= 0) {
+      message.warning('All R&D investment slots are already used this round.');
+      return;
+    }
+    if (cost > rdRemaining && !alreadyInvested) {
+      message.warning('This upgrade exceeds the remaining R&D budget.');
+      return;
+    }
+
+    const nextPayload = [
+      ...currentInvestmentPayload.filter(inv => inv.feature !== feature.feature_id),
+      {
+        team_platform: activePlatform.id,
+        feature: feature.feature_id,
+        method: 'in_house',
+        amount: cost,
+        target_level: current + 1,
+        calculated_cost: cost,
+      },
+    ];
+
+    setSavingInvestment(feature.feature_id);
+    try {
+      await patchDecision(gameId, teamId, currentRound, 'rd', { rd_investments: nextPayload });
+      message.success(`Saved R&D investment: ${feature.name} to level ${current + 1}`);
+      await loadContext();
+      refreshBudgets();
+    } catch (err) {
+      const detail = err?.response?.data?.detail || err?.response?.data?.non_field_errors?.join(' ') || 'R&D investment could not be saved.';
+      message.error(detail);
+    } finally {
+      setSavingInvestment(null);
+    }
+  };
+
 
   // Table columns: Platform name | each feature level | added cost
   const columns = [
@@ -616,6 +673,14 @@ const RDPage = () => {
         }
       />
 
+      <Alert
+        showIcon
+        type="info"
+        message="Choose one R&D action for this round"
+        description={`You have ${fmt(rdRemaining)} of R&D budget remaining and ${investmentSlots.remaining ?? 0} of ${investmentSlots.max ?? 0} investment slots open. Upgrade an existing feature when a new platform is over budget.`}
+        style={{ marginBottom: 16 }}
+      />
+
       {/* Your Platform */}
       <PanelCard headerColor="strategic" title={t('rd.your_platform')} style={{ marginBottom: 16 }}>
         <Table
@@ -668,7 +733,7 @@ const RDPage = () => {
         />
       </PanelCard>
 
-      {/* Platform Upgrade — shown when an active platform exists with upgradeable features */}
+      {/* Platform Upgrade - shown when an active platform exists with upgradeable features */}
       {activePlatform && activePlatform.features?.some(f => Math.floor(f.current_level) < Math.floor(f.ceiling)) && (
         <PanelCard headerColor="strategic" title={t('rd.platform_upgrade')} style={{ marginBottom: 16 }}>
           <div style={{ padding: '8px 0' }}>
@@ -697,13 +762,38 @@ const RDPage = () => {
                         }} />
                       </div>
                     </div>
-                    <div style={{ width: 100, fontSize: 11, color: '#666', textAlign: 'right' }}>
+                    <div style={{ width: 120, fontSize: 11, color: '#666', textAlign: 'right' }}>
                       {nextCost ? <span>{t('rd.next_level')}: {fmt(nextCost.incremental_cost)}</span> : null}
                     </div>
+                    <Button
+                      size="small"
+                      type="primary"
+                      disabled={locked || !nextCost || (Number(nextCost.incremental_cost || 0) > rdRemaining && !currentInvestments.some(inv => inv.feature_id === f.feature_id))}
+                      loading={savingInvestment === f.feature_id}
+                      onClick={() => investInNextLevel(f)}
+                    >
+                      Invest next level
+                    </Button>
                   </div>
                 );
               })}
           </div>
+        </PanelCard>
+      )}
+
+      {currentInvestments.length > 0 && (
+        <PanelCard headerColor="decision" title="CURRENT R&D DRAFT" style={{ marginBottom: 16 }}>
+          <Table
+            dataSource={currentInvestments.map(inv => ({ ...inv, key: inv.id || inv.feature_id }))}
+            pagination={false}
+            size="small"
+            columns={[
+              { title: 'Feature', dataIndex: 'feature_name', key: 'feature_name' },
+              { title: 'Target level', dataIndex: 'target_level', key: 'target_level', width: 120 },
+              { title: 'Method', dataIndex: 'method', key: 'method', width: 120 },
+              { title: 'Cost', dataIndex: 'cost', key: 'cost', width: 120, align: 'right', render: value => fmt(value) },
+            ]}
+          />
         </PanelCard>
       )}
 
