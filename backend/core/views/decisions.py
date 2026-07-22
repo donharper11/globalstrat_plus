@@ -550,6 +550,33 @@ class DecisionLockView(APIView):
                     f'minimum (${me.entry_mode.capital_requirement:,.2f}).'
                 )
 
+        # Core Round 1 decisions must be explicit before locking.
+        if submission.product_creates.count() == 0 and submission.product_retires.count() == 0:
+            errors.append('Product Portfolio is required before locking.')
+
+        active_product_markets = TeamProductMarket.objects.filter(
+            team_product__team=team, team_product__status='active', is_active=True,
+        ).count()
+        marketing_count = submission.marketing_decisions.count()
+        if active_product_markets > 0 and marketing_count < active_product_markets:
+            errors.append('Marketing Mix is required for all active product-market combinations before locking.')
+        elif active_product_markets == 0:
+            errors.append('Marketing Mix requires at least one active product-market combination before locking.')
+
+        strategy_configured = (
+            submission.market_entries.count()
+            + submission.plant_decisions.count()
+            + submission.partnerships.count()
+            + submission.acquisitions.count()
+        ) > 0
+        try:
+            submission.esg
+            strategy_configured = True
+        except DecisionESG.DoesNotExist:
+            pass
+        if not strategy_configured:
+            errors.append('Strategy Mix is required before locking.')
+
         # Financing: debt ceiling
         try:
             fin = submission.financing
@@ -834,7 +861,7 @@ class DecisionSummaryView(APIView):
             'warnings': strategy_warnings,
         }
 
-        # Financing
+        # Financing is optional unless a saved financing decision creates a hard error.
         try:
             fin = submission.financing
             fin_errors = []
@@ -858,7 +885,20 @@ class DecisionSummaryView(APIView):
             else:
                 categories['financing'] = {'status': 'configured', 'warnings': []}
         except DecisionFinancing.DoesNotExist:
-            categories['financing'] = {'status': 'empty', 'warnings': []}
+            categories['financing'] = {
+                'status': 'configured',
+                'warnings': ['No financing changes this round.'],
+                'optional': True,
+            }
+
+        required_lock_categories = {
+            'products': 'Product Portfolio is required before locking.',
+            'marketing': 'Marketing Mix is required before locking.',
+            'strategy': 'Strategy Mix is required before locking.',
+        }
+        for key, message in required_lock_categories.items():
+            if categories.get(key, {}).get('status') != 'configured':
+                lock_blockers.append(message)
 
         can_lock = len(lock_blockers) == 0
 
