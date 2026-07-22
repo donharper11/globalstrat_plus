@@ -31,10 +31,10 @@
 ┌─────────────────────────────────────────────────────────┐
 │  Homelab — 192.168.50.5                                 │
 │                                                         │
-│  Gunicorn (port 8002) — globalstrat.wsgi:application    │
+│  Gunicorn (port 8002) — globalstrat+ Django backend    │
 │  FRP Client → ECS:7000 (tunnel 8002 → 3006)            │
 │                                                         │
-│  PostgreSQL — 192.168.50.38:5432 (globalstrat_db)       │
+│  PostgreSQL — 192.168.50.38:5432 (globalstrat_plus)       │
 │  Qdrant     — 192.168.50.186:6333                       │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -64,7 +64,7 @@ Other platforms on same ECS:
 ### 1. Install systemd services on homelab
 
 ```bash
-cd ~/projects/globalstrat/deploy
+cd ~/projects/globalstrat+/deploy
 sudo bash setup-services.sh
 ```
 
@@ -94,7 +94,7 @@ SSL mode: Full (Cloudflare handles TLS termination).
 ### Frontend
 
 ```bash
-cd ~/projects/globalstrat/frontend
+cd ~/projects/globalstrat+/frontend
 ./deploy-frontend.sh
 ```
 
@@ -120,7 +120,7 @@ sudo systemctl restart globalstrat-backend
 For database migrations:
 
 ```bash
-cd ~/projects/globalstrat/backend
+cd ~/projects/globalstrat+/backend
 GLOBALSTRAT_ENV=production python3 manage.py migrate
 sudo systemctl restart globalstrat-backend
 ```
@@ -148,19 +148,22 @@ Environment variables (set in systemd service or shell):
 - `DASHSCOPE_API_KEY` — required for AI features
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` — override database
 
-To set the DashScope API key in the systemd service:
+Production secrets are loaded from `/etc/globalstrat-plus.env`, not from committed deploy scripts or service files. The file should be owned by root and mode `0600`.
 
-```bash
-sudo systemctl edit globalstrat-backend
-```
+Example keys:
 
-Add:
 ```ini
-[Service]
-Environment=DASHSCOPE_API_KEY=your-key-here
+DJANGO_SECRET_KEY=replace-with-generated-secret
+DB_NAME=globalstrat_plus
+DB_USER=donwh
+DB_PASSWORD=replace-with-db-password
+DB_HOST=192.168.50.38
+DB_PORT=5432
+DASHSCOPE_API_KEY=replace-with-provider-key
+DASHSCOPE_MODEL=qwen3-max-preview
 ```
 
-Then: `sudo systemctl restart globalstrat-backend`
+After changing the env file: `sudo systemctl restart globalstrat-backend`.
 
 ---
 
@@ -169,7 +172,7 @@ Then: `sudo systemctl restart globalstrat-backend`
 ### Homelab (192.168.50.5)
 
 ```
-~/projects/globalstrat/
+~/projects/globalstrat+/
 ├── backend/
 │   ├── globalstrat/settings.py      # Django settings
 │   ├── gunicorn.conf.py             # Gunicorn config (port 8002, 3 workers)
@@ -243,7 +246,7 @@ rm -rf /var/www/globalstrat/build && mv /var/www/globalstrat-backup-XXXXXXXX-XXX
 Use git to revert code, then restart:
 
 ```bash
-cd ~/projects/globalstrat/backend
+cd ~/projects/globalstrat+/backend
 git checkout <previous-commit>
 sudo systemctl restart globalstrat-backend
 ```
