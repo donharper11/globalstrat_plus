@@ -15,10 +15,10 @@ const fmt = (v) => {
 };
 
 const roundStatusLabel = (roundStatus, locked) => {
+  if (roundStatus === 'processed') return { text: 'RESULTS AVAILABLE', color: 'purple' };
   if (locked) return { text: 'LOCKED', color: 'green' };
   if (roundStatus === 'open') return { text: 'DRAFT OPEN', color: 'blue' };
   if (roundStatus === 'closed') return { text: 'ROUND CLOSED', color: 'orange' };
-  if (roundStatus === 'processed') return { text: 'RESULTS AVAILABLE', color: 'purple' };
   if (roundStatus === 'pending') return { text: 'NOT OPEN YET', color: 'default' };
   if (roundStatus === 'in_progress') return { text: 'DRAFT OPEN', color: 'blue' };
   return { text: 'ROUND STATUS UNKNOWN', color: 'default' };

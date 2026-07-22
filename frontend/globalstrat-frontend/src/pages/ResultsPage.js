@@ -36,9 +36,9 @@ const fitColor = (v) => {
 
 const ResultsPage = () => {
   const { t } = useTranslation();
-  const { gameId, teamId, game } = useGame();
+  const { gameId, teamId, currentRound, roundStatus } = useGame();
   const params = useParams();
-  const latestProcessed = Math.max((game?.current_round || 1) - 1, 0);
+  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
   const [selectedRound, setSelectedRound] = useState(
     params.roundNumber ? Number(params.roundNumber) : latestProcessed
   );

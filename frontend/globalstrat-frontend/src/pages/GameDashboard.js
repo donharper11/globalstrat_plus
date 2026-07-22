@@ -122,7 +122,7 @@ const SignalItem = ({ signal }) => {
 const GameDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { game, team, currentRound, budgets, gameId, teamId, loading } = useGame();
+  const { game, team, currentRound, roundStatus, budgets, gameId, teamId, loading } = useGame();
   const { user } = useAuth();
   const { locked } = useDecisions();
   const [summary, setSummary] = useState(null);
@@ -140,7 +140,7 @@ const GameDashboard = () => {
   const [showInvestorSummary, setShowInvestorSummary] = useState(false);
 
   const base = gameId && teamId ? `/games/${gameId}/teams/${teamId}` : '';
-  const latestProcessed = Math.max((currentRound || 1) - 1, 0);
+  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
   const [selectedRound, setSelectedRound] = useState(null);
 
   useEffect(() => {

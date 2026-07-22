@@ -16,9 +16,9 @@ const fmt = (v) => {
 };
 
 const roundStatusText = (roundStatus, locked) => {
+  if (roundStatus === 'processed') return 'RESULTS AVAILABLE';
   if (locked) return 'LOCKED';
   if (roundStatus === 'closed') return 'ROUND CLOSED';
-  if (roundStatus === 'processed') return 'RESULTS AVAILABLE';
   if (roundStatus === 'pending') return 'NOT OPEN YET';
   return 'DRAFT OPEN';
 };

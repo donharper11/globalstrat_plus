@@ -20,13 +20,14 @@ const pct = (v) => `${(Number(v || 0) * 100).toFixed(1)}%`;
 
 const CompetitiveIntelPage = () => {
   const { t } = useTranslation();
-  const { gameId, teamId, currentRound } = useGame();
+  const { gameId, teamId, currentRound, roundStatus } = useGame();
   const [selectedRound, setSelectedRound] = useState(null);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
 
   const roundOptions = [];
-  for (let i = (currentRound || 1); i >= 0; i--) {
+  for (let i = latestProcessed; i >= 0; i--) {
     roundOptions.push({ value: i, label: `${t('common.round')} ${i}` });
   }
 
@@ -45,9 +46,9 @@ const CompetitiveIntelPage = () => {
 
   useEffect(() => {
     if (currentRound != null && selectedRound == null) {
-      setSelectedRound(currentRound > 0 ? currentRound - 1 : 0);
+      setSelectedRound(latestProcessed);
     }
-  }, [currentRound, selectedRound]);
+  }, [currentRound, latestProcessed, selectedRound]);
 
   useEffect(() => {
     if (selectedRound != null) fetchData(selectedRound);
