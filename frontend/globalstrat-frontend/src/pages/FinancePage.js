@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Card, Typography, InputNumber, Row, Col, Tag, Statistic, Alert, Progress, Divider, Tabs } from 'antd';
+import { Card, Typography, InputNumber, Input, Row, Col, Tag, Statistic, Alert, Progress, Divider, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
@@ -19,6 +19,29 @@ const fmt = (v) => {
   if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
   if (Math.abs(n) >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
+};
+
+const MoneyTextInput = ({ value, disabled, formatter, parser, onCommit }) => {
+  const [draft, setDraft] = useState(null);
+  const displayValue = draft === null ? formatter(value) : draft;
+
+  const commit = () => {
+    if (draft === null) return;
+    onCommit(parser(draft));
+    setDraft(null);
+  };
+
+  return (
+    <Input
+      value={displayValue}
+      disabled={disabled}
+      inputMode="decimal"
+      onChange={e => setDraft(e.target.value)}
+      onBlur={commit}
+      onPressEnter={e => e.currentTarget.blur()}
+      style={{ width: '100%' }}
+    />
+  );
 };
 
 const ratioColor = (val, greenMax, yellowMax) => {
@@ -88,7 +111,8 @@ const FinancePage = () => {
     return Number.isFinite(numeric) && numeric >= 0 ? numeric : 0;
   };
 
-  const formatMoneyInput = (value) => {
+  const formatMoneyInput = (value, info) => {
+    if (info?.userTyping) return info.input;
     if (value === undefined || value === null || value === '') return '';
     const numeric = Number(value);
     return Number.isFinite(numeric) ? `$ ${numeric.toLocaleString('en-US')}` : value;
@@ -300,13 +324,12 @@ const FinancePage = () => {
           ].map(b => (
             <Col xs={12} md={6} key={b.key}>
               <Text style={{ display: 'block', marginBottom: 4 }}>{b.label}</Text>
-              <InputNumber
-                min={0} step={100000}
-                value={budgetAllocation[b.key]} disabled={locked}
+              <MoneyTextInput
+                value={budgetAllocation[b.key]}
+                disabled={locked}
                 formatter={formatMoneyInput}
                 parser={parseMoneyInput}
-                onChange={v => updateBudget(b.key, v)}
-                style={{ width: '100%' }}
+                onCommit={v => updateBudget(b.key, v)}
               />
             </Col>
           ))}
