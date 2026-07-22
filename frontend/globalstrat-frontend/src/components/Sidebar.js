@@ -270,7 +270,7 @@ const Sidebar = ({ collapsed, onNavigate }) => {
             key: 'instructor',
             icon: icon(faGamepad),
             label: t('nav.game_control'),
-            onClick: () => go(gameId ? `/games/${gameId}/instructor` : '/'),
+            onClick: () => go('/instructor'),
           },
         ],
       },

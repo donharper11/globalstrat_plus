@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, Layout, Drawer } from 'antd';
 import { AuthProvider } from './AuthContext';
 import { GameProvider } from './contexts/GameContext';
@@ -98,6 +98,9 @@ function App() {
                 </InstructorP>
               }
             />
+
+            {/* GSP-R1-03: /games/:gameId/instructor is not a student route; send it to the instructor portal (Game Control) instead of the student shell/recovery. */}
+            <Route path="/games/:gameId/instructor" element={<Navigate to="/instructor" replace />} />
 
             {/* Student game-playing layout */}
             <Route
