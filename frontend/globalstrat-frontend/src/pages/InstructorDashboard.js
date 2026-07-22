@@ -176,6 +176,7 @@ const InstructorDashboard = () => {
         getTeamBriefings(gameId).catch(() => ({ data: {} })),
       ]);
       setDashboard(resDash.data);
+      setGameStatus(resDash.data?.status || 'setup');
       setQueries(resQ.data?.queries || []);
       setEventTemplates(resEvt.data?.event_templates || []);
       setMarketOptions(resEvt.data?.markets || []);
@@ -284,6 +285,19 @@ const InstructorDashboard = () => {
   const teams = dashboard?.teams || [];
   const rs = dashboard?.round_status || {};
   const events = dashboard?.events_this_round || [];
+  const displayGameStatus = gameStatus || dashboard?.status || 'setup';
+  const roundState = rs.round_state || 'unknown';
+  const roundStateMeta = {
+    open: { text: 'Open for student decisions', color: 'blue' },
+    closed: { text: 'Closed; awaiting processing', color: 'orange' },
+    processed: { text: 'Processed; results available', color: 'purple' },
+    pending: { text: 'Not open yet', color: 'default' },
+  }[roundState] || { text: roundState.replace(/_/g, ' '), color: 'default' };
+  const totalDecisionRounds = roundSchedule?.total_rounds || '—';
+  const latestProcessedRound = Math.max((dashboard?.current_round || 1) - 1, 0);
+  const gameStatusColor = displayGameStatus === 'active' ? '#52c41a'
+    : displayGameStatus === 'paused' ? '#faad14'
+      : displayGameStatus === 'archived' ? '#8c8c8c' : '#1890ff';
 
   const handleAdvance = async () => {
     setActionLoading(true);
@@ -393,8 +407,9 @@ const InstructorDashboard = () => {
       {/* Status summary */}
       <Row gutter={[16, 16]}>
         <Col xs={12} md={6}><Card><Statistic title={t('instructor.game')} value={createGameName || dashboard?.game_name || t('instructor.game')} suffix={gameId ? `#${gameId}` : undefined} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title="Decision round" value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${roundSchedule?.total_rounds || '—'}`} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title="Lifecycle status" value={gameStatus || dashboard?.status || 'setup'} valueStyle={{ color: gameStatus === 'active' ? '#52c41a' : gameStatus === 'paused' ? '#faad14' : gameStatus === 'archived' ? '#8c8c8c' : '#1890ff' }} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title="Decision round" value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${totalDecisionRounds}`} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title="Round status" value={roundStateMeta.text} valueStyle={{ color: roundStateMeta.color === 'blue' ? '#1677ff' : roundStateMeta.color === 'orange' ? '#fa8c16' : roundStateMeta.color === 'purple' ? '#722ed1' : undefined, fontSize: 20 }} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title="Game status" value={displayGameStatus} valueStyle={{ color: gameStatusColor }} /></Card></Col>
         <Col xs={12} md={6}><Card><Statistic title={t('instructor.teams')} value={createdGameTeams.length || rs.total_teams || 0} suffix={hasGame ? `(${rs.teams_locked || 0} ${t('instructor.locked')})` : undefined} /></Card></Col>
       </Row>
 
@@ -402,7 +417,7 @@ const InstructorDashboard = () => {
         showIcon
         type="info"
         message={`Monitoring ${createGameName || dashboard?.game_name || t('instructor.game')}${gameId ? ` (#${gameId})` : ''}`}
-        description={`Decision round ${dashboard?.current_round ?? 0} of ${roundSchedule?.total_rounds || 'unknown'} is currently ${gameStatus || dashboard?.status || 'setup'}. Latest processed results round: ${Math.max((dashboard?.current_round || 1) - 1, 0)}.`}
+        description={`Decision round ${dashboard?.current_round ?? 0} of ${totalDecisionRounds} is ${roundStateMeta.text.toLowerCase()}. Game status: ${displayGameStatus}. Latest processed results round: ${latestProcessedRound}.`}
         style={{ marginTop: 16 }}
       />
 
@@ -410,7 +425,7 @@ const InstructorDashboard = () => {
       <Card title={t('instructor.game_lifecycle')} style={{ marginTop: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
           <Space wrap>
-            {gameStatus === 'setup' && (
+            {displayGameStatus === 'setup' && (
               <Popconfirm title={t('instructor.activate_confirm')} onConfirm={async () => {
                 try {
                   const res = await activateGame(gameId);
@@ -423,7 +438,7 @@ const InstructorDashboard = () => {
                 <Button type="primary">{t('instructor.activate_game')}</Button>
               </Popconfirm>
             )}
-            {gameStatus === 'active' && (
+            {displayGameStatus === 'active' && (
               <>
                 <Button type="primary" onClick={() => setAdvanceModalOpen(true)}>{t('instructor.advance_round')}</Button>
                 <Button onClick={() => setExtendModalOpen(true)}>{t('instructor.extend_deadline')}</Button>
@@ -438,7 +453,7 @@ const InstructorDashboard = () => {
                 </Popconfirm>
               </>
             )}
-            {gameStatus === 'paused' && (
+            {displayGameStatus === 'paused' && (
               <>
                 <Popconfirm title={t('instructor.resume_confirm')} onConfirm={async () => {
                   try {
@@ -452,7 +467,7 @@ const InstructorDashboard = () => {
                 <Button onClick={() => setExtendModalOpen(true)}>{t('instructor.extend_deadline')}</Button>
               </>
             )}
-            {(gameStatus === 'active' || gameStatus === 'paused') && (
+            {(displayGameStatus === 'active' || displayGameStatus === 'paused') && (
               <Popconfirm title={t('instructor.reset_confirm')} okText={t('instructor.reset')} okType="danger" onConfirm={async () => {
                 try {
                   const res = await resetGame(gameId);
@@ -465,7 +480,7 @@ const InstructorDashboard = () => {
                 <Button danger>{t('instructor.reset_to_setup')}</Button>
               </Popconfirm>
             )}
-            {gameStatus !== 'archived' && (
+            {displayGameStatus !== 'archived' && (
               <Popconfirm title={t('instructor.archive_confirm')} okText={t('instructor.archive')} onConfirm={async () => {
                 try {
                   await archiveGame(gameId);
@@ -1527,19 +1542,19 @@ const InstructorDashboard = () => {
           {/* ── Game Status Banner (always visible at top when game exists) ── */}
           {gameId && (
             <Card size="small" style={{ marginBottom: 16, borderLeft: `4px solid ${
-              gameStatus === 'active' ? '#52c41a' : gameStatus === 'paused' ? '#faad14' : '#1890ff'
+              displayGameStatus === 'active' ? '#52c41a' : displayGameStatus === 'paused' ? '#faad14' : '#1890ff'
             }` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <Text strong style={{ fontSize: 15 }}>{createGameName || 'Game'}</Text>
-                  <Tag color={gameStatus === 'active' ? 'green' : gameStatus === 'paused' ? 'orange' : gameStatus === 'archived' ? 'default' : 'blue'}
-                    style={{ marginLeft: 8 }}>{gameStatus}</Tag>
+                  <Tag color={displayGameStatus === 'active' ? 'green' : displayGameStatus === 'paused' ? 'orange' : displayGameStatus === 'archived' ? 'default' : 'blue'}
+                    style={{ marginLeft: 8 }}>{displayGameStatus}</Tag>
                   <Text type="secondary" style={{ marginLeft: 8 }}>
                     {createdGameTeams.length} teams &middot; {roster.filter(r => r.team_id && createdGameTeams.some(t => t.team_id === r.team_id)).length}/{roster.length} students assigned
                   </Text>
                 </div>
                 <Space>
-                  {gameStatus === 'setup' && (
+                  {displayGameStatus === 'setup' && (
                     <Popconfirm
                       title={t('instructor.activate_game_question')}
                       description={t('instructor.activate_game_desc')}
@@ -1561,7 +1576,7 @@ const InstructorDashboard = () => {
                       </Button>
                     </Popconfirm>
                   )}
-                  {gameStatus === 'active' && (
+                  {displayGameStatus === 'active' && (
                     <Button onClick={async () => {
                       try {
                         const res = await pauseGame(gameId);
@@ -1570,7 +1585,7 @@ const InstructorDashboard = () => {
                       } catch (err) { message.error(err.response?.data?.error || 'Failed to pause'); }
                     }}>{t('instructor.pause_game')}</Button>
                   )}
-                  {gameStatus === 'paused' && (
+                  {displayGameStatus === 'paused' && (
                     <Button type="primary" onClick={async () => {
                       try {
                         const res = await resumeGame(gameId);
@@ -1579,7 +1594,7 @@ const InstructorDashboard = () => {
                       } catch (err) { message.error(err.response?.data?.error || 'Failed to resume'); }
                     }}>{t('instructor.resume_game')}</Button>
                   )}
-                  {(gameStatus === 'active' || gameStatus === 'paused') && (
+                  {(displayGameStatus === 'active' || displayGameStatus === 'paused') && (
                     <Popconfirm
                       title={t('instructor.reset_game_question')}
                       description={t('instructor.reset_game_desc')}
@@ -1823,8 +1838,8 @@ const InstructorDashboard = () => {
               description={
                 <span>
                   {createdGameTeams.length} teams &middot; Status: <Tag color={
-                    gameStatus === 'active' ? 'green' : gameStatus === 'paused' ? 'orange' : gameStatus === 'archived' ? 'default' : 'blue'
-                  }>{gameStatus}</Tag>
+                    displayGameStatus === 'active' ? 'green' : displayGameStatus === 'paused' ? 'orange' : displayGameStatus === 'archived' ? 'default' : 'blue'
+                  }>{displayGameStatus}</Tag>
                 </span>
               }
             />

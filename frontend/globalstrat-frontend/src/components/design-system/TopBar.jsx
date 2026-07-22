@@ -15,6 +15,14 @@ const fmt = (v) => {
   return `$${n.toFixed(0)}`;
 };
 
+const roundStatusText = (roundStatus, locked) => {
+  if (locked) return 'LOCKED';
+  if (roundStatus === 'closed') return 'ROUND CLOSED';
+  if (roundStatus === 'processed') return 'RESULTS AVAILABLE';
+  if (roundStatus === 'pending') return 'NOT OPEN YET';
+  return 'DRAFT OPEN';
+};
+
 const GlobeLogo = () => (
   <svg className="ds-topbar-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -36,7 +44,7 @@ function DSTopBar({ onToggle, isMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { currentRound, budgets, team } = useGame();
+  const { currentRound, totalRounds, roundStatus, budgets, team } = useGame();
   const { locked } = useDecisions();
 
   const rawName = user?.display_name || user?.username || '';
@@ -75,9 +83,9 @@ function DSTopBar({ onToggle, isMobile }) {
 
           <div className="ds-topbar-divider" />
           <span className="ds-topbar-round">
-            R{currentRound || '—'} of 8
+            R{currentRound || '—'} of {totalRounds || '—'}
             <span className={`ds-topbar-status ${locked ? 'locked' : 'draft'}`}>
-              {locked ? t('common.locked') : t('common.in_progress')}
+              {roundStatusText(roundStatus, locked)}
             </span>
           </span>
 
