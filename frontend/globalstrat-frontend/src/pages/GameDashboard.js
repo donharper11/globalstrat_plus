@@ -221,7 +221,7 @@ const GameDashboard = () => {
     { key: 'rd', label: t('dashboard.step_rd'), path: `${base}/decisions/rd` },
     { key: 'products', label: t('dashboard.step_products'), path: `${base}/decisions/products` },
     { key: 'marketing', label: t('dashboard.step_marketing'), path: `${base}/decisions/marketing` },
-    { key: 'strategy', label: t('dashboard.step_strategy'), path: `${base}/decisions/strategy` },
+    { key: 'strategy', label: t('dashboard.step_strategy'), path: `${base}/decisions/corporate-strategy` },
     { key: 'finance', label: t('dashboard.step_finance'), path: `${base}/decisions/finance`, altKey: 'budget' },
     { key: 'summary', label: t('dashboard.step_review'), path: `${base}/decisions/summary` },
   ];

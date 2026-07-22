@@ -206,10 +206,11 @@ class DecisionSubmissionView(APIView):
             team_id=team_id, round=rnd,
         ).first()
         if not submission:
-            return Response(
-                {'detail': 'No submission exists for this team/round.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            # GSP-R1-01: the normal no-draft state is not an error. Return a
+            # typed empty 200 so it does not read as a browser-visible failure
+            # during play. Frontend (DecisionContext) already treats an empty
+            # body as a fresh draft.
+            return Response({}, status=status.HTTP_200_OK)
         serializer = DecisionSubmissionSerializer(submission)
         return Response(serializer.data)
 
