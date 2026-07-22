@@ -1,4 +1,4 @@
-# GSP-R1-01 — Student Routing & Deep-Link Recovery
+# GSP-R1-01 - Student Routing & Deep-Link Recovery
 
 **Status:** Ready for builder dispatch.
 **Scope owner:** Student routing, dashboard shortcuts, and no-draft browser noise.
