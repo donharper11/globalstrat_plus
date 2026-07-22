@@ -146,11 +146,10 @@ export default function StudentAccountsPanel({ gameId }) {
           <>
             <Space size="large" wrap style={{ marginBottom: 12 }}>
               <Text strong style={{ fontSize: 20 }}>
-                {sessions.active_count} online
+                {sessions.active_count} active session{sessions.active_count === 1 ? '' : 's'}
               </Text>
               <Text type="secondary">
-                Counted as online if active in the last {sessions.idle_timeout_minutes} minutes.
-                Auto-refreshes every 30s.
+                A session is counted when it has activity in the last {sessions.idle_timeout_minutes} minutes. This is not a unique-person count. Auto-refreshes every 30s.
               </Text>
             </Space>
             <Table

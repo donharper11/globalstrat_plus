@@ -13,6 +13,40 @@ const { Text, Title } = Typography;
 
 const scoreColor = (s) => (s == null ? 'default' : s >= 60 ? 'green' : s >= 30 ? 'gold' : 'red');
 const money = (n) => (n == null ? '—' : `$${Math.round(Number(n)).toLocaleString()}`);
+const RISK_COMPONENTS = [
+  'semiconductor', 'power_management', 'display', 'battery', 'final_assembly',
+  'pcb', 'enclosure', 'camera_module', 'memory', 'processor', 'chips',
+];
+
+const formatRiskFlag = (flag) => {
+  const raw = String(flag || '');
+  if (raw.includes(',')) return raw.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+  let remaining = raw.toLowerCase().replace(/[\s_-]+/g, '');
+  const parts = [];
+  while (remaining.length) {
+    let match = null;
+    for (const component of RISK_COMPONENTS) {
+      const compact = component.replace(/_/g, '');
+      if (remaining.startsWith(compact)) {
+        match = component;
+        break;
+      }
+    }
+    if (!match) break;
+    parts.push(match.replace(/_/g, ' '));
+    remaining = remaining.slice(match.replace(/_/g, '').length);
+  }
+  if (parts.length) return parts.join(', ');
+  return raw.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+};
+
+const normalizePanel = (panel) => ({
+  ...panel,
+  teams: (panel?.teams || []).map(team => ({
+    ...team,
+    single_source_flags: (team.single_source_flags || []).map(formatRiskFlag),
+  })),
+});
 
 const WEIGHT_LABELS = {
   multi_sourcing: 'Multi-sourcing',
@@ -49,7 +83,7 @@ const InstructorSCPanel = ({ gameId }) => {
         getInstructorSCEventCatalog(gameId),
         getResilienceWeightOverrides(gameId).catch(() => ({ data: [] })),
       ]);
-      setPanel(p.data);
+      setPanel(normalizePanel(p.data));
       setCatalog(c.data.events || []);
       setOverrides(o.data || []);
     } catch (e) {
@@ -109,7 +143,7 @@ const InstructorSCPanel = ({ gameId }) => {
       render: (v) => v ? <Tag>{v.replace(/_/g, ' ')}</Tag> : <Text type="secondary">—</Text> },
     { title: 'Single-source risk', dataIndex: 'single_source_flags', key: 'ssf',
       render: (flags) => (flags && flags.length
-        ? flags.map((f) => <Tag color="red" key={f}>{f}</Tag>)
+        ? <Text type="danger">{flags.map(formatRiskFlag).join(', ')}</Text>
         : <Tag color="green">none</Tag>) },
     { title: 'Buffer (days)', dataIndex: 'buffer_days_avg', key: 'buf',
       render: (v) => v == null ? <Text type="secondary">—</Text> : v },
@@ -230,9 +264,9 @@ const InstructorSCPanel = ({ gameId }) => {
 
       <Card size="small" title={<Space><Title level={5} style={{ margin: 0 }}>Per-team supply-chain audit</Title>
         {panel?.round_number != null && <Tag>round {panel.round_number}</Tag>}</Space>}>
-        {panel?.teams?.length
+        {panel?.teams?.filter(t => t?.team_id || t?.team_name).length
           ? <Table rowKey="team_id" size="small" loading={loading} scroll={{ x: 900 }}
-              dataSource={panel.teams} columns={columns} pagination={false}
+              dataSource={panel.teams.filter(t => t?.team_id || t?.team_name)} columns={columns} pagination={false}
               expandable={{ expandedRowRender: expanded }} />
           : <Empty description="No teams / no SC data yet." />}
       </Card>
