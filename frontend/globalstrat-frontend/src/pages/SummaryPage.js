@@ -55,13 +55,29 @@ const SummaryPage = () => {
     { key: 'rd', label: t('summary_page.rd_investment'), path: `${base}/decisions/rd` },
     { key: 'products', label: t('summary_page.product_portfolio'), path: `${base}/decisions/products` },
     { key: 'marketing', label: t('summary_page.marketing_mix'), path: `${base}/decisions/marketing` },
-    { key: 'strategy', label: t('summary_page.strategy_mix'), path: `${base}/decisions/strategy` },
+    { key: 'strategy', label: t('summary_page.strategy_mix'), path: `${base}/decisions/corporate-strategy` },
     { key: 'financing', label: t('summary_page.financing'), path: `${base}/decisions/finance` },
     { key: 'sourcing', label: 'Sourcing', path: `${base}/decisions/sourcing` },
     { key: 'logistics', label: 'Logistics', path: `${base}/decisions/logistics` },
     { key: 'trade_finance', label: 'Trade Finance', path: `${base}/decisions/trade-finance` },
     { key: 'inventory', label: 'Inventory', path: `${base}/decisions/inventory` },
   ];
+
+  const statusLabel = (status) => {
+    if (status === 'configured') return 'Complete';
+    if (status === 'partial') return 'Needs review';
+    if (status === 'error') return 'Blocked';
+    return 'Not started';
+  };
+
+  const guidanceFor = (item, cat) => {
+    const messages = [...(cat.errors || []), ...(cat.warnings || [])];
+    if (messages.length > 0) return messages;
+    if (cat.status === 'configured') return ['This requirement has draft work saved.'];
+    if (item.key === 'rd') return ['Open R&D Investment and either upgrade an existing feature or create an affordable platform.'];
+    if (item.key === 'budget') return ['Open Finance and allocate R&D, Marketing, and Strategy budgets.'];
+    return [`Open ${item.label} to complete this requirement.`];
+  };
 
   const handleLock = async () => {
     setLockLoading(true);
@@ -117,7 +133,7 @@ const SummaryPage = () => {
                     cat.status === 'partial' ? 'orange' :
                     cat.status === 'error' ? 'red' : 'default'
                   }>
-                    {cat.status || 'empty'}
+                    {statusLabel(cat.status)}
                   </Tag>
                 ]}
               >
@@ -129,17 +145,25 @@ const SummaryPage = () => {
                     </Button>
                   }
                   description={
-                    <Space direction="vertical" size={0}>
-                      {(cat.warnings || []).map((w, i) => (
-                        <Text key={i} type="warning" style={{ fontSize: 12 }}>{w}</Text>
-                      ))}
-                      {(cat.errors || []).map((e, i) => (
-                        <Text key={i} type="danger" style={{ fontSize: 12 }}>{e}</Text>
+                    <Space direction="vertical" size={2}>
+                      {guidanceFor(item, cat).map((msg, i) => (
+                        <Text
+                          key={i}
+                          type={cat.status === 'error' ? 'danger' : cat.status === 'configured' ? 'secondary' : 'warning'}
+                          style={{ fontSize: 12 }}
+                        >
+                          {msg}
+                        </Text>
                       ))}
                       {cat.configured_count != null && (
                         <Text type="secondary" style={{ fontSize: 12 }}>
                           {cat.configured_count} / {cat.total_required} {t("summary_page.configured")}
                         </Text>
+                      )}
+                      {cat.status !== 'configured' && (
+                        <Button size="small" onClick={() => navigate(item.path)}>
+                          Fix in {item.label}
+                        </Button>
                       )}
                     </Space>
                   }
@@ -184,6 +208,16 @@ const SummaryPage = () => {
       )}
 
       {/* Lock button */}
+      {!locked && !canLock && (
+        <Alert
+          type="info"
+          showIcon
+          message="Finish the blocked items above before locking this round."
+          description="Use each Fix button to jump to the page where that decision is completed."
+          style={{ marginBottom: 12 }}
+        />
+      )}
+
       {!locked && (
         <Button
           type="primary"
