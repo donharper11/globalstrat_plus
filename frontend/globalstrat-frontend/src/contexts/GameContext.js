@@ -33,20 +33,20 @@ export const GameProvider = ({ children }) => {
     try {
       const res = await getRounds(gameId);
       const rounds = res.data?.results || res.data || [];
-      // Find the current active round — prefer 'open' first, then lowest pending/in_progress
+      // Prefer the round where students should currently act or review.
       const sorted = [...rounds].sort((a, b) => a.round_number - b.round_number);
       const playableRounds = sorted.filter(r => Number(r.round_number) > 0);
       setTotalRounds(playableRounds.length || null);
       const open = sorted.find(r => r.status === 'open');
-      const active = open || sorted.find(r => ['pending', 'in_progress'].includes(r.status));
-      const processed = rounds.filter(r => r.status === 'processed');
+      const closed = sorted.find(r => r.status === 'closed');
+      const processed = sorted.filter(r => r.status === 'processed' && Number(r.round_number) > 0);
+      const lastProcessed = processed.length > 0
+        ? processed.sort((a, b) => b.round_number - a.round_number)[0]
+        : null;
+      const active = open || closed || lastProcessed || sorted.find(r => ['pending', 'in_progress'].includes(r.status));
       if (active) {
         setCurrentRound(active.round_number);
         setRoundStatus(active.status);
-      } else if (processed.length > 0) {
-        const last = processed.sort((a, b) => b.round_number - a.round_number)[0];
-        setCurrentRound(last.round_number);
-        setRoundStatus('processed');
       } else if (rounds.length > 0) {
         setCurrentRound(rounds[0].round_number || 1);
         setRoundStatus(rounds[0].status || 'pending');

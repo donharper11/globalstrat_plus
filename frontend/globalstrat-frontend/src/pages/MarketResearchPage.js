@@ -1029,8 +1029,8 @@ const StakeholdersTab = ({ gameId, teamId, round }) => {
 
 const MarketResearchPage = () => {
   const { t } = useTranslation();
-  const { gameId, teamId, currentRound } = useGame();
-  const latestProcessed = Math.max((currentRound || 1) - 1, 0);
+  const { gameId, teamId, currentRound, roundStatus } = useGame();
+  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
   const [viewRound, setViewRound] = useState(null);
 
   useEffect(() => {

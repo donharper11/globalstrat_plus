@@ -24,8 +24,8 @@ const COLORS = ['#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1', '#13c2c2'
 
 const LeaderboardPage = () => {
   const { t } = useTranslation();
-  const { gameId, teamId, game } = useGame();
-  const latestProcessed = Math.max((game?.current_round || 1) - 1, 0);
+  const { gameId, teamId, currentRound, roundStatus } = useGame();
+  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
   const [selectedRound, setSelectedRound] = useState(latestProcessed);
   const [leaderboard, setLeaderboard] = useState(null);
   const [history, setHistory] = useState(null);

@@ -293,8 +293,10 @@ const InstructorDashboard = () => {
     processed: { text: 'Processed; results available', color: 'purple' },
     pending: { text: 'Not open yet', color: 'default' },
   }[roundState] || { text: roundState.replace(/_/g, ' '), color: 'default' };
-  const totalDecisionRounds = roundSchedule?.total_rounds || '—';
-  const latestProcessedRound = Math.max((dashboard?.current_round || 1) - 1, 0);
+  const totalDecisionRounds = roundSchedule?.total_rounds || dashboard?.total_rounds || '—';
+  const latestProcessedRound = roundState === 'processed'
+    ? dashboard?.current_round || 0
+    : Math.max((dashboard?.current_round || 1) - 1, 0);
   const gameStatusColor = displayGameStatus === 'active' ? '#52c41a'
     : displayGameStatus === 'paused' ? '#faad14'
       : displayGameStatus === 'archived' ? '#8c8c8c' : '#1890ff';
