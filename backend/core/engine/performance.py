@@ -21,6 +21,8 @@ PI_WEIGHTS = {
     'resilience': D('0.15'),
 }
 
+COMMERCIAL_INACTIVITY_COMPOSITE_CAP = D('0.25')
+
 
 def _clamp01(value):
     return max(D('0'), min(D('1'), D(str(value))))
@@ -153,6 +155,40 @@ def _execution_resilience_component(context, team, max_revenue, active_market_id
     return _clamp01(capacity_score - incident_penalty - cost_penalty)
 
 
+def _is_voluntarily_commercially_inactive(context, team, current_round):
+    """Return True when a team made no current-round commercial commitment.
+
+    Zero revenue alone is not enough: a pre-revenue launch, compliance freeze,
+    or disruption can prevent sales despite real commercial decisions. The cap
+    applies only when revenue, production, promotion, distribution, and sales
+    staffing are all zero (or no marketing decision exists at all).
+    """
+    revenue = D(str(_team_financials(context, team).get('total_revenue', 0) or 0))
+    if revenue > 0:
+        return False
+
+    submission = (
+        DecisionSubmission.objects
+        .filter(team=team, round__round_number=current_round,
+                round__game=context.game)
+        .first()
+    )
+    if submission is None:
+        return True
+
+    marketing = list(submission.marketing_decisions.all())
+    if not marketing:
+        return True
+
+    return all(
+        D(str(row.production_volume or 0)) <= 0
+        and D(str(row.promotion_budget or 0)) <= 0
+        and D(str(row.distribution_investment or 0)) <= 0
+        and D(str(row.sales_team_count or 0)) <= 0
+        for row in marketing
+    )
+
+
 def _enforce_zero_revenue_invariant(candidates):
     """Keep a zero-revenue firm from outranking a firm that generated revenue.
 
@@ -220,6 +256,14 @@ def calculate_performance_index(context):
             + resilience_score * PI_WEIGHTS['resilience']
         ).quantize(D('0.0001'), rounding=ROUND_HALF_UP)
 
+        commercially_inactive = _is_voluntarily_commercially_inactive(
+            context, team, current_round,
+        )
+        if commercially_inactive:
+            composite_score = min(
+                composite_score, COMMERCIAL_INACTIVITY_COMPOSITE_CAP,
+            )
+
         index_change = ((composite_score - D('0.5')) * sensitivity).quantize(
             D('0.01'), rounding=ROUND_HALF_UP,
         )
@@ -239,6 +283,7 @@ def calculate_performance_index(context):
             'stakeholder_score': stakeholder_score,
             'resilience_score': resilience_score,
             'guard_applied': False,
+            'commercially_inactive': commercially_inactive,
         })
 
     _enforce_zero_revenue_invariant(candidates)
@@ -275,5 +320,7 @@ def calculate_performance_index(context):
             f'financial={item["financial_score"]:.3f}, '
             f'stakeholder={item["stakeholder_score"]:.3f}, '
             f'resilience={item["resilience_score"]:.3f}'
+            + ('; commercial-inactivity cap applied'
+               if item['commercially_inactive'] else '')
             + ('; zero-revenue ranking guard applied' if item['guard_applied'] else '')
         )
