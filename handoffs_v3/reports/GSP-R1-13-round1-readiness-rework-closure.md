@@ -10,11 +10,11 @@ RW-1 and RW-2 are resolved. Game #20 used four materially divergent, predeclared
 
 ## RW-2 — Direct invariant and mutation proof
 
-`core.engine.performance.calculate_performance_index` now calculates all team candidates before persistence and enforces this round-level invariant:
+`core.engine.performance.calculate_performance_index` now calculates all team candidates before persistence and enforces this round-level rule, supplemented by the GSP-R1-14 zero-floor tie-break:
 
-> When at least one team has positive revenue, a team with zero or negative revenue cannot have a persisted PI at or above the lowest positive-revenue team's PI.
+> When at least one team has positive revenue, a team with zero or negative revenue cannot outrank the lowest positive-revenue team.
 
-If the raw composite would violate the invariant, the zero-revenue PI is capped at 0.01 below the lowest positive-revenue PI. The raw composite remains in `satisfaction_score`; `index_change` and `index_value` record the guarded result, and the engine log explicitly records `zero-revenue ranking guard applied`.
+If the raw composite would violate the rule, the zero-revenue PI is capped at 0.01 below the lowest positive-revenue PI. At the nonnegative `0.00` PI floor, strict numeric separation is impossible; GSP-R1-14 permits equal persisted PI values and uses an explicit revenue-aware leaderboard tie-break so the selling team ranks first. The raw composite remains in `satisfaction_score`; `index_change` and `index_value` record the guarded result, and the engine log explicitly records `zero-revenue ranking guard applied`.
 
 New regression:
 

@@ -323,3 +323,75 @@ class CC18ComplianceTest(TestCase):
             game=self.game, round_number=4, team=selling_team,
         )
         self.assertLess(zero_result.index_value, selling_result.index_value)
+
+    def test_zero_floor_uses_revenue_aware_leaderboard_tie_break(self):
+        """GSP-R1-14: preserve the invariant at the nonnegative PI floor."""
+        from core.engine.leaderboard import update_leaderboard
+        from core.models.results_financials import (
+            LeaderboardEntry, RoundResultPerformanceIndex,
+        )
+
+        self._round(5)
+        self.team.performance_index = D('0')
+        self.team.save(update_fields=['performance_index'])
+        selling_team = Team.objects.create(
+            game=self.game, name='Zero PI Seller',
+            firm_starter_profile=self.team.firm_starter_profile,
+            performance_index=D('0'), cash_on_hand=D('50000000'),
+            total_equity=D('50000000'),
+        )
+        entry_mode = EntryModeDefinition.objects.filter(scenario=self.scenario).first()
+        for team in (self.team, selling_team):
+            TeamMarketPresence.objects.create(
+                team=team, market=self.na, entry_mode=entry_mode,
+                established_round=1, initial_investment=D('0'), status='active',
+            )
+
+        # Put the zero-revenue team first in context order so the old stable
+        # PI-only sort demonstrably ranks it first when both persisted PIs tie.
+        ctx = _Ctx(self.game, 5, [self.team, selling_team], self.scenario)
+        ctx.fit_scores = {}
+        ctx.adjusted_fit_scores = {}
+        ctx.financials = {
+            self.team.id: {
+                'total_revenue': D('0'), 'net_income': D('-1000000'),
+                'debt_to_equity': D('0.10'), 'shareholder_return': D('0'),
+            },
+            selling_team.id: {
+                'total_revenue': D('1'), 'net_income': D('-1000000'),
+                'debt_to_equity': D('2.00'), 'shareholder_return': D('0'),
+            },
+        }
+        ctx.compliance_freezes = set()
+        ctx.sc_capacity_factor = {}
+        ctx.sc_disruption_costs = {}
+
+        for segment in SegmentDefinition.objects.filter(scenario=self.scenario):
+            if (segment.market_id and segment.market_id != self.na.id
+                    and segment.segment_type == 'customer'):
+                continue
+            market_id = segment.market_id if segment.market_id == self.na.id else None
+            zero_key = (self.team.id, segment.id, market_id)
+            seller_key = (selling_team.id, segment.id, market_id)
+            ctx.fit_scores[zero_key] = 1.0
+            ctx.adjusted_fit_scores[zero_key] = 1.0
+            ctx.fit_scores[seller_key] = 0.0
+            ctx.adjusted_fit_scores[seller_key] = 0.0
+
+        calculate_performance_index(ctx)
+        update_leaderboard(ctx)
+
+        zero_result = RoundResultPerformanceIndex.objects.get(
+            game=self.game, round_number=5, team=self.team,
+        )
+        selling_result = RoundResultPerformanceIndex.objects.get(
+            game=self.game, round_number=5, team=selling_team,
+        )
+        self.assertEqual(zero_result.index_value, D('0.00'))
+        self.assertEqual(selling_result.index_value, D('0.00'))
+        self.assertEqual(LeaderboardEntry.objects.get(
+            game=self.game, round_number=5, team=selling_team,
+        ).rank, 1)
+        self.assertEqual(LeaderboardEntry.objects.get(
+            game=self.game, round_number=5, team=self.team,
+        ).rank, 2)
