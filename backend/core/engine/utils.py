@@ -1,10 +1,13 @@
 """
 Shared utilities for the engine pipeline.
 """
+import logging
 import math
 from decimal import Decimal
 
 from core.models.scenario import ScenarioConfig
+
+_logger = logging.getLogger(__name__)
 
 
 _config_cache = {}  # scenario_id -> {key: value}
@@ -131,3 +134,49 @@ class RoundContext:
         self.production_remaining = {}  # (team_id, product_id, market_id) → units remaining
         self.org_modifiers = {}    # team_id → dict of org structure modifiers
         self.log = []              # human-readable log entries
+
+
+# ── Team notifications ────────────────────────────────────────────────────
+# SimulationInstance is an unmanaged model, so its table exists only in
+# databases provisioned outside Django (production does; a test database
+# Django created does not). Probe once per process instead of raising -- and
+# logging a traceback -- on every notification.
+_SIMULATION_INSTANCE_AVAILABLE = None
+
+
+def resolve_instance_id(game_id):
+    """Return the SimulationInstance id for a game, or None if unavailable."""
+    global _SIMULATION_INSTANCE_AVAILABLE
+    if _SIMULATION_INSTANCE_AVAILABLE is False:
+        return None
+    try:
+        from core.models.course import SimulationInstance
+        instance = SimulationInstance.objects.filter(game_id=game_id).first()
+        _SIMULATION_INSTANCE_AVAILABLE = True
+        return instance.instance_id if instance else None
+    except Exception:
+        if _SIMULATION_INSTANCE_AVAILABLE is None:
+            _logger.info(
+                'simulation_instance table unavailable; team notifications will '
+                'be recorded without an instance id'
+            )
+        _SIMULATION_INSTANCE_AVAILABLE = False
+        return None
+
+
+def notify_team(game_id, team, round_number, message):
+    """Best-effort team notification. Never let this abort round processing."""
+    try:
+        from core.models.messaging import TeamNotification
+        TeamNotification.objects.create(
+            team_id=team.id,
+            round_id=round_number,
+            instance_id=resolve_instance_id(game_id),
+            notification_text=message,
+            is_read=False,
+        )
+    except Exception:
+        _logger.warning(
+            'Could not create TeamNotification for %s', getattr(team, 'name', team),
+            exc_info=True,
+        )

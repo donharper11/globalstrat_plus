@@ -382,6 +382,7 @@ def calculate_operating_expenses(context):
     amortization_rounds = int(get_config(
         scenario, 'platform_amortization_rounds', default=5,
     ) or 5)
+    total_rounds = getattr(scenario, 'num_rounds', 0) or 0
 
     context.opex = {}  # team_id → dict
 
@@ -562,7 +563,15 @@ def calculate_operating_expenses(context):
                 remaining = cost - charged
                 if remaining <= 0:
                     continue
-                charge = min(cost / D(str(amortization_rounds)), remaining)
+                # Write the balance off entirely in the final round. With a
+                # 5-round schedule in a 10-round game, a platform bought late
+                # would otherwise still be sitting on the balance sheet when
+                # the game is scored, handing late investment a residual
+                # asset the simulation never intended to reward.
+                if current_round >= total_rounds:
+                    charge = remaining
+                else:
+                    charge = min(cost / D(str(amortization_rounds)), remaining)
                 platform.accumulated_amortization = charged + charge
                 platform.save(update_fields=['accumulated_amortization'])
                 platform_amortization += charge
@@ -788,7 +797,7 @@ def calculate_retirement_costs(context):
     """
     from core.models.results_financials import RoundResultProductMarket
 
-    context.retirement_costs = {}     # team_id → net retirement expense (always positive)
+    context.retirement_costs = {}     # team_id → gross inventory write-off (always positive)
     context.retirement_revenue = {}   # team_id → fire-sale recovery
 
     current_round = context.round_number
@@ -832,10 +841,15 @@ def calculate_retirement_costs(context):
                     recovery_pct = endofround_recovery
 
                 recovery = (inventory_value * recovery_pct).quantize(D('0.01'), rounding=ROUND_HALF_UP)
-                net_expense = inventory_value - recovery
 
+                # Write the inventory off in full and book the fire-sale
+                # proceeds as revenue. Netting the recovery out of the expense
+                # *as well* as recording it as revenue counted it twice: the
+                # P&L moved by (2 x recovery - value) instead of
+                # (recovery - value), leaving equity overstated by exactly the
+                # recovery and the balance sheet out by the same amount.
                 team_liquidate_revenue += recovery
-                team_retire_expense += net_expense
+                team_retire_expense += inventory_value
 
         if team_retire_expense > 0 or team_liquidate_revenue > 0:
             context.retirement_costs[team.id] = team_retire_expense
