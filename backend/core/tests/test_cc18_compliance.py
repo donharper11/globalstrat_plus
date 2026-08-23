@@ -29,6 +29,10 @@ from core.engine.compliance_engine import enforce_compliance, _trigger_applies, 
 from core.engine.revenue import calculate_revenue
 from core.engine.bass_engine import run_bass_adoption
 from core.engine.performance import calculate_performance_index
+from core.engine.performance import (
+    COMMERCIAL_INACTIVITY_COMPOSITE_CAP,
+    _is_voluntarily_commercially_inactive,
+)
 
 
 class _Ctx:
@@ -395,3 +399,92 @@ class CC18ComplianceTest(TestCase):
         self.assertEqual(LeaderboardEntry.objects.get(
             game=self.game, round_number=5, team=self.team,
         ).rank, 2)
+
+    def test_voluntary_commercial_inactivity_caps_composite(self):
+        """GSP-R1-15: an Apex-shaped do-nothing round loses five PI points."""
+        from core.models.results_financials import RoundResultPerformanceIndex
+
+        rnd = self._round(6)
+        self.team.performance_index = D('100')
+        self.team.save(update_fields=['performance_index'])
+        entry_mode = EntryModeDefinition.objects.filter(scenario=self.scenario).first()
+        TeamMarketPresence.objects.create(
+            team=self.team, market=self.na, entry_mode=entry_mode,
+            established_round=1, initial_investment=D('0'), status='active',
+        )
+        sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
+        DecisionMarketing.objects.create(
+            submission=sub, team_product=self.product, market=self.na,
+            retail_price=D('500'), promotion_budget=D('0'),
+            campaign_focus_feature_ids=[], channel_digital_pct=D('1'),
+            channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+            distribution_strategy='hybrid', distribution_investment=D('0'),
+            sales_team_count=0, demand_estimate=0, production_volume=0,
+            production_source_market=self.na,
+        )
+        ctx = _Ctx(self.game, 6, [self.team], self.scenario)
+        ctx.fit_scores = {}
+        ctx.adjusted_fit_scores = {}
+        ctx.financials = {self.team.id: {
+            'total_revenue': D('0'), 'net_income': D('-1000000'),
+            'debt_to_equity': D('0.10'),
+        }}
+        ctx.compliance_freezes = set()
+        ctx.sc_capacity_factor = {}
+        ctx.sc_disruption_costs = {}
+        for segment in SegmentDefinition.objects.filter(scenario=self.scenario):
+            if (segment.market_id and segment.market_id != self.na.id
+                    and segment.segment_type == 'customer'):
+                continue
+            market_id = segment.market_id if segment.market_id == self.na.id else None
+            key = (self.team.id, segment.id, market_id)
+            ctx.fit_scores[key] = 1.0
+            ctx.adjusted_fit_scores[key] = 1.0
+
+        calculate_performance_index(ctx)
+
+        result = RoundResultPerformanceIndex.objects.get(
+            game=self.game, round_number=6, team=self.team,
+        )
+        self.assertEqual(result.satisfaction_score, COMMERCIAL_INACTIVITY_COMPOSITE_CAP)
+        self.assertEqual(result.index_change, D('-5.00'))
+        self.assertEqual(result.index_value, D('95.00'))
+
+    def test_pre_revenue_commercial_commitment_is_not_inactive(self):
+        """Production or go-to-market effort preserves pre-revenue strategy credit."""
+        rnd = self._round(7)
+        sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
+        DecisionMarketing.objects.create(
+            submission=sub, team_product=self.product, market=self.na,
+            retail_price=D('500'), promotion_budget=D('100000'),
+            campaign_focus_feature_ids=[], channel_digital_pct=D('1'),
+            channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+            distribution_strategy='hybrid', distribution_investment=D('50000'),
+            sales_team_count=2, demand_estimate=1000, production_volume=1000,
+            production_source_market=self.na,
+        )
+        ctx = _Ctx(self.game, 7, [self.team], self.scenario)
+        ctx.financials = {self.team.id: {'total_revenue': D('0')}}
+        self.assertFalse(_is_voluntarily_commercially_inactive(
+            ctx, self.team, 7,
+        ))
+
+    def test_compliance_blocked_seller_is_not_commercially_inactive(self):
+        """A frozen seller with real production/marketing is not 'do nothing'."""
+        rnd = self._round(8)
+        sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
+        DecisionMarketing.objects.create(
+            submission=sub, team_product=self.product, market=self.na,
+            retail_price=D('500'), promotion_budget=D('100000'),
+            campaign_focus_feature_ids=[], channel_digital_pct=D('1'),
+            channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+            distribution_strategy='hybrid', distribution_investment=D('50000'),
+            sales_team_count=2, demand_estimate=1000, production_volume=1000,
+            production_source_market=self.na,
+        )
+        ctx = _Ctx(self.game, 8, [self.team], self.scenario)
+        ctx.financials = {self.team.id: {'total_revenue': D('0')}}
+        ctx.compliance_freezes = {(self.team.id, self.na.id)}
+        self.assertFalse(_is_voluntarily_commercially_inactive(
+            ctx, self.team, 8,
+        ))
