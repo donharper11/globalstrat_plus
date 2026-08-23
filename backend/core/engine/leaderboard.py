@@ -20,10 +20,20 @@ def update_leaderboard(context):
     current_round = context.round_number
     scenario = context.scenario
 
-    # Sort teams by performance index
+    # Sort by PI first. At the nonnegative PI floor, the performance guard
+    # cannot put a zero-revenue team numerically below a selling team at 0.00,
+    # so positive revenue is the explicit tie-break. Revenue, net income, and
+    # team id make all remaining ties deterministic and financially legible.
+    financials_by_team = getattr(context, 'financials', {}) or {}
     teams_ranked = sorted(
         context.teams,
-        key=lambda t: float(t.performance_index),
+        key=lambda t: (
+            D(str(t.performance_index)),
+            D(str(financials_by_team.get(t.id, {}).get('total_revenue', 0) or 0)) > 0,
+            D(str(financials_by_team.get(t.id, {}).get('total_revenue', 0) or 0)),
+            D(str(financials_by_team.get(t.id, {}).get('net_income', 0) or 0)),
+            -t.id,
+        ),
         reverse=True,
     )
 

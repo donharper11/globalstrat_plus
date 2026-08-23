@@ -154,12 +154,13 @@ def _execution_resilience_component(context, team, max_revenue, active_market_id
 
 
 def _enforce_zero_revenue_invariant(candidates):
-    """Keep a zero-revenue firm below every firm that generated revenue.
+    """Keep a zero-revenue firm from outranking a firm that generated revenue.
 
     The composite remains the explanatory score, but a strong non-financial
     signal cannot recreate the Game 17 outcome where a firm with no sales
-    ranked first.  Apply the guard to the accumulated index before it is
-    persisted so the result and leaderboard remain consistent.
+    ranked first. Apply the guard to the accumulated index before persistence.
+    At the nonnegative PI floor, both values may be zero; the leaderboard's
+    revenue-aware tie-break then places the selling firm first.
     """
     positive_indexes = [
         item['new_index'] for item in candidates if item['revenue'] > 0
