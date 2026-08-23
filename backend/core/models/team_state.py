@@ -46,7 +46,24 @@ class TeamPlatform(models.Model):
         max_digits=4, decimal_places=2, default=0,
         help_text="Proportion of platform features developed via licensing (0.0-1.0). Higher = more vulnerable to technology sanctions.",
     )
+    capitalized_cost = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0,
+        help_text=(
+            'Platform development cost carried as an asset rather than expensed '
+            'at commit time. Only populated when the scenario sets '
+            'capitalize_platform_development.'
+        ),
+    )
+    accumulated_amortization = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0,
+        help_text='Amortization charged against capitalized_cost to date.',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def net_book_value(self):
+        """Unamortized platform cost still carried on the balance sheet."""
+        return max(self.capitalized_cost - self.accumulated_amortization, 0)
 
     class Meta:
         db_table = 'team_platform'

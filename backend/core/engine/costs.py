@@ -379,6 +379,9 @@ def calculate_operating_expenses(context):
     capitalize_platform = get_config(
         scenario, 'capitalize_platform_development', default=False, cast_type=bool,
     )
+    amortization_rounds = int(get_config(
+        scenario, 'platform_amortization_rounds', default=5,
+    ) or 5)
 
     context.opex = {}  # team_id → dict
 
@@ -390,14 +393,35 @@ def calculate_operating_expenses(context):
         rd_expense = D('0')
         marketing_expense = D('0')
         strategy_expense = D('0')
+        platform_capex = D('0')
 
         if submission:
             # R&D expense
             for inv in submission.rd_investments.all():
                 rd_expense += inv.amount
-            if not capitalize_platform:
-                for dev in submission.platform_developments.all():
+            for dev in submission.platform_developments.all():
+                if not capitalize_platform:
                     rd_expense += dev.committed_cost
+                else:
+                    # Carry the cost as an asset and amortize it below. Before
+                    # this, committed_cost had exactly one consumer -- the
+                    # expense line above -- so turning the flag on made the
+                    # cost disappear from the P&L, the balance sheet and cash
+                    # altogether, handing the team a free platform.
+                    from core.models.team_state import TeamPlatform
+                    platform = TeamPlatform.objects.filter(
+                        team=team, platform_generation=dev.platform_generation,
+                    ).order_by('-id').first()
+                    if platform is not None:
+                        platform.capitalized_cost = (
+                            platform.capitalized_cost or D('0')
+                        ) + dev.committed_cost
+                        platform.save(update_fields=['capitalized_cost'])
+                        # The cash still leaves the business; it is an
+                        # investing outflow rather than an operating expense.
+                        platform_capex += dev.committed_cost
+                    else:
+                        rd_expense += dev.committed_cost
 
             # Marketing expense
             try:
@@ -525,8 +549,28 @@ def calculate_operating_expenses(context):
             org_overhead = context.org_structure_costs.get(team.id, D('0'))
         strategy_expense += org_overhead
 
+        # Amortize capitalized platform cost on a straight line. Charged from
+        # the round after commitment until the asset is fully written off.
+        platform_amortization = D('0')
+        if capitalize_platform and amortization_rounds > 0:
+            from core.models.team_state import TeamPlatform
+            for platform in TeamPlatform.objects.filter(team=team):
+                cost = platform.capitalized_cost or D('0')
+                if cost <= 0:
+                    continue
+                charged = platform.accumulated_amortization or D('0')
+                remaining = cost - charged
+                if remaining <= 0:
+                    continue
+                charge = min(cost / D(str(amortization_rounds)), remaining)
+                platform.accumulated_amortization = charged + charge
+                platform.save(update_fields=['accumulated_amortization'])
+                platform_amortization += charge
+
         context.opex[team.id] = {
             'rd_expense': rd_expense,
+            'platform_amortization': platform_amortization,
+            'platform_capex': platform_capex,
             'marketing_expense': marketing_expense,
             'strategy_expense': strategy_expense,
             'research_expense': D('0'),

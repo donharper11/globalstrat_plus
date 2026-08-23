@@ -94,13 +94,15 @@ class Command(BaseCommand):
             self.stdout.write(f'\n  Advancing round {round_num}...')
             round_start = time.time()
             from core.engine.advance_round import advance_round
-            context = advance_round(game.id)
+            result = advance_round(game.id)
             round_elapsed = time.time() - round_start
             self.stdout.write(f'  Round {round_num} processed in {round_elapsed:.1f}s')
 
-            # Print engine log highlights
-            for entry in context.log:
-                self.stdout.write(f'    {entry}')
+            # Print engine result summary. advance_round() returns a dict
+            # (processed_round / phase_1_time / phase_2_status / advance keys);
+            # it used to return a context object carrying .log.
+            for key, value in (result or {}).items():
+                self.stdout.write(f'    {key}: {value}')
 
             # Collect & print results
             round_results = self._collect_round_results(game, round_num, teams)
