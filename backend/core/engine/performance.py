@@ -153,6 +153,27 @@ def _execution_resilience_component(context, team, max_revenue, active_market_id
     return _clamp01(capacity_score - incident_penalty - cost_penalty)
 
 
+def _enforce_zero_revenue_invariant(candidates):
+    """Keep a zero-revenue firm below every firm that generated revenue.
+
+    The composite remains the explanatory score, but a strong non-financial
+    signal cannot recreate the Game 17 outcome where a firm with no sales
+    ranked first.  Apply the guard to the accumulated index before it is
+    persisted so the result and leaderboard remain consistent.
+    """
+    positive_indexes = [
+        item['new_index'] for item in candidates if item['revenue'] > 0
+    ]
+    if not positive_indexes:
+        return
+
+    ceiling = max(D('0'), min(positive_indexes) - D('0.01'))
+    for item in candidates:
+        if item['revenue'] <= 0 and item['new_index'] >= min(positive_indexes):
+            item['new_index'] = ceiling
+            item['guard_applied'] = True
+
+
 def calculate_performance_index(context):
     """
     Calculate a strategic-management performance index.
@@ -171,6 +192,7 @@ def calculate_performance_index(context):
     max_revenue = max(revenues) if revenues else D('0')
     max_abs_net_income = max(net_incomes) if net_incomes else D('0')
 
+    candidates = []
     for team in context.teams:
         active_market_ids = set(
             TeamMarketPresence.objects.filter(
@@ -204,6 +226,31 @@ def calculate_performance_index(context):
         previous_index = team.performance_index
         new_index = max(D('0'), previous_index + index_change)
 
+        candidates.append({
+            'team': team,
+            'previous_index': previous_index,
+            'new_index': new_index,
+            'revenue': D(str(_team_financials(context, team).get('total_revenue', 0) or 0)),
+            'composite_score': composite_score,
+            'market_score': market_score,
+            'capability_score': capability_score,
+            'financial_score': financial_score,
+            'stakeholder_score': stakeholder_score,
+            'resilience_score': resilience_score,
+            'guard_applied': False,
+        })
+
+    _enforce_zero_revenue_invariant(candidates)
+
+    for item in candidates:
+        team = item['team']
+        previous_index = item['previous_index']
+        new_index = item['new_index']
+        composite_score = item['composite_score']
+        index_change = (new_index - previous_index).quantize(
+            D('0.01'), rounding=ROUND_HALF_UP,
+        )
+
         # Update team
         team.performance_index = new_index
         team.save()
@@ -222,7 +269,10 @@ def calculate_performance_index(context):
             f'Performance index: {team.name} '
             f'{previous_index} → {new_index} '
             f'({"+" if index_change >= 0 else ""}{index_change}); '
-            f'market={market_score:.3f}, capability={capability_score:.3f}, '
-            f'financial={financial_score:.3f}, stakeholder={stakeholder_score:.3f}, '
-            f'resilience={resilience_score:.3f}'
+            f'market={item["market_score"]:.3f}, '
+            f'capability={item["capability_score"]:.3f}, '
+            f'financial={item["financial_score"]:.3f}, '
+            f'stakeholder={item["stakeholder_score"]:.3f}, '
+            f'resilience={item["resilience_score"]:.3f}'
+            + ('; zero-revenue ranking guard applied' if item['guard_applied'] else '')
         )
