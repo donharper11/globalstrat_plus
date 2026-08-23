@@ -9,7 +9,7 @@ Usage: python manage.py run_integration_test [--rounds N]
 """
 import time
 from decimal import Decimal
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 from core.models.core import Game, Team, Round
@@ -45,6 +45,10 @@ class Command(BaseCommand):
             '--rounds', type=int, default=None,
             help='Number of rounds to run (default: all rounds in scenario)',
         )
+        parser.add_argument(
+            '--scenario', type=str, default='Consumer Electronics 2026',
+            help='Scenario name to play (default: Consumer Electronics 2026)',
+        )
 
     def handle(self, *args, **options):
         start_time = time.time()
@@ -54,7 +58,7 @@ class Command(BaseCommand):
         self.stdout.write('=' * 70)
 
         # Step 1: Initialize
-        game, teams = self._initialize_game()
+        game, teams = self._initialize_game(options['scenario'])
         max_rounds = options['rounds'] or game.scenario.num_rounds
         strategies = ['aggressive', 'steady', 'green', 'cost_leader']
 
@@ -142,17 +146,23 @@ class Command(BaseCommand):
     # Step 1: Initialize
     # =========================================================================
 
-    def _initialize_game(self):
+    def _initialize_game(self, scenario_name='Consumer Electronics 2026'):
         """Create a fresh game with 4 teams."""
         from django.contrib.auth.models import User as AuthUser
         from django.core.management import call_command
 
         # Ensure scenario exists
-        scenario = Scenario.objects.filter(name='Consumer Electronics 2026').first()
+        scenario = Scenario.objects.filter(name=scenario_name).first()
         if not scenario:
-            self.stdout.write('Loading scenario...')
-            call_command('load_scenario', 'electronics')
-            scenario = Scenario.objects.get(name='Consumer Electronics 2026')
+            self.stdout.write(f'Loading scenario {scenario_name!r}...')
+            call_command('load_all_scenarios')
+            scenario = Scenario.objects.filter(name=scenario_name).first()
+        if not scenario:
+            available = ', '.join(
+                Scenario.objects.values_list('name', flat=True)) or '(none loaded)'
+            raise CommandError(
+                f'Scenario {scenario_name!r} not found. Available: {available}'
+            )
 
         # Ensure admin user
         admin = AuthUser.objects.filter(is_superuser=True).first()
@@ -188,6 +198,23 @@ class Command(BaseCommand):
     # Step 2: Decision Generation
     # =========================================================================
 
+    def _pick_markets(self):
+        """Resolve home/second/third market for whichever scenario is loaded.
+
+        The scripted decisions used to hardcode 'NA'/'APAC'/'EU', which are
+        Consumer Electronics' codes. The other shipped scenarios use
+        'na'/'ea'/'eu'/'sa'/'wa', so the harness raised KeyError('NA') on them
+        and they had never been played. Pick positionally instead.
+        """
+        ordered = sorted(self.markets.values(), key=lambda m: (m.id,))
+        if len(ordered) < 3:
+            raise CommandError(
+                f'Scenario needs at least 3 markets, found {len(ordered)}'
+            )
+        home = next((m for m in ordered if m.code.upper() in ('NA', 'N_A')), ordered[0])
+        rest = [m for m in ordered if m.id != home.id]
+        return home, rest[0], rest[1]
+
     def _generate_round_decisions(self, team, round_number, strategy, game):
         """Generate and lock a complete decision set for one team."""
         round_obj = Round.objects.get(game=game, round_number=round_number)
@@ -198,9 +225,7 @@ class Command(BaseCommand):
             defaults={'status': 'draft'},
         )
 
-        na = self.markets['NA']
-        apac = self.markets['APAC']
-        eu = self.markets['EU']
+        na, apac, eu = self._pick_markets()
 
         # Get team's active platform
         active_platform = TeamPlatform.objects.filter(
@@ -359,8 +384,7 @@ class Command(BaseCommand):
 
     def _generate_market_entry(self, submission, team, strategy, rnd, presences):
         """Generate market entry decisions."""
-        apac = self.markets['APAC']
-        eu = self.markets['EU']
+        _home, apac, eu = self._pick_markets()
 
         # Aggressive: APAC round 1 (JV), EU round 3 (export)
         # Steady: APAC round 3 (licensing), EU round 5 (export)

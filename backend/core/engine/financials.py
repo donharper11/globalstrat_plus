@@ -48,32 +48,14 @@ def _clamp_ratio(value, limit=D('99999')):
 
 def _notify_debt_refused(context, team, requested):
     """Tell the team its debt raise was refused because it is in distress."""
-    message = (
+    from core.engine.utils import notify_team
+    notify_team(
+        context.game.id, team, context.round_number,
         f"Your request to raise ${requested:,.0f} of new debt was refused. "
         f"{team.name} is in financial distress, and lenders will not extend "
         f"further credit until the company returns to positive cash and "
-        f"profitability."
+        f"profitability.",
     )
-    from core.models.messaging import TeamNotification
-    instance_id = None
-    try:
-        # Unmanaged model: its table is absent from any database Django
-        # provisioned on its own.
-        from core.models.course import SimulationInstance
-        instance = SimulationInstance.objects.filter(game_id=context.game.id).first()
-        instance_id = instance.instance_id if instance else None
-    except Exception:
-        _logger.debug("SimulationInstance unavailable; notifying without it", exc_info=True)
-    try:
-        TeamNotification.objects.create(
-            team_id=team.id,
-            round_id=context.round_number,
-            instance_id=instance_id,
-            notification_text=message,
-            is_read=False,
-        )
-    except Exception:
-        _logger.warning("Could not notify %s of refused debt", team.name, exc_info=True)
 
 
 def generate_financial_statements(context):
@@ -207,6 +189,19 @@ def generate_financial_statements(context):
             )
             _notify_debt_refused(context, team, new_debt)
             new_debt = D('0')
+
+        # A team cannot repay more debt than it owes. Without this cap the cash
+        # still leaves via financing_cf while total_debt is floored at zero, so
+        # assets fall with no matching fall in liabilities or equity and the
+        # balance sheet breaks -- which is exactly what happened in the final
+        # rounds once teams had already paid their debt down.
+        outstanding = team.total_debt + new_debt
+        if debt_repayment > outstanding:
+            context.log.append(
+                f'{team.name}: debt repayment capped at ${outstanding:,.0f} '
+                f'(requested ${debt_repayment:,.0f})'
+            )
+            debt_repayment = max(outstanding, D('0'))
 
         # CC-26: Apply investor sentiment subscription rate to equity issuance
         if new_equity > 0:
@@ -461,8 +456,11 @@ def generate_financial_statements(context):
                         f'Cash closing: ${cash_closing:,.0f}. '
                         f'Net income: ${net_income:,.0f}. '
                         f'Total debt: ${total_debt:,.0f}. '
-                        f'Consequences: +10% talent turnover, share price floor at 0.7x book value, '
-                        f'cannot take new debt or make acquisitions.'
+                        f'Consequences, in force from the next round until the company '
+                        f'returns to positive cash and profitability: +10% talent turnover, '
+                        f'share price floor at 0.7x book value, no new debt, and no '
+                        f'acquisitions. (Distress is assessed from this round\'s closing '
+                        f'position, so the restrictions bite from round {current_round + 1}.)'
                     ),
                     teaching_note=(
                         'This team is in financial distress. Use this as a teaching moment about '

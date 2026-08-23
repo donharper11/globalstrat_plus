@@ -111,33 +111,6 @@ def process_acquisitions(context):
 
 
 
-def _create_notification(context, team, message):
-    """Best-effort team notification.
-
-    SimulationInstance is an unmanaged model, so its table is absent from any
-    database Django provisioned on its own. A missing notification must never
-    abort round processing -- it is informational only.
-    """
-    from core.models.messaging import TeamNotification
-    instance_id = None
-    try:
-        from core.models.course import SimulationInstance
-        instance = SimulationInstance.objects.filter(game_id=context.game.id).first()
-        instance_id = instance.instance_id if instance else None
-    except Exception:
-        logger.debug("SimulationInstance unavailable; notifying without it", exc_info=True)
-    try:
-        TeamNotification.objects.create(
-            team_id=team.id,
-            round_id=context.round_number,
-            instance_id=instance_id,
-            notification_text=message,
-            is_read=False,
-        )
-    except Exception:
-        logger.warning("Could not create TeamNotification for %s", team.name, exc_info=True)
-
-
 def _notify_distress_blocked(context, team, target):
     """Create a TeamNotification when distress blocks an acquisition."""
     message = (
@@ -148,7 +121,8 @@ def _notify_distress_blocked(context, team, target):
     context.log.append(
         f"Acquisition blocked (distress) for {team.name}: {target.target_name}"
     )
-    _create_notification(context, team, message)
+    from core.engine.utils import notify_team
+    notify_team(context.game.id, team, context.round_number, message)
 
 def _notify_rejected_bid(context, team, target):
     """Create a TeamNotification when a competing bid is rejected."""
@@ -159,4 +133,5 @@ def _notify_rejected_bid(context, team, target):
     context.log.append(
         f"Acquisition bid rejected for {team.name}: {target.target_name} already acquired"
     )
-    _create_notification(context, team, message)
+    from core.engine.utils import notify_team
+    notify_team(context.game.id, team, context.round_number, message)
