@@ -207,6 +207,11 @@ def _calculate_target_holding(fund, satisfaction):
         return min_pct
 
 
+# Investor sentiment band applied to book value when pricing shares.
+SENTIMENT_MIN = 0.70
+SENTIMENT_MAX = 1.30
+
+
 def _calculate_share_price(team, fund_results, context):
     """Calculate share price from book value adjusted by investor sentiment."""
     financials = RoundResultFinancials.objects.filter(
@@ -217,8 +222,13 @@ def _calculate_share_price(team, fund_results, context):
         return Decimal('1.00')
 
     book_value = float(financials.total_equity) / team.shares_outstanding
+
+    # Insolvent: equity is wiped out, so the shares are worthless. Return the
+    # floor immediately rather than smoothing towards it -- the +/-20% per
+    # round cap below would otherwise take ~30 rounds to reflect a bankruptcy
+    # that has already happened, and no game runs that long.
     if book_value <= 0:
-        book_value = 0.01
+        return Decimal('0.01')
 
     # Weighted satisfaction
     total_active_pct = sum(r['holding_pct'] for r in fund_results)
@@ -231,12 +241,12 @@ def _calculate_share_price(team, fund_results, context):
         weighted_satisfaction = 0.5
 
     # Sentiment: 0.0 sat → 0.70x, 0.5 sat → 1.00x, 1.0 sat → 1.30x
-    sentiment = 0.70 + (weighted_satisfaction * 0.60)
+    sentiment = SENTIMENT_MIN + (weighted_satisfaction * (SENTIMENT_MAX - SENTIMENT_MIN))
 
     raw_price = book_value * sentiment
 
     # Price floor: 70% of book value
-    raw_price = max(raw_price, book_value * 0.70)
+    raw_price = max(raw_price, book_value * SENTIMENT_MIN)
 
     # Smooth: cap change at ±20% per round
     prev_history = SharePriceHistory.objects.filter(
@@ -251,6 +261,13 @@ def _calculate_share_price(team, fund_results, context):
             raw_price = prev_price + max_change
         elif raw_price < prev_price - max_change:
             raw_price = prev_price - max_change
+
+    # Re-anchor to book value. Smoothing damps movement *within* the sentiment
+    # band; it must never let the price drift outside it. Without this a team
+    # whose equity collapses keeps a price set by its own history rather than
+    # its balance sheet (observed: 9.9x book after a single bad round).
+    raw_price = min(raw_price, book_value * SENTIMENT_MAX)
+    raw_price = max(raw_price, book_value * SENTIMENT_MIN)
 
     return Decimal(str(round(max(raw_price, 0.01), 2)))
 

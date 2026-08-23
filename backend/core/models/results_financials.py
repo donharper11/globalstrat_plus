@@ -50,6 +50,10 @@ class RoundResultFinancials(models.Model):
     total_cogs = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     gross_profit = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     rd_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    platform_amortization = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0,
+        help_text='Straight-line amortization of capitalized platform development cost.',
+    )
     marketing_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     strategy_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     research_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)

@@ -9,6 +9,10 @@ from core.models.results_financials import (
     RoundResultProductMarket, RoundResultFinancials, RoundResultMarketRevenue,
 )
 
+import logging
+
+_logger = logging.getLogger(__name__)
+
 D = Decimal
 
 
@@ -40,6 +44,36 @@ def _clamp_ratio(value, limit=D('99999')):
     """Clamp a ratio to prevent DB overflow, quantize to 4 decimal places."""
     clamped = max(-limit, min(limit, value))
     return clamped.quantize(D('0.0001'), rounding=ROUND_HALF_UP)
+
+
+def _notify_debt_refused(context, team, requested):
+    """Tell the team its debt raise was refused because it is in distress."""
+    message = (
+        f"Your request to raise ${requested:,.0f} of new debt was refused. "
+        f"{team.name} is in financial distress, and lenders will not extend "
+        f"further credit until the company returns to positive cash and "
+        f"profitability."
+    )
+    from core.models.messaging import TeamNotification
+    instance_id = None
+    try:
+        # Unmanaged model: its table is absent from any database Django
+        # provisioned on its own.
+        from core.models.course import SimulationInstance
+        instance = SimulationInstance.objects.filter(game_id=context.game.id).first()
+        instance_id = instance.instance_id if instance else None
+    except Exception:
+        _logger.debug("SimulationInstance unavailable; notifying without it", exc_info=True)
+    try:
+        TeamNotification.objects.create(
+            team_id=team.id,
+            round_id=context.round_number,
+            instance_id=instance_id,
+            notification_text=message,
+            is_read=False,
+        )
+    except Exception:
+        _logger.warning("Could not notify %s of refused debt", team.name, exc_info=True)
 
 
 def generate_financial_statements(context):
@@ -79,8 +113,12 @@ def generate_financial_statements(context):
         strategy_expense = opex.get('strategy_expense', D('0'))
         research_expense = opex.get('research_expense', D('0'))
         admin_overhead = opex.get('admin_overhead', D('0'))
+        platform_amortization = opex.get('platform_amortization', D('0'))
 
-        total_opex = rd_expense + marketing_expense + strategy_expense + research_expense + admin_overhead
+        total_opex = (
+            rd_expense + marketing_expense + strategy_expense
+            + research_expense + admin_overhead + platform_amortization
+        )
 
         logistics_tariff = D('0')
         for (t, p, m), l in context.logistics.items():
@@ -157,6 +195,19 @@ def generate_financial_statements(context):
             except Exception:
                 pass
 
+        # A team already in distress cannot raise new debt -- lenders will not
+        # extend credit to a firm with negative cash. The distress alert has
+        # always told students this; it was never actually enforced. Note that
+        # team.is_in_distress here still reflects the state the team *entered*
+        # this round with, since distress is re-evaluated further down.
+        if team.is_in_distress and new_debt > 0:
+            context.log.append(
+                f'{team.name}: new debt of ${new_debt:,.0f} refused - team is in '
+                f'financial distress'
+            )
+            _notify_debt_refused(context, team, new_debt)
+            new_debt = D('0')
+
         # CC-26: Apply investor sentiment subscription rate to equity issuance
         if new_equity > 0:
             subscription_rate = _calculate_subscription_rate(team, game, current_round)
@@ -196,8 +247,14 @@ def generate_financial_statements(context):
         # Cash flow (indirect method: add back depreciation, adjust for working capital)
         prev_inventory_value = prev_financials.inventory_value if prev_financials else D('0')
         inventory_change = inventory_value - prev_inventory_value
-        operating_cf = net_income + depreciation - inventory_change
-        investing_cf = -capex
+        # Platform amortization is non-cash, like depreciation: add it back.
+        operating_cf = (
+            net_income + depreciation + platform_amortization - inventory_change
+        )
+        # Capitalized platform development is an investing outflow: the cash
+        # leaves now, the asset is amortized over later rounds.
+        platform_capex = opex.get('platform_capex', D('0'))
+        investing_cf = -capex - platform_capex
         financing_cf = new_debt - debt_repayment + new_equity - dividends
 
         cash_closing = cash_opening + operating_cf + investing_cf + financing_cf
@@ -209,7 +266,21 @@ def generate_financial_statements(context):
         retained_earnings_change = net_income - dividends
         total_equity = team.total_equity + new_equity + retained_earnings_change
 
-        total_assets = cash_closing + plant_book_value + inventory_value
+        # Unamortized platform development cost is an asset. Without this the
+        # balance sheet would not balance whenever capitalization is enabled,
+        # because retained earnings keep the cost that assets never recorded.
+        platform_book_value = D('0')
+        try:
+            from core.models.team_state import TeamPlatform
+            for _p in TeamPlatform.objects.filter(team=team):
+                platform_book_value += max(
+                    (_p.capitalized_cost or D('0')) - (_p.accumulated_amortization or D('0')),
+                    D('0'),
+                )
+        except Exception:
+            platform_book_value = D('0')
+
+        total_assets = cash_closing + plant_book_value + inventory_value + platform_book_value
 
         # Balance check
         bs_diff = abs(total_assets - (total_debt + total_equity))
@@ -269,6 +340,7 @@ def generate_financial_statements(context):
                 'total_cogs': total_cogs,
                 'gross_profit': gross_profit,
                 'rd_expense': rd_expense,
+                'platform_amortization': platform_amortization,
                 'marketing_expense': marketing_expense,
                 'strategy_expense': strategy_expense,
                 'research_expense': research_expense,
