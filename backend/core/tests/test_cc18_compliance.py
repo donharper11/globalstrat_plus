@@ -264,3 +264,62 @@ class CC18ComplianceTest(TestCase):
         calculate_performance_index(ctx)
         frozen_result = RoundResultPerformanceIndex.objects.get(game=self.game, round_number=3, team=self.team)
         self.assertLess(frozen_result.index_value, unfrozen_high_index)
+
+    def test_zero_revenue_high_fit_team_cannot_outrank_positive_revenue_team(self):
+        """GSP-R1-13: directly prevent the Game 17 leaderboard anomaly."""
+        from core.models.results_financials import RoundResultPerformanceIndex
+
+        self._round(4)
+        selling_team = Team.objects.create(
+            game=self.game, name='Positive Revenue Team',
+            firm_starter_profile=self.team.firm_starter_profile,
+            performance_index=D('100'), cash_on_hand=D('50000000'),
+            total_equity=D('50000000'),
+        )
+        entry_mode = EntryModeDefinition.objects.filter(scenario=self.scenario).first()
+        for team in (self.team, selling_team):
+            TeamMarketPresence.objects.create(
+                team=team, market=self.na, entry_mode=entry_mode,
+                established_round=1, initial_investment=D('0'), status='active',
+            )
+
+        ctx = _Ctx(self.game, 4, [self.team, selling_team], self.scenario)
+        ctx.fit_scores = {}
+        ctx.adjusted_fit_scores = {}
+        ctx.financials = {
+            self.team.id: {
+                'total_revenue': D('0'), 'net_income': D('-1000000'),
+                'debt_to_equity': D('0.10'),
+            },
+            selling_team.id: {
+                'total_revenue': D('1000000'), 'net_income': D('100000'),
+                'debt_to_equity': D('1.50'),
+            },
+        }
+        ctx.compliance_freezes = set()
+        ctx.sc_capacity_factor = {}
+        ctx.sc_disruption_costs = {}
+
+        # Recreate the anomaly's shape: the zero-revenue team has dominant
+        # customer and stakeholder fit while the selling team has weak fit.
+        for segment in SegmentDefinition.objects.filter(scenario=self.scenario):
+            if (segment.market_id and segment.market_id != self.na.id
+                    and segment.segment_type == 'customer'):
+                continue
+            market_id = segment.market_id if segment.market_id == self.na.id else None
+            zero_key = (self.team.id, segment.id, market_id)
+            seller_key = (selling_team.id, segment.id, market_id)
+            ctx.fit_scores[zero_key] = 1.0
+            ctx.adjusted_fit_scores[zero_key] = 1.0
+            ctx.fit_scores[seller_key] = 0.0
+            ctx.adjusted_fit_scores[seller_key] = 0.0
+
+        calculate_performance_index(ctx)
+
+        zero_result = RoundResultPerformanceIndex.objects.get(
+            game=self.game, round_number=4, team=self.team,
+        )
+        selling_result = RoundResultPerformanceIndex.objects.get(
+            game=self.game, round_number=4, team=selling_team,
+        )
+        self.assertLess(zero_result.index_value, selling_result.index_value)
