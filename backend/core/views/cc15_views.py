@@ -476,7 +476,7 @@ class ForecastView(APIView):
 
             # Get FX rate for this market
             mkt = mktg.market
-            cond = MarketCondition.objects.filter(market=mkt, round=rnd).first()
+            cond = MarketConditionByRound.objects.filter(market=mkt, round_number=rnd.round_number).first()
             fx_rate = _dec(mkt.exchange_rate_base) + (_dec(cond.exchange_rate_modifier) if cond else 0)
 
             revenue_lines.append({
