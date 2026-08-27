@@ -36,6 +36,12 @@ Severity: P0 blocks the competition; P1 materially degrades fairness/operability
 
 ## Audit coverage and limits
 
+### Phase 2 verification finding
+
+| ID | Area | Severity | Finding | Reproduction | Evidence |
+|---|---|---:|---|---|---|
+| CR-017 | A1 walkthrough | P1 | Navigating away from a dirty decision page provides no warning or route guard. Browser Back reconstructs the page from server state and silently loses the unsaved edit. | In an open round, change an enabled Marketing numeric field without saving; navigate to another decision page; use browser Back. No confirmation appears and the original server value returns. | `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`; `evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json` |
+
 - A1: automated EN/ZH route sweep of 23 student routes plus two instructor entry routes against the deployed UI; screenshots and console/API traces are in `evidence/browser/`. Eight student visits produced blank bodies (CR-016).
 - A2/A3/A6/A7: API, model, engine and permission trace plus existing integration tests.
 - A4: adversarial engine inspection focused on FX and order/repeat behavior. CR-011 is confirmed by formula inspection; a calibrated multi-strategy tournament remains required after P0 repair.
