@@ -47,6 +47,59 @@ class CompetitionAuditTests(TestCase):
         with self.assertRaises(ValueError):
             event.save()
 
+    def test_submission_origin_distinguishes_missing_from_deliberate_empty(self):
+        """V-1: an instructor can tell a never-submitted/defaulted team apart from
+        a team that produced a (possibly empty) draft, without the database."""
+        from core.views.results_api import classify_submission_origin
+        from core.models import DecisionSubmission
+        from django.utils import timezone
+
+        r2 = Round.objects.create(game=self.game, round_number=2, status='closed',
+                                  opened_at=timezone.now())
+        r3 = Round.objects.create(game=self.game, round_number=3, status='closed',
+                                  opened_at=timezone.now())
+        r4 = Round.objects.create(game=self.game, round_number=4, status='open',
+                                  opened_at=timezone.now())
+
+        # No submission at all.
+        self.assertEqual(
+            classify_submission_origin(self.game, self.team, self.round, None),
+            'no_submission')
+
+        # Never submitted -> defaulted at close (empty locked shell + audit action).
+        s1 = DecisionSubmission.objects.create(team=self.team, round=self.round,
+                                               status='locked')
+        DecisionAuditEvent.objects.create(
+            game=self.game, team=self.team, round=self.round, user=None,
+            action='missing_submission_defaulted', endpoint='engine:close_round',
+            payload={})
+        self.assertEqual(
+            classify_submission_origin(self.game, self.team, self.round, s1),
+            'defaulted_missing')
+
+        # Deliberate empty: had a draft that was auto-locked at the deadline.
+        s2 = DecisionSubmission.objects.create(team=self.team, round=r2,
+                                               status='locked')
+        DecisionAuditEvent.objects.create(
+            game=self.game, team=self.team, round=r2, user=None,
+            action='deadline_lock', endpoint='engine:close_round', payload={})
+        self.assertEqual(
+            classify_submission_origin(self.game, self.team, r2, s2),
+            'deadline_locked')
+
+        # Team locked its own submission (no close-time default/deadline event).
+        s3 = DecisionSubmission.objects.create(team=self.team, round=r3,
+                                               status='locked')
+        self.assertEqual(
+            classify_submission_origin(self.game, self.team, r3, s3),
+            'student_locked')
+
+        # Draft, still open.
+        s4 = DecisionSubmission.objects.create(team=self.team, round=r4,
+                                               status='draft')
+        self.assertEqual(
+            classify_submission_origin(self.game, self.team, r4, s4), 'draft')
+
     def test_jwt_wrapper_exposes_pk_for_drf_throttling(self):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.user)}')
