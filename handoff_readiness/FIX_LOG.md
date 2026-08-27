@@ -20,6 +20,7 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
 | CR-014 | Closed | Extracted the remaining student-facing supply-chain and shared navigation/status copy into matched EN/ZH keys: Sourcing, Logistics, Trade Finance, Inventory, the supply-chain dashboard, round status, and shallow-route recovery. Protocol names and brands (for example Incoterms, GS, GlobalStrat) remain intentionally invariant. |
 | CR-015 | Accepted operational constraint | The supported competition URL is the public GlobalStrat endpoint; port 8081 belongs to code-server and is excluded from the runbook. |
 | CR-016 | Closed | Root cause was the full-screen authentication gate: direct navigation waited for `/auth/me/` behind an unlabeled standalone Ant Design spinner. The app now hydrates the last server-verified session immediately while revalidating it in the background, and all standalone loading states render explicit, accessible EN/ZH text. The post-deploy sweep captured 48/48 nonblank screens with no console or API errors. |
+| CR-017 | Open | Final A1 rehearsal changed an enabled Round 1 Marketing field from `0` to `1`, navigated away, then returned with browser Back. No warning appeared and the field reverted to `0`, silently discarding the unsaved decision. Evidence: `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`. |
 
 ## Additional server-side hardening
 
@@ -81,3 +82,7 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
   deployed 48-screen sweep passes, but the strict six-round UI lifecycle and
   browser-state scenarios are not yet evidenced, so the consolidated gate
   remains open (`CONSOLIDATED_A1_A8_VERIFICATION.md`).
+- The missing A1 rehearsal was executed in an isolated tagged stack. All six
+  rounds, refresh, duplicate-tab, session-expiry, close/return and later-round
+  URL scenarios passed. Back navigation exposed open CR-017: an unsaved
+  Marketing edit is discarded without warning.

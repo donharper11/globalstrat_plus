@@ -1,0 +1,1689 @@
+{
+  "base": "http://127.0.0.1:18080",
+  "started_at": "2026-08-27T15:46:29.942Z",
+  "checks": [
+    {
+      "name": "browser_close_and_return",
+      "pass": true,
+      "first": {
+        "text_length": 2246,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+      },
+      "returned": {
+        "text_length": 2246,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+      }
+    },
+    {
+      "name": "session_timeout_student",
+      "pass": true,
+      "text_length": 224,
+      "expected_visible": true,
+      "url": "http://127.0.0.1:18080/login",
+      "sample": "GLOBALSTRAT\nAdvanced Strategic Management Simulation\nUsername\nPassword\nIf you have not been given a password, try your student ID.\nLog In\nClarity. Capability. Camdani.\nBuilt for Real Work, Not Just Coursework\nTry the demo\n中文"
+    },
+    {
+      "name": "session_timeout_instructor",
+      "pass": true,
+      "text_length": 87,
+      "expected_visible": true,
+      "url": "http://127.0.0.1:18080/instructor/login",
+      "sample": "GLOBALSTRAT\nInstructor Portal\nUsername\nPassword\nSign In\nStudents: use the student login"
+    },
+    {
+      "name": "back_mid_decision",
+      "pass": false,
+      "edited": false,
+      "warning_visible": false,
+      "text_length": 0,
+      "expected_visible": true,
+      "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/sourcing",
+      "sample": ""
+    },
+    {
+      "name": "refresh_during_submission",
+      "pass": true,
+      "request_status": "navigation-aborted",
+      "text_length": 2246,
+      "expected_visible": true,
+      "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary",
+      "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+    },
+    {
+      "name": "duplicate_tab",
+      "pass": true,
+      "statuses": [
+        201,
+        200
+      ],
+      "pages": [
+        {
+          "text_length": 2387,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+        },
+        {
+          "text_length": 2387,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+        }
+      ]
+    },
+    {
+      "name": "round_1_direct_later_url",
+      "pass": true,
+      "current_round": 1,
+      "page": {
+        "text_length": 2387,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+      }
+    },
+    {
+      "name": "round_1_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "round_2_direct_later_url",
+      "pass": true,
+      "current_round": 2,
+      "page": {
+        "text_length": 2716,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR2 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nBRL weakened 2.0% against USD — South America revenue converts to fewer USD\n│\n📈\nEast Asia growt"
+      }
+    },
+    {
+      "name": "round_2_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "round_3_direct_later_url",
+      "pass": true,
+      "current_round": 3,
+      "page": {
+        "text_length": 3510,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nCNY weakened 2.0% against USD — East Asia revenue converts to fewer USD\n│\n💱\nNGN weakened 3.0% a"
+      }
+    },
+    {
+      "name": "round_3_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "round_4_direct_later_url",
+      "pass": true,
+      "current_round": 4,
+      "page": {
+        "text_length": 3498,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN strengthened 3.1% against USD — Africa revenue converts to more USD\n│\n📈\nNorth America growt"
+      }
+    },
+    {
+      "name": "round_4_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "round_5_direct_later_url",
+      "pass": true,
+      "current_round": 5,
+      "page": {
+        "text_length": 3178,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nEUR weakened 2.0% against USD — Western Europe revenue converts to fewer USD\n│\n📉\nNorth America "
+      }
+    },
+    {
+      "name": "round_5_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "round_6_direct_later_url",
+      "pass": true,
+      "current_round": 6,
+      "page": {
+        "text_length": 2908,
+        "expected_visible": true,
+        "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+        "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR6 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN weakened 2.0% against USD — Africa revenue converts to fewer USD\n│\n📉\nEast Asia growth slowi"
+      }
+    },
+    {
+      "name": "round_6_lifecycle",
+      "pass": true,
+      "open_status": "open",
+      "closed_status": "closed",
+      "processed_status": "processed"
+    },
+    {
+      "name": "six_round_completion",
+      "pass": true,
+      "final": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "completed",
+        "current_round": 6,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:06:20.579346+00:00",
+        "round": {
+          "round_id": 7,
+          "round_number": 6,
+          "status": "processed",
+          "processing_status": "FULLY_COMPLETE",
+          "narrative_generated": true,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:04:07.437152+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:05:10.583091+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T16:05:47.380442+00:00",
+          "phase_1_duration": 4.4209394454956055,
+          "phase_2_duration": 27.861069202423096,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 1,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:54:04.726255+00:00",
+        "round": {
+          "round_id": 2,
+          "round_number": 1,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:29:46.815151+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 1,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:54:04.910767+00:00",
+        "round": {
+          "round_id": 2,
+          "round_number": 1,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:29:46.815151+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:54:04.774773+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 1,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:54:41.061003+00:00",
+        "round": {
+          "round_id": 2,
+          "round_number": 1,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:29:46.815151+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:54:04.774773+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T15:54:40.951990+00:00",
+          "phase_1_duration": 3.766216516494751,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 2387,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6DRAFT OPEN\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electron"
+        },
+        "open_instructor": {
+          "text_length": 278,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach\nMy Courses\nNew Course:\nCreate\nSTR"
+        },
+        "closed_student": {
+          "text_length": 2286,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6LOCKED\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics "
+        },
+        "processed_student": {
+          "text_length": 2435,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR1 of 6RESULTS AVAILABLE\nBudget $0/$7.5M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar E"
+        },
+        "processed_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n20\nMy Courses\nNew Course:\nCreate"
+        }
+      }
+    },
+    {
+      "round": 2,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 2,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:56:17.201706+00:00",
+        "round": {
+          "round_id": 3,
+          "round_number": 2,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:55:14.128205+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 2,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:56:17.397440+00:00",
+        "round": {
+          "round_id": 3,
+          "round_number": 2,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:55:14.128205+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:56:17.251156+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 2,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:56:54.836562+00:00",
+        "round": {
+          "round_id": 3,
+          "round_number": 2,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:55:14.128205+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:56:17.251156+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T15:56:54.736083+00:00",
+          "phase_1_duration": 5.073761224746704,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 2716,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR2 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nBRL weakened 2.0% against USD — South America revenue converts to fewer USD\n│\n📈\nEast Asia growt"
+        },
+        "open_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n20\nMy Courses\nNew Course:\nCreate"
+        },
+        "closed_student": {
+          "text_length": 2756,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR2 of 6LOCKED\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nBRL weakened 2.0% against USD — South America revenue converts to fewer USD\n│\n📈\nEast Asia growth ac"
+        },
+        "processed_student": {
+          "text_length": 3633,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR2 of 6RESULTS AVAILABLE\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nBRL weakened 2.0% against USD — South America revenue converts to fewer USD\n│\n📋\nCustoms "
+        },
+        "processed_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n32\nMy Courses\nNew Course:\nCreate"
+        }
+      }
+    },
+    {
+      "round": 3,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 3,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:58:31.011776+00:00",
+        "round": {
+          "round_id": 4,
+          "round_number": 3,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:57:27.858982+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 3,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:58:31.203041+00:00",
+        "round": {
+          "round_id": 4,
+          "round_number": 3,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:57:27.858982+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:58:31.053102+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 3,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T15:59:08.166534+00:00",
+        "round": {
+          "round_id": 4,
+          "round_number": 3,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:57:27.858982+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T15:58:31.053102+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T15:59:08.069046+00:00",
+          "phase_1_duration": 4.68770170211792,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 3510,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nCNY weakened 2.0% against USD — East Asia revenue converts to fewer USD\n│\n💱\nNGN weakened 3.0% a"
+        },
+        "open_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n36\nMy Courses\nNew Course:\nCreate"
+        },
+        "closed_student": {
+          "text_length": 3550,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 6LOCKED\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nCNY weakened 2.0% against USD — East Asia revenue converts to fewer USD\n│\n💱\nNGN weakened 3.0% again"
+        },
+        "processed_student": {
+          "text_length": 4007,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 6RESULTS AVAILABLE\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n⚡\nAfrican Currency Depreciation — A wave of currency devaluations across key African markets"
+        },
+        "processed_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n56\nMy Courses\nNew Course:\nCreate"
+        }
+      }
+    },
+    {
+      "round": 4,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 4,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:00:44.321561+00:00",
+        "round": {
+          "round_id": 5,
+          "round_number": 4,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:59:41.245864+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 4,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:00:44.502351+00:00",
+        "round": {
+          "round_id": 5,
+          "round_number": 4,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:59:41.245864+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:00:44.362841+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 4,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:01:21.499000+00:00",
+        "round": {
+          "round_id": 5,
+          "round_number": 4,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T15:59:41.245864+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:00:44.362841+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T16:01:21.395235+00:00",
+          "phase_1_duration": 4.65897536277771,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 3498,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN strengthened 3.1% against USD — Africa revenue converts to more USD\n│\n📈\nNorth America growt"
+        },
+        "open_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n56\nMy Courses\nNew Course:\nCreate"
+        },
+        "closed_student": {
+          "text_length": 3538,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 6LOCKED\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN strengthened 3.1% against USD — Africa revenue converts to more USD\n│\n📈\nNorth America growth ac"
+        },
+        "processed_student": {
+          "text_length": 3779,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 6RESULTS AVAILABLE\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n⚡\nEast Asia Supply Chain Disruption — A major port closure in East Asia has disrupted shippi"
+        },
+        "processed_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n76\nMy Courses\nNew Course:\nCreate"
+        }
+      }
+    },
+    {
+      "round": 5,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 5,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:02:57.506904+00:00",
+        "round": {
+          "round_id": 6,
+          "round_number": 5,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:01:54.392191+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 5,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:02:57.671628+00:00",
+        "round": {
+          "round_id": 6,
+          "round_number": 5,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:01:54.392191+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:02:57.549562+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 5,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:03:34.425426+00:00",
+        "round": {
+          "round_id": 6,
+          "round_number": 5,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:01:54.392191+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:02:57.549562+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T16:03:34.336175+00:00",
+          "phase_1_duration": 4.550719738006592,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 3178,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nEUR weakened 2.0% against USD — Western Europe revenue converts to fewer USD\n│\n📉\nNorth America "
+        },
+        "open_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n76\nMy Courses\nNew Course:\nCreate"
+        },
+        "closed_student": {
+          "text_length": 3218,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 6LOCKED\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nEUR weakened 2.0% against USD — Western Europe revenue converts to fewer USD\n│\n📉\nNorth America grow"
+        },
+        "processed_student": {
+          "text_length": 3679,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 6RESULTS AVAILABLE\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nEUR weakened 2.0% against USD — Western Europe revenue converts to fewer USD\n│\n📋\nPanama "
+        },
+        "processed_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n96\nMy Courses\nNew Course:\nCreate"
+        }
+      }
+    },
+    {
+      "round": 6,
+      "open": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 6,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:05:10.540803+00:00",
+        "round": {
+          "round_id": 7,
+          "round_number": 6,
+          "status": "open",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:04:07.437152+00:00",
+          "deadline": null,
+          "closed_at": null,
+          "close_reason": "",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 0,
+          "teams_pending": 4,
+          "next_action": "await_deadline"
+        }
+      },
+      "closed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 6,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:05:10.722373+00:00",
+        "round": {
+          "round_id": 7,
+          "round_number": 6,
+          "status": "closed",
+          "processing_status": "PENDING",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:04:07.437152+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:05:10.583091+00:00",
+          "close_reason": "manual",
+          "processed_at": null,
+          "phase_1_duration": null,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "process"
+        }
+      },
+      "processed": {
+        "game_id": 1,
+        "game_name": "GlobalStrat Test Game",
+        "game_status": "active",
+        "current_round": 6,
+        "total_rounds": 6,
+        "server_time": "2026-08-27T16:05:47.491390+00:00",
+        "round": {
+          "round_id": 7,
+          "round_number": 6,
+          "status": "processed",
+          "processing_status": "RESULTS_AVAILABLE",
+          "narrative_generated": false,
+          "narrative_error": "",
+          "opened_at": "2026-08-27T16:04:07.437152+00:00",
+          "deadline": null,
+          "closed_at": "2026-08-27T16:05:10.583091+00:00",
+          "close_reason": "manual",
+          "processed_at": "2026-08-27T16:05:47.380442+00:00",
+          "phase_1_duration": 4.4209394454956055,
+          "phase_2_duration": null,
+          "seconds_remaining": null,
+          "is_overdue": false,
+          "teams_total": 4,
+          "teams_locked": 4,
+          "teams_pending": 0,
+          "next_action": "advance"
+        }
+      },
+      "ui": {
+        "open_student": {
+          "text_length": 2908,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR6 of 6DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN weakened 2.0% against USD — Africa revenue converts to fewer USD\n│\n📉\nEast Asia growth slowi"
+        },
+        "open_instructor": {
+          "text_length": 282,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n96\nMy Courses\nNew Course:\nCreate"
+        },
+        "closed_student": {
+          "text_length": 2948,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR6 of 6LOCKED\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN weakened 2.0% against USD — Africa revenue converts to fewer USD\n│\n📉\nEast Asia growth slowing —"
+        },
+        "processed_student": {
+          "text_length": 3349,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/games/1/teams/1/decisions/summary?round=6",
+          "sample": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR6 of 6RESULTS AVAILABLE\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\nAC\nAlex Chen · Helix Digital\nLIVE\n💱\nNGN weakened 2.0% against USD — Africa revenue converts to fewer USD\n│\n📋\nBreakthrough in"
+        },
+        "processed_instructor": {
+          "text_length": 283,
+          "expected_visible": true,
+          "url": "http://127.0.0.1:18080/instructor",
+          "sample": "GLOBALSTRAT — Instructor Portal\nInstructor\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n99+\nMy Courses\nNew Course:\nCreat"
+        }
+      }
+    }
+  ],
+  "fixture": {
+    "game_id": 1,
+    "team_id": 1,
+    "total_rounds": 6
+  },
+  "observed_events": {
+    "student": [
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/rounds/?game_id=1",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/context/finance/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/auth/me/?user_id=2&section_id=1",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/decisions/round/1/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/rounds/?game_id=1",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/ticker/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/sc/round/1/sourcing/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/context/finance/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/rounds/?game_id=1",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/games/1/teams/1/context/finance/",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "http://127.0.0.1:18080/api/auth/me/?user_id=2&section_id=1",
+        "text": "net::ERR_ABORTED"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      }
+    ],
+    "instructor": [
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "requestfailed",
+        "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+        "text": "net::ERR_TIMED_OUT"
+      },
+      {
+        "type": "console",
+        "text": "Failed to load resource: net::ERR_TIMED_OUT"
+      }
+    ]
+  },
+  "finished_at": "2026-08-27T16:06:20.588Z",
+  "pass_count": 18,
+  "fail_count": 1
+}

@@ -3,7 +3,7 @@
 Verification date: 2026-08-27 UTC  
 Candidate: `competition-rc-2026.08.27.1`  
 Application commit: `86c2ad40fb300a666e154915aa392cb2e56f2ad6`  
-Overall verdict: **INCOMPLETE — A1 strict lifecycle coverage remains open.**
+Overall verdict: **FAIL — the completed A1 rehearsal found CR-017.**
 
 The application source under `backend/` and `frontend/` matches the annotated
 tag exactly. A fresh frontend production build emitted `main.8d2222cf.js` with
@@ -13,7 +13,7 @@ tagged revision in its production environment.
 
 | Area | Verdict | Consolidated evidence |
 |---|---|---|
-| A1 click-through | **Incomplete** | Public route probes and the deployed 48-screen EN/ZH sweep pass with no blank, console or API failures. Direct later-round and shallow-route recovery are covered. The evidence does not demonstrate a complete six-round instructor/student UI lifecycle or all required back, refresh-during-submission, duplicate-tab, session-timeout and browser-close/return states. |
+| A1 click-through | **Fail** | The isolated tagged rehearsal completed all six rounds and the required browser-state scenarios. Everything passed except back navigation during an unsaved Marketing edit: no warning appeared and the edit was silently lost (CR-017; `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`). |
 | A2 lifecycle | **Pass** | 107 tagged focused A2/A3 tests; expected and 3x deadline evidence accounts for every write, late rejection and team lock; concurrent resolution has one winner. |
 | A3 reconstruction | **Pass** | Zero hash mismatches across 1,035 live decision audit events and nine completed manifests; isolated replay input/output hashes are byte-identical; tagged provenance writer probe passed. Historical pre-tag manifests correctly remain unmodified and have empty revision fields. |
 | A4 balance/exploits | **Pass** | Nine tagged tests; FX matrix has no dominant hedge ratio, legal R&D ordering is invariant, duplicate targets are rejected, and the six-round cohort rejects an unassailable early lead. |
@@ -31,6 +31,5 @@ tagged revision in its production environment.
 - Tagged isolated workstreams: A2/A3 **107 passed**, A4 **9 passed**, A5
   **73 passed**.
 
-The consolidated launch gate must remain unchecked until A1's missing browser
-state/lifecycle scenarios are executed and recorded. This is verification debt,
-not evidence of a newly observed application defect.
+The consolidated launch gate remains unchecked until CR-017 is repaired and the
+targeted back-navigation scenario plus affected A1 verification are rerun.

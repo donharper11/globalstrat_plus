@@ -9,7 +9,7 @@
     "matches_fresh_tag_source_build": true
   },
   "areas": {
-    "A1": {"verdict": "incomplete", "route_sweep_passed": 48, "route_sweep_failed": 0, "missing": ["complete six-round instructor/student UI lifecycle", "back mid-decision", "refresh during submission", "duplicate tab", "session timeout", "browser close and return"]},
+    "A1": {"verdict": "fail", "route_sweep_passed": 48, "route_sweep_failed": 0, "six_round_lifecycle_passed": true, "browser_state_checks_completed": true, "open_finding": "CR-017"},
     "A2": {"verdict": "pass"},
     "A3": {"verdict": "pass", "decision_audit_events_checked": 1035, "decision_hash_mismatches": 0, "completed_manifests_checked": 9, "manifest_hash_mismatches": 0},
     "A4": {"verdict": "pass"},
@@ -26,6 +26,6 @@
     "tagged_a4": {"tests": 9, "seconds": 12.690, "passed": true},
     "tagged_a5": {"tests": 73, "seconds": 50.151, "passed": true}
   },
-  "overall_verdict": "incomplete",
+  "overall_verdict": "fail",
   "launch_checklist_gate_complete": false
 }
