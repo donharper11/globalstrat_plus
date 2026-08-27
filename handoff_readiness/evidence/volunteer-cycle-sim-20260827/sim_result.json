@@ -1,0 +1,92 @@
+{
+  "base": "http://127.0.0.1:8056",
+  "game_id": 24,
+  "round": 1,
+  "scenarios": [
+    {
+      "scenario": "deadline_extension",
+      "pass": true,
+      "detail": {
+        "extend_http": 200,
+        "submit_after_extend_http": 200
+      }
+    },
+    {
+      "scenario": "duplicate_submission",
+      "pass": true,
+      "detail": {
+        "concurrent_http": {
+          "0": 200,
+          "1": 200
+        },
+        "submission_rows": 1,
+        "expect": "exactly one canonical submission row"
+      }
+    },
+    {
+      "scenario": "team_deactivation",
+      "pass": true,
+      "detail": {
+        "guard_rejected_bad_input_http": 400,
+        "deactivate_http": 200,
+        "participation_status": "withdrawn"
+      }
+    },
+    {
+      "scenario": "incident_reopen_after_close",
+      "pass": true,
+      "detail": {
+        "close_http": 200,
+        "closed_status": "closed",
+        "reopen_reported": true,
+        "status_after_reopen": "open",
+        "resubmit_http": 200
+      }
+    },
+    {
+      "scenario": "late_submission_rejected",
+      "pass": true,
+      "detail": {
+        "post_close_submit_http": 403,
+        "detail": "{'detail': 'Round 1 is closed \u2014 it is no longer accepting decisions.'}",
+        "expect": "rejected once the round is closed"
+      }
+    },
+    {
+      "scenario": "operator_correction",
+      "pass": true,
+      "detail": {
+        "submission_locked_at_deadline": "locked",
+        "unlock_http": 200,
+        "status_after": "draft",
+        "new_operator_audit_events": 1,
+        "note": "realistic dispute path: a submission locked at the deadline is unlocked by the operator to correct an error, fully audited"
+      }
+    },
+    {
+      "scenario": "missing_defaulted_recorded",
+      "pass": true,
+      "detail": {
+        "defaulted_recorded_at_first_close": true,
+        "all_close_actions_for_team": [
+          "missing_submission_defaulted",
+          "deadline_lock"
+        ],
+        "note": "genuinely-missing team is defaulted at the first close; a later reopen+reclose (incident drill) then deadline_locks the now-existing empty submission"
+      }
+    },
+    {
+      "scenario": "deactivated_excluded_from_resolution",
+      "pass": true,
+      "detail": {
+        "process_http": 200,
+        "deactivated_team": 122,
+        "in_leaderboard": false,
+        "ranked_count": 23
+      }
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "all_pass": true
+}

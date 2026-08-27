@@ -55,8 +55,21 @@ checklist tracks the remaining operational path to launch.
   (RD-01/02/03) which are now fixed and covered by regression tests; the re-run
   passes (`RECOVERY_DRILL.md`, `evidence/recovery-drill-20260827/`). **Two-operator
   sign-off remains outstanding** — a process gate, not a code gate.
-- [ ] Conduct a volunteer competition cycle on the tagged build with separate identities and real deadlines. Include deliberate late/missing/duplicate submissions, team correction, deadline extension, outage communications, team deactivation and an operator incident drill.
-- [ ] Confirm instructors can identify who submitted what and when, distinguish missing from deliberate empty submissions, and apply published dispute and tie rules without direct database intervention.
+- [ ] Conduct a volunteer competition cycle on the tagged build with separate
+  identities and real deadlines (deliberate late/missing/duplicate submissions,
+  team correction, deadline extension, outage communications, team deactivation,
+  operator incident drill). **Scripted precursor done:** `volunteer_cycle_sim.py`
+  exercises every one of these mechanics against an isolated stack and passes 8/8
+  (`INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`,
+  `evidence/volunteer-cycle-sim-20260827/`). The human cycle with real people
+  still remains.
+- [ ] Confirm instructors can identify who submitted what and when, distinguish
+  missing from deliberate empty submissions, and apply published dispute and tie
+  rules without direct database intervention. **Verified with one gap:** what/when,
+  correction and tie-break/leaderboard all work from the UI/API, but an instructor
+  **cannot distinguish a missing (defaulted) team from a deliberately-empty one**
+  without querying the database (finding V-1), and the individual submitter is not
+  surfaced (V-2). See `INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`.
 - [ ] Reconcile any volunteer findings, rerun affected verification, and obtain engineering, competition-operations and rules-owner sign-off.
 
 ## Dependency and parallel-work note
