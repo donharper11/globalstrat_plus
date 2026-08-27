@@ -864,7 +864,16 @@ const InstructorDashboard = () => {
           { title: t('instructor.cash'), dataIndex: 'cash_on_hand', render: fmt },
           { title: t('instructor.revenue'), dataIndex: 'total_revenue', render: fmt },
           { title: t('instructor.distress'), dataIndex: 'is_in_distress', render: v => v ? <Tag color="red">{t('instructor.yes')}</Tag> : t('instructor.no') },
-          { title: t('instructor.decision'), dataIndex: 'decision_status', render: v => <Tag color={statusColor[v] || 'default'}>{v}</Tag> },
+          { title: t('instructor.decision'), dataIndex: 'decision_status', render: (v, r) => {
+            const originColor = { defaulted_missing: 'red', deadline_locked: 'gold', student_locked: 'green' };
+            const o = r.submission_origin;
+            return (
+              <Space direction="vertical" size={0}>
+                <Tag color={statusColor[v] || 'default'}>{v}</Tag>
+                {o && originColor[o] && <Tag color={originColor[o]}>{t(`instructor.origin_${o}`)}</Tag>}
+              </Space>
+            );
+          } },
           { title: t('instructor.coherence'), dataIndex: 'coherence_score', render: v => v != null ? v.toFixed(1) : '—' },
           { title: t('instructor.markets'), dataIndex: 'markets_entered', render: v => (v || []).join(', ') },
           {

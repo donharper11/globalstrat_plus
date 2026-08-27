@@ -65,11 +65,12 @@ checklist tracks the remaining operational path to launch.
   still remains.
 - [ ] Confirm instructors can identify who submitted what and when, distinguish
   missing from deliberate empty submissions, and apply published dispute and tie
-  rules without direct database intervention. **Verified with one gap:** what/when,
-  correction and tie-break/leaderboard all work from the UI/API, but an instructor
-  **cannot distinguish a missing (defaulted) team from a deliberately-empty one**
-  without querying the database (finding V-1), and the individual submitter is not
-  surfaced (V-2). See `INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`.
+  rules without direct database intervention. **Verified.** what/when, correction
+  and tie-break/leaderboard all work from the UI/API; the missing-vs-empty gap
+  (V-1) is now fixed — instructor endpoints and dashboard surface submission_origin
+  so a defaulted team is distinguishable without the database (commit 93a09cc).
+  Minor open item: the individual submitter (V-2) is still not surfaced (team-level
+  visibility only). See `INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`.
 - [ ] Reconcile any volunteer findings, rerun affected verification, and obtain engineering, competition-operations and rules-owner sign-off.
 
 ## Dependency and parallel-work note
