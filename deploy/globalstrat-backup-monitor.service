@@ -1,0 +1,16 @@
+[Unit]
+Description=GlobalStrat competition backup integrity and capacity monitor
+After=local-fs.target postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+WorkingDirectory=/home/ubuntu/projects/globalstrat+/backend
+Environment=GLOBALSTRAT_ENV=production
+EnvironmentFile=-/etc/globalstrat-plus.env
+ExecStart=/usr/local/sbin/globalstrat-backup-monitor
+
+[Install]
+WantedBy=multi-user.target

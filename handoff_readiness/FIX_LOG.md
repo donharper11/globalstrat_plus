@@ -64,3 +64,15 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
   and zero-day retention validation. The clean convergence run passed **271
   tests in 89.173 seconds**; migration `core.0060_team_participation_status`
   applied successfully and Gunicorn was reloaded.
+- Deployed release provenance verified at 2026-08-27T15:03:54Z: the restarted
+  backend inherited `GIT_REVISION=86c2ad40fb300a666e154915aa392cb2e56f2ad6`,
+  and the real manifest writer recorded that exact revision in a rollback-only
+  production-settings transaction
+  (`evidence/release-provenance-verification.json`).
+- Backup evidence policy approved and applied: 90-day dump retention with
+  dispute holds, 12-month manifest/audit retention, pruning disabled by default,
+  backup storage tightened from `0775`/`0664` to `0700`/`0600`, and backend
+  `UMask=0077`. The enabled daily systemd monitor verified all 12 backups,
+  reported zero invalid/expired artifacts and confirmed 44% filesystem use
+  (`BACKUP_RETENTION_POLICY.md`,
+  `evidence/backup-retention-verification.json`).

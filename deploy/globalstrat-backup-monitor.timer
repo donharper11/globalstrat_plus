@@ -1,0 +1,12 @@
+[Unit]
+Description=Run GlobalStrat competition backup monitor daily
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=24h
+Persistent=true
+RandomizedDelaySec=5min
+Unit=globalstrat-backup-monitor.service
+
+[Install]
+WantedBy=timers.target

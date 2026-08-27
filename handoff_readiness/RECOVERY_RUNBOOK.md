@@ -13,6 +13,8 @@ round was resolved, so the application must be in maintenance mode first.
   changing the database.
 - The exact confirmation token is `RESTORE-GAME-<id>-ROUND-<number>`.
 - Set `COMPETITION_RECOVERY_ENABLED=true` only for the maintenance window.
+- Run operator commands with `umask 077`; handle and retain artifacts according
+  to `BACKUP_RETENTION_POLICY.md` and do not export dumps to unmanaged systems.
 - Recovery writes `recovery-audit.jsonl` beside the dumps before restoration,
   then append-only `OperatorAuditEvent` rows after restoration and re-run.
 
@@ -20,6 +22,7 @@ round was resolved, so the application must be in maintenance mode first.
 
 ```bash
 cd /home/ubuntu/projects/globalstrat+/backend
+umask 077
 COMPETITION_RECOVERY_ENABLED=true python3 manage.py recover_competition_round \
   --game-id GAME_ID --round ROUND_NUMBER --actor INSTRUCTOR_USERNAME \
   --reason "SPECIFIC VERIFIED REASON" \

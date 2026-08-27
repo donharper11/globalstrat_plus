@@ -10,7 +10,7 @@ dispositions and verification are recorded in `FIX_LOG.md`.
   service and is not a competition endpoint.
 - Deploy the approved, tagged build and verify that `GIT_REVISION` is populated
   in a newly generated resolution manifest.
-- Confirm database-backup retention, available storage, monitoring, the
+- Confirm the approved `BACKUP_RETENTION_POLICY.md`, available storage, monitoring, the
   bilingual announcement channel, maintenance-mode access, and two named
   recovery approvers.
 - Complete the launch gates in `LAUNCH_CHECKLIST.md`. Do not treat the automated
@@ -85,8 +85,7 @@ reason, and announce the new UTC and local deadline in both languages.
 
 ## Evidence to retain
 
-Retain operator and decision audit events, resolution manifests, dump files and
-SHA-256 sidecars, access/application logs, incident rulings and bilingual event
-announcements according to the approved retention policy. Restrict recovery
+Retain and dispose of all competition evidence according to
+`BACKUP_RETENTION_POLICY.md`, including its dispute-hold rule. Restrict recovery
 artifacts because a full database dump can contain credentials and participant
 data.
