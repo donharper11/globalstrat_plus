@@ -3,11 +3,40 @@ import hashlib
 import json
 import os
 import pathlib
+import re
 import subprocess
 from datetime import datetime, timedelta, timezone
 
 from django.conf import settings
 from django.db import connection
+
+
+# A newer pg_dump (17/18) writes GUCs such as `transaction_timeout` that an
+# older server (16) rejects on restore. Those SET failures do not touch the
+# restored data, so they must not fail an otherwise-clean recovery.
+_BENIGN_RESTORE_ERROR = re.compile(
+    r'unrecognized configuration parameter|errors ignored on restore', re.I)
+
+
+def _restore_stderr_is_benign(stderr):
+    """True when pg_restore's only complaints are cross-version SET no-ops.
+
+    Every genuine error line (anything reported as an error that is not a
+    benign version-skew SET) makes this return False so the caller can fail.
+    """
+    for line in (stderr or '').splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        lowered = stripped.lower()
+        is_error = 'error:' in lowered or lowered.startswith('pg_restore: error')
+        if not is_error:
+            # warnings, DETAIL/HINT and "Command was:" context lines
+            continue
+        if _BENIGN_RESTORE_ERROR.search(stripped):
+            continue
+        return False
+    return True
 
 
 def backup_root():
@@ -48,18 +77,37 @@ def append_recovery_audit(payload):
 
 
 def restore_database(backup_path):
-    """Restore a verified custom-format dump into the configured database."""
+    """Restore a verified custom-format dump into the configured database.
+
+    Restores onto a freshly recreated public schema rather than relying on
+    `pg_restore --clean`. Dropping the schema first means no FK-referenced
+    object survives to block a dependency-ordered object drop, and the restore
+    then tolerates only benign cross-version SET failures (see
+    ``_restore_stderr_is_benign``). Any other pg_restore error is fatal.
+    """
     verified = verify_backup(backup_path)
     db = connection.settings_dict
     env = os.environ.copy()
     env['PGPASSWORD'] = str(db.get('PASSWORD') or '')
-    cmd = ['pg_restore', '--clean', '--if-exists', '--no-owner', '--exit-on-error']
-    if db.get('HOST'): cmd += ['--host', str(db['HOST'])]
-    if db.get('PORT'): cmd += ['--port', str(db['PORT'])]
-    if db.get('USER'): cmd += ['--username', str(db['USER'])]
-    cmd += ['--dbname', str(db['NAME']), verified['path']]
+    conn_args = []
+    if db.get('HOST'): conn_args += ['--host', str(db['HOST'])]
+    if db.get('PORT'): conn_args += ['--port', str(db['PORT'])]
+    if db.get('USER'): conn_args += ['--username', str(db['USER'])]
     connection.close()
-    subprocess.run(cmd, env=env, check=True, timeout=600, capture_output=True)
+    # Clean slate: no surviving object can block the restore's object creation.
+    subprocess.run(
+        ['psql', *conn_args, '--dbname', str(db['NAME']),
+         '--set', 'ON_ERROR_STOP=on',
+         '--command', 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'],
+        env=env, check=True, timeout=120, capture_output=True)
+    result = subprocess.run(
+        ['pg_restore', '--no-owner', *conn_args, '--dbname', str(db['NAME']),
+         verified['path']],
+        env=env, timeout=600, capture_output=True, text=True)
+    if result.returncode != 0 and not _restore_stderr_is_benign(result.stderr):
+        raise RuntimeError(
+            f'pg_restore failed while restoring {verified["path"]}:\n'
+            f'{(result.stderr or "").strip()}')
     return verified
 
 
