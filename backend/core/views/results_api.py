@@ -886,10 +886,16 @@ class InstructorTeamDecisionsView(APIView):
             })
 
         origin = classify_submission_origin(game, team, rnd, sub)
+        locked_by = None
+        if sub.locked_by_id:
+            lb = User.objects.filter(user_id=sub.locked_by_id).first()
+            if lb:
+                locked_by = lb.display_name or lb.email or lb.username
         result = {
             'status': sub.status,
             'round': round_number,
             'locked_at': sub.locked_at.isoformat() if sub.locked_at else None,
+            'locked_by': locked_by,
             'submission_origin': origin,
             'submission_origin_label': SUBMISSION_ORIGIN_LABELS.get(origin, origin),
         }
