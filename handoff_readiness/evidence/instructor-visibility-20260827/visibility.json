@@ -1,0 +1,24 @@
+{
+  "task": "#2 instructor visibility & dispute tooling",
+  "date": "2026-08-27",
+  "environment": "isolated disposable postgres:16 (:15434) seeded read-only from production; isolated Django runserver on :8056; no production mutation",
+  "game": {"id": 24, "name": "REHEARSAL-96", "round": 1, "teams": 24},
+  "results": {
+    "instructor_dashboard": {"http": 200, "shows": ["team_name","members","decision_status","performance_index","cash_on_hand"], "verdict": "pass — per-team decision status and members visible"},
+    "team_decisions_endpoint": {"http": 200, "shows": ["status","locked_at","payload (budget/rd/marketing/entries/financing/esg/talent)"], "omits": ["locked_by / submitting user"], "verdict": "what + when visible; individual submitter not exposed"},
+    "missing_vs_deliberate_empty": {
+      "ground_truth_audit_actions": {"genuinely_missing_team_116": "missing_submission_defaulted", "deliberate_empty_team_117": "deadline_lock"},
+      "instructor_endpoint_shows": {"missing": "status=locked", "empty": "status=locked", "real": "status=locked"},
+      "distinguishable_from_ui_api": false,
+      "verdict": "FAIL — the distinction exists only in the DecisionAuditEvent log; no instructor endpoint surfaces it, so an instructor cannot distinguish missing from deliberately-empty without querying the database."
+    },
+    "correction_path": {"unlock_http": 200, "new_status": "draft", "audited": ["correction_unlock (decision)", "unlock_submission_for_correction (operator)"], "verdict": "pass — operator can unlock/correct a locked submission via API, fully audited, no DB needed"},
+    "leaderboard_tiebreak": {"http": 200, "shape": {"round_number": "int", "rankings": "list"}, "verdict": "pass — reachable by instructor; published tie-break order (cumulative operating cash flow, cumulative revenue, resilience) implemented in prior CR work"},
+    "decision_status_endpoint": {"http": 500, "error": "FieldError: Cannot resolve keyword 'round_id' into field (Round PK is 'id')", "frontend_uses_it": false, "verdict": "orphaned/broken legacy route; unused by the instructor UI"}
+  },
+  "findings": [
+    {"id": "V-1", "severity": "P1", "title": "Missing vs deliberate-empty not distinguishable without the database", "detail": "At close, a never-submitted team is recorded with audit action missing_submission_defaulted and a deliberately-empty draft with deadline_lock, but both become status=locked and no instructor endpoint surfaces the difference. The spec requires distinguishing them without direct database intervention; CR-012 added the audit action but not operator-facing visibility."},
+    {"id": "V-2", "severity": "P2", "title": "Individual submitter (locked_by) not surfaced", "detail": "DecisionSubmission.locked_by_id is populated (CR-004) but no instructor endpoint exposes who on the team submitted/locked; visibility is team-level (members list + locked_at)."},
+    {"id": "V-3", "severity": "P2", "title": "decision-status endpoint returns HTTP 500", "detail": "/api/rounds/<id>/decision-status/ is a stale legacy view (references Program/SimulationState, Round.round_id) and 500s. The instructor UI does not call it (it uses /instructor/dashboard/), so it is orphaned dead code rather than a live-path break."}
+  ]
+}
