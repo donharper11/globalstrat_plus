@@ -16,16 +16,18 @@ Verified against game 24 (24 teams, round 1). Evidence:
 | Instructor sees **what** a team submitted and **when** (`locked_at`) | Pass (`/instructor/teams/{id}/decisions/`) |
 | Operator **correction** of a locked submission, without the database | Pass — `unlock` returns the submission to draft, writing `correction_unlock` (decision) and `unlock_submission_for_correction` (operator) audit events |
 | **Tie-break / leaderboard** viewable by instructor | Pass — `/leaderboard/round/{n}/`; published order implemented in prior CR work |
-| Distinguish **missing** from **deliberately-empty** submissions from the UI/API | **FAIL (V-1)** |
+| Distinguish **missing** from **deliberately-empty** submissions from the UI/API | **FIXED (V-1)** |
 | See **who** on a team submitted (individual) | Gap (V-2) |
 
 ### Findings
-- **V-1 (P1).** After close, a never-submitted team (`missing_submission_defaulted`)
-  and a deliberately-empty locked submission (`deadline_lock`) both show
-  `status: locked`, and **no instructor endpoint surfaces the difference** — it
-  exists only in `DecisionAuditEvent`. The spec requires distinguishing these
-  "without direct database intervention." CR-012 added the audit action but not
-  operator-facing visibility, so this half of CR-012 is effectively unmet.
+- **V-1 (P1) — FIXED (commit 93a09cc).** Instructor endpoints now return
+  `submission_origin` (`defaulted_missing` / `deadline_locked` / `student_locked`
+  / `draft` / `no_submission`, plus a human label), derived from the immutable
+  close-round audit events, on both the team-decisions detail view and the
+  dashboard; the instructor UI shows an origin tag (a red "Never submitted" for a
+  defaulted team). An instructor can now distinguish a missing team from a
+  deliberately-empty one without touching the database. Regression test added;
+  verified end-to-end on an isolated stack (defaulted_missing vs deadline_locked).
 - **V-2 (P2).** `DecisionSubmission.locked_by` (the submitting user, populated by
   CR-004) is not exposed by any instructor endpoint; visibility is team-level.
 - **V-3 (P2).** `/api/rounds/{id}/decision-status/` returns HTTP 500 (stale

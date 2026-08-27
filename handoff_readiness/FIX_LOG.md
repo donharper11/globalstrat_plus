@@ -131,3 +131,28 @@ round 7 reproduced the pre-corruption `output_sha256`
 `c172eb4d…159224d3` exactly, with `restore_round`/`rerun_round` operator audit
 events and `restore/rerun` durable audit records. Two-operator sign-off for a
 live recovery remains an outstanding human gate.
+
+## V-1 fix: instructor can distinguish missing from deliberately-empty submissions
+
+Found during the #2 instructor-visibility verification: after close, a
+never-submitted team (audit action `missing_submission_defaulted`) and a
+deliberately-empty locked submission (`deadline_lock`) both showed
+`status=locked`, and no instructor endpoint surfaced the difference — it lived
+only in `DecisionAuditEvent`, so answering "did this team actually submit?"
+required direct database access. This is the operator-visibility half of CR-012.
+
+- Fix (commit `93a09cc`): `classify_submission_origin()` derives an origin from
+  the immutable close-round audit events — `no_submission` / `draft` /
+  `student_locked` / `deadline_locked` / `defaulted_missing` (robust to a
+  reopen+reclose cycle). It is surfaced as `submission_origin` (plus a human
+  label) on the instructor team-decisions endpoint and per team on the
+  instructor dashboard. The instructor UI shows an origin tag — a red
+  "Never submitted" for a defaulted team.
+- Verification: regression test over all five origin states; full backend suite
+  **274 passed**; end-to-end on an isolated stack a genuinely-missing team
+  reported `defaulted_missing` and a deliberately-empty one `deadline_locked`,
+  distinguishable from the dashboard and detail endpoints with no database access
+  (`evidence/instructor-visibility-20260827/visibility.json`).
+- Deployed: frontend `main.3a59e7dc.js` to the public endpoint (rollback backup
+  `/var/www/globalstrat-backup-20260827-183620`); backend gracefully reloaded so
+  the API serves `submission_origin`. EN/ZH parity preserved (1,986 keys each).
