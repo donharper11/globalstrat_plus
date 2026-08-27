@@ -257,9 +257,16 @@ class RoundProcessView(APIView):
             )
 
         before = _round_payload(game, round_obj)
-        from core.engine.advance_round import process_round
+        from core.engine.advance_round import process_round, RoundNotReadyError
         try:
             result = process_round(game.id)
+        except RoundNotReadyError as e:
+            # Operator-fixable precondition (e.g. a team is unlocked), not a
+            # server fault — report it as an actionable 400.
+            logger.warning('Round not ready to process for game %s: %s', game_id, e)
+            return Response(
+                {'error': str(e)}, status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             logger.exception('Processing failed for game %s', game_id)
             return Response(

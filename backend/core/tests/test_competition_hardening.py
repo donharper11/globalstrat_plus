@@ -100,6 +100,18 @@ class CompetitionAuditTests(TestCase):
         self.assertEqual(
             classify_submission_origin(self.game, self.team, r4, s4), 'draft')
 
+    def test_process_reports_unlocked_team_as_actionable_400(self):
+        """S-1: processing with a team left unlocked returns an actionable 400,
+        not a 500. The engine raises the distinct RoundNotReadyError."""
+        from core.engine.advance_round import RoundNotReadyError, process_round
+        from core.models import DecisionSubmission
+        # self.team has no locked submission for self.round.
+        DecisionSubmission.objects.filter(team=self.team, round=self.round).delete()
+        DecisionSubmission.objects.create(team=self.team, round=self.round,
+                                          status='draft')
+        with self.assertRaises(RoundNotReadyError):
+            process_round(self.game.id)
+
     def test_jwt_wrapper_exposes_pk_for_drf_throttling(self):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.user)}')

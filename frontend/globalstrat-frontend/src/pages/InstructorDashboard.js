@@ -2113,7 +2113,9 @@ const InstructorDashboard = () => {
         {drillLoading ? <LoadingSpinner /> : !drillData ? <Empty description={t('instructor.no_submission_data')} /> : (
           <div>
             <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{drillData.status}</Tag>
+            {drillData.submission_origin_label && <Tag color={drillData.submission_origin === 'defaulted_missing' ? 'red' : drillData.submission_origin === 'deadline_locked' ? 'gold' : 'default'} style={{ marginLeft: 4 }}>{drillData.submission_origin_label}</Tag>}
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
+            {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
 
             {drillData.budget && (
               <Descriptions title={t('instructor.budget_allocation')} size="small" bordered column={{ xs: 1, sm: 2, md: 3 }} style={{ marginTop: 12 }}>

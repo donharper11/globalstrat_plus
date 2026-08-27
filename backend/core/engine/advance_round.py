@@ -26,6 +26,12 @@ logger = logging.getLogger('engine')
 SC_FAILURE_MARKER = '[SC-ENGINE-FAILURE]'
 
 
+class RoundNotReadyError(ValueError):
+    """A precondition for processing is unmet (operator-fixable), e.g. a team's
+    decisions are not locked. Distinct from an engine failure so callers can
+    report it as an actionable 400 rather than a 500."""
+
+
 def _run_sc_step(step_name, fn, context):
     """Run a supply-chain step and fail the atomic resolution on error."""
     try:
@@ -309,8 +315,9 @@ def _run_phase_1(game_id):
             round=current_round_obj,
         ).first()
         if not submission or submission.status != 'locked':
-            raise ValueError(
-                f'Team "{team.name}" has not locked decisions for round {current_round}.'
+            raise RoundNotReadyError(
+                f'Team "{team.name}" has not locked decisions for round {current_round}. '
+                f'Re-lock the team (or close the round) before processing.'
             )
 
     # Mark processing started only after preconditions pass.
