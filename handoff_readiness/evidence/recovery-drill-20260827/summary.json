@@ -1,0 +1,72 @@
+{
+  "drill": "end-to-end recover_competition_round",
+  "date": "2026-08-27",
+  "environment": "isolated disposable postgres:16 (127.0.0.1:15433) seeded read-only from production; all destructive ops confined to the container",
+  "target": {
+    "game_id": 31,
+    "game_name": "CC-12 Integration Test",
+    "round": 6,
+    "baseline_output_sha256": "03aeb179a6d0ac1fcab1022ac9accd42e1e2631340f0a4e3bbe22cdf7199b620",
+    "baseline_input_sha256": "19920aa7197fac391bf56ed1012f599297b083b7c296bfdcf4b0c93762820137"
+  },
+  "result": "FOUND THEN FIXED \u2014 end-to-end recovery failed on first run (3 defects), was repaired, and now passes end-to-end with deterministic reproduction.",
+  "verdict_dry_run": "pass (validation + durable intent audit written)",
+  "verdict_end_to_end": "pass_after_fix",
+  "findings": [
+    {
+      "id": "RD-01",
+      "severity": "P1",
+      "title": "restore_database aborts on benign version-skew SET",
+      "detail": "Host pg tools are pg_dump/pg_restore 18.3 while the DB server (production and disposable) is 16.13. pg_dump 18 writes 'SET transaction_timeout = 0;' into every custom dump; restore_database runs 'pg_restore --clean --if-exists --no-owner --exit-on-error', and --exit-on-error makes the v16 server's 'unrecognized configuration parameter \"transaction_timeout\"' fatal. pg_restore exits 1 and restore_database raises CalledProcessError before any restore completes.",
+      "evidence": "01-restore-exit-on-error.txt",
+      "validated_fix": "Clean-slate restore: 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' then 'pg_restore --no-owner' (no --clean, no --exit-on-error), then treat the run as successful only if stderr contains no errors other than benign 'unrecognized configuration parameter' SETs; otherwise raise. Verified in isolation: state reverted correctly with only the benign SET error.",
+      "status": "fixed"
+    },
+    {
+      "id": "RD-02",
+      "severity": "P1",
+      "title": "--clean cannot drop FK-referenced objects",
+      "detail": "Even ignoring transaction_timeout, 'pg_restore --clean' fails to DROP objects that are FK targets, e.g. 'cannot drop constraint users_pkey on table public.users because ... team_withdrawn_by_id_...fk_users_user_id on table public.team depends on it'. The dependency-ordered DROP is not CASCADE, so --clean leaves a partially-dropped schema.",
+      "evidence": "01-restore-exit-on-error.txt",
+      "validated_fix": "Same clean-slate DROP SCHEMA ... CASCADE approach removes all FK-dependent objects first, eliminating these errors.",
+      "status": "fixed"
+    },
+    {
+      "id": "RD-03",
+      "severity": "P1",
+      "title": "Backup/code revision skew breaks the re-run",
+      "detail": "The re-run half (process_round with current code) fails with 'column team.participation_status does not exist'. The game-31 pre-resolution backups were written 2026-08-27T14:02Z, 34 minutes before migration 0060_team_participation_status was applied to production (2026-08-27T14:36Z). Restoring a pre-0060 snapshot and re-running current code queries a column the restored schema lacks. Compounding it, these manifests' code_revision field is EMPTY, so the command cannot even detect the skew.",
+      "evidence": "django_migrations 0060 applied 2026-08-27T14:36Z vs backup mtime 14:02Z; restored schema has no team.participation_status; manifest.code_revision is blank",
+      "recommended_fix": "Design decision required. Options: (a) fail-closed guard \u2014 refuse recovery unless manifest.code_revision equals the deployed GIT_REVISION (requires code_revision to be populated, which newer manifests do but these legacy ones do not); (b) run 'manage.py migrate' after restore to bring the schema to current code before re-run; (c) operational \u2014 during a frozen-code competition, backups and code share a revision, so this skew should not occur; still, the command should assert code_revision match and refuse otherwise.",
+      "status": "fixed"
+    }
+  ],
+  "note": "Only the --dry-run path was exercised in prior verification, which stops before restore_database; that is why none of these were caught. The dry-run guards (maintenance-mode gate, confirm-token, >=10-char reason, instructor/admin actor, backup SHA-256 verification, durable JSONL intent audit) all work correctly.",
+  "isolation": "Production was read-only (single pg_dump for seeding + read queries). No production database, service, or competition record was mutated by the drill. Disposable container gs-recovery-drill removed on completion.",
+  "fix": {
+    "RD-01_RD-02": "restore_database rewritten: DROP SCHEMA public CASCADE + CREATE SCHEMA (clean slate, no FK-drop ordering), then pg_restore --no-owner tolerating only benign cross-version SET failures (_restore_stderr_is_benign). Any other pg_restore error is fatal.",
+    "RD-03": "recover_competition_round now compares manifest.code_revision to the running resolve_code_revision() and refuses on mismatch (or empty) unless --allow-code-revision-mismatch. Revisions recorded in the durable intent audit.",
+    "tests": "core/tests/test_competition_hardening.py: added benign-classifier and code-revision-mismatch tests; updated dry-run test. Full suite 273 passed."
+  },
+  "green_rerun": {
+    "target": {
+      "game_id": 31,
+      "round": 7,
+      "code_revision": "drillrev1 (fresh same-revision backup generated in-drill)"
+    },
+    "baseline_output_sha256": "c172eb4d2d4494c4aff11be6779b5f4cc2779de0100770acb0a10e7a159224d3",
+    "rerun_output_sha256": "c172eb4d2d4494c4aff11be6779b5f4cc2779de0100770acb0a10e7a159224d3",
+    "deterministic_match": true,
+    "operator_audit_events": [
+      "restore_round",
+      "rerun_round"
+    ],
+    "durable_audit_records": [
+      "restore_round_intent",
+      "restore_round_complete",
+      "rerun_round_complete"
+    ],
+    "evidence": "recovery-audit-green-rerun.jsonl"
+  },
+  "two_operator_sign_off": "OUTSTANDING \u2014 human gate. The command records actor + reason in an immutable operator audit event and durable JSONL; a second operator must counter-sign per the runbook before a live recovery."
+}
