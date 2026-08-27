@@ -24,7 +24,9 @@ checklist tracks the remaining operational path to launch.
 
 ## Required before release candidate approval
 
-- [ ] Commit and tag the exact competition build; record the approved revision and deployment artifact.
+- [x] Commit and tag the exact competition build: commit
+  `86c2ad40fb300a666e154915aa392cb2e56f2ad6`, annotated tag
+  `competition-rc-2026.08.27.1`.
 - [ ] Set `GIT_REVISION` in the deployed environment and verify a newly generated resolution manifest contains the expected non-empty revision.
 - [ ] Approve backup and manifest retention, access control, storage monitoring and secure disposal. Confirm that retention covers the dispute window.
 - [ ] Run a final consolidated A1–A8 verification against the tagged candidate and record links to its evidence.
