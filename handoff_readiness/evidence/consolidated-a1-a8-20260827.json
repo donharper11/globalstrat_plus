@@ -9,23 +9,82 @@
     "matches_fresh_tag_source_build": true
   },
   "areas": {
-    "A1": {"verdict": "fail", "route_sweep_passed": 48, "route_sweep_failed": 0, "six_round_lifecycle_passed": true, "browser_state_checks_completed": true, "open_finding": "CR-017"},
-    "A2": {"verdict": "pass"},
-    "A3": {"verdict": "pass", "decision_audit_events_checked": 1035, "decision_hash_mismatches": 0, "completed_manifests_checked": 9, "manifest_hash_mismatches": 0},
-    "A4": {"verdict": "pass"},
-    "A5": {"verdict": "pass"},
-    "A6": {"verdict": "pass"},
-    "A7": {"verdict": "pass"},
-    "A8": {"verdict": "pass", "en_keys": 1982, "zh_keys": 1982, "key_mismatches": 0}
+    "A1": {
+      "verdict": "pass",
+      "route_sweep_passed": 48,
+      "route_sweep_failed": 0,
+      "six_round_lifecycle_passed": true,
+      "browser_state_checks_completed": true,
+      "cr017": "repaired"
+    },
+    "A2": {
+      "verdict": "pass"
+    },
+    "A3": {
+      "verdict": "pass",
+      "decision_audit_events_checked": 1035,
+      "decision_hash_mismatches": 0,
+      "completed_manifests_checked": 9,
+      "manifest_hash_mismatches": 0
+    },
+    "A4": {
+      "verdict": "pass"
+    },
+    "A5": {
+      "verdict": "pass"
+    },
+    "A6": {
+      "verdict": "pass"
+    },
+    "A7": {
+      "verdict": "pass"
+    },
+    "A8": {
+      "verdict": "pass",
+      "en_keys": 1982,
+      "zh_keys": 1982,
+      "key_mismatches": 0
+    }
   },
   "fresh_checks": {
-    "backend_full_suite": {"tests": 271, "seconds": 85.190, "passed": true},
-    "frontend_production_build": {"passed": true, "warnings": true},
-    "a6_a7_focused": {"tests": 50, "seconds": 24.489, "passed": true},
-    "tagged_a2_a3": {"tests": 107, "seconds": 58.043, "passed": true},
-    "tagged_a4": {"tests": 9, "seconds": 12.690, "passed": true},
-    "tagged_a5": {"tests": 73, "seconds": 50.151, "passed": true}
+    "backend_full_suite": {
+      "tests": 271,
+      "seconds": 85.19,
+      "passed": true
+    },
+    "frontend_production_build": {
+      "passed": true,
+      "warnings": true
+    },
+    "a6_a7_focused": {
+      "tests": 50,
+      "seconds": 24.489,
+      "passed": true
+    },
+    "tagged_a2_a3": {
+      "tests": 107,
+      "seconds": 58.043,
+      "passed": true
+    },
+    "tagged_a4": {
+      "tests": 9,
+      "seconds": 12.69,
+      "passed": true
+    },
+    "tagged_a5": {
+      "tests": 73,
+      "seconds": 50.151,
+      "passed": true
+    }
   },
-  "overall_verdict": "fail",
-  "launch_checklist_gate_complete": false
+  "overall_verdict": "pass",
+  "launch_checklist_gate_complete": true,
+  "cr017_repair": {
+    "commit": "aa353c16e5fc1a139e9395e4c50e849e26e49fa1",
+    "deployed_frontend_superseded_by": {
+      "javascript": "main.d8229d93.js",
+      "sha256": "b83c99f639f1c99aec417bc370910f27b2d2153053e4c8cf49312ac16d0b98a1"
+    },
+    "note": "Frontend advances beyond tag competition-rc-2026.08.27.1 to include the CR-017 guard; backend unchanged from the tag. A2-A8 unaffected (backend/engine/locale-parity/deployed-screen evidence)."
+  }
 }

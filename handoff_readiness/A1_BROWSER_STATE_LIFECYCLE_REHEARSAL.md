@@ -5,6 +5,20 @@ Candidate: `competition-rc-2026.08.27.1`
 Commit: `86c2ad40fb300a666e154915aa392cb2e56f2ad6`  
 Verdict: **FAIL — CR-017, silent loss of an unsaved decision on navigation.**
 
+> **Update — 2026-08-27, CR-017 closed.** The record below is the original
+> failing rehearsal. After the `useUnsavedChangesGuard` repair, the identical
+> back-navigation scenario was re-run against the fixed production build served
+> to the isolated tagged backend. Browser Back during an unsaved Marketing edit
+> now raises the discard confirmation *"You have unsaved changes. Leave this
+> page and discard them?"* (plus a `beforeunload` guard on tab close / full
+> navigation) instead of silently reverting the field. Re-verification evidence:
+> `evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json`
+> (`leave_dialog` populated, `warning_visible: true`, `edit_created: true`,
+> `pass: true`) and `evidence/a1-lifecycle-20260827/cr017-regression-sweep.json`
+> (all five guarded decision pages render and stay inert when clean). The A1
+> verdict is therefore **PASS**; all other scenarios in this record already
+> passed and are unaffected by the frontend-only guard change.
+
 ## Isolation and scope
 
 The exact tagged source ran on loopback against a disposable PostgreSQL 16
