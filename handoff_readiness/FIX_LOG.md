@@ -76,3 +76,8 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
   reported zero invalid/expired artifacts and confirmed 44% filesystem use
   (`BACKUP_RETENTION_POLICY.md`,
   `evidence/backup-retention-verification.json`).
+- Final tagged-candidate consolidation reran 271 backend tests successfully,
+  rebuilt a byte-identical public frontend artifact, and passed A2-A8. A1's
+  deployed 48-screen sweep passes, but the strict six-round UI lifecycle and
+  browser-state scenarios are not yet evidenced, so the consolidated gate
+  remains open (`CONSOLIDATED_A1_A8_VERIFICATION.md`).

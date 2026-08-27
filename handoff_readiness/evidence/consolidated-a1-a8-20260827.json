@@ -1,0 +1,31 @@
+{
+  "verified_at": "2026-08-27T15:23:37Z",
+  "tag": "competition-rc-2026.08.27.1",
+  "commit": "86c2ad40fb300a666e154915aa392cb2e56f2ad6",
+  "application_source_matches_tag": true,
+  "deployed_frontend": {
+    "javascript": "main.8d2222cf.js",
+    "sha256": "34b64d2dcf724d55f40b2bf04a3e605c14b36b809aa28399be6b396abe6d4bbd",
+    "matches_fresh_tag_source_build": true
+  },
+  "areas": {
+    "A1": {"verdict": "incomplete", "route_sweep_passed": 48, "route_sweep_failed": 0, "missing": ["complete six-round instructor/student UI lifecycle", "back mid-decision", "refresh during submission", "duplicate tab", "session timeout", "browser close and return"]},
+    "A2": {"verdict": "pass"},
+    "A3": {"verdict": "pass", "decision_audit_events_checked": 1035, "decision_hash_mismatches": 0, "completed_manifests_checked": 9, "manifest_hash_mismatches": 0},
+    "A4": {"verdict": "pass"},
+    "A5": {"verdict": "pass"},
+    "A6": {"verdict": "pass"},
+    "A7": {"verdict": "pass"},
+    "A8": {"verdict": "pass", "en_keys": 1982, "zh_keys": 1982, "key_mismatches": 0}
+  },
+  "fresh_checks": {
+    "backend_full_suite": {"tests": 271, "seconds": 85.190, "passed": true},
+    "frontend_production_build": {"passed": true, "warnings": true},
+    "a6_a7_focused": {"tests": 50, "seconds": 24.489, "passed": true},
+    "tagged_a2_a3": {"tests": 107, "seconds": 58.043, "passed": true},
+    "tagged_a4": {"tests": 9, "seconds": 12.690, "passed": true},
+    "tagged_a5": {"tests": 73, "seconds": 50.151, "passed": true}
+  },
+  "overall_verdict": "incomplete",
+  "launch_checklist_gate_complete": false
+}

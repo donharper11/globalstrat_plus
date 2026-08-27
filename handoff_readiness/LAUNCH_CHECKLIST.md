@@ -34,7 +34,10 @@ checklist tracks the remaining operational path to launch.
   integrity/capacity monitoring and guarded disposal. The 90-day backup period
   covers the 24-hour dispute window and extends through final rulings
   (`BACKUP_RETENTION_POLICY.md`).
-- [ ] Run a final consolidated A1–A8 verification against the tagged candidate and record links to its evidence.
+- [ ] Complete the final consolidated A1–A8 verification against the tagged
+  candidate. A2–A8 pass; A1 remains incomplete for the strict six-round UI and
+  browser-state scenarios (`CONSOLIDATED_A1_A8_VERIFICATION.md`,
+  `evidence/consolidated-a1-a8-20260827.json`).
 - [ ] Build/deploy the tagged candidate and verify the public frontend/API, migrations, authentication and monitoring. Record rollback artifact and procedure.
 
 ## Required before live competition approval
