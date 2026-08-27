@@ -20,7 +20,7 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
 | CR-014 | Closed | Extracted the remaining student-facing supply-chain and shared navigation/status copy into matched EN/ZH keys: Sourcing, Logistics, Trade Finance, Inventory, the supply-chain dashboard, round status, and shallow-route recovery. Protocol names and brands (for example Incoterms, GS, GlobalStrat) remain intentionally invariant. |
 | CR-015 | Accepted operational constraint | The supported competition URL is the public GlobalStrat endpoint; port 8081 belongs to code-server and is excluded from the runbook. |
 | CR-016 | Closed | Root cause was the full-screen authentication gate: direct navigation waited for `/auth/me/` behind an unlabeled standalone Ant Design spinner. The app now hydrates the last server-verified session immediately while revalidating it in the background, and all standalone loading states render explicit, accessible EN/ZH text. The post-deploy sweep captured 48/48 nonblank screens with no console or API errors. |
-| CR-017 | Open | Final A1 rehearsal changed an enabled Round 1 Marketing field from `0` to `1`, navigated away, then returned with browser Back. No warning appeared and the field reverted to `0`, silently discarding the unsaved decision. Evidence: `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`. |
+| CR-017 | Closed | Added `useUnsavedChangesGuard`, wired into all five student decision pages that track a dirty draft (Marketing, Sourcing, Logistics, Trade Finance, Inventory). While a page has unsaved edits it warns before the route is left: a `beforeunload` prompt on tab close / full navigation, an intercepted `confirm` on same-origin link clicks, and a history-sentinel `confirm` on browser Back (BrowserRouter exposes no data-router blocker, so the guard keeps a same-URL sentinel entry while dirty). The prompt text is a new EN/ZH locale key `common.unsaved_changes_prompt`. Re-verification: the original failing scenario now fires the discard dialog `"You have unsaved changes. Leave this page and discard them?"` instead of silently reverting. Evidence: `evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json` (`leave_dialog` populated, `warning_visible: true`, `pass: true`), `cr017-regression-sweep.json`, and `frontend/globalstrat-frontend/src/hooks/useUnsavedChangesGuard.test.js` (3/3). |
 
 ## Additional server-side hardening
 
@@ -86,3 +86,29 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
   rounds, refresh, duplicate-tab, session-expiry, close/return and later-round
   URL scenarios passed. Back navigation exposed open CR-017: an unsaved
   Marketing edit is discarded without warning.
+
+## CR-017 repair and re-verification (post-tag)
+
+- Fix committed as `aa353c16e5fc1a139e9395e4c50e849e26e49fa1` on `main` (frontend-only: `useUnsavedChangesGuard`
+  hook + wiring in the five dirty-tracking decision pages + one EN/ZH locale key).
+  The backend is unchanged from tag `competition-rc-2026.08.27.1`.
+- Frontend rebuilt from that commit: bundle `main.d8229d93.js`,
+  sha256 `b83c99f639f1c99aec417bc370910f27b2d2153053e4c8cf49312ac16d0b98a1`.
+- Unit test `useUnsavedChangesGuard.test.js`: **3/3 passed** (blocks a cancelled
+  same-origin link, stays inert when clean, marks `beforeunload` prevented while dirty).
+- EN/ZH locale parity re-checked: **1,983 leaf keys each, zero mismatch**
+  (the new `common.unsaved_changes_prompt` key added to both).
+- Targeted A1 re-verification against the fixed build served to the isolated
+  backend: the original failing scenario (Marketing field `0`->`1`, browser Back)
+  now raises `"You have unsaved changes. Leave this page and discard them?"`
+  (`leave_dialog` populated, `warning_visible: true`, `pass: true`;
+  `evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json`).
+- Five-page guard sweep: Marketing, Sourcing, Logistics, Trade Finance and
+  Inventory each render nonblank with zero page errors and the guard stays inert
+  on a clean back-navigation — no false prompts
+  (`evidence/a1-lifecycle-20260827/cr017-regression-sweep.json`, `all_pass: true`).
+- Deployed to the public endpoint via `frontend/deploy-frontend.sh --skip-build`:
+  rsynced to `root@47.86.57.36:/var/www/globalstrat/build`, 37 files, verified
+  `main.d8229d93.js` live at https://globalstrat.camdani.com. Rollback artifact:
+  `/var/www/globalstrat-backup-20260827-171919`. Cloudflare purge skipped
+  (no `CF_TOKEN`); the content-hashed bundle name makes the new asset cache-safe.

@@ -3,7 +3,7 @@
 Verification date: 2026-08-27 UTC  
 Candidate: `competition-rc-2026.08.27.1`  
 Application commit: `86c2ad40fb300a666e154915aa392cb2e56f2ad6`  
-Overall verdict: **FAIL — the completed A1 rehearsal found CR-017.**
+Overall verdict: **PASS — CR-017 repaired and re-verified; all of A1–A8 pass.**
 
 The application source under `backend/` and `frontend/` matches the annotated
 tag exactly. A fresh frontend production build emitted `main.8d2222cf.js` with
@@ -13,7 +13,7 @@ tagged revision in its production environment.
 
 | Area | Verdict | Consolidated evidence |
 |---|---|---|
-| A1 click-through | **Fail** | The isolated tagged rehearsal completed all six rounds and the required browser-state scenarios. Everything passed except back navigation during an unsaved Marketing edit: no warning appeared and the edit was silently lost (CR-017; `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`). |
+| A1 click-through | **Pass** | The isolated rehearsal completed all six rounds and the required browser-state scenarios. The one prior failure — silent loss on back navigation during an unsaved Marketing edit — is closed by CR-017 (commit `aa353c16e5fc`). Re-run of the identical scenario now raises the discard confirmation (`evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json`, `pass:true`), and a five-page guard sweep confirms every guarded decision page renders and stays inert when clean (`cr017-regression-sweep.json`). See `A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`. |
 | A2 lifecycle | **Pass** | 107 tagged focused A2/A3 tests; expected and 3x deadline evidence accounts for every write, late rejection and team lock; concurrent resolution has one winner. |
 | A3 reconstruction | **Pass** | Zero hash mismatches across 1,035 live decision audit events and nine completed manifests; isolated replay input/output hashes are byte-identical; tagged provenance writer probe passed. Historical pre-tag manifests correctly remain unmodified and have empty revision fields. |
 | A4 balance/exploits | **Pass** | Nine tagged tests; FX matrix has no dominant hedge ratio, legal R&D ordering is invariant, duplicate targets are rejected, and the six-round cohort rejects an unassailable early lead. |
@@ -31,5 +31,10 @@ tagged revision in its production environment.
 - Tagged isolated workstreams: A2/A3 **107 passed**, A4 **9 passed**, A5
   **73 passed**.
 
-The consolidated launch gate remains unchecked until CR-017 is repaired and the
-targeted back-navigation scenario plus affected A1 verification are rerun.
+CR-017 is repaired (commit `aa353c16e5fc`) and the targeted back-navigation
+scenario plus the affected A1 verification have been rerun against the fixed
+build, all passing. The frontend advances beyond tag `competition-rc-2026.08.27.1`
+to carry the guard (bundle `main.d8229d93.js`,
+sha256 `b83c99f639f1c99aec417bc370910f27b2d2153053e4c8cf49312ac16d0b98a1`); the
+backend is unchanged from the tag, so A2–A8 are unaffected. **The consolidated
+launch gate for A1–A8 is now complete.**

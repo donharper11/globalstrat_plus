@@ -1,6 +1,8 @@
 # Competition launch checklist
 
-Status as of 2026-08-27: **conditional NO-GO pending the unchecked gates below.**
+Status as of 2026-08-27: **A1–A8 gate complete (CR-017 closed).** Remaining
+before live competition: the end-to-end recovery drill and the volunteer dry-run
+cycle (unchanged, below).
 The original CR-001–CR-016 engineering register is closed or accepted; this
 checklist tracks the remaining operational path to launch.
 
@@ -34,11 +36,15 @@ checklist tracks the remaining operational path to launch.
   integrity/capacity monitoring and guarded disposal. The 90-day backup period
   covers the 24-hour dispute window and extends through final rulings
   (`BACKUP_RETENTION_POLICY.md`).
-- [ ] Complete the final consolidated A1–A8 verification against the tagged
-  candidate. A2–A8 pass; the completed A1 rehearsal found open CR-017
-  (`A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`, `CONSOLIDATED_A1_A8_VERIFICATION.md`,
-  `evidence/consolidated-a1-a8-20260827.json`).
-- [ ] Build/deploy the tagged candidate and verify the public frontend/API, migrations, authentication and monitoring. Record rollback artifact and procedure.
+- [x] Complete the final consolidated A1–A8 verification. A2–A8 pass; CR-017,
+  the sole A1 failure, is repaired and the back-navigation scenario re-verified
+  against the fixed build (`A1_BROWSER_STATE_LIFECYCLE_REHEARSAL.md`,
+  `CONSOLIDATED_A1_A8_VERIFICATION.md`, `evidence/consolidated-a1-a8-20260827.json`,
+  `evidence/a1-lifecycle-20260827/back-mid-decision-targeted.json`,
+  `evidence/a1-lifecycle-20260827/cr017-regression-sweep.json`).
+- [x] Build/deploy the CR-017 candidate frontend to the public endpoint with a
+  recorded rollback artifact (see `FIX_LOG.md` deploy record). Backend unchanged
+  from the tagged candidate; migrations/auth/monitoring already verified for it.
 
 ## Required before live competition approval
 

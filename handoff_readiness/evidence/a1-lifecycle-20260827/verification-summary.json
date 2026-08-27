@@ -22,22 +22,32 @@
     "refresh_during_submission": "pass",
     "duplicate_tab": "pass",
     "direct_later_round_url": "pass_rounds_1_to_6",
-    "back_mid_decision": "fail"
+    "back_mid_decision": "pass"
   },
   "back_mid_decision": {
     "route": "marketing",
     "old_value": "0",
     "edited_value": "1",
     "returned_value": "0",
-    "leave_dialog": null,
-    "warning_visible": false,
-    "edit_preserved": false
+    "leave_dialog": "You have unsaved changes. Leave this page and discard them?",
+    "warning_visible": true,
+    "edit_preserved": false,
+    "note": "Edit is intentionally not persisted; the fix warns before the route is left rather than silently discarding. Original run recorded leave_dialog:null / warning_visible:false."
   },
   "environment_notes": {
     "external_font_requests_timed_out": true,
     "page_exceptions": 0,
     "intentional_navigation_request_aborts_observed": true
   },
-  "a1_verdict": "fail",
-  "open_finding": "CR-017"
+  "a1_verdict": "pass",
+  "cr017_repaired": {
+    "commit": "aa353c16e5fc1a139e9395e4c50e849e26e49fa1",
+    "frontend_bundle": "main.d8229d93.js",
+    "frontend_sha256": "b83c99f639f1c99aec417bc370910f27b2d2153053e4c8cf49312ac16d0b98a1",
+    "reverified_at": "2026-08-27T17:00:00Z",
+    "evidence": [
+      "back-mid-decision-targeted.json",
+      "cr017-regression-sweep.json"
+    ]
+  }
 }
