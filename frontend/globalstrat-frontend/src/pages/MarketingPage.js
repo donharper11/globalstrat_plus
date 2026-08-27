@@ -8,6 +8,7 @@ import { getMarketingContext, patchDecision } from '../api/decisions';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
 import { PanelCard, PageHeader } from '../components/design-system';
+import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 
 const { Title, Text } = Typography;
 
@@ -36,7 +37,11 @@ const MarketingPage = () => {
   const [decisions, setDecisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const saveTimer = useRef(null);
+  const saveVersion = useRef(0);
+
+  useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
 
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) { setLoading(false); return; }
@@ -82,13 +87,15 @@ const MarketingPage = () => {
   const totalSpend = decisions.reduce((s, d) => s + d.promotion_budget + (d.sales_team_count * repCost), 0);
   const mktgBudget = Number(context?.marketing_budget_remaining || 0) + totalSpend;
 
-  const autoSave = useCallback(() => {
+  const autoSave = useCallback((nextDecisions) => {
+    const version = ++saveVersion.current;
+    setDirty(true);
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
       try {
-        const payload = decisions.filter(d => d.retail_price > 0 || d.production_volume > 0).map(d => ({
+        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0).map(d => ({
           team_product: d.team_product,
           market: d.market,
           retail_price: d.retail_price,
@@ -106,11 +113,14 @@ const MarketingPage = () => {
           demand_estimate: d.demand_estimate,
         }));
         await patchDecision(gameId, teamId, currentRound, 'marketing', { marketing_decisions: payload });
+        if (version === saveVersion.current) setDirty(false);
         refreshBudgets();
       } catch { /* ignore */ }
       setSaving(false);
     }, 2000);
-  }, [gameId, teamId, currentRound, locked, decisions, refreshBudgets]);
+  }, [gameId, teamId, currentRound, locked, repCost, refreshBudgets]);
+
+  useEffect(() => () => clearTimeout(saveTimer.current), []);
 
   const updateDecision = (idx, field, value) => {
     setDecisions(prev => {
@@ -126,9 +136,9 @@ const MarketingPage = () => {
           next[idx].channel_trade_pct = 1 - next[idx].channel_digital_pct - next[idx].channel_traditional_pct;
         }
       }
+      autoSave(next);
       return next;
     });
-    autoSave();
   };
 
   const toggleChannel = (idx, channelKey) => {
@@ -154,9 +164,9 @@ const MarketingPage = () => {
       // Sum sales_team_count from channel reps
       d.sales_team_count = Object.values(detail).reduce((s, v) => s + (v || 0), 0);
       next[idx] = d;
+      autoSave(next);
       return next;
     });
-    autoSave();
   };
 
   const updateChannelReps = (idx, channelKey, reps) => {
@@ -168,9 +178,9 @@ const MarketingPage = () => {
       d.distribution_channel_detail = detail;
       d.sales_team_count = Object.values(detail).reduce((s, v) => s + (v || 0), 0);
       next[idx] = d;
+      autoSave(next);
       return next;
     });
-    autoSave();
   };
 
   const toggleCampaignFeature = (idx, featureId) => {
@@ -185,9 +195,9 @@ const MarketingPage = () => {
         ids.push(featureId);
       }
       next[idx] = { ...d, campaign_focus_feature_ids: ids };
+      autoSave(next);
       return next;
     });
-    autoSave();
   };
 
   if (loading) return <LoadingSpinner />;

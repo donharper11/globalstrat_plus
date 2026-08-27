@@ -14,6 +14,7 @@ import { getProductContext } from '../api/decisions';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
+import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 
 const { Text, Paragraph } = Typography;
 const UNLOCK = { buffer_days: 3, safety_stock_trigger_pct: 3, contingency_plans: 5 };
@@ -152,11 +153,12 @@ const InventoryPage = () => {
     } finally { setSaving(false); }
   };
 
+  const dirty = snap !== null && canonical(rows, altRules, modeRules) !== snap;
+  useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
   if (loading) return <LoadingSpinner />;
   const invLocked = round < UNLOCK.buffer_days;
   const cpLocked = round < UNLOCK.contingency_plans;
   const dis = (extra) => !editable || cpLocked || extra;
-  const dirty = snap !== null && canonical(rows, altRules, modeRules) !== snap;
   const st = pageState({ locked, editable, dirty });
 
   return (

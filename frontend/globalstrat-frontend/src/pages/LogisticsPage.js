@@ -13,6 +13,7 @@ import { getLanes, getMarkets, getLogistics, saveLogistics } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
+import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 
 const { Text, Paragraph } = Typography;
 
@@ -117,8 +118,9 @@ const LogisticsPage = () => {
   const saveAndCloseModal = async () => { const ok = await handleSave(); if (ok) setEditLane(null); };
   const removeLane = (id) => setMix((p) => { const n = { ...p }; delete n[id]; return n; });
 
-  if (loading) return <LoadingSpinner />;
   const dirty = snap !== null && canonical(mix, inco, customs) !== snap;
+  useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
+  if (loading) return <LoadingSpinner />;
   const st = pageState({ locked, editable, dirty });
 
   // Configured lanes table
