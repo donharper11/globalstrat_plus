@@ -156,3 +156,18 @@ required direct database access. This is the operator-visibility half of CR-012.
 - Deployed: frontend `main.3a59e7dc.js` to the public endpoint (rollback backup
   `/var/www/globalstrat-backup-20260827-183620`); backend gracefully reloaded so
   the API serves `submission_origin`. EN/ZH parity preserved (1,986 keys each).
+
+## V-2 and S-1 fixes; full playthrough
+
+- **V-2 (commit `19716a7`).** Instructor team-decisions endpoint now returns
+  `locked_by` (the individual submitter) and the drill-down shows it. Team-level
+  visibility is no longer the only granularity.
+- **S-1 (commit `19716a7`).** `process_round` raises a distinct `RoundNotReadyError`;
+  the process view returns an actionable **400** ("Re-lock the team (or close the
+  round) before processing") instead of a raw 500 when a team is left unlocked.
+  Regression test added; full suite **275 passed**. Deployed frontend
+  `main.f407eb73.js`; backend reloaded.
+- **Full playthrough.** `full_playthrough_sim.py` ran a complete 6-round, 24-bot
+  game with strategy-diverse budget+marketing decisions and per-round adversarial
+  events — all rounds process=200, leaderboards produced, manifests complete,
+  0 issues (`evidence/full-playthrough-20260827/report.json`).
