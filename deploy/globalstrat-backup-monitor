@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+backup_dir="${COMPETITION_BACKUP_DIR:-/home/ubuntu/projects/globalstrat+/backend/competition_backups}"
+retention_days="${COMPETITION_BACKUP_RETENTION_DAYS:-90}"
+min_free_gb="${COMPETITION_BACKUP_MIN_FREE_GB:-10}"
+max_used_percent="${COMPETITION_BACKUP_MAX_USED_PERCENT:-80}"
+backend_dir="/home/ubuntu/projects/globalstrat+/backend"
+
+test -d "$backup_dir"
+test "$(stat -c '%U:%G' "$backup_dir")" = "ubuntu:ubuntu"
+test "$(stat -c '%a' "$backup_dir")" = "700"
+
+if find "$backup_dir" -maxdepth 1 -type f ! -perm 600 -print -quit | grep -q .; then
+    echo "Backup monitor failed: an artifact is not mode 0600." >&2
+    exit 1
+fi
+if find "$backup_dir" -maxdepth 1 -type f \( ! -user ubuntu -o ! -group ubuntu \) -print -quit | grep -q .; then
+    echo "Backup monitor failed: an artifact has an unexpected owner." >&2
+    exit 1
+fi
+
+available_kb="$(df -Pk "$backup_dir" | awk 'NR == 2 {print $4}')"
+used_percent="$(df -Pk "$backup_dir" | awk 'NR == 2 {gsub(/%/, "", $5); print $5}')"
+test "$available_kb" -ge "$((min_free_gb * 1024 * 1024))"
+test "$used_percent" -le "$max_used_percent"
+
+inventory="$(mktemp)"
+trap 'rm -f "$inventory"' EXIT
+cd "$backend_dir"
+/usr/bin/python3 manage.py manage_competition_backups \
+    --retention-days "$retention_days" >"$inventory"
+/usr/bin/python3 - "$inventory" "$retention_days" "$available_kb" "$used_percent" <<'PY'
+import json
+import sys
+
+path, expected_days, available_kb, used_percent = sys.argv[1:]
+with open(path, encoding='utf-8') as stream:
+    report = json.load(stream)
+if report['retention_days'] != int(expected_days):
+    raise SystemExit('Backup monitor failed: retention configuration mismatch.')
+if report['invalid_count']:
+    raise SystemExit('Backup monitor failed: invalid backup/checksum pair detected.')
+print(json.dumps({
+    'status': 'ok',
+    'retention_days': report['retention_days'],
+    'backup_count': report['backup_count'],
+    'expired_count': report['expired_count'],
+    'invalid_count': report['invalid_count'],
+    'available_kb': int(available_kb),
+    'used_percent': int(used_percent),
+}, sort_keys=True))
+PY

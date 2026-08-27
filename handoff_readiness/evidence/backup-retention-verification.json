@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-08-27T15:13:32Z",
+  "policy": {
+    "backup_retention_days": 90,
+    "audit_manifest_retention_months": 12,
+    "published_dispute_filing_hours": 24,
+    "pruning_enabled": false,
+    "dispute_hold_required": true
+  },
+  "access_control": {
+    "directory": "/home/ubuntu/projects/globalstrat+/backend/competition_backups",
+    "owner": "ubuntu:ubuntu",
+    "directory_mode": "0700",
+    "artifact_mode": "0600",
+    "backend_umask": "0077"
+  },
+  "inventory": {
+    "backup_count": 12,
+    "invalid_count": 0,
+    "expired_count": 0,
+    "total_bytes": 12844722
+  },
+  "capacity": {
+    "filesystem_used_percent": 44,
+    "available_kb": 110457872,
+    "minimum_available_gb": 10,
+    "maximum_used_percent": 80
+  },
+  "monitoring": {
+    "timer": "globalstrat-backup-monitor.timer",
+    "enabled": true,
+    "active": true,
+    "interval_hours": 24,
+    "first_run_result": "success"
+  },
+  "destructive_actions": {
+    "backups_deleted": 0,
+    "prune_test_performed": false
+  }
+}
