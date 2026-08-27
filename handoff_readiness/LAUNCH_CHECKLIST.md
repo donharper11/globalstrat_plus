@@ -58,11 +58,15 @@ checklist tracks the remaining operational path to launch.
 - [ ] Conduct a volunteer competition cycle on the tagged build with separate
   identities and real deadlines (deliberate late/missing/duplicate submissions,
   team correction, deadline extension, outage communications, team deactivation,
-  operator incident drill). **Scripted precursor done:** `volunteer_cycle_sim.py`
-  exercises every one of these mechanics against an isolated stack and passes 8/8
-  (`INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`,
-  `evidence/volunteer-cycle-sim-20260827/`). The human cycle with real people
-  still remains.
+  operator incident drill). **Scripted precursors done:** `volunteer_cycle_sim.py`
+  passes 8/8 on the single-round adversarial scenarios, and
+  `full_playthrough_sim.py` runs a complete 6-round, 24-bot-team game with
+  strategy-diverse decisions and per-round event injection — all rounds healthy,
+  0 issues (`INSTRUCTOR_VISIBILITY_AND_DRYRUN.md`,
+  `evidence/volunteer-cycle-sim-20260827/`, `evidence/full-playthrough-20260827/`).
+  The human cycle with real people still remains — it tests comprehension,
+  incentivised adversarial behaviour, real duration and operator judgement, which
+  bots cannot.
 - [ ] Confirm instructors can identify who submitted what and when, distinguish
   missing from deliberate empty submissions, and apply published dispute and tie
   rules without direct database intervention. **Verified.** what/when, correction
