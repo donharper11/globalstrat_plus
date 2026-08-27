@@ -26,21 +26,9 @@ const canonical = (ms, tv, rs) => JSON.stringify({
 // CC-2 §8 unlock schedule (server is authoritative; this drives disabled state).
 const UNLOCK = { multiSupplier: 3, multi_sourcing_strategy: 3, payment_terms: 4,
   tier_2_3_visibility_investment: 5, volume_commitments: 5 };
-const MULTI_SOURCING_OPTIONS = [
-  { value: 'single_source', label: 'Single source' },
-  { value: 'primary_backup', label: 'Primary + backup' },
-  { value: 'balanced_split', label: 'Balanced split' },
-  { value: 'geographic_diversity', label: 'Geographic diversity' },
-];
-const TIER_VISIBILITY_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'basic', label: 'Basic' },
-  { value: 'comprehensive', label: 'Comprehensive' },
-];
-
 const prettyCategory = (c) => (c || '').replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
 
-const flattenErrors = (data) => {
+const flattenErrors = (data, fallback) => {
   const out = [];
   const walk = (v, prefix) => {
     if (v == null) return;
@@ -52,12 +40,12 @@ const flattenErrors = (data) => {
     });
   };
   walk(data, '');
-  return out.length ? out : ['Something went wrong. Please check your inputs.'];
+  return out.length ? out : [fallback];
 };
 
-const lockTag = (r) => (
-  <Tooltip title={`Unlocks in round ${r}`}>
-    <Tag icon={<LockOutlined />} style={{ marginLeft: 6 }}>Round {r}</Tag>
+const lockTag = (r, t) => (
+  <Tooltip title={t('sc.common.unlocks_in_round', { round: r })}>
+    <Tag icon={<LockOutlined />} style={{ marginLeft: 6 }}>{t('sc.common.round')} {r}</Tag>
   </Tooltip>
 );
 
@@ -71,6 +59,10 @@ const SourcingPage = () => {
   const { locked } = useDecisions();
   const round = currentRound || 1;
   const editable = roundStatus === 'open' && !locked;
+  const multiSourcingOptions = ['single_source', 'primary_backup', 'balanced_split', 'geographic_diversity']
+    .map((value) => ({ value, label: t(`sc.sourcing.option_${value}`) }));
+  const tierVisibilityOptions = ['none', 'basic', 'comprehensive']
+    .map((value) => ({ value, label: t(`sc.sourcing.visibility_${value}`) }));
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -102,7 +94,7 @@ const SourcingPage = () => {
       setMultiSourcing(ms); setTierVisibility(tv); setRows(loadedRows);
       setSnap(canonical(ms, tv, loadedRows));
     } catch { message.error(t('sc.sourcing.load_error')); } finally { setLoading(false); }
-  }, [gameId, teamId, scenarioId, currentRound]);
+  }, [gameId, teamId, scenarioId, currentRound, t]);
   useEffect(() => { load(); }, [load]);
 
   const categories = useMemo(() => {
@@ -126,9 +118,9 @@ const SourcingPage = () => {
     const errs = [];
     new Set(rows.map((r) => r.critical_input_category)).forEach((cat) => {
       const cr = rows.filter((r) => r.critical_input_category === cat);
-      if (cr.some((r) => !r.supplier)) errs.push(`${prettyCategory(cat)}: every row needs a supplier.`);
+      if (cr.some((r) => !r.supplier)) errs.push(t('sc.sourcing.validation_supplier', { category: prettyCategory(cat) }));
       const total = cr.reduce((s, r) => s + (Number(r.allocation_pct) || 0), 0);
-      if (total !== 100) errs.push(`${prettyCategory(cat)}: split must total 100% (now ${total}%).`);
+      if (total !== 100) errs.push(t('sc.sourcing.validation_split', { category: prettyCategory(cat), total }));
     });
     return errs;
   };
@@ -158,9 +150,9 @@ const SourcingPage = () => {
       await load();
       return true;
     } catch (err) {
-      if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data)); message.error('The server rejected this. See the notes above.'); }
-      else if (err.response?.status === 403) message.error("This round isn't open for changes.");
-      else message.error('Save failed. Please try again.');
+      if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data, t('sc.common.input_error'))); message.error(t('sc.common.server_rejected')); }
+      else if (err.response?.status === 403) message.error(t('sc.common.readonly_notice'));
+      else message.error(t('sc.common.save_failed'));
       return false;
     } finally { setSaving(false); }
   };
@@ -179,16 +171,16 @@ const SourcingPage = () => {
       names: cr.map((r) => supplierName(r.supplier) || '—').filter(Boolean) };
   });
   const summaryColumns = [
-    { title: 'Critical input', dataIndex: 'cat', render: (v) => <Text strong>{prettyCategory(v)}</Text> },
-    { title: 'Suppliers used', key: 'sup', render: (_, r) => (r.count === 0
-      ? <Text type="secondary">— none —</Text>
+    { title: t('sc.sourcing.critical_input'), dataIndex: 'cat', render: (v) => <Text strong>{prettyCategory(v)}</Text> },
+    { title: t('sc.sourcing.suppliers_used'), key: 'sup', render: (_, r) => (r.count === 0
+      ? <Text type="secondary">— {t('sc.common.none')} —</Text>
       : <Space wrap size={4}>{r.names.map((n, i) => <Tag key={i}>{n}</Tag>)}</Space>) },
-    { title: 'Split', dataIndex: 'total', width: 120, render: (v, r) => (r.count === 0
-      ? <Tag>not set</Tag>
+    { title: t('sc.sourcing.split'), dataIndex: 'total', width: 120, render: (v, r) => (r.count === 0
+      ? <Tag>{t('sc.common.not_set')}</Tag>
       : <Tag color={v === 100 ? 'green' : 'red'}>{v}% {v !== 100 && '⚠'}</Tag>) },
     { title: '', key: 'edit', width: 90, render: (_, r) => (
       <Button size="small" icon={<EditOutlined />} disabled={!editable} onClick={() => setEditCat(r.cat)}>
-        {r.count ? 'Edit' : 'Set up'}
+        {r.count ? t('sc.common.edit') : t('sc.common.set_up')}
       </Button>) },
   ];
 
@@ -198,16 +190,16 @@ const SourcingPage = () => {
   const editTotal = editCat ? catTotal(editCat) : 0;
   const canAddMore = editable && (round >= UNLOCK.multiSupplier || editRows.length < 1);
   const editColumns = [
-    { title: 'Supplier', key: 's', render: (_, r) => (
-      <Select style={{ width: 260 }} placeholder="Choose a supplier" value={r.supplier}
+    { title: t('sc.sourcing.supplier'), key: 's', render: (_, r) => (
+      <Select style={{ width: 260 }} placeholder={t('sc.sourcing.choose_supplier')} value={r.supplier}
         disabled={!editable} options={editOptions} onChange={(v) => updateRow(r.key, { supplier: v })} showSearch optionFilterProp="label" />) },
-    { title: 'Share %', key: 'p', width: 110, render: (_, r) => (
+    { title: t('sc.sourcing.share_pct'), key: 'p', width: 110, render: (_, r) => (
       <InputNumber min={0} max={100} value={r.allocation_pct} disabled={!editable}
         onChange={(v) => updateRow(r.key, { allocation_pct: v ?? 0 })} />) },
-    { title: <>Payment {round < UNLOCK.payment_terms && lockTag(UNLOCK.payment_terms)}</>, key: 'pt', width: 180, render: (_, r) => (
-      <Input style={{ width: 150 }} placeholder="e.g. letter_of_credit" value={r.payment_terms}
+    { title: <>{t('sc.sourcing.payment')} {round < UNLOCK.payment_terms && lockTag(UNLOCK.payment_terms, t)}</>, key: 'pt', width: 180, render: (_, r) => (
+      <Input style={{ width: 150 }} placeholder={t('sc.sourcing.payment_example')} value={r.payment_terms}
         disabled={!editable || round < UNLOCK.payment_terms} onChange={(e) => updateRow(r.key, { payment_terms: e.target.value })} />) },
-    { title: <>Volume {round < UNLOCK.volume_commitments && lockTag(UNLOCK.volume_commitments)}</>, key: 'v', width: 130, render: (_, r) => (
+    { title: <>{t('sc.sourcing.volume')} {round < UNLOCK.volume_commitments && lockTag(UNLOCK.volume_commitments, t)}</>, key: 'v', width: 130, render: (_, r) => (
       <InputNumber min={0} value={r.volume_commitment_units} disabled={!editable || round < UNLOCK.volume_commitments}
         onChange={(v) => updateRow(r.key, { volume_commitment_units: v ?? 0 })} />) },
     { title: '', key: 'x', width: 40, render: (_, r) => (
@@ -222,9 +214,9 @@ const SourcingPage = () => {
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
-          <Button icon={<ShopOutlined />} onClick={() => setCatalogOpen(true)}>Browse suppliers</Button>
-          <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
-          <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
+          <Button icon={<ShopOutlined />} onClick={() => setCatalogOpen(true)}>{t('sc.sourcing.browse_suppliers')}</Button>
+          <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>{t('sc.common.reload')}</Button>
+          <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>{t('sc.common.save')}</Button>
         </Space>} />
 
       {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }}
@@ -236,14 +228,14 @@ const SourcingPage = () => {
       <PanelCard headerColor="neutral" title={t('sc.sourcing.approach')} style={{ marginBottom: 16 }}>
         <Space size="large" wrap>
           <div>
-            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.multi_strategy')}</Text>{round < UNLOCK.multi_sourcing_strategy && lockTag(UNLOCK.multi_sourcing_strategy)}</div>
-            <Select style={{ width: 240 }} placeholder="Choose an approach" allowClear value={multiSourcing}
-              options={MULTI_SOURCING_OPTIONS} disabled={!editable || round < UNLOCK.multi_sourcing_strategy} onChange={setMultiSourcing} />
+            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.multi_strategy')}</Text>{round < UNLOCK.multi_sourcing_strategy && lockTag(UNLOCK.multi_sourcing_strategy, t)}</div>
+            <Select style={{ width: 240 }} placeholder={t('sc.sourcing.choose_approach')} allowClear value={multiSourcing}
+              options={multiSourcingOptions} disabled={!editable || round < UNLOCK.multi_sourcing_strategy} onChange={setMultiSourcing} />
           </div>
           <div>
-            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.visibility')}</Text>{round < UNLOCK.tier_2_3_visibility_investment && lockTag(UNLOCK.tier_2_3_visibility_investment)}</div>
-            <Select style={{ width: 240 }} placeholder="Choose a level" allowClear value={tierVisibility}
-              options={TIER_VISIBILITY_OPTIONS} disabled={!editable || round < UNLOCK.tier_2_3_visibility_investment} onChange={setTierVisibility} />
+            <div style={{ marginBottom: 4 }}><Text strong>{t('sc.sourcing.visibility')}</Text>{round < UNLOCK.tier_2_3_visibility_investment && lockTag(UNLOCK.tier_2_3_visibility_investment, t)}</div>
+            <Select style={{ width: 240 }} placeholder={t('sc.sourcing.choose_level')} allowClear value={tierVisibility}
+              options={tierVisibilityOptions} disabled={!editable || round < UNLOCK.tier_2_3_visibility_investment} onChange={setTierVisibility} />
           </div>
         </Space>
       </PanelCard>
@@ -251,41 +243,41 @@ const SourcingPage = () => {
       <PanelCard headerColor="decision" title={t('sc.sourcing.critical_inputs')} style={{ marginBottom: 16 }}>
         <Paragraph type="secondary" style={{ fontSize: 12 }}>{t('sc.sourcing.critical_inputs_help')}</Paragraph>
         {categories.length === 0
-          ? <Empty description="No supplier categories in this scenario" />
+          ? <Empty description={t('sc.sourcing.no_categories')} />
           : <Table rowKey="cat" size="small" pagination={false} columns={summaryColumns} dataSource={summary} />}
       </PanelCard>
 
       {/* Per-category edit modal — Save persists everything, closes, and refreshes */}
       <Modal
         open={!!editCat}
-        title={editCat ? `Suppliers for ${prettyCategory(editCat)}` : ''}
+        title={editCat ? t('sc.sourcing.suppliers_for', { category: prettyCategory(editCat) }) : ''}
         width={820}
         onCancel={() => setEditCat(null)}
         footer={[
-          <Tag key="t" color={editTotal === 100 ? 'green' : (editTotal === 0 ? 'default' : 'red')} style={{ marginRight: 'auto' }}>{editTotal}% allocated</Tag>,
-          <Button key="c" onClick={() => setEditCat(null)}>Close</Button>,
-          <Button key="s" type="primary" loading={saving} disabled={!editable} onClick={saveAndCloseModal}>Save &amp; close</Button>,
+          <Tag key="t" color={editTotal === 100 ? 'green' : (editTotal === 0 ? 'default' : 'red')} style={{ marginRight: 'auto' }}>{t('sc.sourcing.allocated_pct', { total: editTotal })}</Tag>,
+          <Button key="c" onClick={() => setEditCat(null)}>{t('sc.common.close')}</Button>,
+          <Button key="s" type="primary" loading={saving} disabled={!editable} onClick={saveAndCloseModal}>{t('sc.common.save_close')}</Button>,
         ]}
         styles={{ footer: { display: 'flex', alignItems: 'center', gap: 8 } }}
       >
         {editRows.length === 0
-          ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No suppliers chosen yet" />
+          ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('sc.sourcing.no_suppliers')} />
           : <Table rowKey="key" size="small" pagination={false} columns={editColumns} dataSource={editRows} />}
-        <Tooltip title={!canAddMore && round < UNLOCK.multiSupplier ? `Using more than one supplier unlocks in round ${UNLOCK.multiSupplier}` : ''}>
-          <Button icon={<PlusOutlined />} onClick={() => addRow(editCat)} disabled={!canAddMore} style={{ marginTop: 12 }}>Add supplier</Button>
+        <Tooltip title={!canAddMore && round < UNLOCK.multiSupplier ? t('sc.sourcing.multi_unlock', { round: UNLOCK.multiSupplier }) : ''}>
+          <Button icon={<PlusOutlined />} onClick={() => addRow(editCat)} disabled={!canAddMore} style={{ marginTop: 12 }}>{t('sc.sourcing.add_supplier')}</Button>
         </Tooltip>
       </Modal>
 
       {/* Supplier catalog modal */}
-      <Modal open={catalogOpen} title={t('sc.sourcing.supplier_catalog')} width={960} footer={<Button onClick={() => setCatalogOpen(false)}>Close</Button>} onCancel={() => setCatalogOpen(false)}>
+      <Modal open={catalogOpen} title={t('sc.sourcing.supplier_catalog')} width={960} footer={<Button onClick={() => setCatalogOpen(false)}>{t('sc.common.close')}</Button>} onCancel={() => setCatalogOpen(false)}>
         <Table rowKey="id" size="small" pagination={{ pageSize: 10 }} dataSource={suppliers} scroll={{ x: true }}
           columns={[
-            { title: 'Supplier', dataIndex: 'name', render: (v, s) => <><Text strong>{v}</Text> <Tag>{s.country}</Tag></> },
-            { title: 'Makes', dataIndex: 'specialization', render: (a) => (a || []).map((s) => <Tag key={s}>{prettyCategory(s)}</Tag>) },
-            { title: 'Unit price', dataIndex: 'base_unit_price_usd', render: (v) => `$${v}` },
-            { title: 'Quality', dataIndex: 'quality_rating' },
-            { title: 'Reliability', dataIndex: 'reliability_rating' },
-            { title: 'Lead time (days)', dataIndex: 'lead_time_days_baseline' },
+            { title: t('sc.sourcing.supplier'), dataIndex: 'name', render: (v, s) => <><Text strong>{v}</Text> <Tag>{s.country}</Tag></> },
+            { title: t('sc.sourcing.makes'), dataIndex: 'specialization', render: (a) => (a || []).map((s) => <Tag key={s}>{prettyCategory(s)}</Tag>) },
+            { title: t('sc.sourcing.unit_price'), dataIndex: 'base_unit_price_usd', render: (v) => `$${v}` },
+            { title: t('sc.sourcing.quality'), dataIndex: 'quality_rating' },
+            { title: t('sc.sourcing.reliability'), dataIndex: 'reliability_rating' },
+            { title: t('sc.sourcing.lead_time'), dataIndex: 'lead_time_days_baseline' },
           ]} />
       </Modal>
     </div>

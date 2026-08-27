@@ -28,7 +28,7 @@ class DecisionSubmission(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     locked_at = models.DateTimeField(null=True, blank=True)
     locked_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        'core.User', on_delete=models.PROTECT,
         null=True, blank=True, related_name='locked_submissions',
     )
     team_notes = models.TextField(null=True, blank=True)

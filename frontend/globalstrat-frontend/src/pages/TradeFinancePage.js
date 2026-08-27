@@ -29,13 +29,7 @@ const UNLOCK = {
   buyer_payment_instrument: 4, lc_doc_prep_investment: 4,
   sinosure_coverage: 4, fx_hedging: 5,
 };
-const LC_DOC_PREP = [
-  { value: 'minimal', label: 'Minimal' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'diligent', label: 'Diligent' },
-];
-
-const flattenErrors = (data) => {
+const flattenErrors = (data, fallback) => {
   const out = [];
   const walk = (v, prefix) => {
     if (v == null) return;
@@ -47,11 +41,11 @@ const flattenErrors = (data) => {
     });
   };
   walk(data, '');
-  return out.length ? out : ['Request failed.'];
+  return out.length ? out : [fallback];
 };
-const lockTag = (r) => (
-  <Tooltip title={`Unlocks at round ${r}`}>
-    <Tag icon={<LockOutlined />} style={{ marginLeft: 6 }}>Round {r}</Tag>
+const lockTag = (r, t) => (
+  <Tooltip title={t('sc.common.unlocks_in_round', { round: r })}>
+    <Tag icon={<LockOutlined />} style={{ marginLeft: 6 }}>{t('sc.common.round')} {r}</Tag>
   </Tooltip>
 );
 let seq = 1;
@@ -62,6 +56,8 @@ const TradeFinancePage = () => {
   const { locked } = useDecisions();
   const round = currentRound || 1;
   const editable = roundStatus === 'open' && !locked;
+  const lcDocPrep = ['minimal', 'standard', 'diligent']
+    .map((value) => ({ value, label: t(`sc.trade_finance.${value}`) }));
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -98,7 +94,7 @@ const TradeFinancePage = () => {
       const f = {}; (tfRes.data?.fx_hedges || []).forEach((x) => { f[x.currency_pair] = { hedge_ratio: x.hedge_ratio, tenor_days: x.tenor_days }; }); setFx(f);
       setSnap(canonical(loadedTf, s, f));
     } catch { message.error(t('sc.trade_finance.load_error')); } finally { setLoading(false); }
-  }, [gameId, teamId, scenarioId, currentRound]);
+  }, [gameId, teamId, scenarioId, currentRound, t]);
   useEffect(() => { load(); }, [load]);
 
   const fxInstrument = useMemo(
@@ -117,7 +113,7 @@ const TradeFinancePage = () => {
     const errs = [];
     tfRows.forEach((r, i) => {
       if (r.buyer_payment_instrument && (!r.segment || !r.market))
-        errs.push(`Trade finance row ${i + 1}: choose a segment and market.`);
+        errs.push(t('sc.trade_finance.validation_row', { row: i + 1 }));
     });
     return errs;
   };
@@ -146,9 +142,9 @@ const TradeFinancePage = () => {
       message.success(t('sc.trade_finance.saved_toast'));
       await load();
     } catch (err) {
-      if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data)); message.error('The server rejected this submission.'); }
-      else if (err.response?.status === 403) message.error('This round is not open for submissions.');
-      else message.error('Save failed.');
+      if (err.response?.status === 400) { setServerErrors(flattenErrors(err.response.data, t('sc.common.input_error'))); message.error(t('sc.common.server_rejected')); }
+      else if (err.response?.status === 403) message.error(t('sc.common.readonly_notice'));
+      else message.error(t('sc.common.save_failed'));
     } finally { setSaving(false); }
   };
 
@@ -165,62 +161,62 @@ const TradeFinancePage = () => {
         status={locked ? 'locked' : 'draft'}
         actions={<Space>
           <StateBadge state={st} />
-          <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>Reload</Button>
-          <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>Save</Button>
+          <Button icon={<ReloadOutlined />} onClick={load} disabled={saving}>{t('sc.common.reload')}</Button>
+          <Button type="primary" icon={<SaveOutlined />} loading={saving} disabled={!editable} onClick={handleSave}>{t('sc.common.save')}</Button>
         </Space>} />
 
       {!editable && <Alert type="info" showIcon style={{ marginBottom: 16 }}
-        message={locked ? 'Decisions are locked for this round.' : 'This round is not open for submissions — read-only.'} />}
+        message={locked ? t('sc.common.locked_notice') : t('sc.common.readonly_notice')} />}
       {serverErrors.length > 0 && <Alert type="error" showIcon closable style={{ marginBottom: 16 }}
-        onClose={() => setServerErrors([])} message="Submission errors"
+        onClose={() => setServerErrors([])} message={t('sc.trade_finance.submission_errors')}
         description={<ul style={{ margin: 0, paddingLeft: 18 }}>{serverErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>} />}
 
       <PanelCard headerColor="strategic" title={t('sc.trade_finance.instruments')} style={{ marginBottom: 16 }}>
         <Paragraph type="secondary" style={{ fontSize: 12 }}>
-          As a Chinese firm selling into overseas markets, your choice of payment instrument trades off getting paid safely against how much cash your buyer must tie up. Sinosure export-credit insurance and FX forwards manage political/commercial and currency risk on cross-border sales.
+          {t('sc.trade_finance.instruments_help')}
         </Paragraph>
         <Table rowKey="instrument_id" size="small" pagination={false} dataSource={instruments} scroll={{ x: true }}
           columns={[
-            { title: 'Instrument', dataIndex: 'display_name', key: 'n', render: (v, r) => <Text strong>{v || r.instrument_id}</Text> },
-            { title: 'Seller protection', dataIndex: 'seller_protection', key: 'sp' },
-            { title: 'Buyer cash need', dataIndex: 'buyer_cash_requirement', key: 'bc' },
-            { title: 'Available in', dataIndex: 'available_in_markets', key: 'am', render: (a) => (a || []).map((x) => <Tag key={x}>{x}</Tag>) },
+            { title: t('sc.trade_finance.instrument'), dataIndex: 'display_name', key: 'n', render: (v, r) => <Text strong>{v || r.instrument_id}</Text> },
+            { title: t('sc.trade_finance.seller_protection'), dataIndex: 'seller_protection', key: 'sp' },
+            { title: t('sc.trade_finance.buyer_cash'), dataIndex: 'buyer_cash_requirement', key: 'bc' },
+            { title: t('sc.trade_finance.available_in'), dataIndex: 'available_in_markets', key: 'am', render: (a) => (a || []).map((x) => <Tag key={x}>{x}</Tag>) },
           ]} />
       </PanelCard>
 
       <PanelCard headerColor="decision"
-        title={<Space>Buyer Payment Instruments (by segment / market) {tfLocked && lockTag(UNLOCK.buyer_payment_instrument)}</Space>} style={{ marginBottom: 16 }}>
-        {tfRows.length === 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No payment instrument choices yet" /> : (
+        title={<Space>{t('sc.trade_finance.buyer_instruments')} {tfLocked && lockTag(UNLOCK.buyer_payment_instrument, t)}</Space>} style={{ marginBottom: 16 }}>
+        {tfRows.length === 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('sc.trade_finance.no_payment_choices')} /> : (
           <Table rowKey="key" size="small" pagination={false} dataSource={tfRows}
             columns={[
-              { title: 'Customer segment', key: 'seg', width: 300, render: (_, r) => (
-                <Select showSearch optionFilterProp="label" style={{ width: 280 }} placeholder="Select segment"
+              { title: t('sc.trade_finance.customer_segment'), key: 'seg', width: 300, render: (_, r) => (
+                <Select showSearch optionFilterProp="label" style={{ width: 280 }} placeholder={t('sc.trade_finance.select_segment')}
                   value={r.segment} disabled={!editable || tfLocked} options={segmentOptions}
                   onChange={(v) => { const seg = segments.find((s) => s.id === v); updTf(r.key, { segment: v, market: seg?.market_id ?? r.market }); }} /> ) },
-              { title: 'Market', key: 'mkt', width: 180, render: (_, r) => (
-                <Select style={{ width: 160 }} placeholder="Market" value={r.market} disabled={!editable || tfLocked}
+              { title: t('sc.trade_finance.market'), key: 'mkt', width: 180, render: (_, r) => (
+                <Select style={{ width: 160 }} placeholder={t('sc.trade_finance.market')} value={r.market} disabled={!editable || tfLocked}
                   options={markets.map((m) => ({ value: m.id, label: `${m.name} (${m.code})` }))}
                   onChange={(v) => updTf(r.key, { market: v })} /> ) },
-              { title: 'Instrument', key: 'ins', width: 200, render: (_, r) => (
-                <Select style={{ width: 180 }} placeholder="Instrument" value={r.buyer_payment_instrument} disabled={!editable || tfLocked}
+              { title: t('sc.trade_finance.instrument'), key: 'ins', width: 200, render: (_, r) => (
+                <Select style={{ width: 180 }} placeholder={t('sc.trade_finance.instrument')} value={r.buyer_payment_instrument} disabled={!editable || tfLocked}
                   options={instrumentOptions} onChange={(v) => updTf(r.key, { buyer_payment_instrument: v })} /> ) },
-              { title: 'LC doc prep', key: 'lc', width: 140, render: (_, r) => (
+              { title: t('sc.trade_finance.lc_prep'), key: 'lc', width: 140, render: (_, r) => (
                 <Select style={{ width: 120 }} value={r.lc_doc_prep_investment} disabled={!editable || tfLocked}
-                  options={LC_DOC_PREP} onChange={(v) => updTf(r.key, { lc_doc_prep_investment: v })} /> ) },
+                  options={lcDocPrep} onChange={(v) => updTf(r.key, { lc_doc_prep_investment: v })} /> ) },
               { title: '', key: 'x', width: 40, render: (_, r) => <Button type="text" danger icon={<DeleteOutlined />} disabled={!editable} onClick={() => delTf(r.key)} /> },
             ]} />
         )}
-        <Button icon={<PlusOutlined />} onClick={addTf} disabled={!editable || tfLocked} style={{ marginTop: 12 }}>Add payment choice</Button>
+        <Button icon={<PlusOutlined />} onClick={addTf} disabled={!editable || tfLocked} style={{ marginTop: 12 }}>{t('sc.trade_finance.add_payment')}</Button>
       </PanelCard>
 
-      <Divider orientation="left">Risk Management</Divider>
+      <Divider orientation="left">{t('sc.trade_finance.risk_management')}</Divider>
       <PanelCard headerColor="neutral"
-        title={<Space>Sinosure Export-Credit Coverage {round < UNLOCK.sinosure_coverage && lockTag(UNLOCK.sinosure_coverage)}</Space>} style={{ marginBottom: 16 }}>
-        {markets.length === 0 ? <Empty description="No markets" /> : (
+        title={<Space>{t('sc.trade_finance.sinosure')} {round < UNLOCK.sinosure_coverage && lockTag(UNLOCK.sinosure_coverage, t)}</Space>} style={{ marginBottom: 16 }}>
+        {markets.length === 0 ? <Empty description={t('sc.logistics.no_markets')} /> : (
           <Table rowKey="id" size="small" pagination={false} dataSource={markets}
             columns={[
-              { title: 'Market', key: 'm', render: (_, mk) => <><Text strong>{mk.name}</Text> <Tag>{mk.code}</Tag></> },
-              { title: 'Coverage %', key: 'cov', render: (_, mk) => (
+              { title: t('sc.trade_finance.market'), key: 'm', render: (_, mk) => <><Text strong>{mk.name}</Text> <Tag>{mk.code}</Tag></> },
+              { title: t('sc.trade_finance.coverage_pct'), key: 'cov', render: (_, mk) => (
                 <InputNumber min={0} max={100} value={sino[mk.id]} disabled={!editable || round < UNLOCK.sinosure_coverage}
                   onChange={(v) => setSino((p) => ({ ...p, [mk.id]: v }))} /> ) },
             ]} />
@@ -228,16 +224,16 @@ const TradeFinancePage = () => {
       </PanelCard>
 
       <PanelCard headerColor="strategic"
-        title={<Space>{t('sc.trade_finance.fx_hedging')} {round < UNLOCK.fx_hedging && lockTag(UNLOCK.fx_hedging)}</Space>} style={{ marginBottom: 16 }}>
-        {currencyPairs.length === 0 ? <Empty description="No FX pairs in this scenario" /> : (
+        title={<Space>{t('sc.trade_finance.fx_hedging')} {round < UNLOCK.fx_hedging && lockTag(UNLOCK.fx_hedging, t)}</Space>} style={{ marginBottom: 16 }}>
+        {currencyPairs.length === 0 ? <Empty description={t('sc.trade_finance.no_fx_pairs')} /> : (
           <Table rowKey="pair" size="small" pagination={false}
             dataSource={currencyPairs.map((p) => ({ pair: p }))}
             columns={[
-              { title: 'Currency pair', dataIndex: 'pair', key: 'p', render: (v) => <Text strong>{v}</Text> },
-              { title: 'Hedge ratio %', key: 'hr', render: (_, r) => (
+              { title: t('sc.trade_finance.currency_pair'), dataIndex: 'pair', key: 'p', render: (v) => <Text strong>{v}</Text> },
+              { title: t('sc.trade_finance.hedge_ratio'), key: 'hr', render: (_, r) => (
                 <InputNumber min={0} max={100} value={fx[r.pair]?.hedge_ratio} disabled={!editable || round < UNLOCK.fx_hedging}
                   onChange={(v) => setFx((p) => ({ ...p, [r.pair]: { ...(p[r.pair] || {}), hedge_ratio: v } }))} /> ) },
-              { title: 'Tenor (days)', key: 'td', render: (_, r) => (
+              { title: t('sc.trade_finance.tenor_days'), key: 'td', render: (_, r) => (
                 <Select style={{ width: 110 }} allowClear placeholder="—" value={fx[r.pair]?.tenor_days} disabled={!editable || round < UNLOCK.fx_hedging}
                   options={tenorOptions.map((t) => ({ value: t, label: `${t}` }))}
                   onChange={(v) => setFx((p) => ({ ...p, [r.pair]: { ...(p[r.pair] || {}), tenor_days: v } }))} /> ) },
@@ -247,28 +243,26 @@ const TradeFinancePage = () => {
 
       <PanelCard headerColor="neutral" title={t('sc.trade_finance.hedge_positions')} style={{ marginBottom: 16 }}>
         <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>
-          Hedges you set are opened at round-advance against your foreign receivables, marked to
-          market each round, and settle at maturity — the realized P&amp;L flows into your income
-          statement. A short receivables hedge gains when the foreign currency weakens.
+          {t('sc.trade_finance.hedge_help')}
         </Text>
         {hedgePositions.length === 0
-          ? <Empty description="No FX hedge positions yet — set a hedge ratio above and advance a round." />
+          ? <Empty description={t('sc.trade_finance.no_positions')} />
           : (
             <Table rowKey="id" size="small" pagination={false} dataSource={hedgePositions} scroll={{ x: true }}
               columns={[
-                { title: 'Pair', dataIndex: 'currency_pair', key: 'cp', render: (v) => <Text strong>{v}</Text> },
-                { title: 'Notional', dataIndex: 'notional', key: 'n', render: (v) => `$${Math.round(Number(v)).toLocaleString()}` },
-                { title: 'Locked rate', dataIndex: 'locked_rate', key: 'lr', render: (v) => Number(v).toFixed(4) },
-                { title: 'Mark-to-market', dataIndex: 'mtm_current', key: 'mtm', render: (v) => (
+                { title: t('sc.trade_finance.pair'), dataIndex: 'currency_pair', key: 'cp', render: (v) => <Text strong>{v}</Text> },
+                { title: t('sc.trade_finance.notional'), dataIndex: 'notional', key: 'n', render: (v) => `$${Math.round(Number(v)).toLocaleString()}` },
+                { title: t('sc.trade_finance.locked_rate'), dataIndex: 'locked_rate', key: 'lr', render: (v) => Number(v).toFixed(4) },
+                { title: t('sc.trade_finance.mark_to_market'), dataIndex: 'mtm_current', key: 'mtm', render: (v) => (
                   <Text type={Number(v) > 0 ? 'success' : Number(v) < 0 ? 'danger' : undefined}>
                     {Number(v) >= 0 ? '+' : ''}{Math.round(Number(v)).toLocaleString()}
                   </Text>) },
-                { title: 'Realized P&L', dataIndex: 'realized_pnl', key: 'rp', render: (v) => (
+                { title: t('sc.trade_finance.realized_pnl'), dataIndex: 'realized_pnl', key: 'rp', render: (v) => (
                   v == null ? <Text type="secondary">—</Text>
                     : <Text type={Number(v) > 0 ? 'success' : Number(v) < 0 ? 'danger' : undefined}>
                         {Number(v) >= 0 ? '+' : ''}{Math.round(Number(v)).toLocaleString()}
                       </Text>) },
-                { title: 'Status', dataIndex: 'status', key: 'st', render: (v) => (
+                { title: t('sc.trade_finance.status'), dataIndex: 'status', key: 'st', render: (v) => (
                   <Tag color={v === 'open' ? 'blue' : v === 'matured' ? 'green' : 'default'}>{v}</Tag>) },
               ]} />
           )}

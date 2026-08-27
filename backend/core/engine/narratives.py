@@ -86,7 +86,7 @@ def generate_round_narratives(game, round_obj):
         _generate_all_fallbacks(game, round_obj)
         return
 
-    teams = list(Team.objects.filter(game=game))
+    teams = list(Team.objects.filter(game=game, participation_status='active'))
     round_number = round_obj.round_number
 
     calls = []
@@ -681,7 +681,7 @@ def _generate_all_fallbacks(game, round_obj):
     """Generate template-based content for all teams when LLM is unavailable."""
     from core.models.cc27_models import StrategicBriefing
 
-    teams = Team.objects.filter(game=game)
+    teams = Team.objects.filter(game=game, participation_status='active')
     round_number = round_obj.round_number
 
     for team in teams:

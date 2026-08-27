@@ -13,6 +13,9 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from core.views.decisions import (
+    CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
+from core.permissions import IsInstructor
 
 from core.models.core import Game, Team, Round
 from core.models.cc32_models import CommunicationAssignment, TeamCommunication
@@ -21,6 +24,7 @@ from core.utils.localization import get_localized_field, get_user_language
 
 
 class CommunicationAssignmentsView(APIView):
+    permission_classes = [IsTeamMember]
     """GET — active assignments for the current round."""
 
     def get(self, request, game_id, team_id):
@@ -106,8 +110,10 @@ class CommunicationAssignmentsView(APIView):
         return Response({'round': current_round, 'assignments': assignments})
 
 
-class CommunicationDraftView(APIView):
+class CommunicationDraftView(CompetitionDecisionWriteMixin, APIView):
     """POST — save draft for a specific assignment."""
+    permission_classes = [IsTeamMember, IsCurrentRoundOpen]
+    throttle_scope = 'decision_write'
 
     def post(self, request, game_id, team_id, assignment_id):
         game = get_object_or_404(Game, id=game_id)
@@ -128,6 +134,9 @@ class CommunicationDraftView(APIView):
                 'is_draft': True,
             },
         )
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, game, team, rnd, 'save_communication_draft',
+                              request.data)
 
         return Response({
             'id': tc.id,
@@ -137,8 +146,10 @@ class CommunicationDraftView(APIView):
         })
 
 
-class CommunicationSubmitView(APIView):
+class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
     """POST — submit for LLM evaluation. One-shot, cannot resubmit."""
+    permission_classes = [IsTeamMember, IsCurrentRoundOpen]
+    throttle_scope = 'decision_write'
 
     def post(self, request, game_id, team_id, assignment_id):
         game = get_object_or_404(Game, id=game_id)
@@ -183,6 +194,11 @@ class CommunicationSubmitView(APIView):
         # Trigger LLM evaluation
         from core.rag.communication_eval import evaluate_communication
         evaluation = evaluate_communication(tc)
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, game, team, rnd, 'submit_communication', {
+            'assignment_id': assignment_id, 'content': tc.content,
+            'word_count': tc.word_count, 'evaluation': evaluation,
+        })
 
         return Response({
             'id': tc.id,
@@ -196,6 +212,7 @@ class CommunicationSubmitView(APIView):
 
 class CommunicationHistoryView(APIView):
     """GET — all past submissions with evaluations."""
+    permission_classes = [IsTeamMember]
 
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
@@ -226,6 +243,7 @@ class CommunicationHistoryView(APIView):
 
 
 class InstructorCommunicationsView(APIView):
+    permission_classes = [IsInstructor]
     """GET — all team submissions for a round (instructor only)."""
 
     def get(self, request, game_id, round_number):

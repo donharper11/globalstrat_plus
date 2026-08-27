@@ -116,6 +116,8 @@ class RoundCloseView(APIView):
 
     def post(self, request, game_id):
         game = get_object_or_404(Game, pk=game_id)
+        before_round = Round.objects.filter(game=game, round_number=game.current_round).first()
+        before = _round_payload(game, before_round)
         from core.engine.advance_round import close_round
 
         try:
@@ -133,6 +135,9 @@ class RoundCloseView(APIView):
         round_obj = Round.objects.filter(
             game=game, round_number=game.current_round,
         ).first()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, game, round_obj, 'close_round', before,
+                              _round_payload(game, round_obj))
         return Response({
             'message': f'Round {result["round"]} closed. '
                        f'{result["submissions_locked"]} submission(s) locked.',
@@ -186,6 +191,7 @@ class RoundReopenView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        before = _round_payload(game, round_obj)
         round_obj.status = 'open'
         round_obj.closed_at = None
         round_obj.close_reason = ''
@@ -196,6 +202,9 @@ class RoundReopenView(APIView):
             round=round_obj, team__in=Team.objects.filter(game=game),
             status='locked',
         ).update(status='draft', locked_at=None)
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, game, round_obj, 'reopen_round', before,
+                              _round_payload(game, round_obj))
 
         return Response({
             'message': f'Round {round_obj.round_number} reopened. '
@@ -247,6 +256,7 @@ class RoundProcessView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        before = _round_payload(game, round_obj)
         from core.engine.advance_round import process_round
         try:
             result = process_round(game.id)
@@ -259,6 +269,9 @@ class RoundProcessView(APIView):
 
         game.refresh_from_db()
         round_obj.refresh_from_db()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, game, round_obj, 'process_round', before,
+                              _round_payload(game, round_obj))
         return Response({
             'message': f'Round {result["processed_round"]} processed in '
                        f'{result["phase_1_time"]:.1f}s. Results are available; '
@@ -280,6 +293,9 @@ class RoundAdvanceView(APIView):
 
     def post(self, request, game_id):
         game = get_object_or_404(Game, pk=game_id)
+        old_round = Round.objects.filter(
+            game=game, round_number=game.current_round).first()
+        before = _round_payload(game, old_round)
         force = request.data.get('force', False)
 
         from core.engine.advance_round import advance_to_next_round
@@ -296,6 +312,9 @@ class RoundAdvanceView(APIView):
         round_obj = Round.objects.filter(
             game=game, round_number=game.current_round,
         ).first()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, game, old_round, 'advance_round', before,
+                              _round_payload(game, round_obj))
 
         if result['next_round'] is None:
             msg = f'Round {result["completed_round"]} was the last round. Game complete.'
@@ -330,6 +349,7 @@ class RoundDeadlineView(APIView):
             return Response({'error': 'No current round.'},
                             status=status.HTTP_404_NOT_FOUND)
 
+        before = _round_payload(game, round_obj)
         if 'minutes_from_now' in request.data:
             try:
                 minutes = int(request.data['minutes_from_now'])
@@ -354,6 +374,9 @@ class RoundDeadlineView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         round_obj.save(update_fields=['deadline'])
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, game, round_obj, 'set_deadline', before,
+                              _round_payload(game, round_obj))
 
         warning = None
         if round_obj.deadline and round_obj.deadline <= timezone.now() \

@@ -623,7 +623,9 @@ class InstructorAdvanceRoundView(APIView):
         # Check all teams locked (or allow override)
         force = request.data.get('force', False)
         if not force:
-            teams = Team.objects.filter(game=game)
+            teams = Team.objects.filter(
+                game=game, participation_status='active',
+            )
             for t in teams:
                 rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
                 dec_sub = DecisionSubmission.objects.filter(

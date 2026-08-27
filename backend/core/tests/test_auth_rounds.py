@@ -660,3 +660,10 @@ class ClosedRoundBlocksSubmissionTests(_BaseFixture):
         self.round.save()
         r = self.client.post(self.url, {}, format='json')
         self.assertNotEqual(r.status_code, 403)
+
+    def test_instructor_lock_flag_blocks_writes_while_round_is_open(self):
+        self.round.decisions_locked = True
+        self.round.lock_reason = 'instructor_locked'
+        self.round.save(update_fields=['decisions_locked', 'lock_reason'])
+        r = self.client.post(self.url, {}, format='json')
+        self.assertEqual(r.status_code, 403)

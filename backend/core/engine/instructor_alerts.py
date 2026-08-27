@@ -58,7 +58,7 @@ def generate_post_round_alerts(game, round_number):
     Analyze all teams after a round is processed.
     Generate alerts for the instructor based on patterns.
     """
-    teams = Team.objects.filter(game=game)
+    teams = Team.objects.filter(game=game, participation_status='active')
     alerts = []
 
     for team in teams:

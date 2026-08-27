@@ -1,0 +1,19 @@
+{
+  "date": "2026-08-27",
+  "workstreams": {
+    "documentation_reconciliation": "accepted after primary audit",
+    "team_deactivation": "accepted after lock-order, manifest, and visibility corrections",
+    "release_provenance_retention": "accepted after production revision and zero-day validation corrections"
+  },
+  "team_participation_migration": "core.0060_team_participation_status",
+  "migration_applied": true,
+  "full_suite": {
+    "command": "python3 manage.py test core.tests core.engine.tests --noinput --verbosity 1",
+    "tests": 271,
+    "seconds": 89.173,
+    "result": "passed"
+  },
+  "django_system_check": "clean",
+  "runtime_probe": {"endpoint": "/api/auth/me/", "status": 403},
+  "gunicorn_reloaded": true
+}

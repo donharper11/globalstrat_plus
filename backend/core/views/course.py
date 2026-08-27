@@ -1323,9 +1323,13 @@ class RoundLockView(APIView):
         except Round.DoesNotExist:
             return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        before = {'decisions_locked': r.decisions_locked, 'lock_reason': r.lock_reason}
         r.decisions_locked = True
         r.lock_reason = 'instructor_locked'
         r.save()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, r.game, r, 'legacy_lock_round', before,
+                              {'decisions_locked': True, 'lock_reason': r.lock_reason})
         return Response({
             'round_id': r.round_id,
             'decisions_locked': True,
@@ -1343,9 +1347,13 @@ class RoundUnlockView(APIView):
         except Round.DoesNotExist:
             return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        before = {'decisions_locked': r.decisions_locked, 'lock_reason': r.lock_reason}
         r.decisions_locked = False
         r.lock_reason = None
         r.save()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, r.game, r, 'legacy_unlock_round', before,
+                              {'decisions_locked': False, 'lock_reason': ''})
         return Response({
             'round_id': r.round_id,
             'decisions_locked': False,
@@ -1372,6 +1380,7 @@ class RoundExtendView(APIView):
         except Round.DoesNotExist:
             return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+        before = {'deadline': r.deadline.isoformat() if r.deadline else None}
         if r.deadline:
             r.deadline = r.deadline + dt.timedelta(hours=hours)
         else:
@@ -1381,6 +1390,9 @@ class RoundExtendView(APIView):
         r.end_date = r.deadline.date()
         r.end_time = r.deadline.time()
         r.save()
+        from core.services.competition_audit import record_operator_event
+        record_operator_event(request, r.game, r, 'extend_deadline', before,
+                              {'deadline': r.deadline.isoformat(), 'hours': hours})
         return Response({
             'round_id': r.round_id,
             'deadline': r.deadline.isoformat(),

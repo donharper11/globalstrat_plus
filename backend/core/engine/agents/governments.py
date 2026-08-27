@@ -782,7 +782,9 @@ class GovernmentAgent(AgentBase):
         }
 
         for market_code, gp in profiles.items():
-            for team in game.teams.select_related('home_market').all():
+            for team in game.teams.filter(
+                participation_status='active',
+            ).select_related('home_market'):
                 if team.home_market and team.home_market.code == market_code:
                     continue  # Skip domestic firms
 

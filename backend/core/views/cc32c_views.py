@@ -9,9 +9,11 @@ from core.models.cc32c_models import TaxStructureType, TeamTaxStructure
 from core.models.cc31_models import TeamGovernanceCommitment
 from core.models.results_financials import RoundResultFinancials
 from core.utils.localization import get_localized_field, get_user_language
+from core.views.decisions import (
+    CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
 
 
-class TaxStructureContextView(APIView):
+class TaxStructureContextView(CompetitionDecisionWriteMixin, APIView):
     """
     GET — tax structure options and current team state.
     POST — switch tax structure.
@@ -20,7 +22,7 @@ class TaxStructureContextView(APIView):
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
         game = get_object_or_404(Game, pk=game_id)
-        team = get_object_or_404(Team, pk=team_id)
+        team = get_object_or_404(Team, pk=team_id, game=game)
         scenario = game.scenario
 
         # Available structures
@@ -110,7 +112,7 @@ class TaxStructureContextView(APIView):
 
     def post(self, request, game_id, team_id):
         game = get_object_or_404(Game, pk=game_id)
-        team = get_object_or_404(Team, pk=team_id)
+        team = get_object_or_404(Team, pk=team_id, game=game)
 
         structure_code = request.data.get('structure_code')
         if not structure_code:
@@ -126,6 +128,10 @@ class TaxStructureContextView(APIView):
             tts.adopted_round = game.current_round
             tts.setup_cost_paid = True  # Direct has no setup cost
             tts.save()
+            rnd = game.rounds.filter(round_number=game.current_round).first()
+            from core.services.competition_audit import record_decision_event
+            record_decision_event(request, game, team, rnd, 'change_tax_structure',
+                                  request.data)
             return Response({'status': 'ok', 'structure': 'direct'})
 
         structure = get_object_or_404(
@@ -144,4 +150,11 @@ class TaxStructureContextView(APIView):
             tts.setup_cost_paid = False  # Will be paid during engine processing
             tts.save()
 
+        rnd = game.rounds.filter(round_number=game.current_round).first()
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, game, team, rnd, 'change_tax_structure',
+                              request.data)
+
         return Response({'status': 'ok', 'structure': structure_code})
+    permission_classes = [IsTeamMember, IsCurrentRoundOpen]
+    throttle_scope = 'decision_write'

@@ -38,7 +38,7 @@ def bootstrap_round_zero(game):
     adoption, leaderboard, etc. on first login.
     """
     scenario = game.scenario
-    teams = list(Team.objects.filter(game=game))
+    teams = list(Team.objects.filter(game=game, participation_status='active'))
     markets = list(MarketDefinition.objects.filter(scenario=scenario))
     all_segments = list(SegmentDefinition.objects.filter(scenario=scenario))
 

@@ -67,6 +67,7 @@ def process_fx_hedges(context):
     num_rounds = context.scenario.num_rounds
     days_per_round = get_config(context.scenario, 'fx_days_per_round',
                                 default=DEFAULT_DAYS_PER_ROUND)
+    premium_bps = D(str(get_config(context.scenario, 'fx_hedge_premium_bps', default=25)))
 
     # 1. Open positions from this round's FX hedge decisions.
     for dec in FXHedgeDecision.objects.filter(round=rnd, hedge_ratio__gt=0):
@@ -83,6 +84,11 @@ def process_fx_hedges(context):
         if exposure <= 0:
             continue  # nothing to hedge
         notional = _q(exposure * D(dec.hedge_ratio) / D('100'))
+        # Treasury capacity is not free: charge a transparent premium on the
+        # protected notional so 100% hedging is no longer a dominant free option.
+        premium = _q(notional * premium_bps / D('10000'))
+        context.sc_fx_hedge_pnl[dec.team_id] = (
+            context.sc_fx_hedge_pnl.get(dec.team_id, D('0')) - premium)
         tenor_rounds = max(1, round((dec.tenor_days or DEFAULT_DAYS_PER_ROUND) / days_per_round))
         maturity_num = min(context.round_number + tenor_rounds, num_rounds)
         maturity, _ = Round.objects.get_or_create(
@@ -117,4 +123,4 @@ def process_fx_hedges(context):
 
     context.log.append(
         f'FX hedges processed; {settled} settled, realized P&L for '
-        f'{len(context.sc_fx_hedge_pnl)} team(s).')
+        f'{len(context.sc_fx_hedge_pnl)} team(s); premium={premium_bps} bps.')

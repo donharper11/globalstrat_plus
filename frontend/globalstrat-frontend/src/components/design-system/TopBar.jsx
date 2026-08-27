@@ -15,12 +15,12 @@ const fmt = (v) => {
   return `$${n.toFixed(0)}`;
 };
 
-const roundStatusText = (roundStatus, locked) => {
-  if (roundStatus === 'processed') return 'RESULTS AVAILABLE';
-  if (locked) return 'LOCKED';
-  if (roundStatus === 'closed') return 'ROUND CLOSED';
-  if (roundStatus === 'pending') return 'NOT OPEN YET';
-  return 'DRAFT OPEN';
+const roundStatusText = (roundStatus, locked, t) => {
+  if (roundStatus === 'processed') return t('game_status.results_available');
+  if (locked) return t('game_status.locked');
+  if (roundStatus === 'closed') return t('game_status.round_closed');
+  if (roundStatus === 'pending') return t('game_status.not_open');
+  return t('game_status.draft_open');
 };
 
 const GlobeLogo = () => (
@@ -79,13 +79,13 @@ function DSTopBar({ onToggle, isMobile }) {
       {!isMobile && (
         <>
           <div className="ds-topbar-divider" />
-          <span className="ds-topbar-scenario">Consumer Electronics Sim</span>
+          <span className="ds-topbar-scenario">{t('topbar.scenario')}</span>
 
           <div className="ds-topbar-divider" />
           <span className="ds-topbar-round">
-            R{currentRound || '—'} of {totalRounds || '—'}
+            R{currentRound || '—'} {t('topbar.of')} {totalRounds || '—'}
             <span className={`ds-topbar-status ${locked ? 'locked' : 'draft'}`}>
-              {roundStatusText(roundStatus, locked)}
+              {roundStatusText(roundStatus, locked, t)}
             </span>
           </span>
 

@@ -4,14 +4,25 @@ import { getCurrentUser } from './api/auth';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('gs_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      localStorage.removeItem('gs_user');
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(() => !localStorage.getItem('gs_user'));
 
   useEffect(() => {
     const stored = localStorage.getItem('gs_user');
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
+        // Render the last server-verified session immediately. API authorization
+        // remains server-side while this background request refreshes the user.
+        setLoading(false);
         getCurrentUser(parsed.user_id, parsed.section_id)
           .then((res) => {
             const userData = res.data;
@@ -28,6 +39,7 @@ export const AuthProvider = ({ children }) => {
           .finally(() => setLoading(false));
       } catch {
         localStorage.removeItem('gs_user');
+        setUser(null);
         setLoading(false);
       }
     } else {

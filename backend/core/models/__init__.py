@@ -106,3 +106,6 @@ from .overrides import (
     ClassProgressiveDisclosureOverride, ClassResilienceWeightOverride,
 )
 from .auth_models import UserSession
+from .competition_audit import (
+    DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
+)

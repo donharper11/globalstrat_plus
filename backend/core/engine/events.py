@@ -36,8 +36,8 @@ def fire_events(context):
         game=game, expires_round=current_round,
     ).delete()
 
-    templates = EventTemplateDefinition.objects.filter(scenario=scenario)
-    all_markets = list(MarketDefinition.objects.filter(scenario=scenario))
+    templates = EventTemplateDefinition.objects.filter(scenario=scenario).order_by('id')
+    all_markets = list(MarketDefinition.objects.filter(scenario=scenario).order_by('id'))
 
     for template in templates:
         # Check eligibility

@@ -1,0 +1,24 @@
+2026-08-27 Phase 1 static evidence summary
+
+Locale parity command result:
+  en leaf keys: 1794
+  zh-CN leaf keys: 1794
+  missing in zh-CN: 0
+  missing in en: 0
+
+Searches performed:
+  rg "THROTTLE|RateThrottle|throttle_classes|DEFAULT_THROTTLE" backend
+  Result: no matches.
+
+  rg "pg_dump|backup|snapshot" application/deploy code (excluding docs/node_modules)
+  Result: no database backup or pre-resolution snapshot implementation. Only frontend static-build backup and engine-internal agent snapshots matched.
+
+  rg "Math.random|random.Random|rng.random" engine/frontend
+  Result: engine probabilistic paths use deterministic helper or explicit derived seeds. No stored round seed or resolution manifest model was found.
+
+Test commands:
+  python3 manage.py test core.tests core.engine.tests --verbosity 1
+  Result: 246 tests, OK, 83.449 seconds.
+
+  python3 -m pytest -q
+  Result: 19 collection errors because DJANGO_SETTINGS_MODULE was not configured and management commands named *_test.py were collected.

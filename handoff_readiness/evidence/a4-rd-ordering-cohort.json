@@ -1,0 +1,25 @@
+{
+  "date": "2026-08-27",
+  "cohort": "identical-payload forward/reverse R&D ordering",
+  "legal_payload": {
+    "investments": 3,
+    "distinct_platform_features": 3,
+    "forward_reverse_feature_levels_identical": true,
+    "forward_reverse_pending_gains_identical": true
+  },
+  "adversarial_duplicate_target": {
+    "operations": ["license", "in_house"],
+    "forward_rejected": true,
+    "reverse_rejected": true,
+    "uniform_error": "Only one R&D investment per platform feature is allowed in a round.",
+    "full_submission_enforced": true,
+    "partial_rd_update_enforced": true
+  },
+  "tests": {
+    "cohort_tests_passed": 2,
+    "combined_regression_tests_passed": 64,
+    "django_system_check": "clean"
+  },
+  "ordering_advantage": false,
+  "status": "closed"
+}

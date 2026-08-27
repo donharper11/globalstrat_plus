@@ -1,0 +1,18 @@
+CR-001 trace
+  RoundLockView writes Round.decisions_locked=True and leaves Round.status unchanged.
+  IsRoundOpen authorizes writes from Game.status, Round.status and Round.deadline only.
+  It never reads Round.decisions_locked.
+
+CR-002 trace
+  RoundProcessView checks state, then invokes process_round.
+  process_round/_run_phase_1 do not wrap processing in transaction.atomic and do not select_for_update the Round/Game.
+  processing_status is set to PROCESSING with an ordinary save after the precondition read.
+
+CR-003/004 trace
+  DecisionPartialUpdateView deletes current related records and recreates replacements.
+  DecisionChangeLog records only decision_type and a generic description.
+  DecisionLockView explicitly comments that locked_by is left null.
+
+CR-007 trace
+  Generic DecisionPartialUpdateView has no @transaction.atomic.
+  List-valued updates validate, delete all existing rows, then bulk_create replacements.

@@ -14,14 +14,13 @@ const fmt = (v) => {
   return `$${n.toFixed(0)}`;
 };
 
-const roundStatusLabel = (roundStatus, locked) => {
-  if (roundStatus === 'processed') return { text: 'RESULTS AVAILABLE', color: 'purple' };
-  if (locked) return { text: 'LOCKED', color: 'green' };
-  if (roundStatus === 'open') return { text: 'DRAFT OPEN', color: 'blue' };
-  if (roundStatus === 'closed') return { text: 'ROUND CLOSED', color: 'orange' };
-  if (roundStatus === 'pending') return { text: 'NOT OPEN YET', color: 'default' };
-  if (roundStatus === 'in_progress') return { text: 'DRAFT OPEN', color: 'blue' };
-  return { text: 'ROUND STATUS UNKNOWN', color: 'default' };
+const roundStatusLabel = (roundStatus, locked, t) => {
+  if (roundStatus === 'processed') return { text: t('game_status.results_available'), color: 'purple' };
+  if (locked) return { text: t('game_status.locked'), color: 'green' };
+  if (roundStatus === 'open' || roundStatus === 'in_progress') return { text: t('game_status.draft_open'), color: 'blue' };
+  if (roundStatus === 'closed') return { text: t('game_status.round_closed'), color: 'orange' };
+  if (roundStatus === 'pending') return { text: t('game_status.not_open'), color: 'default' };
+  return { text: t('game_status.unknown'), color: 'default' };
 };
 
 const GameStatusBar = () => {
@@ -29,7 +28,7 @@ const GameStatusBar = () => {
   const { team, currentRound, totalRounds, roundStatus, budgets } = useGame();
   const { locked, saving, lastSaved } = useDecisions();
 
-  const status = roundStatusLabel(roundStatus, locked);
+  const status = roundStatusLabel(roundStatus, locked, t);
 
   return (
     <div style={{

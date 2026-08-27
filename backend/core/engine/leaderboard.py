@@ -4,8 +4,12 @@ From 03-engine-logic.md Section 14.
 """
 from decimal import Decimal, ROUND_HALF_UP
 
+from django.db.models import Sum
+
 from core.models.scenario import MarketDefinition
-from core.models.results_financials import LeaderboardEntry, RoundResultMarketRevenue
+from core.models.results_financials import (
+    LeaderboardEntry, RoundResultFinancials, RoundResultMarketRevenue)
+from core.models.sc_state import ResilienceScoreHistory
 
 D = Decimal
 
@@ -20,18 +24,41 @@ def update_leaderboard(context):
     current_round = context.round_number
     scenario = context.scenario
 
-    # Sort by PI first. At the nonnegative PI floor, the performance guard
-    # cannot put a zero-revenue team numerically below a selling team at 0.00,
-    # so positive revenue is the explicit tie-break. Revenue, net income, and
-    # team id make all remaining ties deterministic and financially legible.
+    # Published competition tie-break: cumulative operating cash flow,
+    # cumulative revenue, then current/final-round resilience. Team id is only
+    # a stable display ordering if every published criterion remains equal;
+    # competition rules treat that final condition as a shared prize tie.
     financials_by_team = getattr(context, 'financials', {}) or {}
+    cumulative = {
+        row['team_id']: row
+        for row in RoundResultFinancials.objects.filter(
+            game=game, round_number__lte=current_round,
+        ).values('team_id').annotate(
+            operating_cash_flow=Sum('operating_cash_flow'),
+            total_revenue=Sum('total_revenue'),
+        )
+    }
+    for team in context.teams:
+        if team.id not in cumulative:
+            current = financials_by_team.get(team.id, {})
+            cumulative[team.id] = {
+                'operating_cash_flow': current.get('operating_cash_flow', 0),
+                'total_revenue': current.get('total_revenue', 0),
+            }
+    resilience = dict(ResilienceScoreHistory.objects.filter(
+        team__game=game, round__round_number=current_round,
+    ).values_list('team_id', 'score'))
+    def published_key(team):
+        return (
+            D(str(team.performance_index)),
+            D(str(cumulative.get(team.id, {}).get('operating_cash_flow', 0) or 0)),
+            D(str(cumulative.get(team.id, {}).get('total_revenue', 0) or 0)),
+            D(str(resilience.get(team.id, 0) or 0)),
+        )
+
     teams_ranked = sorted(
         context.teams,
-        key=lambda t: (
-            D(str(t.performance_index)),
-            D(str(financials_by_team.get(t.id, {}).get('total_revenue', 0) or 0)) > 0,
-            D(str(financials_by_team.get(t.id, {}).get('total_revenue', 0) or 0)),
-            D(str(financials_by_team.get(t.id, {}).get('net_income', 0) or 0)),
+        key=lambda t: published_key(t) + (
             -t.id,
         ),
         reverse=True,
@@ -39,7 +66,15 @@ def update_leaderboard(context):
 
     markets = MarketDefinition.objects.filter(scenario=scenario)
 
-    for rank, team in enumerate(teams_ranked, 1):
+    previous_key = None
+    shared_rank = 0
+    ranked_pairs = []
+    for position, team in enumerate(teams_ranked, 1):
+        team_key = published_key(team)
+        if team_key != previous_key:
+            shared_rank = position
+        previous_key = team_key
+        ranked_pairs.append((shared_rank, team))
         financials = getattr(context, 'financials', {}).get(team.id, {})
 
         # Build market share summary
@@ -57,7 +92,7 @@ def update_leaderboard(context):
         LeaderboardEntry.objects.update_or_create(
             game=game, round_number=current_round, team=team,
             defaults={
-                'rank': rank,
+                'rank': shared_rank,
                 'performance_index': team.performance_index,
                 'shareholder_return': financials.get('shareholder_return', D('0')),
                 'total_revenue': financials.get('total_revenue', D('0')),
@@ -68,7 +103,7 @@ def update_leaderboard(context):
 
     context.log.append(
         'Leaderboard: ' + ', '.join(
-            f'#{i+1} {t.name} ({t.performance_index})'
-            for i, t in enumerate(teams_ranked)
+            f'#{rank} {team.name} ({team.performance_index})'
+            for rank, team in ranked_pairs
         )
     )
