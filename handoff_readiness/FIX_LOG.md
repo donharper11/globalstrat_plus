@@ -112,3 +112,22 @@ Implementation date: 2026-08-27 UTC. Migration `0059_competition_audit` was appl
   `main.d8229d93.js` live at https://globalstrat.camdani.com. Rollback artifact:
   `/var/www/globalstrat-backup-20260827-171919`. Cloudflare purge skipped
   (no `CF_TOKEN`); the content-hashed bundle name makes the new asset cache-safe.
+
+## Recovery drill: recover_competition_round hardening (RD-01/02/03)
+
+The end-to-end recovery drill (previously only dry-run tested) exposed three
+defects in the real restore + re-run path; all are fixed and re-verified green
+(`RECOVERY_DRILL.md`, `evidence/recovery-drill-20260827/`).
+
+| ID | Status | Repair |
+|---|---|---|
+| RD-01 | Closed | `restore_database` no longer passes `pg_restore --exit-on-error`, which turned a benign cross-version `SET transaction_timeout` (pg_dump 18 vs server 16) into a fatal restore failure. It now tolerates only benign version-skew SET errors (`_restore_stderr_is_benign`); any other pg_restore error is fatal. |
+| RD-02 | Closed | `restore_database` restores onto a freshly recreated schema (`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`) instead of `pg_restore --clean`, so FK-referenced objects (e.g. `users_pkey` ← `team`) no longer block the restore. |
+| RD-03 | Closed | `recover_competition_round` compares `manifest.code_revision` to the running `resolve_code_revision()` and refuses on mismatch/empty unless `--allow-code-revision-mismatch`; both revisions are written to the durable intent audit. Prevents re-running resolution against a build whose schema differs from the backup. |
+
+Verification: full backend suite **273 passed** (added a benign-error-classifier
+test and a code-revision-mismatch test). Green end-to-end re-run on game 31
+round 7 reproduced the pre-corruption `output_sha256`
+`c172eb4d…159224d3` exactly, with `restore_round`/`rerun_round` operator audit
+events and `restore/rerun` durable audit records. Two-operator sign-off for a
+live recovery remains an outstanding human gate.

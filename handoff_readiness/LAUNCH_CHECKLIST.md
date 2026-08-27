@@ -48,7 +48,13 @@ checklist tracks the remaining operational path to launch.
 
 ## Required before live competition approval
 
-- [ ] Execute the guarded `recover_competition_round` workflow end to end in an isolated environment, not only `--dry-run`: validate, restore, re-run, compare manifests and hashes, verify both audit records, and obtain two-operator sign-off.
+- [x] Execute the guarded `recover_competition_round` workflow end to end in an
+  isolated environment (not only `--dry-run`): validated, restored, re-ran, and
+  reproduced a byte-identical result; both operator audit records and the durable
+  recovery audit verified. The first end-to-end run exposed three defects
+  (RD-01/02/03) which are now fixed and covered by regression tests; the re-run
+  passes (`RECOVERY_DRILL.md`, `evidence/recovery-drill-20260827/`). **Two-operator
+  sign-off remains outstanding** — a process gate, not a code gate.
 - [ ] Conduct a volunteer competition cycle on the tagged build with separate identities and real deadlines. Include deliberate late/missing/duplicate submissions, team correction, deadline extension, outage communications, team deactivation and an operator incident drill.
 - [ ] Confirm instructors can identify who submitted what and when, distinguish missing from deliberate empty submissions, and apply published dispute and tie rules without direct database intervention.
 - [ ] Reconcile any volunteer findings, rerun affected verification, and obtain engineering, competition-operations and rules-owner sign-off.

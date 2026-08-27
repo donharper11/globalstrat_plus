@@ -1,0 +1,32 @@
+pg_restore: error: could not execute query: ERROR:  unrecognized configuration parameter "transaction_timeout"
+Command was: SET transaction_timeout = 0;
+pg_restore: error: could not execute query: ERROR:  cannot drop constraint users_pkey on table public.users because other objects depend on it
+DETAIL:  constraint team_withdrawn_by_id_c634d631_fk_users_user_id on table public.team depends on index public.users_pkey
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+Command was: ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
+pg_restore: error: could not execute query: ERROR:  cannot drop table public.users because other objects depend on it
+DETAIL:  constraint team_withdrawn_by_id_c634d631_fk_users_user_id on table public.team depends on table public.users
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+Command was: DROP TABLE IF EXISTS public.users;
+pg_restore: error: could not execute query: ERROR:  relation "users" already exists
+Command was: CREATE TABLE public.users (
+    user_id integer NOT NULL,
+    username character varying(255) NOT NULL,
+    password_hash text,
+    role character varying(50),
+    team_id integer,
+    email character varying(200),
+    student_id character varying(50),
+    display_name character varying(200)
+);
+
+
+pg_restore: error: COPY failed for table "users": ERROR:  duplicate key value violates unique constraint "users_pkey"
+DETAIL:  Key (user_id)=(7) already exists.
+CONTEXT:  COPY users, line 1
+pg_restore: error: could not execute query: ERROR:  multiple primary keys for table "users" are not allowed
+Command was: ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+pg_restore: warning: errors ignored on restore: 6
