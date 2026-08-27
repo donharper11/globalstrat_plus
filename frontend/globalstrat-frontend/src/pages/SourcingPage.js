@@ -14,6 +14,7 @@ import { getSuppliers, getSourcing, saveSourcing } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
+import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 
 const { Text, Paragraph } = Typography;
 
@@ -159,9 +160,9 @@ const SourcingPage = () => {
 
   const saveAndCloseModal = async () => { const ok = await handleSave(); if (ok) setEditCat(null); };
 
-  if (loading) return <LoadingSpinner />;
-
   const dirty = snap !== null && canonical(multiSourcing, tierVisibility, rows) !== snap;
+  useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
+  if (loading) return <LoadingSpinner />;
   const st = pageState({ locked, editable, dirty });
 
   // ── Critical-inputs summary table ──

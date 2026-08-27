@@ -16,6 +16,7 @@ import {
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
+import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 
 const canonical = (tf, sino, fx) => JSON.stringify({
   tf: (tf || []).map((r) => ({ seg: r.segment, mkt: r.market,
@@ -148,9 +149,10 @@ const TradeFinancePage = () => {
     } finally { setSaving(false); }
   };
 
+  const dirty = snap !== null && canonical(tfRows, sino, fx) !== snap;
+  useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
   if (loading) return <LoadingSpinner />;
   const tfLocked = round < UNLOCK.buyer_payment_instrument;
-  const dirty = snap !== null && canonical(tfRows, sino, fx) !== snap;
   const st = pageState({ locked, editable, dirty });
 
   return (
