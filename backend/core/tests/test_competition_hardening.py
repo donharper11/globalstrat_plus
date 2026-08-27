@@ -80,9 +80,10 @@ class CompetitionAuditTests(TestCase):
             ResolutionManifest.objects.create(
                 game=self.game, round=self.round, seed='s' * 64,
                 input_manifest={}, input_sha256='i' * 64,
-                backup_path=str(dump))
+                backup_path=str(dump), code_revision='rev-under-test')
             with override_settings(COMPETITION_RECOVERY_ENABLED=True,
-                                   COMPETITION_BACKUP_DIR=directory):
+                                   COMPETITION_BACKUP_DIR=directory,
+                                   GIT_REVISION='rev-under-test'):
                 call_command(
                     'recover_competition_round', game_id=self.game.id,
                     round_number=1, actor='recovery-instructor',
@@ -93,3 +94,47 @@ class CompetitionAuditTests(TestCase):
             self.assertEqual(records[-1]['action'], 'restore_round_intent')
             self.assertEqual(records[-1]['backup_sha256'], digest)
             self.assertTrue(records[-1]['dry_run'])
+            self.assertEqual(records[-1]['manifest_code_revision'], 'rev-under-test')
+
+    def test_recovery_refuses_code_revision_mismatch(self):
+        User.objects.create(
+            username='rev-instructor', role='instructor', password_hash='x')
+        with tempfile.TemporaryDirectory() as directory:
+            dump = Path(directory) / 'round.dump'
+            dump.write_bytes(b'test backup')
+            digest = hashlib.sha256(dump.read_bytes()).hexdigest()
+            dump.with_suffix('.dump.sha256').write_text(
+                f'{digest}  {dump.name}\n', encoding='utf-8')
+            ResolutionManifest.objects.create(
+                game=self.game, round=self.round, seed='s' * 64,
+                input_manifest={}, input_sha256='i' * 64,
+                backup_path=str(dump), code_revision='old-build')
+            with override_settings(COMPETITION_RECOVERY_ENABLED=True,
+                                   COMPETITION_BACKUP_DIR=directory,
+                                   GIT_REVISION='new-build'):
+                with self.assertRaisesRegex(CommandError, 'does not.*match'):
+                    call_command(
+                        'recover_competition_round', game_id=self.game.id,
+                        round_number=1, actor='rev-instructor',
+                        reason='Correct a verified scoring defect',
+                        confirm=f'RESTORE-GAME-{self.game.id}-ROUND-1', dry_run=True)
+                # Explicit override lets it proceed (validation only, dry-run).
+                call_command(
+                    'recover_competition_round', game_id=self.game.id,
+                    round_number=1, actor='rev-instructor',
+                    reason='Correct a verified scoring defect',
+                    confirm=f'RESTORE-GAME-{self.game.id}-ROUND-1', dry_run=True,
+                    allow_code_revision_mismatch=True)
+
+    def test_restore_stderr_classifier_separates_benign_from_real(self):
+        from core.services.competition_backup import _restore_stderr_is_benign
+        benign = (
+            'pg_restore: error: could not execute query: ERROR:  unrecognized '
+            'configuration parameter "transaction_timeout"\n'
+            'Command was: SET transaction_timeout = 0;\n'
+            'pg_restore: warning: errors ignored on restore: 1')
+        self.assertTrue(_restore_stderr_is_benign(benign))
+        self.assertTrue(_restore_stderr_is_benign(''))
+        real = (benign + '\npg_restore: error: could not execute query: '
+                'ERROR:  relation "team" already exists')
+        self.assertFalse(_restore_stderr_is_benign(real))

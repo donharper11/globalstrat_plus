@@ -20,6 +20,11 @@ class Command(BaseCommand):
         parser.add_argument('--confirm', required=True)
         parser.add_argument('--restore-only', action='store_true')
         parser.add_argument('--dry-run', action='store_true')
+        parser.add_argument(
+            '--allow-code-revision-mismatch', action='store_true',
+            help='Proceed even when the backup was produced by a different '
+                 'build than the one now running. Unsafe for a re-run; pair '
+                 'with --restore-only.')
 
     def handle(self, *args, **options):
         if not getattr(settings, 'COMPETITION_RECOVERY_ENABLED', False):
@@ -42,12 +47,28 @@ class Command(BaseCommand):
             game_id=game_id, round__round_number=round_number).first()
         if not manifest:
             raise CommandError('No resolution manifest exists for that game and round.')
+        # Re-running resolution against a build other than the one that produced
+        # the backup is unsafe: the restored schema may not match the code. Fail
+        # closed unless an operator explicitly overrides (restore-only advised).
+        from core.services.resolution_manifest import resolve_code_revision
+        current_revision = resolve_code_revision()
+        manifest_revision = (manifest.code_revision or '').strip()
+        if manifest_revision != current_revision and not options['allow_code_revision_mismatch']:
+            raise CommandError(
+                f'Backup code revision {manifest_revision or "(empty)"} does not '
+                f'match the running revision {current_revision}. Restoring and '
+                f're-running against a different build is unsafe. Deploy the '
+                f'matching build, or pass --allow-code-revision-mismatch '
+                f'(use --restore-only) to override.')
         verified = verify_backup(manifest.backup_path)
         intent = {
             'action': 'restore_round_intent', 'actor': actor.username,
             'reason': reason, 'game_id': game_id, 'round_number': round_number,
             'backup_path': verified['path'], 'backup_sha256': verified['sha256'],
             'input_sha256': manifest.input_sha256, 'dry_run': options['dry_run'],
+            'manifest_code_revision': manifest_revision,
+            'running_code_revision': current_revision,
+            'code_revision_override': bool(options['allow_code_revision_mismatch']),
         }
         audit_path = append_recovery_audit(intent)
         if options['dry_run']:
