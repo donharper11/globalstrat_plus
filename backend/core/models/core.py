@@ -43,6 +43,11 @@ class Game(models.Model):
 
 
 class Team(models.Model):
+    PARTICIPATION_STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('withdrawn', 'Withdrawn'),
+    ]
+
     id = models.BigAutoField(primary_key=True)
     game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name='teams')
     name = models.CharField(max_length=200)
@@ -63,6 +68,15 @@ class Team(models.Model):
         help_text="Team's country of origin. Affects trust, cultural distance, repatriation costs.",
     )
     is_in_distress = models.BooleanField(default=False)
+    participation_status = models.CharField(
+        max_length=20, choices=PARTICIPATION_STATUS_CHOICES, default='active',
+    )
+    withdrawn_at = models.DateTimeField(null=True, blank=True)
+    withdrawn_by = models.ForeignKey(
+        'core.User', on_delete=models.PROTECT,
+        null=True, blank=True, related_name='withdrawn_teams',
+    )
+    withdrawal_reason = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -119,6 +133,8 @@ class Round(models.Model):
     opened_at = models.DateTimeField(null=True, blank=True)
     deadline = models.DateTimeField(null=True, blank=True)
     processed_at = models.DateTimeField(null=True, blank=True)
+    decisions_locked = models.BooleanField(default=False)
+    lock_reason = models.CharField(max_length=64, blank=True, default='')
 
     # Set when the round stops accepting decisions — either the deadline
     # elapsed or an instructor closed it by hand.

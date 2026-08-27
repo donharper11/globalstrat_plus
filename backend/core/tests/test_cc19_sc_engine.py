@@ -196,8 +196,8 @@ class CC19SCEngineTest(TestCase):
         self.assertNotEqual(_seed(1, 2, 3), _seed(1, 3, 3))
 
 
-class CC19SCFailOpenHardeningTest(TestCase):
-    """W6: a failing SC engine step must be LOUD, not silently undisrupted."""
+class CC19SCFailClosedHardeningTest(TestCase):
+    """A failing SC engine step must abort resolution in every environment."""
 
     def setUp(self):
         from types import SimpleNamespace
@@ -207,11 +207,12 @@ class CC19SCFailOpenHardeningTest(TestCase):
     def _boom(self, context):
         raise RuntimeError('forced SC failure')
 
-    def test_marker_logged_at_error_and_swallowed_when_not_strict(self):
+    def test_marker_logged_and_reraised_even_when_legacy_strict_flag_is_off(self):
         from core.engine.advance_round import _run_sc_step, SC_FAILURE_MARKER
         with self.settings(SC_ENGINE_STRICT=False):
             with self.assertLogs('engine', level='ERROR') as cm:
-                _run_sc_step('run_sc_state', self._boom, self.ctx)  # must NOT raise
+                with self.assertRaises(RuntimeError):
+                    _run_sc_step('run_sc_state', self._boom, self.ctx)
         joined = '\n'.join(cm.output)
         self.assertIn(SC_FAILURE_MARKER, joined)
         self.assertIn('step=run_sc_state', joined)

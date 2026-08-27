@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { Result, Button, Spin } from "antd";
 import { useGame } from "../contexts/GameContext";
+import { useTranslation } from "react-i18next";
 
 // GSP-R1-01: Shallow decision slugs a student might reach via direct URL entry
 // or a dashboard shortcut. These must resolve into the active game/team nested
@@ -27,6 +28,7 @@ function resolveNestedTarget(pathname, gameId, teamId) {
 // - A known shallow decision slug redirects into the active nested route.
 // - Anything else shows an honest recovery screen with one click back into play.
 export default function ShallowRouteRecovery() {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { gameId, teamId, loading } = useGame();
@@ -45,15 +47,15 @@ export default function ShallowRouteRecovery() {
   return (
     <Result
       status="404"
-      title="This page needs your active game"
+      title={t('route_recovery.title')}
       subTitle={
         gameId && teamId
-          ? "That link did not open a specific page. Jump back into your active game to continue."
-          : "We could not find an active game and team for your account. Return to your dashboard to continue."
+          ? t('route_recovery.active_help')
+          : t('route_recovery.missing_help')
       }
       extra={
         <Button type="primary" onClick={() => navigate("/")}>
-          Open my active game
+          {t('route_recovery.open_game')}
         </Button>
       }
     />

@@ -208,6 +208,7 @@ from core.views.instructor_accounts import (
     StudentAccountListView, StudentPasswordResetView,
     BulkPasswordResetView, ActiveSessionsView,
 )
+from core.views.team_control import InstructorTeamParticipationView
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -228,6 +229,9 @@ urlpatterns = [
          name='round-control-advance'),
     path('games/<int:game_id>/round-control/deadline/', RoundDeadlineView.as_view(),
          name='round-control-deadline'),
+    path('games/<int:game_id>/instructor/teams/<int:team_id>/participation/',
+         InstructorTeamParticipationView.as_view(),
+         name='instructor-team-participation'),
     # ---- Instructor: student accounts & sessions ----
     path('instructor/student-accounts/', StudentAccountListView.as_view(),
          name='instructor-student-accounts'),

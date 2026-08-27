@@ -122,7 +122,9 @@ class RoundContext:
         self.game = game
         self.round_number = round_number
         self.scenario = game.scenario
-        self.teams = list(game.teams.all())
+        self.teams = list(game.teams.filter(
+            participation_status='active',
+        ).order_by('id'))
         self.markets = {}          # market_id → MarketEffectiveState
         self.segments = {}         # segment_id → SegmentEffectiveState
         self.fit_scores = {}       # (team_id, segment_id, market_id) → float

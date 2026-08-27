@@ -1,0 +1,17 @@
+2026-08-27 UTC runtime observations
+
+Backend:
+  http://127.0.0.1:8002/api/ -> 403 without authentication (expected)
+  student1 and instructor authenticated successfully through /api/auth/login/
+  active student assignment: game 20, team 39
+  game 20 round status during audit: round 1 processed / RESULTS_AVAILABLE
+
+Frontend:
+  https://globalstrat.camdani.com -> 200 GlobalStrat SPA
+  http://127.0.0.1:8081 -> 302 ./login, code-server login surface
+
+Browser sweep:
+  48 screens total: 23 student routes in EN, 23 in zh-CN, 2 instructor entry routes.
+  8/46 student route visits rendered zero body text after DOM ready + 1.2 seconds.
+  Instructor routes rendered portal header only within the same observation window.
+  Full structured trace: ../browser/results.json

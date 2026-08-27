@@ -21,6 +21,8 @@ class JWTUser:
     def __init__(self, user):
         self._user = user
         self.user_id = user.user_id
+        self.pk = user.user_id
+        self.id = user.user_id
         self.username = user.username
         self.role = user.role
         self.team_id = None  # Resolved from Enrollment, not User

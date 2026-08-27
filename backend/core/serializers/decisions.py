@@ -32,6 +32,17 @@ from core.models.scenario import PlatformFeatureCeiling, ScenarioConfig
 from core.models.team_state import TeamPlant
 
 
+def validate_rd_investment_targets(investments):
+    """Require an unambiguous single operation for each platform feature."""
+    targets = [
+        (item['team_platform'].pk, item['feature'].pk)
+        for item in investments
+    ]
+    if len(targets) != len(set(targets)):
+        raise serializers.ValidationError(
+            'Only one R&D investment per platform feature is allowed in a round.')
+
+
 # ---------------------------------------------------------------------------
 # Tier 2 — Detail serializers
 # ---------------------------------------------------------------------------
@@ -560,7 +571,17 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
             'event_responses', 'research_allocations',
             'talent_allocations', 'compliance_investments',
         ]
-        read_only_fields = ['id', 'status', 'locked_at', 'locked_by']
+    read_only_fields = ['id', 'status', 'locked_at', 'locked_by']
+
+    def validate(self, attrs):
+        """Reject ambiguous R&D payloads whose result could depend on row order."""
+        investments = attrs.get('rd_investments')
+        if investments is not None:
+            try:
+                validate_rd_investment_targets(investments)
+            except serializers.ValidationError as error:
+                raise serializers.ValidationError({'rd_investments': error.detail})
+        return attrs
 
     # ------------------------------------------------------------------
     # Helpers

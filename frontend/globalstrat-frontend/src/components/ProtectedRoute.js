@@ -1,13 +1,13 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { Spin } from 'antd';
 import { useAuth } from '../AuthContext';
+import LoadingSpinner from './LoadingSpinner';
 
 const ProtectedRoute = ({ children, redirectTo = '/login', requiredRole }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <Spin size="large" style={{ display: 'block', margin: '200px auto' }} />;
+    return <LoadingSpinner fullPage />;
   }
 
   if (!user) {

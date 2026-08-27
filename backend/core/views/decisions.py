@@ -53,6 +53,7 @@ from core.serializers.decisions import (
     DecisionPartnershipSerializer,
     DecisionAcquisitionSerializer,
     DecisionESGSerializer,
+    validate_rd_investment_targets,
     DecisionEventResponseSerializer,
     DecisionResearchAllocationSerializer,
     DecisionTalentSerializer,
@@ -86,6 +87,11 @@ class IsTeamMember(permissions.BasePermission):
         # Instructors / admins always allowed
         if role in ('instructor', 'admin'):
             return True
+        if not Team.objects.filter(
+            pk=team_id, participation_status='active',
+        ).exists():
+            self.message = 'This team has been withdrawn from the competition.'
+            return False
         # Students: check enrollment team or TeamMember
         from core.models import Enrollment
         if Enrollment.objects.filter(
@@ -136,13 +142,17 @@ class IsRoundOpen(permissions.BasePermission):
 
         round_obj = Round.objects.filter(
             game_id=game_id, round_number=round_number,
-        ).only('status', 'deadline').first()
+        ).only('status', 'deadline', 'decisions_locked').first()
         if not round_obj:
             return False
 
         if round_obj.status != 'open':
             self.message = (f'Round {round_number} is {round_obj.status} — '
                             f'it is no longer accepting decisions.')
+            return False
+
+        if round_obj.decisions_locked:
+            self.message = 'Decisions have been locked by the instructor.'
             return False
 
         if round_obj.deadline:
@@ -155,6 +165,22 @@ class IsRoundOpen(permissions.BasePermission):
         return True
 
 
+class IsCurrentRoundOpen(IsRoundOpen):
+    """Apply the same write gates to endpoints that omit round_number."""
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        game_id = view.kwargs.get('game_id')
+        game = Game.objects.filter(pk=game_id).only('current_round').first()
+        if not game:
+            return False
+        view.kwargs['round_number'] = game.current_round
+        try:
+            return super().has_permission(request, view)
+        finally:
+            view.kwargs.pop('round_number', None)
+
+
 class IsInstructor(permissions.BasePermission):
     message = 'Instructor or Admin access required.'
 
@@ -163,6 +189,25 @@ class IsInstructor(permissions.BasePermission):
         if not user:
             return False
         return (user.role or '').lower() in ('instructor', 'admin')
+
+
+class CompetitionDecisionWriteMixin:
+    """Coordinate student writes with deadline close and same-team writes."""
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.method in permissions.SAFE_METHODS:
+            return super().dispatch(request, *args, **kwargs)
+        game_id = kwargs.get('game_id')
+        if not game_id:
+            return super().dispatch(request, *args, **kwargs)
+        from core.services.competition_locks import (
+            lock_game_for_decision_write, lock_team_for_decision_write)
+        with transaction.atomic():
+            lock_game_for_decision_write(game_id)
+            team_id = kwargs.get('team_id')
+            if team_id:
+                lock_team_for_decision_write(team_id)
+            return super().dispatch(request, *args, **kwargs)
 
 
 # ---------------------------------------------------------------------------
@@ -192,13 +237,14 @@ def _get_team(team_id):
 # Decision CRUD Views
 # ---------------------------------------------------------------------------
 
-class DecisionSubmissionView(APIView):
+class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
     """
     GET  — retrieve full decision submission
     POST — create or update (upsert) draft submission
     PUT  — full replacement of draft submission
     """
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     def get(self, request, game_id, team_id, round_number):
         rnd = _get_round(game_id, round_number)
@@ -220,9 +266,24 @@ class DecisionSubmissionView(APIView):
     def put(self, request, game_id, team_id, round_number):
         return self._upsert(request, game_id, team_id, round_number)
 
+    @transaction.atomic
     def _upsert(self, request, game_id, team_id, round_number):
+        from core.services.competition_locks import (
+            lock_game_for_decision_write, lock_team_for_decision_write)
+        lock_game_for_decision_write(game_id)
+        lock_team_for_decision_write(team_id)
+
+        # Permission checks happen before the transaction lock. Re-read the
+        # gate after waiting so requests queued behind deadline close receive
+        # the same 403 as requests that arrived after it.
         rnd = _get_round(game_id, round_number)
-        team = _get_team(team_id)
+        if (rnd.status != 'open' or rnd.decisions_locked or
+                (rnd.deadline and timezone.now() >= rnd.deadline)):
+            return Response(
+                {'detail': f'Round {round_number} is closed; decisions are no longer accepted.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        team = get_object_or_404(Team, pk=team_id, game_id=game_id)
         submission = DecisionSubmission.objects.filter(
             team=team, round=rnd,
         ).first()
@@ -244,9 +305,11 @@ class DecisionSubmissionView(APIView):
             serializer = DecisionSubmissionSerializer(data=data)
 
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        saved = serializer.save()
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save', request.data)
         resp_status = status.HTTP_200_OK if submission else status.HTTP_201_CREATED
-        return Response(serializer.data, status=resp_status)
+        return Response(DecisionSubmissionSerializer(saved).data, status=resp_status)
 
 
 # ---------------------------------------------------------------------------
@@ -272,12 +335,14 @@ _TYPE_MAP = {
 }
 
 
-class DecisionPartialUpdateView(APIView):
+class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
     """
     PATCH — update a single decision type within a submission.
     """
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
+    @transaction.atomic
     def patch(self, request, game_id, team_id, round_number, decision_type):
         if decision_type not in _TYPE_MAP:
             return Response(
@@ -326,6 +391,8 @@ class DecisionPartialUpdateView(APIView):
                 ser = serializer_cls(data=item)
                 ser.is_valid(raise_exception=True)
                 validated_items.append(ser.validated_data)
+            if decision_type == 'rd':
+                validate_rd_investment_targets(validated_items)
             model_cls = serializer_cls.Meta.model
             model_cls.objects.filter(submission=submission).delete()
             if validated_items:
@@ -362,6 +429,8 @@ class DecisionPartialUpdateView(APIView):
 
         # Return updated submission
         submission.refresh_from_db()
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save', request.data)
         return Response(DecisionSubmissionSerializer(submission).data)
 
 
@@ -369,9 +438,10 @@ class DecisionPartialUpdateView(APIView):
 # Lock / Unlock
 # ---------------------------------------------------------------------------
 
-class DecisionLockView(APIView):
+class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
     """POST — lock the submission after full validation."""
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     def post(self, request, game_id, team_id, round_number):
         rnd = _get_round(game_id, round_number)
@@ -400,8 +470,14 @@ class DecisionLockView(APIView):
 
         submission.status = 'locked'
         submission.locked_at = timezone.now()
-        # locked_by left null — our auth uses X-User-Id, not Django auth
+        from core.utils.auth_context import get_request_user
+        submission.locked_by = get_request_user(request)
         submission.save()
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(
+            request, submission.team.game, submission.team, rnd, 'lock',
+            DecisionSubmissionSerializer(submission).data,
+        )
 
         # Generate pre-lock instructor alerts
         try:
@@ -681,10 +757,18 @@ class DecisionUnlockView(APIView):
                 {'detail': 'Submission is not locked.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        before = DecisionSubmissionSerializer(submission).data
         submission.status = 'draft'
         submission.locked_at = None
         submission.locked_by = None
         submission.save()
+        from core.services.competition_audit import (
+            record_decision_event, record_operator_event)
+        record_decision_event(request, submission.team.game, submission.team, rnd,
+                              'correction_unlock', before)
+        record_operator_event(
+            request, submission.team.game, rnd, 'unlock_submission_for_correction',
+            before, DecisionSubmissionSerializer(submission).data)
         return Response(DecisionSubmissionSerializer(submission).data)
 
 

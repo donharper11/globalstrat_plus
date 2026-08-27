@@ -23,7 +23,7 @@ from core.models.scenario import AICompetitorDefinition
 
 def generate_strategic_briefings(game, round_number, agent_narratives=None):
     """Generate a personalized strategic briefing for every team."""
-    teams = Team.objects.filter(game=game)
+    teams = Team.objects.filter(game=game, participation_status='active')
     briefings_created = 0
 
     for team in teams:
@@ -122,7 +122,9 @@ def _generate_executive_summary(game, team, current, previous):
     pi = current['performance']
     lb = current['leaderboard']
     prev_f = previous['financials'] if previous else None
-    total_teams = Team.objects.filter(game=game).count()
+    total_teams = Team.objects.filter(
+        game=game, participation_status='active',
+    ).count()
 
     parts = []
 
@@ -512,7 +514,9 @@ def _generate_competitive_landscape(game, team, round_number):
             landscape['rank_change'] = prev_lb.rank - lb.rank
 
     # Other teams' notable moves
-    other_teams = Team.objects.filter(game=game).exclude(id=team.id)
+    other_teams = Team.objects.filter(
+        game=game, participation_status='active',
+    ).exclude(id=team.id)
     for other in other_teams:
         moves = []
         new_entries = TeamMarketPresence.objects.filter(

@@ -13,6 +13,7 @@ import logging
 import time
 import threading
 
+from django.db import transaction
 from django.utils import timezone
 
 from core.models.core import Game, Team, Round
@@ -26,22 +27,7 @@ SC_FAILURE_MARKER = '[SC-ENGINE-FAILURE]'
 
 
 def _run_sc_step(step_name, fn, context):
-    """Run one supply-chain engine step fail-open, but LOUD (W6).
-
-    The SC steps were best-effort try/except: a throw degraded silently to
-    ``capacity_factor=1`` / ``cost=0``, so a subtle SC bug turned into "no
-    disruptions ever" while the round still 'succeeded looking undisrupted'.
-
-    This wrapper makes every failure:
-      - log at ERROR with a distinct, alertable marker (``SC_FAILURE_MARKER``)
-        including the step, game, and round, so the regression is greppable;
-      - be recorded on the round log for operator visibility;
-      - and, in strict mode (``settings.SC_ENGINE_STRICT`` — default ON outside
-        production), RE-RAISE so the round fails loud in dev/test rather than
-        succeeding undisrupted. In production strict is off by default, so a
-        live class is never crashed by an SC bug — but the ERROR log still fires.
-    """
-    from django.conf import settings
+    """Run a supply-chain step and fail the atomic resolution on error."""
     try:
         fn(context)
     except Exception as e:
@@ -53,8 +39,7 @@ def _run_sc_step(step_name, fn, context):
             exc_info=True,
         )
         context.log.append(f'{SC_FAILURE_MARKER} {step_name} failed: {e}')
-        if getattr(settings, 'SC_ENGINE_STRICT', False):
-            raise
+        raise
 
 
 def get_current_round(game):
@@ -64,6 +49,7 @@ def get_current_round(game):
     ).first()
 
 
+@transaction.atomic
 def close_round(game_id, reason='manual'):
     """
     Stop accepting decisions for the current round.
@@ -72,8 +58,13 @@ def close_round(game_id, reason='manual'):
     Processing is a separate, instructor-triggered step (process_round).
     Idempotent — closing an already-closed round is a no-op.
     """
-    game = Game.objects.get(id=game_id)
-    round_obj = get_current_round(game)
+    from core.services.competition_locks import lock_game_for_round_close
+    # This is acquired before physical row locks. It lets already-active
+    # decision transactions commit, then holds subsequent writes behind close.
+    lock_game_for_round_close(game_id)
+    game = Game.objects.select_for_update().get(id=game_id)
+    round_obj = Round.objects.select_for_update().filter(
+        game=game, round_number=game.current_round).first()
     if not round_obj:
         raise ValueError(f'Game "{game.name}" has no round {game.current_round}.')
 
@@ -102,21 +93,32 @@ def close_round(game_id, reason='manual'):
 def _lock_all_submissions(game, round_obj):
     """Lock every team's submission for this round, creating empty ones."""
     count = 0
-    for team in Team.objects.filter(game=game):
+    for team in Team.objects.filter(game=game, participation_status='active'):
         submission = DecisionSubmission.objects.filter(
             team=team, round=round_obj,
         ).first()
         if not submission:
-            DecisionSubmission.objects.create(
+            submission = DecisionSubmission.objects.create(
                 team=team, round=round_obj,
                 status='locked', locked_at=timezone.now(),
             )
+            action = 'missing_submission_defaulted'
             count += 1
         elif submission.status != 'locked':
             submission.status = 'locked'
             submission.locked_at = timezone.now()
             submission.save(update_fields=['status', 'locked_at'])
+            action = 'deadline_lock'
             count += 1
+        else:
+            continue
+        from core.models import DecisionAuditEvent
+        from core.serializers.decisions import DecisionSubmissionSerializer
+        DecisionAuditEvent.objects.create(
+            game=game, team=team, round=round_obj, user=None, action=action,
+            endpoint='engine:close_round',
+            payload=DecisionSubmissionSerializer(submission).data,
+        )
     return count
 
 
@@ -131,16 +133,38 @@ def process_round(game_id, dry_run=False):
     """
     from django.db import transaction
 
-    if dry_run:
-        sid = transaction.savepoint()
-
     try:
-        context = _run_phase_1(game_id)
-        phase_1_time = context._phase_1_time
+        # One transaction owns the resolution claim, recovery snapshot,
+        # manifests, and deterministic mutations. A concurrent caller waits
+        # here, then observes `processed` before it can take another snapshot.
+        with transaction.atomic():
+            game_for_backup = Game.objects.select_for_update().get(id=game_id)
+            round_for_backup = Round.objects.select_for_update().filter(
+                game=game_for_backup,
+                round_number=game_for_backup.current_round,
+            ).first()
+            if not round_for_backup:
+                raise ValueError(
+                    f'No round {game_for_backup.current_round} found for game '
+                    f'"{game_for_backup.name}".')
+            if round_for_backup.status == 'processed':
+                raise ValueError(
+                    f'Round {round_for_backup.round_number} has already been processed.')
 
-        if dry_run:
-            transaction.savepoint_rollback(sid)
-            return {'phase_1_time': phase_1_time, 'phase_2_status': 'skipped_dry_run'}
+            from core.services.competition_backup import backup_before_resolution
+            backup_path = backup_before_resolution(game_id, round_for_backup.round_number)
+            from core.services.resolution_manifest import prepare_manifest
+            prepare_manifest(game_for_backup, round_for_backup, backup_path)
+            context = _run_phase_1(game_id)
+            phase_1_time = context._phase_1_time
+
+            if dry_run:
+                transaction.set_rollback(True)
+                return {'phase_1_time': phase_1_time,
+                        'phase_2_status': 'skipped_dry_run'}
+
+            from core.services.resolution_manifest import complete_manifest
+            complete_manifest(round_for_backup)
 
         # Phase 2: background LLM calls
         game = Game.objects.get(id=game_id)
@@ -245,16 +269,18 @@ def advance_round(game_id, dry_run=False):
     return result
 
 
+@transaction.atomic
 def _run_phase_1(game_id):
     """Phase 1: All deterministic calculations. No LLM calls."""
     start = time.time()
 
-    game = Game.objects.get(id=game_id)
+    game = Game.objects.select_for_update().get(id=game_id)
 
     # Process the round the game is actually on. This used to look up
     # status='open', which broke once a deadline could close a round before
     # processing.
-    current_round_obj = get_current_round(game)
+    current_round_obj = Round.objects.select_for_update().filter(
+        game=game, round_number=game.current_round).first()
 
     if not current_round_obj:
         raise ValueError(f'No round {game.current_round} found for game "{game.name}" (ID: {game_id})')
@@ -274,7 +300,9 @@ def _run_phase_1(game_id):
     # Verify all teams have locked decisions before any processing starts.
     # InstructorAdvanceRoundView can expose an explicit force path, but the
     # engine entry point itself must not silently create or lock submissions.
-    teams = Team.objects.filter(game=game).order_by('id')
+    teams = Team.objects.filter(
+        game=game, participation_status='active',
+    ).order_by('id')
     for team in teams:
         submission = DecisionSubmission.objects.filter(
             team=team,
@@ -306,7 +334,7 @@ def _run_phase_1(game_id):
 
     # CC-19B: Generate SC disruption state (fire SC events, carry recovery forward)
     # and compute each team's production capacity factor BEFORE revenue, so
-    # Channel-1 lost sales throttle units in calculate_revenue. Best-effort.
+    # Channel-1 lost sales throttle units in calculate_revenue.
     from core.engine.sc_engine import run_sc_state
     _run_sc_step('run_sc_state', run_sc_state, context)
 
@@ -328,10 +356,7 @@ def _run_phase_1(game_id):
 
     # Step 4.55: Organizational structure modifiers (CC-32B)
     from core.engine.org_structure import apply_org_structure_modifiers
-    try:
-        apply_org_structure_modifiers(context)
-    except Exception as e:
-        context.log.append(f'CC-32B org structure failed: {e}')
+    apply_org_structure_modifiers(context)
 
     # Step 4.6: Acquisition processing (CC-20)
     from core.engine.acquisitions import process_acquisitions
@@ -339,10 +364,7 @@ def _run_phase_1(game_id):
 
     # Step 4.7: Alliance satisfaction processing (CC-32D)
     from core.engine.alliance_engine import process_alliances
-    try:
-        process_alliances(context)
-    except Exception as e:
-        context.log.append(f'CC-32D alliance processing failed: {e}')
+    process_alliances(context)
 
     from core.engine.preference_engine import calculate_fit_scores
     calculate_fit_scores(context)
@@ -375,31 +397,25 @@ def _run_phase_1(game_id):
     calculate_entry_mode_overhead(context)  # CC-31A B7: before opex
     # CC-32B: Org structure overhead
     from core.engine.org_structure import calculate_org_structure_costs
-    try:
-        calculate_org_structure_costs(context)
-    except Exception as e:
-        context.log.append(f'CC-32B org structure costs failed: {e}')
+    calculate_org_structure_costs(context)
     calculate_operating_expenses(context)
     calculate_interest(context)
     calculate_tax(context)
     calculate_repatriation_costs(context)  # CC-31A B6: after tax, uses market_profit
     # CC-32C: Tax structure maintenance + audit rolls (after tax & repatriation)
-    try:
-        process_tax_structure_costs(context)
-    except Exception as e:
-        context.log.append(f'CC-32C tax structure processing failed: {e}')
+    process_tax_structure_costs(context)
     calculate_inventory_costs(context)
     calculate_retirement_costs(context)
 
     # CC-19B Channel 2: supply-chain disruption costs (freight surcharge +
     # mitigation premiums) — a real operating expense booked in operating_income
-    # by generate_financial_statements. Best-effort. Must run before financials.
+    # by generate_financial_statements. Must run before financials.
     from core.engine.sc_engine import calculate_sc_disruption_costs
     _run_sc_step('calculate_sc_disruption_costs', calculate_sc_disruption_costs, context)
 
     # CC-20: FX hedge lifecycle (open -> mark-to-market -> settle). Books realized
     # P&L into pre-tax income via context.sc_fx_hedge_pnl. Needs revenue (exposure),
-    # must run before financials. Same fail-open+strict handling as the SC steps.
+    # must run before financials.
     from core.engine.fx_engine import process_fx_hedges
     _run_sc_step('process_fx_hedges', process_fx_hedges, context)
 
@@ -411,26 +427,17 @@ def _run_phase_1(game_id):
     from core.engine.strategic_economics import (
         record_esg_impacts, record_talent_impacts, record_partnership_impacts,
     )
-    try:
-        record_esg_impacts(context)
-        record_talent_impacts(context)
-        record_partnership_impacts(context)
-    except Exception as e:
-        context.log.append(f'CC-24 impact recording failed: {e}')
+    record_esg_impacts(context)
+    record_talent_impacts(context)
+    record_partnership_impacts(context)
 
     # Step 12.7: CC-25 — Calculate derived features from financial outcomes
     from core.engine.derived_features import calculate_derived_features
-    try:
-        calculate_derived_features(context)
-    except Exception as e:
-        context.log.append(f'CC-25 derived features failed: {e}')
+    calculate_derived_features(context)
 
     # Step 12.8: CC-26 — AI Capital Markets (investor trading + share price)
     from core.engine.capital_markets import process_capital_markets
-    try:
-        process_capital_markets(context)
-    except Exception as e:
-        context.log.append(f'CC-26 capital markets failed: {e}')
+    process_capital_markets(context)
 
     # Step 13: Performance index
     from core.engine.performance import calculate_performance_index
@@ -441,29 +448,27 @@ def _run_phase_1(game_id):
     calculate_coherence(context, skip_rag=True)
 
     # Step 14.5: CC-32E — Agent Orchestrator (deterministic actions + template narratives)
-    agent_results = {'actions': [], 'narratives': [], 'convergence_iterations': 0}
-    try:
-        from core.engine.agents.orchestrator import run_agent_cycle
-        agent_results = run_agent_cycle(game, current_round_obj, context)
-        context.log.append(
-            f'CC-32E: Agent cycle complete — {len(agent_results["actions"])} actions, '
-            f'{len(agent_results["narratives"])} narratives, '
-            f'{agent_results["convergence_iterations"]} iterations'
-        )
-    except Exception as e:
-        context.log.append(f'CC-32E agent orchestrator failed: {e}')
+    from core.engine.agents.orchestrator import run_agent_cycle
+    agent_results = run_agent_cycle(game, current_round_obj, context)
+    context.log.append(
+        f'CC-32E: Agent cycle complete — {len(agent_results["actions"])} actions, '
+        f'{len(agent_results["narratives"])} narratives, '
+        f'{agent_results["convergence_iterations"]} iterations'
+    )
+
+    # Score supply-chain resilience before ranking because the published final
+    # tie-break uses this round's resilience score.
+    from core.engine.sc_engine import score_sc_resilience
+    _run_sc_step('score_sc_resilience', score_sc_resilience, context)
 
     # Step 15: Leaderboard
     from core.engine.leaderboard import update_leaderboard
     update_leaderboard(context)
 
     # Step 16: Instructor alerts (deterministic — no RAG enhancement)
-    try:
-        from core.engine.instructor_alerts import generate_post_round_alerts
-        alert_count = generate_post_round_alerts(game, current_round)
-        context.log.append(f'Generated {alert_count} instructor alerts')
-    except Exception as e:
-        context.log.append(f'Instructor alert generation failed: {e}')
+    from core.engine.instructor_alerts import generate_post_round_alerts
+    alert_count = generate_post_round_alerts(game, current_round)
+    context.log.append(f'Generated {alert_count} instructor alerts')
 
     # Step 17: Mark the round processed. Opening the next round is a separate,
     # instructor-triggered step — see advance_to_next_round().
@@ -473,12 +478,6 @@ def _run_phase_1(game_id):
     phase_1_time = time.time() - start
     current_round_obj.phase_1_duration = phase_1_time
     current_round_obj.save()
-
-    # CC-19/CC-19B: Score supply-chain resilience and record per-team disruption
-    # impact (lost sales + costs already flowed through the P&L above). Read-only;
-    # best-effort — must never crash round processing.
-    from core.engine.sc_engine import score_sc_resilience
-    _run_sc_step('score_sc_resilience', score_sc_resilience, context)
 
     logger.info(f'Phase 1 complete: {phase_1_time:.1f}s')
     context.log.append(f'Round {current_round} processed (Phase 1: {phase_1_time:.1f}s)')

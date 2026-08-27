@@ -509,6 +509,9 @@ class GameTeamsView(APIView):
             result.append({
                 'team_id': t.id,
                 'team_name': t.name,
+                'participation_status': t.participation_status,
+                'withdrawn_at': t.withdrawn_at,
+                'withdrawal_reason': t.withdrawal_reason,
                 'home_market': get_localized_field(t.home_market, 'name', language) if t.home_market else None,
                 'home_market_code': t.home_market.code if t.home_market else None,
                 'profile_name': get_localized_field(t.firm_starter_profile, 'profile_name', language) if t.firm_starter_profile else None,

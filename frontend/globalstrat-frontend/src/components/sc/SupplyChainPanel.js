@@ -57,12 +57,12 @@ const SupplyChainPanel = () => {
       setD({ suppliers: suppliers || [], regimes: regimes || [], sourcing: sourcing || {},
         inventory: inventory || {}, resilience: resilience || {}, events: events || [],
         compliance: compliance || [] });
-    } catch { message.error('Unable to load supply chain summary.'); } finally { setLoading(false); }
-  }, [gameId, teamId, scenarioId, currentRound]);
+    } catch { message.error(t('sc.dashboard.load_error')); } finally { setLoading(false); }
+  }, [gameId, teamId, scenarioId, currentRound, t]);
   useEffect(() => { load(); }, [load]);
 
   if (loading) return <LoadingSpinner />;
-  if (!d) return <Alert type="warning" showIcon message="Supply chain summary is unavailable for this round." />;
+  if (!d) return <Alert type="warning" showIcon message={t('sc.dashboard.unavailable')} />;
 
   const base = `/games/${gameId}/teams/${teamId}`;
   const go = (p) => navigate(`${base}${p}`);
@@ -117,14 +117,14 @@ const SupplyChainPanel = () => {
       key: `sc-${e.id}`,
       label: (
         <Space size={6} wrap>
-          <Tag color={SEV_COLOR[e.severity] || 'blue'}>{e.severity ? pretty(e.severity) : 'Disruption'}</Tag>
-          <Text strong>{e.event_name || 'Supply-chain disruption'}</Text>
+          <Tag color={SEV_COLOR[e.severity] || 'blue'}>{e.severity ? pretty(e.severity) : t('sc.dashboard.disruption')}</Tag>
+          <Text strong>{e.event_name || t('sc.dashboard.sc_disruption')}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            {e.fired_by_instructor ? '· injected · ' : '· '}{e.affects_all_teams ? 'affects everyone' : 'affects your team'}
+            {e.fired_by_instructor ? t('sc.dashboard.injected') : '· '}{e.affects_all_teams ? t('sc.dashboard.affects_everyone') : t('sc.dashboard.affects_team')}
           </Text>
         </Space>
       ),
-      children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.resolution_data?.narrative || 'A supply-chain disruption occurred this round.'}</Paragraph>,
+      children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.resolution_data?.narrative || t('sc.dashboard.disruption_occurred')}</Paragraph>,
     })),
     ...compliance.slice(0, 12).map((e) => {
       const active = e.freeze_until_round >= currentRound || e.round_number === currentRound;
@@ -132,7 +132,7 @@ const SupplyChainPanel = () => {
         key: `comp-${e.id}`,
         label: (
           <Space size={6} wrap>
-            <Tag color={active ? 'red' : 'default'}>Compliance</Tag>
+            <Tag color={active ? 'red' : 'default'}>{t('sc.dashboard.compliance')}</Tag>
             <Text strong>{e.regime_name}</Text>
             <Text type="secondary">R{e.round_number}{e.market_code ? ` · ${e.market_code}` : ''} · {money(Number(e.cost_usd))}
               {e.freeze_until_round >= currentRound ? ` · frozen thru R${e.freeze_until_round}` : ''}</Text>
@@ -147,9 +147,9 @@ const SupplyChainPanel = () => {
     <div style={{ maxWidth: 1200, width: '100%' }}>
       <Space style={{ marginBottom: 12, width: '100%', justifyContent: 'space-between' }}>
         <Text type="secondary" style={{ fontSize: 12 }}>
-          Your supply chain at a glance: how healthy you are, what's threatening you, and where you're exposed.
+          {t('sc.dashboard.summary')}
         </Text>
-        <Button size="small" icon={<ReloadOutlined />} onClick={load}>Refresh</Button>
+        <Button size="small" icon={<ReloadOutlined />} onClick={load}>{t('sc.dashboard.refresh')}</Button>
       </Space>
       <StateLegend />
 
@@ -157,20 +157,20 @@ const SupplyChainPanel = () => {
         {/* 1. Resilience + this-round disruption impact */}
         <Col xs={24} md={8}>
           <SCCard title={t('sc.dashboard.resilience_score')} color="decision">
-            {scoreCalculated ? <Statistic title="This round" value={score} /> : (
+            {scoreCalculated ? <Statistic title={t('sc.dashboard.this_round')} value={score} /> : (
               <Alert type="info" showIcon message={t('sc.dashboard.not_scored')}
-                description="Your resilience score appears here once the round has been processed." />
+                description={t('sc.dashboard.score_help')} />
             )}
             {scoreCalculated && disrupted && (
               <Alert style={{ marginTop: 12 }} type="warning" showIcon icon={<WarningOutlined />}
-                message="Disruption impact this round"
+                message={t('sc.dashboard.impact_this_round')}
                 description={(
                   <Space direction="vertical" size={0} style={{ fontSize: 12 }}>
                     {cf !== undefined && cf < 1 && (
-                      <Text>Production capacity: <Text strong>{Math.round(cf * 100)}%</Text> (input shortfall)</Text>
+                      <Text>{t('sc.dashboard.production_capacity')}: <Text strong>{Math.round(cf * 100)}%</Text> {t('sc.dashboard.input_shortfall')}</Text>
                     )}
-                    {lostSales > 0 && <Text>Lost sales: <Text strong>{money(lostSales)}</Text></Text>}
-                    {disruptionCost > 0 && <Text>Disruption costs: <Text strong>{money(disruptionCost)}</Text></Text>}
+                    {lostSales > 0 && <Text>{t('sc.dashboard.lost_sales')}: <Text strong>{money(lostSales)}</Text></Text>}
+                    {disruptionCost > 0 && <Text>{t('sc.dashboard.disruption_costs')}: <Text strong>{money(disruptionCost)}</Text></Text>}
                   </Space>
                 )} />
             )}
@@ -179,40 +179,40 @@ const SupplyChainPanel = () => {
 
         {/* 2. Your exposure — consolidated sourcing/geography/buffer risk */}
         <Col xs={24} md={16}>
-          <SCCard title="Your Exposure" color="strategic"
-            onEdit={() => go('/decisions/sourcing')} editLabel="Edit sourcing"
+          <SCCard title={t('sc.dashboard.your_exposure')} color="strategic"
+            onEdit={() => go('/decisions/sourcing')} editLabel={t('sc.dashboard.edit_sourcing')}
             empty={allocations.length === 0 && invRows.length === 0}
-            emptyText="Set your sourcing and inventory to see where you're exposed.">
+            emptyText={t('sc.dashboard.exposure_empty')}>
             <Row gutter={[16, 12]}>
               <Col xs={24} md={8}>
-                <Text type="secondary" style={{ fontSize: 12 }}>Single-source risk</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('sc.dashboard.single_source_risk')}</Text>
                 <div style={{ marginTop: 4 }}>
                   {singleSourced.length
                     ? <Space wrap size={4}>{singleSourced.map((c) => <Tag color="red" key={c}>{pretty(c)}</Tag>)}</Space>
-                    : <Tag color="green">{allocations.length ? 'None' : '—'}</Tag>}
+                    : <Tag color="green">{allocations.length ? t('sc.common.none') : '—'}</Tag>}
                 </div>
               </Col>
               <Col xs={24} md={8}>
-                <Text type="secondary" style={{ fontSize: 12 }}>Geographic concentration</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('sc.dashboard.geo_concentration')}</Text>
                 <div style={{ marginTop: 4 }}>
                   {topCountry
                     ? (
                       <Space direction="vertical" size={2} style={{ width: '100%' }}>
                         <Space><Tag color={topCountry.pct > 50 ? 'orange' : 'default'}>{topCountry.country}</Tag>
                           <Text strong>{topCountry.pct}%</Text>
-                          {topCountry.pct > 50 && <Text type="secondary" style={{ fontSize: 11 }}>concentrated</Text>}</Space>
+                          {topCountry.pct > 50 && <Text type="secondary" style={{ fontSize: 11 }}>{t('sc.dashboard.concentrated')}</Text>}</Space>
                         <Progress percent={topCountry.pct} size="small" showInfo={false} status={topCountry.pct > 50 ? 'exception' : 'normal'} style={{ width: 130 }} />
                       </Space>
                     ) : <Text type="secondary">—</Text>}
                 </div>
               </Col>
               <Col xs={24} md={8}>
-                <Text type="secondary" style={{ fontSize: 12 }}>Buffer adequacy</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>{t('sc.dashboard.buffer_adequacy')}</Text>
                 <div style={{ marginTop: 4 }}>
                   {bufferAvg != null
-                    ? <Space><Text strong>{bufferAvg} days</Text><Tag color={thinBuffer ? 'orange' : 'green'}>{thinBuffer ? 'thin' : 'adequate'}</Tag>
-                        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>edit</Button></Space>
-                    : <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>Set inventory buffers</Button>}
+                    ? <Space><Text strong>{t('sc.dashboard.days', { count: bufferAvg })}</Text><Tag color={thinBuffer ? 'orange' : 'green'}>{thinBuffer ? t('sc.dashboard.thin') : t('sc.dashboard.adequate')}</Tag>
+                        <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>{t('sc.common.edit')}</Button></Space>
+                    : <Button type="link" size="small" style={{ padding: 0 }} onClick={() => go('/decisions/inventory')}>{t('sc.dashboard.set_buffers')}</Button>}
                 </div>
               </Col>
             </Row>
@@ -224,26 +224,26 @@ const SupplyChainPanel = () => {
         {/* 3. Compliance exposure */}
         <Col xs={24} md={10}>
           <SCCard title={t('sc.dashboard.compliance_risk')} color="decision">
-            <Paragraph type="secondary" style={{ fontSize: 12, marginBottom: 6 }}>Rules that apply in this market:</Paragraph>
+            <Paragraph type="secondary" style={{ fontSize: 12, marginBottom: 6 }}>{t('sc.dashboard.rules_apply')}</Paragraph>
             <Space wrap>{d.regimes.map((r) => <Tag key={r.id}>{r.name}</Tag>)}</Space>
             {flaggedNames.length > 0 ? (
               <Alert style={{ marginTop: 12 }} type="warning" showIcon icon={<WarningOutlined />}
-                message="Forced-labor risk in your supply chain"
-                description={`Some suppliers you use carry forced-labor risk: ${flaggedNames.join(', ')}. This can get shipments held at the border.`} />
+                message={t('sc.dashboard.forced_labor_risk')}
+                description={t('sc.dashboard.flagged_suppliers', { suppliers: flaggedNames.join(', ') })} />
             ) : (
               <Alert style={{ marginTop: 12 }} type="success" showIcon
-                message={allocations.length ? 'None of your current suppliers are flagged for forced-labor risk.' : 'Add suppliers to see your compliance risk here.'} />
+                message={allocations.length ? t('sc.dashboard.no_flagged') : t('sc.dashboard.add_for_risk')} />
             )}
           </SCCard>
         </Col>
 
         {/* 4. Disruptions & alerts — the live feed (collapsible, active-first) */}
         <Col xs={24} md={14}>
-          <SCCard title="Disruptions & Alerts" color="strategic"
+          <SCCard title={t('sc.dashboard.disruptions_alerts')} color="strategic"
             empty={alertItems.length === 0}
-            emptyText="No active disruptions or compliance actions. This updates each round.">
+            emptyText={t('sc.dashboard.no_alerts')}>
             <Paragraph type="secondary" style={{ fontSize: 12, marginBottom: 8 }}>
-              {events.length} disruption(s) this round{activeCompliance.length ? ` · ${activeCompliance.length} active compliance action(s)` : ''}. Click to read details.
+              {t('sc.dashboard.alert_summary', { disruptions: events.length, compliance: activeCompliance.length })}
             </Paragraph>
             <Collapse size="small" items={alertItems} />
           </SCCard>

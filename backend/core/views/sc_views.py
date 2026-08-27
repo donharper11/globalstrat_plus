@@ -42,7 +42,7 @@ from core.serializers.sc_serializers import (
     SCEventInstanceSerializer, HedgePositionSerializer,
     ResilienceScoreHistorySerializer,
 )
-from core.views.decisions import IsTeamMember, IsRoundOpen
+from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember, IsRoundOpen
 
 
 # ---------------------------------------------------------------------------
@@ -69,8 +69,9 @@ def _get_scenario_from_game(game_id):
 # Decision submission endpoints (§7.1)
 # ---------------------------------------------------------------------------
 
-class SourcingView(APIView):
+class SourcingView(CompetitionDecisionWriteMixin, APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     @staticmethod
     def _body(team, rnd):
@@ -124,11 +125,14 @@ class SourcingView(APIView):
                 payment_terms=alloc.get('payment_terms', ''),
             )
 
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save_sourcing', request.data)
         return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
-class LogisticsView(APIView):
+class LogisticsView(CompetitionDecisionWriteMixin, APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     @staticmethod
     def _body(team, rnd):
@@ -194,11 +198,14 @@ class LogisticsView(APIView):
                           if k not in ('team', 'round', 'destination_market')},
             )
 
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save_logistics', request.data)
         return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
-class TradeFinanceView(APIView):
+class TradeFinanceView(CompetitionDecisionWriteMixin, APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     @staticmethod
     def _body(team, rnd):
@@ -256,11 +263,14 @@ class TradeFinanceView(APIView):
                           if k not in ('team', 'round', 'currency_pair')},
             )
 
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save_trade_finance', request.data)
         return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 
-class InventoryView(APIView):
+class InventoryView(CompetitionDecisionWriteMixin, APIView):
     permission_classes = [IsTeamMember, IsRoundOpen]
+    throttle_scope = 'decision_write'
 
     @staticmethod
     def _body(team, rnd):
@@ -309,6 +319,8 @@ class InventoryView(APIView):
                           if k not in ('team', 'round')},
             )
 
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, team.game, team, rnd, 'save_inventory', request.data)
         return Response(self._body(team, rnd), status=status.HTTP_201_CREATED)
 
 

@@ -10,11 +10,13 @@ from core.models.core import Game, Team
 from core.models.team_state import TeamMarketPresence
 from core.models.cc32b_models import OrganizationalStructureType, TeamOrganizationalStructure
 from core.utils.localization import get_localized_field, get_user_language
+from core.views.decisions import (
+    CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
 
 D = Decimal
 
 
-class OrgStructureContextView(APIView):
+class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
     """
     GET: Returns available org structures, team's current structure, costs, and transition info.
     POST: Switch to a new structure.
@@ -153,6 +155,10 @@ class OrgStructureContextView(APIView):
         org.adopted_round = game.current_round
         org.transition_rounds_remaining = new_structure.transition_disruption_rounds
         org.save()
+        rnd = game.rounds.filter(round_number=game.current_round).first()
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, game, team, rnd, 'change_org_structure',
+                              request.data)
 
         return Response({
             'success': True,
@@ -160,3 +166,5 @@ class OrgStructureContextView(APIView):
             'transition_cost': float(new_structure.transition_cost),
             'disruption_rounds': new_structure.transition_disruption_rounds,
         })
+    permission_classes = [IsTeamMember, IsCurrentRoundOpen]
+    throttle_scope = 'decision_write'

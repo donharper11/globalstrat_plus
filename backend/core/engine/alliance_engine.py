@@ -443,7 +443,7 @@ def _initialize_new_alliance_states(game, round_number):
     """Create TeamAllianceState for partnerships that have profiles but no state."""
     scenario = game.scenario
 
-    for team in game.teams.all():
+    for team in game.teams.filter(participation_status='active'):
         active_partnerships = TeamPartnership.objects.filter(
             team=team, status='active',
         ).select_related('strategy_option', 'market')

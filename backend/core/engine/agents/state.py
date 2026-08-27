@@ -63,7 +63,9 @@ def build_state_snapshot(game, round_obj):
 def _serialize_teams(game, round_number, scenario):
     """Serialize all team state into snapshot dict."""
     teams = {}
-    for team in game.teams.select_related('home_market').all():
+    for team in game.teams.filter(
+        participation_status='active',
+    ).select_related('home_market'):
         financials = RoundResultFinancials.objects.filter(
             game=game, team=team, round_number=round_number,
         ).first()

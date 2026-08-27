@@ -1,0 +1,27 @@
+{
+  "date": "2026-08-27",
+  "item_1_deadline_coordination": {
+    "status": "closed",
+    "lock_scope": "transaction-scoped shared game advisory lock plus exclusive team advisory lock",
+    "permission_recheck_position": "after game lock acquisition",
+    "write_families": [
+      "generic submission", "partial decision", "submission lock",
+      "sourcing", "logistics", "trade finance", "inventory",
+      "communication draft", "communication submit",
+      "organisational structure", "tax structure"
+    ],
+    "regression_tests_passed": 78
+  },
+  "item_2_tie_break_alignment": {
+    "status": "closed",
+    "implemented_order": [
+      "performance index",
+      "cumulative operating cash flow",
+      "cumulative revenue",
+      "current/final-round resilience"
+    ],
+    "exact_remaining_tie": "shared leaderboard rank and shared prize",
+    "regression_tests_passed": 81
+  },
+  "django_system_check": "clean"
+}

@@ -30,6 +30,13 @@ except Exception:
 # ---------------------------------------------------------------------------
 ENVIRONMENT = os.environ.get('GLOBALSTRAT_ENV', 'development')
 IS_PRODUCTION = ENVIRONMENT == 'production'
+GIT_REVISION = os.environ.get('GIT_REVISION', '')
+COMPETITION_BACKUP_DIR = Path(os.environ.get(
+    'COMPETITION_BACKUP_DIR', BASE_DIR / 'competition_backups'))
+COMPETITION_BACKUP_RETENTION_DAYS = int(os.environ.get(
+    'COMPETITION_BACKUP_RETENTION_DAYS', '30'))
+COMPETITION_BACKUP_PRUNE_ENABLED = (
+    os.environ.get('COMPETITION_BACKUP_PRUNE_ENABLED', '').lower() == 'true')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 _INSECURE_SECRET_KEY = 'django-insecure-9*703tq1!eqol9@=4k4v_179%p74zhk@0q5@kz6am$6tu+4ib&'
@@ -252,13 +259,16 @@ try:
 except ImportError:
     pass
 
-# Supply-chain engine strictness (W6). In STRICT mode a failing SC engine step
-# re-raises and fails the round loud, so a bug surfaces in dev/test instead of
-# silently degrading to "no disruptions ever" (the fail-open risk). Default:
-# strict OFF in production (never crash a live class), ON everywhere else so
-# regressions are caught before deploy. Override with SC_ENGINE_STRICT.
+# Legacy compatibility flag. Resolution is now unconditionally fail-closed;
+# this value remains temporarily for older integrations that import it.
 SC_ENGINE_STRICT = os.environ.get(
-    'SC_ENGINE_STRICT', 'false' if IS_PRODUCTION else 'true',
+    'SC_ENGINE_STRICT', 'true',
+).lower() in ('1', 'true', 'yes')
+
+# Full database recovery must only run while the application is in maintenance
+# mode. The guarded management command refuses to execute unless enabled.
+COMPETITION_RECOVERY_ENABLED = os.environ.get(
+    'COMPETITION_RECOVERY_ENABLED', 'false',
 ).lower() in ('1', 'true', 'yes')
 
 # JWT Configuration (custom User model — uses PyJWT, not simplejwt)
@@ -282,4 +292,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'decision_write': os.environ.get('DECISION_WRITE_RATE', '120/min'),
+    },
 }

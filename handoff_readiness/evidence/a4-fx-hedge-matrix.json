@@ -1,0 +1,18 @@
+{
+  "date": "2026-08-27",
+  "foreign_receivable": 1000000,
+  "opening_rate": 1.0,
+  "premium_bps": 25,
+  "terminal_rates": [0.8, 0.9, 1.0, 1.1, 1.2],
+  "terminal_value_by_hedge_ratio": {
+    "0":   [800000, 900000, 1000000, 1100000, 1200000],
+    "25":  [849375, 924375, 999375, 1074375, 1149375],
+    "50":  [898750, 948750, 998750, 1048750, 1098750],
+    "75":  [948125, 973125, 998125, 1023125, 1048125],
+    "100": [997500, 997500, 997500, 997500, 997500]
+  },
+  "winning_ratio_by_path": [100, 100, 0, 0, 0],
+  "dominant_ratio": null,
+  "engine_test": "core.tests.test_cc20_fx_engine.CC20FXHedgeTest.test_calibrated_ratio_matrix_has_no_dominant_hedge",
+  "passed": true
+}

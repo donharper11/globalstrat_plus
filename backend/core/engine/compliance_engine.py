@@ -113,8 +113,10 @@ def enforce_compliance(context):
                .select_related('market')):
         context.compliance_freezes.add((ev.team_id, ev.market_id))
 
-    regimes = list(ComplianceRegime.objects.filter(scenario=context.scenario))
-    all_markets = list(MarketDefinition.objects.filter(scenario=context.scenario))
+    regimes = list(ComplianceRegime.objects.filter(
+        scenario=context.scenario).order_by('id'))
+    all_markets = list(MarketDefinition.objects.filter(
+        scenario=context.scenario).order_by('id'))
     market_by_code = {m.code: m for m in all_markets}
     rng = random.Random(_seed(game.id, round_number, context.scenario.id) ^ 0x0C0FFEE)
 
