@@ -38,6 +38,41 @@ def _dec(v):
     return float(v)
 
 
+# Human-readable labels for each submission origin, for instructor UI/disputes.
+SUBMISSION_ORIGIN_LABELS = {
+    'no_submission': 'No submission',
+    'draft': 'Draft (not locked)',
+    'student_locked': 'Locked by team',
+    'deadline_locked': 'Auto-locked at deadline',
+    'defaulted_missing': 'Never submitted — defaulted at close',
+}
+
+
+def classify_submission_origin(game, team, rnd, submission):
+    """Classify how a submission reached its current state, for dispute clarity.
+
+    Distinguishes a team that never submitted (its submission exists only because
+    close auto-created an empty default) from one that produced a draft which was
+    then locked — a distinction the raw ``status`` field ('locked') hides. Derived
+    from the immutable DecisionAuditEvent log so instructors need no database
+    access to answer "did this team actually submit?".
+    """
+    if submission is None:
+        return 'no_submission'
+    from core.models import DecisionAuditEvent
+    close_events = DecisionAuditEvent.objects.filter(
+        game=game, team=team, round=rnd, endpoint='engine:close_round')
+    # "Ever defaulted" is robust to a reopen+reclose cycle: once a team has been
+    # defaulted for a round, the record only exists because it never submitted.
+    if close_events.filter(action='missing_submission_defaulted').exists():
+        return 'defaulted_missing'
+    if submission.status != 'locked':
+        return 'draft'
+    if close_events.filter(action='deadline_lock').exists():
+        return 'deadline_locked'
+    return 'student_locked'
+
+
 # ---------------------------------------------------------------------------
 # 1a. Round Results
 # ---------------------------------------------------------------------------
@@ -568,6 +603,8 @@ class InstructorDashboardView(APIView):
                 'cash_on_hand': _dec(t.cash_on_hand),
                 'is_in_distress': t.is_in_distress,
                 'decision_status': dec_status,
+                'submission_origin': classify_submission_origin(
+                    game, t, current_rnd, dec_sub),
                 'coherence_score': _dec(coh.blended_score) if coh else None,
                 'total_revenue': _dec(fin.total_revenue) if fin else 0,
                 'markets_entered': markets_entered,
@@ -842,12 +879,19 @@ class InstructorTeamDecisionsView(APIView):
 
         sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
         if not sub:
-            return Response({'status': 'no_submission', 'round': round_number})
+            return Response({
+                'status': 'no_submission', 'round': round_number,
+                'submission_origin': 'no_submission',
+                'submission_origin_label': SUBMISSION_ORIGIN_LABELS['no_submission'],
+            })
 
+        origin = classify_submission_origin(game, team, rnd, sub)
         result = {
             'status': sub.status,
             'round': round_number,
             'locked_at': sub.locked_at.isoformat() if sub.locked_at else None,
+            'submission_origin': origin,
+            'submission_origin_label': SUBMISSION_ORIGIN_LABELS.get(origin, origin),
         }
 
         # Budget
