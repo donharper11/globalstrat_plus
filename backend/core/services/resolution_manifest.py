@@ -297,13 +297,34 @@ def build_input_manifest(game, round_obj):
 
 def build_output_manifest(round_obj):
     """The competitive result plus a separately hashed narrative envelope."""
+    from core.services.manifest_snapshot import identity_closure
     game = round_obj.game
-    competitive = build_snapshot(OUTPUT_SECTIONS, 'output', game.scenario_id, game.id)
+    # A competitive row points at configuration it does not itself contain —
+    # a team's starter profile, a game's scenario, a market. Without those in
+    # the snapshot their foreign keys would fall back to surrogate ids and the
+    # competitive hash would move with unrelated sequence activity. Pull in
+    # what identity requires; keep only the competitive sections in the body.
+    competitive_names = {section.name for section in OUTPUT_SECTIONS}
+    competitive = build_snapshot(
+        identity_closure(OUTPUT_SECTIONS, INPUT_SECTIONS), 'output',
+        game.scenario_id, game.id)
     config = build_snapshot(
         tuple(s for s in INPUT_SECTIONS if s.name in CONFIG_SECTION_NAMES),
         'input', game.scenario_id, game.id)
-    narrative = build_snapshot(NARRATIVE_SECTIONS, 'output',
-                               game.scenario_id, game.id)
+    # Narrative sections reference the game, team and market. Without those in
+    # the same snapshot their foreign keys cannot be tokenised and would fall
+    # back to surrogate ids, so pull in whatever identity requires and keep
+    # only the narrative sections in the body.
+    from core.services.manifest_snapshot import identity_closure
+    narrative_names = {section.name for section in NARRATIVE_SECTIONS}
+    narrative = build_snapshot(
+        identity_closure(NARRATIVE_SECTIONS, INPUT_SECTIONS + NARRATIVE_SECTIONS),
+        'output', game.scenario_id, game.id)
+    for snapshot in (competitive, config, narrative):
+        if snapshot.unmapped_references:
+            raise ManifestVerificationError(
+                'Manifest sections reference rows with no natural key: '
+                f'{snapshot.unmapped_references[:5]}.')
 
     body = {
         'kind': MANIFEST_KIND,
@@ -311,21 +332,40 @@ def build_output_manifest(round_obj):
         'schema_version': MANIFEST_SCHEMA_VERSION,
         'game': f'game({json.dumps(game.name)})',
         'round_number': round_obj.round_number,
-        'sections': competitive.rows,
-        'section_digests': competitive.section_digests(),
+        'sections': {name: rows for name, rows in competitive.rows.items()
+                     if name in competitive_names},
+        'section_digests': {name: digest for name, digest
+                            in competitive.section_digests().items()
+                            if name in competitive_names},
         # Proves resolution did not rewrite its own configuration: these must
         # equal the digests the input manifest recorded for the same sections.
         'config_digests': config.section_digests(),
         'field_inventory_sha256': canonical_sha256(competitive.field_inventory()),
     }
+    # `rows` carries a narrative section's non-prose columns; the prose itself
+    # is separated out by the snapshot and lives in `narrative_rows`. Both
+    # belong in the narrative envelope — hashing only the former would make
+    # "the narrative differed" untestable, because the text would not be in it.
     narrative_body = {
         'kind': MANIFEST_KIND,
         'envelope': 'narrative',
         'schema_version': MANIFEST_SCHEMA_VERSION,
         'round_number': round_obj.round_number,
-        'sections': narrative.rows,
-        'inline_narrative': competitive.narrative_rows,
-        'section_digests': narrative.section_digests(),
+        'sections': {name: rows for name, rows in narrative.rows.items()
+                     if name in narrative_names},
+        'prose': {name: rows for name, rows in narrative.narrative_rows.items()
+                  if name in narrative_names},
+        # Narrative fields on rows that are otherwise competitive: event and
+        # government-action text, agent-cycle template prose.
+        'inline_narrative': {name: rows for name, rows
+                             in competitive.narrative_rows.items()
+                             if name in competitive_names},
+        'section_digests': {name: digest for name, digest
+                            in narrative.section_digests().items()
+                            if name in narrative_names},
+        'prose_digests': {name: digest for name, digest
+                          in narrative.narrative_digests().items()
+                          if name in narrative_names},
     }
     return canonicalize(body), canonicalize(narrative_body)
 

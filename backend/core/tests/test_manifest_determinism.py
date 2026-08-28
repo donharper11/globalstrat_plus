@@ -629,6 +629,66 @@ class ManifestSnapshotIntegrationTests(TestCase):
         team.cash_on_hand = D(team.cash_on_hand) + D('1000000.00')
         team.save(update_fields=['cash_on_hand'])
 
+    def test_no_surrogate_reference_reaches_the_output_or_narrative_envelope(self):
+        """A competitive row points at configuration the output snapshot does
+        not itself contain — a team's starter profile, a game's scenario. Those
+        foreign keys must still resolve to natural-key tokens, or the hash moves
+        with unrelated sequence activity."""
+        from core.services.resolution_manifest import build_output_manifest
+        self._write_decisions()
+        competitive, narrative = build_output_manifest(self.round)
+        for name, body in (('output', competitive), ('narrative', narrative)):
+            rendered = cj.canonical_dumps(body)
+            self.assertNotIn('#surrogate:', rendered,
+                             f'{name} envelope carries a surrogate reference')
+        team = competitive['sections']['team'][0]
+        self.assertTrue(team['firm_starter_profile_id'].startswith(
+            'firm_starter_profile('))
+        self.assertTrue(team['game_id'].startswith('game('))
+
+    def test_narrative_envelope_carries_the_prose_itself(self):
+        """Hashing a narrative section's metadata and calling it the narrative
+        hash would make "the prose differed" untestable."""
+        from django.apps import apps
+        from core.services.resolution_manifest import build_output_manifest
+        StrategicBriefing = apps.get_model('core', 'StrategicBriefing')
+        briefing = StrategicBriefing.objects.create(
+            game=self.game, team=self.teams[0], round_number=1,
+            executive_summary='ORIGINAL PROSE from the recorded model.',
+            performance_analysis='p', investment_returns='i',
+            investor_sentiment='s', competitive_landscape='c',
+            strategic_recommendations='r', risk_alerts='a')
+
+        _competitive, narrative = build_output_manifest(self.round)
+        rows = narrative['prose']['strategic_briefing']
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['executive_summary'],
+                         'ORIGINAL PROSE from the recorded model.')
+        before = cj.canonical_sha256(narrative)
+
+        briefing.executive_summary = 'DIFFERENT PROSE from another model.'
+        briefing.save(update_fields=['executive_summary'])
+        _competitive, changed = build_output_manifest(self.round)
+        self.assertNotEqual(cj.canonical_sha256(changed), before)
+
+    def test_changed_prose_leaves_the_competitive_hash_alone(self):
+        """The other half of the same claim: prose moves, the result does not."""
+        from django.apps import apps
+        from core.services.resolution_manifest import build_output_manifest
+        StrategicBriefing = apps.get_model('core', 'StrategicBriefing')
+        briefing = StrategicBriefing.objects.create(
+            game=self.game, team=self.teams[0], round_number=1,
+            executive_summary='first', performance_analysis='p',
+            investment_returns='i', investor_sentiment='s',
+            competitive_landscape='c', strategic_recommendations='r',
+            risk_alerts='a')
+        competitive_before, _ = build_output_manifest(self.round)
+        briefing.executive_summary = 'a completely different narrative'
+        briefing.save(update_fields=['executive_summary'])
+        competitive_after, _ = build_output_manifest(self.round)
+        self.assertEqual(cj.canonical_sha256(competitive_before),
+                         cj.canonical_sha256(competitive_after))
+
     def test_version_1_manifests_are_readable_but_never_read_as_version_2(self):
         from core.models import ResolutionManifest
         from core.services.resolution_manifest import (

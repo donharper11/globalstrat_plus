@@ -107,6 +107,27 @@ def section_field_plan(section, model, mode):
             'narrative': tuple(sorted(narrative)), 'dropped': dropped}
 
 
+def identity_closure(sections, universe):
+    """`sections` plus every section needed to resolve their foreign keys.
+
+    A snapshot can only tokenise a foreign key whose target it also holds;
+    anything else falls back to a surrogate id. Rather than hand-maintain the
+    parent list for a partial snapshot, walk the relation graph and pull in
+    what identity requires.
+    """
+    by_model = {section.model: section for section in universe}
+    chosen = {section.name: section for section in sections}
+    pending = list(sections)
+    while pending:
+        section = pending.pop()
+        for label in sorted(set(_relation_fields(_model(section.model)).values())):
+            parent = by_model.get(label)
+            if parent is not None and parent.name not in chosen:
+                chosen[parent.name] = parent
+                pending.append(parent)
+    return tuple(chosen.values())
+
+
 def _order_sections(sections):
     """Materialisation order: a section follows every section it points at."""
     duplicates = duplicate_models(sections)
