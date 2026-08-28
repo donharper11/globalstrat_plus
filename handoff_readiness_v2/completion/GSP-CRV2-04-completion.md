@@ -1,6 +1,7 @@
 # GSP-CRV2-04 — database-enforced audit integrity and read evidence
 
 **Finding:** V2-007 (P1) — **closed**
+**Rework:** GSP-CRV2-04_REWORK_REPORT — caller-controlled TRUNCATE bypass, closed at `REWORK_FREEZE`
 **New finding raised:** V2-017 (P1) — logged, not repaired here
 **Baseline:** `1752315` (branch `crv2-04-audit-integrity`, cut from `main`)
 **Freeze commit:** `54a0d50` (clean tree, `git status --untracked-files=no` = 0)
@@ -283,3 +284,71 @@ protected earlier than they were.
    a defect — but a verification that cannot run is a verification nobody will
    run, and archiving by round (the retention procedure) is what keeps it
    inside that limit.
+
+
+## Rework — the truncate guard's authorization was itself a bypass
+
+**Audit finding, and it is correct.** `0071` authorised the test-reset
+exception on one condition:
+
+```sql
+current_setting('globalstrat.allow_truncate', true) = 'on'
+```
+
+PostgreSQL lets any ordinary session set a custom setting, and the application
+connects as the tables' owner, so it holds `TRUNCATE` privilege. The same
+application and raw-SQL context the guards exist to refuse could run:
+
+```sql
+SET globalstrat.allow_truncate = 'on';
+TRUNCATE competition_decision_audit_event;
+```
+
+with no trigger dropped. I wrote that gate to make the guard testable and did
+not ask who could satisfy it — which is how a control ends up authorising
+exactly what it was added to prevent. The submitted claim that the triggers
+reject every application write including `TRUNCATE` was false, and an anchor
+noticing the loss afterwards is the detect layer, not the reject layer.
+
+**The correction.** The allowance now requires two conditions, and the load is
+carried by the one a session cannot change:
+
+```sql
+db_name LIKE 'test\_%'
+  AND current_setting('globalstrat.allow_truncate', true) = 'on'
+```
+
+Django names an isolated test database with that prefix; a competition database
+never has it. Setting the flag in a competition database changes nothing. The
+setting is kept so a test can withdraw the allowance and watch the guard fire,
+and because an explicit marker is worth having, but it can only make the rule
+stricter. The underscore is escaped, because `_` is a LIKE wildcard and
+`test_%` would also match `testing_db`.
+
+The policy lives in its own SQL function, `competition_truncate_is_allowed(db_name)`,
+for a specific reason: a test necessarily runs inside a database that *is*
+allowed to reset itself, so asking `current_database()` would prove the wrong
+thing. Asking the policy about a competition database name is the only way to
+demonstrate refusal from inside the suite.
+
+**Migration `0072`** ships the corrected function body. `0071` installed the
+permissive version *into the database*; editing the Python that generated it
+does not reach an installed function, so existing databases need the migration.
+
+**Verification** (proportionate, per the rework report — no full suite, no
+concurrency or determinism matrices, no narrative drills):
+
+| Check | Result |
+|---|---|
+| `AuditGuardInstallationTests` (8 tests, incl. 3 new) | REWORK_FOCUSED |
+| Same tests against the audited defect | 1 failure — `test_the_setting_alone_cannot_authorize_truncation` |
+| Disposable-database negative walkthrough | REWORK_WALKTHROUGH |
+| `makemigrations --check`, `manage.py check`, `git diff --check` | clean |
+
+The reverted-code run matters more than the passing one: it is what
+distinguishes a test that covers the defect from a test that merely passes
+beside it.
+
+**Unchanged by this rework:** the hash chain, the anchor replay, the read
+inventory and its middleware, the `UPDATE`/`DELETE` guards, and V2-017, which
+remains a separate open finding against the lifecycle boundary.

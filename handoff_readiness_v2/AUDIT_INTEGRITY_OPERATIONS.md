@@ -57,17 +57,34 @@ did not cover it — GSP-CRV2-04's own certification run found that out by tryin
 it. A statement-level `BEFORE TRUNCATE` guard now refuses it on all five
 tables.
 
-That guard reads a session setting, `globalstrat.allow_truncate`. Django's
-`TransactionTestCase` resets the database by truncating every table, so without
-a way to say "this is a test database" the guard could only have been installed
-where no test could reach it. **Production must never set it.** If a database
-is behaving as though the guard is absent, check for it:
+The guard has to make an exception for one legitimate case: Django's
+`TransactionTestCase` resets an isolated test database by truncating every
+table. **The exception requires two conditions, and the one that matters is the
+one a session cannot change:**
 
 ```sql
-SHOW globalstrat.allow_truncate;   -- expect: unrecognized configuration parameter
-SELECT name, setting, source FROM pg_settings WHERE name = 'globalstrat.allow_truncate';
-ALTER DATABASE <db> RESET globalstrat.allow_truncate;   -- if it was ever set
+db_name LIKE 'test\_%'
+  AND current_setting('globalstrat.allow_truncate', true) = 'on'
 ```
+
+The first version required only the setting, and that was a bypass rather than
+a gate: `SET globalstrat.allow_truncate = 'on'` is available to *any* session,
+including the application's own, so the application could empty an audit table
+without dropping a trigger. Setting it in a competition database now changes
+nothing, because the database is not named like a test database. The setting is
+kept because withdrawing it lets a test watch the guard fire, and because an
+explicit marker is worth having — but it can only ever make the rule stricter.
+
+To see what the policy would decide for any database name:
+
+```sql
+SELECT competition_truncate_is_allowed('globalstrat_plus');   -- f, always
+SELECT competition_truncate_is_allowed('test_globalstrat_plus');
+```
+
+**Operational consequence:** never name a competition database `test_…`, and
+never restore a competition dump into a database with that prefix. That name
+is the whole authorization.
 
 ### Verifying the guards themselves
 

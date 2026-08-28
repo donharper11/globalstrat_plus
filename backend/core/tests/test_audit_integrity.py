@@ -140,6 +140,54 @@ class AuditGuardInstallationTests(AuditIntegrityBase):
         # And the reset path the test runner depends on still works.
         self.raw('TRUNCATE competition_decision_audit_event CASCADE')
 
+    def test_the_setting_alone_cannot_authorize_truncation(self):
+        """The reported bypass, asked of the policy directly.
+
+        `SET globalstrat.allow_truncate = 'on'` is available to any session,
+        the application included, so for as long as the guard consulted only
+        that setting the application could empty an audit table without
+        dropping a trigger. The policy is interrogated with a competition
+        database name rather than the caller's, because a test necessarily
+        runs inside a database that *is* allowed to reset itself — asking
+        `current_database()` would prove the wrong thing.
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SET LOCAL {audit_guards.TRUNCATE_SETTING} = 'on'")
+            cursor.execute(
+                f'SELECT {audit_guards.POLICY_FUNCTION}(%s), '
+                f'       {audit_guards.POLICY_FUNCTION}(%s), '
+                f'       {audit_guards.POLICY_FUNCTION}(%s)',
+                ['globalstrat_plus', 'gsp_audit_evidence_1', 'testing_db'])
+            competition, evidence, near_miss = cursor.fetchone()
+        self.assertFalse(competition,
+                         'the setting alone authorised a competition database')
+        self.assertFalse(evidence)
+        # `test_` is a LIKE prefix with a wildcard in it; `testing_db` must not
+        # slip through an unescaped underscore.
+        self.assertFalse(near_miss)
+
+    def test_an_isolated_test_database_may_still_reset_itself(self):
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SET LOCAL {audit_guards.TRUNCATE_SETTING} = 'on'")
+            cursor.execute(f'SELECT {audit_guards.POLICY_FUNCTION}(%s)',
+                           ['test_globalstrat_plus'])
+            self.assertTrue(cursor.fetchone()[0])
+            cursor.execute(
+                f"SET LOCAL {audit_guards.TRUNCATE_SETTING} = 'off'")
+            cursor.execute(f'SELECT {audit_guards.POLICY_FUNCTION}(%s)',
+                           ['test_globalstrat_plus'])
+            self.assertFalse(cursor.fetchone()[0],
+                             'withdrawing the setting must still refuse')
+
+    def test_django_can_still_flush_the_test_database(self):
+        """The legitimate path the exception exists for."""
+        self.assertTrue(connection.settings_dict['NAME'].startswith(
+            audit_guards.TEST_DATABASE_PREFIX),
+            'this test asserts on the isolated test-database contract')
+        self.raw('TRUNCATE competition_decision_audit_event CASCADE')
+
     def test_every_audit_table_refuses_truncate(self):
         for table in audit_guards.ALL_TABLES:
             with self.subTest(table=table):

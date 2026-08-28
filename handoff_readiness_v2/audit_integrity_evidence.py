@@ -404,6 +404,9 @@ NEGATIVE_STATEMENTS = [
      "UPDATE competition_audit_chain SET entry_sha256 = repeat('0', 64)"),
     ('TRUNCATE the decision audit',
      'TRUNCATE competition_decision_audit_event CASCADE'),
+    ('TRUNCATE after setting the test-reset flag',
+     "SET globalstrat.allow_truncate = 'on'; "
+     'TRUNCATE competition_decision_audit_event CASCADE'),
 ]
 
 ORM_BYPASS_SCRIPT = r'''

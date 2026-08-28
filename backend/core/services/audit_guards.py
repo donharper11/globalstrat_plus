@@ -41,12 +41,30 @@ TRUNCATE_FUNCTION = 'competition_audit_reject_truncate'
 # through: one statement empties the audit log and every `BEFORE DELETE`
 # trigger stays silent. It needs a statement-level trigger of its own.
 #
-# The escape hatch exists because Django's `TransactionTestCase` resets the
-# database by truncating every table, so a guard with no way to say "this is a
-# test database" could only be installed where no test could reach it. The
-# setting is never set in production, and a test that wants to prove the guard
-# turns it off for one transaction.
+# Django's `TransactionTestCase` resets the database by truncating every table,
+# so the guard needs some way to recognise a test database — but the first
+# version recognised one by asking the session, and
+# `SET globalstrat.allow_truncate = 'on'` is available to any session,
+# including the application's own. That authorised precisely the destruction it
+# was meant to gate.
+#
+# The allowance now requires two things, and the one that matters is the one a
+# session cannot change: the database must be named the way Django names an
+# isolated test database. The setting is kept because it lets a test withdraw
+# the allowance and watch the guard fire, and because an explicit marker is
+# worth having — but it can only ever make the rule stricter. Setting it in a
+# competition database changes nothing.
 TRUNCATE_SETTING = 'globalstrat.allow_truncate'
+
+# Django builds an isolated test database as TEST['NAME'] or, by default, the
+# configured name with this prefix. A competition database is never named this.
+TEST_DATABASE_PREFIX = 'test_'
+
+# `_` is a LIKE wildcard, so the prefix has to be escaped before it becomes a
+# pattern: an unescaped `test_%` also matches `testXfoo`.
+TEST_DATABASE_LIKE = TEST_DATABASE_PREFIX.replace('_', r'\_') + '%'
+
+POLICY_FUNCTION = 'competition_truncate_is_allowed'
 
 
 def _trigger_name(table):
@@ -86,9 +104,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Kept as its own function so the policy can be interrogated with a database
+-- name that is not the caller's, which is the only way to test from inside a
+-- test database that a production database would refuse.
+CREATE OR REPLACE FUNCTION {POLICY_FUNCTION}(db_name text) RETURNS boolean AS $$
+BEGIN
+    RETURN db_name LIKE '{TEST_DATABASE_LIKE}'
+       AND COALESCE(current_setting('{TRUNCATE_SETTING}', true), 'off') = 'on';
+END;
+$$ LANGUAGE plpgsql STABLE;
+
 CREATE OR REPLACE FUNCTION {TRUNCATE_FUNCTION}() RETURNS trigger AS $$
 BEGIN
-    IF COALESCE(current_setting('{TRUNCATE_SETTING}', true), 'off') = 'on' THEN
+    IF {POLICY_FUNCTION}(current_database()) THEN
         RETURN NULL;
     END IF;
     RAISE EXCEPTION
@@ -135,6 +163,7 @@ def uninstall_sql():
     statements.append(f'DROP FUNCTION IF EXISTS {REJECT_FUNCTION}();')
     statements.append(f'DROP FUNCTION IF EXISTS {MANIFEST_FUNCTION}();')
     statements.append(f'DROP FUNCTION IF EXISTS {TRUNCATE_FUNCTION}();')
+    statements.append(f'DROP FUNCTION IF EXISTS {POLICY_FUNCTION}(text);')
     return statements
 
 
