@@ -16,22 +16,28 @@ import '@testing-library/jest-dom';
 //
 //  1. it calls `getComputedStyle(el, '::-webkit-scrollbar')`, and jsdom rejects
 //     the pseudo-element argument;
-//  2. it then injects a `#id::-webkit-scrollbar { }` rule into the document,
-//     and jsdom's selector engine cannot parse that pseudo-element — so every
-//     *later* `getComputedStyle` call throws too, anywhere in the page.
+//  2. it then injects a `#id::-webkit-scrollbar { }` rule into the document.
 //
-// The second one is why the failure is so misleading: it surfaces as
-// "Failed to execute 'contains' on 'Node'" from deep inside rc-table, with a
-// perfectly ordinary element as the argument and no mention of stylesheets.
+// The second one is the damaging half. To compute a style, jsdom walks every
+// stylesheet in the document and asks its selector engine to match each rule.
+// One rule it cannot parse makes *every later* `getComputedStyle` call throw,
+// anywhere on the page — and the thrown error names neither stylesheets nor
+// the rule. antd's Select ships a rule with the same problem, so this is not
+// specific to Table.
 //
-// Real computed styles are still returned whenever jsdom can produce them. The
-// fallback applies only once that unparseable rule is in the document, which is
-// a limitation of the DOM implementation and not a fact about the component.
+// Real computed styles are returned whenever jsdom can produce them. The
+// fallback covers only the two ways its CSS engine gives up on a rule that
+// browsers accept, which is a limitation of the DOM implementation rather than
+// a fact about the component under test. Anything else is re-thrown.
 const EMPTY_STYLE = {
   width: '0px',
   height: '0px',
   getPropertyValue: () => '',
 };
+
+// "Failed to execute 'contains' on 'Node'" — an unparseable pseudo-element.
+// "... is not a valid selector"           — a rule nwsapi cannot compile.
+const JSDOM_CSS_LIMITS = /is not of type 'Node'|is not a valid selector/;
 
 const realGetComputedStyle = window.getComputedStyle;
 window.getComputedStyle = function (element, pseudoElement) {
@@ -42,7 +48,7 @@ window.getComputedStyle = function (element, pseudoElement) {
     // `.call(window, ...)` matters: jsdom's implementation reads `this`.
     return realGetComputedStyle.call(window, element);
   } catch (error) {
-    if (/is not of type 'Node'/.test(error.message)) {
+    if (JSDOM_CSS_LIMITS.test(error.message)) {
       return EMPTY_STYLE;
     }
     throw error;
