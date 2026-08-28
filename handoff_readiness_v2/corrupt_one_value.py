@@ -15,6 +15,9 @@ import sys
 
 import django
 
+# Importable whether it is run from backend/ or by absolute path.
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), '..', 'backend'))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'globalstrat.settings')
 django.setup()
 
