@@ -452,6 +452,87 @@ class AuditAnchorTests(AuditIntegrityBase):
                 self.assertNotEqual(report['recomputed_head_sha256'],
                                     report['anchored_head_sha256'])
 
+    def test_a_row_edited_below_the_anchored_head_is_detected(self):
+        """The case the first implementation missed.
+
+        It compared the stored head with the anchored head and recomputed that
+        one entry from its own stored fields, which proves the chain row was
+        not edited and nothing at all about the audit rows underneath it. Here
+        the tampered row is three entries below the head, so it leaves the head
+        entry's own columns untouched — and the anchor must still refuse.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            with override_settings(COMPETITION_BACKUP_DIR=directory):
+                first = self.make_decision_event(action='first')
+                self.make_decision_event(action='second')
+                self.make_operator_event()
+                self.make_manifest(completed=True)
+                audit_chain.seal_pending()
+                anchored = audit_anchor.export_anchor()
+                self.assertEqual(anchored['head_seq'], 4)
+                self.assertTrue(audit_anchor.verify_against_anchor()['ok'])
+
+                table = 'competition_decision_audit_event'
+                self.raw(f'DROP TRIGGER {table}_append_only ON {table}')
+                try:
+                    self.raw(f'UPDATE {table} SET action = %s WHERE id = %s',
+                             ['tampered', first.pk])
+                finally:
+                    audit_guards.install(connection)
+
+                report = audit_anchor.verify_against_anchor()
+                self.assertFalse(report['ok'], report)
+                self.assertEqual(report['entries_replayed'], 4)
+                self.assertNotEqual(report['recomputed_head_sha256'],
+                                    report['anchored_head_sha256'])
+                self.assertTrue(
+                    any('no longer hashes' in p for p in report['problems']),
+                    report['problems'])
+
+    def test_a_row_deleted_below_the_anchored_head_is_detected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with override_settings(COMPETITION_BACKUP_DIR=directory):
+                first = self.make_decision_event(action='first')
+                self.make_decision_event(action='second')
+                self.make_operator_event()
+                audit_chain.seal_pending()
+                audit_anchor.export_anchor()
+
+                table = 'competition_decision_audit_event'
+                self.raw(f'DROP TRIGGER {table}_append_only ON {table}')
+                try:
+                    self.raw(f'DELETE FROM {table} WHERE id = %s', [first.pk])
+                finally:
+                    audit_guards.install(connection)
+
+                report = audit_anchor.verify_against_anchor()
+                self.assertFalse(report['ok'], report)
+                self.assertTrue(any('has been deleted' in p
+                                    for p in report['problems']),
+                                report['problems'])
+
+    def test_a_chain_entry_removed_below_the_head_is_detected(self):
+        """Deleting the evidence of the evidence."""
+        with tempfile.TemporaryDirectory() as directory:
+            with override_settings(COMPETITION_BACKUP_DIR=directory):
+                self.make_decision_event()
+                self.make_decision_event(action='second')
+                self.make_operator_event()
+                audit_chain.seal_pending()
+                audit_anchor.export_anchor()
+
+                self.raw('DROP TRIGGER competition_audit_chain_append_only '
+                         'ON competition_audit_chain')
+                try:
+                    self.raw('DELETE FROM competition_audit_chain WHERE seq = 1')
+                finally:
+                    audit_guards.install(connection)
+
+                report = audit_anchor.verify_against_anchor()
+                self.assertFalse(report['ok'], report)
+                self.assertTrue(any('remain' in p for p in report['problems']),
+                                report['problems'])
+
     def test_an_edited_anchor_file_is_rejected_by_its_own_checksum(self):
         with tempfile.TemporaryDirectory() as directory:
             with override_settings(COMPETITION_BACKUP_DIR=directory):

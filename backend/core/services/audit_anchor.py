@@ -7,10 +7,13 @@ not in the database. Each export records the chain head as it stood at a moment
 in time, alongside the build that produced it, and is written to the backup
 volume with an accompanying checksum.
 
-Verification then asks a question the database cannot answer about itself: does
-the entry at the anchored sequence number still hash to the value someone wrote
-down outside? Because every entry commits to its predecessor, one matching head
-covers the whole prefix.
+Verification then asks a question the database cannot answer about itself:
+replaying every sealed entry from the rows the database holds *today*, does the
+chain still arrive at the digest someone wrote down outside? Because each
+entry's digest feeds the next, one matching head covers every row beneath it —
+but only if the replay reads the live rows. Recomputing the head from the chain
+table's own stored fields would prove the chain row was not edited and nothing
+at all about the audit rows underneath it.
 """
 import hashlib
 import json
@@ -20,6 +23,7 @@ import pathlib
 from django.utils import timezone
 
 from core.models import AuditChainEntry
+from core.models.audit_integrity import GENESIS_SHA256
 from core.services.audit_chain import PROJECTIONS, entry_digest, row_digest
 from core.services.audit_chain import RECOVERY_AUDIT_TABLE, recovery_audit_state
 
@@ -112,58 +116,80 @@ def load_anchor(path=None):
 
 
 def verify_against_anchor(path=None):
-    """Recompute the chain up to the anchored head and compare.
+    """Rebuild the chain from live rows up to the anchored head and compare.
 
-    A `False` result is the interesting one: it means the rows the database
-    holds today no longer produce the digest that was written down when they
-    were sealed.
+    The whole prefix is recomputed, not just the anchored entry. An earlier
+    version compared the stored head against the anchored head and recomputed
+    that one entry from its own stored fields — which proves the chain row was
+    not edited and says nothing whatever about the audit rows underneath it. A
+    modified row three entries back passed that check. Because each entry's
+    digest feeds the next, replaying every entry from the live rows makes the
+    final value depend on all of them, which is the property the anchor was
+    supposed to have.
+
+    A `False` result is the interesting one: the rows the database holds today
+    no longer produce the digest that was written down when they were sealed.
     """
     anchor = load_anchor(path)
     if anchor is None:
         return {'ok': False, 'reason': 'no anchor found',
                 'checked_at': timezone.now().isoformat()}
 
-    entry = AuditChainEntry.objects.filter(seq=anchor['head_seq']).first()
-    if entry is None:
-        return {'ok': False, 'anchor': anchor['path'],
-                'reason': f"chain entry {anchor['head_seq']} is gone",
-                'checked_at': timezone.now().isoformat()}
-
+    head_seq = anchor['head_seq']
+    entries = list(AuditChainEntry.objects.filter(seq__lte=head_seq)
+                   .order_by('seq'))
     problems = []
-    if entry.entry_sha256 != anchor['head_entry_sha256']:
-        problems.append('the stored chain head differs from the anchored head')
+    if len(entries) != head_seq:
+        problems.append(
+            f'{head_seq} entries were anchored; {len(entries)} remain')
 
-    # Recompute the anchored entry from the live row it commits to.
-    if entry.source_table == RECOVERY_AUDIT_TABLE:
-        state = recovery_audit_state()
-        row_sha = state['sha256'] if state else None
-        if row_sha is None:
-            problems.append('recovery-audit.jsonl is missing')
-            row_sha = entry.row_sha256
-    else:
-        model, _fields = PROJECTIONS[entry.source_table]
-        row = model.objects.filter(pk=entry.source_id).first()
-        if row is None:
-            problems.append(
-                f'{entry.source_table}:{entry.source_id} has been deleted')
-            row_sha = entry.row_sha256
-        else:
-            row_sha = row_digest(entry.source_table, row)
-            if row_sha != entry.row_sha256:
+    caches = {}
+    for table, (model, _fields) in PROJECTIONS.items():
+        caches[table] = {row.pk: row for row in model.objects.all()}
+
+    recomputed = GENESIS_SHA256
+    for entry in entries:
+        if entry.source_table == RECOVERY_AUDIT_TABLE:
+            state = recovery_audit_state()
+            if state is None:
                 problems.append(
-                    f'{entry.source_table}:{entry.source_id} no longer hashes '
-                    'to its sealed digest')
+                    f'#{entry.seq}: recovery-audit.jsonl is missing')
+                row_sha = entry.row_sha256
+            else:
+                row_sha = state['sha256']
+                if row_sha != entry.row_sha256 and entry.seq == head_seq:
+                    problems.append(
+                        f'#{entry.seq}: recovery-audit.jsonl has changed')
+                elif row_sha != entry.row_sha256:
+                    # Older file entries legitimately describe earlier content.
+                    row_sha = entry.row_sha256
+        else:
+            row = caches.get(entry.source_table, {}).get(entry.source_id)
+            if row is None:
+                problems.append(
+                    f'#{entry.seq}: {entry.source_table}:{entry.source_id} '
+                    'has been deleted')
+                row_sha = entry.row_sha256
+            else:
+                row_sha = row_digest(entry.source_table, row)
+                if row_sha != entry.row_sha256:
+                    problems.append(
+                        f'#{entry.seq}: {entry.source_table}:'
+                        f'{entry.source_id} no longer hashes to its sealed '
+                        'digest')
+        recomputed = entry_digest(recomputed, entry.source_table,
+                                  entry.source_id, row_sha)
 
-    recomputed = entry_digest(entry.prev_sha256, entry.source_table,
-                              entry.source_id, row_sha)
     if recomputed != anchor['head_entry_sha256']:
-        problems.append('the anchored head does not recompute from live data')
+        problems.append(
+            'the chain rebuilt from live rows does not reach the anchored head')
 
     return {
         'ok': not problems,
         'anchor': anchor['path'],
         'anchored_at': anchor['anchored_at'],
-        'head_seq': anchor['head_seq'],
+        'head_seq': head_seq,
+        'entries_replayed': len(entries),
         'anchored_head_sha256': anchor['head_entry_sha256'],
         'recomputed_head_sha256': recomputed,
         'entries_now': AuditChainEntry.objects.count(),

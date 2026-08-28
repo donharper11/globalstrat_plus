@@ -233,7 +233,44 @@ def main():
               + '\nSame attempts through the ORM and the admin:\n\n'
               + orm.stdout + orm.stderr)
 
-        # 8. The privileged change, and proof the external check catches it.
+        # 8. Read evidence walkthrough, end to end over HTTP.
+        walk = manage(database, 'shell', '-c', WALKTHROUGH_SCRIPT)
+        step('read-evidence walkthrough', walk)
+        write('read-evidence-walkthrough.txt', walk.stdout + walk.stderr)
+
+        record['steps'] = transcript
+        record['all_steps_as_expected'] = all(s['as_expected'] for s in transcript)
+        write('provenance.json', json.dumps(record, indent=2, sort_keys=True))
+
+        # 9. Every remaining command the operations guide documents, run as
+        #    written. A guide whose commands have not been executed is a guide
+        #    whose commands have not been tested.
+        guide = []
+        for title, args in (
+                ('install_audit_guards --privileges',
+                 ('install_audit_guards', '--privileges')),
+                ('verify_audit_chain --skip-anchor',
+                 ('verify_audit_chain', '--skip-anchor')),
+                ('who_accessed --user',
+                 ('who_accessed', '--user', '1')),
+                ('who_accessed --since',
+                 ('who_accessed', '--since', '2026-01-01T00:00:00Z')),
+                ('seal_audit_chain (catch-up, nothing pending)',
+                 ('seal_audit_chain',)),
+        ):
+            result = manage(database, *args, env_extra=env_extra)
+            step(f'guide command: {title}', result)
+            guide.append(f'$ manage.py {" ".join(args)}\n'
+                         f'{result.stdout}{result.stderr}')
+        write('operations-guide-commands.txt',
+              'Every command in AUDIT_INTEGRITY_OPERATIONS.md not already\n'
+              'exercised above, run exactly as the guide writes it.\n'
+              '==========================================================\n\n'
+              + '\n'.join(guide))
+
+        # 10. The privileged change, and proof the external check catches
+        #     it. Last, because it breaks the chain deliberately and every
+        #     check above needs a healthy one.
         tamper = []
         table = 'competition_decision_audit_event'
         tamper.append(psql(database,
@@ -258,16 +295,7 @@ def main():
               + f'\n--> exit {broken.returncode} '
                 f'({"detected" if broken.returncode else "MISSED"})\n')
 
-        # 9. Read evidence walkthrough, end to end over HTTP.
-        walk = manage(database, 'shell', '-c', WALKTHROUGH_SCRIPT)
-        step('read-evidence walkthrough', walk)
-        write('read-evidence-walkthrough.txt', walk.stdout + walk.stderr)
-
-        record['steps'] = transcript
-        record['all_steps_as_expected'] = all(s['as_expected'] for s in transcript)
-        write('provenance.json', json.dumps(record, indent=2, sort_keys=True))
-
-        # 10. Checksums last.
+        # 11. Checksums last.
         lines = []
         for path in sorted(EVIDENCE.rglob('*')):
             if path.is_file() and path.name != 'SHA256SUMS':

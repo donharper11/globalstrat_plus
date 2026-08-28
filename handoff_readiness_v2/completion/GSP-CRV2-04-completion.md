@@ -26,7 +26,7 @@ So the work is deliberately split into two claims that are easy to blur:
 
 | | Mechanism | Covers |
 |---|---|---|
-| **Rejected** | Triggers on all five audit tables | Every write the application can make, at any layer, for every role including the owner |
+| **Rejected** | Triggers on all five audit tables: `UPDATE`/`DELETE` per row, `TRUNCATE` per statement | Every write the application can make, at any layer, for every role including the owner |
 | **Detected** | Forward hash chain, head exported outside the database | The change made by whoever can drop the trigger first |
 
 **Nothing rejects the second category, and this report does not claim it does.**
@@ -124,6 +124,26 @@ The test now drives `middleware._sensitive()` directly. The general lesson is
 in the docstring: a test aimed at the helper rather than the caller proves the
 helper.
 
+The heavier finding came from reordering the harness. Moving the deliberate
+tamper to the end meant asking which checks needed a healthy chain, and that
+question exposed a **false claim in the anchor verification**:
+`verify_against_anchor()` compared the stored head with the anchored head and
+recomputed that single entry *from its own stored fields*. That proves the
+chain row was not edited and says nothing whatever about the audit rows beneath
+it. A row modified three entries below the head passed the anchor check
+cleanly — the earlier evidence file shows exactly that, `"anchor": {"ok":
+true}` beside `"chain": {"ok": false}`. The module docstring asserted "one
+matching head covers the whole prefix", which was the intended property and not
+the implemented one.
+
+It now replays every sealed entry from the rows the database holds today and
+compares the resulting head. Three tests cover a row edited below the head, a
+row deleted below the head, and a chain entry removed below the head; all three
+fail against the previous implementation and pass against this one. The overall
+command always reported the tamper, because `verify_chain()` catches it
+independently — but a defence-in-depth design in which one of the two layers
+silently does not work is worth knowing about before a dispute, not during one.
+
 The same pass added `UNCHAINED_FIELDS`. Seven manifest columns are outside the
 chain — three covered by their own digests, three paths to content those
 digests commit to, and `environment`, which is outside every hash by design.
@@ -170,11 +190,21 @@ progress:
 | `db2fd08` | Reviewing the artifacts found a 6.3-second lazy inventory build |
 | `286beaa` | The guard report listed every table twice, which reads like a double registration |
 | `02c2772` | A file-by-file read before submitting found the middleware still calling the slow scan (below) |
+| `e58f9f2` | Tracing the harness's own step order found that anchor verification could not detect a tampered row below the head (below) |
 
-The full backend suite ran **once**, from `e58f9f2`. The harness was paid four
-times, which is the cost of that discipline and is recorded here rather than
-smoothed over. The alternative — certifying `02c2772` and repairing afterwards
-— would have submitted evidence for code the report then contradicted.
+The full backend suite ran twice from `e58f9f2`, and the second run is my
+error, not a repair: the first invocation piped through `tail -80`, and the
+test summary was pushed out of the window by fixture logging. Exit code 0 was
+the only surviving evidence, which is not a count. The runtime did not change
+between the two runs — the digest is identical — so the second is a re-capture
+of the same certification, not a second certification.
+
+The harness was paid five times: four abandoned candidates, then once more
+after the documentation commit so `provenance.json` would record all eighteen
+checks rather than the ten that went through `step()`. That is the cost of the
+discipline, recorded rather than smoothed over. The alternative — certifying
+`02c2772` and repairing afterwards — would have submitted evidence for code
+this report then contradicted.
 
 ```bash
 # 1. static guards
