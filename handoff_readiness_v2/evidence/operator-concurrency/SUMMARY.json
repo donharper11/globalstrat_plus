@@ -1,0 +1,102 @@
+{
+  "finding": "V2-004",
+  "handoff": "GSP-CRV2-02",
+  "iterations_per_pair": 100,
+  "pairs": [
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "advance-vs-correct.json",
+      "iterations": 100,
+      "pair": "advance-vs-correct",
+      "status_code_pairs": {
+        "200+409": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "close-vs-extend.json",
+      "iterations": 100,
+      "pair": "close-vs-extend",
+      "status_code_pairs": {
+        "200+200": 49,
+        "200+400": 51
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 2,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "close-vs-reopen.json",
+      "iterations": 100,
+      "pair": "close-vs-reopen",
+      "status_code_pairs": {
+        "200+200": 52,
+        "200+409": 48
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "deactivate-vs-process.json",
+      "iterations": 100,
+      "pair": "deactivate-vs-process",
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "process-vs-correct.json",
+      "iterations": 100,
+      "pair": "process-vs-correct",
+      "status_code_pairs": {
+        "200+409": 58,
+        "400+200": 42
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "process-vs-process.json",
+      "iterations": 100,
+      "pair": "process-vs-process",
+      "status_code_pairs": {
+        "200+409": 47,
+        "409+200": 53
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "scheduler-vs-manual-close.json",
+      "iterations": 100,
+      "pair": "scheduler-vs-manual-close",
+      "status_code_pairs": {
+        "command+200": 92,
+        "command+409": 8
+      }
+    }
+  ],
+  "totals": {
+    "deadlocks": 0,
+    "pairs": 7,
+    "races": 700,
+    "server_errors": 0
+  }
+}

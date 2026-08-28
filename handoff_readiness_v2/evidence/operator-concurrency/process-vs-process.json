@@ -1,0 +1,4577 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343243
+    },
+    {
+      "game_id": 9,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343244
+    },
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343244
+    },
+    {
+      "game_id": 9,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343246
+    },
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343245
+    },
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343246
+    },
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343248
+    },
+    {
+      "game_id": 9,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343249
+    },
+    {
+      "game_id": 9,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 343249
+    }
+  ],
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "pair": "process-vs-process",
+  "status_code_pairs": {
+    "200+409": 47,
+    "409+200": 53
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 2 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-aa5f1e7c-095a-4683-8a58-9671cbcc716f"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "message": "Round 2 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5866591930389404,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d0930cff-fed4-4571-a2ef-10c6cf5a41e9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:40:56.503655+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:40:56.503651+00:00",
+            "phase_1_duration": 0.5866591930389404,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:40:57.318795+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 516,
+            "round_number": 2,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 3 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5382223129272461,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-382461a1-6365-4475-9886-5bd619ae17d0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:40:57.563793+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:40:57.563791+00:00",
+            "phase_1_duration": 0.5382223129272461,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:40:58.326725+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 517,
+            "round_number": 3,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 3 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-593afadb-8021-4469-8074-bcf3e73163d3"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 4 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-3004698f-9a49-4faa-81ae-6808d28b58c9"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "message": "Round 4 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5276198387145996,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c48eb863-0d98-4d3a-a467-aaa8d0ccf1d5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:40:58.550355+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:40:58.550352+00:00",
+            "phase_1_duration": 0.5276198387145996,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:40:59.312268+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 518,
+            "round_number": 4,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 5 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5274953842163086,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2b71a8d6-5824-460f-a47d-3fb88b87f48b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:40:59.546742+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:40:59.546738+00:00",
+            "phase_1_duration": 0.5274953842163086,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:00.313346+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 519,
+            "round_number": 5,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 5 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-be4f735a-1d33-4274-9c6c-3f98d07825bd"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 6 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-89509e9a-9361-4dd6-ba5c-3010658ab85a"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "message": "Round 6 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5839605331420898,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5ee31a48-2fe1-49de-8131-4a6ba63421b5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:00.544970+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:00.544954+00:00",
+            "phase_1_duration": 0.5839605331420898,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:01.359777+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 520,
+            "round_number": 6,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 7 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-7f41506b-b499-4a2a-986f-ae0d05580c86"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "message": "Round 7 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6745953559875488,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a09f30b8-7e73-4b2b-9264-cfef8a5b7c19",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:01.589865+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:01.589862+00:00",
+            "phase_1_duration": 0.6745953559875488,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:02.512237+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 521,
+            "round_number": 7,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 8 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-f28e7ad2-4794-4000-81ac-e7cb39b7ab54"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "message": "Round 8 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6094410419464111,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a334a24b-008d-4e8c-b9c2-fc2c8315ef2d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:02.775211+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:02.775207+00:00",
+            "phase_1_duration": 0.6094410419464111,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:03.652981+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 522,
+            "round_number": 8,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 9 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5661675930023193,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-87eb7f08-7101-47ce-8987-2095373c50dc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:03.888018+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:03.888001+00:00",
+            "phase_1_duration": 0.5661675930023193,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:04.712602+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 523,
+            "round_number": 9,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 9 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e435ffd8-2211-4331-97f6-14cbfa8a0dc8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 10 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-00eb778d-44f2-454d-badb-b8bb03e00f06"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "message": "Round 10 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5678582191467285,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-672c29aa-5c7d-4358-9adf-f85c4e635970",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:04.944926+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:04.944921+00:00",
+            "phase_1_duration": 0.5678582191467285,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:05.767503+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 524,
+            "round_number": 10,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 11 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5566635131835938,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2900cc2d-53ea-40f3-ad23-7232b8951250",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:06.005139+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:06.005105+00:00",
+            "phase_1_duration": 0.5566635131835938,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:06.830504+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 525,
+            "round_number": 11,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 11 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e48120fb-1d2b-4a4e-a243-8004c920f87c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 12 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-0c0937e5-3d26-4e72-9ff9-7866203076dc"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "message": "Round 12 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5579936504364014,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-be194bf8-bc65-4535-b8b7-e089fb1f65a9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:07.066033+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:07.066030+00:00",
+            "phase_1_duration": 0.5579936504364014,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:07.875043+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 526,
+            "round_number": 12,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 13 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.572415828704834,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3774eff8-db78-41f1-994e-00411cc7db03",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:08.119076+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:08.119074+00:00",
+            "phase_1_duration": 0.572415828704834,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:08.964128+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 527,
+            "round_number": 13,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 13 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-dd9b409e-a65d-4933-8f2c-14ad808def64"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 14 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8d522fe2-5c09-4bb0-b55b-fd0dc681d42f"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "message": "Round 14 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5710008144378662,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-09bd59b6-1fb8-4d60-973d-24c8488e3665",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:09.228338+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:09.228335+00:00",
+            "phase_1_duration": 0.5710008144378662,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:10.078826+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 528,
+            "round_number": 14,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 15 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5844340324401855,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d68ce150-92a5-4571-a5aa-839a1cb31f79",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:10.524067+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:10.524064+00:00",
+            "phase_1_duration": 0.5844340324401855,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:11.384223+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 529,
+            "round_number": 15,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 15 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-aec57fae-32d1-4fea-9445-88c140140dec"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 16 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-941e5b16-497f-407f-a70c-fc67959fdf7c"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "message": "Round 16 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6119744777679443,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1ad7efc9-c2c5-439d-a75a-e03db25729f2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:11.651927+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:11.651923+00:00",
+            "phase_1_duration": 0.6119744777679443,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:12.538612+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 530,
+            "round_number": 16,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 17 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5908298492431641,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b4cee0d2-65e8-49ac-a691-bb590ce1aed7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:12.827281+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:12.827278+00:00",
+            "phase_1_duration": 0.5908298492431641,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:13.686030+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 531,
+            "round_number": 17,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 17 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-fd5c6abc-0b74-40ff-8a96-24a82d08951f"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 18 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-a2c0a44b-a728-4ce8-8e97-7307de763d40"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "message": "Round 18 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5736019611358643,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d64562cd-9f43-4006-a88b-f54e767227e9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:14.143440+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:14.143437+00:00",
+            "phase_1_duration": 0.5736019611358643,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:14.984287+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 532,
+            "round_number": 18,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 19 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5684385299682617,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e5b7e33e-3f5c-40ed-bcd1-75370933434d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:15.238153+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:15.238137+00:00",
+            "phase_1_duration": 0.5684385299682617,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:16.070691+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 533,
+            "round_number": 19,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 19 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-b0dfc1c3-3751-4798-abc1-5fc15cbd9ef8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 20 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-7d333223-d12b-4383-8475-95a12626eb23"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "message": "Round 20 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5741333961486816,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fb9751b0-cc1b-4e2f-8311-e18169e94588",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:16.341089+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:16.341086+00:00",
+            "phase_1_duration": 0.5741333961486816,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:17.192228+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 534,
+            "round_number": 20,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 21 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5676906108856201,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6f9e8403-b0e6-4fa5-828d-b2b7a85ba50a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:17.460536+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:17.460532+00:00",
+            "phase_1_duration": 0.5676906108856201,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:18.327144+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 535,
+            "round_number": 21,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 21 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-68344168-37d3-4ad0-a57e-8d222f3f78f5"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 22 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-6bc74458-0e09-4ea5-9d57-de7b66363c73"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "message": "Round 22 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6019787788391113,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3de295f9-ebaa-45a4-beaa-affb0915e666",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:18.590980+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:18.590975+00:00",
+            "phase_1_duration": 0.6019787788391113,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:19.500028+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 536,
+            "round_number": 22,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 23 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5814900398254395,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-577d59bd-9f78-4570-bf19-bc08474fe5c3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:19.795824+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:19.795822+00:00",
+            "phase_1_duration": 0.5814900398254395,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:20.648918+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 537,
+            "round_number": 23,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 23 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-323dee3e-9931-4120-9059-d0daa6cd4556"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 24 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-1ebf0144-6385-4891-961d-be77aeccf768"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "message": "Round 24 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5853886604309082,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-60919d04-804c-4a9a-87ee-301f9ce7e807",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:20.940822+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:20.940819+00:00",
+            "phase_1_duration": 0.5853886604309082,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:21.817254+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 538,
+            "round_number": 24,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 25 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6294851303100586,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-91393fc7-54a8-4da9-bf87-2fd5d59aa3d8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:22.136168+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:22.136165+00:00",
+            "phase_1_duration": 0.6294851303100586,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:23.068155+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 539,
+            "round_number": 25,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 25 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-1c065cbc-e6e4-4f4d-a19c-f1bb20122a31"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 26 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-5da81fe1-9be6-4644-aef9-bdb70a62488f"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "message": "Round 26 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6282844543457031,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-724fcf7d-bdc5-401a-b3d3-7e61d52c24af",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:23.342257+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:23.342253+00:00",
+            "phase_1_duration": 0.6282844543457031,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:24.256814+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 540,
+            "round_number": 26,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 27 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.577725887298584,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-16d3118b-b6cd-4184-bac9-3cf505947e5e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:24.539740+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:24.539738+00:00",
+            "phase_1_duration": 0.577725887298584,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:25.398754+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 541,
+            "round_number": 27,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 27 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-82e21062-bdd8-40e6-a2c8-998e5c128279"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 28 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-fb4742c2-71c4-4865-b817-9b9455d9df7e"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "message": "Round 28 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5879826545715332,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-640dfb12-7cc9-4ef8-9167-229123f09748",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:25.684419+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:25.684401+00:00",
+            "phase_1_duration": 0.5879826545715332,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:26.573707+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 542,
+            "round_number": 28,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 29 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6160736083984375,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c9867058-2377-48e2-ae0a-b3a8c8003b5c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:26.857234+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:26.857231+00:00",
+            "phase_1_duration": 0.6160736083984375,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:27.777342+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 543,
+            "round_number": 29,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 29 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8fad36ec-c322-4884-bff3-932c70226e8c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 30 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-57dfcc32-5fd2-4d1f-be61-7efa9dfdffcb"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "message": "Round 30 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6383161544799805,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f4076f7c-21ec-402e-9085-e74df2857c59",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:28.071058+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:28.071054+00:00",
+            "phase_1_duration": 0.6383161544799805,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:28.999445+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 544,
+            "round_number": 30,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 31 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6458051204681396,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d311df82-791f-4fd4-ae2d-ce0867eea9a8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:29.303054+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:29.303050+00:00",
+            "phase_1_duration": 0.6458051204681396,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:30.260554+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 545,
+            "round_number": 31,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 31 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-cae03a9a-3185-4bdc-95d0-3e9f55eeed47"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 32 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-b68a2bdd-ccd3-49a1-94ff-7a6ee6035f17"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "message": "Round 32 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6227664947509766,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-670f7e3f-8c52-49c8-be87-0f67cf6695b3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:30.557840+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:30.557837+00:00",
+            "phase_1_duration": 0.6227664947509766,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:31.487400+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 546,
+            "round_number": 32,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 33 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6458847522735596,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-33afc6f4-07bc-48d4-9705-c284489c57c0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:31.783961+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:31.783958+00:00",
+            "phase_1_duration": 0.6458847522735596,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:32.742944+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 547,
+            "round_number": 33,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 33 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-4b7c5b88-f1b5-4a2e-819c-5b992b16d2df"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 34 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-544c3b52-4e20-4317-8e16-0c81584abc64"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "message": "Round 34 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7469809055328369,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b71507cf-6dec-45ed-8985-59039cfc044b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:33.029003+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:33.028999+00:00",
+            "phase_1_duration": 0.7469809055328369,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:34.077721+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 548,
+            "round_number": 34,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 35 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-0a4e16ba-8fa3-4e9c-a721-38025addad5c"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "message": "Round 35 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5932490825653076,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e79c487e-7fb4-4d16-ba58-82ed6fdd2b5c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:34.399979+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:34.399977+00:00",
+            "phase_1_duration": 0.5932490825653076,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:35.324854+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 549,
+            "round_number": 35,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 36 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-eb3cdbef-7781-4abd-a5cc-3ad16f5dea4a"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "message": "Round 36 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6178486347198486,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-05de3202-8ace-4048-aa21-01a394427d34",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:35.652545+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:35.652542+00:00",
+            "phase_1_duration": 0.6178486347198486,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:36.571511+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 550,
+            "round_number": 36,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 37 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6231813430786133,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-dd744939-f294-466a-9e0b-b0528b716386",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:36.901219+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:36.901216+00:00",
+            "phase_1_duration": 0.6231813430786133,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:37.852437+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 551,
+            "round_number": 37,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 37 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-20de6bf7-e616-4ab7-aa72-caf3e3a667b9"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 38 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-51751fc8-e5e0-4404-a8f7-ed4d955f6a50"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "message": "Round 38 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6285154819488525,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2121aa66-99e8-4c4f-9c43-fb2ec62b4094",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:38.169020+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:38.169018+00:00",
+            "phase_1_duration": 0.6285154819488525,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:39.180185+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 552,
+            "round_number": 38,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 39 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6256544589996338,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1ad53d5c-69f3-4ff1-aea9-c508392e9ea6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:39.481240+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:39.481238+00:00",
+            "phase_1_duration": 0.6256544589996338,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:40.441520+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 553,
+            "round_number": 39,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 39 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-821e4b15-dc04-4f0c-9bd9-9c926e97dce8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 40 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-12eed146-9cba-4122-a4cd-47e11fc1e7cf"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "message": "Round 40 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5954759120941162,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f6d79b63-93c6-4c92-aece-090d98e01dc4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:40.755687+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:40.755684+00:00",
+            "phase_1_duration": 0.5954759120941162,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:41.672384+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 554,
+            "round_number": 40,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 41 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7315559387207031,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-eeeb04c6-3d43-4230-b3c7-98065829ea2c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:41.986480+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:41.986477+00:00",
+            "phase_1_duration": 0.7315559387207031,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:43.042010+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 555,
+            "round_number": 41,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 41 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-058ec53a-5271-4ef0-bdbc-9cf2ca108ef5"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 42 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-268c78b7-d5b3-41db-b3bd-d1d10b07c505"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "message": "Round 42 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6298868656158447,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-cf9cc507-1316-42fb-ae18-f61eedbc3e69",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:43.379180+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:43.379177+00:00",
+            "phase_1_duration": 0.6298868656158447,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:44.362533+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 556,
+            "round_number": 42,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 43 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6562755107879639,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-66ec931e-ede9-4527-8faf-9b486dd3f22c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:44.688199+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:44.688196+00:00",
+            "phase_1_duration": 0.6562755107879639,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:45.661389+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 557,
+            "round_number": 43,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 43 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8897b739-95c8-4e9e-a8e8-6f86cfc467f8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 44 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-42274559-453b-482d-bfe1-0226a6a92688"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "message": "Round 44 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6378576755523682,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-98dda6b9-28fd-44c4-b5e0-ec2ac91a2525",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:46.006335+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:46.006331+00:00",
+            "phase_1_duration": 0.6378576755523682,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:46.989831+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 558,
+            "round_number": 44,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 45 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6319735050201416,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3d12d443-d545-4b26-922e-9d0c32febd38",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:47.315887+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:47.315883+00:00",
+            "phase_1_duration": 0.6319735050201416,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:48.281922+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 559,
+            "round_number": 45,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 45 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-253a42ad-34a8-44b5-b48c-acc89d096e8a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 46 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-ec053a96-bb61-4874-b07a-8e54a91640de"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "message": "Round 46 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6352405548095703,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-57d09768-d6dd-4549-b77e-cd17785b0a43",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:48.711274+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:48.711271+00:00",
+            "phase_1_duration": 0.6352405548095703,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:49.673006+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 560,
+            "round_number": 46,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 47 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.677825927734375,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9610228f-c29b-45c8-84ad-63312d8f4934",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:50.015121+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:50.015119+00:00",
+            "phase_1_duration": 0.677825927734375,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:51.026445+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 561,
+            "round_number": 47,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 47 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-2c06a0d8-1142-4988-8b61-396821686af3"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 48 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8c8c59a4-69b9-41eb-b9ba-d94e9bfd59e5"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "message": "Round 48 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6552925109863281,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-82efccd6-e2f3-4fc5-b981-bccaf6744418",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:51.384988+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:51.384984+00:00",
+            "phase_1_duration": 0.6552925109863281,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:52.392270+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 562,
+            "round_number": 48,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 49 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6931123733520508,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bb14808d-36a7-4d20-9be4-9aed3857691f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:52.752063+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:52.752061+00:00",
+            "phase_1_duration": 0.6931123733520508,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:53.792967+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 563,
+            "round_number": 49,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 49 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-facae836-d251-4390-80d7-40fcf3357c2b"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 50 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-d77a045f-a8e8-4a17-a108-9f15c1ca87ab"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "message": "Round 50 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6571643352508545,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-631c3b93-ded9-453d-a593-43d83974d625",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:54.144355+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:54.144353+00:00",
+            "phase_1_duration": 0.6571643352508545,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:55.155391+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 564,
+            "round_number": 50,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 51 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6451051235198975,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-dad23843-85d8-46cb-80d9-98e0fe323fa2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:55.499953+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:55.499951+00:00",
+            "phase_1_duration": 0.6451051235198975,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:56.487028+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 565,
+            "round_number": 51,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 51 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-bf16afa2-c5bb-4040-aabf-06d5bcdd6727"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 52 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-05355800-7793-4a48-8de8-9990ba6ae7e3"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "message": "Round 52 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6592631340026855,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e24438e2-213d-492b-81f6-182b4d6c1273",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:56.862955+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:56.862952+00:00",
+            "phase_1_duration": 0.6592631340026855,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:57.857634+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 566,
+            "round_number": 52,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 53 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6786744594573975,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a59b4edc-9789-4ea5-b5ea-1e17ced89424",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:58.201868+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:58.201865+00:00",
+            "phase_1_duration": 0.6786744594573975,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:41:59.233410+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 567,
+            "round_number": 53,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 53 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-0aa8317d-2f7d-44e7-bdca-36aaedb8cb60"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 54 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-2f84de9f-f66d-4024-af49-ee634d0d78d8"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "message": "Round 54 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6730971336364746,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b0585a64-1fa5-4801-a3a1-1b2183c25f4f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:41:59.655405+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:41:59.655402+00:00",
+            "phase_1_duration": 0.6730971336364746,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:00.705792+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 568,
+            "round_number": 54,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 55 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6859040260314941,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-726bc56c-a82b-4209-bda2-7c561b1cee13",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:01.155424+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:01.155405+00:00",
+            "phase_1_duration": 0.6859040260314941,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:02.186413+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 569,
+            "round_number": 55,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 55 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8e2f0b19-cd0c-496b-bcd2-de1f830bdb14"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 56 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-239b17a5-2e82-4c6a-a5c8-b24c097c1a81"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "message": "Round 56 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.77960205078125,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-182ee9c6-99de-4804-811c-4641302b86b4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:02.647756+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:02.647752+00:00",
+            "phase_1_duration": 0.77960205078125,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:03.844314+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 570,
+            "round_number": 56,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 57 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6495857238769531,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e362a402-bb4f-4d6d-b0af-ee6a0ade3f8a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:04.246472+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:04.246469+00:00",
+            "phase_1_duration": 0.6495857238769531,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:05.257295+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 571,
+            "round_number": 57,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 57 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8257f318-e916-4f68-820c-e25b726c91c7"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 58 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-a12dc13f-541f-4bbd-b9bb-4c34830cfbc2"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "message": "Round 58 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6618175506591797,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3a8290f9-973f-4254-836c-5509e077528d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:05.617820+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:05.617817+00:00",
+            "phase_1_duration": 0.6618175506591797,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:06.632300+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 572,
+            "round_number": 58,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 59 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6659092903137207,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-786b1a73-9dd2-4845-ae4d-45d77f9e54bb",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:06.983152+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:06.983149+00:00",
+            "phase_1_duration": 0.6659092903137207,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:08.027492+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 573,
+            "round_number": 59,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 59 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-890fe01f-ef6a-4aae-a738-6d4d8a0f4ada"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 60 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-6e6a7cbe-6c10-4cbd-9b56-5b0bfcd65faf"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "message": "Round 60 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7001655101776123,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ee2142e4-d9f8-409e-a82e-dc95e6c680c9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:08.408670+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:08.408666+00:00",
+            "phase_1_duration": 0.7001655101776123,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:09.477175+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 574,
+            "round_number": 60,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 61 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7024486064910889,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-27d432f0-f120-4429-be86-bb45d6774586",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:09.848866+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:09.848863+00:00",
+            "phase_1_duration": 0.7024486064910889,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:10.912015+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 575,
+            "round_number": 61,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 61 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e97f7dbc-4ca4-41c1-9561-1428e10bc599"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 62 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-835aa6a2-aed1-4439-b0be-6e1f1053fe75"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "message": "Round 62 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7227141857147217,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e844a414-c39d-40cc-9fbe-b31a1cd8f1a9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:11.274174+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:11.274171+00:00",
+            "phase_1_duration": 0.7227141857147217,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:12.513004+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 576,
+            "round_number": 62,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 63 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7414348125457764,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2122f53d-8f83-4faf-a4de-aac3cfc6bfaf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:12.910080+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:12.910076+00:00",
+            "phase_1_duration": 0.7414348125457764,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:14.028597+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 577,
+            "round_number": 63,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 63 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e6096154-5d2d-4147-a92a-abceb492cea5"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 64 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-4ae7b82e-c884-4afb-9887-acd0e57e60a1"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "message": "Round 64 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.696622371673584,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-80d2b1a9-55bb-45f3-a3b0-998b174601ed",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:14.415204+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:14.415201+00:00",
+            "phase_1_duration": 0.696622371673584,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:15.526998+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 578,
+            "round_number": 64,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 65 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6843702793121338,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-811b1f76-8cf9-4d32-b238-1db23565b13f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:15.908665+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:15.908662+00:00",
+            "phase_1_duration": 0.6843702793121338,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:16.955377+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 579,
+            "round_number": 65,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 65 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-69ede7df-275a-4d35-bde1-9663c6b365d7"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 66 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-b9ac55c8-6c13-4cb3-b8b6-1280da70d03e"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "message": "Round 66 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6769814491271973,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-95ede3c1-617b-46a0-8c05-957edad5259c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:17.321231+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:17.321228+00:00",
+            "phase_1_duration": 0.6769814491271973,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:18.381287+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 580,
+            "round_number": 66,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 67 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7154726982116699,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-edecead8-a5d3-4f56-bf39-bebe294f7b2a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:18.801896+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:18.801893+00:00",
+            "phase_1_duration": 0.7154726982116699,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:19.915098+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 581,
+            "round_number": 67,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 67 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-fe4ba3ca-7e02-41ee-b850-3ac884d03669"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 68 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-496e6cd2-8c01-4f57-91b8-a94da4405939"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "message": "Round 68 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7010776996612549,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4582b492-9960-46ef-afc4-479886926680",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:20.314827+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:20.314825+00:00",
+            "phase_1_duration": 0.7010776996612549,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:21.406811+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 582,
+            "round_number": 68,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 69 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.788597822189331,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-836b3476-904f-45cc-81a9-b447295dc811",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:21.939092+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:21.939089+00:00",
+            "phase_1_duration": 0.788597822189331,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:23.177516+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 583,
+            "round_number": 69,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 69 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-0631aee7-f37b-4ab4-aeb9-9850cdb3eb10"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 70 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-852dde21-5b6e-4336-bb8e-014f8d3b9be6"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "message": "Round 70 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6988239288330078,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0360a5fc-280b-4afd-93cd-8b679231eb51",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:23.602791+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:23.602787+00:00",
+            "phase_1_duration": 0.6988239288330078,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:24.701973+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 584,
+            "round_number": 70,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 71 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6897623538970947,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-939b3361-550e-499f-a3e6-5d692ec5ebee",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:25.147786+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:25.147782+00:00",
+            "phase_1_duration": 0.6897623538970947,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:26.234563+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 585,
+            "round_number": 71,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 71 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-1b031836-7067-48c4-8268-0bd5dabb9089"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 72 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-aae3148c-cc15-4de1-8381-5459ce0ba6fc"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "message": "Round 72 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7011516094207764,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e458212b-86cf-444e-a2a6-3d39a946a49d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:26.626667+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:26.626663+00:00",
+            "phase_1_duration": 0.7011516094207764,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:27.759736+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 586,
+            "round_number": 72,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 73 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7331562042236328,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a763cbe9-7ec3-4f43-80ec-79650762e5fa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:28.224631+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:28.224627+00:00",
+            "phase_1_duration": 0.7331562042236328,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:29.381777+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 587,
+            "round_number": 73,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 73 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-d30ee8c6-20ec-48a2-8c76-79d84d76ef9f"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 74 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-f3b34397-3894-41c1-bdf9-8434ad9f845d"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "message": "Round 74 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7077996730804443,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5b03568a-5837-4029-b47a-25981cb5743b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:29.787813+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:29.787810+00:00",
+            "phase_1_duration": 0.7077996730804443,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:30.903777+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 588,
+            "round_number": 74,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 75 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7150030136108398,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-59ba79e7-2a92-4011-9bc4-104c5f024ed8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:31.480492+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:31.480487+00:00",
+            "phase_1_duration": 0.7150030136108398,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:32.611680+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 589,
+            "round_number": 75,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 75 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-4c296984-dd9c-48ff-aa07-a58e0e551103"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 76 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-b2c70eec-dd66-42e3-8b30-126212302988"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "message": "Round 76 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7299513816833496,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-79b86640-e7fe-4433-9a15-a59a861b180a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:33.017249+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:33.017246+00:00",
+            "phase_1_duration": 0.7299513816833496,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:34.196451+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 590,
+            "round_number": 76,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 77 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.725501537322998,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-52cfd146-b4df-4622-8be2-4225062465fa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:34.602094+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:34.602090+00:00",
+            "phase_1_duration": 0.725501537322998,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:35.736342+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 591,
+            "round_number": 77,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 77 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-5de74d49-af6b-4876-aa94-293003173ee1"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 78 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-f4653356-7136-460f-b86b-a538fe43a4df"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "message": "Round 78 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7122442722320557,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c3f9b042-4795-4e33-a442-5c532f7f1c41",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:36.150839+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:36.150836+00:00",
+            "phase_1_duration": 0.7122442722320557,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:37.346193+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 592,
+            "round_number": 78,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 79 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7180516719818115,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-71aa0624-fcb7-44d2-95c4-94bdf52ecb3e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:37.756339+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:37.756336+00:00",
+            "phase_1_duration": 0.7180516719818115,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:38.903535+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 593,
+            "round_number": 79,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 79 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8edd56f0-2689-4b11-9066-5406b8406d74"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 80 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-af06f3af-1f6f-4c2c-b3fc-bd6a94ee80a0"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "message": "Round 80 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7263550758361816,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5bec1c77-cc01-41aa-b76b-d586f7647782",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:39.326911+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:39.326858+00:00",
+            "phase_1_duration": 0.7263550758361816,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:40.505847+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 594,
+            "round_number": 80,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 81 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7306146621704102,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2a0959d7-2aff-4070-89ea-0490908aeae9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:41.041364+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:41.041348+00:00",
+            "phase_1_duration": 0.7306146621704102,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:42.178404+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 595,
+            "round_number": 81,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 81 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e55e581d-f97e-4442-a5d1-d016f6b61cf5"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 82 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-33f95522-cc49-4e05-b2b8-edd52e7b9e3a"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "message": "Round 82 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7491035461425781,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b0d587f1-e14c-4992-bb55-3ce257d90b8c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:42.672568+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:42.672565+00:00",
+            "phase_1_duration": 0.7491035461425781,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:43.839902+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 596,
+            "round_number": 82,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 83 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7429442405700684,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1e508bd6-3714-4b8d-a858-f85a7e466424",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:44.298560+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:44.298557+00:00",
+            "phase_1_duration": 0.7429442405700684,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:45.508399+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 597,
+            "round_number": 83,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 83 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-a35ac655-1499-48e4-9644-83ace4370c47"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 84 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-68d83980-8fb9-42ee-a713-51d3f089b2fb"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "message": "Round 84 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7422440052032471,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-824e780e-1b33-480b-bf09-f9ec883f239a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:45.919560+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:45.919557+00:00",
+            "phase_1_duration": 0.7422440052032471,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:47.082528+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 598,
+            "round_number": 84,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 85 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-2b407ebd-9f30-44cf-9b00-abee8dc112f9"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "message": "Round 85 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7250604629516602,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f6257fa9-9e8d-4137-9581-ecf73fcccf15",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:47.536358+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:47.536355+00:00",
+            "phase_1_duration": 0.7250604629516602,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:48.718780+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 599,
+            "round_number": 85,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 86 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-da082b99-c218-4410-b426-1263c322420b"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "message": "Round 86 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7327220439910889,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6517daf8-3e73-4b29-8848-1fc81c2c7eaa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:49.135926+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:49.135923+00:00",
+            "phase_1_duration": 0.7327220439910889,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:50.286123+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 600,
+            "round_number": 86,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 87 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7552056312561035,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-73cdb434-3a17-4811-a3b2-493ed4726fbc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:50.878297+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:50.878294+00:00",
+            "phase_1_duration": 0.7552056312561035,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:52.048394+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 601,
+            "round_number": 87,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 87 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-3c889129-97a5-48cb-be6c-116b7e11606e"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 88 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8cdafe80-f543-447e-a4af-4eb10783701b"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "message": "Round 88 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7658097743988037,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0a96a194-6c4c-4444-a7ef-68163fab0902",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:52.493430+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:52.493425+00:00",
+            "phase_1_duration": 0.7658097743988037,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:53.820449+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 602,
+            "round_number": 88,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 89 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7365665435791016,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4b90589a-fe75-42e9-a089-bb7d92dc7d1f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:54.249533+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:54.249530+00:00",
+            "phase_1_duration": 0.7365665435791016,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:55.443778+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 603,
+            "round_number": 89,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 89 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-3d582934-64fb-47e4-8791-f6b62223f1cd"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 90 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-ab8faf4c-cc90-49c3-976d-95321fe06d1a"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "message": "Round 90 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.775982141494751,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5724f105-5e34-4cf1-aad6-d0c3b4780f2e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:55.880733+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:55.880729+00:00",
+            "phase_1_duration": 0.775982141494751,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:57.106199+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 604,
+            "round_number": 90,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 91 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7529168128967285,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-540325eb-ad97-4e43-8a53-1d637e1c9b0b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:57.554600+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:57.554598+00:00",
+            "phase_1_duration": 0.7529168128967285,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:42:58.734902+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 605,
+            "round_number": 91,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 91 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8c6f974d-42d3-48f6-acbd-40f0abdc2ffe"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 92 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-8deb9d50-5671-4a3f-8934-3d65db88696a"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "message": "Round 92 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7426702976226807,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4b53207e-5f23-4511-bd28-e3d6092d6f05",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:42:59.280301+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:42:59.280298+00:00",
+            "phase_1_duration": 0.7426702976226807,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:00.473664+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 606,
+            "round_number": 92,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 93 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7964050769805908,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2d25d702-002e-4144-b212-eefbf79e2c2c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:00.945767+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:00.945762+00:00",
+            "phase_1_duration": 0.7964050769805908,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:02.219495+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 607,
+            "round_number": 93,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 93 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-ae27eb99-e730-4310-ad6c-a700fe0e5ced"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 94 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-f4da28a5-b5ac-4ae3-963d-fc6257e1353e"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "message": "Round 94 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8131532669067383,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-004b1abc-2b34-4ef4-9d31-31a6a8da6963",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:02.741869+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:02.741864+00:00",
+            "phase_1_duration": 0.8131532669067383,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:04.096044+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 608,
+            "round_number": 94,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 95 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-695e3700-649d-4884-8af4-15f72b000659"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "message": "Round 95 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7503776550292969,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e3cb3ab9-c09b-4296-9c24-03df54ac94ee",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:04.568096+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:04.568093+00:00",
+            "phase_1_duration": 0.7503776550292969,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:05.775498+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 609,
+            "round_number": 95,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 96 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-a404fbd4-9b03-4640-9f92-6e650356be66"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "message": "Round 96 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7748982906341553,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-15f58853-34f1-401e-a87a-3b22e79366a0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:06.205697+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:06.205680+00:00",
+            "phase_1_duration": 0.7748982906341553,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:07.418037+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 610,
+            "round_number": 96,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 97 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7713847160339355,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-57369005-1c2d-48b4-9025-8ca05a2172f2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:08.040547+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:08.040543+00:00",
+            "phase_1_duration": 0.7713847160339355,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:09.264868+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 611,
+            "round_number": 97,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 97 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e01493a6-9c7f-4c60-ba6f-67fda3d2aad2"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 98 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-883baa2e-5f33-4039-a12d-1b71a8c73e62"
+        },
+        "kind": "api",
+        "status_code": 409
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "message": "Round 98 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7705404758453369,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-df4a2ba1-bf91-4a6a-9be7-37b55bb5e221",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:09.775872+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:09.775869+00:00",
+            "phase_1_duration": 0.7705404758453369,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:11.018243+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 612,
+            "round_number": 98,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 99 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8439853191375732,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8058d853-bd3c-4211-8b99-b2d805d35a45",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:11.514312+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:11.514308+00:00",
+            "phase_1_duration": 0.8439853191375732,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:12.836618+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 613,
+            "round_number": 99,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 99 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-e17a28cc-b35a-4e10-a402-6b1af6d159ee"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 100 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7658419609069824,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d9ee7190-f8bd-4827-8d82-8738e662701a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:13.320338+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:13.320335+00:00",
+            "phase_1_duration": 0.7658419609069824,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:14.599592+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 614,
+            "round_number": 100,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 100 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-190978a2-2e7b-4681-9909-744cee2ad828"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 101 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8101270198822021,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4db10d71-576e-455f-974a-4beb8159d955",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T09:43:15.069271+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T08:43:15.069268+00:00",
+            "phase_1_duration": 0.8101270198822021,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T08:43:16.454026+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 615,
+            "round_number": 101,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 101 has already been processed.",
+          "guidance": "Refresh the console. If results look wrong, use recovery rather than processing again.",
+          "request_id": "srv-a42f84c3-7430-411e-bdb6-18ef445ff495"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    }
+  ]
+}

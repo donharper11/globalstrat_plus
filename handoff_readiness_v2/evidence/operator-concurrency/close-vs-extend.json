@@ -1,0 +1,4370 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 2,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342036
+    },
+    {
+      "game_id": 2,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342037
+    },
+    {
+      "game_id": 2,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342037
+    },
+    {
+      "game_id": 2,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342038
+    },
+    {
+      "game_id": 2,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342039
+    },
+    {
+      "game_id": 2,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342041
+    },
+    {
+      "game_id": 2,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342040
+    },
+    {
+      "game_id": 2,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 342041
+    }
+  ],
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "pair": "close-vs-extend",
+  "status_code_pairs": {
+    "200+200": 49,
+    "200+400": 51
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 2 closed. 0 submission(s) locked.",
+          "request_id": "srv-d8ae834d-f36e-4dc3-af05-adc9b5bfde4a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.497189+00:00",
+            "deadline": "2026-08-28T11:36:45.452914+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.452911+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 104,
+            "round_number": 2,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:45.452914+00:00",
+          "reopened": false,
+          "request_id": "srv-b1f899b0-6432-4d94-9108-f943f186aed0"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 3 closed. 0 submission(s) locked.",
+          "request_id": "srv-4c491345-07c5-4d7f-ac83-7bc83738138f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.550551+00:00",
+            "deadline": "2026-08-28T09:36:45.512277+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.512273+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 105,
+            "round_number": 3,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-5dde209e-f43f-49e1-a025-5d25db1340d4"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 4 closed. 0 submission(s) locked.",
+          "request_id": "srv-e2b6d700-4f94-4827-a507-7c9fd98af135",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.625635+00:00",
+            "deadline": "2026-08-28T11:36:45.573742+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.573739+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 106,
+            "round_number": 4,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:45.573742+00:00",
+          "reopened": false,
+          "request_id": "srv-70bfd09a-9252-4f98-84e0-f2790e306360"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 5 closed. 0 submission(s) locked.",
+          "request_id": "srv-7990e162-f8bd-400e-8139-e5d7c473c996",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.679506+00:00",
+            "deadline": "2026-08-28T09:36:45.642128+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.642125+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 107,
+            "round_number": 5,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a670ac4b-baf0-45a9-9431-d3db9068eebb"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 6 closed. 0 submission(s) locked.",
+          "request_id": "srv-4806484a-afff-4118-a81c-fc70f6a03f55",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.747842+00:00",
+            "deadline": "2026-08-28T11:36:45.703867+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.703864+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 108,
+            "round_number": 6,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:45.703867+00:00",
+          "reopened": false,
+          "request_id": "srv-f48546a4-f937-42a6-8d60-581cfa2c0bca"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 7 closed. 0 submission(s) locked.",
+          "request_id": "srv-79155420-05d3-4b6c-aca2-3290e53329bf",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.796312+00:00",
+            "deadline": "2026-08-28T09:36:45.761733+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.761730+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 109,
+            "round_number": 7,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a3cc9aca-1a1a-402a-b2f0-7214b3d090ab"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 8 closed. 0 submission(s) locked.",
+          "request_id": "srv-a762dced-db1d-44fd-84e7-8b4d9e7b7425",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.860512+00:00",
+            "deadline": "2026-08-28T11:36:45.817681+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.817679+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 110,
+            "round_number": 8,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:45.817681+00:00",
+          "reopened": false,
+          "request_id": "srv-da3838a9-2ee8-41d8-8374-4645e26eab40"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 9 closed. 0 submission(s) locked.",
+          "request_id": "srv-a5510862-d076-4309-8cbe-7b9a7885842a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.909535+00:00",
+            "deadline": "2026-08-28T09:36:45.874347+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.874343+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 111,
+            "round_number": 9,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a9489f2d-c878-4a06-b721-73bc01e3775a"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 10 closed. 0 submission(s) locked.",
+          "request_id": "srv-7eb73d15-8daa-4985-bdf8-bf3d6cfdc95c",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:45.980292+00:00",
+            "deadline": "2026-08-28T11:36:45.933247+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.933245+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 112,
+            "round_number": 10,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:45.933247+00:00",
+          "reopened": false,
+          "request_id": "srv-0f1bffc3-3dda-46dc-807c-54e75cf4f528"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 11 closed. 0 submission(s) locked.",
+          "request_id": "srv-c4812cb1-9348-44d8-a18a-80731c54cca0",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.031567+00:00",
+            "deadline": "2026-08-28T09:36:45.994240+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:45.994237+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 113,
+            "round_number": 11,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-658b3ad7-6c0e-4bc5-afe9-0606c34919b2"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 12 closed. 0 submission(s) locked.",
+          "request_id": "srv-f9557b9b-3ac9-4baf-b26b-31d2eb549c0e",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.101155+00:00",
+            "deadline": "2026-08-28T11:36:46.053867+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.053861+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 114,
+            "round_number": 12,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.053867+00:00",
+          "reopened": false,
+          "request_id": "srv-77fc362f-87bc-44df-a8d8-0d182f86d042"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 13 closed. 0 submission(s) locked.",
+          "request_id": "srv-d49d48ef-e735-4a2b-b9ee-c500a817eee4",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.149529+00:00",
+            "deadline": "2026-08-28T09:36:46.114547+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.114544+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 115,
+            "round_number": 13,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-e6e28814-e523-4402-9332-578e941ffaf2"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 14 closed. 0 submission(s) locked.",
+          "request_id": "srv-c781d78d-6cba-46b8-b394-575c14ec8b25",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.220170+00:00",
+            "deadline": "2026-08-28T11:36:46.172739+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.172737+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 116,
+            "round_number": 14,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.172739+00:00",
+          "reopened": false,
+          "request_id": "srv-232b2d25-00fe-4fc6-bbd6-d67d621a9f0a"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 15 closed. 0 submission(s) locked.",
+          "request_id": "srv-f4c39435-645b-455b-824f-f6de9273fb27",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.271678+00:00",
+            "deadline": "2026-08-28T09:36:46.233332+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.233329+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 117,
+            "round_number": 15,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-4317e91c-2122-46a0-b4be-b61f878d92dd"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 16 closed. 0 submission(s) locked.",
+          "request_id": "srv-80bd04a7-8032-41d2-8fca-ffaf61a16e1d",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.338837+00:00",
+            "deadline": "2026-08-28T11:36:46.294694+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.294692+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 118,
+            "round_number": 16,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.294694+00:00",
+          "reopened": false,
+          "request_id": "srv-be08c799-ee4d-4bde-aedd-5e3e2fad4f4d"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 17 closed. 0 submission(s) locked.",
+          "request_id": "srv-317a922c-ff00-4f4d-8382-5ec867437a06",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.387645+00:00",
+            "deadline": "2026-08-28T09:36:46.351779+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.351776+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 119,
+            "round_number": 17,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-7c4a712e-a918-4d66-9dc7-c5cc734bf2f9"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 18 closed. 0 submission(s) locked.",
+          "request_id": "srv-71e15a41-22c9-474f-bca7-e3b0d60efc24",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.455828+00:00",
+            "deadline": "2026-08-28T11:36:46.407968+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.407965+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 120,
+            "round_number": 18,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.407968+00:00",
+          "reopened": false,
+          "request_id": "srv-9368c13f-d9d0-4ac6-9d48-62f8028189d4"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 19 closed. 0 submission(s) locked.",
+          "request_id": "srv-0a09accb-e4a3-4ceb-be85-747982cbbcd7",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.505469+00:00",
+            "deadline": "2026-08-28T09:36:46.469253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.469251+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 121,
+            "round_number": 19,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-6da78288-7f7d-4c3c-83d1-2dd36a735ecc"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 20 closed. 0 submission(s) locked.",
+          "request_id": "srv-cc8885a2-9d7d-4ca7-bd10-f433acfce5cd",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.580497+00:00",
+            "deadline": "2026-08-28T11:36:46.531048+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.531044+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 122,
+            "round_number": 20,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.531048+00:00",
+          "reopened": false,
+          "request_id": "srv-539fb276-fbca-47ec-9606-e7eb10e615ff"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 21 closed. 0 submission(s) locked.",
+          "request_id": "srv-5f174f52-1815-457c-9b5a-16d6404bf6f6",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.630394+00:00",
+            "deadline": "2026-08-28T09:36:46.594249+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.594245+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 123,
+            "round_number": 21,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-1d6e1051-515f-439b-973e-10dcb9778e40"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 22 closed. 0 submission(s) locked.",
+          "request_id": "srv-c88da9bf-bbd4-48f6-8fd6-1f56db438328",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.701707+00:00",
+            "deadline": "2026-08-28T11:36:46.655780+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.655776+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 124,
+            "round_number": 22,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.655780+00:00",
+          "reopened": false,
+          "request_id": "srv-0e73e0bd-285e-493a-86df-aff9bbd63919"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 23 closed. 0 submission(s) locked.",
+          "request_id": "srv-7f086444-f70c-4bbf-8fc7-3e0ac8ff5106",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.752973+00:00",
+            "deadline": "2026-08-28T09:36:46.715409+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.715405+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 125,
+            "round_number": 23,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-b1a538c0-3488-45c4-a9d4-85779beb8938"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 24 closed. 0 submission(s) locked.",
+          "request_id": "srv-f36216d7-3c42-4bf6-981a-e8f402e95c90",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.821981+00:00",
+            "deadline": "2026-08-28T11:36:46.775899+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.775896+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 126,
+            "round_number": 24,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.775899+00:00",
+          "reopened": false,
+          "request_id": "srv-4a8295eb-f454-4b18-8896-3893aed80ea9"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 25 closed. 0 submission(s) locked.",
+          "request_id": "srv-f79e308f-f157-4642-815c-0013907446bf",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.873551+00:00",
+            "deadline": "2026-08-28T09:36:46.835355+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.835350+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 127,
+            "round_number": 25,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-55173061-a8d0-4a49-9de0-a08cdc5e08a0"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 26 closed. 0 submission(s) locked.",
+          "request_id": "srv-b4fa030d-3d7d-47f4-a264-ab695af8f5d0",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.941872+00:00",
+            "deadline": "2026-08-28T11:36:46.894614+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.894610+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 128,
+            "round_number": 26,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:46.894614+00:00",
+          "reopened": false,
+          "request_id": "srv-cd897062-4caf-4dd5-99e4-95f45ebe386b"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 27 closed. 0 submission(s) locked.",
+          "request_id": "srv-a326e2e4-cd7c-4ed5-8101-311361f08e50",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:46.992592+00:00",
+            "deadline": "2026-08-28T09:36:46.956040+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:46.956037+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 129,
+            "round_number": 27,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-d807ede5-7e6a-4db9-ac91-373c37f22ac4"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 28 closed. 0 submission(s) locked.",
+          "request_id": "srv-7eaf085c-1cad-4fbf-8142-62089cdc8546",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.058555+00:00",
+            "deadline": "2026-08-28T11:36:47.014251+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.014234+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 130,
+            "round_number": 28,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.014251+00:00",
+          "reopened": false,
+          "request_id": "srv-bdce5211-7f4d-436f-bdcb-491de4e913cb"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 29 closed. 0 submission(s) locked.",
+          "request_id": "srv-d0881f10-8704-486b-899c-bfc802f3d16c",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.111519+00:00",
+            "deadline": "2026-08-28T09:36:47.072214+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.072209+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 131,
+            "round_number": 29,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-5bbfd56f-5b4a-4f06-83d5-e4a9b6788101"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 30 closed. 0 submission(s) locked.",
+          "request_id": "srv-be5f6cb1-46be-4ce7-a3dc-fc77765a09e2",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.172731+00:00",
+            "deadline": "2026-08-28T09:36:47.135912+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.135908+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 132,
+            "round_number": 30,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-eb5cb049-598f-42d7-a46e-122ba53cc36b"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 31 closed. 0 submission(s) locked.",
+          "request_id": "srv-cad3b9e3-f10d-4cd4-a19a-34dff7c2fe6f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.245554+00:00",
+            "deadline": "2026-08-28T11:36:47.196175+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.196170+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 133,
+            "round_number": 31,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.196175+00:00",
+          "reopened": false,
+          "request_id": "srv-ca056871-d347-4691-9ef1-5825a955b2c0"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 32 closed. 0 submission(s) locked.",
+          "request_id": "srv-cb188071-dbf4-48f6-9b1d-e8eeaef82b9a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.299692+00:00",
+            "deadline": "2026-08-28T09:36:47.260489+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.260461+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 134,
+            "round_number": 32,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-edad8cc4-5b89-4157-b799-819fb76fe774"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 33 closed. 0 submission(s) locked.",
+          "request_id": "srv-3e6c8009-e25f-4909-b397-2a6ad733f070",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.359072+00:00",
+            "deadline": "2026-08-28T09:36:47.322973+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.322956+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 135,
+            "round_number": 33,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-563758c3-715c-48f7-99be-19236d6ac65b"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 34 closed. 0 submission(s) locked.",
+          "request_id": "srv-7cafb6ac-6861-482b-9afd-aff09463b8f9",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.424569+00:00",
+            "deadline": "2026-08-28T11:36:47.380180+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.380177+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 136,
+            "round_number": 34,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.380180+00:00",
+          "reopened": false,
+          "request_id": "srv-a2ea6e5d-9b7b-4a49-9e4c-ef22eca6b75f"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 35 closed. 0 submission(s) locked.",
+          "request_id": "srv-60de4a31-5310-4f47-aadd-dfb90e8e89be",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.476939+00:00",
+            "deadline": "2026-08-28T09:36:47.437960+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.437956+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 137,
+            "round_number": 35,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-b0e8851d-0215-439e-b136-ec90dde791a2"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 36 closed. 0 submission(s) locked.",
+          "request_id": "srv-43feb6fd-ba32-4161-87d6-b18e73a65580",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.545858+00:00",
+            "deadline": "2026-08-28T11:36:47.498725+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.498721+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 138,
+            "round_number": 36,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.498725+00:00",
+          "reopened": false,
+          "request_id": "srv-2691b84c-c9b2-422f-98b4-f65a2bc35d92"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 37 closed. 0 submission(s) locked.",
+          "request_id": "srv-7ff4455f-d403-4ef4-87ae-e769c42deb8c",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.595250+00:00",
+            "deadline": "2026-08-28T09:36:47.559331+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.559328+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 139,
+            "round_number": 37,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-f5880d7c-f737-4aee-9043-f020d651ad19"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 38 closed. 0 submission(s) locked.",
+          "request_id": "srv-563483f1-9d4c-4b15-9ed4-8a19edf1eb6e",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.658083+00:00",
+            "deadline": "2026-08-28T09:36:47.619313+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.619308+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 140,
+            "round_number": 38,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-22591e19-84e1-4bb1-90c4-131ebd877963"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 39 closed. 0 submission(s) locked.",
+          "request_id": "srv-9712b1ce-1b2c-4faa-83d3-322692923e50",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.717413+00:00",
+            "deadline": "2026-08-28T09:36:47.681192+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.681190+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 141,
+            "round_number": 39,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-e8a10c01-d133-4a3e-8fae-45cb09aa0a33"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 40 closed. 0 submission(s) locked.",
+          "request_id": "srv-3a6c1850-80c3-4a21-8a56-c7cd723c45b0",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.788996+00:00",
+            "deadline": "2026-08-28T11:36:47.741704+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.741700+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 142,
+            "round_number": 40,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.741704+00:00",
+          "reopened": false,
+          "request_id": "srv-3e2537e3-d426-4402-ab2b-d24bd3169040"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 41 closed. 0 submission(s) locked.",
+          "request_id": "srv-9b4e1db5-15f5-4cc5-be24-bdb84dac9500",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.837333+00:00",
+            "deadline": "2026-08-28T09:36:47.801684+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.801668+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 143,
+            "round_number": 41,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-ccf97796-4a79-4e8d-8424-d8f772c1aead"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 42 closed. 0 submission(s) locked.",
+          "request_id": "srv-b2fab2de-fa37-4b90-872d-afb6c9fae4dd",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.907615+00:00",
+            "deadline": "2026-08-28T11:36:47.861224+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.861219+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 144,
+            "round_number": 42,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.861224+00:00",
+          "reopened": false,
+          "request_id": "srv-5bc0560b-579d-4260-8d54-9b9219e11823"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 43 closed. 0 submission(s) locked.",
+          "request_id": "srv-a0e440ea-6d72-424f-a39b-843f6911af0b",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:47.966378+00:00",
+            "deadline": "2026-08-28T09:36:47.924576+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.924572+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 145,
+            "round_number": 43,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-432a1402-8053-46a7-8c0a-30e64e266a09"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 44 closed. 0 submission(s) locked.",
+          "request_id": "srv-1f4648c1-7919-46e4-8b18-f832340f33e6",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.033803+00:00",
+            "deadline": "2026-08-28T11:36:47.987756+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:47.987752+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 146,
+            "round_number": 44,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:47.987756+00:00",
+          "reopened": false,
+          "request_id": "srv-67c16bbe-e7f1-4d3e-8e5d-e726e2926f77"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 45 closed. 0 submission(s) locked.",
+          "request_id": "srv-786af511-81e9-496b-aa98-e311f88e17af",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.097697+00:00",
+            "deadline": "2026-08-28T11:36:48.046426+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.046423+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 147,
+            "round_number": 45,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.046426+00:00",
+          "reopened": false,
+          "request_id": "srv-d42b7c8e-d831-43a2-98ba-229c17b3e283"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 46 closed. 0 submission(s) locked.",
+          "request_id": "srv-b25aaa73-3949-4362-90e3-6f0605d42c89",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.155310+00:00",
+            "deadline": "2026-08-28T11:36:48.111877+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.111860+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 148,
+            "round_number": 46,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.111877+00:00",
+          "reopened": false,
+          "request_id": "srv-f1acc344-ffb9-4be0-992a-6526e7b12339"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 47 closed. 0 submission(s) locked.",
+          "request_id": "srv-c8d2930f-e2db-4440-a367-59c7ef4ab51a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.217252+00:00",
+            "deadline": "2026-08-28T11:36:48.168289+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.168285+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 149,
+            "round_number": 47,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.168289+00:00",
+          "reopened": false,
+          "request_id": "srv-3e950228-1247-4803-9b23-854cf30623b8"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 48 closed. 0 submission(s) locked.",
+          "request_id": "srv-4430365e-a77e-4a2e-a8cd-317ebeec7c5b",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.281111+00:00",
+            "deadline": "2026-08-28T11:36:48.233289+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.233285+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 150,
+            "round_number": 48,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.233289+00:00",
+          "reopened": false,
+          "request_id": "srv-8bb9e195-8844-454c-8103-df6cd22a1b96"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 49 closed. 0 submission(s) locked.",
+          "request_id": "srv-4be8fc6b-27c0-4c9e-8224-f7ec6b39ad1a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.347047+00:00",
+            "deadline": "2026-08-28T11:36:48.297057+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.297053+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 151,
+            "round_number": 49,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.297057+00:00",
+          "reopened": false,
+          "request_id": "srv-823772e1-2ce4-44fc-a370-90b8fb01300f"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 50 closed. 0 submission(s) locked.",
+          "request_id": "srv-995895e2-b924-46fa-b182-19edc4861e5c",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.553507+00:00",
+            "deadline": "2026-08-28T11:36:48.362361+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.362358+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 152,
+            "round_number": 50,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.362361+00:00",
+          "reopened": false,
+          "request_id": "srv-f2148897-120e-46d1-b8ab-e47aba7d8e66"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 51 closed. 0 submission(s) locked.",
+          "request_id": "srv-e2495469-93a0-4b12-a655-91c19c564679",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.602234+00:00",
+            "deadline": "2026-08-28T09:36:48.565582+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.565579+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 153,
+            "round_number": 51,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-5cee85b7-1c80-4750-9abb-b181ef5d13db"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 52 closed. 0 submission(s) locked.",
+          "request_id": "srv-45c80347-eab4-4303-bef2-ce4917cdd686",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.672273+00:00",
+            "deadline": "2026-08-28T11:36:48.625113+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.625108+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 154,
+            "round_number": 52,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.625113+00:00",
+          "reopened": false,
+          "request_id": "srv-33bd0a54-afac-4b2c-b8a1-0b59ebd3e3fa"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 53 closed. 0 submission(s) locked.",
+          "request_id": "srv-3327a000-13d1-4988-bb09-c34b10f824e1",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.719687+00:00",
+            "deadline": "2026-08-28T09:36:48.685955+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.685952+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 155,
+            "round_number": 53,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-7db7093b-fd06-470c-9482-ec29fe552faf"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 54 closed. 0 submission(s) locked.",
+          "request_id": "srv-f5513cb2-4611-483a-aaa4-0cd6ced5e52d",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.786326+00:00",
+            "deadline": "2026-08-28T11:36:48.742199+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.742197+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 156,
+            "round_number": 54,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.742199+00:00",
+          "reopened": false,
+          "request_id": "srv-07437e40-5818-44e9-b787-c194d49c6094"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 55 closed. 0 submission(s) locked.",
+          "request_id": "srv-548802bb-e369-4ae7-9c27-5c15126e5a8f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.836104+00:00",
+            "deadline": "2026-08-28T09:36:48.800062+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.800060+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 157,
+            "round_number": 55,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-5f91f27d-4fe7-4ee9-b6a7-d53dfed34b06"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 56 closed. 0 submission(s) locked.",
+          "request_id": "srv-07e7e36f-e9b3-47c6-84b7-a15d802be2c1",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.898545+00:00",
+            "deadline": "2026-08-28T09:36:48.858953+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.858950+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 158,
+            "round_number": 56,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-8c2c10cf-b7e9-46db-b33a-e3176e4068e6"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 57 closed. 0 submission(s) locked.",
+          "request_id": "srv-d564a259-9a9b-4122-8fb6-eefd857e4345",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:48.961766+00:00",
+            "deadline": "2026-08-28T09:36:48.923402+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.923398+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 159,
+            "round_number": 57,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-74afb338-c714-4452-be10-0d14b9d9ecef"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 58 closed. 0 submission(s) locked.",
+          "request_id": "srv-3e10432c-bd2c-4a81-a865-b2b6d3b389d7",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.031012+00:00",
+            "deadline": "2026-08-28T11:36:48.984844+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:48.984842+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 160,
+            "round_number": 58,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:48.984844+00:00",
+          "reopened": false,
+          "request_id": "srv-fd44248e-c099-4aa7-aa15-d5816e319549"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 59 closed. 0 submission(s) locked.",
+          "request_id": "srv-34953b37-cc51-447b-b699-0a58378b910a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.081581+00:00",
+            "deadline": "2026-08-28T09:36:49.045253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.045250+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 161,
+            "round_number": 59,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-ebe2907d-7b33-4304-b6dc-cf1cdd663d3c"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 60 closed. 0 submission(s) locked.",
+          "request_id": "srv-be77bfce-8c78-4c83-a55b-f0ea3d15f32b",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.145779+00:00",
+            "deadline": "2026-08-28T11:36:49.104334+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.104331+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 162,
+            "round_number": 60,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.104334+00:00",
+          "reopened": false,
+          "request_id": "srv-75db8c36-f347-4e64-95d8-14526833046f"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 61 closed. 0 submission(s) locked.",
+          "request_id": "srv-90c7bdb2-beb9-4989-ba56-d05c876be701",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.191887+00:00",
+            "deadline": "2026-08-28T09:36:49.157312+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.157294+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 163,
+            "round_number": 61,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-e1b2305a-fd78-4a59-9843-e225a3254c87"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 62 closed. 0 submission(s) locked.",
+          "request_id": "srv-355289d1-cc79-4686-8d30-1f95caf80c66",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.261331+00:00",
+            "deadline": "2026-08-28T11:36:49.214703+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.214699+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 164,
+            "round_number": 62,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.214703+00:00",
+          "reopened": false,
+          "request_id": "srv-78029bea-2519-4f8c-8c62-82303ddd652d"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 63 closed. 0 submission(s) locked.",
+          "request_id": "srv-4a96dad3-e69a-4e13-9784-22ce028b94fd",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.320942+00:00",
+            "deadline": "2026-08-28T09:36:49.277867+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.277863+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 165,
+            "round_number": 63,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-8d68f959-eb7a-4c17-af5a-79941e81c513"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 64 closed. 0 submission(s) locked.",
+          "request_id": "srv-1af03813-a926-465c-8428-d3220be9d27c",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.388713+00:00",
+            "deadline": "2026-08-28T11:36:49.344222+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.344220+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 166,
+            "round_number": 64,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.344222+00:00",
+          "reopened": false,
+          "request_id": "srv-e94380fe-3087-4c99-8af3-6383932fae0b"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 65 closed. 0 submission(s) locked.",
+          "request_id": "srv-04e80fcb-d4a7-43ee-b825-e3b8d44abc7e",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.440806+00:00",
+            "deadline": "2026-08-28T09:36:49.401458+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.401455+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 167,
+            "round_number": 65,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-1a7d1944-f7df-49af-a276-ddff3d73c179"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 66 closed. 0 submission(s) locked.",
+          "request_id": "srv-73940d8d-3484-40cc-80d7-35a2e237d2e4",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.509381+00:00",
+            "deadline": "2026-08-28T11:36:49.463358+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.463354+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 168,
+            "round_number": 66,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.463358+00:00",
+          "reopened": false,
+          "request_id": "srv-31f5f0bf-9c6c-46fa-9c20-5ffb93efcab5"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 67 closed. 0 submission(s) locked.",
+          "request_id": "srv-230c5b46-c83d-43a1-83ee-529982ee4be9",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.558826+00:00",
+            "deadline": "2026-08-28T09:36:49.522531+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.522528+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 169,
+            "round_number": 67,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-685ee161-75b9-45e9-80c3-4a3b6b10337c"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 68 closed. 0 submission(s) locked.",
+          "request_id": "srv-87da28bd-5d1d-4311-a21a-24ac911d606a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.630432+00:00",
+            "deadline": "2026-08-28T11:36:49.580366+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.580363+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 170,
+            "round_number": 68,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.580366+00:00",
+          "reopened": false,
+          "request_id": "srv-55751ef2-dc53-4deb-a335-080a669d59f1"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 69 closed. 0 submission(s) locked.",
+          "request_id": "srv-7c57e397-f7ff-4996-ace4-eb2957f50b4a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.686400+00:00",
+            "deadline": "2026-08-28T09:36:49.647590+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.647586+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 171,
+            "round_number": 69,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a8956f9a-b225-4936-bd48-ef18d3c2449f"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 70 closed. 0 submission(s) locked.",
+          "request_id": "srv-e1af8484-7c37-46dd-947b-8c9f73a72f47",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.750489+00:00",
+            "deadline": "2026-08-28T09:36:49.710631+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.710628+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 172,
+            "round_number": 70,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-3a6155d4-a0d2-44e2-b08d-a7886edda034"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 71 closed. 0 submission(s) locked.",
+          "request_id": "srv-98599afc-a594-4385-8040-282d6508b65e",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.815870+00:00",
+            "deadline": "2026-08-28T09:36:49.777808+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.777803+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 173,
+            "round_number": 71,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-4f538b76-dd36-4a39-aaa5-2edaf9e80f76"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 72 closed. 0 submission(s) locked.",
+          "request_id": "srv-1c29d12d-2c25-411a-ba40-4da842b65529",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.884095+00:00",
+            "deadline": "2026-08-28T11:36:49.839894+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.839889+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 174,
+            "round_number": 72,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.839894+00:00",
+          "reopened": false,
+          "request_id": "srv-2250854a-d9cd-4486-9afb-60f78b668e95"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 73 closed. 0 submission(s) locked.",
+          "request_id": "srv-2fbf586c-b8b7-4dbd-aaa1-8ad1ddd64516",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:49.935133+00:00",
+            "deadline": "2026-08-28T09:36:49.899060+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.899057+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 175,
+            "round_number": 73,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-321607e4-12fe-45cf-943c-9bd01da2a1d4"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 74 closed. 0 submission(s) locked.",
+          "request_id": "srv-5f826c3c-3ca1-48b6-a5ad-8775c77ef87f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.007142+00:00",
+            "deadline": "2026-08-28T11:36:49.957368+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:49.957364+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 176,
+            "round_number": 74,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:49.957368+00:00",
+          "reopened": false,
+          "request_id": "srv-898c5514-436b-4125-b48d-083ab33830c7"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 75 closed. 0 submission(s) locked.",
+          "request_id": "srv-a0826180-8f20-427c-9179-72eb8c3107ac",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.056350+00:00",
+            "deadline": "2026-08-28T09:36:50.019845+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.019842+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 177,
+            "round_number": 75,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-4c408d39-1f54-40bf-9822-0ec9c764df63"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 76 closed. 0 submission(s) locked.",
+          "request_id": "srv-fb555d1c-fd56-43f1-9d07-3f246d6c66ee",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.121907+00:00",
+            "deadline": "2026-08-28T11:36:50.079317+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.079313+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 178,
+            "round_number": 76,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.079317+00:00",
+          "reopened": false,
+          "request_id": "srv-f6431e42-62a6-4728-892a-c2f514656b0d"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 77 closed. 0 submission(s) locked.",
+          "request_id": "srv-6ba20f29-922e-4d7e-9696-b1debb71dc66",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.170110+00:00",
+            "deadline": "2026-08-28T09:36:50.134769+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.134764+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 179,
+            "round_number": 77,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a7c827fd-339d-462e-98d0-904763d56da1"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 78 closed. 0 submission(s) locked.",
+          "request_id": "srv-2ead2a58-ff1f-443d-acba-3102466c81c4",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.241532+00:00",
+            "deadline": "2026-08-28T11:36:50.191312+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.191308+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 180,
+            "round_number": 78,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.191312+00:00",
+          "reopened": false,
+          "request_id": "srv-76cf17ac-d433-49bd-9d78-096ab56e927c"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 79 closed. 0 submission(s) locked.",
+          "request_id": "srv-12ee7f61-780a-4256-8a3c-d847800d53c6",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.293965+00:00",
+            "deadline": "2026-08-28T09:36:50.254181+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.254177+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 181,
+            "round_number": 79,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-78e4d0c8-2d2e-4df1-b24c-ee4eb0827f95"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 80 closed. 0 submission(s) locked.",
+          "request_id": "srv-6a42b3cf-96c2-462a-9a32-5bf7c7634d2f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.352683+00:00",
+            "deadline": "2026-08-28T09:36:50.315135+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.315132+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 182,
+            "round_number": 80,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-8465234d-7ece-403c-91d7-4310a47a26a4"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 81 closed. 0 submission(s) locked.",
+          "request_id": "srv-e26e5bf6-d261-4483-ba19-a9e8ddaaaf89",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.407518+00:00",
+            "deadline": "2026-08-28T09:36:50.373568+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.373566+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 183,
+            "round_number": 81,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-3338b482-a64c-4e60-808c-a183f182ddee"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 82 closed. 0 submission(s) locked.",
+          "request_id": "srv-df7661fa-6609-4d4c-bbe0-9a63c85fdb99",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.472315+00:00",
+            "deadline": "2026-08-28T11:36:50.428563+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.428561+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 184,
+            "round_number": 82,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.428563+00:00",
+          "reopened": false,
+          "request_id": "srv-b81ce274-c12a-41fb-b84e-291a3c0ea164"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 83 closed. 0 submission(s) locked.",
+          "request_id": "srv-d78a12c2-f9c1-4d0c-82be-d87ee747551d",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.520460+00:00",
+            "deadline": "2026-08-28T09:36:50.485582+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.485579+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 185,
+            "round_number": 83,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-2de60711-8fff-405e-abc2-cac90030b41d"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 84 closed. 0 submission(s) locked.",
+          "request_id": "srv-7cb902a1-55ae-4801-bfd3-939dcaf7506f",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.588548+00:00",
+            "deadline": "2026-08-28T11:36:50.543837+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.543834+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 186,
+            "round_number": 84,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.543837+00:00",
+          "reopened": false,
+          "request_id": "srv-bda7a767-5450-434e-ba58-354eefa76fbd"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 85 closed. 0 submission(s) locked.",
+          "request_id": "srv-df5299fe-d1be-483d-ba48-5bbee9a5bf37",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.637141+00:00",
+            "deadline": "2026-08-28T09:36:50.602196+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.602192+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 187,
+            "round_number": 85,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-de940857-3e0a-4896-a648-2dfaf2b73887"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 86 closed. 0 submission(s) locked.",
+          "request_id": "srv-0d28d3b8-bf77-4a7d-8681-d4a25bc5e821",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.707115+00:00",
+            "deadline": "2026-08-28T11:36:50.661773+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.661770+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 188,
+            "round_number": 86,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.661773+00:00",
+          "reopened": false,
+          "request_id": "srv-851b4c81-2d36-40ff-9757-143e6ef39b94"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 87 closed. 0 submission(s) locked.",
+          "request_id": "srv-79909dc8-55ba-4ab6-a0db-1e5311e4686e",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.771579+00:00",
+            "deadline": "2026-08-28T11:36:50.723545+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.723529+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 189,
+            "round_number": 87,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.723545+00:00",
+          "reopened": false,
+          "request_id": "srv-ff237aac-7304-44ef-b889-0ff088dd9113"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 88 closed. 0 submission(s) locked.",
+          "request_id": "srv-2d4262b6-065a-498e-8605-c6ab5d715393",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.826096+00:00",
+            "deadline": "2026-08-28T09:36:50.787476+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.787453+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 190,
+            "round_number": 88,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-e45e40b4-99ed-4ab5-9c03-8ee70e268ac6"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 89 closed. 0 submission(s) locked.",
+          "request_id": "srv-b9f47bc7-9554-490f-ba4e-9e8d82805646",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.884214+00:00",
+            "deadline": "2026-08-28T09:36:50.849782+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.849779+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 191,
+            "round_number": 89,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-a4e77ad7-8e52-47ee-b9a6-c2f6d8022eb8"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 90 closed. 0 submission(s) locked.",
+          "request_id": "srv-a73abecf-509b-484b-b9d5-3eadaed59fda",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:50.952311+00:00",
+            "deadline": "2026-08-28T11:36:50.905985+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.905982+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 192,
+            "round_number": 90,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.905985+00:00",
+          "reopened": false,
+          "request_id": "srv-19394bb7-c257-4fea-a3a9-e7629128ad8d"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 91 closed. 0 submission(s) locked.",
+          "request_id": "srv-0ebfd899-7a52-4bf6-960b-3d16d2df37ce",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.029497+00:00",
+            "deadline": "2026-08-28T11:36:50.967196+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:50.967193+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 193,
+            "round_number": 91,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:50.967196+00:00",
+          "reopened": false,
+          "request_id": "srv-33145644-b947-4131-bf89-6298a9e46caa"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 92 closed. 0 submission(s) locked.",
+          "request_id": "srv-7ea0bb77-a274-483a-99cd-dae994b424ab",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.091198+00:00",
+            "deadline": "2026-08-28T11:36:51.041332+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.041328+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 194,
+            "round_number": 92,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:51.041332+00:00",
+          "reopened": false,
+          "request_id": "srv-c428c9fa-02f7-443b-b28d-5dd5456bdcb5"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 93 closed. 0 submission(s) locked.",
+          "request_id": "srv-108f1b14-2800-4fe1-a4df-f6ffa389a690",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.141694+00:00",
+            "deadline": "2026-08-28T09:36:51.103752+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.103748+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 195,
+            "round_number": 93,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-f0e8dca8-a877-444a-8802-a6228f0d13db"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 94 closed. 0 submission(s) locked.",
+          "request_id": "srv-1759b050-2db6-4fbf-aace-003fa1079792",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.206145+00:00",
+            "deadline": "2026-08-28T11:36:51.163079+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.163076+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 196,
+            "round_number": 94,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:51.163079+00:00",
+          "reopened": false,
+          "request_id": "srv-dd648034-0bf8-4cd1-960b-b288ac08ff6b"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 95 closed. 0 submission(s) locked.",
+          "request_id": "srv-18dce4d0-2e8e-497c-ae7b-b6151a6e1956",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.252725+00:00",
+            "deadline": "2026-08-28T09:36:51.219413+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.219373+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 197,
+            "round_number": 95,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-0339e2e6-87ba-4619-bf46-ab094987c520"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 96 closed. 0 submission(s) locked.",
+          "request_id": "srv-5394c77d-a468-4d16-9eda-cf48612217fb",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.318533+00:00",
+            "deadline": "2026-08-28T11:36:51.275559+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.275555+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 198,
+            "round_number": 96,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:51.275559+00:00",
+          "reopened": false,
+          "request_id": "srv-d000b27d-7fd7-4a14-8dd5-359640bd3a63"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 97 closed. 0 submission(s) locked.",
+          "request_id": "srv-e710bfb5-1d50-47ba-bed4-64efb11635a4",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.368338+00:00",
+            "deadline": "2026-08-28T09:36:51.330614+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.330612+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 199,
+            "round_number": 97,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-71baca91-d3bd-4c75-b04d-1303c7ba7e7b"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 98 closed. 0 submission(s) locked.",
+          "request_id": "srv-f3ee5956-3d08-47d9-b755-6f46e077d22a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.437708+00:00",
+            "deadline": "2026-08-28T11:36:51.392556+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.392553+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 200,
+            "round_number": 98,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:51.392556+00:00",
+          "reopened": false,
+          "request_id": "srv-11bd9129-1db0-4172-9d14-3322f931c5f9"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 99 closed. 0 submission(s) locked.",
+          "request_id": "srv-b477a0e4-c991-46b0-89b6-c182663bd2f7",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.486939+00:00",
+            "deadline": "2026-08-28T09:36:51.450726+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.450723+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 201,
+            "round_number": 99,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-75e58c7c-8504-4f58-9aca-9b84e70fb821"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 100 closed. 0 submission(s) locked.",
+          "request_id": "srv-d866c88d-e7b0-4e76-98e3-e2d50d604d27",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.551718+00:00",
+            "deadline": "2026-08-28T11:36:51.506325+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.506323+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 202,
+            "round_number": 100,
+            "seconds_remaining": 10799,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "message": "Deadline extended by 2 hour(s).",
+          "new_deadline": "2026-08-28T11:36:51.506325+00:00",
+          "reopened": false,
+          "request_id": "srv-933643f0-586a-4ddc-9906-01f8f3539bff"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 101 closed. 0 submission(s) locked.",
+          "request_id": "srv-b6f07a6b-7c4f-4d33-bc57-a5c74bdcbf04",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T08:36:51.601316+00:00",
+            "deadline": "2026-08-28T09:36:51.563928+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T08:36:51.563926+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 203,
+            "round_number": 101,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "code": "reason_required",
+          "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+          "guidance": "Resend with {\"reason\": \"<why this override is correct>\"}.",
+          "request_id": "srv-8a4f88bd-be36-46f2-94b6-5fe9a9314639"
+        },
+        "kind": "api",
+        "status_code": 400
+      }
+    }
+  ]
+}
