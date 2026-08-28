@@ -52,10 +52,22 @@ jobs:
         env:
           CI: true
 
+      # CI=false here on purpose. `CI=true react-scripts build` promotes every
+      # ESLint warning to an error; this repository carries 57 across 18 page
+      # components. Failing the build on them would block toolchain work behind
+      # an unrelated cleanup, or push someone into editing hook dependency
+      # arrays to get a release out. The next step holds the count instead.
       - name: Production build
-        run: npm run build
+        # `shell: bash` sets pipefail, so tee cannot hide a failing build the
+        # way a bare pipe would.
+        shell: bash
+        run: npm run build 2>&1 | tee build.log
         env:
-          CI: true
+          CI: false
+
+      - name: No new lint warnings
+        run: node eslint-warning-count.js build.log
+
 
       # A second lockfile is a second source of truth that nothing validates.
       # yarn.lock was removed in GSP-CRV2-05; this stops it coming back.

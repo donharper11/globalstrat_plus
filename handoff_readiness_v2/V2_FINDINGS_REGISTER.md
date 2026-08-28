@@ -13,7 +13,7 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-006 | Backend restart / narrative | P1 | Phase 2 runs only in a daemon thread. A worker restart can silently abandon it; no durable queued job or startup retry exists, and an abrupt process death cannot populate `narrative_error`. Numeric results remain valid, but operator visibility/recovery is incomplete. | Process a round, terminate the worker after Phase 2 dispatch and before completion, restart, then inspect `narrative_generated`, `narrative_error`, and logs. | **Closed** — see closure entry below |
 | V2-007 | Audit integrity | P1 | Audit models reject a second `.save()`, but queryset `.update()`/`.delete()` and direct SQL can alter them. The database does not enforce append-only history, so stored data alone cannot prove absence of operator/database tampering. | In an isolated database, call `DecisionAuditEvent.objects.filter(pk=...).update(action='tampered')`; it bypasses model `save()`. | **Closed** in GSP-CRV2-04 — see closure entry below |
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
-| V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | Open |
+| V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
 ## New finding raised by GSP-CRV2-04
 
@@ -338,6 +338,53 @@ role and the SQL is tested, but pointing the competition stack at it is a
 deployment action. Until then the reject layer is triggers alone.
 
 See also V2-017, raised while building this handoff's inventory.
+
+### V2-009 — supported frontend toolchain and green verification (P1) — closed in GSP-CRV2-05
+
+**The finding named the wrong cause.** It attributed the Jest failure to the
+Node engine mismatch (`react-router-dom@7` wants `>=20`, the VM's system node is
+18). Reproduced on **Node 22.17.1**, which satisfies that range, the failure is
+identical: `Cannot find module 'react-router-dom' from 'src/App.js'`.
+
+The cause is packaging. `react-router-dom@7.1.1` declares `main: "./dist/main.js"`
+and does not ship that file — `dist/` holds `index.js` and `index.mjs` only. Node
+resolves the package through `exports`; react-scripts 5.0.1 pins jest 27, which
+predates `exports` support, falls back to `main`, and finds nothing. Checked
+against the registry, **every** published 7.x carries the same dead `main`
+(7.1.1 → 7.6.3 verified, including a clean install of 7.6.3), so neither a
+Node upgrade nor a 7.x upgrade fixes it.
+
+**Repair:** `react-router-dom@6.30.6`, which ships the file its `main` names and
+requires only Node `>=14`. All eight router APIs this application imports exist
+unchanged in v6, no data-router API is used, and the two v7 defaults that could
+have behaved differently are inert — every navigation in the codebase is
+absolute, so `v7_relativeSplatPath` has nothing to change.
+
+**Three further defects were found while closing it**, none of which the finding
+mentions:
+
+1. **`npm ci` could not install the project at all.** `react-scripts` peers
+   `typescript@^3||^4`, `i18next`/`react-i18next` peer `typescript@^5`, no
+   version satisfies both, and npm 10 installs optional peers by default. The
+   1.6 GB `node_modules` on the VM was produced by some other command than the
+   one the acceptance names. `--legacy-peer-deps` was tried and **rejected on
+   evidence**: it makes the install succeed and the build fail, because
+   `ajv-keywords@5` then cannot find the `ajv@8` it peers on. Settled with
+   `overrides: { "typescript": "^5.9.3" }`, which leaves peer resolution strict
+   and pins only a package with no source files in this repository.
+2. **`axios@1.7.9` fails Jest for the same reason as the router** — ESM at
+   `main`, CJS only via `exports`. Babel now transforms it, so the test runs the
+   same source the browser bundle does.
+3. **A failed drill-down request was displayed as "no submission data"**, the
+   same thing shown for a team that submitted nothing. On the screen an
+   instructor opens to defend a disputed result, a server error was being
+   rendered as evidence about the team. Repaired and covered by test.
+
+**Also closed:** `yarn.lock` removed (yarn is not installed on the host, so it
+was a second source of truth nothing validated); runtime pinned in `.nvmrc`,
+`engines` and `packageManager`; CI added reading the runtime from `.nvmrc`;
+CRA's stock `renders learn react` placeholder replaced with a test that mounts
+the app and asserts the router resolves the default route.
 
 ## Scope notes
 
