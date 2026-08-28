@@ -3,8 +3,8 @@
 **Finding:** V2-007 (P1) — **closed**
 **New finding raised:** V2-017 (P1) — logged, not repaired here
 **Baseline:** `1752315` (branch `crv2-04-audit-integrity`, cut from `main`)
-**Freeze commit:** `02c2772` (clean tree, `git status --untracked-files=no` = 0)
-**Runtime source digest:** `c46455daa7bd7708e5ecbbcbe1ee51a77f64888806509f67e572cd360de78b85`
+**Freeze commit:** `e58f9f2` (clean tree, `git status --untracked-files=no` = 0)
+**Runtime source digest:** `b3c8531f5c0e4db1a5628d172505bd995f6667502c6ef83f2421a0e92c4e1b11`
 **Evidence:** `handoff_readiness_v2/evidence/audit-integrity/`
 
 ## What the finding was, and what decided the design
@@ -110,6 +110,27 @@ exist only where raw SQL created them), and the negative transcripts ran before 
 anchored, so an attack could be mistaken for the cause of a verification
 failure.
 
+## What the final read found, and what that says about the tests
+
+Reading every new file end to end before submitting caught a defect no test
+would have: the fix that made the inventory fast changed `logged_routes()` and
+left `SensitiveReadLogMiddleware` calling the live 6.3-second scan. The test
+written for that fix passed, because it asserted on the helper the middleware
+was *supposed* to call rather than on the middleware. The focused module ran
+76 s before the correction and 28 s after — the scan was being paid on the
+first sensitive read of every test class that made one.
+
+The test now drives `middleware._sensitive()` directly. The general lesson is
+in the docstring: a test aimed at the helper rather than the caller proves the
+helper.
+
+The same pass added `UNCHAINED_FIELDS`. Seven manifest columns are outside the
+chain — three covered by their own digests, three paths to content those
+digests commit to, and `environment`, which is outside every hash by design.
+All seven were correct and none were written down, which is the state in which
+an omission nobody recorded is indistinguishable from one nobody noticed. A
+test now fails if a new column joins neither list.
+
 ## V2-017, raised while building the inventory
 
 The route inventory that certified "0 unguarded mutating routes" inspects only
@@ -139,13 +160,21 @@ it is done, the reject layer is the triggers alone. Recorded in
 
 ## Commands, in the order they ran
 
-Certification ran from `02c2772` after three earlier freeze candidates were
-abandoned — the first because certification found the `TRUNCATE` hole, the
-second and third because reviewing the artifacts found defects that would have
-been submitted (a 6.3-second lazy inventory build, and a misleading guard
-report). Each abandoned candidate returned to Phase 3 rather than patching a
-certification in progress. The expensive step paid twice is the harness; the
-full backend suite ran once, from the final freeze.
+Certification ran from `e58f9f2`. Four earlier freeze candidates were
+abandoned, each returning to Phase 3 rather than patching a certification in
+progress:
+
+| Candidate | Why it was abandoned |
+|---|---|
+| `08c10d9` | Certification found `TRUNCATE` bypassed every guard |
+| `db2fd08` | Reviewing the artifacts found a 6.3-second lazy inventory build |
+| `286beaa` | The guard report listed every table twice, which reads like a double registration |
+| `02c2772` | A file-by-file read before submitting found the middleware still calling the slow scan (below) |
+
+The full backend suite ran **once**, from `e58f9f2`. The harness was paid four
+times, which is the cost of that discipline and is recorded here rather than
+smoothed over. The alternative — certifying `02c2772` and repairing afterwards
+— would have submitted evidence for code the report then contradicted.
 
 ```bash
 # 1. static guards
@@ -164,10 +193,10 @@ python3 manage.py test core --noinput
 
 | Run | Count | Duration |
 |---|---:|---:|
-| Focused `test_audit_integrity` (final) | 49 tests | 76.8 s |
+| Focused `test_audit_integrity` (final) | 50 tests | 28.4 s |
 | Focused regression: hardening + determinism + durable narratives | 97 tests | 142.5 s |
 | Preflight concurrency sample (10 races/pair, 120 races) | 31 tests | 93.4 s |
-| Evidence harness (17 steps, all as expected) | — | 64.1 s |
+| Evidence harness (18 steps, all as expected) | — | 49.6 s |
 | Full backend suite | FULL_SUITE_COUNT | FULL_SUITE_TIME |
 
 Deliberately **not** run, per `EXECUTION_PROTOCOL.md`: CRV2-01's

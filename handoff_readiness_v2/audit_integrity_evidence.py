@@ -212,6 +212,16 @@ def main():
                 f'$ psql -c "{statement.strip()}"\n'
                 f'{result.stdout}{result.stderr}'
                 f'--> {"REFUSED" if refused else "!!! PERMITTED !!!"}\n')
+            # Recorded in `steps` as well as printed, so provenance.json
+            # accounts for every check the run made rather than for the subset
+            # that happened to go through `step()`.
+            transcript.append({
+                'step': f'refused: {title}',
+                'returncode': result.returncode,
+                'as_expected': refused,
+                'stdout': result.stdout,
+                'stderr': result.stderr,
+            })
             print(f"  {'ok ' if refused else 'BAD'} refused: {title}")
         orm = manage(database, 'shell', '-c', ORM_BYPASS_SCRIPT)
         step('ORM bypasses refused', orm)
