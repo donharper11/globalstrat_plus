@@ -41,13 +41,14 @@ Decision: **NO-GO for a prize competition at this checkpoint.**
 
 Closed with evidence from named revisions: GSP-CRV2-01 (V2-001, V2-002,
 V2-012, V2-013, V2-014), GSP-CRV2-02 (V2-004), GSP-CRV2-03 (V2-006, V2-015,
-V2-016), GSP-CRV2-04 (V2-007).
+V2-016), GSP-CRV2-04 (V2-007), GSP-CRV2-05 (V2-009).
 
 Outstanding: V2-010 and V2-011 await a rules disposition, and V2-017 — raised
 by GSP-CRV2-04 — leaves 216 Django admin write routes outside the audited
 lifecycle boundary. The remaining v2 acceptance exercises — adversarial
-balance, load and failure modes, post-close retrieval, supported frontend
-toolchain — are incomplete. Three deployment actions are unticked: the
+balance, load and failure modes, post-close retrieval — are incomplete, and
+GSP-CRV2-05 discharged all of V2-009 except the browser journey smoke, which it
+hands to GSP-CRV2-08 with the reason stated. Three deployment actions are unticked: the
 narrative worker unit, `COMPETITION_REQUIRE_CLEAN_BUILD`, and pointing the
 competition stack at a non-owner database role so the application cannot drop
 its own audit guards. v1 GO cannot substitute for any of them.
