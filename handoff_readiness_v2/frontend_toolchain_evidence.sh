@@ -18,7 +18,9 @@ export CI=true
 status=0
 record() {  # record <name> <command...>
   local name="$1"; shift
-  local log="$OUT/$name.log"
+  # `.txt`, not `.log`: the repository gitignores `*.log`, so evidence
+  # written there would be checksummed and then never committed.
+  local log="$OUT/$name.txt"
   echo "\$ $*" > "$log"
   local start; start=$(date +%s)
   "$@" >> "$log" 2>&1
@@ -56,7 +58,7 @@ record jest          npm test -- --watchAll=false
 # `env CI=false ...` rather than a `CI=false record ...` prefix: an
 # assignment in front of a shell *function* can outlive the call.
 record build env CI=false npm run build
-record lint-warnings node eslint-warning-count.js "$OUT/build.log"
+record lint-warnings node eslint-warning-count.js "$OUT/build.txt"
 
 # `npm ci` must not rewrite the lockfile; if it did, the lock and the manifest
 # disagreed before the run started.
@@ -70,7 +72,7 @@ record lockfile-unchanged git -C "$REPO" diff --exit-code -- \
 } > "$OUT/artefacts.txt"
 cat "$OUT/artefacts.txt"
 
-( cd "$OUT" && sha256sum ./*.log ./*.txt > SHA256SUMS )
+( cd "$OUT" && sha256sum ./*.txt > SHA256SUMS )
 echo
 echo "overall: $([ $status -eq 0 ] && echo PASS || echo FAIL)"
 exit $status
