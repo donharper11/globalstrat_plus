@@ -84,7 +84,9 @@ def resolve_evidence_dir(iterations, raw=None):
             f'{iterations}. Evidence may only be written at '
             f'{CERTIFICATION_ITERATIONS} races per pair; a cheap sample must '
             f'not overwrite a release artifact.')
-    return directory
+    # Normalise "unset" and "set to empty" to the same answer, so callers have
+    # one thing to check.
+    return directory or None
 
 
 ITERATIONS = resolve_iterations()
@@ -760,8 +762,16 @@ class IterationProfileTests(SimpleTestCase):
             '/tmp/evidence')
 
     def test_no_evidence_directory_is_fine_at_any_profile(self):
-        for iterations in ITERATION_PROFILES:
-            self.assertIsNone(resolve_evidence_dir(iterations, raw=None))
+        """`raw=None` means "read the environment", so this has to clear it.
+
+        Without the patch the test passed everywhere except during a
+        certification run — the one run where the variable is set — which is
+        the worst possible place for a test to first disagree.
+        """
+        with patch.dict(os.environ, {}, clear=True):
+            for iterations in ITERATION_PROFILES:
+                self.assertIsNone(resolve_evidence_dir(iterations))
+                self.assertIsNone(resolve_evidence_dir(iterations, raw=''))
 
     def test_iterations_are_total_races_not_per_arrival_order(self):
         """The count the evidence reports is the count the harness runs.
