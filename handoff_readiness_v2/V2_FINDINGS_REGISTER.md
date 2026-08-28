@@ -29,6 +29,9 @@ published result is never P2.
 | V2-013 | Manifest envelope | **P1** | GSP-CRV2-01 (closed) | The output snapshot held only the competitive sections, so foreign keys pointing at configuration it did not contain (`Team.firm_starter_profile`, `Game.scenario`, `Team.home_market`) fell back to `core.Scenario#surrogate:7`. The competitive hash carried raw sequence values, defeating the surrogate-independence requirement. Never broke a replay, because a restored database reproduces the ids. | Inspect any pre-repair `output_manifest` for `#surrogate:`. | **Repaired** — both envelopes now pull in whatever identity requires; a test forbids `#surrogate:` in either. |
 | V2-014 | Narrative envelope | **P1** | GSP-CRV2-01 (closed) | A narrative section's prose is separated into `narrative_rows` by the snapshot, and the narrative envelope was built from `rows` alone. `narrative_sha256` hashed briefing ids and round numbers, not a word of text — so a replay against a deliberately different model produced an identical narrative hash and the "prose differs, result does not" claim was unverifiable. | Two runs of game 36 round 1 under different endpoints reported the same `narrative_sha256`. | **Repaired** — the envelope carries `prose` and `prose_digests`; tests require that changing a briefing changes the narrative hash and leaves the competitive hash alone. |
 
+| V2-015 | Narrative / manifest reconciliation | **P1** | GSP-CRV2-03 | Phase 2 writes into rows and fields that `output_sha256` covers, after that hash has been taken: `RoundResultCoherence.rag_score/blended_score/breakdown`, `SCEventInstance.resolution_data['narrative']`, and newly created `InstructorAlert` coaching rows. The hash never moves — it is computed inside the Phase-1 transaction — so every replay matches; what diverges is the *stored database* from the manifest that certified it, which no replay compares. | Resolve a round with an API key configured, wait for Phase 2, then rebuild the output manifest and compare with the stored `output_sha256`. | **Repaired in GSP-CRV2-03** — see closure entry. |
+| V2-016 | LLM reaches a graded number | **P1** | Competition-rules owner (via GSP-CRV2-09) | `RoundResultCoherence.blended_score` is read by `core/services/grading.py`. With an LLM reachable, coherence is `0.6·formula + 0.4·RAG`; without one, the formula score stands. Two identical competitions therefore grade differently depending on an external service's availability. Rank is unaffected: neither `performance.py` nor `leaderboard.py` reads coherence. | `grep blended_score core/services/grading.py`; compare a round resolved with and without `DASHSCOPE_API_KEY`. | Open — rules decision required, see disposition below. |
+
 ### Disposition required for V2-010 and V2-011
 
 Neither is implemented inside GSP-CRV2-01: changing a seed or a draw order
@@ -49,6 +52,25 @@ ambiguous.
   withdrawal changes later teams' draws, with the withdrawal procedure written
   to match. Option (a) is the smaller change and matches `core/engine/rng.py`'s
   documented convention.
+
+### Disposition required for V2-016
+
+GSP-CRV2-03 makes the RAG blend *durable, idempotent and observable*, and stops
+it silently diverging the database from its manifest (V2-015). It deliberately
+does **not** decide whether an LLM should influence a grade at all, because that
+changes published coherence values. The choice:
+
+* **(a) Coherence is a formula score.** The RAG evaluation is recorded and shown
+  as commentary but never blended into `blended_score`. Grades then depend only
+  on the deterministic engine, and a narrative outage cannot change them. This
+  is the option consistent with every other guarantee in the v2 work.
+* **(b) The blend stays.** Then the RAG call is part of scoring, not narration,
+  and it must move inside the Phase-1 transaction with the rest of the engine —
+  which reintroduces an external dependency into resolution, and means an LLM
+  outage blocks a round rather than degrading its prose.
+
+There is no third option in which the blend both affects grades and lives
+outside the certified envelope. Today it does exactly that.
 
 ## Closure entries
 
