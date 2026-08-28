@@ -485,6 +485,33 @@ class SensitiveReadInventoryTests(TestCase):
             self.assertGreater(len(reason), 40,
                                f'{view} needs a reason someone can review')
 
+    def test_the_middleware_reads_the_generated_file_rather_than_rebuilding(self):
+        """Rebuilding the inventory parses the source of every view, which
+        measured 6.3 seconds. Doing that lazily would have charged it to the
+        first student to open a decision page in each worker process."""
+        from unittest.mock import patch
+        from core.services import read_inventory
+        with patch.object(read_inventory, 'sensitive_routes',
+                          side_effect=AssertionError('rebuilt the inventory')):
+            routes = read_inventory.logged_routes()
+        self.assertEqual(len(routes), 30)
+
+    def test_a_stale_inventory_falls_back_to_the_live_scan(self):
+        """A generated file that no longer describes the URL conf must not be
+        believed: under-logging would be silent, and silence is what this
+        table exists to remove."""
+        from unittest.mock import patch
+        from core.services import read_inventory
+        stale = dict(read_inventory.load_inventory())
+        stale['url_conf_route_count'] = 1
+        with patch.object(read_inventory, 'load_inventory', return_value=stale):
+            with self.assertLogs('core.services.read_inventory', 'WARNING') as logs:
+                routes = read_inventory.logged_routes()
+        self.assertIn('stale', logs.output[0])
+        self.assertEqual(routes, {row['route']
+                                  for row in read_inventory.sensitive_routes()
+                                  if row['logged']})
+
     def test_the_inventory_route_format_is_what_a_request_resolves_to(self):
         """A pattern the middleware can never match protects nothing.
 

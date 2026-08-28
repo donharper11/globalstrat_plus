@@ -134,12 +134,17 @@ def main():
              manage(database, 'install_audit_guards', '--check'))
         triggers = psql(database, """
             SELECT c.relname AS table, t.tgname AS trigger,
-                   p.proname AS function, t.tgenabled AS enabled
+                   p.proname AS function,
+                   CASE t.tgtype & 32 WHEN 32 THEN 'TRUNCATE'
+                        ELSE 'UPDATE/DELETE' END AS fires_on,
+                   t.tgenabled AS enabled
             FROM pg_trigger t
             JOIN pg_class c ON c.oid = t.tgrelid
             JOIN pg_proc p ON p.oid = t.tgfoid
-            WHERE NOT t.tgisinternal AND t.tgname LIKE '%_append_only'
-            ORDER BY c.relname""")
+            WHERE NOT t.tgisinternal
+              AND (t.tgname LIKE '%_append_only'
+                   OR t.tgname LIKE '%_no_truncate')
+            ORDER BY c.relname, t.tgname""")
         write('triggers.txt', triggers.stdout + triggers.stderr)
 
         # 3. Privileges and ownership, as they really are.

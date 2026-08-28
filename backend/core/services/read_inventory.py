@@ -17,6 +17,7 @@ registered. Routes that only mention such a model incidentally appear in
 import ast
 import inspect
 import json
+import logging
 import pathlib
 import re
 import sys
@@ -154,14 +155,48 @@ def sensitive_routes():
 
 
 def logged_routes():
-    """The route patterns the middleware must record a read event for."""
+    """The route patterns the middleware must record a read event for.
+
+    Read from the generated file rather than rebuilt. Rebuilding reads and
+    parses the source of every registered view, which measured 6.3 seconds —
+    a cost the first student to open a decision page in each worker process
+    would otherwise have paid.
+
+    The file is not trusted blindly. The URL conf is walked, which is cheap
+    because it reads no source, and if the number of registered routes has
+    moved since the file was written then the file is stale and the live scan
+    runs instead. That covers the drift that actually happens — a route added
+    or removed without regenerating the inventory — and the guard test covers
+    the rest.
+    """
+    try:
+        inventory = load_inventory()
+        recorded = inventory.get('url_conf_route_count')
+        live = registered_route_count()
+        if recorded is not None and recorded == live:
+            return {row['route'] for row in inventory['routes'] if row['logged']}
+        logging.getLogger(__name__).warning(
+            'read_inventory.json is stale (%s routes recorded, %s registered); '
+            'rebuilding. Run manage.py dump_read_inventory.', recorded, live)
+    except (OSError, ValueError, KeyError) as error:
+        logging.getLogger(__name__).warning(
+            'read_inventory.json unusable (%s); rebuilding from the URL conf.',
+            error)
     return {row['route'] for row in sensitive_routes() if row['logged']}
+
+
+def registered_route_count():
+    """How many routes the URL conf serves. Cheap: no source is read."""
+    return sum(1 for _ in _walk(get_resolver()))
 
 
 def build_inventory():
     rows = sensitive_routes()
     return {
         'decision_models': list(decision_models()),
+        # Recorded so the middleware can trust the generated file without
+        # rebuilding it. See `logged_routes()`.
+        'url_conf_route_count': registered_route_count(),
         'audit_models': list(AUDIT_MODELS),
         'total_sensitive_routes': len(rows),
         'audit_routes': sum(1 for r in rows if r['category'] == 'audit'),
