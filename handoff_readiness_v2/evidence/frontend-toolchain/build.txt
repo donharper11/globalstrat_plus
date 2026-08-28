@@ -1,0 +1,134 @@
+$ env CI=false npm run build
+
+> globalstrat-frontend@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Browserslist: browsers data (caniuse-lite) is 20 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: browsers data (caniuse-lite) is 20 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Compiled with warnings.
+
+[eslint] 
+src/contexts/DecisionContext.js
+  Line 34:6:  React Hook useCallback has a missing dependency: 'isDemo'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/CommunicationsPage.js
+  Line 3:92:  'Badge' is defined but never used                                                                       no-unused-vars
+  Line 21:7:  'fmt' is assigned a value but never used                                                                no-unused-vars
+  Line 83:6:  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/CompanyForecastPage.js
+  Line 11:9:   'Title' is assigned a value but never used      no-unused-vars
+  Line 11:22:  'Paragraph' is assigned a value but never used  no-unused-vars
+
+src/pages/CorporateStrategyPage.js
+  Line 2:112:   'Descriptions' is defined but never used       no-unused-vars
+  Line 585:9:   'navigate' is assigned a value but never used  no-unused-vars
+  Line 716:9:   'markets' is assigned a value but never used   no-unused-vars
+  Line 913:23:  'gqBoost' is assigned a value but never used   no-unused-vars
+
+src/pages/FinancePage.js
+  Line 2:63:  'Statistic' is defined but never used       no-unused-vars
+  Line 2:81:  'Progress' is defined but never used        no-unused-vars
+  Line 14:9:  'Title' is assigned a value but never used  no-unused-vars
+
+src/pages/FinancialReportsPage.js
+  Line 72:9:    'totalInvValue' is assigned a value but never used   no-unused-vars
+  Line 766:11:  't' is assigned a value but never used               no-unused-vars
+  Line 957:9:   'grossMarginPct' is assigned a value but never used  no-unused-vars
+  Line 958:9:   'netMarginPct' is assigned a value but never used    no-unused-vars
+
+src/pages/GameDashboard.js
+  Line 16:104:  'getRoundBriefing' is defined but never used       no-unused-vars
+  Line 125:11:  'game' is assigned a value but never used          no-unused-vars
+  Line 125:17:  'team' is assigned a value but never used          no-unused-vars
+  Line 127:11:  'locked' is assigned a value but never used        no-unused-vars
+  Line 136:10:  'briefingRead' is assigned a value but never used  no-unused-vars
+  Line 213:9:   'statusColor' is assigned a value but never used   no-unused-vars
+  Line 876:11:  'sevColor' is assigned a value but never used      no-unused-vars
+
+src/pages/InstructorDashboard.js
+  Line 7:70:    'CheckCircleOutlined' is defined but never used         no-unused-vars
+  Line 36:10:   'PageHeader' is defined but never used                  no-unused-vars
+  Line 94:10:   'teamMgmt' is assigned a value but never used           no-unused-vars
+  Line 121:10:  'createStep' is assigned a value but never used         no-unused-vars
+  Line 131:10:  'showCreateGame' is assigned a value but never used     no-unused-vars
+  Line 131:26:  'setShowCreateGame' is assigned a value but never used  no-unused-vars
+
+src/pages/LeaderboardPage.js
+  Line 3:10:    'Card' is defined but never used            no-unused-vars
+  Line 13:9:    'Title' is assigned a value but never used  no-unused-vars
+  Line 105:13:  't' is assigned a value but never used      no-unused-vars
+
+src/pages/LoginPage.js
+  Line 71:13:  'data' is assigned a value but never used  no-unused-vars
+
+src/pages/MarketResearchPage.js
+  Line 189:6:  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  Line 371:6:  React Hook useEffect has a missing dependency: 't'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  Line 568:6:  React Hook useEffect has a missing dependency: 't'. Either include it or remove the dependency array    react-hooks/exhaustive-deps
+  Line 670:6:  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/MarketStrategyPage.js
+  Line 2:34:   'Select' is defined but never used               no-unused-vars
+  Line 2:113:  'Divider' is defined but never used              no-unused-vars
+  Line 11:9:   'Title' is assigned a value but never used       no-unused-vars
+  Line 26:7:   'TalentLink' is assigned a value but never used  no-unused-vars
+
+src/pages/MarketingPage.js
+  Line 2:68:    'Space' is defined but never used                 no-unused-vars
+  Line 13:9:    'Title' is assigned a value but never used        no-unused-vars
+  Line 247:11:  'borderColor' is assigned a value but never used  no-unused-vars
+
+src/pages/ProductsPage.js
+  Line 16:9:  'Title' is assigned a value but never used           no-unused-vars
+  Line 18:7:  'positionColors' is assigned a value but never used  no-unused-vars
+
+src/pages/RDPage.js
+  Line 16:9:  'Title' is assigned a value but never used                                                                                                                                                               no-unused-vars
+  Line 31:9:  The 'generations' logical expression could make the dependencies of useEffect Hook (at line 46) change on every render. To fix this, wrap the initialization of 'generations' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+src/pages/StrategyToolsPage.js
+  Line 13:22:   'Paragraph' is assigned a value but never used                                                          no-unused-vars
+  Line 299:6:   React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  Line 520:6:   React Hook useMemo has a missing dependency: 't'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  Line 672:10:  'marketsData' is assigned a value but never used                                                        no-unused-vars
+  Line 738:6:   React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/SummaryPage.js
+  Line 3:10:  'Card' is defined but never used            no-unused-vars
+  Line 13:9:  'Title' is assigned a value but never used  no-unused-vars
+
+src/pages/TeamActivityPage.js
+  Line 45:6:  React Hook useCallback has a missing dependency: 't'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+File sizes after gzip:
+
+  761.01 kB  build/static/js/main.890aff00.js
+  9.34 kB    build/static/css/main.e89ff0ea.css
+
+The bundle size is significantly larger than recommended.
+Consider reducing it with code splitting: https://goo.gl/9VhYWB
+You can also analyze the project dependencies: https://goo.gl/LeUzfb
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+--> exit 0 after 90s
