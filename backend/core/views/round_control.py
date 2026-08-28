@@ -13,6 +13,7 @@ inspect a round's results before the game moves on.
 """
 import logging
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -154,9 +155,10 @@ class RoundReopenView(APIView):
     """
     permission_classes = [IsInstructor]
 
+    @transaction.atomic
     def post(self, request, game_id):
-        game = get_object_or_404(Game, pk=game_id)
-        round_obj = Round.objects.filter(
+        game = get_object_or_404(Game.objects.select_for_update(), pk=game_id)
+        round_obj = Round.objects.select_for_update().filter(
             game=game, round_number=game.current_round,
         ).first()
         if not round_obj:
@@ -347,14 +349,20 @@ class RoundDeadlineView(APIView):
     """
     permission_classes = [IsInstructor]
 
+    @transaction.atomic
     def post(self, request, game_id):
-        game = get_object_or_404(Game, pk=game_id)
-        round_obj = Round.objects.filter(
+        game = get_object_or_404(Game.objects.select_for_update(), pk=game_id)
+        round_obj = Round.objects.select_for_update().filter(
             game=game, round_number=game.current_round,
         ).first()
         if not round_obj:
             return Response({'error': 'No current round.'},
                             status=status.HTTP_404_NOT_FOUND)
+        if round_obj.status != 'open':
+            return Response(
+                {'error': 'Deadline changes are refused unless the round is open.'},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         before = _round_payload(game, round_obj)
         if 'minutes_from_now' in request.data:

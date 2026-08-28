@@ -900,6 +900,23 @@ class InstructorTeamDecisionsView(APIView):
             'submission_origin_label': SUBMISSION_ORIGIN_LABELS.get(origin, origin),
         }
 
+        # V2-G: expose the immutable evidence behind the snapshot so an
+        # operator can answer submission disputes without database access.
+        from core.models import DecisionAuditEvent
+        result['audit_events'] = [{
+            'id': event.id,
+            'action': event.action,
+            'actor': (event.user.display_name or event.user.email or
+                      event.user.username) if event.user else 'system',
+            'server_timestamp': event.created_at.isoformat(),
+            'endpoint': event.endpoint,
+            'request_id': event.request_id,
+            'payload_sha256': event.payload_sha256,
+            'payload': event.payload,
+        } for event in DecisionAuditEvent.objects.filter(
+            game=game, team=team, round=rnd,
+        ).select_related('user').order_by('id')]
+
         # Budget
         try:
             b = sub.budget_allocation

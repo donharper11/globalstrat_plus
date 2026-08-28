@@ -100,6 +100,29 @@ class CompetitionAuditTests(TestCase):
         self.assertEqual(
             classify_submission_origin(self.game, self.team, r4, s4), 'draft')
 
+    def test_instructor_history_exposes_dispute_audit_evidence(self):
+        from core.models import DecisionSubmission
+        instructor = User.objects.create(
+            username='audit-instructor', role='instructor', password_hash='x')
+        DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        event = DecisionAuditEvent.objects.create(
+            game=self.game, team=self.team, round=self.round, user=self.user,
+            action='save', endpoint='/api/decisions', request_id='req-123',
+            payload={'budget': 42})
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(instructor)}')
+        response = client.get(
+            f'/api/games/{self.game.id}/instructor/teams/{self.team.id}/decisions/',
+            {'round': 1})
+        self.assertEqual(response.status_code, 200)
+        evidence = response.data['audit_events'][0]
+        self.assertEqual(evidence['request_id'], 'req-123')
+        self.assertEqual(evidence['payload_sha256'], event.payload_sha256)
+        self.assertEqual(evidence['actor'], self.user.username)
+        self.assertEqual(evidence['payload'], {'budget': 42})
+
     def test_process_reports_unlocked_team_as_actionable_400(self):
         """S-1: processing with a team left unlocked returns an actionable 400,
         not a 500. The engine raises the distinct RoundNotReadyError."""
@@ -125,6 +148,32 @@ class CompetitionAuditTests(TestCase):
             with self.assertRaisesRegex(RuntimeError, 'engine broke'):
                 _run_sc_step('test', Mock(side_effect=RuntimeError('engine broke')),
                              context)
+
+    def test_output_manifest_covers_competitive_outputs_and_carried_state(self):
+        from core.services.resolution_manifest import complete_manifest
+        manifest = ResolutionManifest.objects.create(
+            game=self.game, round=self.round, seed='s' * 64,
+            input_manifest={}, input_sha256='i' * 64)
+        complete_manifest(self.round)
+        manifest.refresh_from_db()
+        self.assertEqual(set(manifest.output_manifest), {
+            'financials', 'market_revenue', 'product_market', 'adoption',
+            'performance', 'coherence', 'resilience', 'share_price',
+            'leaderboard', 'carried_team_state',
+        })
+        self.assertEqual(manifest.output_manifest['carried_team_state'][0]['team_id'],
+                         self.team.id)
+        self.assertEqual(len(manifest.output_sha256), 64)
+
+    def test_failed_resolution_is_durably_visible_after_transaction_rollback(self):
+        from unittest.mock import patch
+        from core.engine.advance_round import process_round
+        with patch('core.services.competition_backup.backup_before_resolution',
+                   side_effect=RuntimeError('disk full')):
+            with self.assertRaisesRegex(RuntimeError, 'disk full'):
+                process_round(self.game.id)
+        self.round.refresh_from_db()
+        self.assertEqual(self.round.processing_status, 'FAILED')
 
     def test_recovery_requires_maintenance_mode(self):
         with self.assertRaisesRegex(CommandError, 'Recovery is disabled'):

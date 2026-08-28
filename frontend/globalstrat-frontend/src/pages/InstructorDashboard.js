@@ -2117,6 +2117,23 @@ const InstructorDashboard = () => {
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
             {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
 
+            {drillData.audit_events?.length > 0 && (
+              <Card size="small" title="Submission audit evidence" style={{ marginTop: 12 }}>
+                <Table dataSource={drillData.audit_events} rowKey="id" size="small"
+                  pagination={{ pageSize: 8 }} scroll={{ x: 1000 }}
+                  columns={[
+                    { title: 'Time (server)', dataIndex: 'server_timestamp', render: v => new Date(v).toLocaleString() },
+                    { title: 'Actor', dataIndex: 'actor' },
+                    { title: 'Action', dataIndex: 'action' },
+                    { title: 'Endpoint', dataIndex: 'endpoint' },
+                    { title: 'Request ID', dataIndex: 'request_id', render: v => v || '—' },
+                    { title: 'Payload SHA-256', dataIndex: 'payload_sha256', render: v => <Text code copyable>{v}</Text> },
+                    { title: 'Payload', dataIndex: 'payload', render: v => <Text code copyable>{JSON.stringify(v)}</Text> },
+                  ]}
+                />
+              </Card>
+            )}
+
             {drillData.budget && (
               <Descriptions title={t('instructor.budget_allocation')} size="small" bordered column={{ xs: 1, sm: 2, md: 3 }} style={{ marginTop: 12 }}>
                 <Descriptions.Item label={t('instructor.rd')}>{fmt(drillData.budget.rd_budget)}</Descriptions.Item>

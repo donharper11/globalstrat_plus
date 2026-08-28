@@ -194,8 +194,6 @@ def process_round(game_id, dry_run=False):
         }
 
     except Exception:
-        if dry_run:
-            transaction.savepoint_rollback(sid)
         _mark_failed(game_id)
         raise
 
@@ -205,21 +203,23 @@ def _mark_failed(game_id):
     try:
         game = Game.objects.get(id=game_id)
         round_obj = get_current_round(game)
-        if round_obj and round_obj.processing_status == 'PROCESSING':
+        if round_obj and round_obj.status != 'processed':
             round_obj.processing_status = 'FAILED'
             round_obj.save(update_fields=['processing_status'])
     except Exception:
         pass
 
 
+@transaction.atomic
 def advance_to_next_round(game_id, force=False):
     """
     Open the next round. Requires the current round to be processed first,
     so results always exist before the game moves on (pass force=True to
     override).
     """
-    game = Game.objects.get(id=game_id)
-    round_obj = get_current_round(game)
+    game = Game.objects.select_for_update().get(id=game_id)
+    round_obj = Round.objects.select_for_update().filter(
+        game=game, round_number=game.current_round).first()
     if not round_obj:
         raise ValueError(f'Game "{game.name}" has no round {game.current_round}.')
 

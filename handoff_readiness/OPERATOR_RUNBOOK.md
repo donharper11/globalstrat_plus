@@ -16,6 +16,18 @@ dispositions and verification are recorded in `FIX_LOG.md`.
 - Complete the launch gates in `LAUNCH_CHECKLIST.md`. Do not treat the automated
   rehearsal as a substitute for the volunteer dry run.
 
+### Hard deploy-freeze rule
+
+Do not deploy any code inside the competition window. Recovery rejects a dump
+whose manifest revision differs from the running build, so a deploy makes every
+earlier round backup unavailable to the normal recovery path. If an emergency
+deploy is unavoidable: pause the event, obtain two-operator approval, deploy,
+take a fresh backup immediately, restore that backup on an isolated stack, and
+do not open the next round until the restore is verified. The guarded
+`--allow-code-revision-mismatch` option is break-glass only: it requires an
+explicit schema/code compatibility review, maintenance mode, two approvals, and
+a retained written reason.
+
 ## Before each round
 
 Confirm the game and round, server UTC time, published deadline, roster and
@@ -56,6 +68,29 @@ use the logged correction workflow with a substantive reason and retain the
 written ruling.
 
 ## Submission appears lost
+
+### Dispute-response procedures (operator UI only)
+
+1. **“We submitted before the deadline.”** Open Instructor → Team Overview →
+   View decisions, select the disputed round, and read the audit-evidence table.
+   Compare its server timestamp and action with the round deadline and
+   `submission_origin`. Copy the request ID and payload hash into the incident.
+2. **“The recorded decision differs.”** In the same table, copy the last
+   accepted payload before lock and compare its SHA-256 and fields with the
+   stored snapshot. Do not rely on a browser screenshot alone.
+3. **“Another team saw our decisions.”** Preserve the request ID and gateway
+   access log. The decision ledger proves writes, not reads; search team-scoped
+   reads by actor. If logs do not retain actor/team, classify this as not
+   answerable and escalate—absence of a write is not proof of absence of a read.
+4. **“The round was rerun after final.”** Compare manifest timestamps/hash with
+   operator events and recovery-audit JSONL. Require one original process or an
+   explicitly approved recovery trail.
+5. **“The operator changed something.”** Review operator events in timestamp
+   order; compare before/after, actor, reason and request ID.
+6. **“Prove the calculation.”** Export input/output manifests, revision and
+   seed, then follow `RECOVERY_RUNBOOK.md` on an isolated stack. A matching
+   expanded hash proves published outputs and carried team state, not excluded
+   narrative wording.
 
 Do not reconstruct it from memory. Check gateway and application logs for the
 request ID and response, then inspect the append-only decision audit ledger. If

@@ -77,16 +77,45 @@ def prepare_manifest(game, round_obj, backup_path):
 
 def complete_manifest(round_obj):
     from core.models.results_financials import (
-        RoundResultFinancials, RoundResultPerformanceIndex, LeaderboardEntry)
+        RoundResultFinancials, RoundResultMarketRevenue,
+        RoundResultPerformanceIndex, RoundResultProductMarket,
+        RoundResultCoherence, LeaderboardEntry)
+    from core.models.results import RoundResultAdoption
+    from core.models.cc26_models import SharePriceHistory
+    from core.models.sc_state import ResilienceScoreHistory
+    from core.models.core import Team
+
+    common = {'game': round_obj.game, 'round_number': round_obj.round_number}
     payload = {
         'financials': list(RoundResultFinancials.objects.filter(
-            game=round_obj.game, round_number=round_obj.round_number).order_by('team_id').values()),
+            **common).order_by('team_id').values()),
+        'market_revenue': list(RoundResultMarketRevenue.objects.filter(
+            **common).order_by('team_id', 'market_id').values()),
+        'product_market': list(RoundResultProductMarket.objects.filter(
+            **common).order_by('team_id', 'team_product_id', 'market_id').values()),
+        'adoption': list(RoundResultAdoption.objects.filter(
+            **common).order_by('team_id', 'market_id', 'segment_id').values()),
         'performance': list(RoundResultPerformanceIndex.objects.filter(
-            game=round_obj.game, round_number=round_obj.round_number).order_by('team_id').values()),
+            **common).order_by('team_id').values()),
+        'coherence': list(RoundResultCoherence.objects.filter(
+            **common).order_by('team_id').values()),
+        'resilience': list(ResilienceScoreHistory.objects.filter(
+            round=round_obj).order_by('team_id').values()),
+        'share_price': list(SharePriceHistory.objects.filter(
+            **common).order_by('team_id').values()),
         'leaderboard': list(LeaderboardEntry.objects.filter(
-            game=round_obj.game, round_number=round_obj.round_number).order_by('rank', 'team_id').values()),
+            **common).order_by('rank', 'team_id').values()),
+        # These fields are the directly carried, team-level competitive state
+        # read by the next round. Lifecycle and audit timestamps are excluded.
+        'carried_team_state': list(Team.objects.filter(
+            game=round_obj.game).order_by('id').values(
+                'id', 'performance_index', 'cash_on_hand', 'total_debt',
+                'total_equity', 'shares_outstanding', 'share_price',
+                'home_market_id', 'is_in_distress', 'participation_status')),
     }
     payload = json.loads(json.dumps(payload, cls=DjangoJSONEncoder))
+    for row in payload['carried_team_state']:
+        row['team_id'] = row.pop('id')
     # Database surrogate keys depend on unrelated sequence activity and are not
     # part of a scoring result. Excluding them makes the manifest compare the
     # competition outputs themselves across isolated restore/replay.
