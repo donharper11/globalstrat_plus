@@ -1,0 +1,4583 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383121
+    },
+    {
+      "game_id": 19,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383122
+    },
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383122
+    },
+    {
+      "game_id": 19,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383124
+    },
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383123
+    },
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383124
+    },
+    {
+      "game_id": 19,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383127
+    },
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383126
+    },
+    {
+      "game_id": 19,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383127
+    }
+  ],
+  "arrival_orders": {
+    "first-first": 50,
+    "second-first": 50
+  },
+  "code_revision": "830b7adee8ae5bad180a66cfe1797753b45d7e56",
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "iterations_are_total_per_pair": true,
+  "pair": "schedule-vs-process",
+  "source_tree_sha256": "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3",
+  "status_code_pairs": {
+    "400+200": 100
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 2 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5d2051b0-87cb-485e-965c-e80d11530f2d"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "message": "Round 2 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5409061908721924,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7aecac6b-73a2-4fe9-88c0-1c0305f7dc7e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:25.015800+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:25.015798+00:00",
+            "phase_1_duration": 0.5409061908721924,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:25.783522+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1030,
+            "round_number": 2,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 3 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-1aca1f3d-577d-4644-9057-0864dfea9242"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "message": "Round 3 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5393695831298828,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c6641e0f-a5b7-4905-864c-71414feedab2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:26.015085+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:26.015082+00:00",
+            "phase_1_duration": 0.5393695831298828,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:26.794224+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1031,
+            "round_number": 3,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 4 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-26c25c94-f280-4b45-918c-4a98623982a5"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "message": "Round 4 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.585939884185791,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a2ead87c-b3da-43e1-89f2-08d20dd936e5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:27.000504+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:27.000500+00:00",
+            "phase_1_duration": 0.585939884185791,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:27.831027+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1032,
+            "round_number": 4,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 5 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-6603c132-664f-466c-836b-12ee4642ab54"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "message": "Round 5 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5559933185577393,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2bc79b4c-a4e1-453f-b2c9-43f005445cf0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:28.060106+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:28.060102+00:00",
+            "phase_1_duration": 0.5559933185577393,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:28.856264+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1033,
+            "round_number": 5,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 6 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b4ce7958-d0eb-405f-8add-24d027dc584d"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "message": "Round 6 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.556466817855835,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0a5fd7c5-e31e-40ec-a841-3c4637c0aa8e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:29.071451+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:29.071448+00:00",
+            "phase_1_duration": 0.556466817855835,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:29.881855+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1034,
+            "round_number": 6,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 7 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d24c4754-a084-4b35-8c07-e88c579a3d37"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "message": "Round 7 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5700376033782959,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2536f5a1-f2ce-4b9a-86ba-684a3fdae1d9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:30.109181+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:30.109178+00:00",
+            "phase_1_duration": 0.5700376033782959,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:30.918061+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1035,
+            "round_number": 7,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 8 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-62b3921a-9fdd-4d0f-a29c-de5dd2abadcc"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "message": "Round 8 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5598313808441162,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1c7ec1e6-6a9f-450f-bf3f-4014b58e0501",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:31.142787+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:31.142784+00:00",
+            "phase_1_duration": 0.5598313808441162,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:31.948276+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1036,
+            "round_number": 8,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 9 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4bb39b87-0176-4ada-b7c3-8d5d99382a8a"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "message": "Round 9 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.576716423034668,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-61e864e8-60d1-4da2-bfda-0d71f8b415a3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:32.181815+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:32.181811+00:00",
+            "phase_1_duration": 0.576716423034668,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:33.008392+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1037,
+            "round_number": 9,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 10 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-bfc96404-2c5c-4299-92c3-f9cb76ea220a"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "message": "Round 10 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5661811828613281,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2626b3bc-dfef-4140-91f1-b9852bd3534f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:33.236614+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:33.236610+00:00",
+            "phase_1_duration": 0.5661811828613281,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:34.052990+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1038,
+            "round_number": 10,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 11 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a755f664-e2d5-4604-8ddb-1f5621d43bc7"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "message": "Round 11 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5864241123199463,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d81b7971-4cc9-4be4-87cb-8a581f8794de",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:34.291816+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:34.291812+00:00",
+            "phase_1_duration": 0.5864241123199463,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:35.134348+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1039,
+            "round_number": 11,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 12 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-af5e610f-eb6d-4586-9490-ad8cd5bb7260"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "message": "Round 12 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5865170955657959,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a471a223-2ec0-4d5e-8753-0778b3db6dde",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:35.355733+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:35.355729+00:00",
+            "phase_1_duration": 0.5865170955657959,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:36.199525+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1040,
+            "round_number": 12,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 13 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-0cace257-26a0-450b-a844-17011ab0eb27"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "message": "Round 13 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.538815975189209,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9c148e91-96be-48b4-9801-2de7e560e765",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:36.451776+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:36.451772+00:00",
+            "phase_1_duration": 0.538815975189209,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:37.254206+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1041,
+            "round_number": 13,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 14 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5736265a-0f06-4793-a0c1-1aca36a9d7b0"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "message": "Round 14 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5747590065002441,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e7d8d7eb-0144-4d33-abb9-febb72275170",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:37.498189+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:37.498185+00:00",
+            "phase_1_duration": 0.5747590065002441,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:38.361679+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1042,
+            "round_number": 14,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 15 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-c634ddcf-fa3f-4c48-999a-2fc9a3eecf33"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "message": "Round 15 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5652565956115723,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0526e9fd-7c76-45b1-82f8-681589a93c68",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:38.607873+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:38.607870+00:00",
+            "phase_1_duration": 0.5652565956115723,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:39.450198+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1043,
+            "round_number": 15,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 16 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-0d002816-6774-444d-8f15-a77707defc48"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "message": "Round 16 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5716643333435059,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2d932e40-d828-4d28-88b7-6963964710b8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:39.685463+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:39.685459+00:00",
+            "phase_1_duration": 0.5716643333435059,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:40.524692+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1044,
+            "round_number": 16,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 17 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a6f08d17-408c-46a9-aed3-5827560a918c"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "message": "Round 17 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5610854625701904,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4f530130-2a15-43b5-a57f-e9cdc14d2703",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:40.769667+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:40.769664+00:00",
+            "phase_1_duration": 0.5610854625701904,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:41.592491+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1045,
+            "round_number": 17,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 18 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-9b50ebce-d228-4fdc-b30a-d09632d01b95"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "message": "Round 18 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.585085391998291,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e390780d-e457-4360-8805-c00092fbb1a3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:41.833452+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:41.833448+00:00",
+            "phase_1_duration": 0.585085391998291,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:42.678757+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1046,
+            "round_number": 18,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 19 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d8430755-ed98-4ec8-9c8b-8bbb0c02ff8a"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "message": "Round 19 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6159327030181885,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-cf2ab5d2-ba09-4fe8-a26c-93e36581433d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:42.985049+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:42.985046+00:00",
+            "phase_1_duration": 0.6159327030181885,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:43.906360+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1047,
+            "round_number": 19,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 20 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d13ece04-58c7-458e-b6c5-502034c2f278"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "message": "Round 20 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5824224948883057,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3a17007a-b46a-4f6a-bd21-544e7d285e05",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:44.172290+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:44.172285+00:00",
+            "phase_1_duration": 0.5824224948883057,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:45.018709+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1048,
+            "round_number": 20,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 21 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-80f2a7da-5ef6-408b-9b5a-f6b869753c6c"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "message": "Round 21 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5954403877258301,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f940adf6-5b75-4f67-8b4c-553012570399",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:45.281676+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:45.281673+00:00",
+            "phase_1_duration": 0.5954403877258301,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:46.165741+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1049,
+            "round_number": 21,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 22 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-44aed06e-7429-43e4-8173-50e7d950eecd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "message": "Round 22 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6084237098693848,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-83265688-9c8c-4b80-9ec0-95ff6857a66a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:46.445874+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:46.445856+00:00",
+            "phase_1_duration": 0.6084237098693848,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:47.349694+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1050,
+            "round_number": 22,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 23 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-2defeff5-471a-4f25-8f78-477e09a3d38b"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "message": "Round 23 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5780882835388184,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bd849767-c718-4a7c-b8d3-f4873605e470",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:47.625247+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:47.625244+00:00",
+            "phase_1_duration": 0.5780882835388184,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:48.493048+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1051,
+            "round_number": 23,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 24 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-87f3a0a2-d2c0-42be-b7d9-1c1a65fb9cb1"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "message": "Round 24 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6030895709991455,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-630769cc-10c0-4fd4-87ae-7cdbd81a4b88",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:48.760977+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:48.760972+00:00",
+            "phase_1_duration": 0.6030895709991455,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:49.643001+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1052,
+            "round_number": 24,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 25 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-263f7034-e0d4-4fee-a25e-b38c70ee7419"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "message": "Round 25 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5983717441558838,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7cca1908-81b1-4cfa-b7af-9a891dc24c43",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:49.927654+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:49.927652+00:00",
+            "phase_1_duration": 0.5983717441558838,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:50.811942+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1053,
+            "round_number": 25,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 26 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-24aa7e35-4c9d-4b3d-adf9-7e25611e1d34"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "message": "Round 26 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5909883975982666,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8c66b943-0063-4955-a7cd-a78831f1175b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:51.093420+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:51.093417+00:00",
+            "phase_1_duration": 0.5909883975982666,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:51.979051+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1054,
+            "round_number": 26,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 27 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-32818cbd-297d-4335-bcbd-3fb5d711d2fd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "message": "Round 27 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6111655235290527,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1d6f1c2e-645e-45d9-afa6-c6f5db2a7403",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:52.387074+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:52.387071+00:00",
+            "phase_1_duration": 0.6111655235290527,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:53.311499+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1055,
+            "round_number": 27,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 28 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e79c1109-bcc6-41f7-92e2-ed992de293d1"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "message": "Round 28 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5993897914886475,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-07be0cc0-6f5c-4793-8070-c859bd7f6515",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:53.597722+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:53.597719+00:00",
+            "phase_1_duration": 0.5993897914886475,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:54.628976+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1056,
+            "round_number": 28,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 29 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b9709cdf-2964-4cdb-9219-288025b715b4"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "message": "Round 29 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.58699631690979,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bf31577e-af25-43b2-b51c-6b408368da36",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:54.939387+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:54.939383+00:00",
+            "phase_1_duration": 0.58699631690979,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:55.851001+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1057,
+            "round_number": 29,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 30 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-eb8d6a4f-bb81-45a3-bd41-0133e5f58264"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "message": "Round 30 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6005549430847168,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9e916c5f-4b9e-44dc-99bb-f5fd0a80a002",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:56.139500+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:56.139497+00:00",
+            "phase_1_duration": 0.6005549430847168,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:57.032933+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1058,
+            "round_number": 30,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 31 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-95a63870-00a6-4150-8bf8-74812d110519"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "message": "Round 31 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6267440319061279,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b9eb57c3-37a0-425b-8df9-355c504f2d1e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:57.315133+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:57.315130+00:00",
+            "phase_1_duration": 0.6267440319061279,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:58.239506+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1059,
+            "round_number": 31,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 32 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-58b42333-c779-4298-be26-2c62bc58bf53"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "message": "Round 32 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6325583457946777,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-15876995-07a2-43de-b2bf-8ce85130899f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:58.525025+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:58.525022+00:00",
+            "phase_1_duration": 0.6325583457946777,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:12:59.456933+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1060,
+            "round_number": 32,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 33 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b812a090-fbf5-4b4b-b72a-317e4dddf4f5"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "message": "Round 33 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6142416000366211,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bc4e7b6b-d4a3-443c-b549-52f8e3db14a1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:12:59.790139+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:12:59.790136+00:00",
+            "phase_1_duration": 0.6142416000366211,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:00.708519+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1061,
+            "round_number": 33,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 34 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d622e0fb-698e-4779-8b95-c6763eb4dc18"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "message": "Round 34 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6387438774108887,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2f726fe9-3689-43be-93a1-7a7c3898124f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:01.033949+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:01.033932+00:00",
+            "phase_1_duration": 0.6387438774108887,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:01.988254+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1062,
+            "round_number": 34,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 35 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-727bb6e5-d607-4373-b684-33f3aaa95bef"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "message": "Round 35 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6943421363830566,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-72a090e9-5116-43e2-8dd4-4839f35443da",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:02.302750+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:02.302746+00:00",
+            "phase_1_duration": 0.6943421363830566,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:03.376627+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1063,
+            "round_number": 35,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 36 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f07ded98-a35b-4b1c-9f30-cea37bc801fd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "message": "Round 36 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6172361373901367,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-963bf182-ef3c-4e55-a488-69b3b2f927f7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:03.706298+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:03.706294+00:00",
+            "phase_1_duration": 0.6172361373901367,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:04.699914+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1064,
+            "round_number": 36,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 37 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e4c23a7c-7a69-4035-98b6-4fba393ec298"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "message": "Round 37 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6270720958709717,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fb9174ca-47c9-47fa-9eff-8b4dc8b0afcd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:05.000319+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:05.000317+00:00",
+            "phase_1_duration": 0.6270720958709717,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:05.943929+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1065,
+            "round_number": 37,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 38 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a81b2a18-844f-445e-841a-dddb0323a7fa"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "message": "Round 38 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6238090991973877,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a720bd4a-361a-4ab7-8f2b-ec2919a7c5a6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:06.240508+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:06.240503+00:00",
+            "phase_1_duration": 0.6238090991973877,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:07.175352+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1066,
+            "round_number": 38,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 39 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-82e79c19-dd7d-472d-ab77-0829018464f0"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "message": "Round 39 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6323056221008301,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-32222ef6-ed85-42a3-8917-24f8f20694f9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:07.490995+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:07.490991+00:00",
+            "phase_1_duration": 0.6323056221008301,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:08.467847+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1067,
+            "round_number": 39,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 40 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d5ed6e1f-a3a3-4230-8b38-c2f0e427862a"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "message": "Round 40 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6362442970275879,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-29f4a2be-24f8-44d4-9e14-a122c5d4f574",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:08.809477+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:08.809473+00:00",
+            "phase_1_duration": 0.6362442970275879,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:09.767497+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1068,
+            "round_number": 40,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 41 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b6467c93-faf1-4210-b688-942abb727748"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "message": "Round 41 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6233716011047363,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ed9aa9be-8327-4631-b497-01fd9b86ba9b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:10.092815+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:10.092811+00:00",
+            "phase_1_duration": 0.6233716011047363,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:11.150157+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1069,
+            "round_number": 41,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 42 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f33b7784-2ced-4e89-b1d9-5d7564e45820"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "message": "Round 42 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6472675800323486,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0279b247-ad18-46a5-833a-bb2f19b0e6c5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:11.456227+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:11.456224+00:00",
+            "phase_1_duration": 0.6472675800323486,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:12.439636+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1070,
+            "round_number": 42,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 43 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-7bbfc0a7-afb1-4e5e-923c-46ff1b8bc323"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "message": "Round 43 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.664309024810791,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-741f2397-941e-440b-97aa-cd94d46ded35",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:12.826512+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:12.826499+00:00",
+            "phase_1_duration": 0.664309024810791,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:13.844515+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1071,
+            "round_number": 43,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 44 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-60ef3fca-a799-4da8-8c79-efc91543da29"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "message": "Round 44 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6604444980621338,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-563e2998-a4ad-4650-b099-e03910b931bb",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:14.161012+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:14.161007+00:00",
+            "phase_1_duration": 0.6604444980621338,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:15.163452+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1072,
+            "round_number": 44,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 45 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-17edb4c8-6bb6-47fc-b64c-af79fbb78a95"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "message": "Round 45 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6340241432189941,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-afea34ca-d494-4407-8256-cebe9d40f6c7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:15.492909+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:15.492905+00:00",
+            "phase_1_duration": 0.6340241432189941,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:16.486322+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1073,
+            "round_number": 45,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 46 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-cb96649b-eeb6-4c76-aced-e66203c3358c"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "message": "Round 46 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.637169599533081,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e55d13cb-4ded-41f4-8b14-1f04beddcc55",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:16.812193+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:16.812190+00:00",
+            "phase_1_duration": 0.637169599533081,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:17.773875+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1074,
+            "round_number": 46,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 47 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-00f4e87c-8275-4254-9b2e-c3a7654b154c"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "message": "Round 47 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6829342842102051,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4234a368-9b89-4b8c-8bf4-2692bc26e897",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:18.098905+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:18.098901+00:00",
+            "phase_1_duration": 0.6829342842102051,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:19.108313+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1075,
+            "round_number": 47,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 48 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-70458fc7-d65c-4b95-a7c2-dbde42c0bba2"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "message": "Round 48 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.674994945526123,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8fe33772-effe-40f4-822c-91184bbcb436",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:19.443071+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:19.443067+00:00",
+            "phase_1_duration": 0.674994945526123,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:20.483046+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1076,
+            "round_number": 48,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 49 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f9553240-3da0-41f0-983a-1fb5d51119cd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "message": "Round 49 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6585094928741455,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d710f895-a544-447f-98fb-7149c7383485",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:20.818756+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:20.818753+00:00",
+            "phase_1_duration": 0.6585094928741455,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:21.813557+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1077,
+            "round_number": 49,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 50 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b8acd29d-30aa-4763-9da1-85edf2a095ca"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "message": "Round 50 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6571524143218994,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9abf10aa-b321-4d11-82ce-2649086b324d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:22.180370+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:22.180366+00:00",
+            "phase_1_duration": 0.6571524143218994,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:23.209276+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1078,
+            "round_number": 50,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 51 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-cfff404b-3163-40af-bdfb-5b9245421feb"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "message": "Round 51 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6732361316680908,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-944770c8-90f3-485f-a1e4-e4d4368d9d33",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:23.562435+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:23.562430+00:00",
+            "phase_1_duration": 0.6732361316680908,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:24.716199+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1079,
+            "round_number": 51,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 52 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d25bef7c-42aa-4252-8bbb-d6c5694a215e"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "message": "Round 52 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.647355318069458,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-63197464-b86a-493f-bbdc-960ddb2dee64",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:25.064322+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:25.064320+00:00",
+            "phase_1_duration": 0.647355318069458,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:26.063046+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1080,
+            "round_number": 52,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 53 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a33e858c-9d81-4ce0-bae2-fb9b3782287f"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "message": "Round 53 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6620900630950928,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-14c0410b-2ebb-4de8-9d18-06c4288ebb50",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:26.393702+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:26.393698+00:00",
+            "phase_1_duration": 0.6620900630950928,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:27.420712+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1081,
+            "round_number": 53,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 54 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-db7f2f3a-a896-405c-a2e8-9569080e483e"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "message": "Round 54 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6803169250488281,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-23139206-f961-4f2d-834b-89cae1921ad3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:27.771494+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:27.771477+00:00",
+            "phase_1_duration": 0.6803169250488281,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:28.799382+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1082,
+            "round_number": 54,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 55 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-38d56fa6-0055-486a-bf2c-f7e37f39eb35"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "message": "Round 55 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6828415393829346,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a87e4d3f-9235-468e-b369-e680d5d3e3f6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:29.154412+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:29.154409+00:00",
+            "phase_1_duration": 0.6828415393829346,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:30.196085+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1083,
+            "round_number": 55,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 56 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e299a9f6-7730-4909-a1ec-f6920ca8f45b"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "message": "Round 56 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6606724262237549,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9bc1c121-301f-41d5-8902-cd2cbf819faf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:30.565649+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:30.565643+00:00",
+            "phase_1_duration": 0.6606724262237549,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:31.630198+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1084,
+            "round_number": 56,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 57 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b643a50f-5ed6-4538-806d-6a72e5ff85c1"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "message": "Round 57 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.692620038986206,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0310b253-1f1d-4eed-91a2-68cf7a644ec4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:31.985343+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:31.985339+00:00",
+            "phase_1_duration": 0.692620038986206,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:33.054399+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1085,
+            "round_number": 57,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 58 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-79d512f5-b1cd-47c5-9f1e-b9058c05b9e6"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "message": "Round 58 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6623036861419678,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c88f55f1-081d-4c78-a534-c481cf2b8641",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:33.429811+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:33.429800+00:00",
+            "phase_1_duration": 0.6623036861419678,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:34.470555+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1086,
+            "round_number": 58,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 59 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5d925160-051a-460e-bbbe-837547b51374"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "message": "Round 59 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6940963268280029,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8549e1de-7f15-40ee-b241-39c975597651",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:34.823890+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:34.823888+00:00",
+            "phase_1_duration": 0.6940963268280029,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:35.881397+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1087,
+            "round_number": 59,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 60 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-702eb209-78cf-4fe5-b900-265827de1676"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "message": "Round 60 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6932721138000488,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-84b8a9c6-8e57-4f40-b5fa-5706a4e2878e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:36.257253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:36.257250+00:00",
+            "phase_1_duration": 0.6932721138000488,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:37.478638+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1088,
+            "round_number": 60,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 61 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a55ea9fb-a781-4eff-827c-e5447ba87d55"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "message": "Round 61 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.694443941116333,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-689070fd-6d4c-48d8-acf4-85568ab0a96f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:37.845980+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:37.845977+00:00",
+            "phase_1_duration": 0.694443941116333,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:38.915743+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1089,
+            "round_number": 61,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 62 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-8f93eb8f-d698-41aa-84f8-7f76d4e90894"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "message": "Round 62 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6514029502868652,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7f239574-51e0-499a-bb0e-642953186242",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:39.331334+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:39.331329+00:00",
+            "phase_1_duration": 0.6514029502868652,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:40.402596+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1090,
+            "round_number": 62,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 63 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-439642b7-129d-4dae-90d2-b8943bec83a1"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "message": "Round 63 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6659960746765137,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-38cc30ed-0f38-460c-83bf-51f64784c6af",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:40.760622+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:40.760618+00:00",
+            "phase_1_duration": 0.6659960746765137,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:41.800796+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1091,
+            "round_number": 63,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 64 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-8a23cd41-d311-4ef6-84c6-2b2ad14e7022"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "message": "Round 64 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.703824520111084,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8069f5a0-9cae-4d18-932a-0ca4b39bb594",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:42.177908+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:42.177905+00:00",
+            "phase_1_duration": 0.703824520111084,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:43.263361+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1092,
+            "round_number": 64,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 65 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a47fd647-cf0e-4156-a382-be79306dc166"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "message": "Round 65 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6953821182250977,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3e2b0186-7291-496c-9bf4-c7bad1f34df0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:43.662064+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:43.662060+00:00",
+            "phase_1_duration": 0.6953821182250977,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:44.756163+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1093,
+            "round_number": 65,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 66 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-51ba7781-7e21-4cdf-8f3b-218130e862d9"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "message": "Round 66 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7069952487945557,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a736eebf-a376-4eca-b569-45b338855908",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:45.179125+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:45.179122+00:00",
+            "phase_1_duration": 0.7069952487945557,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:46.270978+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1094,
+            "round_number": 66,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 67 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a88d6ccb-6c0d-4629-8d52-88369a82f035"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "message": "Round 67 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6803081035614014,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9319eda5-9df2-4e94-b8f2-84e9dd7da120",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:46.673894+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:46.673891+00:00",
+            "phase_1_duration": 0.6803081035614014,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:47.752568+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1095,
+            "round_number": 67,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 68 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-1ec880aa-8d99-4251-aa14-5650022245fd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "message": "Round 68 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6839869022369385,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-298da0bd-0dd4-45b8-bcc3-2af7238ffd74",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:48.277931+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:48.277928+00:00",
+            "phase_1_duration": 0.6839869022369385,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:49.382870+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1096,
+            "round_number": 68,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 69 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-21c7bf17-7c71-47c8-82c6-4ace7633f3c8"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "message": "Round 69 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7065823078155518,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-536a234f-e99c-456e-b5cb-d9ca92f606b3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:49.783801+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:49.783798+00:00",
+            "phase_1_duration": 0.7065823078155518,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:50.883154+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1097,
+            "round_number": 69,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 70 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4bee61d4-a256-4758-98d5-81f1f08c9a30"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "message": "Round 70 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7046995162963867,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-454cba94-95e2-4b0a-a102-90fca48a2ba1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:51.254068+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:51.254065+00:00",
+            "phase_1_duration": 0.7046995162963867,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:52.331531+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1098,
+            "round_number": 70,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 71 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-53699b1a-ef7b-459d-851d-483eb69ea9b3"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "message": "Round 71 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7631628513336182,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ac67a868-03b1-4a3f-a7e1-22d7939e71be",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:52.735802+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:52.735799+00:00",
+            "phase_1_duration": 0.7631628513336182,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:53.951222+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1099,
+            "round_number": 71,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 72 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-c34540ed-5ea5-4874-8bdd-cb28a52a262b"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "message": "Round 72 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7294604778289795,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ca4ca98b-2327-4392-b783-23f06bbc6356",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:54.332562+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:54.332559+00:00",
+            "phase_1_duration": 0.7294604778289795,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:55.451826+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1100,
+            "round_number": 72,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 73 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b8ca6bf9-fa5f-4201-a8e7-38b17c31da51"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "message": "Round 73 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7402763366699219,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f4366d5d-d8c9-4b5e-808f-44e7808b615f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:55.838666+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:55.838663+00:00",
+            "phase_1_duration": 0.7402763366699219,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:57.013103+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1101,
+            "round_number": 73,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 74 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-09a4315f-cd21-47bc-8aa9-5ecc6232d77a"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "message": "Round 74 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7144265174865723,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-da34d901-fd5e-4135-8633-4ed42f6c0f32",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:57.396554+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:57.396550+00:00",
+            "phase_1_duration": 0.7144265174865723,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:13:58.514193+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1102,
+            "round_number": 74,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 75 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-9c0e2e1a-9e9a-4e65-af15-c909003412c8"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "message": "Round 75 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7774398326873779,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-69589ae7-b0e2-4499-8ee9-fd04d6f7f4d5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:13:59.026536+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:13:59.026533+00:00",
+            "phase_1_duration": 0.7774398326873779,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:00.207202+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1103,
+            "round_number": 75,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 76 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5efe8832-d299-49fb-87a4-a974e7bea483"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "message": "Round 76 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7728404998779297,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-64aca0de-45db-4c23-acda-70bc2cb5f2e6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:00.620990+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:00.620987+00:00",
+            "phase_1_duration": 0.7728404998779297,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:01.838121+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1104,
+            "round_number": 76,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 77 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e63cbb0a-20ef-4e49-99fb-6d0fa0244c86"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "message": "Round 77 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7719423770904541,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-af06c53e-c89c-4134-81d4-1dbac3041c17",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:02.279497+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:02.279493+00:00",
+            "phase_1_duration": 0.7719423770904541,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:03.564880+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1105,
+            "round_number": 77,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 78 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-3603192b-3ab4-46ea-9ae1-887cadda1396"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "message": "Round 78 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6877179145812988,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1c3b53a8-a2d0-4d56-b452-68ba3ff31086",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:04.015203+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:04.015194+00:00",
+            "phase_1_duration": 0.6877179145812988,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:05.156807+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1106,
+            "round_number": 78,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 79 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-80f6bcc5-a925-4900-90c7-b4da4a1418c6"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "message": "Round 79 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7084276676177979,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-de71cee4-8f98-43e4-bfea-995dcb5077ae",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:05.571423+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:05.571420+00:00",
+            "phase_1_duration": 0.7084276676177979,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:06.678843+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1107,
+            "round_number": 79,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 80 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4fbb2f09-ef4f-46c3-8a14-3dbdcfb94daa"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "message": "Round 80 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7040586471557617,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f3007189-4d39-41a0-8eae-02cf4fb51d03",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:07.068255+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:07.068239+00:00",
+            "phase_1_duration": 0.7040586471557617,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:08.167609+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1108,
+            "round_number": 80,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 81 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a96c616f-d4ae-42cc-ae74-257b7a95b9cb"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "message": "Round 81 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7377822399139404,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-08e89daf-0807-489c-9ae8-4650bb46234b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:08.608114+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:08.608112+00:00",
+            "phase_1_duration": 0.7377822399139404,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:09.918304+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1109,
+            "round_number": 81,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 82 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e6c8f4d2-8ed6-4ba8-9521-425e6aab80de"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "message": "Round 82 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7532415390014648,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5c318abd-2026-4c71-ba47-631eac697547",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:10.373046+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:10.373043+00:00",
+            "phase_1_duration": 0.7532415390014648,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:11.542749+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1110,
+            "round_number": 82,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 83 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-91fa8455-d26f-4736-9bbd-c79b67b213fb"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "message": "Round 83 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.762782096862793,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fe6716f9-ede6-462e-a873-58e7fd278b33",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:11.989791+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:11.989786+00:00",
+            "phase_1_duration": 0.762782096862793,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:13.180686+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1111,
+            "round_number": 83,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 84 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-28b1c1c0-7027-4ea7-ad18-dced29ea42d0"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "message": "Round 84 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7353131771087646,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a2d312d3-8df5-4627-8309-a0e2fc975103",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:13.603911+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:13.603907+00:00",
+            "phase_1_duration": 0.7353131771087646,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:14.770146+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1112,
+            "round_number": 84,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 85 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d43e5b97-f0b4-48fb-96d6-1650fd565f0d"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "message": "Round 85 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7018356323242188,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-27ef2e59-72c8-488c-875e-9849306526f2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:15.184614+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:15.184611+00:00",
+            "phase_1_duration": 0.7018356323242188,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:16.297946+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1113,
+            "round_number": 85,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 86 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-3e9b0451-180e-489a-8a9e-13fa61fec724"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "message": "Round 86 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7537980079650879,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-06a1bd37-9eea-4583-a160-371be8567778",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:16.715104+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:16.715100+00:00",
+            "phase_1_duration": 0.7537980079650879,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:17.886120+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1114,
+            "round_number": 86,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 87 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e00fb3b5-a489-47e6-a893-bc885df39f33"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "message": "Round 87 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7242777347564697,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b8d5936c-1458-48b8-bf4e-f0d1c7f2aa3c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:18.460528+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:18.460525+00:00",
+            "phase_1_duration": 0.7242777347564697,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:19.620012+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1115,
+            "round_number": 87,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 88 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-c92c17b7-f985-4c92-b304-5f0e380f55e4"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "message": "Round 88 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7538611888885498,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9216fac8-dac3-4f17-979e-6b18e0281e9e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:20.072861+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:20.072858+00:00",
+            "phase_1_duration": 0.7538611888885498,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:21.300767+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1116,
+            "round_number": 88,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 89 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f282a343-2adb-46f8-96a4-a3eb37abef36"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "message": "Round 89 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7666540145874023,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b73b1fc6-d4e0-4f03-845c-36b613bbc48f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:21.754613+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:21.754610+00:00",
+            "phase_1_duration": 0.7666540145874023,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:22.961212+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1117,
+            "round_number": 89,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 90 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-fa320a43-8b41-43cc-972d-c3cabdf7f25b"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "message": "Round 90 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7479226589202881,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b4731813-1deb-4853-8706-8e4dd9969da2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:23.451809+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:23.451806+00:00",
+            "phase_1_duration": 0.7479226589202881,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:24.647266+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1118,
+            "round_number": 90,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 91 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5bf22f98-c5d2-4d25-a4ed-816b1257b817"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "message": "Round 91 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7745676040649414,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e5a8f690-2799-4582-bc87-faff438c0133",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:25.118028+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:25.118011+00:00",
+            "phase_1_duration": 0.7745676040649414,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:26.354312+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1119,
+            "round_number": 91,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 92 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-022556ec-0614-46d8-a08f-e085ff036f52"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "message": "Round 92 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7100775241851807,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-846e189d-9f64-4abb-a34a-220c24de26f9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:26.815367+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:26.815363+00:00",
+            "phase_1_duration": 0.7100775241851807,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:27.968573+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1120,
+            "round_number": 92,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 93 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a552b7eb-4ce0-4256-97fe-bb3923085467"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "message": "Round 93 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7440247535705566,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d38a8c8d-1087-4052-8a66-2ce64aed5f2a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:28.561783+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:28.561780+00:00",
+            "phase_1_duration": 0.7440247535705566,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:29.788399+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1121,
+            "round_number": 93,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 94 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a7cca763-e347-49c4-8413-591cf4b820ac"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "message": "Round 94 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7630460262298584,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c59bd2be-89cd-4333-ace7-63ccdd4fdfe3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:30.218058+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:30.218055+00:00",
+            "phase_1_duration": 0.7630460262298584,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:31.424290+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1122,
+            "round_number": 94,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 95 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-0a64976a-c38b-48fb-bd82-df429e6195ee"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "message": "Round 95 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7965664863586426,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e5e2c261-b5f6-4a6c-8f09-961509427629",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:31.888635+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:31.888624+00:00",
+            "phase_1_duration": 0.7965664863586426,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:33.162759+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1123,
+            "round_number": 95,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 96 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b74514ec-4707-4e6e-a189-a5528349d804"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "message": "Round 96 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8406729698181152,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9e34a591-83e1-4be6-854d-ff68bed851e7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:33.630371+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:33.630367+00:00",
+            "phase_1_duration": 0.8406729698181152,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:34.992433+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1124,
+            "round_number": 96,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 97 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-631e43f6-ec59-45c3-8b5e-1c381a4f1dec"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "message": "Round 97 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8014225959777832,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1c2154f1-f56b-4569-8600-648047c7771d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:35.449481+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:35.449478+00:00",
+            "phase_1_duration": 0.8014225959777832,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:36.697070+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1125,
+            "round_number": 97,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 98 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4d42293d-3b1a-411f-949b-3235d4982ddb"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "message": "Round 98 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7737910747528076,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e2fb0509-4ea0-417f-814c-79e668d41bb9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:37.156124+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:37.156117+00:00",
+            "phase_1_duration": 0.7737910747528076,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:38.549754+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1126,
+            "round_number": 98,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 99 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-afe85923-2eff-410a-8860-1816b06d7686"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "message": "Round 99 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7723071575164795,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-aed1d0aa-da3a-4014-aa13-e642dd4d8532",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:39.018468+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:39.018465+00:00",
+            "phase_1_duration": 0.7723071575164795,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:40.263023+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1127,
+            "round_number": 99,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 100 is \"processed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-44f2d492-c888-4f10-bd86-4c55eaf4b065"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "message": "Round 100 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8080029487609863,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b3caf4b1-8f09-4481-a1c0-dd7c3d17a80f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:40.715812+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:40.715807+00:00",
+            "phase_1_duration": 0.8080029487609863,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:41.976496+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1128,
+            "round_number": 100,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 101 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b454e249-230f-4ca6-88ba-e4ef75aaa3cf"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "message": "Round 101 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7959103584289551,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0a995618-3f5b-40f5-a217-146c93403535",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:14:42.435876+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:14:42.435874+00:00",
+            "phase_1_duration": 0.7959103584289551,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:14:43.784437+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 1129,
+            "round_number": 101,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    }
+  ]
+}

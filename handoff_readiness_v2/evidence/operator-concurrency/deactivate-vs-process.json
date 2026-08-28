@@ -1,0 +1,4883 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380394
+    },
+    {
+      "game_id": 4,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380395
+    },
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380395
+    },
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380397
+    },
+    {
+      "game_id": 4,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380398
+    },
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380398
+    },
+    {
+      "game_id": 4,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380401
+    },
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380400
+    },
+    {
+      "game_id": 4,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 380401
+    }
+  ],
+  "arrival_orders": {
+    "first-first": 50,
+    "second-first": 50
+  },
+  "code_revision": "830b7adee8ae5bad180a66cfe1797753b45d7e56",
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "iterations_are_total_per_pair": true,
+  "pair": "deactivate-vs-process",
+  "source_tree_sha256": "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3",
+  "status_code_pairs": {
+    "200+200": 100
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-accf7fa1-59ba-48e2-832d-2b4d02d196d7",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:38.810818+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "message": "Round 2 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5608582496643066,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ad5034a5-65d9-4d8a-ad36-45c90ad39f9e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:37.790665+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:37.790662+00:00",
+            "phase_1_duration": 0.5608582496643066,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:38.583663+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 306,
+            "round_number": 2,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-572d1dc6-ff40-483d-9642-dedcbbc76bc8",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:38.853934+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "message": "Round 3 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.32950830459594727,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-cd60930e-96ce-4925-9b35-6ce79bb813a2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:38.818162+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:38.818159+00:00",
+            "phase_1_duration": 0.32950830459594727,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:39.409084+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 307,
+            "round_number": 3,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-9f229a86-a1fd-4dcb-a8dc-ba0832013fa8",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:40.714597+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "message": "Round 4 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5864260196685791,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7a047dc5-d8de-4e2e-9418-35a09ffff88c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:39.637870+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:39.637867+00:00",
+            "phase_1_duration": 0.5864260196685791,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:40.471192+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 308,
+            "round_number": 4,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-5d497673-2802-404e-a27c-8d7f858423b6",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:40.759347+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "message": "Round 5 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.33039236068725586,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-81ea7e99-a451-4266-b480-e5f79b1226c9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:40.725584+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:40.725581+00:00",
+            "phase_1_duration": 0.33039236068725586,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:41.319332+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 309,
+            "round_number": 5,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-25bd0ad1-4997-4660-a5b5-25b46c771448",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:42.558078+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "message": "Round 6 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5563597679138184,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6d05db61-3ff9-46e9-a9d1-8a834f15709f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:41.534780+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:41.534776+00:00",
+            "phase_1_duration": 0.5563597679138184,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:42.329924+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 310,
+            "round_number": 6,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-29d9003b-65fc-4500-9d90-172f28f662b4",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:42.600810+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "message": "Round 7 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3327765464782715,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-97378b10-6c6a-41ef-a588-002ec56a282d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:42.566600+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:42.566598+00:00",
+            "phase_1_duration": 0.3327765464782715,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:43.162733+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 311,
+            "round_number": 7,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-bb2b6871-6835-4a13-a46e-8cd246856279",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:44.470335+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "message": "Round 8 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5688073635101318,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6db5c195-d98d-44c5-81e1-08732dd8ca0a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:43.380857+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:43.380854+00:00",
+            "phase_1_duration": 0.5688073635101318,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:44.195650+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 312,
+            "round_number": 8,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-64b07a27-d85b-4fc1-b599-ac820cf6ad69",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:44.516050+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "message": "Round 9 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3386838436126709,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b073fedf-a0b7-4a5e-9833-d7ea7f8da80b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:44.478159+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:44.478156+00:00",
+            "phase_1_duration": 0.3386838436126709,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:45.089623+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 313,
+            "round_number": 9,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-c5e1acd1-6d87-48b2-8ea9-b354bb2e5a6f",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:46.411505+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "message": "Round 10 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6260356903076172,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fc37fcc3-ebe3-4204-ae81-3b8c90500f9a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:45.313309+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:45.313306+00:00",
+            "phase_1_duration": 0.6260356903076172,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:46.188017+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 314,
+            "round_number": 10,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-efc47440-9320-4599-97f0-6960a0321c24",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:46.453565+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "message": "Round 11 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3301210403442383,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0e4b5330-e5e5-4575-86a2-b70f2060d98d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:46.419383+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:46.419379+00:00",
+            "phase_1_duration": 0.3301210403442383,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:47.019872+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 315,
+            "round_number": 11,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-ee875059-b140-43ba-819f-c1c48f03ba55",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:48.399967+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "message": "Round 12 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6432862281799316,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9dbf3de1-1740-48ff-b76f-95a4860dd1f9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:47.247601+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:47.247598+00:00",
+            "phase_1_duration": 0.6432862281799316,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:48.151367+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 316,
+            "round_number": 12,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-b553a38f-802f-4a2c-8991-fbe0aca0b733",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:49.530762+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "message": "Round 13 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6092472076416016,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3367bc0b-02f9-4905-a79a-5a2b70a59fbf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:48.406940+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:48.406936+00:00",
+            "phase_1_duration": 0.6092472076416016,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:49.286901+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 317,
+            "round_number": 13,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-136ed7db-9858-4d33-a455-bc0a0d641201",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:50.611369+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "message": "Round 14 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.576556921005249,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d1263939-5ab7-464e-bcc9-796c1d3e4b46",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:49.538124+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:49.538122+00:00",
+            "phase_1_duration": 0.576556921005249,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:50.373109+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 318,
+            "round_number": 14,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-1c8a0b83-93e9-4b9c-9c8b-9bce6de2172e",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:50.656218+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "message": "Round 15 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.351149320602417,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3ef14a0d-4108-4108-bf6a-03b7632b85fc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:50.618623+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:50.618620+00:00",
+            "phase_1_duration": 0.351149320602417,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:51.251835+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 319,
+            "round_number": 15,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-40599ede-ad14-4f1e-aa35-cf915de062a8",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:52.627001+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "message": "Round 16 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6173567771911621,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-88c0e948-f6fa-43ac-b1cb-e56c0c36196b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:51.495504+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:51.495487+00:00",
+            "phase_1_duration": 0.6173567771911621,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:52.369953+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 320,
+            "round_number": 16,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-13770835-3fee-4d6c-9609-d8e959581f98",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:53.804540+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "message": "Round 17 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6279842853546143,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7d7db653-3547-4b3b-85db-0c27eb8b7b39",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:52.636396+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:52.636391+00:00",
+            "phase_1_duration": 0.6279842853546143,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:53.537586+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 321,
+            "round_number": 17,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2bbbbfa4-95b2-4d30-bb68-93c0a7ff19ee",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:54.991540+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "message": "Round 18 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6272811889648438,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bf5d0352-f875-48de-bf27-396f104a61f2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:53.812654+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:53.812650+00:00",
+            "phase_1_duration": 0.6272811889648438,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:54.738061+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 322,
+            "round_number": 18,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-10e8030a-82c5-4486-8b6a-9823638c3abe",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:55.036213+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "message": "Round 19 processed in 0.3s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.34766316413879395,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e31b00b2-e60b-4601-a09d-2a5b0fdbd44f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:54.999218+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:54.999215+00:00",
+            "phase_1_duration": 0.34766316413879395,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:55.621981+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 323,
+            "round_number": 19,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-68ac3baa-a609-4027-8e31-11d625550abb",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:57.048131+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "message": "Round 20 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5838263034820557,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0d78e0a4-b937-41ba-9149-6d1f6bed9cd1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:55.902603+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:55.902600+00:00",
+            "phase_1_duration": 0.5838263034820557,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:56.775743+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 324,
+            "round_number": 20,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-83d7ced6-6612-480c-bcbf-325a602785c0",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:58.157885+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "message": "Round 21 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5865552425384521,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-05516c80-6c4e-475b-810d-c620ea98db15",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:57.056901+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:57.056896+00:00",
+            "phase_1_duration": 0.5865552425384521,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:57.917187+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 325,
+            "round_number": 21,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a8229ac4-05da-425e-a6d8-6af7fc1b266c",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:59.356258+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "message": "Round 22 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6456098556518555,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-db9f45d3-801d-4383-a827-2fcca194023e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:58.165340+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:58.165337+00:00",
+            "phase_1_duration": 0.6456098556518555,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:02:59.077569+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 326,
+            "round_number": 22,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-606558c2-7cdf-45ba-86a8-6d824f5cf457",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:02:59.402218+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "message": "Round 23 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3531768321990967,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-53d7264e-f168-4c1d-800c-fe5399d1d45c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:02:59.364260+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:02:59.364255+00:00",
+            "phase_1_duration": 0.3531768321990967,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:00.006388+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 327,
+            "round_number": 23,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-edb4a107-ce7f-4fdc-917f-4e8bf0ef43d0",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:01.488703+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "message": "Round 24 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6266055107116699,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-69250638-7331-479f-8b27-4dda2f03e015",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:00.267625+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:00.267620+00:00",
+            "phase_1_duration": 0.6266055107116699,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:01.181226+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 328,
+            "round_number": 24,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-73de3f0b-c86c-4234-864b-993bb2b6a525",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:01.537043+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "message": "Round 25 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3997457027435303,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-975782cc-97ed-4428-a28e-1dec546f389f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:01.499276+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:01.499271+00:00",
+            "phase_1_duration": 0.3997457027435303,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:02.247387+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 329,
+            "round_number": 25,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-8a88a852-d8d9-4472-970c-835b7c978c8e",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:03.877932+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "message": "Round 26 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6343576908111572,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-91a1b5a5-5257-403b-9dcb-3386d5096c79",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:02.607263+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:02.607257+00:00",
+            "phase_1_duration": 0.6343576908111572,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:03.566740+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 330,
+            "round_number": 26,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-6053cd52-04ef-4bd0-859d-459a4a2b4030",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:03.919955+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "message": "Round 27 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.36866140365600586,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9331def8-2dcd-4ee5-badf-a43cc4832aab",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:03.885176+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:03.885172+00:00",
+            "phase_1_duration": 0.36866140365600586,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:04.556418+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 331,
+            "round_number": 27,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-68f5d31b-9a4a-4238-b945-5f04af1fdd35",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:06.242636+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "message": "Round 28 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7877132892608643,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-09526025-6bb7-4b93-8dfb-202f3ca2a217",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:04.860668+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:04.860651+00:00",
+            "phase_1_duration": 0.7877132892608643,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:05.955956+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 332,
+            "round_number": 28,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-c548229b-ebbb-4543-a32a-7d67b6bd818b",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:06.286379+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "message": "Round 29 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5859920978546143,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7dc05135-64a2-46c2-a591-939176c69851",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:06.250495+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:06.250492+00:00",
+            "phase_1_duration": 0.5859920978546143,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:07.138402+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 333,
+            "round_number": 29,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a4d9f02f-a1fd-4653-84c0-a8a0dbe14713",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:08.759948+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "message": "Round 30 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7265305519104004,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a597b0b3-572f-430e-b1a2-394499fe0f68",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:07.406818+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:07.406814+00:00",
+            "phase_1_duration": 0.7265305519104004,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:08.446761+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 334,
+            "round_number": 30,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-581c9b2a-a62d-4e36-88b5-aa00b93f5616",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:08.801395+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "message": "Round 31 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3728606700897217,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-27a18cdb-1326-4750-a11d-ae56f56eac98",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:08.768234+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:08.768232+00:00",
+            "phase_1_duration": 0.3728606700897217,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:09.453172+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 335,
+            "round_number": 31,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-5da8b4b8-fcb5-4f5f-96dc-750d20063f38",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:11.071295+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "message": "Round 32 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6599891185760498,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f2bd8c52-3953-4dff-b618-a81418b8547d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:09.746791+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:09.746788+00:00",
+            "phase_1_duration": 0.6599891185760498,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:10.712992+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 336,
+            "round_number": 32,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-83e5af14-9435-4ae7-81c3-464b5cc05e90",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:11.113217+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "message": "Round 33 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.35921716690063477,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ef8fd737-a90e-4e14-a23b-7257decab8f6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:11.079021+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:11.079016+00:00",
+            "phase_1_duration": 0.35921716690063477,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:11.753539+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 337,
+            "round_number": 33,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-e791f5ce-3dbc-4ab2-9366-fd0876f86cbd",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:13.472739+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "message": "Round 34 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.732980489730835,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-551c7c2e-f173-4975-abff-e069719250f7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:12.044984+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:12.044981+00:00",
+            "phase_1_duration": 0.732980489730835,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:13.097336+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 338,
+            "round_number": 34,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-e14568e1-f2b1-471d-9830-8c67cb5cd4d0",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:14.885437+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "message": "Round 35 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7048254013061523,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-97e369a6-efad-4a6c-a419-34aa192cf3ef",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:13.481490+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:13.481484+00:00",
+            "phase_1_duration": 0.7048254013061523,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:14.562500+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 339,
+            "round_number": 35,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-06b5aab4-db88-4328-8204-1cc28f6217ad",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:16.231775+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "message": "Round 36 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6609091758728027,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-62df462c-8540-4911-865b-580a8f8c14d9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:14.893703+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:14.893701+00:00",
+            "phase_1_duration": 0.6609091758728027,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:15.875421+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 340,
+            "round_number": 36,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-731031c3-aeef-452c-88c4-72d8dbfbc8c2",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:16.277731+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "message": "Round 37 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3915536403656006,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-79a0b27e-40c4-4d16-859a-7db728ec059a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:16.239707+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:16.239688+00:00",
+            "phase_1_duration": 0.3915536403656006,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:16.980173+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 341,
+            "round_number": 37,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-af5f32ea-6924-4dd4-a58c-6b671f02caf1",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:18.712818+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "message": "Round 38 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7122454643249512,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c8f7502a-394e-44f5-86dd-b99b4f17e985",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:17.316481+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:17.316475+00:00",
+            "phase_1_duration": 0.7122454643249512,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:18.382446+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 342,
+            "round_number": 38,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-61d3daa6-d88a-47b8-b341-8e5acdfe4571",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:18.752633+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "message": "Round 39 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4101989269256592,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fb533185-203e-45d8-82e5-8f613a2d82db",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:18.720001+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:18.719998+00:00",
+            "phase_1_duration": 0.4101989269256592,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:19.494507+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 343,
+            "round_number": 39,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-1d264e95-5d9a-47a6-8bb2-53f6315736bb",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:21.090828+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "message": "Round 40 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6320164203643799,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9f7251c4-b36c-4372-8f54-0d6673dc5b77",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:19.817698+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:19.817681+00:00",
+            "phase_1_duration": 0.6320164203643799,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:20.765545+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 344,
+            "round_number": 40,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-f0f58bc1-6636-4439-b139-8bae7360acfd",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:21.132847+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "message": "Round 41 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.37489891052246094,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-04305c2a-d769-4f41-8244-086e069a5bbf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:21.098027+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:21.098025+00:00",
+            "phase_1_duration": 0.37489891052246094,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:21.804775+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 345,
+            "round_number": 41,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-1e5da8fd-dbd5-49a8-a49c-c8e194994df6",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:23.516597+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "message": "Round 42 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6848421096801758,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c39380c5-698e-4357-a46c-546293b813c3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:22.173102+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:22.173098+00:00",
+            "phase_1_duration": 0.6848421096801758,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:23.192518+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 346,
+            "round_number": 42,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-d7f40991-027c-44a8-806d-17254aa30470",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:23.556767+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "message": "Round 43 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.374147891998291,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5089026d-ec8c-403d-967b-4aebcbf2b847",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:23.523791+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:23.523788+00:00",
+            "phase_1_duration": 0.374147891998291,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:24.266466+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 347,
+            "round_number": 43,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-05ad6216-3f91-462b-a77f-db4a31fc8283",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:25.851431+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "message": "Round 44 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.668536901473999,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-04d8f6a9-7e93-4e13-9a33-35210ad5674f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:24.563554+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:24.563551+00:00",
+            "phase_1_duration": 0.668536901473999,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:25.556872+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 348,
+            "round_number": 44,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-f612d1e4-fe18-42af-8319-d01ba7376c29",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:25.895528+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "message": "Round 45 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.373457670211792,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f7a61772-ff84-48f1-971a-fe1b3f2bcd7c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:25.859288+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:25.859284+00:00",
+            "phase_1_duration": 0.373457670211792,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:26.690089+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 349,
+            "round_number": 45,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2dbd6487-8f35-441f-89be-d52161844369",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:28.362757+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "message": "Round 46 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7104387283325195,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-56d503a1-4ae8-41ac-ac2a-48c2c1da9acd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:27.013935+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:27.013932+00:00",
+            "phase_1_duration": 0.7104387283325195,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:28.046200+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 350,
+            "round_number": 46,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-b5d24b4e-1869-410b-869d-eb8369851bc6",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:28.406380+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "message": "Round 47 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.37906622886657715,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-54a3ef67-9d20-4fd0-a356-393200b825bd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:28.370681+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:28.370678+00:00",
+            "phase_1_duration": 0.37906622886657715,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:29.088823+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 351,
+            "round_number": 47,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-5fc5d44e-8ffe-48f4-9a28-cff34099526f",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:30.801951+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "message": "Round 48 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6861140727996826,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-900ac183-cad8-46e2-885e-d23dfd6b07df",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:29.427189+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:29.427186+00:00",
+            "phase_1_duration": 0.6861140727996826,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:30.458177+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 352,
+            "round_number": 48,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-f0332215-f24d-416d-a3f3-0ddc516b15dc",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:30.845438+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "message": "Round 49 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3826320171356201,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-05916768-7827-4b9a-afad-e3fcafa5817c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:30.809137+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:30.809132+00:00",
+            "phase_1_duration": 0.3826320171356201,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:31.540168+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 353,
+            "round_number": 49,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-17fdf1da-4bb4-46a5-99d3-9193d0c2eba3",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:33.204730+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "message": "Round 50 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6939246654510498,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ed7319c9-f160-4099-a31e-6b6b7685f136",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:31.857785+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:31.857782+00:00",
+            "phase_1_duration": 0.6939246654510498,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:32.886908+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 354,
+            "round_number": 50,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-c20d7986-7ace-4c7a-a7c2-2e0420c7ddd8",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:33.246819+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "message": "Round 51 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4165351390838623,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d1b97168-7359-4513-a496-5122b7545dc6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:33.213015+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:33.212999+00:00",
+            "phase_1_duration": 0.4165351390838623,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:33.960765+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 355,
+            "round_number": 51,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2c02b7f8-deb9-44a1-ad24-353f5632e0aa",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:35.615852+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "message": "Round 52 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.665938138961792,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-14c01b3a-503e-4697-967c-173e579e643c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:34.294381+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:34.294377+00:00",
+            "phase_1_duration": 0.665938138961792,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:35.300819+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 356,
+            "round_number": 52,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-3781ad65-c1f6-4ae3-af76-73a4c26b879c",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:36.946180+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "message": "Round 53 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6628546714782715,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-585a5a8b-345d-48d7-be45-a140cf2303f2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:35.622762+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:35.622758+00:00",
+            "phase_1_duration": 0.6628546714782715,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:36.627605+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 357,
+            "round_number": 53,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-4b12384c-9790-49cd-8c00-1e0abc762b5c",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:38.331876+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "message": "Round 54 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7082250118255615,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-dab2302a-6351-491b-8788-f5dde3d090c5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:36.953955+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:36.953952+00:00",
+            "phase_1_duration": 0.7082250118255615,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:37.993412+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 358,
+            "round_number": 54,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-fccd24d1-a9d8-4335-b7de-0d4dc48bcbb4",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:38.375050+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "message": "Round 55 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.38695693016052246,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-be0a2a20-21c7-4498-9a67-db30cbffbac2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:38.339119+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:38.339115+00:00",
+            "phase_1_duration": 0.38695693016052246,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:39.115951+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 359,
+            "round_number": 55,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-0947da6c-9fe3-429c-90df-bc3d6a84c479",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:40.927627+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "message": "Round 56 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6832911968231201,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b81ddf23-0d55-46ed-8474-24912546fb77",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:39.463616+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:39.463611+00:00",
+            "phase_1_duration": 0.6832911968231201,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:40.595460+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 360,
+            "round_number": 56,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-79b24919-c24c-44bc-9a42-7efcc2416965",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:42.249031+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "message": "Round 57 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6457364559173584,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-aaf4a2fb-099b-4344-8062-32a6a338eb9f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:40.935077+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:40.935075+00:00",
+            "phase_1_duration": 0.6457364559173584,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:41.914572+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 361,
+            "round_number": 57,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a0f9043e-5ece-476f-b455-7c5746a358b9",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:43.795721+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "message": "Round 58 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7672998905181885,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8cbdf2e3-a4ca-4dde-bf68-46e9392cc512",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:42.256305+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:42.256302+00:00",
+            "phase_1_duration": 0.7672998905181885,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:43.420554+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 362,
+            "round_number": 58,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2169a520-4442-4ec5-be5d-7c642bea5a3c",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:43.846001+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "message": "Round 59 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.41003990173339844,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d1c1859e-db32-4863-8eba-1eee96f95522",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:43.804566+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:43.804561+00:00",
+            "phase_1_duration": 0.41003990173339844,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:44.639755+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 363,
+            "round_number": 59,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-41461316-78ca-46ee-82a0-8019b61edf9d",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:46.450713+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "message": "Round 60 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.726707935333252,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3388e7d2-fe2f-46aa-9b52-aa225ca87c0e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:45.007003+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:45.007001+00:00",
+            "phase_1_duration": 0.726707935333252,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:46.101481+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 364,
+            "round_number": 60,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-b0747163-53c2-4de9-90ce-c02b5f7e90d9",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:46.492714+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "message": "Round 61 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.425079345703125,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2f68a00b-86c6-4ed9-b910-2eb6bbe018da",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:46.458621+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:46.458616+00:00",
+            "phase_1_duration": 0.425079345703125,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:47.262408+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 365,
+            "round_number": 61,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-124b55e8-c2ee-4eaf-9426-588e8a228566",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:49.028546+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "message": "Round 62 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6985816955566406,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2303a30a-6cf0-43b8-801a-0f65a1f5d573",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:47.619332+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:47.619327+00:00",
+            "phase_1_duration": 0.6985816955566406,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:48.677590+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 366,
+            "round_number": 62,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-778aa632-5ea9-409b-80e5-205976ae26c1",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:50.449374+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "message": "Round 63 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7003278732299805,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d979357d-ed9b-4b38-b852-2691338318cc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:49.035362+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:49.035359+00:00",
+            "phase_1_duration": 0.7003278732299805,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:50.095351+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 367,
+            "round_number": 63,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-96c3a254-927d-4a22-bded-63844977e2ae",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:51.930382+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "message": "Round 64 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7435562610626221,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-676d06e4-ddc7-4e14-9013-24fd71db3a86",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:50.457542+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:50.457537+00:00",
+            "phase_1_duration": 0.7435562610626221,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:51.564662+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 368,
+            "round_number": 64,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-4e5d8dfa-ffad-458b-84a6-a30035d0bb2d",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:53.589406+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "message": "Round 65 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7745358943939209,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9a9a78d9-ba1e-4321-8eb6-c8511731d1bc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:51.937683+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:51.937679+00:00",
+            "phase_1_duration": 0.7745358943939209,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:53.224603+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 369,
+            "round_number": 65,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-6e4585ca-6d35-4836-a50e-7370398f9221",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:55.209322+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "message": "Round 66 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7368297576904297,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a3ee4c93-ddb6-444d-a7c9-3c13e4324782",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:53.597530+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:53.597526+00:00",
+            "phase_1_duration": 0.7368297576904297,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:54.812299+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 370,
+            "round_number": 66,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-95c2875e-7d5a-4cbb-b9ee-bf305fc0ca7b",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:56.934934+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "message": "Round 67 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7147436141967773,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d524d101-bc54-4611-a2b1-ce121962fec7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:55.217011+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:55.217008+00:00",
+            "phase_1_duration": 0.7147436141967773,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:56.334680+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 371,
+            "round_number": 67,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-37091fc2-91ca-46a5-9682-34c4beee46f3",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:58.387631+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "message": "Round 68 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7054674625396729,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e087ea22-6d22-4f0b-a6c4-ccdb2500180b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:56.942597+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:56.942595+00:00",
+            "phase_1_duration": 0.7054674625396729,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:58.024322+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 372,
+            "round_number": 68,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-1820f41c-15ff-4f38-a7ef-7c2cf8264dc2",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:03:59.871641+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "message": "Round 69 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.712660551071167,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-83d86fc0-7883-4cfb-8604-ebea409b3404",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:58.395337+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:58.395335+00:00",
+            "phase_1_duration": 0.712660551071167,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:03:59.482640+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 373,
+            "round_number": 69,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-0cf62453-79ce-44c9-bf5b-1397874a2f74",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:01.358838+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "message": "Round 70 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7284836769104004,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4298585e-1fc1-463d-91aa-f9b59f72547d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:03:59.879080+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:03:59.879077+00:00",
+            "phase_1_duration": 0.7284836769104004,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:00.982108+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 374,
+            "round_number": 70,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-af43d611-3a9e-4f70-a049-978a2511176e",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:01.403579+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "message": "Round 71 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.416064977645874,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0c50b26e-c957-4352-9830-491225653be1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:01.366367+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:01.366362+00:00",
+            "phase_1_duration": 0.416064977645874,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:02.178143+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 375,
+            "round_number": 71,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-94015fe6-b934-4e66-bd5b-12e1acc844cd",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:04.453983+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "message": "Round 72 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8673834800720215,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e037070a-e540-4378-9169-33a3156f4fa2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:02.659396+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:02.659390+00:00",
+            "phase_1_duration": 0.8673834800720215,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:03.936119+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 376,
+            "round_number": 72,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-b6bce540-5d2f-4c95-9184-d1428faf7740",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:04.498333+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "message": "Round 73 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.3956010341644287,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4341cfb9-8d70-4ea9-8987-905917dfa9c7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:04.462732+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:04.462727+00:00",
+            "phase_1_duration": 0.3956010341644287,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:05.258283+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 377,
+            "round_number": 73,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-180acfd0-71d8-45e8-abeb-906e1a5b80d9",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:07.172417+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "message": "Round 74 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.733081579208374,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b8c5b905-6ea5-498c-bbdd-ec77411dc626",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:05.676236+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:05.676233+00:00",
+            "phase_1_duration": 0.733081579208374,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:06.798595+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 378,
+            "round_number": 74,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-6bd0a9d5-3fbe-44f6-82e9-d809081c0c2f",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:08.768232+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "message": "Round 75 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7690920829772949,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-45b81ba5-44fd-4b77-a6fa-856d849c2953",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:07.180516+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:07.180514+00:00",
+            "phase_1_duration": 0.7690920829772949,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:08.316434+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 379,
+            "round_number": 75,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-ae6d1c0e-8cbe-4a88-b563-45bf1797f85a",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:10.314556+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "message": "Round 76 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7378726005554199,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-737a9b37-b638-4003-83f4-e0b7fa1d7f12",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:08.776725+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:08.776722+00:00",
+            "phase_1_duration": 0.7378726005554199,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:09.932678+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 380,
+            "round_number": 76,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-560b1b55-117a-418d-bd9d-cbc276a411c6",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:10.355342+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "message": "Round 77 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4243965148925781,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f8a96d9b-4124-4953-a897-abdd136c15f1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:10.321594+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:10.321592+00:00",
+            "phase_1_duration": 0.4243965148925781,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:11.152074+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 381,
+            "round_number": 77,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-e13e9950-65bb-4851-8702-7186db8cefb5",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:13.166364+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "message": "Round 78 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7768204212188721,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1759530c-af65-4ed8-8004-225e2109de2b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:11.581728+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:11.581725+00:00",
+            "phase_1_duration": 0.7768204212188721,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:12.741740+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 382,
+            "round_number": 78,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-33db4458-a2d2-4ec8-a787-0eb578df9ee1",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:13.207501+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "message": "Round 79 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.41654133796691895,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bf978ed3-84db-41a1-9b6a-888d1a3feb00",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:13.174373+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:13.174369+00:00",
+            "phase_1_duration": 0.41654133796691895,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:13.993290+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 383,
+            "round_number": 79,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-57755f2e-07b0-4305-abc8-f3e373eb08a5",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:16.063938+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "message": "Round 80 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7206404209136963,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2d0ec5a7-490a-415c-b154-b345dda1d2f3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:14.543246+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:14.543242+00:00",
+            "phase_1_duration": 0.7206404209136963,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:15.665604+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 384,
+            "round_number": 80,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-4c954c0d-56bb-462d-81fe-5de96b8f3b5e",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:16.105452+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "message": "Round 81 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.41959118843078613,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-af8d5822-ae73-4b77-a2c3-90d3975aabfe",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:16.071599+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:16.071595+00:00",
+            "phase_1_duration": 0.41959118843078613,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:16.923000+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 385,
+            "round_number": 81,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-4405a886-145c-4733-8092-25f1913e13de",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:18.928537+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "message": "Round 82 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7415497303009033,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-29eff2dc-6aa4-4f40-bd08-120c00c72d73",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:17.371173+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:17.371161+00:00",
+            "phase_1_duration": 0.7415497303009033,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:18.523782+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 386,
+            "round_number": 82,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-156d2f17-1988-4aa2-bc76-c497af1c43c4",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:18.969381+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "message": "Round 83 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4422030448913574,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e7c273c7-44ab-42f5-b7d3-b09030bcbdd6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:18.935083+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:18.935080+00:00",
+            "phase_1_duration": 0.4422030448913574,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:19.808538+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 387,
+            "round_number": 83,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-39c8b654-cb78-442b-8461-7ea488da49d4",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:21.808704+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "message": "Round 84 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7352089881896973,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8e1526f5-fb7d-49b1-a056-60ba832d9cab",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:20.267178+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:20.267154+00:00",
+            "phase_1_duration": 0.7352089881896973,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:21.424280+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 388,
+            "round_number": 84,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a6b156d8-d240-454a-9253-e92a1751bef2",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:21.852779+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "message": "Round 85 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.42306041717529297,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-40fdf21c-9c74-4083-95f0-a4c765874576",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:21.816341+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:21.816338+00:00",
+            "phase_1_duration": 0.42306041717529297,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:22.644177+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 389,
+            "round_number": 85,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-de18f65b-c8af-4b6e-856c-cc691096c3de",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:24.822397+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "message": "Round 86 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7728784084320068,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-50fbd863-59c6-4828-8130-15e3260d70c3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:23.090567+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:23.090558+00:00",
+            "phase_1_duration": 0.7728784084320068,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:24.407033+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 390,
+            "round_number": 86,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-6140ec31-7483-4013-91f0-b4a217d30733",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:24.868977+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "message": "Round 87 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4851257801055908,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a88f1c84-f997-4cfc-be12-0ac57701fa17",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:24.832511+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:24.832507+00:00",
+            "phase_1_duration": 0.4851257801055908,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:25.823877+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 391,
+            "round_number": 87,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-0d2c1245-3331-447a-901d-1d55fab63f24",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:27.865264+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "message": "Round 88 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7586450576782227,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bd0065f7-bc14-4ea2-86aa-9aa92db230bc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:26.280442+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:26.280438+00:00",
+            "phase_1_duration": 0.7586450576782227,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:27.451534+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 392,
+            "round_number": 88,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-139e37a4-9366-415f-bdd0-b3eb2ca0cc50",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:27.905558+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "message": "Round 89 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4523601531982422,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3f95060a-7436-46c5-8a5f-357eb77d3398",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:27.873703+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:27.873686+00:00",
+            "phase_1_duration": 0.4523601531982422,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:28.762620+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 393,
+            "round_number": 89,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-d406b7f0-9dba-4a97-9a2b-b62199cb6198",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:30.777365+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "message": "Round 90 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7667505741119385,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2de87923-ed21-4c6d-a84a-bc28875bcfaa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:29.201240+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:29.201236+00:00",
+            "phase_1_duration": 0.7667505741119385,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:30.375844+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 394,
+            "round_number": 90,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-9dff5c69-9657-4c22-a2b9-d6f9ff2235d5",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:30.819065+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "message": "Round 91 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.4290428161621094,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b42d6852-a782-4060-96a7-6a0199ee9e0a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:30.785226+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:30.785224+00:00",
+            "phase_1_duration": 0.4290428161621094,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:31.626431+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 395,
+            "round_number": 91,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-130a1212-dba3-4edc-baf2-4936555e0b91",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:33.838717+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "message": "Round 92 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7881155014038086,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-90774236-e1a5-4a83-957d-d165500c24f4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:32.063201+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:32.063197+00:00",
+            "phase_1_duration": 0.7881155014038086,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:33.289134+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 396,
+            "round_number": 92,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2c1364e6-ddef-4c6e-86de-97f416ce4c14",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:33.882419+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "message": "Round 93 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.43800950050354004,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-922f2257-fbea-4a28-be18-ea55007e84d1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:33.846484+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:33.846467+00:00",
+            "phase_1_duration": 0.43800950050354004,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:34.762256+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 397,
+            "round_number": 93,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a4139129-4952-407d-a25a-f235a5f874e4",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:36.811263+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "message": "Round 94 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7813389301300049,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0efc9e5a-5bea-45cf-ae1e-724c7fa95fa4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:35.174058+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:35.174054+00:00",
+            "phase_1_duration": 0.7813389301300049,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:36.382065+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 398,
+            "round_number": 94,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-2c76c07b-2c50-40ae-bd86-174766c54e58",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:36.853290+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "message": "Round 95 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.45291566848754883,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d29a9043-fad5-4640-8654-c1669a628446",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:36.818892+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:36.818848+00:00",
+            "phase_1_duration": 0.45291566848754883,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:37.724910+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 399,
+            "round_number": 95,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-a6e1c2af-aa27-467d-bb02-0966d6a17aa7",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:39.796145+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "message": "Round 96 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7823865413665771,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d0c76ded-3da1-4fd1-84ba-d0a65b1791d5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:38.141179+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:38.141176+00:00",
+            "phase_1_duration": 0.7823865413665771,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:39.333471+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 400,
+            "round_number": 96,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-dc8c966d-69f5-482e-8373-4382924de7d5",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:39.838348+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "message": "Round 97 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.45002055168151855,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-78fee4a5-7302-4c9f-9a5f-747c599d3543",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:39.804082+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:39.804079+00:00",
+            "phase_1_duration": 0.45002055168151855,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:40.700296+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 401,
+            "round_number": 97,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-25ef6702-2b7a-4cf1-99fd-e6cf890eb205",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:41.172366+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "message": "Round 98 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.45253658294677734,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7b2f4313-3500-4353-8e01-e8feeeb68a8a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:41.136616+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:41.136613+00:00",
+            "phase_1_duration": 0.45253658294677734,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:42.037153+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 402,
+            "round_number": 98,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-3744fdbf-c7e0-44cf-beaf-94c9d62ef526",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:42.733317+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "message": "Round 99 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.46581339836120605,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-38e89a4e-7b69-4b83-a096-bfe8209aca99",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:42.693154+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:42.693149+00:00",
+            "phase_1_duration": 0.46581339836120605,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:43.647415+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 403,
+            "round_number": 99,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-c95e9c27-f04c-4342-b6c2-8bb3d4993698",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:45.774654+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "message": "Round 100 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7818617820739746,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-16d93e86-c2cd-4ced-9816-21f69d932a2f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:44.096035+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:44.096030+00:00",
+            "phase_1_duration": 0.7818617820739746,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:45.338980+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 404,
+            "round_number": 100,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "name": "Team 0",
+          "participation_status": "withdrawn",
+          "request_id": "srv-59f8bb19-44b2-4aba-b296-92f8f739751b",
+          "team_id": 7,
+          "withdrawal_reason": "Team withdrew from the competition.",
+          "withdrawn_at": "2026-08-28T12:04:45.818263+00:00",
+          "withdrawn_by_id": 8
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "message": "Round 101 processed in 0.4s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.43900036811828613,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-549343c6-f789-474e-b1e7-a9b9ac5608ac",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:45.782330+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:45.782326+00:00",
+            "phase_1_duration": 0.43900036811828613,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:46.668009+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 405,
+            "round_number": 101,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    }
+  ]
+}

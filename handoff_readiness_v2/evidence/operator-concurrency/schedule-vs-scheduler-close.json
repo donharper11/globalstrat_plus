@@ -1,0 +1,1785 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 20,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383552
+    },
+    {
+      "game_id": 20,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383553
+    },
+    {
+      "game_id": 20,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383553
+    },
+    {
+      "game_id": 20,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383554
+    },
+    {
+      "game_id": 20,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383555
+    },
+    {
+      "game_id": 20,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383556
+    },
+    {
+      "game_id": 20,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 383557
+    }
+  ],
+  "arrival_orders": {
+    "first-first": 50,
+    "second-first": 50
+  },
+  "code_revision": "830b7adee8ae5bad180a66cfe1797753b45d7e56",
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "iterations_are_total_per_pair": true,
+  "pair": "schedule-vs-scheduler-close",
+  "source_tree_sha256": "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3",
+  "status_code_pairs": {
+    "200+command": 85,
+    "400+command": 15
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-a73f6d49-d85e-4371-9197-9ce3e810dd10",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-0a6211d6-c64d-437f-a636-ad5b80f85cce",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 4 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-3c115b1a-875a-416c-aca7-c251d2c2f9a6"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 2,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-2c7e76aa-f614-4af7-b033-df12700426ef",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8102afd9-73dd-47cb-bd28-b62235a65b99",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-5ecb7f2a-3e2f-4148-9e2d-17728d558825",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-b2f6d30f-d610-46ac-8cb9-1637e9d8d493",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-afbd327b-1316-4010-970d-fb4a127e1c67",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-c906aeeb-90e9-449d-bb62-0f111ff62047",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-97f928be-d89b-4694-8a86-e563498f2297",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-1586dcbb-7ac7-4e02-93ec-1335d46c5492",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-19359c16-49e1-40fc-a5f3-73722fd612d6",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-984d6e55-2110-433c-a5a0-efee679eedbd",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8f599cef-1704-4e79-84ca-2ce501295ef6",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-9d21126f-5004-4742-b83c-6494c96ce760",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-e68b8607-6b80-4341-a9b2-daf613987060",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 18 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a9aefe4c-f461-431a-9923-33d33df77cf6"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 16,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-f4bf0cc5-b527-4fff-a69a-6d73bc94d1d5",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 20 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5cc8a574-c014-4c34-9ec9-14770922566e"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 18,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ef18800f-72f3-4b8e-9fbc-24d331325328",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-65a13a6c-b4cd-44fc-b7be-208ccd7c2c8e",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8a029485-cdca-435e-aac5-f82966ac6a8c",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-3b6f5889-e7b5-449d-9905-560fe3e24bcc",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-d2cf33c5-2eb2-460d-8557-9dd0ba4ffdd6",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8095d458-fc9c-4451-b4a6-85401eedce69",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-9a52ee8a-1f71-4186-8862-4858d3f8fa9e",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-91f6ecd8-565b-491b-972e-78a30c5a4e85",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-4b805a7f-75a7-4dbf-af9f-403b08e79222",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-72a6b0ec-d509-494d-96f5-bbf540716e96",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-07cccb11-ef48-4f5e-9985-f01923fa78b5",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 32 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-1d570e69-68c5-45c8-9721-4bfe8f7cef67"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 30,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ed62fee2-2324-42e7-813c-712ddf24c2c1",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-c014bd1b-0375-4897-9dd8-dfb0e781523f",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ca0008ae-718b-4447-bd79-b63b816ff555",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-3b1b11ed-0da9-4578-85df-43f9265f3c89",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 37 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-2c403d6b-10b1-4f8f-adeb-fc252be82994"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 35,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 38 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-513b1c5f-baf0-40f9-8ac3-04369fc3e1cf"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 36,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 39 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-9efe1bec-f5ce-406b-854c-25386dc79d99"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 37,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-d902b5f8-53c3-4481-96f0-b189939f9fbd",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 41 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-fa002cdd-7c4e-4f0d-a426-d18c05dfd6e9"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 39,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 42 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-37cb85e3-6fae-4ae9-93eb-5cff16f73a4c"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 40,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-4df1a22e-17ca-4f03-83e2-6230f363ce34",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-bf9216df-ad70-4bbb-9716-f01a9e83573b",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-93dee816-6085-43cd-b0a8-b24565f7e893",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 46 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-52a5134f-f5ee-4434-ae82-ebba28db8ddd"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 44,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-acf159d7-170a-49d9-b3f5-96c971705e52",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-c084aa78-2fcd-4fb7-9dfb-56540c6103ef",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-54877221-6b8e-4718-b3cc-af21d3b51618",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 50 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-05784e06-bcd7-4ab4-9037-d8d679642a2f"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 48,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-d2e291b1-8780-4b95-b98a-d4811f87d6bc",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ff31636b-0fa9-4eb8-8bdf-39616b483e72",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-5969c955-b5ff-49cb-a48f-ac8b5ddc37d0",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 54 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f7ae54df-6ba2-4600-84dc-d0a77b3a3081"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 52,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-9cce142b-99be-41dd-bf30-243300b379cd",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-42e3aa44-0616-44cc-b387-23971b4bb9c5",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-c7a138e1-7226-49f2-a05d-028bc30615b3",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-b4107cf6-0925-436e-bb50-150096eaecea",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-00d013d7-cf2b-4064-80aa-de26a794df07",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-a220e04a-264f-4627-8c31-a313b2efb220",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-89f78b06-8c81-4653-9a6d-9c459c2380b8",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-f11b0cde-6121-4e1a-8be6-dd322ae33e6f",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-4c0689fd-a843-4621-8c6d-6effd2309b07",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-6747a5a4-5841-49c8-a845-cfc4361591fa",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-cf4e2f06-16ac-44ac-b2cd-c458ba09132e",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-75266b5b-24b3-4a28-9f6f-546879804254",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-f93f27c8-eb29-4829-94e8-c1caef4bcd91",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-df724066-986b-46e4-9b8b-b68df4f38f0b",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-93bc39b8-0f47-4dfd-af6d-b58ecff44cec",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 70 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-190494aa-4be0-4414-b438-a3fd341fbfba"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 68,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-0eb2da44-0c75-4dd4-ab12-a14113efadca",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-bfecbde5-fe9a-4fa8-9c6f-3d85275807f4",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ab17f3b4-3fc6-4135-b18f-d0cffdbc3f8e",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-b8f8c7cf-faca-4569-b3e6-676b8946e38f",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-47f84b45-db5e-4baa-8287-316f6f95acfd",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8811af1b-f572-4b7c-a89d-24e093ef47f9",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-a1e27f10-851b-4218-86e7-6401e9c80187",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-60d2437d-4ac6-4773-8035-e9588cb9ad48",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-408f4f70-dc0a-459e-9162-b37a24707a57",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-23f3b3b2-6543-489c-a2e1-4e318015e6b2",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-4ed316a3-7daf-4b38-a393-bc5b32d6de0a",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-eef74974-b8fc-4ed4-aaf2-cb0e85cc893f",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 83 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-c12569c1-a952-4a09-b4f1-c9db6a340ab1"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 81,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-be917167-a11d-447b-bbe2-af014ef90a9d",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-fe7df8ea-c301-4d78-be57-d7879d7375e7",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 86 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b0a7dc17-6390-4509-8080-d271e1058446"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 84,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-91308fb8-bd59-4986-b995-9cf89761c4c8",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-4eb67b7c-aeef-41a6-a485-54c53e02f0e3",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-d273f8d9-e6fd-4109-b068-68ec89cf66e0",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-ea24bd43-a062-498e-8277-511743ac80e0",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-be6fa352-21a1-4dfd-9638-d8d2a95a36f4",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-9ad72fe5-9f3a-4e10-bb1d-dc97a9690c24",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-1395c8bf-4eb8-44d0-ace9-c84873cc5c75",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-282d9d10-bee5-46cc-b21a-175e4c493097",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-93cb92c7-bb21-4b91-9bc0-7a5102c11a03",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-96c92b96-afdb-43f5-985d-610fbf11af68",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-a1e553a2-a969-40d7-bfb1-eab57fc6de29",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-6abbf48d-5bd7-465f-876b-bbfa059ceeba",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-be33a368-976e-4495-a4b0-162d4e04a92f",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-bd7d3134-8a69-4d0d-96c1-acea4b20f7ce",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "game_id": 20,
+          "request_id": "srv-8d5371c3-00ac-4aef-b9e7-0b59bd959d6d",
+          "updated": 1
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "kind": "management-command",
+        "status_code": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,4683 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379518
+    },
+    {
+      "game_id": 1,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379519
+    },
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379519
+    },
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379522
+    },
+    {
+      "game_id": 1,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379523
+    },
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379523
+    },
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379525
+    },
+    {
+      "game_id": 1,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379524
+    },
+    {
+      "game_id": 1,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 379524
+    }
+  ],
+  "arrival_orders": {
+    "first-first": 50,
+    "second-first": 50
+  },
+  "code_revision": "830b7adee8ae5bad180a66cfe1797753b45d7e56",
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "iterations_are_total_per_pair": true,
+  "pair": "advance-vs-correct",
+  "source_tree_sha256": "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3",
+  "status_code_pairs": {
+    "200+409": 100
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 2,
+          "game_status": "active",
+          "message": "Advanced to round 3.",
+          "next_round": 3,
+          "request_id": "srv-de0aea4f-0914-4a6d-8f46-27a4126fdc5c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:52.722211+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 3,
+            "round_number": 3,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 2 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-b94fbeb9-0ac3-476e-a4e7-61b03d27ada3"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 3,
+          "game_status": "active",
+          "message": "Advanced to round 4.",
+          "next_round": 4,
+          "request_id": "srv-1990a288-9f48-4beb-a930-39427c6d29c1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:54.057499+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 4,
+            "round_number": 4,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 3 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a9851654-b943-4e44-a712-eb4fa71fbe2e"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 4,
+          "game_status": "active",
+          "message": "Advanced to round 5.",
+          "next_round": 5,
+          "request_id": "srv-823c6dde-38e1-4230-ada8-57648fe0a7d2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:55.298747+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 5,
+            "round_number": 5,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 4 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-71aaa619-4a31-4468-99d2-8a8f2918dab1"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 5,
+          "game_status": "active",
+          "message": "Advanced to round 6.",
+          "next_round": 6,
+          "request_id": "srv-eb9cd2d6-d1e0-4941-b45c-742e40760041",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:56.515135+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 6,
+            "round_number": 6,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 5 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a3661d9e-d4bf-450a-9335-b10c41b23e41"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 6,
+          "game_status": "active",
+          "message": "Advanced to round 7.",
+          "next_round": 7,
+          "request_id": "srv-0706deba-15f8-4ec2-8e58-399802bad636",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:57.743982+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 7,
+            "round_number": 7,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 6 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-15b3db01-f2a2-4f10-b1c1-cf854bce0cbc"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 7,
+          "game_status": "active",
+          "message": "Advanced to round 8.",
+          "next_round": 8,
+          "request_id": "srv-730f3fb2-947b-4ad3-a858-b699c71aa2b3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T11:59:58.988054+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 8,
+            "round_number": 8,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 7 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-b47e95b1-dcf0-4b32-9536-5cab16217671"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 8,
+          "game_status": "active",
+          "message": "Advanced to round 9.",
+          "next_round": 9,
+          "request_id": "srv-b60750d0-c725-42bd-998d-bb3dbfce195e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:00.350546+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 9,
+            "round_number": 9,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 8 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-e8d0d128-8f7b-41d6-af1e-4eea75a7a824"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 9,
+          "game_status": "active",
+          "message": "Advanced to round 10.",
+          "next_round": 10,
+          "request_id": "srv-82306d40-cfbd-444f-813e-eef441e12393",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:01.748736+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 10,
+            "round_number": 10,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 9 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-5c1c23fe-8112-4f0c-92fe-8d16d94644f9"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 10,
+          "game_status": "active",
+          "message": "Advanced to round 11.",
+          "next_round": 11,
+          "request_id": "srv-de7970a4-b7e3-4036-b85d-bc36f7f489c9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:03.344375+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 11,
+            "round_number": 11,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 10 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-d00ea1d5-76d6-447f-bd6b-82e4ebeb8f05"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 11,
+          "game_status": "active",
+          "message": "Advanced to round 12.",
+          "next_round": 12,
+          "request_id": "srv-8e3b3f76-083e-48f9-81b5-05dd20dec0d0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:04.864934+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 12,
+            "round_number": 12,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 11 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-aca0cdaa-8bb8-4b9f-a88a-40a5958a1d81"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 12,
+          "game_status": "active",
+          "message": "Advanced to round 13.",
+          "next_round": 13,
+          "request_id": "srv-84ea0b29-d839-4171-b6db-dddd37c397ad",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:06.206445+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 13,
+            "round_number": 13,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 12 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-83afcbf3-82c5-4b7c-9684-7a4c85852e56"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 13,
+          "game_status": "active",
+          "message": "Advanced to round 14.",
+          "next_round": 14,
+          "request_id": "srv-3af7f489-f1af-40bb-9b7a-a4bdb35f0983",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:07.809325+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 14,
+            "round_number": 14,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 13 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-18feedb3-52a8-410b-855b-f2ad45dbfd7c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 14,
+          "game_status": "active",
+          "message": "Advanced to round 15.",
+          "next_round": 15,
+          "request_id": "srv-b4b32812-5d3c-4ab5-b695-5b9f9063aecd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:09.214249+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 15,
+            "round_number": 15,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 14 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-93cb7833-598a-46a5-b765-ec03e0dc4af0"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 15,
+          "game_status": "active",
+          "message": "Advanced to round 16.",
+          "next_round": 16,
+          "request_id": "srv-c5c1b817-d679-4e06-9ecc-4e4cc390ca53",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:10.649003+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 16,
+            "round_number": 16,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 15 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-11b2d0a4-4d85-46b4-a1e0-76b2e627391a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 16,
+          "game_status": "active",
+          "message": "Advanced to round 17.",
+          "next_round": 17,
+          "request_id": "srv-930066d2-4997-4647-a354-228c098ef146",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:11.982208+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 17,
+            "round_number": 17,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 16 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-4d695012-e52a-427a-9bf4-90eb9d388924"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 17,
+          "game_status": "active",
+          "message": "Advanced to round 18.",
+          "next_round": 18,
+          "request_id": "srv-b1484a02-8cfc-47f8-bf36-a5548fad8804",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:13.332995+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 18,
+            "round_number": 18,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 17 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-009ac3c9-888a-4de5-aabb-d77c02b1480c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 18,
+          "game_status": "active",
+          "message": "Advanced to round 19.",
+          "next_round": 19,
+          "request_id": "srv-739b51f1-bd9b-40db-8d89-fa336b1fa4aa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:14.826025+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 19,
+            "round_number": 19,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 18 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-51eb5836-fd39-462c-9203-a777c8b08ac7"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 19,
+          "game_status": "active",
+          "message": "Advanced to round 20.",
+          "next_round": 20,
+          "request_id": "srv-dec1e6b2-aaf3-4072-9e72-435f1962af3a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:16.107251+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 20,
+            "round_number": 20,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 19 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-d8b26535-6d3d-409a-aa84-f3bc633e82a2"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 20,
+          "game_status": "active",
+          "message": "Advanced to round 21.",
+          "next_round": 21,
+          "request_id": "srv-4740bd32-09b4-4600-9a1f-302ed19b5239",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:17.401422+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 21,
+            "round_number": 21,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 20 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ff5a1eaa-e1ae-4b68-94b4-5ca8b5935824"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 21,
+          "game_status": "active",
+          "message": "Advanced to round 22.",
+          "next_round": 22,
+          "request_id": "srv-798b6e24-0ce3-4e21-a072-b825cd22ca2f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:18.695511+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 22,
+            "round_number": 22,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 21 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-7c5539fa-f4ab-4bba-bfe3-0c7c64054015"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 22,
+          "game_status": "active",
+          "message": "Advanced to round 23.",
+          "next_round": 23,
+          "request_id": "srv-49ee07b2-882c-4075-b975-c330a2eb8ee8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:20.149295+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 23,
+            "round_number": 23,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 22 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-932dc56d-57c1-440b-8a28-afbb983d3e44"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 23,
+          "game_status": "active",
+          "message": "Advanced to round 24.",
+          "next_round": 24,
+          "request_id": "srv-31002821-4bee-48e4-9743-60181f78aa65",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:21.344963+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 24,
+            "round_number": 24,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 23 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-6d9c0f1c-0765-4ae2-ac56-fa27fb06ae12"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 24,
+          "game_status": "active",
+          "message": "Advanced to round 25.",
+          "next_round": 25,
+          "request_id": "srv-2d240191-08db-4332-b6fc-b1068679aa45",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:22.599636+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 25,
+            "round_number": 25,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 24 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-705c7856-df22-4c00-aa08-7692f0e81879"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 25,
+          "game_status": "active",
+          "message": "Advanced to round 26.",
+          "next_round": 26,
+          "request_id": "srv-aea2802b-24cc-4961-8bb7-4004bc884c14",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:23.910372+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 26,
+            "round_number": 26,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 25 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-d65d89c0-8b0e-49d5-8a43-51de60035bb7"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 26,
+          "game_status": "active",
+          "message": "Advanced to round 27.",
+          "next_round": 27,
+          "request_id": "srv-9dc26465-17db-40ec-9fd3-66d647baf5d9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:25.112741+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 27,
+            "round_number": 27,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 26 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-9cea8142-2cc9-457d-9666-e73bdde7b88c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 27,
+          "game_status": "active",
+          "message": "Advanced to round 28.",
+          "next_round": 28,
+          "request_id": "srv-7c58d083-8cf2-4a64-9f47-40b79dcb1695",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:26.312311+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 28,
+            "round_number": 28,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 27 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-95f6792f-22b9-4386-a2c2-7e7a4d618ccd"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 28,
+          "game_status": "active",
+          "message": "Advanced to round 29.",
+          "next_round": 29,
+          "request_id": "srv-eec0fe3d-fd82-46c2-a69f-637c9fa07907",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:27.536460+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 29,
+            "round_number": 29,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 28 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-8b757b57-b153-47bc-832e-0c340bdf4517"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 29,
+          "game_status": "active",
+          "message": "Advanced to round 30.",
+          "next_round": 30,
+          "request_id": "srv-ab519ae3-53b3-44d6-88ae-b09c587c5fa6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:28.778468+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 30,
+            "round_number": 30,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 29 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-58870229-572e-4f56-b659-ac8dcaf74635"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 30,
+          "game_status": "active",
+          "message": "Advanced to round 31.",
+          "next_round": 31,
+          "request_id": "srv-4bc884dc-3865-43a2-95e6-22156648dd2c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:30.142989+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 31,
+            "round_number": 31,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 30 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-af29325f-7b37-407a-8261-e1fe4e77dd73"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 31,
+          "game_status": "active",
+          "message": "Advanced to round 32.",
+          "next_round": 32,
+          "request_id": "srv-d5010bdd-147e-496d-ac4a-ed13dce31278",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:31.445911+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 32,
+            "round_number": 32,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 31 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-54d26de2-2e73-47d9-a78d-066b666ce653"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 32,
+          "game_status": "active",
+          "message": "Advanced to round 33.",
+          "next_round": 33,
+          "request_id": "srv-8647eb97-0f58-456a-9534-0c18b75ebd15",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:32.735867+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 33,
+            "round_number": 33,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 32 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ea39bf08-469f-4673-96e9-879b947b307a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 33,
+          "game_status": "active",
+          "message": "Advanced to round 34.",
+          "next_round": 34,
+          "request_id": "srv-39c96540-7d0c-40fd-99b7-610c83e8886d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:34.098991+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 34,
+            "round_number": 34,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 33 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ce7ea598-06d6-44e9-986a-26cfe7d06f81"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 34,
+          "game_status": "active",
+          "message": "Advanced to round 35.",
+          "next_round": 35,
+          "request_id": "srv-6da4ed8d-1f53-47b9-801a-f1084c798b12",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:35.543439+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 35,
+            "round_number": 35,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 34 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-284e0f2b-cbef-42bb-9bbf-7a0eac4c4fc1"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 35,
+          "game_status": "active",
+          "message": "Advanced to round 36.",
+          "next_round": 36,
+          "request_id": "srv-2dc5af0d-5712-4154-b2d4-61ed3536b6c1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:36.888087+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 36,
+            "round_number": 36,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 35 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-380827ef-3c35-4044-ae52-a2c423a79168"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 36,
+          "game_status": "active",
+          "message": "Advanced to round 37.",
+          "next_round": 37,
+          "request_id": "srv-0242a7a2-3e44-43b3-8e3d-34f3dc282f37",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:38.267584+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 37,
+            "round_number": 37,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 36 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-7c36d189-5b41-482e-9ba9-d5aaf167decb"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 37,
+          "game_status": "active",
+          "message": "Advanced to round 38.",
+          "next_round": 38,
+          "request_id": "srv-d9c370b8-dc63-4000-8e0c-0865071a2566",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:39.596704+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 38,
+            "round_number": 38,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 37 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-4bb8ef0a-88f1-4f26-9092-eccfd7dbcb8c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 38,
+          "game_status": "active",
+          "message": "Advanced to round 39.",
+          "next_round": 39,
+          "request_id": "srv-1399f5fe-ff10-42a2-a049-811f7dab39b7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:40.958008+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 39,
+            "round_number": 39,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 38 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-e8468df5-00a7-49fe-9212-8535f7530f9b"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 39,
+          "game_status": "active",
+          "message": "Advanced to round 40.",
+          "next_round": 40,
+          "request_id": "srv-9c02b1b1-c2c0-474c-a34c-69ac5838702d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:42.326139+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 40,
+            "round_number": 40,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 39 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-6157ec18-4226-4813-90ef-5583eb93dbb7"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 40,
+          "game_status": "active",
+          "message": "Advanced to round 41.",
+          "next_round": 41,
+          "request_id": "srv-d88415a1-9e5d-47f2-8090-976d82c24d25",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:43.814212+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 41,
+            "round_number": 41,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 40 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-312c9b15-b774-4045-bb6e-a7766a91bf0a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 41,
+          "game_status": "active",
+          "message": "Advanced to round 42.",
+          "next_round": 42,
+          "request_id": "srv-b9f5eed3-494b-45f6-8388-701c979b4ee3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:45.200924+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 42,
+            "round_number": 42,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 41 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-6cb8fe2f-5ff5-4521-9ce1-6280522fd4bd"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 42,
+          "game_status": "active",
+          "message": "Advanced to round 43.",
+          "next_round": 43,
+          "request_id": "srv-82b1d9bf-212b-4ea4-a773-3646fe25a4e0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:46.595110+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 43,
+            "round_number": 43,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 42 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-5682e016-45ab-4d4b-9f9b-03ed78eed26f"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 43,
+          "game_status": "active",
+          "message": "Advanced to round 44.",
+          "next_round": 44,
+          "request_id": "srv-af9a2070-0728-4921-b132-e94469cf8a87",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:47.978627+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 44,
+            "round_number": 44,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 43 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-09001d70-a064-4697-ad60-f4db26fb94ff"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 44,
+          "game_status": "active",
+          "message": "Advanced to round 45.",
+          "next_round": 45,
+          "request_id": "srv-10abce56-ede0-487f-9d7f-f743ec7073ab",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:49.494480+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 45,
+            "round_number": 45,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 44 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-4e419c93-02e8-4194-bece-13c44012e003"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 45,
+          "game_status": "active",
+          "message": "Advanced to round 46.",
+          "next_round": 46,
+          "request_id": "srv-39f132c1-5814-4986-85b7-c9b0adff7b65",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:50.879792+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 46,
+            "round_number": 46,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 45 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ebfd0844-ab80-43c7-a5c5-bc751e27127e"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 46,
+          "game_status": "active",
+          "message": "Advanced to round 47.",
+          "next_round": 47,
+          "request_id": "srv-5805d616-0ff4-420c-bc3b-0996694f5a14",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:52.442145+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 47,
+            "round_number": 47,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 46 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-c3664013-4c27-4f4b-9e54-6f17217b91ba"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 47,
+          "game_status": "active",
+          "message": "Advanced to round 48.",
+          "next_round": 48,
+          "request_id": "srv-76f18abe-936a-4e5a-a65d-36e8c1f91c35",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:53.858351+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 48,
+            "round_number": 48,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 47 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a693682f-2538-4969-b29b-e59889288134"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 48,
+          "game_status": "active",
+          "message": "Advanced to round 49.",
+          "next_round": 49,
+          "request_id": "srv-347def8b-827c-44f4-bf72-9e4e434d3556",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:55.287634+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 49,
+            "round_number": 49,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 48 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-90c05252-d82e-4224-a7b2-e32b85f9a132"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 49,
+          "game_status": "active",
+          "message": "Advanced to round 50.",
+          "next_round": 50,
+          "request_id": "srv-61e7d8c7-9eae-4592-9286-2769864e92a6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:56.712891+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 50,
+            "round_number": 50,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 49 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-953fce1f-2bf5-4ccb-a03a-4957b8d78fb2"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 50,
+          "game_status": "active",
+          "message": "Advanced to round 51.",
+          "next_round": 51,
+          "request_id": "srv-835a29a1-3c08-40b0-b617-1909e82ebcf9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:58.182462+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 51,
+            "round_number": 51,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 50 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-380923c3-97c4-4c11-88e1-3337627d296c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 51,
+          "game_status": "active",
+          "message": "Advanced to round 52.",
+          "next_round": 52,
+          "request_id": "srv-a21965e7-e95e-4995-976b-3bd0c72d4616",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:00:59.592263+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 52,
+            "round_number": 52,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 51 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-f4d3ad00-26d6-4ac5-8b85-fa1d51d20955"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 52,
+          "game_status": "active",
+          "message": "Advanced to round 53.",
+          "next_round": 53,
+          "request_id": "srv-9d056f1e-65fc-4718-91c3-e21538f08586",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:01.076194+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 53,
+            "round_number": 53,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 52 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-214a82b3-08f9-4f22-b00f-eccbd8f26094"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 53,
+          "game_status": "active",
+          "message": "Advanced to round 54.",
+          "next_round": 54,
+          "request_id": "srv-fc31b1de-f18d-408a-8861-c5fe61cacadd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:02.465081+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 54,
+            "round_number": 54,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 53 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-54bbf995-b988-4f24-ae6c-1803875d53a1"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 54,
+          "game_status": "active",
+          "message": "Advanced to round 55.",
+          "next_round": 55,
+          "request_id": "srv-dce11a28-b1dc-4a44-8b08-d97b32d6fd8f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:04.236100+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 55,
+            "round_number": 55,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 54 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-93e384d1-0ba3-4e59-8bcc-caf3da0d245a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 55,
+          "game_status": "active",
+          "message": "Advanced to round 56.",
+          "next_round": 56,
+          "request_id": "srv-f5719e4d-7475-4c41-ba0a-df37869a3aab",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:05.695217+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 56,
+            "round_number": 56,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 55 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-8591b358-e4a3-4d33-aa8e-cd59931c8ae0"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 56,
+          "game_status": "active",
+          "message": "Advanced to round 57.",
+          "next_round": 57,
+          "request_id": "srv-89992f2b-cd33-4388-bc09-38311d809745",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:07.299822+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 57,
+            "round_number": 57,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 56 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-94887d9b-f8f4-4f39-890b-e0f7b534d2b0"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 57,
+          "game_status": "active",
+          "message": "Advanced to round 58.",
+          "next_round": 58,
+          "request_id": "srv-2919fec6-fa9d-44d0-9710-e115c4a94dd7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:08.758031+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 58,
+            "round_number": 58,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 57 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-812b32ab-3554-4082-8827-4afd757b1048"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 58,
+          "game_status": "active",
+          "message": "Advanced to round 59.",
+          "next_round": 59,
+          "request_id": "srv-528899a5-4c08-4f49-b57a-8a27796bd71a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:10.303076+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 59,
+            "round_number": 59,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 58 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-62597f00-13f7-401f-8ca1-b97715068e32"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 59,
+          "game_status": "active",
+          "message": "Advanced to round 60.",
+          "next_round": 60,
+          "request_id": "srv-2faa3df2-44eb-4782-a653-e5e6c831a985",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:11.722024+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 60,
+            "round_number": 60,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 59 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-0ffbcdd0-6e0a-49fd-8cd7-5077fb5e6b55"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 60,
+          "game_status": "active",
+          "message": "Advanced to round 61.",
+          "next_round": 61,
+          "request_id": "srv-a1f248d5-5a3a-4a7a-a47f-4f2928562249",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:13.243156+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 61,
+            "round_number": 61,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 60 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-88339273-172b-4282-bc6f-ca239d300711"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 61,
+          "game_status": "active",
+          "message": "Advanced to round 62.",
+          "next_round": 62,
+          "request_id": "srv-a0eb6213-7cee-44c0-bcb3-ed9fe277459a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:14.885021+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 62,
+            "round_number": 62,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 61 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-8cbe5663-597f-4c9e-a16b-9d0a9ced1502"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 62,
+          "game_status": "active",
+          "message": "Advanced to round 63.",
+          "next_round": 63,
+          "request_id": "srv-865851c9-5e4a-4d39-ba3b-c92c73ba7d06",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:16.368231+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 63,
+            "round_number": 63,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 62 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-0c29ddcb-7332-4ac0-96ea-2b68b5dd610c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 63,
+          "game_status": "active",
+          "message": "Advanced to round 64.",
+          "next_round": 64,
+          "request_id": "srv-ecec555e-eed8-40b5-8269-a9d37b4d94f8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:17.961560+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 64,
+            "round_number": 64,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 63 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-bff8ae9c-a447-46eb-a4b1-81cea2fdc5d5"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 64,
+          "game_status": "active",
+          "message": "Advanced to round 65.",
+          "next_round": 65,
+          "request_id": "srv-0c5e26fc-932d-4b55-8274-ddf73fa15722",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:19.499834+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 65,
+            "round_number": 65,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 64 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ed213568-88f9-41f9-9fbf-82532b32b787"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 65,
+          "game_status": "active",
+          "message": "Advanced to round 66.",
+          "next_round": 66,
+          "request_id": "srv-96c08a08-e0d7-4814-841a-a0aa4193d5c4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:20.963008+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 66,
+            "round_number": 66,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 65 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-c144ac50-af49-45a9-b2cf-9b3e8b8b5298"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 66,
+          "game_status": "active",
+          "message": "Advanced to round 67.",
+          "next_round": 67,
+          "request_id": "srv-39bd319d-f903-4b8e-abb3-3697c8a34667",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:22.553576+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 67,
+            "round_number": 67,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 66 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-45a7e5e5-5e02-462e-838e-4e4092d7ab3f"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 67,
+          "game_status": "active",
+          "message": "Advanced to round 68.",
+          "next_round": 68,
+          "request_id": "srv-b8d1cbd3-8830-4f55-a348-fc39d4d2bf52",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:24.102335+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 68,
+            "round_number": 68,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 67 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-5eafc2c7-995b-49a7-bdad-eaba6b55ac7e"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 68,
+          "game_status": "active",
+          "message": "Advanced to round 69.",
+          "next_round": 69,
+          "request_id": "srv-3d8ae8ab-a6e4-4664-8c33-ade4bcb59921",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:25.761873+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 69,
+            "round_number": 69,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 68 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-ff083b54-0097-4319-b642-86fc839f3b92"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 69,
+          "game_status": "active",
+          "message": "Advanced to round 70.",
+          "next_round": 70,
+          "request_id": "srv-a94cdf0b-fa7e-4e92-9032-78f9e84efae2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:27.300326+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 70,
+            "round_number": 70,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 69 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-39ed0302-96eb-46d8-84cd-75053098f2ed"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 70,
+          "game_status": "active",
+          "message": "Advanced to round 71.",
+          "next_round": 71,
+          "request_id": "srv-4fdb4998-726a-44be-9a06-e9d5d2f1edfa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:28.869652+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 71,
+            "round_number": 71,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 70 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a68221f4-36c4-4d7a-8562-1e67d34136bd"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 71,
+          "game_status": "active",
+          "message": "Advanced to round 72.",
+          "next_round": 72,
+          "request_id": "srv-e811b586-8c5a-4b5d-9d49-b689efb1c957",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:30.424208+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 72,
+            "round_number": 72,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 71 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-09a80d41-91d0-44ea-b194-4c1ebfff2f65"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 72,
+          "game_status": "active",
+          "message": "Advanced to round 73.",
+          "next_round": 73,
+          "request_id": "srv-e96ab1c5-877b-4789-84e0-9c1137a8db0d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:31.970073+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 73,
+            "round_number": 73,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 72 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-14069807-1b98-438f-9b38-503fb7fb69b3"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 73,
+          "game_status": "active",
+          "message": "Advanced to round 74.",
+          "next_round": 74,
+          "request_id": "srv-8fe9e23e-55e8-4ab4-ba50-e5dfc562065f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:33.623461+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 74,
+            "round_number": 74,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 73 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-f1b3ec1a-a1c3-4179-9670-0a2acfef26cc"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 74,
+          "game_status": "active",
+          "message": "Advanced to round 75.",
+          "next_round": 75,
+          "request_id": "srv-e3cd63d8-abfa-4ee2-9493-727ccbb55c85",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:35.385828+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 75,
+            "round_number": 75,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 74 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-660f5207-f816-468d-97bc-fe86d7429630"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 75,
+          "game_status": "active",
+          "message": "Advanced to round 76.",
+          "next_round": 76,
+          "request_id": "srv-1d372aa2-b64f-404f-a3fa-03a265405cb1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:36.935295+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 76,
+            "round_number": 76,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 75 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-4a3f045d-bdb5-43b7-b47c-93f15f9a22ad"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 76,
+          "game_status": "active",
+          "message": "Advanced to round 77.",
+          "next_round": 77,
+          "request_id": "srv-1d3289eb-d66d-4294-b966-c8982d606903",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:38.579159+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 77,
+            "round_number": 77,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 76 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-79ae479e-87a5-48ba-a144-729bcab97246"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 77,
+          "game_status": "active",
+          "message": "Advanced to round 78.",
+          "next_round": 78,
+          "request_id": "srv-0d149c92-cde9-4c7b-ab82-032041faca8e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:40.176749+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 78,
+            "round_number": 78,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 77 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-09f4d834-c66a-4a37-968d-04981776d1c8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 78,
+          "game_status": "active",
+          "message": "Advanced to round 79.",
+          "next_round": 79,
+          "request_id": "srv-7b2831fc-d12a-4b87-a378-df9d896b3e49",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:41.813378+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 79,
+            "round_number": 79,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 78 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-93a3cf4e-e0d6-4785-9a3d-59b83b01ff04"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 79,
+          "game_status": "active",
+          "message": "Advanced to round 80.",
+          "next_round": 80,
+          "request_id": "srv-bcd31ae5-55fd-41a4-8159-b44b23bf417f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:43.450844+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 80,
+            "round_number": 80,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 79 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-be47853f-dd2a-4ede-b484-c01b7bc46495"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 80,
+          "game_status": "active",
+          "message": "Advanced to round 81.",
+          "next_round": 81,
+          "request_id": "srv-7188afc1-b96a-47b0-a9da-71e7f7d2c785",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:45.242195+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 81,
+            "round_number": 81,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 80 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-3990b764-ce8c-41ad-9978-03e15860e545"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 81,
+          "game_status": "active",
+          "message": "Advanced to round 82.",
+          "next_round": 82,
+          "request_id": "srv-7ea5119b-2011-4ca5-846c-12793019ed03",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:46.917063+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 82,
+            "round_number": 82,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 81 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-420f8e3c-6cf7-4f53-a763-42cec9886de1"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 82,
+          "game_status": "active",
+          "message": "Advanced to round 83.",
+          "next_round": 83,
+          "request_id": "srv-75eb0f0a-460f-422a-92ec-9a19231cdb4f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:48.568335+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 83,
+            "round_number": 83,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 82 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-7a977cdd-ca77-4f3d-921c-61d71f65df7d"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 83,
+          "game_status": "active",
+          "message": "Advanced to round 84.",
+          "next_round": 84,
+          "request_id": "srv-2f5f1f6c-c29a-425b-9fa1-62a7fa1111d3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:50.189171+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 84,
+            "round_number": 84,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 83 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-00922419-8218-4774-bef8-2a38274555f2"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 84,
+          "game_status": "active",
+          "message": "Advanced to round 85.",
+          "next_round": 85,
+          "request_id": "srv-97630bcb-154d-4154-8d5d-24bbde8e800b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:51.844804+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 85,
+            "round_number": 85,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 84 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-55c216f8-9391-4c0f-a857-87539758c8d2"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 85,
+          "game_status": "active",
+          "message": "Advanced to round 86.",
+          "next_round": 86,
+          "request_id": "srv-4d6f1a2f-e330-4600-8a7e-93fbbe49c656",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:53.510670+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 86,
+            "round_number": 86,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 85 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-0b71bb78-ad59-4ae1-99af-9bea730a0f54"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 86,
+          "game_status": "active",
+          "message": "Advanced to round 87.",
+          "next_round": 87,
+          "request_id": "srv-6c3816cd-dbba-48bf-8deb-cc69ee040e82",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:55.393852+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 87,
+            "round_number": 87,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 86 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-8f10a5be-91c3-4a14-8a52-2c98013aba9a"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 87,
+          "game_status": "active",
+          "message": "Advanced to round 88.",
+          "next_round": 88,
+          "request_id": "srv-a81e939d-abe0-4ef3-945a-5c550be5c2ae",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:57.051729+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 88,
+            "round_number": 88,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 87 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-bb5213c1-10aa-4b8c-9235-26f25b419fe0"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 88,
+          "game_status": "active",
+          "message": "Advanced to round 89.",
+          "next_round": 89,
+          "request_id": "srv-00e6d827-4203-4413-87db-b5a5961ae365",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:01:58.851276+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 89,
+            "round_number": 89,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 88 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-9e52477d-b84c-4de1-afda-d869846d962b"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 89,
+          "game_status": "active",
+          "message": "Advanced to round 90.",
+          "next_round": 90,
+          "request_id": "srv-3d809625-8bb1-497f-aad0-7b7a0d862f7f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:00.534225+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 90,
+            "round_number": 90,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 89 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-6b664dec-692e-4e59-a713-52bf0a7d544b"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 90,
+          "game_status": "active",
+          "message": "Advanced to round 91.",
+          "next_round": 91,
+          "request_id": "srv-c70c8f7d-6c69-47c0-9f1b-6b9b245f8043",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:02.225841+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 91,
+            "round_number": 91,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 90 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-9a7d0073-1111-4d25-8f50-d82924119481"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 91,
+          "game_status": "active",
+          "message": "Advanced to round 92.",
+          "next_round": 92,
+          "request_id": "srv-a85c74b7-9627-4b16-97a5-8a8c07afc08a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:04.278842+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 92,
+            "round_number": 92,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 91 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-9638831b-ca6f-481d-82c1-8cad5fab8105"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 92,
+          "game_status": "active",
+          "message": "Advanced to round 93.",
+          "next_round": 93,
+          "request_id": "srv-eea8a6a9-49e2-4238-a375-56ded9ac4781",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:06.054854+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 93,
+            "round_number": 93,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 92 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-b21aaabc-f356-4999-ac42-f7a5562be90c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 93,
+          "game_status": "active",
+          "message": "Advanced to round 94.",
+          "next_round": 94,
+          "request_id": "srv-ace921bb-defa-49b2-8353-17e3979c452e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:07.882852+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 94,
+            "round_number": 94,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 93 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a581c555-793a-467f-8b31-f39359496f2e"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 94,
+          "game_status": "active",
+          "message": "Advanced to round 95.",
+          "next_round": 95,
+          "request_id": "srv-d8e426bc-2bf3-4b4d-aee8-143c6cb85821",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:09.597224+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 95,
+            "round_number": 95,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 94 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-769583b6-221e-40d0-831d-af097f4848c8"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 95,
+          "game_status": "active",
+          "message": "Advanced to round 96.",
+          "next_round": 96,
+          "request_id": "srv-9d3a53c5-8ea7-4b41-b493-fe741087ffe8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:11.316612+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 96,
+            "round_number": 96,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 95 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-a5386af6-428b-4fbf-affc-9693cd3c6ab4"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 96,
+          "game_status": "active",
+          "message": "Advanced to round 97.",
+          "next_round": 97,
+          "request_id": "srv-e9008e31-a26b-4ace-9f25-d95cf5138051",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:13.370450+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 97,
+            "round_number": 97,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 96 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-091f4390-a628-43c4-b326-b59fe370c201"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 97,
+          "game_status": "active",
+          "message": "Advanced to round 98.",
+          "next_round": 98,
+          "request_id": "srv-2bba9426-dc14-41d9-98f8-e055954eb83e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:15.141752+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 98,
+            "round_number": 98,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 97 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-4bf6d82d-7cb0-4176-b83e-9f4b73765650"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 98,
+          "game_status": "active",
+          "message": "Advanced to round 99.",
+          "next_round": 99,
+          "request_id": "srv-1c21c02c-9958-4e43-841a-a9de26d1c2fc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:16.947777+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 99,
+            "round_number": 99,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 98 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-af0a3628-4ce9-4c97-9bd6-86b6653dbaca"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 99,
+          "game_status": "active",
+          "message": "Advanced to round 100.",
+          "next_round": 100,
+          "request_id": "srv-5539026b-8ca7-4a6a-b523-c7e7803a4a16",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:18.684393+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 100,
+            "round_number": 100,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 99 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-3479adf7-a1f4-4ac3-a767-148366fc9d9c"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "completed_round": 100,
+          "game_status": "active",
+          "message": "Advanced to round 101.",
+          "next_round": 101,
+          "request_id": "srv-a23d933d-aaad-4329-9515-6ef85b2d8231",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:20.657104+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 101,
+            "round_number": 101,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 100 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-3ad0459b-f219-43b8-9e8b-a59f68690a9b"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "completed_round": 101,
+          "game_status": "active",
+          "message": "Advanced to round 102.",
+          "next_round": 102,
+          "request_id": "srv-d7482997-e502-4cfe-a0b9-77f506ccfe3e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": null,
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T12:02:22.466814+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 102,
+            "round_number": 102,
+            "seconds_remaining": null,
+            "status": "open",
+            "teams_locked": 0,
+            "teams_pending": 2,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "code": "round_already_processed",
+          "error": "Round 101 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-65094260-2746-49f7-9494-e4e3ab79cc0f"
+        },
+        "kind": "api",
+        "status_code": 409
+      }
+    }
+  ]
+}

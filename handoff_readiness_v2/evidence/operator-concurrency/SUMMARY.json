@@ -1,0 +1,232 @@
+{
+  "expensive_runs": {
+    "concurrency_matrix": {
+      "count": 1,
+      "races": 1200,
+      "seconds": 938,
+      "tests": 31
+    },
+    "full_backend_suite": {
+      "count": 1,
+      "seconds": 164,
+      "tests": 359
+    }
+  },
+  "finding": "V2-004",
+  "frozen_revision": [
+    "830b7adee8ae5bad180a66cfe1797753b45d7e56"
+  ],
+  "handoff": "GSP-CRV2-02",
+  "iteration_profiles": {
+    "certification": 100,
+    "development": 1,
+    "preflight": 10
+  },
+  "pairs": [
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "advance-vs-correct.json",
+      "pair": "advance-vs-correct",
+      "races": 100,
+      "status_code_pairs": {
+        "200+409": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "close-vs-extend.json",
+      "pair": "close-vs-extend",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 46,
+        "200+400": 54
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 2,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "close-vs-reopen.json",
+      "pair": "close-vs-reopen",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 51,
+        "200+409": 49
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "deactivate-vs-process.json",
+      "pair": "deactivate-vs-process",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "extend-vs-set-deadline.json",
+      "pair": "extend-vs-set-deadline",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "pause-vs-process.json",
+      "pair": "pause-vs-process",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "process-vs-correct.json",
+      "pair": "process-vs-correct",
+      "races": 100,
+      "status_code_pairs": {
+        "200+409": 64,
+        "400+200": 36
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "process-vs-process.json",
+      "pair": "process-vs-process",
+      "races": 100,
+      "status_code_pairs": {
+        "200+409": 51,
+        "409+200": 49
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-close.json",
+      "pair": "schedule-vs-close",
+      "races": 100,
+      "status_code_pairs": {
+        "200+200": 53,
+        "400+200": 47
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-process.json",
+      "pair": "schedule-vs-process",
+      "races": 100,
+      "status_code_pairs": {
+        "400+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 7,
+      "advisory_lock_waiters_observed": 2,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-scheduler-close.json",
+      "pair": "schedule-vs-scheduler-close",
+      "races": 100,
+      "status_code_pairs": {
+        "200+command": 85,
+        "400+command": 15
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 9,
+      "advisory_lock_waiters_observed": 3,
+      "arrival_orders": {
+        "first-first": 50,
+        "second-first": 50
+      },
+      "deadlock_delta": 0,
+      "evidence_file": "scheduler-vs-manual-close.json",
+      "pair": "scheduler-vs-manual-close",
+      "races": 100,
+      "status_code_pairs": {
+        "command+200": 92,
+        "command+409": 8
+      }
+    }
+  ],
+  "races_per_pair": 100,
+  "races_per_pair_semantics": "Total races per pair. _race alternates which thread is released first by iteration parity, so 100 = 50 with each action arriving first. Not 100 per arrival order.",
+  "route_coverage": {
+    "exempt": 16,
+    "guarded": 20,
+    "lifecycle_mutating_routes": 36,
+    "total_mutating_routes": 214,
+    "unguarded": 0
+  },
+  "source_tree_sha256": [
+    "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3"
+  ],
+  "totals": {
+    "deadlocks": 0,
+    "pairs": 12,
+    "races": 1200,
+    "server_errors": 0
+  }
+}

@@ -1,0 +1,4583 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381255
+    },
+    {
+      "game_id": 6,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381256
+    },
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381256
+    },
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381258
+    },
+    {
+      "game_id": 6,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381259
+    },
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381259
+    },
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381260
+    },
+    {
+      "game_id": 6,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381261
+    },
+    {
+      "game_id": 6,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 381261
+    }
+  ],
+  "arrival_orders": {
+    "first-first": 50,
+    "second-first": 50
+  },
+  "code_revision": "830b7adee8ae5bad180a66cfe1797753b45d7e56",
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "iterations_are_total_per_pair": true,
+  "pair": "pause-vs-process",
+  "source_tree_sha256": "a35c665d973478ddfd2ac2b3f5d8395b426637a6d5504acb57038be29c894fe3",
+  "status_code_pairs": {
+    "200+200": 100
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 2 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5902707576751709,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4100c569-dd13-43d7-b855-3f3c8937eac0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:56.999017+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:56.999014+00:00",
+            "phase_1_duration": 0.5902707576751709,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:57.833416+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 508,
+            "round_number": 2,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "current_round": 2,
+          "game_id": 6,
+          "request_id": "srv-d23af1da-50e5-41b3-b56c-702b5658af2d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 3 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5620949268341064,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-afc8c61b-d6e1-4f73-8803-9d2dbe17a96f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:58.051077+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:58.051073+00:00",
+            "phase_1_duration": 0.5620949268341064,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:58.846687+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 509,
+            "round_number": 3,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "current_round": 3,
+          "game_id": 6,
+          "request_id": "srv-19e5e9e0-42cb-4db8-b59a-5fb145ff0203",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 4 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.544823169708252,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-17a640fd-211f-4139-97c5-d4ece27971bc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:04:59.103274+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:04:59.103271+00:00",
+            "phase_1_duration": 0.544823169708252,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:04:59.890843+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 510,
+            "round_number": 4,
+            "seconds_remaining": 3599,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "current_round": 4,
+          "game_id": 6,
+          "request_id": "srv-37fc3313-37e8-435a-861a-d16edaa1755c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 5 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5785298347473145,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-48137677-facd-4253-93c8-ad2e98b9bc78",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:00.108782+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:00.108778+00:00",
+            "phase_1_duration": 0.5785298347473145,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:00.922561+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 511,
+            "round_number": 5,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "current_round": 5,
+          "game_id": 6,
+          "request_id": "srv-42560865-65e4-4ca2-a389-6e6d8d52792d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 6 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7780227661132812,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4a97cbe0-cf9e-479e-a35f-3c790e5c09d7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:01.152885+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:01.152881+00:00",
+            "phase_1_duration": 0.7780227661132812,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:02.186573+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 512,
+            "round_number": 6,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "current_round": 6,
+          "game_id": 6,
+          "request_id": "srv-e1648379-3144-49cb-9ca7-e09ab6cc49ba",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 7 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6910302639007568,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4b93ac8c-4feb-4cc0-aa32-0d272bf55ae4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:02.531572+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:02.531567+00:00",
+            "phase_1_duration": 0.6910302639007568,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:03.537695+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 513,
+            "round_number": 7,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "current_round": 7,
+          "game_id": 6,
+          "request_id": "srv-6e27b3bb-52fc-4f84-919d-7f9aa9a509f9",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 8 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.573702335357666,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-17624f6b-a868-4f60-bc69-910b296bc699",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:03.841306+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:03.841302+00:00",
+            "phase_1_duration": 0.573702335357666,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:04.702276+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 514,
+            "round_number": 8,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "current_round": 8,
+          "game_id": 6,
+          "request_id": "srv-35922ea0-00a8-4dfd-baef-1d36e8b4e05e",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 9 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5854713916778564,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6941ee0c-b05b-4408-9c2c-7df6686e9b4f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:04.956878+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:04.956874+00:00",
+            "phase_1_duration": 0.5854713916778564,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:05.835108+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 515,
+            "round_number": 9,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "current_round": 9,
+          "game_id": 6,
+          "request_id": "srv-7a50c416-1ed5-459e-a6db-3f0ae65c761c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 10 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5806913375854492,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ddb5c17e-4e91-4b1e-8d6e-e604ba36e339",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:06.098918+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:06.098914+00:00",
+            "phase_1_duration": 0.5806913375854492,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:06.945240+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 516,
+            "round_number": 10,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "current_round": 10,
+          "game_id": 6,
+          "request_id": "srv-03857a59-8b93-4c16-913f-c6f73dbf1270",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 11 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5737919807434082,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-926055ee-b5ba-4e84-822d-81ddb5962b87",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:07.176678+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:07.176675+00:00",
+            "phase_1_duration": 0.5737919807434082,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:08.039469+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 517,
+            "round_number": 11,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "current_round": 11,
+          "game_id": 6,
+          "request_id": "srv-8dbcc843-37d7-4d12-8cd3-b859d62f18fc",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 12 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5862162113189697,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-db7d58a6-a5d0-4fe8-a524-4f9e049c5e00",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:08.305254+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:08.305251+00:00",
+            "phase_1_duration": 0.5862162113189697,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:09.153813+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 518,
+            "round_number": 12,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "current_round": 12,
+          "game_id": 6,
+          "request_id": "srv-efd021c4-e772-420a-a162-d494003c2512",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 13 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6138441562652588,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-af84f0ce-25c8-4170-9e59-953df579d448",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:09.417389+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:09.417385+00:00",
+            "phase_1_duration": 0.6138441562652588,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:10.312143+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 519,
+            "round_number": 13,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "current_round": 13,
+          "game_id": 6,
+          "request_id": "srv-c51c625b-2451-4ff0-a833-36ec7fae3a44",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 14 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6244394779205322,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-642a28e2-254d-4c1d-98a1-741ebf894a67",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:10.614911+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:10.614907+00:00",
+            "phase_1_duration": 0.6244394779205322,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:11.532175+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 520,
+            "round_number": 14,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "current_round": 14,
+          "game_id": 6,
+          "request_id": "srv-ce6c198d-7b5a-42e2-b4e0-e6e0ce4ca65e",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 15 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7260167598724365,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-85ad5819-6c3f-4e04-8158-dc2772b30c72",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:11.803467+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:11.803449+00:00",
+            "phase_1_duration": 0.7260167598724365,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:12.827599+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 521,
+            "round_number": 15,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "current_round": 15,
+          "game_id": 6,
+          "request_id": "srv-fe2ea31e-7827-4a35-bf8e-d3a506323452",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 16 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6392114162445068,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-37900119-b341-437e-b132-fc126b63de81",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:13.145928+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:13.145923+00:00",
+            "phase_1_duration": 0.6392114162445068,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:14.084547+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 522,
+            "round_number": 16,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "current_round": 16,
+          "game_id": 6,
+          "request_id": "srv-8f8fd637-7008-42af-b0e5-e9c2b125eca8",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 17 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6560688018798828,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-543ea4d3-ad23-4bf4-b0d3-8f619043bc3c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:14.348227+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:14.348222+00:00",
+            "phase_1_duration": 0.6560688018798828,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:15.331068+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 523,
+            "round_number": 17,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "current_round": 17,
+          "game_id": 6,
+          "request_id": "srv-76591ef5-2ed2-4c4d-a01a-21a5eb1140b7",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 18 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.711951732635498,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-51ca58dd-4e9e-459c-a12d-13f24e5558d2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:15.624662+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:15.624657+00:00",
+            "phase_1_duration": 0.711951732635498,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:16.661293+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 524,
+            "round_number": 18,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "current_round": 18,
+          "game_id": 6,
+          "request_id": "srv-3ccb1cbd-c721-431d-b1f5-120bdbbeb5df",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 19 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.667534589767456,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0fe1e825-b8bf-4b94-be90-0bbd9091760b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:17.017552+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:17.017548+00:00",
+            "phase_1_duration": 0.667534589767456,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:17.993953+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 525,
+            "round_number": 19,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "current_round": 19,
+          "game_id": 6,
+          "request_id": "srv-83a40ffb-a514-4fe0-858b-36353f046a13",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 20 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6828153133392334,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ec1ee7de-cd49-4024-b103-ec7efa15e6c1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:18.336214+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:18.336211+00:00",
+            "phase_1_duration": 0.6828153133392334,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:19.348819+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 526,
+            "round_number": 20,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "current_round": 20,
+          "game_id": 6,
+          "request_id": "srv-ace6b9b3-92a7-4e13-89ed-50cc0a2d9bc4",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 21 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6037914752960205,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-97ba6434-f239-4431-80de-2deb12a793bc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:19.665149+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:19.665145+00:00",
+            "phase_1_duration": 0.6037914752960205,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:20.606436+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 527,
+            "round_number": 21,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "current_round": 21,
+          "game_id": 6,
+          "request_id": "srv-756e2cc1-d6c0-41b0-a519-d5a6be431932",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 22 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6232743263244629,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-14649772-af43-44ce-8793-1b4e21aef6ee",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:20.870548+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:20.870545+00:00",
+            "phase_1_duration": 0.6232743263244629,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:21.819664+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 528,
+            "round_number": 22,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "current_round": 22,
+          "game_id": 6,
+          "request_id": "srv-87bf1a1c-71db-4313-9cec-b78230f39312",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 23 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7753169536590576,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6dc7cab5-8151-488d-bea8-c502e791d1ba",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:22.120251+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:22.120247+00:00",
+            "phase_1_duration": 0.7753169536590576,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:23.200141+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 529,
+            "round_number": 23,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "current_round": 23,
+          "game_id": 6,
+          "request_id": "srv-9f6557d7-21e1-4953-9ec6-1ff27d6fe9fe",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 24 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7857952117919922,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2b58db75-62cb-444b-b456-f3de312d41ed",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:23.541542+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:23.541522+00:00",
+            "phase_1_duration": 0.7857952117919922,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:24.712927+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 530,
+            "round_number": 24,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "current_round": 24,
+          "game_id": 6,
+          "request_id": "srv-a0e5c7f8-a0f2-4c7d-aff2-13aca603503d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 25 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7530510425567627,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-6a56a71c-e913-47c5-811c-fc460beeb332",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:25.099937+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:25.099932+00:00",
+            "phase_1_duration": 0.7530510425567627,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:26.247544+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 531,
+            "round_number": 25,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "current_round": 25,
+          "game_id": 6,
+          "request_id": "srv-7290234a-636f-4e55-9bfb-70d7c92c73e1",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 26 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7773144245147705,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a2ada512-9f0c-4f97-a91b-6fb7fe694b39",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:26.645257+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:26.645253+00:00",
+            "phase_1_duration": 0.7773144245147705,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:27.783568+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 532,
+            "round_number": 26,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "current_round": 26,
+          "game_id": 6,
+          "request_id": "srv-3675d998-c173-4060-b6b9-f4503293340e",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 27 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6831870079040527,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8363e0ea-abdf-415d-b953-e3bedd1cabe9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:28.100790+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:28.100785+00:00",
+            "phase_1_duration": 0.6831870079040527,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:29.267059+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 533,
+            "round_number": 27,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "current_round": 27,
+          "game_id": 6,
+          "request_id": "srv-3e33d749-05d5-4717-95de-0aa9050916d4",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 28 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6951887607574463,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0fb77b9d-5269-4995-9197-ad45cca06257",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:29.613160+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:29.613156+00:00",
+            "phase_1_duration": 0.6951887607574463,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:30.672775+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 534,
+            "round_number": 28,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "current_round": 28,
+          "game_id": 6,
+          "request_id": "srv-e8577147-ae2e-4293-9a04-a77c6a1fe829",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 29 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7228913307189941,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9f2b9949-293c-47ca-8ff5-c2530a9b645c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:31.014389+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:31.014384+00:00",
+            "phase_1_duration": 0.7228913307189941,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:32.094986+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 535,
+            "round_number": 29,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "current_round": 29,
+          "game_id": 6,
+          "request_id": "srv-e6abd8e4-cce5-4e33-bae0-50284cd12215",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 30 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8683600425720215,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-eda0c9bf-6e01-402d-ae81-9afb78512119",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:32.544585+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:32.544580+00:00",
+            "phase_1_duration": 0.8683600425720215,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:33.828916+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 536,
+            "round_number": 30,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "current_round": 30,
+          "game_id": 6,
+          "request_id": "srv-251cc87f-f37a-489c-ab0a-9c41720d06cd",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 31 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8265268802642822,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d815ed10-8985-4b59-9df8-3dd7da78e0b5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:34.229569+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:34.229565+00:00",
+            "phase_1_duration": 0.8265268802642822,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:35.436155+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 537,
+            "round_number": 31,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "current_round": 31,
+          "game_id": 6,
+          "request_id": "srv-156107f3-ab08-46c9-a807-622ad164acae",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 32 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8269124031066895,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4d30aaa1-7404-473c-812d-c01e8d97320d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:35.870981+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:35.870976+00:00",
+            "phase_1_duration": 0.8269124031066895,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:37.166943+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 538,
+            "round_number": 32,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "current_round": 32,
+          "game_id": 6,
+          "request_id": "srv-1f1824cd-5ea1-48be-b560-7804e9f4e17a",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 33 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7232222557067871,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-91d5d689-af0a-49cf-84ad-5fbb92a7a73d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:37.582755+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:37.582750+00:00",
+            "phase_1_duration": 0.7232222557067871,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:38.669623+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 539,
+            "round_number": 33,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "current_round": 33,
+          "game_id": 6,
+          "request_id": "srv-06258b69-604e-440e-afea-4b3fc33cc74c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 34 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7022991180419922,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-2ae51e84-8732-4694-b8ff-0f5efbf7a540",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:39.017792+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:39.017787+00:00",
+            "phase_1_duration": 0.7022991180419922,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:40.093887+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 540,
+            "round_number": 34,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "current_round": 34,
+          "game_id": 6,
+          "request_id": "srv-f6a18795-1103-40a0-8f18-ccb8784b1844",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 35 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8034942150115967,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1b2a3f50-554b-4d50-850f-e8bbb23abda9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:40.433643+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:40.433640+00:00",
+            "phase_1_duration": 0.8034942150115967,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:41.647277+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 541,
+            "round_number": 35,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "current_round": 35,
+          "game_id": 6,
+          "request_id": "srv-5b7d2b35-8a25-4360-ba52-db2713602f20",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 36 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8702883720397949,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0562d536-893b-40f5-a59a-84abfb9e1362",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:42.085429+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:42.085425+00:00",
+            "phase_1_duration": 0.8702883720397949,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:43.420790+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 542,
+            "round_number": 36,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "current_round": 36,
+          "game_id": 6,
+          "request_id": "srv-94d7fa1b-955f-4a01-8f91-0783c0aa5eda",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 37 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8206536769866943,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-035a9ad4-7fa3-4746-9bd8-ec4037c50cab",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:43.825787+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:43.825783+00:00",
+            "phase_1_duration": 0.8206536769866943,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:45.078829+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 543,
+            "round_number": 37,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "current_round": 37,
+          "game_id": 6,
+          "request_id": "srv-8b6536db-8831-4351-a582-b3e97435a451",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 38 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7025458812713623,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-875a897b-c14a-475b-b369-6cf66c73133f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:45.510444+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:45.510440+00:00",
+            "phase_1_duration": 0.7025458812713623,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:46.663145+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 544,
+            "round_number": 38,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "current_round": 38,
+          "game_id": 6,
+          "request_id": "srv-0fe90973-22e3-4d28-924f-2e1f3f02e811",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 39 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7625515460968018,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f30ab8e7-4319-46ae-aa24-164be448ca3e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:47.022360+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:47.022356+00:00",
+            "phase_1_duration": 0.7625515460968018,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:48.163689+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 545,
+            "round_number": 39,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "current_round": 39,
+          "game_id": 6,
+          "request_id": "srv-1bb41d6a-0ba8-478e-a5f3-cb9de840a141",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 40 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.752030611038208,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9217299c-3278-4670-a28a-f690dbf21bc2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:48.562233+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:48.562229+00:00",
+            "phase_1_duration": 0.752030611038208,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:49.838985+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 546,
+            "round_number": 40,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "current_round": 40,
+          "game_id": 6,
+          "request_id": "srv-d57f5c2c-dfc8-4894-a538-8d733d69e1ca",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 41 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8221886157989502,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9642bdb7-e1db-40e1-8240-609374a83a27",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:50.255442+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:50.255436+00:00",
+            "phase_1_duration": 0.8221886157989502,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:51.484467+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 547,
+            "round_number": 41,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "current_round": 41,
+          "game_id": 6,
+          "request_id": "srv-047b0fb2-49d1-4286-9823-d003123c83a9",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 42 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8177773952484131,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7020dfab-d6c2-46d0-81cc-b828536ec3b6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:51.911041+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:51.911037+00:00",
+            "phase_1_duration": 0.8177773952484131,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:53.107199+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 548,
+            "round_number": 42,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "current_round": 42,
+          "game_id": 6,
+          "request_id": "srv-cf9c7c83-5c12-44de-8a83-994830944482",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 43 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7627780437469482,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-439432e0-adbf-42b4-a8d2-acbbcc25a493",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:53.551048+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:53.551046+00:00",
+            "phase_1_duration": 0.7627780437469482,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:54.750122+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 549,
+            "round_number": 43,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "current_round": 43,
+          "game_id": 6,
+          "request_id": "srv-47d3b5d8-5a3e-4aa3-a0d4-56d6272b1a56",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 44 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7871477603912354,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-68e6f017-aafa-42cc-951a-bf1cc2e02b78",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:55.146253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:55.146249+00:00",
+            "phase_1_duration": 0.7871477603912354,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:56.332668+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 550,
+            "round_number": 44,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "current_round": 44,
+          "game_id": 6,
+          "request_id": "srv-aa2c6fc2-ebed-4c35-bc83-8f4b405e741d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 45 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.758094310760498,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f5b62977-d5b9-479f-9318-3966306f8e79",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:56.747610+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:56.747606+00:00",
+            "phase_1_duration": 0.758094310760498,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:57.891381+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 551,
+            "round_number": 45,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "current_round": 45,
+          "game_id": 6,
+          "request_id": "srv-9b1f705e-3a77-4e45-9d5f-33b0f482fb85",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 46 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8575470447540283,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-cc0bf1f3-bf85-4c82-8413-2b4229ebfa2d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:05:58.329387+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:05:58.329381+00:00",
+            "phase_1_duration": 0.8575470447540283,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:05:59.653285+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 552,
+            "round_number": 46,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "current_round": 46,
+          "game_id": 6,
+          "request_id": "srv-c8a0fe87-46b4-4fdb-a841-040eceba9ae4",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 47 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8153572082519531,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-afa08c56-52d3-489c-bdac-03e48b7f5fc2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:00.066661+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:00.066656+00:00",
+            "phase_1_duration": 0.8153572082519531,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:01.335479+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 553,
+            "round_number": 47,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "current_round": 47,
+          "game_id": 6,
+          "request_id": "srv-b41dc47c-0fb6-4617-9203-3c6ec188151d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 48 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9406337738037109,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1c3613d1-4597-4855-ba3f-0b8ec39c62d7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:01.762973+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:01.762969+00:00",
+            "phase_1_duration": 0.9406337738037109,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:03.203661+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 554,
+            "round_number": 48,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "current_round": 48,
+          "game_id": 6,
+          "request_id": "srv-ee0913de-a0cb-4393-b9df-443986d757e4",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 49 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7048053741455078,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7c315cac-2710-4fec-92e4-d88bfc385639",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:03.683810+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:03.683804+00:00",
+            "phase_1_duration": 0.7048053741455078,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:04.841691+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 555,
+            "round_number": 49,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "current_round": 49,
+          "game_id": 6,
+          "request_id": "srv-f78f3b94-eecb-4f6a-811a-34a307ffe673",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 50 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7360184192657471,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-cb42bbf6-0bb2-41d4-ba96-ea47803d2ea1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:05.244345+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:05.244341+00:00",
+            "phase_1_duration": 0.7360184192657471,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:06.496555+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 556,
+            "round_number": 50,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "current_round": 50,
+          "game_id": 6,
+          "request_id": "srv-27f17617-84db-4d68-b7fa-7b49cc50f06b",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 51 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7716355323791504,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-31d18986-b7a1-41ff-8989-5ae0538b6dbe",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:07.117763+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:07.117759+00:00",
+            "phase_1_duration": 0.7716355323791504,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:08.276884+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 557,
+            "round_number": 51,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "current_round": 51,
+          "game_id": 6,
+          "request_id": "srv-1f047982-756c-44f9-8ed7-d1c439fa1df5",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 52 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7052633762359619,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-06742fc2-0163-4bcc-8a8b-e06b2235454e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:08.695408+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:08.695404+00:00",
+            "phase_1_duration": 0.7052633762359619,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:09.798768+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 558,
+            "round_number": 52,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "current_round": 52,
+          "game_id": 6,
+          "request_id": "srv-1389783f-ba45-46c6-9c51-21435eb7001e",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 53 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.809128999710083,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ccd08b7c-54aa-4d72-a06d-c8553678aaaa",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:10.210223+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:10.210217+00:00",
+            "phase_1_duration": 0.809128999710083,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:11.420375+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 559,
+            "round_number": 53,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "current_round": 53,
+          "game_id": 6,
+          "request_id": "srv-a4acb692-4acb-4683-bb2f-8db60cf1395f",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 54 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.784188985824585,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-ef8af7e1-137e-43ba-8f73-b2cdb56bc121",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:11.828026+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:11.828022+00:00",
+            "phase_1_duration": 0.784188985824585,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:13.010631+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 560,
+            "round_number": 54,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "current_round": 54,
+          "game_id": 6,
+          "request_id": "srv-a6d075fb-b7da-43ae-8154-baefc4f5a2d2",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 55 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7127163410186768,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c63b54c5-5b21-4431-aaae-91a25d3f9244",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:13.384124+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:13.384122+00:00",
+            "phase_1_duration": 0.7127163410186768,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:14.507546+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 561,
+            "round_number": 55,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "current_round": 55,
+          "game_id": 6,
+          "request_id": "srv-92460fb1-aa2f-47d1-8f5f-c88fe97cbf3c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 56 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7163889408111572,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e8805440-e6f1-48ed-a8b2-3f2845da3470",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:14.883449+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:14.883445+00:00",
+            "phase_1_duration": 0.7163889408111572,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:15.970196+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 562,
+            "round_number": 56,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "current_round": 56,
+          "game_id": 6,
+          "request_id": "srv-4299d781-c4ed-465a-ab48-b913fd470d54",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 57 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6945245265960693,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8ef8cebb-4e92-42ef-b3e4-16256c66ef6c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:16.354566+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:16.354549+00:00",
+            "phase_1_duration": 0.6945245265960693,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:17.485261+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 563,
+            "round_number": 57,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "current_round": 57,
+          "game_id": 6,
+          "request_id": "srv-e401e0e3-ec3a-46a0-86fd-70c19389393a",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 58 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7103877067565918,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f50ca51c-c116-47c2-bec5-3fca38dd617a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:17.845008+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:17.845004+00:00",
+            "phase_1_duration": 0.7103877067565918,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:19.044271+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 564,
+            "round_number": 58,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "current_round": 58,
+          "game_id": 6,
+          "request_id": "srv-75d88ccf-6eec-4d62-a4b1-f620c1f868ee",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 59 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8435192108154297,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-51712e6c-fb89-4c25-b98c-688a03f177e0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:19.474347+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:19.474341+00:00",
+            "phase_1_duration": 0.8435192108154297,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:20.781255+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 565,
+            "round_number": 59,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "current_round": 59,
+          "game_id": 6,
+          "request_id": "srv-965c75f7-70af-4ae0-9f6b-71228a42dc57",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 60 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7240505218505859,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-eba46b34-3bdd-4697-827c-46fdcebe5ceb",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:21.166286+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:21.166282+00:00",
+            "phase_1_duration": 0.7240505218505859,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:22.291460+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 566,
+            "round_number": 60,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "current_round": 60,
+          "game_id": 6,
+          "request_id": "srv-3f338bbf-2de6-49dd-9271-ec6e8100d4a3",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 61 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7315919399261475,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b119c601-d397-4393-a328-76cc6cfe8d7e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:22.734442+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:22.734437+00:00",
+            "phase_1_duration": 0.7315919399261475,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:23.949587+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 567,
+            "round_number": 61,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "current_round": 61,
+          "game_id": 6,
+          "request_id": "srv-936b3718-82b7-4de4-a9de-ac6c0f2f1e98",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 62 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8131356239318848,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f01c3074-ad95-4ed0-b448-f770f6ad8301",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:24.397875+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:24.397870+00:00",
+            "phase_1_duration": 0.8131356239318848,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:25.677001+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 568,
+            "round_number": 62,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "current_round": 62,
+          "game_id": 6,
+          "request_id": "srv-8525fb60-1b32-4a39-8b0d-834ba998ea2b",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 63 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7495551109313965,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9750c4cd-af81-4fa4-a938-23d997d8bb7e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:26.138216+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:26.138211+00:00",
+            "phase_1_duration": 0.7495551109313965,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:27.333541+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 569,
+            "round_number": 63,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "current_round": 63,
+          "game_id": 6,
+          "request_id": "srv-6c689134-d8df-4c89-b4b4-f0a9ede885ce",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 64 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9331791400909424,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7e89d0b0-c90a-443e-82cf-346f1107e555",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:27.759311+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:27.759308+00:00",
+            "phase_1_duration": 0.9331791400909424,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:29.126235+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 570,
+            "round_number": 64,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "current_round": 64,
+          "game_id": 6,
+          "request_id": "srv-53dc1ec7-e754-48b6-af08-88fa792b1c74",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 65 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7095715999603271,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-fe69c6c4-348b-4576-b900-f548b156551d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:29.567753+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:29.567751+00:00",
+            "phase_1_duration": 0.7095715999603271,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:30.824889+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 571,
+            "round_number": 65,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "current_round": 65,
+          "game_id": 6,
+          "request_id": "srv-a78ae46d-11a3-4fbc-8497-20faa3512048",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 66 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8115246295928955,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c419e784-4d69-430e-ab29-42525ff97344",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:31.282792+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:31.282788+00:00",
+            "phase_1_duration": 0.8115246295928955,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:32.531872+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 572,
+            "round_number": 66,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "current_round": 66,
+          "game_id": 6,
+          "request_id": "srv-d72a4603-6725-4b80-916a-c87858a5ce76",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 67 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8532247543334961,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9fbf2ed3-c377-4cc8-8fa0-456b5c427323",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:33.037902+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:33.037899+00:00",
+            "phase_1_duration": 0.8532247543334961,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:34.369096+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 573,
+            "round_number": 67,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "current_round": 67,
+          "game_id": 6,
+          "request_id": "srv-175bfcef-6f49-42a1-85f5-22f4e6f3f704",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 68 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7716124057769775,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3337cc07-5a40-4865-a0c0-5741ff068e04",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:34.831985+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:34.831980+00:00",
+            "phase_1_duration": 0.7716124057769775,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:36.064485+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 574,
+            "round_number": 68,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "current_round": 68,
+          "game_id": 6,
+          "request_id": "srv-7eedb8ae-208a-4c4d-8a98-a6bb7fae8a03",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 69 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8809401988983154,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b5f00b67-49df-469e-b5e5-72d849f1b90a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:36.523794+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:36.523789+00:00",
+            "phase_1_duration": 0.8809401988983154,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:37.840833+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 575,
+            "round_number": 69,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "current_round": 69,
+          "game_id": 6,
+          "request_id": "srv-abb7bf90-f616-4d0f-af07-2709bb2e871d",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 70 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7498180866241455,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-788448e9-b985-452a-a648-afe7c69fb2a0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:38.316123+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:38.316119+00:00",
+            "phase_1_duration": 0.7498180866241455,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:39.536034+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 576,
+            "round_number": 70,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "current_round": 70,
+          "game_id": 6,
+          "request_id": "srv-34100798-e09e-42fa-98f4-b95a04feb76c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 71 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8156321048736572,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-bd2f2c7c-1d0d-4bfd-a5e6-38e06873b583",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:39.980269+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:39.980266+00:00",
+            "phase_1_duration": 0.8156321048736572,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:41.392014+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 577,
+            "round_number": 71,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "current_round": 71,
+          "game_id": 6,
+          "request_id": "srv-cc2008bb-2c58-421d-84fe-063d5bf689e4",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 72 processed in 1.0s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.955683708190918,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-96528306-b251-4a18-b052-56bad9f516d1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:41.840112+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:41.840109+00:00",
+            "phase_1_duration": 0.955683708190918,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:43.308890+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 578,
+            "round_number": 72,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "current_round": 72,
+          "game_id": 6,
+          "request_id": "srv-69c64ab8-1bfa-4298-b47f-ee6dbf22e62c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 73 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7856543064117432,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5a4c8999-d015-4bbf-9730-572ff6ac892a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:43.757058+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:43.757055+00:00",
+            "phase_1_duration": 0.7856543064117432,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:45.047825+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 579,
+            "round_number": 73,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "current_round": 73,
+          "game_id": 6,
+          "request_id": "srv-1e5d83d1-4148-416b-a64c-f5feac6dc41b",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 74 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7904567718505859,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-c57ebff0-7b17-47ef-bc2e-a0008af9bec8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:45.533018+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:45.533015+00:00",
+            "phase_1_duration": 0.7904567718505859,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:46.853200+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 580,
+            "round_number": 74,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "current_round": 74,
+          "game_id": 6,
+          "request_id": "srv-f3aba2fe-c5d1-4214-90ca-2d1d27c85913",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 75 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7588791847229004,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-d6d6942d-0e02-422e-baa3-8591ee3bc63b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:47.288639+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:47.288635+00:00",
+            "phase_1_duration": 0.7588791847229004,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:48.517003+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 581,
+            "round_number": 75,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "current_round": 75,
+          "game_id": 6,
+          "request_id": "srv-486ea37c-8ca3-49d1-ad3c-4c0498996124",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 76 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7950420379638672,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-1bcb1677-8bd2-42ee-9442-dddc076d256c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:48.987425+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:48.987422+00:00",
+            "phase_1_duration": 0.7950420379638672,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:50.264672+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 582,
+            "round_number": 76,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "current_round": 76,
+          "game_id": 6,
+          "request_id": "srv-5625d734-4474-4d4e-ab69-6b80c9d0b4b7",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 77 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8247570991516113,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-502cd348-83f0-462f-b940-975ec5afede5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:50.716627+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:50.716623+00:00",
+            "phase_1_duration": 0.8247570991516113,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:52.166627+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 583,
+            "round_number": 77,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "current_round": 77,
+          "game_id": 6,
+          "request_id": "srv-adf0d3df-4456-4175-a2eb-6c601e408b7f",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 78 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8662989139556885,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-32aa809c-e406-47ff-9233-6bee598c8d2d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:52.618518+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:52.618514+00:00",
+            "phase_1_duration": 0.8662989139556885,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:54.053529+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 584,
+            "round_number": 78,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "current_round": 78,
+          "game_id": 6,
+          "request_id": "srv-c19cdefc-1ab6-484b-921a-ab45b8264e65",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 79 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7974822521209717,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-aa24b69a-4eda-416c-8cce-30b721de7d81",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:54.574450+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:54.574443+00:00",
+            "phase_1_duration": 0.7974822521209717,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:55.908289+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 585,
+            "round_number": 79,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "current_round": 79,
+          "game_id": 6,
+          "request_id": "srv-1f27e3a2-34cc-469b-87ea-be5dabd15049",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 80 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7780897617340088,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-92ec17b2-9358-4f26-a7e1-41e0ba550c17",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:56.386113+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:56.386109+00:00",
+            "phase_1_duration": 0.7780897617340088,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:57.638675+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 586,
+            "round_number": 80,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "current_round": 80,
+          "game_id": 6,
+          "request_id": "srv-36a53d50-174d-4910-ad24-a4fb3a01f3fa",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 81 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8019251823425293,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-85b318ac-cf04-4fb5-861b-51f6cc92c29b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:58.120541+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:58.120538+00:00",
+            "phase_1_duration": 0.8019251823425293,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:06:59.424015+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 587,
+            "round_number": 81,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "current_round": 81,
+          "game_id": 6,
+          "request_id": "srv-fda265cb-b104-4ca9-a367-1d9ca0649d2c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 82 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8593530654907227,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-25d27ada-376d-46d9-8b1e-535afd30e7e5",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:06:59.924192+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:06:59.924189+00:00",
+            "phase_1_duration": 0.8593530654907227,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:01.290524+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 588,
+            "round_number": 82,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "current_round": 82,
+          "game_id": 6,
+          "request_id": "srv-d9ca5a1e-e897-45dd-aa51-18678bb083b9",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 83 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.92610764503479,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a2c7029e-cc56-4b57-a4f3-b59266fefb97",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:01.853754+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:01.853750+00:00",
+            "phase_1_duration": 0.92610764503479,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:03.476068+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 589,
+            "round_number": 83,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "current_round": 83,
+          "game_id": 6,
+          "request_id": "srv-d0672a0a-313d-43e3-a7a7-4861b9439c44",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 84 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7818737030029297,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-03c3662b-2f0e-4d4b-a1ff-940c50c7999b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:04.050289+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:04.050284+00:00",
+            "phase_1_duration": 0.7818737030029297,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:05.304334+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 590,
+            "round_number": 84,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "current_round": 84,
+          "game_id": 6,
+          "request_id": "srv-c2a55cff-7caa-4f22-bc09-46b7db12ccd0",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 85 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.769207239151001,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-786f66d2-cdf9-4236-9821-0f7eae11136b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:05.762075+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:05.762072+00:00",
+            "phase_1_duration": 0.769207239151001,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:07.008732+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 591,
+            "round_number": 85,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "current_round": 85,
+          "game_id": 6,
+          "request_id": "srv-64939ef0-85d2-4e7f-97ee-4d4ddd6e6894",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 86 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9040956497192383,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-176d3e1d-8b92-4fad-b925-95dfe2d6d35e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:07.482417+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:07.482414+00:00",
+            "phase_1_duration": 0.9040956497192383,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:08.862727+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 592,
+            "round_number": 86,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "current_round": 86,
+          "game_id": 6,
+          "request_id": "srv-53e7b481-4b2a-43ee-b88d-04af61bd61b1",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 87 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.804396390914917,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5c72607e-a667-41d9-a51c-430e821b8c30",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:09.370867+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:09.370827+00:00",
+            "phase_1_duration": 0.804396390914917,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:10.704992+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 593,
+            "round_number": 87,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "current_round": 87,
+          "game_id": 6,
+          "request_id": "srv-74c414ea-7572-459e-a7c4-b6ab5a8a09b6",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 88 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9034228324890137,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0bb6e6e4-ec8b-4b40-b565-d13190ca0e1a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:11.206113+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:11.206096+00:00",
+            "phase_1_duration": 0.9034228324890137,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:12.793230+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 594,
+            "round_number": 88,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "current_round": 88,
+          "game_id": 6,
+          "request_id": "srv-03dbfa9f-9942-4184-a838-24e6f412e9f7",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 89 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8225622177124023,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9e4bd5d8-d6af-4eb3-a5c9-96f2e71b1f0c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:13.262943+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:13.262938+00:00",
+            "phase_1_duration": 0.8225622177124023,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:14.600103+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 595,
+            "round_number": 89,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "current_round": 89,
+          "game_id": 6,
+          "request_id": "srv-30597402-8e7d-4d71-9cf9-96f7c9d0fefe",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 90 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8247768878936768,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-f48a02b4-949b-436d-95ac-7335fd973932",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:15.089380+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:15.089377+00:00",
+            "phase_1_duration": 0.8247768878936768,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:16.426204+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 596,
+            "round_number": 90,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "current_round": 90,
+          "game_id": 6,
+          "request_id": "srv-8e5d3bd9-2525-4fb2-bfbd-1a3125fa534f",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 91 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8335752487182617,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-005fba48-19e5-4d0a-b2b9-b591522b012f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:16.995558+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:16.995551+00:00",
+            "phase_1_duration": 0.8335752487182617,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:18.482498+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 597,
+            "round_number": 91,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "current_round": 91,
+          "game_id": 6,
+          "request_id": "srv-354e34d0-cee9-4281-8d27-ba8425a7160b",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 92 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9178681373596191,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e5c7773f-db44-4a79-8d3c-e3d0afa44dbb",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:18.971464+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:18.971460+00:00",
+            "phase_1_duration": 0.9178681373596191,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:20.430511+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 598,
+            "round_number": 92,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "current_round": 92,
+          "game_id": 6,
+          "request_id": "srv-b3cb5c48-a882-4503-a9e8-6cb6bb65f1e9",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 93 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.775571346282959,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-7be34076-fee3-4ea1-950d-5a512b222795",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:20.930059+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:20.930043+00:00",
+            "phase_1_duration": 0.775571346282959,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:22.264085+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 599,
+            "round_number": 93,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "current_round": 93,
+          "game_id": 6,
+          "request_id": "srv-006ead1b-f556-4fe4-96e7-f51ba7607a2a",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 94 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8798604011535645,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-0aa82a04-2b8e-4142-8abf-336edaff78cd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:22.939238+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:22.939235+00:00",
+            "phase_1_duration": 0.8798604011535645,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:24.361863+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 600,
+            "round_number": 94,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "current_round": 94,
+          "game_id": 6,
+          "request_id": "srv-7014b0bd-28fe-4807-949c-c71d68427708",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 95 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9078726768493652,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-4150fead-8f71-4cdf-ad53-d7c8bd493e9f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:24.890236+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:24.890232+00:00",
+            "phase_1_duration": 0.9078726768493652,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:26.390507+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 601,
+            "round_number": 95,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "current_round": 95,
+          "game_id": 6,
+          "request_id": "srv-00469235-ea39-42c8-845e-75712cf43e31",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 96 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9009749889373779,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b641bdb0-686f-40fa-983a-2b0dbe0343bd",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:26.906577+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:26.906574+00:00",
+            "phase_1_duration": 0.9009749889373779,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:28.379714+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 602,
+            "round_number": 96,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "current_round": 96,
+          "game_id": 6,
+          "request_id": "srv-123b9717-b03e-4cff-8bf2-acdb86f583b2",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 97 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.9466562271118164,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-3afb69f8-a719-464d-bea7-9435503fffa9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:28.950763+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:28.950759+00:00",
+            "phase_1_duration": 0.9466562271118164,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:30.593584+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 603,
+            "round_number": 97,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "current_round": 97,
+          "game_id": 6,
+          "request_id": "srv-31723025-da6f-4a66-a640-3253f358a673",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 98 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8693826198577881,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-5edcea3c-da1f-4561-9a80-e18d61f386ca",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:31.143446+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:31.143443+00:00",
+            "phase_1_duration": 0.8693826198577881,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:32.540078+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 604,
+            "round_number": 98,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "current_round": 98,
+          "game_id": 6,
+          "request_id": "srv-2eef8519-e6d6-4cc8-ae59-25407248f45c",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 99 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8840031623840332,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-eba8962c-d84d-41fa-8831-86440dcaba1b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:33.268245+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:33.268240+00:00",
+            "phase_1_duration": 0.8840031623840332,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:34.723245+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 605,
+            "round_number": 99,
+            "seconds_remaining": 3597,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "current_round": 99,
+          "game_id": 6,
+          "request_id": "srv-dcba3afc-97b6-4724-8268-513b5b8186b9",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Round 100 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8868114948272705,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-b6c789f7-2161-4fdc-a4e8-acc70bc3b45f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:35.289845+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:35.289841+00:00",
+            "phase_1_duration": 0.8868114948272705,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:36.710556+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 606,
+            "round_number": 100,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "current_round": 100,
+          "game_id": 6,
+          "request_id": "srv-09eb75e1-a493-484d-840b-78c987582c78",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Round 101 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8430097103118896,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-a9b9f52b-80c2-44e7-8445-94702763d058",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T13:07:37.259862+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T12:07:37.259857+00:00",
+            "phase_1_duration": 0.8430097103118896,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T12:07:38.696420+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 607,
+            "round_number": 101,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "current_round": 101,
+          "game_id": 6,
+          "request_id": "srv-974c44df-a2f0-487d-b483-8401604770de",
+          "status": "paused"
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    }
+  ]
+}
