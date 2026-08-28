@@ -275,3 +275,93 @@ def _is_team_member(user_id, team_id):
     return TeamMember.objects.filter(
         team_id=team_id, user_id=user_id,
     ).exists()
+
+
+class SensitiveReadLogMiddleware:
+    """Record every read of a team's raw decisions or of an audit payload.
+
+    Matching is done on the resolved route pattern against
+    `core.services.read_inventory`, not on a list of paths kept here. A view
+    added later that serves decision rows appears in the inventory the moment
+    it is registered, which fails the coverage test until it is either logged
+    or exempted on the record — the same shape as the mutating-route boundary.
+
+    Nothing about the response body is stored. The claim this table has to
+    answer is "who looked at our decisions", and copying the decisions into a
+    second table in order to investigate their disclosure would be a strange
+    way to protect them. Tokens and headers are likewise never recorded.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self._routes = None
+
+    def _sensitive(self, route):
+        if self._routes is None:
+            from core.services.read_inventory import sensitive_routes
+            self._routes = {row['route']: row['category']
+                            for row in sensitive_routes() if row['logged']}
+        return self._routes.get(route)
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        try:
+            self._record(request, response)
+        except Exception as e:
+            # A read that cannot be logged is still a read that happened; the
+            # gap is visible in the log rather than as a 500 for the caller.
+            logger.warning('Sensitive read logging failed for %s: %s',
+                           getattr(request, 'path', '?'), e)
+        return response
+
+    def _record(self, request, response):
+        match = getattr(request, 'resolver_match', None)
+        if match is None or (request.method or '').upper() != 'GET':
+            return
+        category = self._sensitive(match.route)
+        if category is None:
+            return
+
+        from core.models import SensitiveReadEvent
+        from core.services.lifecycle import request_id_for
+        from core.utils.auth_context import get_request_user_id
+
+        status = getattr(response, 'status_code', 0)
+        outcome = ('allowed' if status < 400
+                   else 'denied' if status in (401, 403, 404) else 'error')
+        user_id = None
+        username = ''
+        try:
+            user_id = get_request_user_id(request)
+            if user_id is not None:
+                from core.models import User
+                username = (User.objects.filter(pk=user_id)
+                            .values_list('username', flat=True).first() or '')
+        except Exception:
+            # An unidentifiable caller is recorded as one, not dropped.
+            pass
+
+        SensitiveReadEvent.objects.create(
+            actor_user_id=user_id,
+            username=username,
+            game_id_read=_as_int(match.kwargs.get('game_id')),
+            team_id_read=_as_int(match.kwargs.get('team_id')),
+            round_number_read=_as_int(
+                match.kwargs.get('round_number')
+                or request.GET.get('round_number')
+                or request.GET.get('round')),
+            category=category,
+            route=match.route[:255],
+            endpoint=(request.path or '')[:255],
+            method='GET',
+            status_code=status,
+            outcome=outcome,
+            request_id=request_id_for(request),
+        )
+
+
+def _as_int(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None

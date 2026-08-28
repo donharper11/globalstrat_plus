@@ -11,6 +11,19 @@ def canonical_hash(payload):
     return hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
 
+def _schedule_seal():
+    """Chain the new row once its transaction commits.
+
+    Deliberately after commit, not inside the write: the seal takes a global
+    advisory lock, and taking it underneath the operator lifecycle locks would
+    invert a lock order that GSP-CRV2-02 certified. A rejected operator action
+    rolls back its attempt but records its refusal in a later transaction, so
+    both rows reach the chain by the same route.
+    """
+    from core.services.audit_chain import schedule_seal
+    schedule_seal()
+
+
 class DecisionAuditEvent(models.Model):
     game = models.ForeignKey('core.Game', on_delete=models.PROTECT)
     team = models.ForeignKey('core.Team', on_delete=models.PROTECT)
@@ -33,7 +46,9 @@ class DecisionAuditEvent(models.Model):
             raise ValueError('DecisionAuditEvent records are immutable.')
         if not self.payload_sha256:
             self.payload_sha256 = canonical_hash(self.payload)
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        _schedule_seal()
+        return result
 
 
 class OperatorAuditEvent(models.Model):
@@ -67,7 +82,9 @@ class OperatorAuditEvent(models.Model):
     def save(self, *args, **kwargs):
         if self.pk:
             raise ValueError('OperatorAuditEvent records are immutable.')
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        _schedule_seal()
+        return result
 
 
 class ResolutionManifest(models.Model):

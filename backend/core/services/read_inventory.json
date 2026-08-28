@@ -1,0 +1,482 @@
+{
+  "audit_models": [
+    "DecisionAuditEvent",
+    "OperatorAuditEvent",
+    "ResolutionManifest"
+  ],
+  "audit_routes": 2,
+  "decision_models": [
+    "CustomsClassificationDecision",
+    "Decision",
+    "DecisionAcquisition",
+    "DecisionBudgetAllocation",
+    "DecisionChangeLog",
+    "DecisionESG",
+    "DecisionEventResponse",
+    "DecisionFinancing",
+    "DecisionMarketEntry",
+    "DecisionMarketing",
+    "DecisionPartnership",
+    "DecisionPlant",
+    "DecisionPlatformDevelopment",
+    "DecisionProductCreate",
+    "DecisionProductRetire",
+    "DecisionRDInvestment",
+    "DecisionResearchAllocation",
+    "DecisionSubmission",
+    "DecisionTalent",
+    "FXHedgeDecision",
+    "IncotermsDecision",
+    "InventoryDecision",
+    "LogisticsDecision",
+    "SourcingDecision",
+    "TradeFinanceDecision"
+  ],
+  "decision_routes": 29,
+  "exempt": 1,
+  "logged": 30,
+  "routes": [
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "Decision"
+      ],
+      "route": "api/^decisions/$",
+      "view": "programs.DecisionViewSet"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "Decision"
+      ],
+      "route": "api/^decisions/(?P<pk>[^/.]+)/$",
+      "view": "programs.DecisionViewSet"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "Decision"
+      ],
+      "route": "api/^decisions/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "view": "programs.DecisionViewSet"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "Decision"
+      ],
+      "route": "api/^decisions\\.(?P<format>[a-z0-9]+)/?$",
+      "view": "programs.DecisionViewSet"
+    },
+    {
+      "category": "audit",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionAuditEvent",
+        "Decision",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/instructor/dashboard/",
+      "view": "results_api.InstructorDashboardView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "InventoryDecision",
+        "SourcingDecision"
+      ],
+      "route": "api/games/<int:game_id>/instructor/sc-panel/",
+      "view": "instructor_sc.InstructorSCPanelView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/instructor/team-config/",
+      "view": "team_config.InstructorTeamConfigView"
+    },
+    {
+      "category": "audit",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionAuditEvent",
+        "DecisionBudgetAllocation",
+        "DecisionESG",
+        "DecisionFinancing",
+        "DecisionMarketEntry",
+        "DecisionMarketing",
+        "DecisionPlatformDevelopment",
+        "DecisionRDInvestment",
+        "DecisionSubmission",
+        "DecisionTalent"
+      ],
+      "route": "api/games/<int:game_id>/instructor/teams/<int:team_id>/decisions/",
+      "view": "results_api.InstructorTeamDecisionsView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "Reads OperatorAuditEvent only to count operator actions for the round-status block. No audit row, payload or decision is serialized; the lifecycle boundary already records the writes it reports.",
+      "logged": false,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/round-control/",
+      "view": "round_control.RoundControlView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionChangeLog"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/changes/",
+      "view": "instructor_alerts.TeamChangesView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionBudgetAllocation",
+        "DecisionESG",
+        "DecisionFinancing",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/finance/",
+      "view": "decisions.FinanceContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/governance/",
+      "view": "cc31j_views.GovernanceContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionBudgetAllocation",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/marketing/",
+      "view": "decisions.MarketingContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/products/",
+      "view": "decisions.ProductContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/rd/",
+      "view": "decisions.RDContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionBudgetAllocation",
+        "DecisionESG",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/strategy/",
+      "view": "decisions.StrategyContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/talent-allocation/",
+      "view": "cc31_views.TalentAllocationContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission",
+        "DecisionTalent"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/talent/",
+      "view": "decisions.TalentContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/",
+      "view": "decisions.DecisionSubmissionView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "Decision",
+        "DecisionBudgetAllocation",
+        "DecisionESG",
+        "DecisionFinancing",
+        "DecisionSubmission",
+        "FXHedgeDecision",
+        "InventoryDecision",
+        "LogisticsDecision",
+        "TradeFinanceDecision"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/summary/",
+      "view": "decisions.DecisionSummaryView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionEventResponse",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/events/active/",
+      "view": "views.ActiveEventsView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionEventResponse",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/events/history/",
+      "view": "views.EventHistoryView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/financial-reports/strategic-impact/",
+      "view": "strategic_impact.StrategicImpactView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionBudgetAllocation",
+        "DecisionFinancing",
+        "DecisionMarketEntry",
+        "DecisionMarketing",
+        "DecisionRDInvestment",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/forecast/",
+      "view": "cc15_views.ForecastView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/markets/<str:market_code>/localization/",
+      "view": "cc31_views.MarketLocalizationView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionMarketing",
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/research/reports/<str:report_type>/",
+      "view": "research_reports.ResearchReportsView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "InventoryDecision"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/inventory/",
+      "view": "sc_views.InventoryView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "CustomsClassificationDecision",
+        "IncotermsDecision",
+        "LogisticsDecision"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/logistics/",
+      "view": "sc_views.LogisticsView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "SourcingDecision"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sourcing/",
+      "view": "sc_views.SourcingView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "FXHedgeDecision",
+        "TradeFinanceDecision"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/trade-finance/",
+      "view": "sc_views.TradeFinanceView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/ticker/",
+      "view": "cc31h_views.TickerView"
+    }
+  ],
+  "total_sensitive_routes": 31
+}

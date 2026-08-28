@@ -11,9 +11,22 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-004 | Concurrent operator actions | P0 | Reopen, deadline change, and advance did not share the row-lock transaction used by close/process. Tracing the routes found the problem was wider: several endpoints read the round's status outside any lock and met the conflict inside the engine, where it surfaced as a 500 or a second resolution. | Compare the pre-repair `RoundProcessView` (unlocked status read, blanket `except Exception` → 500) and `InstructorExtendDeadlineView` (no lock, no transaction, silently reopened a closed round). | **Closed** — see closure entry below |
 | V2-005 | Failure visibility | P1 | A Phase-1 exception rolled back `PROCESSING`; `_mark_failed()` then required the rolled-back value, leaving no FAILED indicator. | Injected disk-full exception now leaves `Round.processing_status=FAILED`; focused and full suites pass. | Repaired |
 | V2-006 | Backend restart / narrative | P1 | Phase 2 runs only in a daemon thread. A worker restart can silently abandon it; no durable queued job or startup retry exists, and an abrupt process death cannot populate `narrative_error`. Numeric results remain valid, but operator visibility/recovery is incomplete. | Process a round, terminate the worker after Phase 2 dispatch and before completion, restart, then inspect `narrative_generated`, `narrative_error`, and logs. | **Closed** — see closure entry below |
-| V2-007 | Audit integrity | P1 | Audit models reject a second `.save()`, but queryset `.update()`/`.delete()` and direct SQL can alter them. The database does not enforce append-only history, so stored data alone cannot prove absence of operator/database tampering. | In an isolated database, call `DecisionAuditEvent.objects.filter(pk=...).update(action='tampered')`; it bypasses model `save()`. | Open |
+| V2-007 | Audit integrity | P1 | Audit models reject a second `.save()`, but queryset `.update()`/`.delete()` and direct SQL can alter them. The database does not enforce append-only history, so stored data alone cannot prove absence of operator/database tampering. | In an isolated database, call `DecisionAuditEvent.objects.filter(pk=...).update(action='tampered')`; it bypasses model `save()`. | **Closed** in GSP-CRV2-04 — see closure entry below |
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | Open |
+
+## New finding raised by GSP-CRV2-04
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-017 | Operator boundary / route inventory | **P1** | GSP-CRV2-02 boundary (raised by GSP-CRV2-04) | The route inventory that certified "0 unguarded mutating routes" can only inspect routes whose callback exposes a view class. Django's admin add/change/delete views are function-based, so **216 admin write routes are skipped entirely** — including `Game`, `Round`, `Team`, `DecisionSubmission`, `ActiveModifier` and `SCEventInstance`. A staff user can move round state through `/admin/` with no lifecycle lock and no `OperatorAuditEvent`. The `<path:object_id>/` routes that *do* appear resolve to `RedirectView` and are reported `lifecycle_mutating: false`, which is how a whole write surface came to be counted as harmless. | `_walk(get_resolver())` yields 778 routes; 371 have no view class and are skipped by `mutating_routes()`, 216 of them admin add/change/delete. `core/services/route_inventory.json` lists `admin/core/round/<path:object_id>/` as `RedirectView`, `lifecycle_mutating: false`, and lists no `.../change/` route at all. | Open — logged, not repaired here |
+
+Reach is limited to Django `is_staff` accounts, not the JWT instructor role, so
+this is P1 rather than P0. It is logged rather than repaired because the fix
+belongs to V2-004's boundary, and changing that boundary here would invalidate
+the concurrency certification GSP-CRV2-02 produced. GSP-CRV2-04 repaired only
+the part inside its own scope: the five audit-record admins it registered are
+read-only, and the database triggers refuse the writes regardless.
 
 ## New findings raised by GSP-CRV2-01
 
@@ -272,6 +285,59 @@ who still get a briefing, and silent for operators.
   model. Competitive hash unchanged in every case.
 - Docs: `NARRATIVE_WORKER_OPERATIONS.md` (supervision, leases, backlog
   alerting), `NARRATIVE_JOB_INVENTORY.md` (the Phase-1 inventory).
+
+### V2-007 — database-enforced audit integrity and read evidence (P1) — closed in GSP-CRV2-04
+
+**What the finding was.** The audit models raised on a second `.save()`, and
+that was the entire defence. `Model.objects.filter(...).update()`,
+`.delete()`, raw SQL, `manage.py shell` and the admin all skip `save()`, so
+"append-only" described the usual write path rather than the table.
+`ResolutionManifest` had no guard at any layer.
+
+**What decided the design.** The application connects to PostgreSQL as the
+**owner** of the tables it audits (`donwh`, verified against `pg_tables` and
+`has_table_privilege`). Revoking `UPDATE`/`DELETE` from the connecting role
+achieves nothing while that role can grant it back, and an owner can drop any
+trigger. So the repair separates two claims that are easy to blur:
+
+* **Rejected** — every write the application can make, at any layer. Triggers
+  on all five audit tables refuse `UPDATE` and `DELETE` regardless of role.
+* **Detected** — a change made by whoever holds the maintenance credentials.
+  Nothing can reject that. A forward hash chain over the audit rows, with its
+  head exported outside the database, makes it visible afterwards.
+
+The report does not claim the second category is prevented.
+
+**The manifest exception.** `ResolutionManifest` is written twice by design —
+`prepare_manifest` before resolution, `complete_manifest` after — so a blanket
+no-`UPDATE` rule would have broken round resolution. Its trigger allows updates
+while `completed_at IS NULL` and freezes the row the moment it is set, which is
+the moment it becomes evidence. `DELETE` is refused at all times.
+
+**Sealing and the lock order.** Chaining runs in `transaction.on_commit`, not
+in the audit write. The seal takes a global advisory lock, and taking it
+underneath the operator lifecycle locks GSP-CRV2-02 certified would invert a
+lock order and could deadlock. One seal is scheduled per transaction, and the
+scheduling check reads Django's pending-callback list rather than setting a
+flag, so a rolled-back transaction cannot leave a marker that suppresses the
+next seal.
+
+**Read evidence.** `competition_sensitive_read_event` records reads of raw team
+decisions and audit payloads: actor, subject game/team/round, route, endpoint,
+status, outcome, request id, server time. Refusals are recorded alongside
+successes, because a denied cross-team read is the more useful row when a team
+alleges disclosure. No payload, header or token is stored, and no API route
+serves the table — it is reachable only through `manage.py who_accessed`.
+Coverage comes from middleware matching `core/services/read_inventory.json`,
+generated from the URL conf, so a view registered later is covered by
+construction rather than by memory.
+
+**Still open, and deliberately not closed by code.** The application holds the
+owning credentials. `install_audit_guards --role-sql` provisions a non-owner
+role and the SQL is tested, but pointing the competition stack at it is a
+deployment action. Until then the reject layer is triggers alone.
+
+See also V2-017, raised while building this handoff's inventory.
 
 ## Scope notes
 

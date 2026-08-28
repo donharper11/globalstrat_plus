@@ -425,6 +425,11 @@ def complete_manifest(round_obj):
         'schema_version', 'output_manifest', 'output_sha256',
         'narrative_manifest', 'narrative_sha256', 'output_section_digests',
         'output_body_path', 'completed_at'])
+    # The manifest is only tamper-evident once it is final: the row is written
+    # twice by design, and chaining the pre-resolution write would commit to a
+    # state that is supposed to change.
+    from core.services.audit_chain import schedule_seal
+    schedule_seal()
     return manifest
 
 

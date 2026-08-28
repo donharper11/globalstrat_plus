@@ -11,6 +11,10 @@ from core.models.scenario import (
     FirmStarterProfile, FirmStarterPlatformConfig, FirmStarterProduct,
     AICompetitorDefinition, AICompetitorFitByRound,
 )
+from core.models.audit_integrity import AuditChainEntry, SensitiveReadEvent
+from core.models.competition_audit import (
+    DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
+)
 from core.models.core import Game, Team, TeamMember, Round
 from core.models.decisions import (
     DecisionSubmission, DecisionBudgetAllocation, DecisionRDInvestment,
@@ -764,3 +768,76 @@ class TeamMarketComplianceAdmin(admin.ModelAdmin):
     list_display = ['team', 'market', 'compliance_level', 'current_trust_multiplier', 'rounds_present']
     list_filter = ['game']
     list_per_page = 50
+
+
+# ---------------------------------------------------------------------------
+# Audit records — visible, never editable
+# ---------------------------------------------------------------------------
+
+class AppendOnlyAdmin(admin.ModelAdmin):
+    """Read-only admin for a record that is evidence.
+
+    Registered rather than left out. Leaving an audit table off the admin makes
+    it unreachable from the browser, which reads like protection but is only
+    absence: the day somebody registers it for a legitimate reason, the
+    protection is gone and nothing says so. Refusing add, change and delete
+    here states the rule where a reviewer will look for it, and the database
+    triggers hold it regardless of what this class says.
+    """
+    list_per_page = 50
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_readonly_fields(self, request, obj=None):
+        return [field.name for field in self.model._meta.fields]
+
+
+@admin.register(DecisionAuditEvent)
+class DecisionAuditEventAdmin(AppendOnlyAdmin):
+    list_display = ['id', 'created_at', 'game', 'team', 'round', 'user',
+                    'action', 'endpoint', 'payload_sha256', 'request_id']
+    list_filter = ['action', 'game']
+    search_fields = ['request_id', 'endpoint', 'payload_sha256']
+    date_hierarchy = 'created_at'
+
+
+@admin.register(OperatorAuditEvent)
+class OperatorAuditEventAdmin(AppendOnlyAdmin):
+    list_display = ['id', 'created_at', 'game', 'round', 'user', 'action',
+                    'outcome', 'request_id']
+    list_filter = ['outcome', 'action', 'game']
+    search_fields = ['request_id', 'reason']
+    date_hierarchy = 'created_at'
+
+
+@admin.register(ResolutionManifest)
+class ResolutionManifestAdmin(AppendOnlyAdmin):
+    list_display = ['id', 'game', 'round', 'schema_version', 'input_sha256',
+                    'output_sha256', 'code_revision', 'completed_at']
+    list_filter = ['schema_version', 'game']
+    search_fields = ['input_sha256', 'output_sha256', 'source_tree_sha256']
+
+
+@admin.register(AuditChainEntry)
+class AuditChainEntryAdmin(AppendOnlyAdmin):
+    list_display = ['seq', 'sealed_at', 'source_table', 'source_id',
+                    'row_sha256', 'entry_sha256']
+    list_filter = ['source_table']
+    search_fields = ['entry_sha256', 'row_sha256', 'prev_sha256']
+
+
+@admin.register(SensitiveReadEvent)
+class SensitiveReadEventAdmin(AppendOnlyAdmin):
+    list_display = ['id', 'created_at', 'username', 'outcome', 'category',
+                    'game_id_read', 'team_id_read', 'round_number_read',
+                    'endpoint', 'request_id']
+    list_filter = ['outcome', 'category']
+    search_fields = ['username', 'endpoint', 'request_id']
+    date_hierarchy = 'created_at'

@@ -74,6 +74,19 @@
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
+    "admin/core/auditchainentry/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/auditchainentry/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
     "admin/core/complianceinvestment/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
       "lifecycle_mutating": false,
@@ -110,6 +123,19 @@
         "put"
       ],
       "route": "admin/core/decisionacquisition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionauditevent/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionauditevent/<path:object_id>/",
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
@@ -490,6 +516,19 @@
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
+    "admin/core/operatorauditevent/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/operatorauditevent/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
     "admin/core/origintrustmodifier/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
       "lifecycle_mutating": false,
@@ -552,6 +591,19 @@
         "put"
       ],
       "route": "admin/core/researchquerylog/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/resolutionmanifest/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/resolutionmanifest/<path:object_id>/",
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
@@ -695,6 +747,19 @@
         "put"
       ],
       "route": "admin/core/segmentpreference/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/sensitivereadevent/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/sensitivereadevent/<path:object_id>/",
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
@@ -2435,6 +2500,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 214,
+  "total_mutating_routes": 219,
   "unguarded": 0
 }

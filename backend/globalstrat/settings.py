@@ -97,6 +97,7 @@ MIDDLEWARE = [
     'core.middleware.SessionHeartbeatMiddleware',
     'core.middleware.GamePauseGuardMiddleware',
     'core.middleware.TeamScopeGuardMiddleware',
+    'core.middleware.SensitiveReadLogMiddleware',
 ]
 
 ROOT_URLCONF = 'globalstrat.urls'

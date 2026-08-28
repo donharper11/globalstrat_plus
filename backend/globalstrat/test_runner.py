@@ -21,6 +21,11 @@ the end, so creation order stops mattering.
 
 Production is untouched: this runner is only used by `manage.py test`, and both
 the managed flags and MIGRATION_MODULES are restored on teardown.
+
+Because migrations are skipped, anything a migration installs beyond the model
+schema has to be installed here too. `core.services.audit_guards` is the single
+source for the append-only trigger DDL, and both this runner and migration
+0070 apply it.
 """
 from django.apps import apps
 from django.conf import settings
@@ -44,7 +49,17 @@ class GlobalStratTestRunner(DiscoverRunner):
             settings, 'MIGRATION_MODULES', {},
         )
         settings.MIGRATION_MODULES = _DisableMigrations()
-        return super().setup_databases(**kwargs)
+        config = super().setup_databases(**kwargs)
+        # Skipping migration replay also skips the RunSQL migration that
+        # installs the append-only audit triggers, so without this the test
+        # database is the one place those guards do not exist — which is
+        # exactly where they need to be provable. Installed from the same
+        # module the migration uses, so the two cannot drift.
+        from django.db import connections
+        from core.services.audit_guards import install
+        for alias in connections:
+            install(connections[alias])
+        return config
 
     def teardown_databases(self, old_config, **kwargs):
         super().teardown_databases(old_config, **kwargs)
