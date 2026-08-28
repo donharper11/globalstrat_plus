@@ -1,7 +1,7 @@
 # GSP-CRV2-04 — database-enforced audit integrity and read evidence
 
 **Finding:** V2-007 (P1) — **closed**
-**Rework:** GSP-CRV2-04_REWORK_REPORT — caller-controlled TRUNCATE bypass, closed at `REWORK_FREEZE`
+**Rework:** GSP-CRV2-04_REWORK_REPORT — caller-controlled TRUNCATE bypass, closed at `cbb06be`
 **New finding raised:** V2-017 (P1) — logged, not repaired here
 **Baseline:** `1752315` (branch `crv2-04-audit-integrity`, cut from `main`)
 **Freeze commit:** `54a0d50` (clean tree, `git status --untracked-files=no` = 0)
@@ -340,14 +340,23 @@ concurrency or determinism matrices, no narrative drills):
 
 | Check | Result |
 |---|---|
-| `AuditGuardInstallationTests` (8 tests, incl. 3 new) | REWORK_FOCUSED |
+| Focused guard + rejection tests (18, incl. 3 new) | OK, 4.6 s |
 | Same tests against the audited defect | 1 failure — `test_the_setting_alone_cannot_authorize_truncation` |
-| Disposable-database negative walkthrough | REWORK_WALKTHROUGH |
+| Disposable-database negative walkthrough | 7/7 steps as expected; the audited SQL refused, 3 rows before and 3 after |
 | `makemigrations --check`, `manage.py check`, `git diff --check` | clean |
 
 The reverted-code run matters more than the passing one: it is what
 distinguishes a test that covers the defect from a test that merely passes
 beside it.
+
+**Rework freeze:** `cbb06be`, runtime digest
+`ab0b15c2e86f59991c718b94a5ea1df11e304f7ef869712a03d24daaefc1c6df`, clean tree.
+Evidence in `evidence/audit-integrity-rework/`. The main
+`evidence/audit-integrity/` set still describes `54a0d50` and was **not**
+regenerated — its `TRUNCATE` transcript records the behaviour of the superseded
+guard, and that is what an immutable record of a named commit is for.
+`audit_integrity_evidence.py` now also attempts the bypass, so a future full run
+covers it.
 
 **Unchanged by this rework:** the hash chain, the anchor replay, the read
 inventory and its middleware, the `UPDATE`/`DELETE` guards, and V2-017, which

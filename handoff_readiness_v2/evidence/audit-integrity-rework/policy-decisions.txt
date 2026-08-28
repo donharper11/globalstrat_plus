@@ -1,0 +1,12 @@
+With globalstrat.allow_truncate deliberately set to 'on' —
+the state the audited version treated as sufficient — which
+database names the policy would let reset themselves:
+===========================================================
+
+  globalstrat_plus             refused
+  gsp_truncate_rework_20260828212408 refused
+  testing_db                   refused
+  test_globalstrat_plus        ALLOWED
+
+expected: {'globalstrat_plus': False, 'gsp_truncate_rework_20260828212408': False, 'testing_db': False, 'test_globalstrat_plus': True}
+observed: {'globalstrat_plus': False, 'gsp_truncate_rework_20260828212408': False, 'testing_db': False, 'test_globalstrat_plus': True}

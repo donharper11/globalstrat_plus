@@ -1,0 +1,49 @@
+{
+  "all_steps_as_expected": true,
+  "code_revision": "cbb06bea848d80fb9cf08623863aefc843ca9c45",
+  "connecting_role": "donwh",
+  "database_is_named_like_a_test_database": false,
+  "evidence_database": "gsp_truncate_rework_20260828212408",
+  "generated_at": "2026-08-28T21:24:08.844354+00:00",
+  "rows_after": 3,
+  "rows_before": 3,
+  "source_tree_sha256": "ab0b15c2e86f59991c718b94a5ea1df11e304f7ef869712a03d24daaefc1c6df",
+  "steps": [
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "migrate (0072 included)"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "the corrected function body reached the database"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "seed one audit row through the ORM"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "the audited bypass is refused"
+    },
+    {
+      "as_expected": true,
+      "detail": "3 rows before, 3 after",
+      "step": "the rows survive it"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "plain TRUNCATE is refused"
+    },
+    {
+      "as_expected": true,
+      "detail": "{'globalstrat_plus': False, 'gsp_truncate_rework_20260828212408': False, 'testing_db': False, 'test_globalstrat_plus': True}",
+      "step": "only an isolated test database is allowed to reset itself"
+    }
+  ],
+  "working_tree_clean": true
+}

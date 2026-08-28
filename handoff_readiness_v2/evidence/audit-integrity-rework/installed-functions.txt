@@ -1,0 +1,30 @@
+              proname              |                                   pg_get_functiondef                                    
+-----------------------------------+-----------------------------------------------------------------------------------------
+ competition_audit_reject_truncate | CREATE OR REPLACE FUNCTION public.competition_audit_reject_truncate()                  +
+                                   |  RETURNS trigger                                                                       +
+                                   |  LANGUAGE plpgsql                                                                      +
+                                   | AS $function$                                                                          +
+                                   | BEGIN                                                                                  +
+                                   |     IF competition_truncate_is_allowed(current_database()) THEN                        +
+                                   |         RETURN NULL;                                                                   +
+                                   |     END IF;                                                                            +
+                                   |     RAISE EXCEPTION                                                                    +
+                                   |         'append-only audit table %: TRUNCATE is not permitted', TG_TABLE_NAME          +
+                                   |         USING ERRCODE = 'insufficient_privilege',                                      +
+                                   |               HINT = 'Truncating an audit table destroys the evidence it holds.';      +
+                                   | END;                                                                                   +
+                                   | $function$                                                                             +
+                                   | 
+ competition_truncate_is_allowed   | CREATE OR REPLACE FUNCTION public.competition_truncate_is_allowed(db_name text)        +
+                                   |  RETURNS boolean                                                                       +
+                                   |  LANGUAGE plpgsql                                                                      +
+                                   |  STABLE                                                                                +
+                                   | AS $function$                                                                          +
+                                   | BEGIN                                                                                  +
+                                   |     RETURN db_name LIKE 'test\_%'                                                      +
+                                   |        AND COALESCE(current_setting('globalstrat.allow_truncate', true), 'off') = 'on';+
+                                   | END;                                                                                   +
+                                   | $function$                                                                             +
+                                   | 
+(2 rows)
+

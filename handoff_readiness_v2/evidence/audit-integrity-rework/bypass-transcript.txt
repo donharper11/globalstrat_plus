@@ -1,0 +1,21 @@
+The exact statement pair from the audit, run as the application
+role against a migrated database that is not named like a test
+database.
+==========================================================
+
+rows in competition_decision_audit_event before: 3
+
+$ psql -c "SET globalstrat.allow_truncate = 'on'; TRUNCATE competition_decision_audit_event CASCADE"
+SET
+ERROR:  append-only audit table competition_decision_audit_event: TRUNCATE is not permitted
+HINT:  Truncating an audit table destroys the evidence it holds.
+CONTEXT:  PL/pgSQL function competition_audit_reject_truncate() line 6 at RAISE
+--> REFUSED
+
+$ psql -c "TRUNCATE competition_decision_audit_event CASCADE"
+ERROR:  append-only audit table competition_decision_audit_event: TRUNCATE is not permitted
+HINT:  Truncating an audit table destroys the evidence it holds.
+CONTEXT:  PL/pgSQL function competition_audit_reject_truncate() line 6 at RAISE
+--> REFUSED
+
+rows in competition_decision_audit_event after: 3
