@@ -1,0 +1,133 @@
+{
+  "all_steps_as_expected": true,
+  "code_revision": "54a0d5095e205376a49f55a92d933fce9b8c436b",
+  "connecting_role": "donwh",
+  "database_host": "192.168.50.38",
+  "evidence_database": "gsp_audit_evidence_20260828205616",
+  "generated_at": "2026-08-28T20:56:17.379251+00:00",
+  "python": "3.10.12",
+  "source_tree_sha256": "7f945727ad31c9af31c7132141687353357443599bed6afe1783e4269547b52f",
+  "steps": [
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Operations to perform:\n  Apply all migrations: admin, auth, contenttypes, core, sessions\nRunning migrations:\n  Applying contenttypes.0001_initial... OK\n  Applying auth.0001_initial... OK\n  Applying admin.0001_initial... OK\n  Applying admin.0002_logentry_remove_auto_add... OK\n  Applying admin.0003_logentry_add_action_flag_choices... OK\n  Applying contenttypes.0002_remove_content_type_name... OK\n  Applying auth.0002_alter_permission_name_max_length... OK\n  Applying auth.0003_alter_user_email_max_length... OK\n  Applying auth.0004_alter_user_username_opts... OK\n  Applying auth.0005_alter_user_last_login_null... OK\n  Applying auth.0006_require_contenttypes_0002... OK\n  Applying auth.0007_alter_validators_add_error_messages... OK\n  Applying auth.0008_alter_user_username_max_length... OK\n  Applying auth.0009_alter_user_last_name_max_length... OK\n  Applying auth.0010_alter_group_name_max_length... OK\n  Applying auth.0011_update_proxy_permissions... OK\n  Applying auth.0012_alter_user_first_name_max_length... OK\n  Applying core.0000_users_bootstrap... OK\n  Applying core.0001_initial... OK\n  Applying core.0002_game_state_indexes... OK\n  Applying core.0003_decision_models... OK\n  Applying core.0004_results_and_event_fk... OK\n  Applying core.0005_result_indexes... OK\n  Applying core.0006_cc06_financial_results... OK\n  Applying core.0007_cc06_indexes... OK\n  Applying core.0008_researchquerylog... OK\n  Applying core.0009_widen_ratio_fields... OK\n  Applying core.0010_forecastscenario_teamframeworkanalysis... OK\n  Applying core.0011_decisionmarketing_sales_team_count_and_more... OK\n  Applying core.0012_decisiontalent_teamtalentstate... OK\n  Applying core.0013_add_platform_name_and_feature_levels... OK\n  Applying core.0014_add_distribution_channel_detail... OK\n  Applying core.0015_cc20_mna_esg_ai... OK\n  Applying core.0016_cc21_instructor_alerts_change_log... OK\n  Applying core.0017_add_team_platform_name... OK\n  Applying core.0018_cc24_strategic_economics... OK\n  Applying core.0019_cc25_derived_features... OK\n  Applying core.0020_cc26_capital_markets... OK\n  Applying core.0021_allow_null_market_on_adoption... OK\n  Applying core.0022_remove_research_budget_requirement... OK\n  Applying core.0023_cc27_strategic_briefing... OK\n  Applying core.0024_cc27_per_user_read_status... OK\n  Applying core.0025_channel_margin_fields... OK\n  Applying core.0026_decisionmarketentry_integration_strategy_and_more... OK\n  Applying core.0027_cc31e_event_targeting... OK\n  Applying core.0028_cc31g_investor_fund_profile... OK\n  Applying core.0029_cc31j_governance_commitments... OK\n  Applying core.0030_cc32a_communications... OK\n  Applying core.0031_cc32b_org_design... OK\n  Applying core.0032_cc32d_alliance_partners... OK\n  Applying core.0033_cc32e_agent_cycle_log... OK\n  Applying core.0034_cc32f_government_agents... OK\n  Applying core.0035_cc32h_round_processing_status... OK\n  Applying core.0036_dual_platform_starter... OK\n  Applying core.0037_add_archived_game_status... OK\n  Applying core.0038_acquisitiontarget_description_zh_and_more... OK\n  Applying core.0039_update_num_rounds_default_to_10... OK\n  Applying core.0040_cc35_promote_teamnotification... OK\n  Applying core.0041_sc_scenario_content... OK\n  Applying core.0042_decision_plant_sc_extensions... OK\n  Applying core.0043_cc05_prune_ghost_models... OK\n  Applying core.0044_cc05_promote_group_a_gamification_scoring... OK\n  Applying core.0045_cc05_promote_group_b_financials... OK\n  Applying core.0046_cc05_promote_group_c_programs... OK\n  Applying core.0047_cc05_promote_group_d_simulation_state... OK\n  Applying core.0048_cc05_promote_group_e_messaging_events... OK\n  Applying core.0049_cc05_promote_group_f_instructor... OK\n  Applying core.0050_cc05_promote_new_sales_by_round... OK\n  Applying core.0051_instructor_overrides... OK\n  Applying core.0052_cc19_event_sc_effects... OK\n  Applying core.0053_cc19b_resilience_disruption_impact... OK\n  Applying core.0054_complianceenforcementevent... OK\n  Applying core.0055_complianceenforcementevent_narrative... OK\n  Applying core.0056_round_close_reason_round_closed_at_usersession... OK\n  Applying core.0057_teamplatform_accumulated_amortization_and_more... OK\n  Applying core.0058_roundresultfinancials_platform_amortization... OK\n  Applying core.0059_competition_audit... OK\n  Applying core.0060_team_participation_status... OK\n  Applying core.0061_resolutionmanifest_decision_event_count_and_more... OK\n  Applying core.0062_resolutionmanifest_source_tree_sha256... OK\n  Applying core.0063_operatorauditevent_conflict_and_more... OK\n  Applying core.0064_narrativejob... OK\n  Applying core.0065_sceventinstance_narrative... OK\n  Applying core.0066_instructoralert_source... OK\n  Applying core.0067_narrativejob_degraded... OK\n  Applying core.0068_move_sc_event_narrative... OK\n  Applying core.0069_audit_integrity... OK\n  Applying core.0070_audit_guards... OK\n  Applying core.0071_audit_truncate_guards... OK\n  Applying sessions.0001_initial... OK\n",
+      "step": "migrate"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "All append-only audit guards are installed and enabled.\n",
+      "step": "guards installed by migration"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "181 objects imported automatically (use -v 2 for details).\n\n10 managed=False models; created 9 tables\n   course\n   enrollment\n   grading_component_mapping\n   grading_rubric\n   grading_rubric_category\n   section\n   simulation_instance\n   student_grade_adjustment\n   team_grade\n",
+      "step": "create managed=False legacy tables"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "181 objects imported automatically (use -v 2 for details).\n\nseeded game 1 team 1 round 1\ndecision audit rows : 3\noperator audit rows : 2\nmanifests           : 1\n",
+      "step": "seed audit rows through the ORM"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"head_seq\": 6,\n  \"head_sha256\": \"b4180f345a1dc0dfe0c50552a29c0034f2b7910538ab19dd86ae9356fa7fbc22\",\n  \"sealed\": 1,\n  \"unsealed_remaining\": 0\n}\n",
+      "step": "seal"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"anchored_at\": \"2026-08-28T20:56:55.601951+00:00\",\n  \"code_revision\": \"54a0d5095e205376a49f55a92d933fce9b8c436b\",\n  \"entries\": 6,\n  \"entries_by_table\": {\n    \"competition_decision_audit_event\": 3,\n    \"competition_operator_audit_event\": 2,\n    \"competition_resolution_manifest\": 1,\n    \"competition_sensitive_read_event\": 0,\n    \"recovery_audit_file\": 0\n  },\n  \"head_entry_sha256\": \"b4180f345a1dc0dfe0c50552a29c0034f2b7910538ab19dd86ae9356fa7fbc22\",\n  \"head_seq\": 6,\n  \"head_source\": \"competition_resolution_manifest:1\",\n  \"path\": \"/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/audit-integrity/anchor-store/audit-anchors/anchor-000000000006.json\",\n  \"recovery_audit\": null,\n  \"sealed_before_export\": 0,\n  \"sha256\": \"a7e155bfe0f2f45f796d3012d788c91272dd69220efa41b8c7f494c88bb83396\",\n  \"source_tree_sha256\": \"7f945727ad31c9af31c7132141687353357443599bed6afe1783e4269547b52f\"\n}\n",
+      "step": "export anchor"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\n  \"anchor\": {\n    \"anchor\": \"/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/audit-integrity/anchor-store/audit-anchors/latest.json\",\n    \"anchored_at\": \"2026-08-28T20:56:55.601951+00:00\",\n    \"anchored_head_sha256\": \"b4180f345a1dc0dfe0c50552a29c0034f2b7910538ab19dd86ae9356fa7fbc22\",\n    \"checked_at\": \"2026-08-28T20:56:57.875270+00:00\",\n    \"entries_anchored\": 6,\n    \"entries_now\": 6,\n    \"entries_replayed\": 6,\n    \"head_seq\": 6,\n    \"ok\": true,\n    \"problems\": [],\n    \"recomputed_head_sha256\": \"b4180f345a1dc0dfe0c50552a29c0034f2b7910538ab19dd86ae9356fa7fbc22\"\n  },\n  \"chain\": {\n    \"checked_at\": \"2026-08-28T20:56:57.866829+00:00\",\n    \"entries\": 6,\n    \"head_sha256\": \"b4180f345a1dc0dfe0c50552a29c0034f2b7910538ab19dd86ae9356fa7fbc22\",\n    \"ok\": true,\n    \"problems\": [],\n    \"unsealed\": {\n      \"competition_decision_audit_event\": 0,\n      \"competition_operator_audit_event\": 0,\n      \"competition_resolution_manifest\": 0,\n      \"competition_sensitive_read_event\": 0\n    },\n    \"unsealed_total\": 0\n  },\n  \"missing_guards\": [],\n  \"ok\": true\n}\n",
+      "step": "verify (clean)"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_decision_audit_event: UPDATE on row 1 is not permitted\nHINT:  Audit records are evidence. Correct them by appending.\nCONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw UPDATE on decision audit"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_decision_audit_event: DELETE on row 1 is not permitted\nHINT:  Audit records are evidence. Correct them by appending.\nCONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw DELETE on decision audit"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_operator_audit_event: UPDATE on row 2 is not permitted\nHINT:  Audit records are evidence. Correct them by appending.\nCONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw UPDATE on operator audit"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_operator_audit_event: DELETE on row 2 is not permitted\nHINT:  Audit records are evidence. Correct them by appending.\nCONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw DELETE on operator audit"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  resolution manifest 1 completed at 2026-08-29 04:56:51.131908+08; it is immutable\nHINT:  Re-resolving a round writes a new round, not a new manifest.\nCONTEXT:  PL/pgSQL function competition_manifest_reject_change() line 9 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw UPDATE on a completed manifest"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  resolution manifest 1 cannot be deleted\nCONTEXT:  PL/pgSQL function competition_manifest_reject_change() line 4 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw DELETE on a manifest"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_audit_chain: UPDATE on row 1 is not permitted\nHINT:  Audit records are evidence. Correct them by appending.\nCONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE\n",
+      "stdout": "",
+      "step": "refused: raw UPDATE on the chain itself"
+    },
+    {
+      "as_expected": true,
+      "returncode": 1,
+      "stderr": "ERROR:  append-only audit table competition_decision_audit_event: TRUNCATE is not permitted\nHINT:  Truncating an audit table destroys the evidence it holds.\nCONTEXT:  PL/pgSQL function competition_audit_reject_truncate() line 6 at RAISE\n",
+      "stdout": "",
+      "step": "refused: TRUNCATE the decision audit"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "181 objects imported automatically (use -v 2 for details).\n\nREFUSED  Model.save() on an existing audit row\n         DecisionAuditEvent records are immutable.\nREFUSED  queryset .update()\n         append-only audit table competition_decision_audit_event: UPDATE on row 1 is not permitted\nREFUSED  queryset .delete()\n         append-only audit table competition_decision_audit_event: DELETE on row 1 is not permitted\nREFUSED  operator audit .update()\n         append-only audit table competition_operator_audit_event: UPDATE on row 1 is not permitted\nREFUSED  completed manifest .update()\n         resolution manifest 1 completed at 2026-08-28 20:56:51.131908+00; it is immutable\nREFUSED  manifest .delete()\n         resolution manifest 1 cannot be deleted\n\nDjango admin permissions on each audit record:\n  DecisionAuditEvent     add=False change=False delete=False\n  OperatorAuditEvent     add=False change=False delete=False\n  ResolutionManifest     add=False change=False delete=False\n  AuditChainEntry        add=False change=False delete=False\n  SensitiveReadEvent     add=False change=False delete=False\n",
+      "step": "ORM bypasses refused"
+    },
+    {
+      "as_expected": true,
+      "returncode": 0,
+      "stderr": "Forbidden: /api/games/1/teams/1/decisions/round/1/\n2026-08-28 20:57:01,292 WARNING django.request Forbidden: /api/games/1/teams/1/decisions/round/1/\nForbidden: /api/games/1/teams/1/decisions/round/1/\n2026-08-28 20:57:01,296 WARNING django.request Forbidden: /api/games/1/teams/1/decisions/round/1/\n",
+      "stdout": "181 objects imported automatically (use -v 2 for details).\n\nReads performed:\n  200  evidence-instructor    /api/games/1/instructor/teams/1/decisions/?round=1\n  403  evidence-student       /api/games/1/teams/1/decisions/round/1/\n  403  anonymous              /api/games/1/teams/1/decisions/round/1/\n\nWhat competition_sensitive_read_event recorded:\n  #1 2026-08-28T20:57:01.275075+00:00 allowed  actor='evidence-instructor' game=1 team=1 round=1 category=audit status=200 req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6\n  #2 2026-08-28T20:57:01.291552+00:00 denied   actor='evidence-student' game=1 team=1 round=1 category=decisions status=403 req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75\n  #3 2026-08-28T20:57:01.295358+00:00 denied   actor='anonymous' game=1 team=1 round=1 category=decisions status=403 req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d\n\n$ manage.py who_accessed --game 1 --team 1 --round 1\n3 matching reads; showing 3 (most recent first).\n  2026-08-28T20:57:01.295358+00:00  denied   anonymous                g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d\n  2026-08-28T20:57:01.291552+00:00  denied   evidence-student         g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75\n  2026-08-28T20:57:01.275075+00:00  allowed  evidence-instructor      g1 t1 r1  audit     /api/games/1/instructor/teams/1/decisions/  req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6\n\n$ manage.py who_accessed --outcome denied\n2 matching reads; showing 2 (most recent first).\n  2026-08-28T20:57:01.295358+00:00  denied   anonymous                g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d\n  2026-08-28T20:57:01.291552+00:00  denied   evidence-student         g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75\n\nNo response body, header or token is stored. Fields held per row:\n  id, actor_user_id, username, game_id_read, team_id_read, round_number_read, category, route, endpoint, method, status_code, outcome, request_id, created_at\n",
+      "step": "read-evidence walkthrough"
+    }
+  ],
+  "uncommitted": [],
+  "working_tree_clean": true
+}

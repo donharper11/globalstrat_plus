@@ -1,0 +1,26 @@
+Ownership and owner privileges on the audit tables
+=================================================
+            tablename             | tableowner | owner_update | owner_delete 
+----------------------------------+------------+--------------+--------------
+ competition_audit_chain          | donwh      | t            | t
+ competition_decision_audit_event | donwh      | t            | t
+ competition_operator_audit_event | donwh      | t            | t
+ competition_resolution_manifest  | donwh      | t            | t
+ competition_sensitive_read_event | donwh      | t            | t
+(5 rows)
+
+
+The connecting role owns these tables, so the reject layer is the triggers,
+not the grants. SQL that provisions a non-owner application role:
+
+-- Run as the database owner. Replace <password>.
+CREATE ROLE globalstrat_app LOGIN PASSWORD '<password>';
+GRANT USAGE ON SCHEMA public TO globalstrat_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO globalstrat_app;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO globalstrat_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON competition_decision_audit_event FROM globalstrat_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON competition_operator_audit_event FROM globalstrat_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON competition_sensitive_read_event FROM globalstrat_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON competition_audit_chain FROM globalstrat_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON competition_resolution_manifest FROM globalstrat_app;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO globalstrat_app;

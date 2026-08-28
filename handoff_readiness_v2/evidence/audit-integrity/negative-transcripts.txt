@@ -1,0 +1,74 @@
+Every write path that skips Model.save(), attempted against a
+real database with the migration applied.
+============================================================
+
+$ psql -c "UPDATE competition_decision_audit_event SET action = 'tampered' WHERE id = (SELECT MIN(id) FROM competition_decision_audit_event)"
+ERROR:  append-only audit table competition_decision_audit_event: UPDATE on row 1 is not permitted
+HINT:  Audit records are evidence. Correct them by appending.
+CONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE
+--> REFUSED
+
+$ psql -c "DELETE FROM competition_decision_audit_event WHERE id = (SELECT MIN(id) FROM competition_decision_audit_event)"
+ERROR:  append-only audit table competition_decision_audit_event: DELETE on row 1 is not permitted
+HINT:  Audit records are evidence. Correct them by appending.
+CONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE
+--> REFUSED
+
+$ psql -c "UPDATE competition_operator_audit_event SET outcome = 'committed' WHERE outcome = 'rejected'"
+ERROR:  append-only audit table competition_operator_audit_event: UPDATE on row 2 is not permitted
+HINT:  Audit records are evidence. Correct them by appending.
+CONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE
+--> REFUSED
+
+$ psql -c "DELETE FROM competition_operator_audit_event WHERE outcome = 'rejected'"
+ERROR:  append-only audit table competition_operator_audit_event: DELETE on row 2 is not permitted
+HINT:  Audit records are evidence. Correct them by appending.
+CONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE
+--> REFUSED
+
+$ psql -c "UPDATE competition_resolution_manifest SET output_sha256 = repeat('c', 64) WHERE completed_at IS NOT NULL"
+ERROR:  resolution manifest 1 completed at 2026-08-29 04:56:51.131908+08; it is immutable
+HINT:  Re-resolving a round writes a new round, not a new manifest.
+CONTEXT:  PL/pgSQL function competition_manifest_reject_change() line 9 at RAISE
+--> REFUSED
+
+$ psql -c "DELETE FROM competition_resolution_manifest"
+ERROR:  resolution manifest 1 cannot be deleted
+CONTEXT:  PL/pgSQL function competition_manifest_reject_change() line 4 at RAISE
+--> REFUSED
+
+$ psql -c "UPDATE competition_audit_chain SET entry_sha256 = repeat('0', 64)"
+ERROR:  append-only audit table competition_audit_chain: UPDATE on row 1 is not permitted
+HINT:  Audit records are evidence. Correct them by appending.
+CONTEXT:  PL/pgSQL function competition_audit_reject_change() line 3 at RAISE
+--> REFUSED
+
+$ psql -c "TRUNCATE competition_decision_audit_event CASCADE"
+ERROR:  append-only audit table competition_decision_audit_event: TRUNCATE is not permitted
+HINT:  Truncating an audit table destroys the evidence it holds.
+CONTEXT:  PL/pgSQL function competition_audit_reject_truncate() line 6 at RAISE
+--> REFUSED
+
+Same attempts through the ORM and the admin:
+
+181 objects imported automatically (use -v 2 for details).
+
+REFUSED  Model.save() on an existing audit row
+         DecisionAuditEvent records are immutable.
+REFUSED  queryset .update()
+         append-only audit table competition_decision_audit_event: UPDATE on row 1 is not permitted
+REFUSED  queryset .delete()
+         append-only audit table competition_decision_audit_event: DELETE on row 1 is not permitted
+REFUSED  operator audit .update()
+         append-only audit table competition_operator_audit_event: UPDATE on row 1 is not permitted
+REFUSED  completed manifest .update()
+         resolution manifest 1 completed at 2026-08-28 20:56:51.131908+00; it is immutable
+REFUSED  manifest .delete()
+         resolution manifest 1 cannot be deleted
+
+Django admin permissions on each audit record:
+  DecisionAuditEvent     add=False change=False delete=False
+  OperatorAuditEvent     add=False change=False delete=False
+  ResolutionManifest     add=False change=False delete=False
+  AuditChainEntry        add=False change=False delete=False
+  SensitiveReadEvent     add=False change=False delete=False

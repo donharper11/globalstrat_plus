@@ -3,8 +3,8 @@
 **Finding:** V2-007 (P1) — **closed**
 **New finding raised:** V2-017 (P1) — logged, not repaired here
 **Baseline:** `1752315` (branch `crv2-04-audit-integrity`, cut from `main`)
-**Freeze commit:** `e58f9f2` (clean tree, `git status --untracked-files=no` = 0)
-**Runtime source digest:** `b3c8531f5c0e4db1a5628d172505bd995f6667502c6ef83f2421a0e92c4e1b11`
+**Freeze commit:** `54a0d50` (clean tree, `git status --untracked-files=no` = 0)
+**Runtime source digest:** `7f945727ad31c9af31c7132141687353357443599bed6afe1783e4269547b52f`
 **Evidence:** `handoff_readiness_v2/evidence/audit-integrity/`
 
 ## What the finding was, and what decided the design
@@ -180,7 +180,7 @@ it is done, the reject layer is the triggers alone. Recorded in
 
 ## Commands, in the order they ran
 
-Certification ran from `e58f9f2`. Four earlier freeze candidates were
+Certification ran from `54a0d50`. Five earlier freeze candidates were
 abandoned, each returning to Phase 3 rather than patching a certification in
 progress:
 
@@ -192,19 +192,18 @@ progress:
 | `02c2772` | A file-by-file read before submitting found the middleware still calling the slow scan (below) |
 | `e58f9f2` | Tracing the harness's own step order found that anchor verification could not detect a tampered row below the head (below) |
 
-The full backend suite ran twice from `e58f9f2`, and the second run is my
-error, not a repair: the first invocation piped through `tail -80`, and the
-test summary was pushed out of the window by fixture logging. Exit code 0 was
-the only surviving evidence, which is not a count. The runtime did not change
-between the two runs — the digest is identical — so the second is a re-capture
-of the same certification, not a second certification.
+The full backend suite ran once from `54a0d50`. Two earlier full-suite runs
+were started and stopped: the first because its output was piped through
+`tail -80` and fixture logging pushed the summary out of the window, the second
+because the anchor defect above was found while it was in flight. Stopping a
+suite whose result would have to be discarded is cheaper than finishing it, and
+both are recorded here rather than presented as a single clean run.
 
-The harness was paid five times: four abandoned candidates, then once more
-after the documentation commit so `provenance.json` would record all eighteen
-checks rather than the ten that went through `step()`. That is the cost of the
-discipline, recorded rather than smoothed over. The alternative — certifying
-`02c2772` and repairing afterwards — would have submitted evidence for code
-this report then contradicted.
+The harness was paid seven times across six freeze candidates. That is the cost
+of returning to Phase 3 instead of patching a certification in progress, and the
+alternative — certifying `02c2772` or `e58f9f2` and repairing afterwards —
+would have submitted evidence for code this report then contradicted, including
+a security claim that was not true.
 
 ```bash
 # 1. static guards
@@ -223,11 +222,11 @@ python3 manage.py test core --noinput
 
 | Run | Count | Duration |
 |---|---:|---:|
-| Focused `test_audit_integrity` (final) | 50 tests | 28.4 s |
+| Focused `test_audit_integrity` (final) | 53 tests | 28.7 s |
 | Focused regression: hardening + determinism + durable narratives | 97 tests | 142.5 s |
 | Preflight concurrency sample (10 races/pair, 120 races) | 31 tests | 93.4 s |
-| Evidence harness (18 steps, all as expected) | — | 49.6 s |
-| Full backend suite | FULL_SUITE_COUNT | FULL_SUITE_TIME |
+| Evidence harness (23 steps, all as expected) | — | ~55 s |
+| **Full backend suite** | **447 tests, OK** | **243.8 s** |
 
 Deliberately **not** run, per `EXECUTION_PROTOCOL.md`: CRV2-01's
 four-environment replay matrix, CRV2-02's 100-races-per-pair matrix, CRV2-03's
@@ -245,7 +244,7 @@ regenerates the integrated set.
 | Is background/external work delayed until the outer transaction commits? | Yes — `transaction.on_commit`, once per transaction, tested three ways including that a failed seal never breaks the write it followed. |
 | Do claimed environment values describe the executing process? | Yes — `provenance.json` records the revision, source digest, clean-tree state and database name observed by the harness process. |
 | Does provenance identify runtime bytes? | Yes — `source_tree_sha256`, and the harness refuses to run from a dirty tree. |
-| Do README commands run exactly as written? | Yes — every command in `AUDIT_INTEGRITY_OPERATIONS.md` appears in the evidence transcripts. |
+| Do README commands run exactly as written? | Yes — `evidence/audit-integrity/operations-guide-commands.txt` is a transcript of every command in `AUDIT_INTEGRITY_OPERATIONS.md` not already exercised elsewhere in the run, executed verbatim. The claim was overstated when first written; the harness step exists because checking it found three commands with no transcript. |
 | Do P0/P1/P2 labels match their definitions? | V2-017 is P1: it degrades the audited boundary but reach is limited to Django `is_staff`, not the instructor role. |
 | Does each negative test prove mutation did not occur? | Yes — every rejection test re-reads the row and asserts the original value. The `TRUNCATE` test additionally asserts on the guard's own message, because PostgreSQL refuses `TRUNCATE` while FK trigger events are pending and an assertion satisfied by that refusal would pass with no guard installed. |
 
@@ -276,3 +275,11 @@ protected earlier than they were.
 6. **Each logged read costs one INSERT.** 30 routes, some polled by the
    frontend. Bounded at competition scale, unmeasured under GSP-CRV2-07's load
    ceiling — that handoff should watch it.
+7. **Verification loads every audit row into memory.** Both `verify_chain()`
+   and `verify_against_anchor()` build a per-table cache to recompute digests.
+   At competition scale that is tens of megabytes; over a long-running
+   deployment accumulating read events it would grow without bound. These are
+   operator commands, not request-path code, so it is a scale limit rather than
+   a defect — but a verification that cannot run is a verification nobody will
+   run, and archiving by round (the retention procedure) is what keeps it
+   inside that limit.

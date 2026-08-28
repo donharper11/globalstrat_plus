@@ -1,0 +1,34 @@
+Every command in AUDIT_INTEGRITY_OPERATIONS.md not already
+exercised above, run exactly as the guide writes it.
+==========================================================
+
+$ manage.py install_audit_guards --privileges
+Roles that hold UPDATE or DELETE on an audit table:
+  competition_decision_audit_event         donwh (owner) update=True delete=True
+  competition_decision_audit_event         postgres update=True delete=True
+  competition_operator_audit_event         donwh (owner) update=True delete=True
+  competition_operator_audit_event         postgres update=True delete=True
+  competition_sensitive_read_event         donwh (owner) update=True delete=True
+  competition_sensitive_read_event         postgres update=True delete=True
+  competition_audit_chain                  donwh (owner) update=True delete=True
+  competition_audit_chain                  postgres update=True delete=True
+  competition_resolution_manifest          donwh (owner) update=True delete=True
+  competition_resolution_manifest          postgres update=True delete=True
+Triggers refuse these statements regardless of privilege; an owner can drop a trigger, which the chain anchor then exposes.
+
+$ manage.py verify_audit_chain --skip-anchor
+Chain: 6 entries, 3 unsealed, 0 problems.
+Audit integrity verified.
+
+$ manage.py who_accessed --user 1
+1 matching reads; showing 1 (most recent first).
+  2026-08-28T20:57:01.275075+00:00  allowed  evidence-instructor      g1 t1 r1  audit     /api/games/1/instructor/teams/1/decisions/  req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6
+
+$ manage.py who_accessed --since 2026-01-01T00:00:00Z
+3 matching reads; showing 3 (most recent first).
+  2026-08-28T20:57:01.295358+00:00  denied   anonymous                g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d
+  2026-08-28T20:57:01.291552+00:00  denied   evidence-student         g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75
+  2026-08-28T20:57:01.275075+00:00  allowed  evidence-instructor      g1 t1 r1  audit     /api/games/1/instructor/teams/1/decisions/  req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6
+
+$ manage.py seal_audit_chain
+Sealed 3 entries; head #9 7213a4b55cdf2079…, 0 still unsealed.

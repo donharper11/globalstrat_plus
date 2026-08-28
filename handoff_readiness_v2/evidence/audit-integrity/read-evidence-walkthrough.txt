@@ -1,0 +1,29 @@
+181 objects imported automatically (use -v 2 for details).
+
+Reads performed:
+  200  evidence-instructor    /api/games/1/instructor/teams/1/decisions/?round=1
+  403  evidence-student       /api/games/1/teams/1/decisions/round/1/
+  403  anonymous              /api/games/1/teams/1/decisions/round/1/
+
+What competition_sensitive_read_event recorded:
+  #1 2026-08-28T20:57:01.275075+00:00 allowed  actor='evidence-instructor' game=1 team=1 round=1 category=audit status=200 req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6
+  #2 2026-08-28T20:57:01.291552+00:00 denied   actor='evidence-student' game=1 team=1 round=1 category=decisions status=403 req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75
+  #3 2026-08-28T20:57:01.295358+00:00 denied   actor='anonymous' game=1 team=1 round=1 category=decisions status=403 req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d
+
+$ manage.py who_accessed --game 1 --team 1 --round 1
+3 matching reads; showing 3 (most recent first).
+  2026-08-28T20:57:01.295358+00:00  denied   anonymous                g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d
+  2026-08-28T20:57:01.291552+00:00  denied   evidence-student         g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75
+  2026-08-28T20:57:01.275075+00:00  allowed  evidence-instructor      g1 t1 r1  audit     /api/games/1/instructor/teams/1/decisions/  req=srv-baae6fde-aac3-49f3-a5a4-0801fa6570a6
+
+$ manage.py who_accessed --outcome denied
+2 matching reads; showing 2 (most recent first).
+  2026-08-28T20:57:01.295358+00:00  denied   anonymous                g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-9715bd01-8601-4d52-8a9d-04e3e858b21d
+  2026-08-28T20:57:01.291552+00:00  denied   evidence-student         g1 t1 r1  decisions /api/games/1/teams/1/decisions/round/1/  req=srv-7fbe132e-2d74-4bbe-96f1-cd88924ccc75
+
+No response body, header or token is stored. Fields held per row:
+  id, actor_user_id, username, game_id_read, team_id_read, round_number_read, category, route, endpoint, method, status_code, outcome, request_id, created_at
+Forbidden: /api/games/1/teams/1/decisions/round/1/
+2026-08-28 20:57:01,292 WARNING django.request Forbidden: /api/games/1/teams/1/decisions/round/1/
+Forbidden: /api/games/1/teams/1/decisions/round/1/
+2026-08-28 20:57:01,296 WARNING django.request Forbidden: /api/games/1/teams/1/decisions/round/1/

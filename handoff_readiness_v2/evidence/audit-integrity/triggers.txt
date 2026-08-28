@@ -1,0 +1,14 @@
+              table               |                   trigger                    |              function              |   fires_on    | enabled 
+----------------------------------+----------------------------------------------+------------------------------------+---------------+---------
+ competition_audit_chain          | competition_audit_chain_append_only          | competition_audit_reject_change    | UPDATE/DELETE | O
+ competition_audit_chain          | competition_audit_chain_no_truncate          | competition_audit_reject_truncate  | TRUNCATE      | O
+ competition_decision_audit_event | competition_decision_audit_event_append_only | competition_audit_reject_change    | UPDATE/DELETE | O
+ competition_decision_audit_event | competition_decision_audit_event_no_truncate | competition_audit_reject_truncate  | TRUNCATE      | O
+ competition_operator_audit_event | competition_operator_audit_event_append_only | competition_audit_reject_change    | UPDATE/DELETE | O
+ competition_operator_audit_event | competition_operator_audit_event_no_truncate | competition_audit_reject_truncate  | TRUNCATE      | O
+ competition_resolution_manifest  | competition_resolution_manifest_append_only  | competition_manifest_reject_change | UPDATE/DELETE | O
+ competition_resolution_manifest  | competition_resolution_manifest_no_truncate  | competition_audit_reject_truncate  | TRUNCATE      | O
+ competition_sensitive_read_event | competition_sensitive_read_event_append_only | competition_audit_reject_change    | UPDATE/DELETE | O
+ competition_sensitive_read_event | competition_sensitive_read_event_no_truncate | competition_audit_reject_truncate  | TRUNCATE      | O
+(10 rows)
+
