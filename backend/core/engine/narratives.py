@@ -98,6 +98,30 @@ def _run_calls(calls):
     return llm_runner.run_llm_batch_sync(calls)
 
 
+def _call_outcome(calls, results):
+    """How much of the batch actually came from the model.
+
+    A batch where every call failed still produces prose, because each producer
+    falls back to a template — which is right for students and wrong for
+    operators, who would otherwise see `succeeded` and no hint that the
+    provider never answered. The counts travel back to the job.
+    """
+    attempted = len(calls)
+    succeeded = sum(1 for call in calls
+                    if results.get(call['id'], {}).get('success'))
+    errors = sorted({str(results.get(call['id'], {}).get('error') or '')
+                     for call in calls
+                     if not results.get(call['id'], {}).get('success')} - {''})
+    return {
+        'calls': attempted,
+        'calls_succeeded': succeeded,
+        'calls_failed': attempted - succeeded,
+        'degraded': attempted > 0 and succeeded < attempted,
+        'llm_configured': _llm_available(),
+        'errors': errors[:3],
+    }
+
+
 def _run_briefing(game, round_obj):
     teams = list(Team.objects.filter(
         game=game, participation_status='active').order_by('id'))
@@ -110,7 +134,7 @@ def _run_briefing(game, round_obj):
                           'max_tokens': 2000})
     results = _run_calls(calls)
     _store_briefing_results(game, round_obj, teams, results)
-    return {'teams': len(teams), 'calls': len(calls)}
+    return {'teams': len(teams), **_call_outcome(calls, results)}
 
 
 def _run_coherence_rag(game, round_obj):
@@ -125,7 +149,7 @@ def _run_coherence_rag(game, round_obj):
                           'max_tokens': 800})
     results = _run_calls(calls)
     _store_coherence_results(game, round_obj.round_number, teams, results)
-    return {'teams': len(teams), 'calls': len(calls)}
+    return {'teams': len(teams), **_call_outcome(calls, results)}
 
 
 def _run_coaching(game, round_obj):
@@ -140,28 +164,28 @@ def _run_coaching(game, round_obj):
                           'max_tokens': 600})
     results = _run_calls(calls)
     _store_coaching_results(game, round_obj.round_number, teams, results)
-    return {'teams': len(teams), 'calls': len(calls)}
+    return {'teams': len(teams), **_call_outcome(calls, results)}
 
 
 def _run_outlook(game, round_obj):
     calls = _build_outlook_calls(game, round_obj.round_number)
     results = _run_calls(calls)
     _store_outlook_results(game, round_obj.round_number, results, calls)
-    return {'calls': len(calls)}
+    return _call_outcome(calls, results)
 
 
 def _run_sc_event(game, round_obj):
     calls = _build_sc_event_calls(game, round_obj)
     results = _run_calls(calls)
     _store_sc_event_narratives(game, round_obj, results)
-    return {'calls': len(calls)}
+    return _call_outcome(calls, results)
 
 
 def _run_compliance(game, round_obj):
     calls = _build_compliance_calls(game, round_obj)
     results = _run_calls(calls)
     _store_compliance_narratives(game, round_obj, results)
-    return {'calls': len(calls)}
+    return _call_outcome(calls, results)
 
 
 NARRATIVE_RUNNERS = {

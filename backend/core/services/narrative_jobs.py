@@ -161,14 +161,24 @@ def run_job(job):
 
     job.state = NarrativeJob.SUCCEEDED
     job.completed_at = timezone.now()
-    job.last_error = ''
     job.claimed_by = ''
     job.claim_expires_at = None
+    job.degraded = bool(produced.get('degraded'))
+    # Succeeded on fallbacks is still worth saying out loud: without this an
+    # operator sees `succeeded` and no sign the provider never answered.
+    if job.degraded:
+        detail = '; '.join(produced.get('errors') or []) or 'no response'
+        job.last_error = sanitize_error(
+            f"{produced.get('calls_failed')}/{produced.get('calls')} calls fell "
+            f"back to templates: {detail}")
+        logger.warning('%s completed degraded: %s', job, job.last_error)
+    else:
+        job.last_error = ''
     job.result_sha256 = hashlib.sha256(
         repr(sorted(produced.items())).encode('utf-8')).hexdigest()
     job.save(update_fields=['state', 'attempts', 'completed_at', 'last_error',
                             'claimed_by', 'claim_expires_at', 'result_sha256',
-                            'model_name', 'model_endpoint'])
+                            'degraded', 'model_name', 'model_endpoint'])
     return job
 
 
@@ -198,4 +208,6 @@ def backlog(game_id=None):
             state=NarrativeJob.CLAIMED, claim_expires_at__lte=now).count(),
         'succeeded': queryset.filter(state=NarrativeJob.SUCCEEDED).count(),
         'failed': queryset.filter(state=NarrativeJob.FAILED).count(),
+        'degraded': queryset.filter(state=NarrativeJob.SUCCEEDED,
+                                    degraded=True).count(),
     }

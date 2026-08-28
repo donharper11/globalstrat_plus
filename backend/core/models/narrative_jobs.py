@@ -66,6 +66,11 @@ class NarrativeJob(models.Model):
     model_name = models.CharField(max_length=128, blank=True, default='')
     model_endpoint = models.CharField(max_length=255, blank=True, default='')
     last_error = models.TextField(blank=True, default='')
+    # True when the job completed but the model did not answer every call, so
+    # some of the prose is a template fallback. The job is not failed — the
+    # students have their briefing — but an operator can see that the provider
+    # was not working and decide whether to retry.
+    degraded = models.BooleanField(default=False)
     result_sha256 = models.CharField(max_length=64, blank=True, default='')
 
     created_at = models.DateTimeField(auto_now_add=True)

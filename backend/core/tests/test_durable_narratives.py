@@ -453,3 +453,47 @@ class OperatorVisibilityTests(DurableNarrativeBase):
         report = narrative_jobs.backlog(self.game.id)
         self.assertEqual(report['pending'], 0)
         self.assertEqual(report['succeeded'], len(narrative_jobs.ENQUEUED_TYPES))
+
+
+class DegradedCompletionTests(DurableNarrativeBase):
+    """Succeeding on fallbacks is not the same as succeeding.
+
+    The drills found this: with an unreachable provider every job reported
+    `succeeded`, because each producer falls back to a template. Right for the
+    students, who still get a briefing; wrong for the operator, who saw no sign
+    the model never answered.
+    """
+
+    def test_a_provider_that_never_answers_is_recorded_as_degraded(self):
+        self.resolve()
+        self.stub_llm(success=False)
+        processed = narrative_jobs.drain(game_id=self.game.id)
+        with_calls = [job for job in processed if job.result_sha256]
+        self.assertTrue(with_calls)
+        degraded = [job for job in with_calls if job.degraded]
+        self.assertTrue(degraded, 'A total provider failure left no trace')
+        for job in degraded:
+            self.assertEqual(job.state, NarrativeJob.SUCCEEDED)
+            self.assertIn('fell back to templates', job.last_error)
+
+    def test_a_working_provider_is_not_marked_degraded(self):
+        self.resolve()
+        self.stub_llm(content='A real narrative.')
+        processed = narrative_jobs.drain(game_id=self.game.id)
+        self.assertTrue(all(not job.degraded for job in processed))
+        self.assertTrue(all(job.last_error == '' for job in processed))
+
+    def test_degradation_is_in_the_backlog_report(self):
+        self.resolve()
+        self.stub_llm(success=False)
+        narrative_jobs.drain(game_id=self.game.id)
+        report = narrative_jobs.backlog(self.game.id)
+        self.assertEqual(report['failed'], 0)
+        self.assertGreater(report['degraded'], 0)
+
+    def test_a_degraded_job_still_leaves_the_competitive_hash_alone(self):
+        self.resolve()
+        before = self.competitive_hash()
+        self.stub_llm(success=False)
+        narrative_jobs.drain(game_id=self.game.id)
+        self.assertEqual(self.competitive_hash(), before)
