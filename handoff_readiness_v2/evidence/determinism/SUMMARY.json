@@ -1,0 +1,435 @@
+{
+  "all_competitive_hashes_match": true,
+  "all_runs_verified_source": true,
+  "distinct_post_phase2_narrative_hashes": 4,
+  "game_id": 37,
+  "negative_tests": [
+    {
+      "actual_input_sha256": "692e2b17b9b5c956ecf09131cce797434b540b9782502438da8d740ddb9330b6",
+      "changed_count": "1",
+      "corrupted": "decision",
+      "engine_ran": false,
+      "expected_input_sha256": "408fe6ebb847e00287fec854a87f093359f59acffdb809425805c83951b55c84",
+      "first_change": {
+        "fields": {
+          "retail_price": {
+            "actual": "526",
+            "expected": "525"
+          }
+        },
+        "row": "decision_marketing(decision_submission(team(game(\"DETERMINISM-FIXTURE\")|\"Prism Tech\")|round(game(\"DETERMINISM-FIXTURE\")|\"1\"))|team_product(team(game(\"DETERMINISM-FIXTURE\")|\"Prism Tech\")|\"Nexus One\")|market_definition(scenario(\"Consumer Electronics 2026\")|\"NA\"))"
+      },
+      "gate": "input manifest",
+      "section": "decision_marketing",
+      "verification_passed": false
+    },
+    {
+      "actual_input_sha256": "14d893cdea926d6ead0ee255bdc734dce2dcd5c05f2fd2975d2974c4cbd38bb1",
+      "changed_count": "1",
+      "corrupted": "scenario",
+      "engine_ran": false,
+      "expected_input_sha256": "408fe6ebb847e00287fec854a87f093359f59acffdb809425805c83951b55c84",
+      "first_change": {
+        "fields": {
+          "weight": {
+            "actual": "1.06",
+            "expected": "0.06"
+          }
+        },
+        "row": "segment_preference(segment_definition(scenario(\"Consumer Electronics 2026\")|market_definition(scenario(\"Consumer Electronics 2026\")|\"NA\")|\"Value Seekers\")|feature_definition(scenario(\"Consumer Electronics 2026\")|\"processing_power\"))"
+      },
+      "gate": "input manifest",
+      "section": "segment_preference",
+      "verification_passed": false
+    },
+    {
+      "actual_input_sha256": "58e3e1985242d987c92db8b97eaf62255d0a7d1bd13eae5004587899635341bc",
+      "changed_count": "1",
+      "corrupted": "carried",
+      "engine_ran": false,
+      "expected_input_sha256": "408fe6ebb847e00287fec854a87f093359f59acffdb809425805c83951b55c84",
+      "first_change": {
+        "fields": {
+          "cash_on_hand": {
+            "actual": "51000000",
+            "expected": "50000000"
+          }
+        },
+        "row": "team(game(\"DETERMINISM-FIXTURE\")|\"Prism Tech\")"
+      },
+      "gate": "input manifest",
+      "section": "team",
+      "verification_passed": false
+    },
+    {
+      "actual_source_tree_sha256": "f22f51b50a216ae83af2b751114e93ee6d03e142247ba95ba43080a5f012544b",
+      "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+      "corrupted": "source tree (one untracked file added under backend/)",
+      "engine_ran": false,
+      "expected_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+      "gate": "build identity",
+      "note": "git status --untracked-files=no reported the tree clean and the commit hash was unchanged; the content digest caught it.",
+      "verification_passed": false
+    }
+  ],
+  "recorded": {
+    "backup_path": "/home/ubuntu/projects/globalstrat+/backend/competition_backups/game-37-round-1-20260828T035721064993Z.dump",
+    "backup_sha256": "bdd0bac52a771a3d38d2899698acdfa0b09013cc4e19aa7d2cffa9b6c4ddddb5",
+    "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+    "environment": {
+      "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+      "current_timezone": "UTC",
+      "database": "globalstrat_plus",
+      "database_server_version": "160013",
+      "django": "5.2.4",
+      "django_time_zone": "UTC",
+      "filesystem_encoding": "utf-8",
+      "hash_seed": "",
+      "lang": "en_US.UTF-8",
+      "lc_all": "",
+      "libc": "glibc 2.35",
+      "locale": [
+        "en_US",
+        "UTF-8"
+      ],
+      "machine": "x86_64",
+      "node": "ai-react",
+      "os_release": "Ubuntu 22.04.5 LTS",
+      "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+      "preferred_encoding": "UTF-8",
+      "python": "3.10.12",
+      "python_build": "main Jun 22 2026 18:55:27",
+      "source_file_count": "312",
+      "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+      "system_timezone": "Etc/UTC",
+      "time_tzname": [
+        "UTC",
+        "UTC"
+      ],
+      "tz_env": "UTC"
+    },
+    "input_sha256": "408fe6ebb847e00287fec854a87f093359f59acffdb809425805c83951b55c84",
+    "narrative_sha256": "259e82e52fee3383b63f763a4cd6756a8d78b008fb386a839be9d088e4439269",
+    "output_sha256": "129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383",
+    "schema_version": "2",
+    "seed": "16e7848a540a64f169480b6b2834672b43baa31a12955a5948c9f671e4fd9847",
+    "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a"
+  },
+  "round_number": 1,
+  "runs": [
+    {
+      "competitive_match": true,
+      "competitive_sha256": "129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383",
+      "environment": {
+        "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "current_timezone": "UTC",
+        "database": "globalstrat_replay",
+        "database_server_version": "160013",
+        "django": "5.2.4",
+        "django_time_zone": "UTC",
+        "hash_seed": "",
+        "lang": "en_US.UTF-8",
+        "lc_all": "",
+        "libc": "glibc 2.35",
+        "locale": [
+          "en_US",
+          "UTF-8"
+        ],
+        "node": "ai-react",
+        "os_release": "Ubuntu 22.04.5 LTS",
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+        "preferred_encoding": "UTF-8",
+        "python": "3.10.12",
+        "python_build": "main Jun 22 2026 18:55:27",
+        "source_file_count": "312",
+        "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "system_timezone": "Etc/UTC",
+        "time_tzname": [
+          "UTC",
+          "UTC"
+        ],
+        "tz_env": "UTC"
+      },
+      "label": "A: recorded build, original LLM config",
+      "llm_endpoint": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "llm_model": "qwen-max",
+      "narrative_status": "FULLY_COMPLETE",
+      "phase1_narrative_sha256": "259e82e52fee3383b63f763a4cd6756a8d78b008fb386a839be9d088e4439269",
+      "post_phase2_briefing_opening": "**Strategic Briefing: Q1 2023**\n\n**Financial Performance:**\nLumen Devices reported a revenue of $1,368,000 in the first ",
+      "post_phase2_narrative_sha256": "fd781100a1ed81404b68a24efbda1e89910fafd4ec8db10ad74dcb615d1c9b5f",
+      "required_env": [
+        {
+          "actual": "UTC",
+          "expected": "UTC",
+          "key": "tz_env",
+          "matches": true
+        },
+        {
+          "actual": "3.10.12",
+          "expected": "3.10.12",
+          "key": "python",
+          "matches": true
+        },
+        {
+          "actual": "Ubuntu 22.04.5 LTS",
+          "expected": "Ubuntu 22.04.5 LTS",
+          "key": "os_release",
+          "matches": true
+        }
+      ],
+      "run": "run-a-baseline",
+      "source_identity": {
+        "actual_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "actual_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "expected_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "expected_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "matches": true,
+        "override": false,
+        "source_file_count": "312"
+      }
+    },
+    {
+      "competitive_match": true,
+      "competitive_sha256": "129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383",
+      "environment": {
+        "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "current_timezone": "UTC",
+        "database": "globalstrat_replay",
+        "database_server_version": "160013",
+        "django": "5.2.4",
+        "django_time_zone": "UTC",
+        "hash_seed": "",
+        "lang": "en_US.UTF-8",
+        "lc_all": "",
+        "libc": "glibc 2.35",
+        "locale": [
+          "en_US",
+          "UTF-8"
+        ],
+        "node": "ai-react",
+        "os_release": "Ubuntu 22.04.5 LTS",
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+        "preferred_encoding": "UTF-8",
+        "python": "3.10.12",
+        "python_build": "main Jun 22 2026 18:55:27",
+        "source_file_count": "312",
+        "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "system_timezone": "Etc/UTC",
+        "time_tzname": [
+          "UTC",
+          "UTC"
+        ],
+        "tz_env": "UTC"
+      },
+      "label": "B: different model/endpoint returning deliberately different prose",
+      "llm_endpoint": "http://127.0.0.1:8791/v1/chat/completions",
+      "llm_model": "stub-divergent-1",
+      "narrative_status": "FULLY_COMPLETE",
+      "phase1_narrative_sha256": "259e82e52fee3383b63f763a4cd6756a8d78b008fb386a839be9d088e4439269",
+      "post_phase2_briefing_opening": "STUB MODEL OUTPUT \u2014 this narrative was produced by a deliberately different endpoint for determinism evidence. It shares",
+      "post_phase2_narrative_sha256": "8e5a4f811f05c7130ced4f90c3f82d131db944d6059e3b9b9e697ffa7eaeea69",
+      "required_env": [
+        {
+          "actual": "UTC",
+          "expected": "UTC",
+          "key": "tz_env",
+          "matches": true
+        },
+        {
+          "actual": "3.10.12",
+          "expected": "3.10.12",
+          "key": "python",
+          "matches": true
+        },
+        {
+          "actual": "Ubuntu 22.04.5 LTS",
+          "expected": "Ubuntu 22.04.5 LTS",
+          "key": "os_release",
+          "matches": true
+        }
+      ],
+      "run": "run-b-different-model",
+      "source_identity": {
+        "actual_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "actual_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "expected_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "expected_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "matches": true,
+        "override": false,
+        "source_file_count": "312"
+      }
+    },
+    {
+      "competitive_match": true,
+      "competitive_sha256": "129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383",
+      "environment": {
+        "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "current_timezone": "UTC",
+        "database": "globalstrat_replay",
+        "database_server_version": "160013",
+        "django": "5.2.4",
+        "django_time_zone": "UTC",
+        "hash_seed": "",
+        "lang": "en_US.UTF-8",
+        "lc_all": "",
+        "libc": "glibc 2.35",
+        "locale": [
+          "en_US",
+          "UTF-8"
+        ],
+        "node": "ai-react",
+        "os_release": "Ubuntu 22.04.5 LTS",
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.35",
+        "preferred_encoding": "UTF-8",
+        "python": "3.10.12",
+        "python_build": "main Jun 22 2026 18:55:27",
+        "source_file_count": "312",
+        "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "system_timezone": "Etc/UTC",
+        "time_tzname": [
+          "UTC",
+          "UTC"
+        ],
+        "tz_env": "UTC"
+      },
+      "label": "C: unreachable LLM endpoint",
+      "llm_endpoint": "http://127.0.0.1:9/v1/chat/completions",
+      "llm_model": "unreachable-endpoint",
+      "narrative_status": "FULLY_COMPLETE",
+      "phase1_narrative_sha256": "259e82e52fee3383b63f763a4cd6756a8d78b008fb386a839be9d088e4439269",
+      "post_phase2_briefing_opening": "**Quarter 1 Results**\n\nRevenue declined 94.0% to $1,368,000. Net income: $-21,437,758. Cash position: $28,324,362.",
+      "post_phase2_narrative_sha256": "3bd451a034679a6797f91b4cae355d27b58bf60c827f303b886501d9468c05ef",
+      "required_env": [
+        {
+          "actual": "UTC",
+          "expected": "UTC",
+          "key": "tz_env",
+          "matches": true
+        },
+        {
+          "actual": "3.10.12",
+          "expected": "3.10.12",
+          "key": "python",
+          "matches": true
+        },
+        {
+          "actual": "Ubuntu 22.04.5 LTS",
+          "expected": "Ubuntu 22.04.5 LTS",
+          "key": "os_release",
+          "matches": true
+        }
+      ],
+      "run": "run-c-llm-outage",
+      "source_identity": {
+        "actual_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "actual_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "expected_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "expected_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "matches": true,
+        "override": false,
+        "source_file_count": "312"
+      }
+    },
+    {
+      "competitive_match": true,
+      "competitive_sha256": "129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383",
+      "environment": {
+        "code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "current_timezone": "Asia/Kolkata",
+        "database": "globalstrat_replay",
+        "database_server_version": "160013",
+        "django": "5.2.4",
+        "django_time_zone": "Asia/Kolkata",
+        "hash_seed": "random",
+        "lang": "de_DE.UTF-8",
+        "lc_all": "de_DE.UTF-8",
+        "libc": "glibc 2.36",
+        "locale": [
+          "de_DE",
+          "UTF-8"
+        ],
+        "node": "ai-react",
+        "os_release": "Debian GNU/Linux 12 (bookworm)",
+        "platform": "Linux-5.15.0-190-generic-x86_64-with-glibc2.36",
+        "preferred_encoding": "UTF-8",
+        "python": "3.11.16",
+        "python_build": "main Aug 25 2026 01:18:26",
+        "source_file_count": "312",
+        "source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "system_timezone": "Asia/Kolkata",
+        "time_tzname": [
+          "IST",
+          "IST"
+        ],
+        "tz_env": "Asia/Kolkata"
+      },
+      "label": "D: second container, process TZ Asia/Kolkata, locale de_DE.UTF-8",
+      "llm_endpoint": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "llm_model": "qwen3-max-preview",
+      "narrative_status": "FULLY_COMPLETE",
+      "phase1_narrative_sha256": "259e82e52fee3383b63f763a4cd6756a8d78b008fb386a839be9d088e4439269",
+      "post_phase2_briefing_opening": "**Quarter 1 Results**\n\nRevenue declined 94.0% to $1,368,000. Net income: $-21,437,758. Cash position: $28,324,362.",
+      "post_phase2_narrative_sha256": "2418b417f64763d0e22408ba91a1687dfcd13bbf7c9df7dbe1e3eaaa53bbd37c",
+      "required_env": [
+        {
+          "actual": "Asia/Kolkata",
+          "expected": "Asia/Kolkata",
+          "key": "tz_env",
+          "matches": true
+        },
+        {
+          "actual": "IST,IST",
+          "expected": "IST,IST",
+          "key": "time_tzname",
+          "matches": true
+        },
+        {
+          "actual": "Asia/Kolkata",
+          "expected": "Asia/Kolkata",
+          "key": "django_time_zone",
+          "matches": true
+        },
+        {
+          "actual": "Asia/Kolkata",
+          "expected": "Asia/Kolkata",
+          "key": "current_timezone",
+          "matches": true
+        },
+        {
+          "actual": "Asia/Kolkata",
+          "expected": "Asia/Kolkata",
+          "key": "system_timezone",
+          "matches": true
+        },
+        {
+          "actual": "de_DE.UTF-8",
+          "expected": "de_DE.UTF-8",
+          "key": "lc_all",
+          "matches": true
+        },
+        {
+          "actual": "de_DE,UTF-8",
+          "expected": "de_DE,UTF-8",
+          "key": "locale",
+          "matches": true
+        },
+        {
+          "actual": "Debian GNU/Linux 12 (bookworm)",
+          "expected": "Debian GNU/Linux 12 (bookworm)",
+          "key": "os_release",
+          "matches": true
+        }
+      ],
+      "run": "run-d-second-environment",
+      "source_identity": {
+        "actual_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "actual_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "expected_code_revision": "1189a50d41a502955f77fc505610165735ba6fac",
+        "expected_source_tree_sha256": "642b5884460e82f6420e6ca7ca877f5c9cdacfe1a5f29bac47fc43eeb7b0206a",
+        "matches": true,
+        "override": false,
+        "source_file_count": "312"
+      }
+    }
+  ]
+}

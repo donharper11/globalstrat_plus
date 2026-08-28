@@ -10,8 +10,29 @@ nobody chose.
 ## What was found
 
 A sweep of `backend/core/engine/` (excluding the four Phase-2 prose modules)
-found **93 iterated querysets with no explicit ordering**. Every one now
+found **168 iterated querysets with no explicit ordering**. Every one now
 declares an order, except six that are documented exemptions below.
+
+They came in two waves, and the second wave is the interesting one.
+
+* **93 written inline** — `for row in X.objects.filter(...)`. Found by reading
+  the loop's iterator expression.
+* **75 reached through a local name** —
+
+      rows = X.objects.filter(...)
+      for row in rows:
+
+  Invisible to a check that only inspects the iterator, and by far the more
+  common shape in this codebase. They were found because a cross-environment
+  replay *failed*: `_score_entry_mode_risk` iterated an unordered
+  `TeamMarketPresence` scan, the restored database returned Africa and East
+  Asia in the opposite order, and `RoundResultCoherence.breakdown` — which
+  lists one entry per presence in iteration order — changed with it. Three
+  same-host replays agreed with each other and disagreed with the original
+  resolution. Logged as V2-012.
+
+The lesson is worth keeping: a static sweep is a guard, not a proof. The proof
+is a round restored from its own backup and re-resolved.
 
 ## Two kinds of ordering, and why the difference matters
 
@@ -59,14 +80,17 @@ if an exemption stops matching any real loop — so the list cannot rot.
 | `sc_engine.py` — `ShippingLane.objects.filter(scenario=...)` | Builds a dict keyed by the unique lane code. |
 | `sc_engine.py` — `SupplierState.objects.filter(round=...)` (×3) | Builds a dict keyed by supplier id, unique per round. |
 | `agents/governments.py` — `GovernmentProfile.objects.filter(...)` | Builds a dict keyed by the unique market code. |
+| `sc_engine.py` — `Supplier.objects.filter(scenario=scenario)` (second site) | Builds a dict keyed by the supplier primary key. |
 | `leaderboard.py` — `RoundResultFinancials...values().annotate()` | Aggregate collected into a dict keyed by team id. Adding an `ORDER BY` would change the `GROUP BY` and the aggregate itself. |
 
 ## How this is kept true
 
 `core.tests.test_manifest_determinism.EngineIterationOrderTests` parses every
 module under `core/engine/` and fails on any `for` loop or comprehension whose
-iterator looks like a queryset and carries no `.order_by(`. A new unordered
-loop fails the suite rather than quietly changing a hash.
+iterator looks like a queryset and carries no `.order_by(`. It resolves a loop
+over a local name back to the expression that assigned it, so the shape that
+hid V2-012 cannot pass again. A new unordered loop fails the suite rather than
+quietly changing a hash.
 
 The behavioural counterpart is
 `ManifestSnapshotIntegrationTests.test_row_insertion_order_does_not_change_the_competitive_hash`:
@@ -86,4 +110,6 @@ row order is inverted) and Phase 1 is run again. The two hashes must match.
   but adding or withdrawing a team shifts every later team's draw.
 
 Neither is changed here: both would alter published results, which is a
-competition-rules decision rather than a hardening one.
+competition-rules decision rather than a hardening one. Both were re-triaged to
+P1 after audit — a behaviour that can change a published result is never
+cosmetic — and the register records the specific choice each needs.

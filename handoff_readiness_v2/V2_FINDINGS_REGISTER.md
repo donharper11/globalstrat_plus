@@ -15,12 +15,40 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | Open |
 
-## New findings raised by the GSP-CRV2-01 ordering audit
+## New findings raised by GSP-CRV2-01
 
-| ID | Area | Sev | Description | Reproduction / evidence | Status |
-|---|---|---:|---|---|---|
-| V2-010 | RNG cohort key | P2 | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore share an event stream but not a supply-chain or compliance stream. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | Open — not changed here; altering a seed changes published results, so it is a competition-rules decision. |
-| V2-011 | Shared RNG stream | P2 | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | Open — same reason as V2-010. |
+Severity legend, restated because the first triage of V2-010/V2-011 used it
+wrongly: **P0 blocks; P1 degrades; P2 cosmetic.** A behaviour that can change a
+published result is never P2.
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-010 | RNG cohort key | **P1** | Competition-rules owner (via GSP-CRV2-09) | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore receive the same event stream but different supply-chain and compliance streams. Escalates to **P0** if parallel sections are ever scored against one another, because the disruption exposure they face would differ by construction. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | Open — rules decision required, see disposition below. |
+| V2-011 | Shared RNG stream | **P1** | Competition-rules owner (via GSP-CRV2-09) | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw — one team's presence changes another team's outcome. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | Open — rules decision required, see disposition below. |
+| V2-012 | Iteration order | **P0** | GSP-CRV2-01 (closed) | The first ordering sweep inspected only inline loop iterators, so `rows = X.objects.filter(...)` followed by `for row in rows` was never checked. `_score_entry_mode_risk` iterated an unordered `TeamMarketPresence` scan; a restored database returned two markets in the opposite order, changing `RoundResultCoherence.breakdown` and the competitive hash. A published round did not reproduce. | Cross-environment replay of game 34 round 1: three same-host replays agreed with each other and disagreed with the original resolution; the section diff named `coherence` and the reordered `entry_mode_risk` list. | **Repaired** — 75 further sites ordered; the AST guard now resolves a loop over a local name back to its assignment. |
+| V2-013 | Manifest envelope | **P1** | GSP-CRV2-01 (closed) | The output snapshot held only the competitive sections, so foreign keys pointing at configuration it did not contain (`Team.firm_starter_profile`, `Game.scenario`, `Team.home_market`) fell back to `core.Scenario#surrogate:7`. The competitive hash carried raw sequence values, defeating the surrogate-independence requirement. Never broke a replay, because a restored database reproduces the ids. | Inspect any pre-repair `output_manifest` for `#surrogate:`. | **Repaired** — both envelopes now pull in whatever identity requires; a test forbids `#surrogate:` in either. |
+| V2-014 | Narrative envelope | **P1** | GSP-CRV2-01 (closed) | A narrative section's prose is separated into `narrative_rows` by the snapshot, and the narrative envelope was built from `rows` alone. `narrative_sha256` hashed briefing ids and round numbers, not a word of text — so a replay against a deliberately different model produced an identical narrative hash and the "prose differs, result does not" claim was unverifiable. | Two runs of game 36 round 1 under different endpoints reported the same `narrative_sha256`. | **Repaired** — the envelope carries `prose` and `prose_digests`; tests require that changing a briefing changes the narrative hash and leaves the competitive hash alone. |
+
+### Disposition required for V2-010 and V2-011
+
+Neither is implemented inside GSP-CRV2-01: changing a seed or a draw order
+changes published results, which is a rules decision, not a hardening one. The
+choice the competition-rules owner has to make is stated here so it cannot stay
+ambiguous.
+
+* **V2-010.** Either (a) cohort identity is meant to give every section of one
+  class the same scenario stream, in which case `sc_engine` and
+  `compliance_engine` must move to `game.section_id or game.id` and a test must
+  pin all three call sites to one key; or (b) supply-chain exposure is meant to
+  be per-game, in which case that is a published rule and the event stream
+  should arguably move to `game.id` for the same reason. Silence is not a third
+  option: today the two halves of the engine disagree.
+* **V2-011.** Either (a) per-team independence is required — each roll keys on
+  `(team, regime, market)` through `get_rng`, as the rest of the engine already
+  does — or (b) a shared stream is accepted and the rules state that a
+  withdrawal changes later teams' draws, with the withdrawal procedure written
+  to match. Option (a) is the smaller change and matches `core/engine/rng.py`'s
+  documented convention.
 
 ## Closure entries
 
@@ -39,16 +67,24 @@ Phase-2 prose is hashed separately as `narrative_sha256` and reported
 separately. Measured wall clock is excluded from the competitive hash and kept
 in the input envelope, where it is a frozen fact about the starting state.
 
+No surrogate primary key or foreign-key id reaches either envelope: a row is
+identified by a natural-key token with foreign keys resolved recursively, and
+the snapshot pulls in whatever sections identity requires (V2-013).
+
 - Code: `core/services/manifest_sections.py`, `manifest_snapshot.py`,
-  `manifest_schema.py`, `canonical_json.py`, `resolution_manifest.py`;
-  migration `0061`.
-- Tests: `core/tests/test_manifest_determinism.py` (34), plus the updated
+  `manifest_schema.py`, `canonical_json.py`, `build_identity.py`,
+  `resolution_manifest.py`; migrations `0061`, `0062`.
+- Tests: `core/tests/test_manifest_determinism.py` (50), plus the updated
   envelope assertion in `core/tests/test_competition_hardening.py`.
-- Evidence: `evidence/determinism/` — four replays of game 32 round 1 all
-  produce `ba9f711194866fe36226def40e3dee636dfc2864301e98e57abc212e96dd3393`,
-  including a second container on Debian 12 / Python 3.11 / `Asia/Kolkata` /
-  `de_DE.UTF-8`. Narrative hashes differ in all four.
-- Docs: `DETERMINISM_BOUNDARY.md`, `evidence/determinism/README.md`.
+  Backend suite 328.
+- Evidence: `evidence/determinism/` — four replays of game 37 round 1 all
+  produce `129a374ec6a82f22da9514ad3c263b856381024f46ad31790e5a36e08589b383`,
+  including a second container on Debian 12 / Python 3.11 whose *process*
+  timezone is `Asia/Kolkata` (`time.tzname == ('IST','IST')`) under
+  `LC_ALL=de_DE.UTF-8`, asserted with `--require-env` rather than labelled.
+  Four different narrative hashes, with the prose stored beside each.
+- Docs: `DETERMINISM_BOUNDARY.md`, `ORDERING_AUDIT.md`,
+  `evidence/determinism/README.md`.
 
 ### V2-002 — manifest sufficient to explain an input (P1) — closed
 
@@ -68,17 +104,32 @@ The envelope is versioned. Version-1 manifests stay readable exactly as stored
 and are never reinterpreted as version 2 — `require_schema_version` refuses, so
 a v1 hash cannot be compared against a v2 hash and called a match.
 
-- Command: `manage.py replay_round` verifies input integrity **before** any
-  mutation (exit 2, engine not run) and prints per-section diffs on mismatch
-  (exit 3). `manage.py dump_manifest_schema --check` guards the inventory.
-- Negative tests: a corrupted decision payload, a corrupted scenario value and
-  a corrupted carried-state value each fail verification before processing,
-  each naming the exact row and field — `evidence/determinism/negative/`.
+The build that resolved a round is identified by content, not only by a commit
+hash. `core/services/build_identity.py` digests every runtime source file under
+`backend/`; a `-dirty` suffix names the commit but not the modifications on top
+of it, and two different patches on one HEAD produce the same string.
+Resolution refuses an unidentified build when `COMPETITION_REQUIRE_CLEAN_BUILD`
+is on (the default in production), and replay refuses a source mismatch before
+it mutates anything.
+
+- Command: `manage.py replay_round` verifies the source tree, asserts its own
+  environment fingerprint (`--require-env`), and verifies input integrity
+  **before** any mutation (exit 2, engine not run), printing per-section diffs
+  on a hash mismatch (exit 3). `manage.py dump_manifest_schema --check` guards
+  the inventory. `recover_competition_round` verifies the restored state
+  against the recorded manifest before re-running.
+- Negative tests: a corrupted decision payload, a corrupted scenario value, a
+  corrupted carried-state value and an altered source tree each fail before
+  processing — `evidence/determinism/negative/`. The source-tree case is the
+  telling one: `git status --untracked-files=no` reported the tree clean and
+  the commit hash was unchanged, and the replay still refused.
 - Durability: each envelope is also written to a content-addressed file under
   `<COMPETITION_BACKUP_DIR>/manifests/`, so it survives losing the database.
+  The digest in the filename is the manifest's own `input_sha256` /
+  `output_sha256`.
 
 ## Scope notes
 
 - The Phase-2 LLM path is outside the existing output hash and is dispatched only after the deterministic transaction commits. No LLM value is read by the Phase-1 scoring call graph. This part of the v1 claim is structurally sound, subject to outage/restart verification.
 - Wall-clock values are lifecycle/audit metadata or duration fields. They are excluded from the competitive hash by rule (`manifest_sections.MEASURED_TIME_FIELDS`) and kept in the input envelope as frozen facts about the starting state.
-- The unordered-query sweep is complete: 93 iterated querysets in `core/engine/` had no explicit ordering; all now declare one except six documented exemptions whose result cannot depend on order. See `ORDERING_AUDIT.md`. An AST test fails the suite on any new unordered loop, and a forward/reverse insertion test re-runs the whole Phase-1 pipeline over reordered rows.
+- The unordered-query sweep is complete: 168 iterated querysets in `core/engine/` had no explicit ordering — 93 written inline and 75 reached through a local name, the second group found only after a cross-environment replay failed (V2-012). All now declare one except six documented exemptions whose result cannot depend on order. See `ORDERING_AUDIT.md`. An AST test fails the suite on any new unordered loop in either form, and a forward/reverse insertion test re-runs the whole Phase-1 pipeline over reordered rows.
