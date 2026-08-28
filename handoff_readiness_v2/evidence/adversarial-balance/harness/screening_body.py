@@ -70,11 +70,30 @@ def probe_plan(inventory):
                 plan.append({'decision_type': decision_type, 'field': field,
                              'kind': kind, 'label': 'legal_minimum',
                              'value': minimum})
-                high = declared.get('max_value')
-                maximum = high if (high is not None and high < 10 ** 12) else int(CASH)
+                # The maximum has to be a value the column can actually
+                # hold. A percentage stored as DECIMAL(5,4) tops out at
+                # 9.9999; offering it the team's cash is a harness bug, not a
+                # boundary probe, and PostgreSQL rejects the row before the
+                # engine ever sees it.
+                column_max = None
+                digits = declared.get('max_digits')
+                places = declared.get('decimal_places')
+                if digits is not None:
+                    column_max = D(10) ** (digits - (places or 0)) - (
+                        D(10) ** -(places or 0))
+                declared_max = declared.get('max_value')
+                candidates = [c for c in (declared_max, column_max, CASH)
+                              if c is not None]
+                maximum = min(D(str(c)) for c in candidates)
                 plan.append({'decision_type': decision_type, 'field': field,
                              'kind': kind, 'label': 'funded_maximum',
-                             'value': maximum})
+                             'value': str(maximum),
+                             'maximum_source': (
+                                 'declared max_value' if declared_max is not None
+                                 and D(str(declared_max)) == maximum
+                                 else 'column precision'
+                                 if column_max is not None and column_max == maximum
+                                 else 'team cash')})
             elif kind == 'choice':
                 for choice in entry.get('declared', {}).get('choices', [])[:6]:
                     plan.append({'decision_type': decision_type, 'field': field,
@@ -95,6 +114,11 @@ MODEL_FOR = {
     'financing': ('core.models.decisions', 'DecisionFinancing'),
     'marketing': ('core.models.decisions', 'DecisionMarketing'),
     'talent': ('core.models.talent', 'DecisionTalent'),
+    'rd': ('core.models.decisions', 'DecisionRDInvestment'),
+    'plants': ('core.models.decisions', 'DecisionPlant'),
+    'partnerships': ('core.models.decisions', 'DecisionPartnership'),
+    'market-entry': ('core.models.decisions', 'DecisionMarketEntry'),
+    'platforms': ('core.models.decisions', 'DecisionPlatformDevelopment'),
 }
 
 
@@ -183,6 +207,7 @@ def run(inventory, max_probes=None, verbose=True):
             sub, _ = DecisionSubmission.objects.get_or_create(
                 team=team, round=rnd, defaults={'status': 'draft'})
             BASE.build(sub, team)
+            optional_status = BASE.build_optional(sub, team)
             subs[team.id] = sub
 
         batch = screenable[position:position + len(probes_teams)]
@@ -225,10 +250,16 @@ def run(inventory, max_probes=None, verbose=True):
                     for key in ('total_revenue', 'net_income', 'cash_closing')
                     if probe_outcome.get(key) and control_outcome.get(key)
                 }
-                record['responsive'] = any(
+                # Deliberately named `moved`, not `responsive`. Probes share a
+                # resolution, so almost any change shifts the control too and a
+                # dollar-level threshold marks everything. Whether a dimension
+                # is worth a dense sweep is decided in screening_report.py
+                # against the control's own scale; this flag only says the
+                # number is not identical.
+                record['moved'] = any(
                     abs(D(v)) > D('1') for v in record['delta'].values())
             else:
-                record['responsive'] = None
+                record['moved'] = None
             results.append(record)
         for probe in batch:
             if probe.get('applied') is False:
@@ -239,6 +270,7 @@ def run(inventory, max_probes=None, verbose=True):
                   f'{" — " + error if error else ""}', flush=True)
 
     return {
+        'optional_baseline_rows': optional_status,
         'seed': SCREEN_SEED,
         'baseline': 'load_demo scripted defaults; see harness/baseline.py',
         'elapsed_seconds': round(time.time() - started, 1),

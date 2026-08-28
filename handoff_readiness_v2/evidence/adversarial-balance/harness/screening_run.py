@@ -71,12 +71,11 @@ def main():
         report['code_revision'] = revision
         report['working_tree_clean'] = dirty == ''
 
-        responsive = [r for r in report['results'] if r.get('responsive')]
-        flat = [r for r in report['results']
-                if r.get('applied') and r.get('responsive') is False]
+        moved = [r for r in report['results'] if r.get('moved')]
         print(f"\nplanned {report['planned']} | screened {report['screened']} "
-              f"| responsive {len(responsive)} | flat {len(flat)} "
-              f"| {report['elapsed_seconds']}s")
+              f"| numerically moved {len(moved)} | {report['elapsed_seconds']}s")
+        print('("moved" is not "material" — escalation is decided by '
+              'screening_report.py)')
 
         if options.smoke is None:
             (EVIDENCE / 'screening.json').write_text(

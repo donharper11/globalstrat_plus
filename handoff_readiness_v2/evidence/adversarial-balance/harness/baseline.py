@@ -98,3 +98,104 @@ def build(submission, team):
                 **MARKETING,
             )
     return submission
+
+
+# ---------------------------------------------------------------------------
+# Optional baseline rows
+# ---------------------------------------------------------------------------
+# The five decision types above cover about two thirds of the screenable
+# dimensions. The rest — R&D, plants, partnerships, market entry, platform
+# development — carry real cost-bearing fields, and a dimension with no row to
+# vary is a dimension nobody screened. Each is built where the seeded scenario
+# supplies the foreign keys it needs, and each failure is recorded rather than
+# swallowed, so "not screened" is always a stated reason.
+
+OPTIONAL_AMOUNT = D('100000')
+
+
+def build_optional(submission, team):
+    """Add one row of each remaining decision type. Returns {type: status}."""
+    from core.models.decisions import (DecisionMarketEntry, DecisionPartnership,
+                                       DecisionPlant,
+                                       DecisionPlatformDevelopment,
+                                       DecisionRDInvestment)
+    from core.models.scenario import (EntryModeDefinition, FeatureDefinition,
+                                      PlatformFeatureCeiling,
+                                      PlatformGenerationDefinition,
+                                      StrategyOptionDefinition)
+    from core.models.team_state import TeamMarketPresence, TeamPlatform
+
+    status = {}
+    home = team.home_market
+    platform = TeamPlatform.objects.filter(team=team).order_by('id').first()
+    present = list(TeamMarketPresence.objects
+                   .filter(team=team, status='active')
+                   .values_list('market_id', flat=True))
+
+    def attempt(name, fn):
+        try:
+            fn()
+            status[name] = 'built'
+        except Exception as error:
+            status[name] = f'not built: {type(error).__name__}: {error}'
+
+    def rd():
+        DecisionRDInvestment.objects.filter(submission=submission).delete()
+        if platform is None:
+            raise ValueError('team has no platform')
+        ceiling = (PlatformFeatureCeiling.objects
+                   .filter(platform_generation=platform.platform_generation,
+                           ceiling_value__gt=0)
+                   .order_by('feature_id').first())
+        if ceiling is None:
+            raise ValueError('no feature is reachable on this platform')
+        DecisionRDInvestment.objects.create(
+            submission=submission, team_platform=platform,
+            feature_id=ceiling.feature_id, method='in_house',
+            amount=OPTIONAL_AMOUNT, target_level=1)
+
+    def plants():
+        DecisionPlant.objects.filter(submission=submission).delete()
+        DecisionPlant.objects.create(
+            submission=submission, market=home, action='build',
+            capacity_units=1000, contract_mfg_volume=0)
+
+    def partnerships():
+        DecisionPartnership.objects.filter(submission=submission).delete()
+        option = StrategyOptionDefinition.objects.order_by('id').first()
+        if option is None:
+            raise ValueError('scenario defines no strategy option')
+        DecisionPartnership.objects.create(
+            submission=submission, market=home, strategy_option=option,
+            annual_investment=OPTIONAL_AMOUNT, action='form')
+
+    def market_entry():
+        DecisionMarketEntry.objects.filter(submission=submission).delete()
+        mode = EntryModeDefinition.objects.order_by('id').first()
+        from core.models.scenario import MarketDefinition
+        candidate = (MarketDefinition.objects
+                     .filter(scenario=team.game.scenario)
+                     .exclude(id__in=present).order_by('id').first())
+        if mode is None or candidate is None:
+            raise ValueError('no entry mode or no market left to enter')
+        DecisionMarketEntry.objects.create(
+            submission=submission, market=candidate, entry_mode=mode,
+            initial_investment=OPTIONAL_AMOUNT, action='enter')
+
+    def platforms():
+        DecisionPlatformDevelopment.objects.filter(submission=submission).delete()
+        generation = (PlatformGenerationDefinition.objects
+                      .filter(scenario=team.game.scenario)
+                      .order_by('generation_order').first())
+        if generation is None:
+            raise ValueError('scenario defines no platform generation')
+        DecisionPlatformDevelopment.objects.create(
+            submission=submission, platform_generation=generation,
+            method='in_house', committed_cost=OPTIONAL_AMOUNT)
+
+    attempt('rd', rd)
+    attempt('plants', plants)
+    attempt('partnerships', partnerships)
+    attempt('market-entry', market_entry)
+    attempt('platforms', platforms)
+    return status
