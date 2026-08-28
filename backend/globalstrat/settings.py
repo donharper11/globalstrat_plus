@@ -276,11 +276,16 @@ COMPETITION_RECOVERY_ENABLED = os.environ.get(
     'COMPETITION_RECOVERY_ENABLED', 'false',
 ).lower() in ('1', 'true', 'yes')
 
-# V2-016: whether the Phase-2 retrieval-grounded evaluation is blended into the
-# stored coherence score. Off means coherence is the deterministic formula
-# score and an LLM outage cannot change a grade; on restores the older blend
-# and, with it, a graded number that depends on an external service answering.
-# Turning it on is a competition-rules decision.
+# RETIRED (V2-015 / V2-016). This used to blend the Phase-2 retrieval score
+# into the stored coherence score — a field inside the competitive hash that
+# services/grading.py also reads, so a student's mark depended on whether an
+# external service answered. The path is removed, not merely defaulted off:
+# a setting that a supported configuration can flip back is not a safe
+# competition configuration.
+#
+# The name is kept only so that a stack still setting it fails loudly rather
+# than believing retrieval is being graded when it is not — see
+# core.services.narrative_jobs.require_safe_rag_configuration.
 COMPETITION_RAG_AFFECTS_COHERENCE = os.environ.get(
     'COMPETITION_RAG_AFFECTS_COHERENCE', 'false',
 ).lower() in ('1', 'true', 'yes')

@@ -23,7 +23,7 @@ from rest_framework.views import APIView
 
 from core.models.core import Game, Round, Team
 from core.models.decisions import DecisionSubmission
-from core.permissions import IsInstructor
+from core.permissions import IsInstructor, instructor_can_access_game
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 
@@ -83,6 +83,56 @@ def _round_payload(game, round_obj):
     }
 
 
+def _narrative_job_payload(round_obj):
+    """What an instructor needs to answer "where is my briefing?".
+
+    The job rows already carried all of this; nothing read them but a
+    management command, so an instructor could see that narratives were
+    missing and nothing about why. Deliberately a projection, not the row:
+    `claimed_by` is a hostname and PID that means nothing to an instructor, and
+    the model *endpoint* is infrastructure detail.
+    """
+    from core.models.narrative_jobs import NarrativeJob
+
+    jobs = NarrativeJob.objects.filter(round=round_obj).order_by(
+        'narrative_type', 'template_version')
+    rows = []
+    for job in jobs:
+        rows.append({
+            'narrative_type': job.narrative_type,
+            'label': job.get_narrative_type_display(),
+            'state': job.state,
+            'state_label': job.get_state_display(),
+            'degraded': job.degraded,
+            'attempts': job.attempts,
+            'max_attempts': job.max_attempts,
+            'attempts_remaining': job.attempts_remaining,
+            'template_version': job.template_version,
+            'model_name': job.model_name,
+            # Already sanitised when stored: provider errors quote the failing
+            # request, and that request carries an Authorization header.
+            'last_error': job.last_error,
+            'created_at': job.created_at.isoformat() if job.created_at else None,
+            'claimed_at': job.claimed_at.isoformat() if job.claimed_at else None,
+            'claim_expires_at': (job.claim_expires_at.isoformat()
+                                 if job.claim_expires_at else None),
+            'completed_at': (job.completed_at.isoformat()
+                             if job.completed_at else None),
+        })
+    states = [row['state'] for row in rows]
+    return {
+        'jobs': rows,
+        'summary': {
+            'total': len(rows),
+            'pending': states.count('pending'),
+            'claimed': states.count('claimed'),
+            'succeeded': states.count('succeeded'),
+            'failed': states.count('failed'),
+            'degraded': sum(1 for row in rows if row['degraded']),
+        },
+    }
+
+
 class RoundControlView(APIView):
     """
     GET /api/games/<game_id>/round-control/
@@ -94,6 +144,10 @@ class RoundControlView(APIView):
 
     def get(self, request, game_id):
         game = get_object_or_404(Game, pk=game_id)
+        if not instructor_can_access_game(request, game):
+            return Response(
+                {'error': 'This game belongs to another instructor.'},
+                status=status.HTTP_403_FORBIDDEN)
         round_obj = Round.objects.filter(
             game=game, round_number=game.current_round,
         ).first()
@@ -106,6 +160,9 @@ class RoundControlView(APIView):
             'total_rounds': game.scenario.num_rounds if game.scenario else None,
             'server_time': timezone.now().isoformat(),
             'round': _round_payload(game, round_obj),
+            # Why the prose for this round is missing, late or template-written.
+            'narratives': (_narrative_job_payload(round_obj)
+                           if round_obj else None),
         })
 
 

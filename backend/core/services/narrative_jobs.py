@@ -46,6 +46,28 @@ _SECRET_PATTERN = re.compile(
     re.IGNORECASE)
 
 
+class UnsafeRagConfiguration(RuntimeError):
+    """A retired switch is set, and honouring it would corrupt a competition."""
+
+
+def require_safe_rag_configuration():
+    """Refuse to resolve while the retired coherence-blend flag is set.
+
+    `COMPETITION_RAG_AFFECTS_COHERENCE` used to make Phase 2 write a hashed,
+    grade-affecting field. That path is gone. Silently ignoring the flag would
+    be worse than either behaviour: an operator who set it deliberately would
+    believe retrieval was being graded, and it would not be. So resolution
+    stops and says so, before anything is written.
+    """
+    if getattr(settings, 'COMPETITION_RAG_AFFECTS_COHERENCE', False):
+        raise UnsafeRagConfiguration(
+            'COMPETITION_RAG_AFFECTS_COHERENCE is set, but the Phase-2 path it '
+            'enabled has been removed: it wrote a field inside the competitive '
+            'hash that grading also reads, so a student\'s mark depended on '
+            'whether the model answered (V2-015, V2-016). Unset it to resolve '
+            'rounds. Grading retrieval is a Phase-1 rules change, not a flag.')
+
+
 def sanitize_error(error, limit=500):
     """An operator-readable error with any credential removed.
 

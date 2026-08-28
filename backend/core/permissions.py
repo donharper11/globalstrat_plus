@@ -44,6 +44,37 @@ class IsInstructorOrReadOnly(BasePermission):
         return role in ('instructor', 'admin')
 
 
+def instructor_can_access_game(request, game):
+    """Whether this instructor may read a specific game's data.
+
+    `IsInstructor` only checks the role, so any instructor could read any
+    game. Narrative job metadata carries a model name, an endpoint and error
+    text, so it is scoped to the cohort that owns the game.
+
+    Ownership follows the rule already used for student accounts: a game
+    belongs to the instructor who owns the course behind its section, and a
+    course with no `instructor_id` is unowned and visible to any instructor.
+    Course.instructor_id is genuinely NULL for the live pilot cohort, so
+    scoping strictly to owned courses would hide those games from everyone.
+    """
+    role = (get_request_role(request) or '').lower()
+    if role == 'admin':
+        return True
+    if role != 'instructor':
+        return False
+
+    from core.models.course import Course, Section
+
+    section = Section.objects.filter(section_id=game.section_id).first()
+    if section is None:
+        return True                     # no cohort recorded: unowned
+    course = Course.objects.filter(course_id=section.course_id).first()
+    if course is None or course.instructor_id is None:
+        return True                     # unowned course: any instructor
+    user = getattr(request, 'user', None)
+    return getattr(user, 'user_id', None) == course.instructor_id
+
+
 class GameIsNotPaused(BasePermission):
     """
     Block student writes while the instructor has paused the game.

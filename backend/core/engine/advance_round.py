@@ -147,6 +147,11 @@ def process_round(game_id, dry_run=False):
     """
     from django.db import transaction
 
+    # Checked before the transaction opens, so a misconfigured stack fails
+    # without taking a backup or a lock.
+    from core.services.narrative_jobs import require_safe_rag_configuration
+    require_safe_rag_configuration()
+
     try:
         # One transaction owns the resolution claim, recovery snapshot,
         # manifests, and deterministic mutations. A concurrent caller waits

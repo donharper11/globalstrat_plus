@@ -188,9 +188,21 @@ def calculate_coherence(context, skip_rag=False):
 
 
 def update_coherence_with_rag(game, round_number, team, rag_text):
-    """
-    CC-32H Phase 2: Parse RAG evaluation and blend with stored formula score.
-    Called from narratives.generate_round_narratives().
+    """Record a Phase-2 retrieval evaluation as instructor commentary.
+
+    It does not write `RoundResultCoherence`, and there is no configuration in
+    which it does. That row is inside the competitive hash *and* is read by
+    services/grading.py, so writing it from Phase 2 made the stored round
+    disagree with the manifest that certified it (V2-015) and made a student's
+    mark depend on whether an external service answered (V2-016). A default-off
+    switch was not enough — a supported configuration could still turn it back
+    on — so the write is gone rather than gated, and
+    `require_safe_rag_configuration()` refuses to resolve a round while the
+    legacy flag is set.
+
+    Including retrieval in a grade remains a legitimate rules choice. It
+    belongs in Phase 1, inside the transaction the manifest hashes, and it is
+    not this function.
     """
     import json
 
@@ -200,7 +212,6 @@ def update_coherence_with_rag(game, round_number, team, rag_text):
     if not coherence_record:
         return
 
-    # Parse RAG response
     try:
         text = rag_text.strip()
         if text.startswith('```'):
@@ -209,46 +220,21 @@ def update_coherence_with_rag(game, round_number, team, rag_text):
         rag_score_val = float(parsed.get('score', 50))
         rag_feedback = parsed.get('feedback', '')
     except (json.JSONDecodeError, ValueError, KeyError):
-        return  # Can't parse — formula score stands
+        return  # Can't parse — nothing to say, and nothing to change.
 
+    # What the score *would* have been, shown to instructors as context. It is
+    # computed here and stored nowhere near the graded row.
     formula_score = float(coherence_record.formula_score)
-
-    # Blend with communication coherence if present
     comm_score = (coherence_record.breakdown or {}).get(
         'communication_coherence', {},
     ).get('score', 0)
-
     if comm_score > 0:
         blended_val = 0.55 * formula_score + 0.35 * rag_score_val + 0.10 * comm_score
     else:
         blended_val = 0.6 * formula_score + 0.4 * rag_score_val
 
-    breakdown = coherence_record.breakdown or {}
-    breakdown['rag_evaluation'] = {
-        'score': rag_score_val,
-        'feedback': rag_feedback,
-    }
-
     _record_rag_commentary(game, round_number, team, rag_score_val, rag_feedback,
                            blended_val)
-
-    # V2-016: blending an LLM score into a stored result makes a graded number
-    # depend on whether an external service answered — two identical
-    # competitions grade differently. RoundResultCoherence is inside the
-    # competitive hash *and* is read by services/grading.py, so Phase 2 writing
-    # it also left the database disagreeing with its own manifest (V2-015).
-    #
-    # Off by default: coherence is the deterministic formula score, and the RAG
-    # evaluation is recorded as instructor commentary beside it. Set
-    # COMPETITION_RAG_AFFECTS_COHERENCE=true to restore the blend — that is a
-    # competition-rules decision, and it reintroduces both defects knowingly.
-    if not getattr(settings, 'COMPETITION_RAG_AFFECTS_COHERENCE', False):
-        return
-
-    coherence_record.rag_score = D(str(round(rag_score_val, 2)))
-    coherence_record.blended_score = D(str(round(blended_val, 2)))
-    coherence_record.breakdown = breakdown
-    coherence_record.save(update_fields=['rag_score', 'blended_score', 'breakdown'])
 
 
 def _record_rag_commentary(game, round_number, team, score, feedback, blended):

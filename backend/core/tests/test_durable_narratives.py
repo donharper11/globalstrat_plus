@@ -497,3 +497,204 @@ class DegradedCompletionTests(DurableNarrativeBase):
         self.stub_llm(success=False)
         narrative_jobs.drain(game_id=self.game.id)
         self.assertEqual(self.competitive_hash(), before)
+
+
+# ---------------------------------------------------------------------------
+# R1 — instructor observability
+# ---------------------------------------------------------------------------
+
+class NarrativeStatusEndpointTests(DurableNarrativeBase):
+    """The job rows carried everything an instructor needs and nothing read them.
+
+    A management command served the operator retrying a queue; it did not answer
+    an instructor asking why a team's briefing is missing, late, or written by
+    the engine rather than the model.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from core.models import User
+        from core.models.course import Course, Section
+        self.course = Course.objects.create(
+            course_code=f'C{id(self) % 100000}', course_name='Owned course',
+            instructor_id=None, is_active=True)
+        self.section = Section.objects.create(
+            course_id=self.course.course_id, section_code='S1',
+            section_name='Section 1', max_teams=4, team_size_min=1,
+            team_size_max=4, is_active=True)
+        Game.objects.filter(pk=self.game.pk).update(
+            section_id=self.section.section_id)
+        self.game.refresh_from_db()
+
+        self.owner = User.objects.create(
+            username=f'owner-inst-{id(self)}', role='instructor',
+            password_hash='x')
+        self.other = User.objects.create(
+            username=f'other-inst-{id(self)}', role='instructor',
+            password_hash='x')
+        self.student = User.objects.create(
+            username=f'student-{id(self)}', role='student', password_hash='x')
+        Course.objects.filter(course_id=self.course.course_id).update(
+            instructor_id=self.owner.user_id)
+
+    def _get(self, user):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}')
+        return client.get(f'/api/games/{self.game.id}/round-control/')
+
+    def test_the_games_instructor_sees_every_job_field(self):
+        self.resolve()
+        response = self._get(self.owner)
+        self.assertEqual(response.status_code, 200)
+        narratives = response.data['narratives']
+        self.assertEqual(narratives['summary']['total'],
+                         len(narrative_jobs.ENQUEUED_TYPES))
+        self.assertEqual(narratives['summary']['pending'],
+                         len(narrative_jobs.ENQUEUED_TYPES))
+        row = narratives['jobs'][0]
+        for field in ('narrative_type', 'label', 'state', 'state_label',
+                      'degraded', 'attempts', 'max_attempts',
+                      'attempts_remaining', 'template_version', 'model_name',
+                      'last_error', 'created_at', 'claimed_at',
+                      'claim_expires_at', 'completed_at'):
+            self.assertIn(field, row)
+        self.assertEqual(row['state'], 'pending')
+        self.assertEqual(row['attempts'], 0)
+        self.assertEqual(row['max_attempts'], 3)
+        self.assertEqual(row['template_version'], narrative_jobs.TEMPLATE_VERSION)
+
+    def test_a_student_is_refused(self):
+        self.resolve()
+        self.assertEqual(self._get(self.student).status_code, 403)
+
+    def test_an_unrelated_instructor_is_refused(self):
+        self.resolve()
+        response = self._get(self.other)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn('narratives', response.data)
+
+    def test_an_unowned_cohort_stays_visible_to_any_instructor(self):
+        """Course.instructor_id is genuinely NULL for the live pilot; scoping
+        strictly would hide those games from everyone."""
+        from core.models.course import Course
+        Course.objects.filter(course_id=self.course.course_id).update(
+            instructor_id=None)
+        self.resolve()
+        self.assertEqual(self._get(self.other).status_code, 200)
+
+    def test_degraded_and_failed_jobs_are_represented(self):
+        self.resolve()
+        NarrativeJob.objects.filter(
+            round=self.round, narrative_type='briefing').update(
+            state=NarrativeJob.SUCCEEDED, degraded=True, attempts=1,
+            last_error='3/3 calls fell back to templates: no response',
+            model_name='qwen-max', completed_at=timezone.now())
+        NarrativeJob.objects.filter(
+            round=self.round, narrative_type='coaching').update(
+            state=NarrativeJob.FAILED, attempts=3,
+            last_error='HTTP 500 upstream error', completed_at=timezone.now())
+
+        narratives = self._get(self.owner).data['narratives']
+        by_type = {row['narrative_type']: row for row in narratives['jobs']}
+
+        briefing = by_type['briefing']
+        self.assertEqual(briefing['state'], 'succeeded')
+        self.assertTrue(briefing['degraded'])
+        self.assertIn('fell back to templates', briefing['last_error'])
+        self.assertEqual(briefing['model_name'], 'qwen-max')
+        self.assertIsNotNone(briefing['completed_at'])
+
+        coaching = by_type['coaching']
+        self.assertEqual(coaching['state'], 'failed')
+        self.assertEqual(coaching['attempts'], 3)
+        self.assertEqual(coaching['attempts_remaining'], 0)
+        self.assertIn('500', coaching['last_error'])
+
+        self.assertEqual(narratives['summary']['degraded'], 1)
+        self.assertEqual(narratives['summary']['failed'], 1)
+        self.assertEqual(narratives['summary']['pending'],
+                         len(narrative_jobs.ENQUEUED_TYPES) - 2)
+
+    def test_no_credential_reaches_the_response(self):
+        """A provider error quotes the failing request, and that request
+        carries an Authorization header."""
+        import json as _json
+        self.resolve()
+        self.stub_llm(error=RuntimeError(
+            '401 for request with Authorization: Bearer sk-abcdef0123456789 '
+            'and api_key=sk-secret-value'))
+        for _ in range(3):
+            job = narrative_jobs.claim_next()
+            if job is None:
+                break
+            narrative_jobs.run_job(job)
+
+        body = _json.dumps(self._get(self.owner).data, default=str)
+        for secret in ('sk-abcdef0123456789', 'sk-secret-value',
+                       'test-key-not-real', 'Bearer '):
+            self.assertNotIn(secret, body)
+        self.assertIn('[redacted]', body)
+
+    def test_a_round_with_no_jobs_reports_an_empty_set_not_an_error(self):
+        response = self._get(self.owner)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['narratives']['summary']['total'], 0)
+
+
+# ---------------------------------------------------------------------------
+# R2 — no configuration lets Phase 2 reach a grade
+# ---------------------------------------------------------------------------
+
+class CoherenceIsolationTests(DurableNarrativeBase):
+    """The switch is gone, not defaulted off.
+
+    A default-off setting is not a safe configuration: a supported deployment
+    could flip it and silently reintroduce V2-015 and V2-016.
+    """
+
+    def test_no_configuration_lets_phase_2_change_a_grade_or_the_manifest(self):
+        from django.test import override_settings
+        from core.models.results_financials import RoundResultCoherence
+        from core.services.narrative_jobs import UnsafeRagConfiguration
+
+        self.resolve()
+        coherence = RoundResultCoherence.objects.filter(
+            game=self.game, round_number=1).first()
+        graded_before = coherence.blended_score
+        rag_before = coherence.rag_score
+        hash_before = self.competitive_hash()
+        self.stub_llm(content='{"score": 12, "feedback": "Incoherent."}')
+
+        # 1. The supported configuration: the flag unset.
+        narrative_jobs.drain(game_id=self.game.id)
+        coherence.refresh_from_db()
+        self.assertEqual(coherence.blended_score, graded_before)
+        self.assertEqual(coherence.rag_score, rag_before)
+        self.assertEqual(self.competitive_hash(), hash_before)
+
+        # 2. The retired flag set: running the job still cannot move the grade,
+        #    because the write path no longer exists.
+        with override_settings(COMPETITION_RAG_AFFECTS_COHERENCE=True):
+            NarrativeJob.objects.filter(round=self.round).update(
+                state=NarrativeJob.PENDING, attempts=0, degraded=False,
+                claimed_by='', claim_expires_at=None, completed_at=None)
+            narrative_jobs.drain(game_id=self.game.id)
+            coherence.refresh_from_db()
+            self.assertEqual(coherence.blended_score, graded_before)
+            self.assertEqual(coherence.rag_score, rag_before)
+            self.assertEqual(self.competitive_hash(), hash_before)
+
+            # 3. And resolution refuses to run at all, so nobody is left
+            #    believing retrieval is being graded when it is not.
+            with self.assertRaises(UnsafeRagConfiguration):
+                self.resolve()
+
+        # The evaluation is still visible to instructors as commentary.
+        from core.models.cc21_models import InstructorAlert
+        commentary = InstructorAlert.objects.filter(
+            game=self.game, alert_type='coherence_rag', source='narrative')
+        self.assertTrue(commentary.exists())
+        self.assertIn('Incoherent', commentary.first().detail)
