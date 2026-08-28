@@ -6,9 +6,26 @@ the defect being tested for is that two transactions each read a round, each
 decide they are allowed to proceed, and only discover the conflict inside the
 engine — which mocked locks would hide.
 
-Each pair runs `ITERATIONS` times in each arrival order, and every iteration
-asserts the invariants that make a competition defensible: exactly one
-resolution, no partial output, a complete audit trail, and no 500.
+Counting races
+--------------
+`ITERATIONS` is the **total** number of races per pair, not a count per arrival
+order. `_race` alternates which thread is released first on each iteration, so
+`ITERATIONS=100` means 100 races per pair, 50 with each action arriving first.
+That is deliberate control rather than a hope that the scheduler varies:
+`arrival_order` is recorded per iteration in the evidence transcript.
+
+Iteration profiles
+------------------
+Set `GSP_CRV2_02_ITERATIONS` to 1, 10 or 100:
+
+* **1** (the default) — the development loop. One race per pair still exercises
+  every code path and every invariant; it just cannot speak to how often each
+  side wins.
+* **10** — preflight, before a freeze commit.
+* **100** — release certification, and the only value that may write evidence.
+
+`GSP_CRV2_02_EVIDENCE_DIR` refuses to run at anything but 100, so a cheap
+development run cannot overwrite a release artifact with a 1-race sample.
 """
 import json
 import os
@@ -32,12 +49,50 @@ from core.models.scenario import (FirmStarterProfile, MarketDefinition,
                                   SegmentDefinition)
 
 
-ITERATIONS = 100
+ITERATION_PROFILES = (1, 10, 100)
+CERTIFICATION_ITERATIONS = 100
+
+
+def resolve_iterations(raw=None):
+    """Total races per pair, from `GSP_CRV2_02_ITERATIONS`.
+
+    Validated against the three documented profiles rather than accepting any
+    integer: a typo that silently ran 1000 races, or 0, would be worse than a
+    refusal, and an unexplained number in an evidence file is not certification.
+    """
+    raw = os.environ.get('GSP_CRV2_02_ITERATIONS', '1') if raw is None else raw
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        raise ValueError(
+            f'GSP_CRV2_02_ITERATIONS must be one of {ITERATION_PROFILES}, '
+            f'got {raw!r}.')
+    if value not in ITERATION_PROFILES:
+        raise ValueError(
+            f'GSP_CRV2_02_ITERATIONS must be one of {ITERATION_PROFILES} '
+            f'(development / preflight / certification), got {value}.')
+    return value
+
+
+def resolve_evidence_dir(iterations, raw=None):
+    """Where to write evidence, and only at certification scale."""
+    directory = (os.environ.get('GSP_CRV2_02_EVIDENCE_DIR') if raw is None
+                 else raw)
+    if directory and iterations != CERTIFICATION_ITERATIONS:
+        raise ValueError(
+            f'GSP_CRV2_02_EVIDENCE_DIR is set but GSP_CRV2_02_ITERATIONS is '
+            f'{iterations}. Evidence may only be written at '
+            f'{CERTIFICATION_ITERATIONS} races per pair; a cheap sample must '
+            f'not overwrite a release artifact.')
+    return directory
+
+
+ITERATIONS = resolve_iterations()
 
 # Set to a directory to have every pair write its transcript there: status
 # codes, response bodies, the advisory locks PostgreSQL actually held during
 # the race, and the deadlock counter either side of it.
-EVIDENCE_DIR = os.environ.get('GSP_CRV2_02_EVIDENCE_DIR')
+EVIDENCE_DIR = resolve_evidence_dir(ITERATIONS)
 
 # Same namespace as core.services.competition_locks; used only to read back
 # what the boundary was doing while the two threads contended.
@@ -94,7 +149,11 @@ def build_minimal_game(name):
 
 
 class OperatorConcurrencyBase(TransactionTestCase):
-    """Fixture and race harness shared by every pair in the matrix."""
+    """Fixture and race harness shared by every pair in the matrix.
+
+    Every pair runs `ITERATIONS` races in total, half with each action arriving
+    first. See the module docstring for the profiles.
+    """
 
     # Threads need committed data, so every test truncates afterwards; keep the
     # fixture cheap enough that rebuilding it per test is not the bottleneck.
@@ -166,9 +225,11 @@ class OperatorConcurrencyBase(TransactionTestCase):
               evidence_name=None):
         """Run two operator actions into a barrier, alternating arrival order.
 
-        Returns the list of (first_result, second_result) pairs. Each callable
-        receives the iteration number and must close its own connection —
-        Django gives every thread its own, and a leaked one exhausts the pool.
+        `iterations` is the total across both orders: odd iterations release
+        the second action first, so the two orders split evenly. Returns the
+        list of (first_result, second_result) pairs. Each callable receives the
+        iteration number and must close its own connection — Django gives every
+        thread its own, and a leaked one exhausts the pool.
         """
         outcomes = []
         transcript = []
@@ -223,9 +284,20 @@ class OperatorConcurrencyBase(TransactionTestCase):
                 })
 
         if evidence_name:
+            from core.services.build_identity import build_identity
+            identity = build_identity()
             self._record_evidence(evidence_name, {
                 'pair': evidence_name,
+                # Read by the process that ran the races, not stamped in
+                # afterwards: evidence has to say which bytes produced it.
+                'code_revision': identity['code_revision'],
+                'source_tree_sha256': identity['source_tree_sha256'],
                 'iterations': iterations,
+                'iterations_are_total_per_pair': True,
+                'arrival_orders': {
+                    'first-first': (iterations + 1) // 2,
+                    'second-first': iterations // 2,
+                },
                 'deadlocks_before': deadlocks_before,
                 'deadlocks_after': deadlock_count(),
                 'advisory_locks_observed_during_race': contended_locks,
@@ -493,6 +565,8 @@ class ProcessVersusProcessTests(OperatorConcurrencyBase):
         self.assertEqual(deadlock_count(), before_deadlocks)
 
     def test_the_losing_operator_is_visible_in_the_audit_trail(self):
+        raced_rounds = []
+
         def process_as(operator):
             def action(iteration):
                 return self._client(operator).post(
@@ -502,10 +576,15 @@ class ProcessVersusProcessTests(OperatorConcurrencyBase):
 
         def prepare(iteration):
             self.round = self._fresh_round(iteration, status='closed')
+            raced_rounds.append(self.round.round_number)
 
+        # A sample, not the full profile: this asserts the shape of the audit
+        # trail, which the exactly-once test above already races at full scale.
+        sample = min(5, ITERATIONS)
         self._race(process_as(self.operator), process_as(self.second_operator),
-                   iterations=5, prepare=prepare)
-        for number in range(2, 7):
+                   iterations=sample, prepare=prepare)
+        self.assertEqual(len(raced_rounds), sample)
+        for number in raced_rounds:
             self.assertExactlyOneCommit('process_round', round_number=number)
             self.assertRejectionRecorded('process_round', round_number=number)
 
@@ -646,6 +725,56 @@ class SchedulerVersusManualCloseTests(OperatorConcurrencyBase,
 # ---------------------------------------------------------------------------
 # Route coverage: the guard that stops a future bypass
 # ---------------------------------------------------------------------------
+
+class IterationProfileTests(SimpleTestCase):
+    """The 1/10/100 profiles, checked without running the matrix three times.
+
+    The first submission hard-coded 100, so every focused development run cost
+    release-scale time. These assert the contract that makes a cheap loop
+    possible — and that a cheap run cannot be mistaken for certification.
+    """
+
+    def test_the_default_profile_is_the_cheap_one(self):
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(resolve_iterations(), 1)
+
+    def test_each_documented_profile_is_accepted(self):
+        for value in ITERATION_PROFILES:
+            self.assertEqual(resolve_iterations(str(value)), value)
+        self.assertEqual(ITERATION_PROFILES, (1, 10, 100))
+
+    def test_an_undocumented_count_is_refused(self):
+        for value in ('0', '7', '1000', '-1', 'lots', ''):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    resolve_iterations(value)
+
+    def test_evidence_may_only_be_written_at_certification_scale(self):
+        """A 1-race sample must not be able to overwrite a release artifact."""
+        for iterations in (1, 10):
+            with self.subTest(iterations=iterations):
+                with self.assertRaisesRegex(ValueError, 'may only be written'):
+                    resolve_evidence_dir(iterations, raw='/tmp/evidence')
+        self.assertEqual(
+            resolve_evidence_dir(CERTIFICATION_ITERATIONS, raw='/tmp/evidence'),
+            '/tmp/evidence')
+
+    def test_no_evidence_directory_is_fine_at_any_profile(self):
+        for iterations in ITERATION_PROFILES:
+            self.assertIsNone(resolve_evidence_dir(iterations, raw=None))
+
+    def test_iterations_are_total_races_not_per_arrival_order(self):
+        """The count the evidence reports is the count the harness runs.
+
+        `_race` alternates the released-first thread by iteration parity, so a
+        profile of N is N races split evenly — not N in each direction.
+        """
+        orders = ['second-first' if i % 2 else 'first-first'
+                  for i in range(CERTIFICATION_ITERATIONS)]
+        self.assertEqual(len(orders), CERTIFICATION_ITERATIONS)
+        self.assertEqual(orders.count('first-first'), 50)
+        self.assertEqual(orders.count('second-first'), 50)
+
 
 class RouteCoverageTests(SimpleTestCase):
     """Built from the URL conf, so a route cannot escape by being forgotten.
