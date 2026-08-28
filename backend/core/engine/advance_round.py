@@ -185,6 +185,12 @@ def process_round(game_id, dry_run=False):
 
             from core.services.resolution_manifest import complete_manifest
             complete_manifest(round_for_backup)
+            # Enqueued in the transaction that commits Phase 1: if the numbers
+            # are durable, the outstanding narrative work is durable with them.
+            # Before this, a worker restart between dispatch and completion
+            # abandoned the work with nothing recording that it was owed.
+            from core.services.narrative_jobs import enqueue_round
+            enqueue_round(game_for_backup, round_for_backup)
 
         # Phase 2: background LLM calls, dispatched only once the resolution
         # is durable. on_commit fires after the *outermost* transaction
@@ -196,6 +202,10 @@ def process_round(game_id, dry_run=False):
         ).first()
 
         if round_obj:
+            # The thread is now a convenience, not the mechanism: it drains the
+            # queue promptly on a single-process deployment. The jobs are
+            # already durable, so if it never starts — or dies mid-call — a
+            # worker picks the same rows up.
             def _dispatch_phase_2(game_id=game.id, round_id=round_obj.id):
                 thread = threading.Thread(
                     target=_run_phase_2, args=(game_id, round_id), daemon=True)
@@ -516,42 +526,60 @@ def _run_phase_1(game_id):
 
 
 def _run_phase_2(game_id, round_id):
-    """
-    Phase 2: All LLM calls, run concurrently in background thread.
-    Called from a daemon thread after Phase 1 completes.
+    """Drain this round's narrative jobs in-process.
+
+    Kept for single-process deployments, where the alternative is an operator
+    having to run a worker by hand. It claims through the same durable path a
+    standalone worker uses, so the two cannot double-run a job, and it no
+    longer *is* the mechanism: the rows outlive this thread.
     """
     from django.db import connection
+    from core.services.narrative_jobs import drain
     connection.ensure_connection()
 
     start = time.time()
-
     try:
-        game = Game.objects.get(id=game_id)
-        round_obj = Round.objects.get(id=round_id)
-
-        from core.engine.narratives import generate_round_narratives
-        generate_round_narratives(game, round_obj)
-
-        phase_2_time = time.time() - start
-        logger.info(f'Phase 2 complete: {phase_2_time:.1f}s')
-
-        round_obj.processing_status = 'FULLY_COMPLETE'
-        round_obj.narrative_generated = True
-        round_obj.phase_2_duration = phase_2_time
-        round_obj.narrative_error = ''
-        round_obj.save(update_fields=[
-            'processing_status', 'narrative_generated',
-            'phase_2_duration', 'narrative_error',
-        ])
-
+        drain(game_id=game_id)
+        update_round_narrative_status(round_id, time.time() - start)
     except Exception as e:
-        logger.error(f'Phase 2 failed: {e}')
-        try:
-            round_obj = Round.objects.get(id=round_id)
-            # Don't downgrade — numbers are still valid
-            round_obj.narrative_error = str(e)[:500]
-            round_obj.save(update_fields=['narrative_error'])
-        except Exception:
-            pass
+        logger.error(f'Phase 2 drain failed: {e}')
     finally:
         connection.close()
+
+
+def update_round_narrative_status(round_id, duration=None):
+    """Project this round's job states onto the fields the console reads.
+
+    The console has always shown `processing_status` / `narrative_error`, so
+    those keep working — but they are now a *view* of the job rows rather than
+    the only record, which is what makes an abrupt process death survivable.
+    """
+    from core.models.narrative_jobs import NarrativeJob
+    round_obj = Round.objects.filter(id=round_id).first()
+    if round_obj is None:
+        return None
+    jobs = list(NarrativeJob.objects.filter(round_id=round_id)
+                .order_by('narrative_type', 'template_version'))
+    if not jobs:
+        return round_obj
+
+    failed = [job for job in jobs if job.state == NarrativeJob.FAILED]
+    outstanding = [job for job in jobs
+                   if job.state in (NarrativeJob.PENDING, NarrativeJob.CLAIMED)]
+
+    fields = ['narrative_generated', 'narrative_error']
+    round_obj.narrative_generated = not outstanding and not failed
+    round_obj.narrative_error = (
+        '; '.join(f'{job.narrative_type}: {job.last_error}'
+                  for job in failed)[:500] if failed else '')
+    if not outstanding:
+        # Never downgrade from a resolved state: the numbers stay valid whether
+        # or not the prose arrived.
+        round_obj.processing_status = (
+            'FULLY_COMPLETE' if not failed else 'RESULTS_AVAILABLE')
+        fields.append('processing_status')
+    if duration is not None:
+        round_obj.phase_2_duration = duration
+        fields.append('phase_2_duration')
+    round_obj.save(update_fields=fields)
+    return round_obj

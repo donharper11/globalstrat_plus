@@ -209,9 +209,10 @@ class Snapshot:
     def _queryset(self, section, model):
         from core.services.manifest_sections import SCENARIO
         scope_id = self.scenario_id if section.scope == SCENARIO else self.game_id
+        filters = {section.lookup: scope_id, **(section.filters or {})}
         # Ordering is imposed on the rendered rows, but an explicit ORDER BY
         # keeps the fetch itself reproducible and cheap to reason about.
-        return model.objects.filter(**{section.lookup: scope_id}).order_by('pk')
+        return model.objects.filter(**filters).order_by('pk')
 
     def build(self):
         for section in self.sections:

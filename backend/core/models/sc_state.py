@@ -59,7 +59,14 @@ class SCEventInstance(models.Model):
     affected_teams = models.ManyToManyField('core.Team', blank=True)
     fired_by_instructor = models.BooleanField(default=False)
 
+    # `resolution_data` carries the flags that decide whether an
+    # instructor-injected event fires ({'pending', 'applied'}) — genuinely
+    # competitive state. Phase 2 used to append its prose to the same JSON
+    # column, which put narrative text inside the competitive hash and left a
+    # field that could not be classified either way. The prose lives here
+    # instead, mirroring ComplianceEnforcementEvent.narrative.
     resolution_data = models.JSONField(default=dict)
+    narrative = models.TextField(blank=True, default='')
 
     class Meta:
         db_table = 'sc_event_instance'

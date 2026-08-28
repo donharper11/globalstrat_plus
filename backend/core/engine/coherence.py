@@ -3,8 +3,11 @@ Engine Step 14: Strategic Coherence Scoring.
 From 03-engine-logic.md Section 13.
 CC-11: RAG-grounded coherence evaluation.
 """
+import logging
 import time
 from decimal import Decimal, ROUND_HALF_UP
+
+from django.conf import settings
 
 from core.models.decisions import (
     DecisionMarketing, DecisionRDInvestment, DecisionSubmission,
@@ -16,6 +19,8 @@ from core.models.results_financials import RoundResultCoherence
 from core.engine.utils import get_config
 from core.engine.llm_runner import build_language_instruction
 from core.utils.localization import get_team_language
+
+logger = logging.getLogger('engine')
 
 D = Decimal
 
@@ -224,10 +229,50 @@ def update_coherence_with_rag(game, round_number, team, rag_text):
         'feedback': rag_feedback,
     }
 
+    _record_rag_commentary(game, round_number, team, rag_score_val, rag_feedback,
+                           blended_val)
+
+    # V2-016: blending an LLM score into a stored result makes a graded number
+    # depend on whether an external service answered — two identical
+    # competitions grade differently. RoundResultCoherence is inside the
+    # competitive hash *and* is read by services/grading.py, so Phase 2 writing
+    # it also left the database disagreeing with its own manifest (V2-015).
+    #
+    # Off by default: coherence is the deterministic formula score, and the RAG
+    # evaluation is recorded as instructor commentary beside it. Set
+    # COMPETITION_RAG_AFFECTS_COHERENCE=true to restore the blend — that is a
+    # competition-rules decision, and it reintroduces both defects knowingly.
+    if not getattr(settings, 'COMPETITION_RAG_AFFECTS_COHERENCE', False):
+        return
+
     coherence_record.rag_score = D(str(round(rag_score_val, 2)))
     coherence_record.blended_score = D(str(round(blended_val, 2)))
     coherence_record.breakdown = breakdown
     coherence_record.save(update_fields=['rag_score', 'blended_score', 'breakdown'])
+
+
+def _record_rag_commentary(game, round_number, team, score, feedback, blended):
+    """Keep the RAG evaluation visible to instructors without scoring with it."""
+    try:
+        from core.models.cc21_models import InstructorAlert
+        InstructorAlert.objects.update_or_create(
+            game=game, team=team, round_number=round_number,
+            alert_type='coherence_rag',
+            defaults={
+                'title': f'Round {round_number} coherence commentary',
+                'detail': feedback or '',
+                'severity': 'info',
+                'teaching_note': (
+                    f'Retrieval-grounded evaluation scored {score:.0f}/100. '
+                    f'Blended with the formula score this would be '
+                    f'{blended:.0f}/100; the published coherence score is the '
+                    f'formula score unless COMPETITION_RAG_AFFECTS_COHERENCE '
+                    f'is enabled.'),
+                'source': 'narrative',
+            },
+        )
+    except Exception:
+        logger.exception('Could not record RAG commentary for %s', team)
 
 
 def _calculate_communication_coherence(game, team, current_round):

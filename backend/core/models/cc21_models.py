@@ -29,6 +29,16 @@ class InstructorAlert(models.Model):
     acknowledged = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # Which side of the Phase-1/Phase-2 boundary wrote this row. Engine alerts
+    # are part of the round's deterministic output and are hashed; narrative
+    # alerts are Phase-2 prose and are not. Before this they shared one table
+    # and one manifest section, so a coaching note arriving after resolution
+    # changed a hashed section.
+    SOURCE_CHOICES = [('engine', 'Deterministic engine'),
+                      ('narrative', 'Phase-2 narrative')]
+    source = models.CharField(max_length=16, choices=SOURCE_CHOICES,
+                              default='engine')
+
     class Meta:
         db_table = 'instructor_alert'
         ordering = ['-created_at']

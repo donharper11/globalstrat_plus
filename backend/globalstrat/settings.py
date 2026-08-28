@@ -276,6 +276,15 @@ COMPETITION_RECOVERY_ENABLED = os.environ.get(
     'COMPETITION_RECOVERY_ENABLED', 'false',
 ).lower() in ('1', 'true', 'yes')
 
+# V2-016: whether the Phase-2 retrieval-grounded evaluation is blended into the
+# stored coherence score. Off means coherence is the deterministic formula
+# score and an LLM outage cannot change a grade; on restores the older blend
+# and, with it, a graded number that depends on an external service answering.
+# Turning it on is a competition-rules decision.
+COMPETITION_RAG_AFFECTS_COHERENCE = os.environ.get(
+    'COMPETITION_RAG_AFFECTS_COHERENCE', 'false',
+).lower() in ('1', 'true', 'yes')
+
 # A round scored from an uncommitted working tree cannot be reconstructed: the
 # commit hash names the commit, not the modifications sitting on top of it.
 # Resolution refuses such a build when this is on (the default in production).

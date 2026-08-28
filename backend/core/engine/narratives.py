@@ -74,6 +74,114 @@ COMPLIANCE_SYSTEM_PROMPT = (
 )
 
 
+# ---------------------------------------------------------------------------
+# Per-type execution, for the durable job worker
+# ---------------------------------------------------------------------------
+
+def _llm_available():
+    return bool(getattr(settings, 'DASHSCOPE_API_KEY', ''))
+
+
+def _run_calls(calls):
+    """Dispatch a batch, or return empty results when no key is configured.
+
+    Returning `{}` rather than raising is deliberate: every producer below has
+    a template fallback, so "no LLM" degrades the prose instead of failing the
+    job. A *reachable but broken* endpoint is different — that raises, and the
+    job retries.
+    """
+    if not calls:
+        return {}
+    if not _llm_available():
+        return {}
+    from core.engine import llm_runner
+    return llm_runner.run_llm_batch_sync(calls)
+
+
+def _run_briefing(game, round_obj):
+    teams = list(Team.objects.filter(
+        game=game, participation_status='active').order_by('id'))
+    calls = []
+    for team in teams:
+        prompt = _build_briefing_prompt(game, round_obj.round_number, team)
+        if prompt:
+            calls.append({'id': f'briefing_{team.id}', 'prompt': prompt,
+                          'system_prompt': BRIEFING_SYSTEM_PROMPT,
+                          'max_tokens': 2000})
+    results = _run_calls(calls)
+    _store_briefing_results(game, round_obj, teams, results)
+    return {'teams': len(teams), 'calls': len(calls)}
+
+
+def _run_coherence_rag(game, round_obj):
+    teams = list(Team.objects.filter(
+        game=game, participation_status='active').order_by('id'))
+    calls = []
+    for team in teams:
+        prompt = _build_coherence_prompt(game, round_obj.round_number, team)
+        if prompt:
+            calls.append({'id': f'coherence_{team.id}', 'prompt': prompt,
+                          'system_prompt': COHERENCE_SYSTEM_PROMPT,
+                          'max_tokens': 800})
+    results = _run_calls(calls)
+    _store_coherence_results(game, round_obj.round_number, teams, results)
+    return {'teams': len(teams), 'calls': len(calls)}
+
+
+def _run_coaching(game, round_obj):
+    teams = list(Team.objects.filter(
+        game=game, participation_status='active').order_by('id'))
+    calls = []
+    for team in teams:
+        prompt = _build_coaching_prompt(game, round_obj.round_number, team)
+        if prompt:
+            calls.append({'id': f'coaching_{team.id}', 'prompt': prompt,
+                          'system_prompt': COACHING_SYSTEM_PROMPT,
+                          'max_tokens': 600})
+    results = _run_calls(calls)
+    _store_coaching_results(game, round_obj.round_number, teams, results)
+    return {'teams': len(teams), 'calls': len(calls)}
+
+
+def _run_outlook(game, round_obj):
+    calls = _build_outlook_calls(game, round_obj.round_number)
+    results = _run_calls(calls)
+    _store_outlook_results(game, round_obj.round_number, results, calls)
+    return {'calls': len(calls)}
+
+
+def _run_sc_event(game, round_obj):
+    calls = _build_sc_event_calls(game, round_obj)
+    results = _run_calls(calls)
+    _store_sc_event_narratives(game, round_obj, results)
+    return {'calls': len(calls)}
+
+
+def _run_compliance(game, round_obj):
+    calls = _build_compliance_calls(game, round_obj)
+    results = _run_calls(calls)
+    _store_compliance_narratives(game, round_obj, results)
+    return {'calls': len(calls)}
+
+
+NARRATIVE_RUNNERS = {
+    'briefing': _run_briefing,
+    'coherence_rag': _run_coherence_rag,
+    'coaching': _run_coaching,
+    'outlook': _run_outlook,
+    'sc_event': _run_sc_event,
+    'compliance': _run_compliance,
+}
+
+
+def run_narrative_type(game, round_obj, narrative_type):
+    """Run exactly one narrative type. Raises so the job can retry."""
+    runner = NARRATIVE_RUNNERS.get(narrative_type)
+    if runner is None:
+        raise ValueError(f'Unknown narrative type {narrative_type!r}.')
+    return runner(game, round_obj)
+
+
 def generate_round_narratives(game, round_obj):
     """
     Generate all LLM content for the round concurrently.
@@ -393,8 +501,10 @@ def _store_sc_event_narratives(game, round_obj, results):
         text = r.get('content') if r.get('success') else None
         text = (text or _sc_event_fallback(inst)).strip()
         try:
-            inst.resolution_data = {**(inst.resolution_data or {}), 'narrative': text}
-            inst.save(update_fields=['resolution_data'])
+            # Dedicated column, not resolution_data: that JSON holds the
+            # competitive fire/applied flags and is inside the output hash.
+            inst.narrative = text
+            inst.save(update_fields=['narrative'])
         except Exception as e:
             logger.error(f"CC-17 SC narrative store failed for event {inst.id}: {e}")
 
@@ -476,6 +586,9 @@ def _store_coaching_results(game, round_number, teams, results):
                         'detail': result['content'],
                         'severity': 'info',
                         'teaching_note': result['content'],
+                        # Phase-2 prose, not engine output: keeps this row out
+                        # of the competitive section.
+                        'source': 'narrative',
                     },
                 )
             except Exception as e:

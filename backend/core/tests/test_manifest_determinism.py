@@ -161,8 +161,12 @@ class ManifestEnvelopeTests(SimpleTestCase):
             EXPECTED_INPUT_ONLY_SECTIONS)
 
     def test_narrative_sections_are_separate_from_the_competitive_hash(self):
-        self.assertEqual({s.name for s in ms.NARRATIVE_SECTIONS},
-                         {'strategic_briefing', 'market_intelligence'})
+        self.assertEqual(
+            {s.name for s in ms.NARRATIVE_SECTIONS},
+            # `narrative_alert` is the Phase-2 half of InstructorAlert: the
+            # engine's alerts stay in the competitive section, the coaching and
+            # RAG commentary written after resolution do not (GSP-CRV2-03).
+            {'strategic_briefing', 'market_intelligence', 'narrative_alert'})
         self.assertFalse({s.name for s in ms.NARRATIVE_SECTIONS} &
                          EXPECTED_OUTPUT_SECTIONS)
 

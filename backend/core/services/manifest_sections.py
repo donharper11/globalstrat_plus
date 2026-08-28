@@ -75,6 +75,10 @@ class Section:
     scope: str
     lookup: str
     key: Optional[Tuple[str, ...]] = None
+    # Extra ORM filter, for the case where one table holds rows on both sides
+    # of a boundary — engine-written and narrative-written instructor alerts
+    # live together and must be hashed differently.
+    filters: Optional[Dict[str, object]] = None
     exclude: Dict[str, str] = field(default_factory=dict)
     narrative_fields: Tuple[str, ...] = ()
     in_output: bool = True
@@ -396,7 +400,8 @@ WORLD_STATE_SECTIONS = (
     Section('active_modifier', 'core.ActiveModifier', GAME, 'game_id', key=None,
             why='Live numeric modifiers applied to segments/features/markets.'),
     Section('sc_event_instance', 'core.SCEventInstance', GAME, 'round__game_id',
-            key=None, why='Supply-chain events fired this game.'),
+            key=None, narrative_fields=('narrative',),
+            why='Supply-chain events fired this game.'),
     Section('supplier_state', 'core.SupplierState', GAME, 'round__game_id',
             why='Per-round supplier capacity, quality and recovery.'),
     Section('lane_state', 'core.LaneState', GAME, 'round__game_id',
@@ -504,6 +509,7 @@ RESULT_SECTIONS = (
             narrative_fields=('narrative_items', 'agent_summary'),
             why='Deterministic agent actions and convergence.'),
     Section('instructor_alert', 'core.InstructorAlert', GAME, 'game_id', key=None,
+            filters={'source': 'engine'},
             exclude={'acknowledged': 'Operator UI state set after publication.',
                      'teaching_note': 'Template-authored coaching text.',
                      'detail': 'Template-authored alert body.'},
@@ -525,6 +531,12 @@ NARRATIVE_SECTIONS = (
     Section('market_intelligence', 'core.MarketIntelligenceBrief', GAME, 'game_id',
             narrative_fields=('brief_content',),
             in_output=False, why='Phase-2 market intelligence prose.'),
+    Section('narrative_alert', 'core.InstructorAlert', GAME, 'game_id', key=None,
+            filters={'source': 'narrative'},
+            narrative_fields=('title', 'detail', 'teaching_note'),
+            exclude={'acknowledged': 'Operator UI state set after publication.'},
+            in_output=False,
+            why='Phase-2 coaching notes and RAG commentary for instructors.'),
 )
 
 
