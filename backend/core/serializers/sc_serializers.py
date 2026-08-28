@@ -7,6 +7,7 @@ disclosure and validation rules. Progressive-disclosure enforcement consults
 overrides (CC-04 Amendment A1).
 """
 from rest_framework import serializers
+from core.serializers.decision_limits import NonNegativeFieldsMixin
 from core.models.sc_models import (
     Supplier, ShippingLane, TradeFinanceInstrument, ComplianceRegime,
     ResilienceParameters, FreightMarket,
@@ -186,7 +187,7 @@ class ContingencyPlanReadSerializer(RoundNumberMixin, serializers.ModelSerialize
 # Decision write serializers (enforce validation + progressive disclosure)
 # ---------------------------------------------------------------------------
 
-class SourcingAllocationWriteSerializer(serializers.ModelSerializer):
+class SourcingAllocationWriteSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     # Optional / progressive-disclosure-gated fields; the model has no DB
     # default, so declare them optional here (the old view defaulted them).
     payment_terms = serializers.CharField(

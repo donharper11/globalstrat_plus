@@ -133,6 +133,23 @@ def main():
                  not vl['value_loop_confirmed'],
                  f"cash advantage {vl['probe_advantage_cash']}")
 
+        sweep = manage(database, 'shell', '-c', NEGATIVE_SWEEP, timeout=2400)
+        (EVIDENCE / 'negative-sweep-log.txt').write_text(
+            sweep.stdout + sweep.stderr, encoding='utf-8')
+        if sweep.returncode != 0:
+            print(sweep.stdout[-3000:], sweep.stderr[-3000:])
+            step('negative-value sweep ran', False)
+        else:
+            marker3 = '---NEGATIVE-SWEEP-JSON---'
+            sw = json.loads(sweep.stdout.split(marker3, 1)[1].strip())
+            (EVIDENCE / 'negative-sweep.json').write_text(
+                json.dumps(sw, indent=2, sort_keys=True), encoding='utf-8')
+            step('negative-value sweep ran', True,
+                 f"{len(sw['fields_measured'])} fields measured")
+            step('no negative field pays the team',
+                 not sw['fields_that_pay'],
+                 f"pays: {', '.join(sw['fields_that_pay']) or 'none'}")
+
         record = {
             'generated_at': datetime.datetime.now(
                 datetime.timezone.utc).isoformat(),
@@ -186,6 +203,7 @@ print('rounds', list(Round.objects.filter(game=game).values_list('round_number',
 
 PROBE = (HERE / 'probe_body.py').read_text(encoding='utf-8')
 VALUE_LOOP = (HERE / 'value_loop_body.py').read_text(encoding='utf-8')
+NEGATIVE_SWEEP = (HERE / 'negative_sweep_body.py').read_text(encoding='utf-8')
 
 
 if __name__ == '__main__':

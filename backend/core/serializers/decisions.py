@@ -10,6 +10,7 @@ from decimal import Decimal
 from django.db import transaction
 from django.db.models import Sum
 from rest_framework import serializers
+from core.serializers.decision_limits import NonNegativeFieldsMixin
 
 from core.models.decisions import (
     DecisionAcquisition,
@@ -84,7 +85,23 @@ class DecisionBudgetAllocationSerializer(serializers.ModelSerializer):
         return warnings
 
 
-class DecisionRDInvestmentSerializer(serializers.ModelSerializer):
+class DecisionRDInvestmentListSerializer(serializers.ListSerializer):
+    """The cross-row R&D rule, wherever the rows arrive together.
+
+    It used to live only in `DecisionSubmissionSerializer.validate()`, so the
+    whole-submission endpoint refused a duplicate platform+feature pair and the
+    per-type PATCH endpoint — which validated each row on its own — accepted it.
+    A `ListSerializer` runs for `many=True` on both paths, so there is one rule
+    and one place to change it.
+    """
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        validate_rd_investment_targets(attrs)
+        return attrs
+
+
+class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionRDInvestment
         fields = [
@@ -92,6 +109,7 @@ class DecisionRDInvestmentSerializer(serializers.ModelSerializer):
             'team_platform', 'feature', 'method', 'amount',
             'target_level', 'calculated_cost',
         ]
+        list_serializer_class = DecisionRDInvestmentListSerializer
 
     def validate_amount(self, value):
         if value < 0:
@@ -163,7 +181,7 @@ class DecisionRDInvestmentSerializer(serializers.ModelSerializer):
         return attrs
 
 
-class DecisionPlatformDevelopmentSerializer(serializers.ModelSerializer):
+class DecisionPlatformDevelopmentSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionPlatformDevelopment
         fields = [
@@ -217,7 +235,7 @@ class DecisionProductRetireSerializer(serializers.ModelSerializer):
         ]
 
 
-class DecisionMarketingSerializer(serializers.ModelSerializer):
+class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     warnings = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -322,7 +340,7 @@ class DecisionMarketingSerializer(serializers.ModelSerializer):
         return warnings
 
 
-class DecisionMarketEntrySerializer(serializers.ModelSerializer):
+class DecisionMarketEntrySerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionMarketEntry
         fields = [
@@ -365,7 +383,7 @@ class DecisionFinancingSerializer(serializers.ModelSerializer):
         return value
 
 
-class DecisionPlantSerializer(serializers.ModelSerializer):
+class DecisionPlantSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionPlant
         fields = [
@@ -374,7 +392,7 @@ class DecisionPlantSerializer(serializers.ModelSerializer):
         ]
 
 
-class DecisionPartnershipSerializer(serializers.ModelSerializer):
+class DecisionPartnershipSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionPartnership
         fields = [
@@ -392,7 +410,7 @@ class DecisionAcquisitionSerializer(serializers.ModelSerializer):
         ]
 
 
-class DecisionESGSerializer(serializers.ModelSerializer):
+class DecisionESGSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = DecisionESG
         fields = [
@@ -404,7 +422,7 @@ class DecisionESGSerializer(serializers.ModelSerializer):
         }
 
 
-class DecisionTalentSerializer(serializers.ModelSerializer):
+class DecisionTalentSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
     class Meta:
         from core.models.talent import DecisionTalent
         model = DecisionTalent

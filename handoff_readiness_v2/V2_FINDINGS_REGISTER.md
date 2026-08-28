@@ -19,18 +19,22 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-018 | Decision validation / value loop | **P0** | GSP-CRV2-06 (raised) | Twelve investment and headcount fields accept a **negative** value at the serializer, and `costs.py` adds several of them directly into `strategy_expense`. A negative investment is therefore income. Measured on a resolved round: a team entering `environmental_investment = -5,000,000` reported `strategy_expense = -4,850,000` against an identical control team's `+150,000`, turning a **$1,130,000 loss into a $3,990,000 profit with zero revenue** and $5,120,000 more closing cash. The field has no lower bound, so the amount is arbitrary. Reachable through the ordinary decision API by any team member. | `evidence/adversarial-balance/value-loop.json`: two otherwise identical teams in one game, one field differing only in sign, resolved through `_run_phase_1`. `strategy_expense_delta` is exactly the injected amount. | Open — logged before repair |
-| V2-019 | API uniformity / determinism | **P1** | GSP-CRV2-06 (raised) | `PUT /decisions/round/<n>/` rejects two R&D investments naming the same platform and feature — *"Only one R&D investment per platform feature is allowed in a round."* `PATCH /decisions/round/<n>/rd/` **accepts** the identical payload, because the rule is a cross-row check in `DecisionSubmissionSerializer.validate()` and the per-type handler validates each row alone. The rule exists because the result would otherwise depend on row order, which is the V2-012 defect class. A team using the per-type endpoint can store the state the full endpoint was changed to forbid. | `evidence/adversarial-balance/dimension-inventory.json`, `path_uniformity`. The check carries a control — a distinct platform/feature pair the full API must accept — and reports itself inconclusive if the control fails. | Open — logged before repair |
+| V2-018 | Decision validation / value loop | **P0** | GSP-CRV2-06 | **Thirteen** investment and headcount fields accepted a negative value, and `costs.py` adds several straight into `strategy_expense`, so a negative investment was income. Measured on resolved rounds: `environmental_investment = -5,000,000` turned a $1,130,000 loss into a $3,990,000 profit with zero revenue; a negative **headcount**, multiplied by a salary band, was worth **$50,002,530,000**. Seven further fields accepted negatives but were masked in the first probe by another field failing first, plus one supply-chain field — 21 in all. No lower bound existed anywhere, and the fields were reachable through the ordinary decision API. | `evidence/adversarial-balance/value-loop.json` and `negative-sweep.json`: identical teams differing in one field's sign, resolved through `_run_phase_1`; `strategy_expense_delta` equals the injected amount. | **Closed** — shared non-negative validation across both write paths; `core/tests/test_decision_limits.py` fails against the pre-repair serializers |
+| V2-019 | API uniformity / determinism | ~~P1~~ **Withdrawn — filed in error** | GSP-CRV2-06 | Filed as "the per-type R&D endpoint accepts a duplicate platform+feature payload the whole-submission endpoint rejects". **That was measured on the serializers, not the endpoints, and described as endpoint behaviour.** `DecisionPartialUpdateView` has called `validate_rd_investment_targets` on the assembled list since `86c2ad4`, so both endpoints always refused the duplicate. Contract tests written against the real API pass unchanged on the pre-repair code. What was real is narrower and not an exploit: the rule lived in two places — the submission serializer and the view — so any third caller using `DecisionRDInvestmentSerializer(many=True)` directly would have missed it. | `core/tests/test_decision_limits.DuplicateRdRowApiTests`: both paths refuse for the intended reason, the distinct-feature control is accepted, and neither writes a row. These pass before and after the repair. | **Withdrawn.** The duplication is repaired anyway: the rule now lives in `DecisionRDInvestmentListSerializer` and runs wherever the rows arrive together |
 
-Both were found in Phase 1, from the serializer registry and a controlled
+V2-018 was found in Phase 1, from the serializer registry and a controlled
 engine probe, before any optimizer was built.
 
-The uniformity check reported "no divergence" twice before it measured
-anything: first the platform/feature pair was unavailable to the team, so both
-paths refused for an unrelated reason; then `team` and `round` were missing, so
-DRF never called `validate()` and the cross-row rule was never reached. Two
-refusals for the wrong reason, and one silence, all read as agreement. The
-control was added so that cannot recur.
+V2-019 is left in the register as a withdrawn entry rather than deleted,
+because how it was filed matters more than that it was wrong. The check
+compared `DecisionSubmissionSerializer` with `DecisionRDInvestmentSerializer`
+and reported the result as "the API accepts". It never made a request, so it
+could not see that the view supplies the rule the serializer lacks. Before it
+reached even that state it reported "no divergence" twice for two different
+wrong reasons — an unavailable platform/feature pair, then missing `team` and
+`round` fields that stopped DRF calling `validate()` at all. A probe that
+cannot tell "allowed" from "refused for an unrelated reason" is not evidence,
+and neither is one that measures a layer and names a different one.
 
 ## New finding raised by GSP-CRV2-04
 

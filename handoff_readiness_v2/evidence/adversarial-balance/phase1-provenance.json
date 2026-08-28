@@ -1,8 +1,8 @@
 {
   "all_steps_as_expected": false,
-  "code_revision": "142795ca01bbc9274f6f4e9f238bcec590e43658",
-  "database": "gsp_adversarial_20260828224029",
-  "generated_at": "2026-08-28T22:41:13.944888+00:00",
+  "code_revision": "078ccd1e30523614a0380a9948b9447949f0fd15",
+  "database": "gsp_adversarial_20260828224450",
+  "generated_at": "2026-08-28T22:45:48.205611+00:00",
   "steps": [
     {
       "as_expected": true,
@@ -43,7 +43,17 @@
       "as_expected": false,
       "detail": "cash advantage 5120000.00",
       "step": "a negative ESG investment does not pay the team"
+    },
+    {
+      "as_expected": true,
+      "detail": "8 fields measured",
+      "step": "negative-value sweep ran"
+    },
+    {
+      "as_expected": false,
+      "detail": "pays: esg.environmental_investment, esg.social_investment, talent.commercial_headcount, talent.commercial_training_budget, talent.operations_headcount, talent.operations_training_budget, talent.rd_headcount, talent.rd_training_budget",
+      "step": "no negative field pays the team"
     }
   ],
-  "working_tree_clean": true
+  "working_tree_clean": false
 }
