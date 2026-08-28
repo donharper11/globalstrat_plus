@@ -159,7 +159,7 @@ def calculate_investor_features(team, game, round_number):
         team=team, round__round_number=round_number, round__game=game,
     ).first()
     if sub:
-        for alloc in TalentAllocation.objects.filter(submission=sub):
+        for alloc in TalentAllocation.objects.filter(submission=sub).order_by('talent_pool'):
             total_market_staff += sum(alloc.market_allocation.values())
     if total_headcount > 0:
         localization_ratio = total_market_staff / total_headcount

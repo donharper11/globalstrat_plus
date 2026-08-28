@@ -262,7 +262,9 @@ def _score_positioning_price(team, submission):
     if not submission:
         return score, max_possible, details
 
-    for md in submission.marketing_decisions.all().select_related('team_product', 'market'):
+    for md in (submission.marketing_decisions.all()
+               .select_related('team_product', 'market')
+               .order_by('team_product__name', 'market__code')):
         positioning = md.team_product.positioning
         price = float(md.retail_price)
         price_range = PRICE_RANGES.get(positioning, (0, 9999))
@@ -300,7 +302,9 @@ def _score_distribution_positioning(team, submission):
     if not submission:
         return score, max_possible, details
 
-    for md in submission.marketing_decisions.all().select_related('team_product', 'market'):
+    for md in (submission.marketing_decisions.all()
+               .select_related('team_product', 'market')
+               .order_by('team_product__name', 'market__code')):
         pos = md.team_product.positioning
         dist = md.distribution_strategy
         alignment = DISTRIBUTION_ALIGNMENT.get((pos, dist), 0.5)
@@ -372,7 +376,8 @@ def _score_rd_alignment(team, submission, context):
         ).values_list('market_id', flat=True)
     )
 
-    for inv in submission.rd_investments.all().select_related('feature'):
+    for inv in submission.rd_investments.all().select_related('feature').order_by(
+            'team_platform__name', 'feature__code', 'method'):
         feature = inv.feature
         # Sum preference weights for this feature across active market segments
         total_weight = 0.0
@@ -565,7 +570,7 @@ def _calculate_rag_coherence(context, team, formula_score):
 
         # Build queries based on team's key decisions
         queries = []
-        for presence in TeamMarketPresence.objects.filter(team=team, status='active'):
+        for presence in TeamMarketPresence.objects.filter(team=team, status='active').order_by('id'):
             queries.append(
                 f"market entry strategy for {presence.market.name} "
                 f"using {presence.entry_mode.name if presence.entry_mode else 'direct'}"

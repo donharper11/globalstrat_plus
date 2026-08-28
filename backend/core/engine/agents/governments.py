@@ -784,7 +784,7 @@ class GovernmentAgent(AgentBase):
         for market_code, gp in profiles.items():
             for team in game.teams.filter(
                 participation_status='active',
-            ).select_related('home_market'):
+            ).select_related('home_market').order_by('id'):
                 if team.home_market and team.home_market.code == market_code:
                     continue  # Skip domestic firms
 
@@ -877,7 +877,7 @@ class GovernmentAgent(AgentBase):
         if submission:
             for alloc in TalentAllocation.objects.filter(
                 submission=submission,
-            ):
+            ).order_by('talent_pool'):
                 count = alloc.market_allocation.get(market_code, 0)
                 talent_in_market += count
                 if alloc.talent_pool == 'rd':

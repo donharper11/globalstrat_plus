@@ -62,7 +62,8 @@ def _process_platform_development(team, submission, current_round):
     in-development platforms.
     """
     # Process new platform development decisions
-    for dev_decision in submission.platform_developments.all():
+    for dev_decision in submission.platform_developments.all().order_by(
+            'platform_generation__generation_order', 'platform_name'):
         gen = dev_decision.platform_generation
 
         # Check if team already has this generation
@@ -149,7 +150,8 @@ def _process_platform_development(team, submission, current_round):
 
 def _process_feature_investments(team, submission, scenario, current_round, context=None):
     """Process DecisionRDInvestment records — level-based or legacy dollar-based."""
-    for investment in submission.rd_investments.all():
+    for investment in submission.rd_investments.all().order_by(
+            'team_platform__name', 'feature__code', 'method'):
         tp = investment.team_platform
         feature = investment.feature
 
@@ -296,7 +298,7 @@ def _process_product_creates(team, submission, current_round):
     """Process DecisionProductCreate records."""
     from core.models.scenario import MarketDefinition
 
-    for create_dec in submission.product_creates.all():
+    for create_dec in submission.product_creates.all().order_by('product_name'):
         product = TeamProduct.objects.create(
             team=team,
             team_platform=create_dec.team_platform,
@@ -320,7 +322,7 @@ def _process_product_creates(team, submission, current_round):
 
 def _process_product_retires(team, submission, current_round):
     """Process DecisionProductRetire records."""
-    for retire_dec in submission.product_retires.all():
+    for retire_dec in submission.product_retires.all().order_by('team_product__name'):
         product = retire_dec.team_product
         if retire_dec.timing == 'immediate':
             product.status = 'retired'

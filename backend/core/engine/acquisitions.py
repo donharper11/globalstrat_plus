@@ -38,7 +38,8 @@ def process_acquisitions(context):
 
         for decision in DecisionAcquisition.objects.filter(
             submission=submission,
-        ).select_related('acquisition_target__market'):
+        ).select_related('acquisition_target__market').order_by(
+            'acquisition_target__target_name'):
             target = decision.acquisition_target
 
             if distressed:
@@ -99,7 +100,7 @@ def process_acquisitions(context):
                         state.save()
 
     # Advance integration for all in-progress acquisitions
-    for acq in TeamAcquisition.objects.filter(integration_complete=False):
+    for acq in TeamAcquisition.objects.filter(integration_complete=False).order_by('id'):
         if acq.acquired_round == context.round_number:
             continue  # Just acquired this round — don't count down yet
         acq.integration_rounds_remaining -= 1

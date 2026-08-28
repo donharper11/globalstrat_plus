@@ -110,7 +110,7 @@ def enforce_compliance(context):
     # 1. Carry forward still-active freezes from prior enforcement events.
     for ev in (ComplianceEnforcementEvent.objects
                .filter(team__game=game, freeze_until_round__gte=round_number, market__isnull=False)
-               .select_related('market')):
+               .select_related('market').order_by('id')):
         context.compliance_freezes.add((ev.team_id, ev.market_id))
 
     regimes = list(ComplianceRegime.objects.filter(

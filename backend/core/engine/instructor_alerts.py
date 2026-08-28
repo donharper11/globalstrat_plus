@@ -232,7 +232,8 @@ def generate_pre_lock_alerts(game, team, submission):
     alerts = []
 
     # Check: production volume far exceeds historical sales
-    for mktg in DecisionMarketing.objects.filter(submission=submission).select_related('team_product', 'market'):
+    for mktg in DecisionMarketing.objects.filter(submission=submission).select_related(
+            'team_product', 'market').order_by('team_product__name', 'market__code'):
         prev_result = RoundResultProductMarket.objects.filter(
             game=game, team=team,
             team_product=mktg.team_product, market=mktg.market,

@@ -114,7 +114,7 @@ def fire_events(context):
             event_instance.save()
 
         # Apply each impact definition
-        for impact in template.impacts.all():
+        for impact in template.impacts.all().order_by('id'):
             for market in target_markets:
                 _apply_event_impact(
                     game, event_instance, impact, market, current_round,
@@ -314,7 +314,7 @@ def _fire_compliance_adjusted_event(context, template, all_markets, current_roun
         event_instance.save()
 
     # Apply impacts only for affected teams' markets
-    for impact in template.impacts.all():
+    for impact in template.impacts.all().order_by('id'):
         for market in target_markets:
             _apply_event_impact(game, event_instance, impact, market, current_round)
 

@@ -30,7 +30,7 @@ def process_capital_markets(context):
     team_tax_modifiers = {}  # team_id → {fund_code: modifier}
     for tts in TeamTaxStructure.objects.filter(
         game=context.game,
-    ).select_related('current_structure'):
+    ).select_related('current_structure').order_by('id'):
         structure = tts.current_structure
         if structure:
             team_tax_modifiers[tts.team_id] = {
@@ -173,7 +173,7 @@ def _calculate_fund_satisfaction(fund, features, tax_modifier=0.0):
     total_weighted = 0.0
     total_weight = 0.0
 
-    for pref in fund.preferences.all():
+    for pref in fund.preferences.all().order_by('id'):
         actual = features.get(pref.feature_code, 3.0)
         ideal = float(pref.ideal_value)
         weight = float(pref.weight)
@@ -279,7 +279,7 @@ def _generate_trade_reason(fund, satisfaction, features, action):
     worst_feature = None
     worst_fit = 1
 
-    for pref in fund.preferences.all():
+    for pref in fund.preferences.all().order_by('id'):
         actual = features.get(pref.feature_code, 3.0)
         fit = gaussian_fit(actual, float(pref.ideal_value), float(pref.tolerance))
         weighted = fit * float(pref.weight)

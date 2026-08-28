@@ -70,7 +70,8 @@ def process_fx_hedges(context):
     premium_bps = D(str(get_config(context.scenario, 'fx_hedge_premium_bps', default=25)))
 
     # 1. Open positions from this round's FX hedge decisions.
-    for dec in FXHedgeDecision.objects.filter(round=rnd, hedge_ratio__gt=0):
+    for dec in FXHedgeDecision.objects.filter(round=rnd, hedge_ratio__gt=0).order_by(
+            'team__name', 'currency_pair'):
         foreign = (dec.currency_pair.split('_')[0] or '').upper()
         rate = rates.get(foreign)
         if rate is None:
@@ -103,7 +104,9 @@ def process_fx_hedges(context):
     settled = 0
     for pos in (HedgePosition.objects
                 .filter(team__game=context.game, status='open')
-                .select_related('maturity_round')):
+                .select_related('maturity_round')
+                .order_by('team__name', 'currency_pair',
+                          'opened_round__round_number')):
         foreign = (pos.currency_pair.split('_')[0] or '').upper()
         rate = rates.get(foreign)
         if rate is None:

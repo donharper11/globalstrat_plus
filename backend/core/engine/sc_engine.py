@@ -118,7 +118,8 @@ def _capacity_factor(team, rnd, disrupted_sup):
     from core.models.sc_decisions import SourcingAllocation
     alt_rules, _ = _contingency(team, rnd)
     by_cat = defaultdict(list)
-    for a in SourcingAllocation.objects.filter(team=team, round=rnd):
+    for a in SourcingAllocation.objects.filter(team=team, round=rnd).order_by(
+            'critical_input_category', 'supplier__supplier_id'):
         by_cat[a.critical_input_category].append(a)
 
     cf = 1.0
@@ -166,7 +167,7 @@ def run_sc_state(context):
     # 1. Carry recovering supplier disruptions forward from the prior round.
     prev = Round.objects.filter(game=game, round_number=round_number - 1).first()
     if prev:
-        for st in SupplierState.objects.filter(round=prev, recovery_rounds_remaining__gt=0):
+        for st in SupplierState.objects.filter(round=prev, recovery_rounds_remaining__gt=0).order_by('id'):
             SupplierState.objects.update_or_create(
                 round=rnd, supplier=st.supplier, defaults=dict(
                     capacity_multiplier=st.capacity_multiplier, quality_modifier=st.quality_modifier,
@@ -184,7 +185,7 @@ def run_sc_state(context):
     # disruption onto the next round advance. Same effect path as seeded events.
     for inst in (SCEventInstance.objects
                  .filter(round=rnd, fired_by_instructor=True)
-                 .select_related('event_template')):
+                 .select_related('event_template').order_by('id')):
         if not (inst.resolution_data or {}).get('pending'):
             continue
         _apply_sc_effects(inst.event_template, rnd, suppliers_by_code, lanes_by_code)
@@ -252,7 +253,8 @@ def calculate_sc_disruption_costs(context):
 
     disrupted_sup = {st.supplier_id: st for st in SupplierState.objects.filter(round=rnd)}
     disrupted_lane = {ls.lane_id: ls for ls in
-                      LaneState.objects.filter(round=rnd).exclude(active_disruption__isnull=True)}
+                      LaneState.objects.filter(round=rnd)
+                      .exclude(active_disruption__isnull=True).order_by('id')}
 
     for team in context.teams:
         alt_rules, mode_rules = _contingency(team, rnd)
@@ -317,7 +319,7 @@ def score_sc_resilience(context):
 
     rp = ResilienceParameters.objects.filter(scenario=scenario).first()
     weights = dict((rp.resilience_score_weights if rp else {}) or {})
-    for ov in ClassResilienceWeightOverride.objects.filter(game=game):
+    for ov in ClassResilienceWeightOverride.objects.filter(game=game).order_by('id'):
         weights[ov.weight_name] = float(ov.override_value)
     rec_buffer = float(rp.critical_component_buffer_days_recommended) if rp else 45.0
 

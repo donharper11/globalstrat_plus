@@ -65,7 +65,7 @@ def _serialize_teams(game, round_number, scenario):
     teams = {}
     for team in game.teams.filter(
         participation_status='active',
-    ).select_related('home_market'):
+    ).select_related('home_market').order_by('id'):
         financials = RoundResultFinancials.objects.filter(
             game=game, team=team, round_number=round_number,
         ).first()
@@ -77,7 +77,7 @@ def _serialize_teams(game, round_number, scenario):
         market_revenues = {}
         for mr in RoundResultMarketRevenue.objects.filter(
             game=game, team=team, round_number=round_number,
-        ).select_related('market'):
+        ).select_related('market').order_by('market_id'):
             market_revenues[mr.market.code] = {
                 'revenue': float(mr.home_revenue or 0),
                 'market_share': float(mr.market_share_pct or 0),
@@ -87,7 +87,7 @@ def _serialize_teams(game, round_number, scenario):
         market_presence = {}
         for mp in TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).select_related('market', 'entry_mode'):
+        ).select_related('market', 'entry_mode').order_by('market_id'):
             market_presence[mp.market.code] = {
                 'entry_mode': mp.entry_mode.code if mp.entry_mode else None,
                 'established_round': mp.established_round,
@@ -96,7 +96,7 @@ def _serialize_teams(game, round_number, scenario):
 
         # Products
         products = []
-        for product in TeamProduct.objects.filter(team=team, status='active'):
+        for product in TeamProduct.objects.filter(team=team, status='active').order_by('id'):
             products.append({
                 'id': product.id,
                 'name': product.name,
@@ -106,7 +106,7 @@ def _serialize_teams(game, round_number, scenario):
         partnerships = []
         for tp in TeamPartnership.objects.filter(
             team=team, status='active',
-        ).select_related('market', 'strategy_option'):
+        ).select_related('market', 'strategy_option').order_by('id'):
             partnerships.append({
                 'market': tp.market.code if tp.market else None,
                 'type': tp.strategy_option.code if tp.strategy_option else None,
@@ -142,7 +142,7 @@ def _serialize_teams(game, round_number, scenario):
             from core.models.cc31_models import TeamGovernanceCommitment
             for tgc in TeamGovernanceCommitment.objects.filter(
                 game=game, team=team, is_active=True,
-            ).select_related('commitment_type'):
+            ).select_related('commitment_type').order_by('id'):
                 governance_commitments.append({
                     'code': tgc.commitment_type.code,
                     'name': tgc.commitment_type.name,
@@ -158,7 +158,7 @@ def _serialize_teams(game, round_number, scenario):
             from core.models.cc31_models import TeamMarketCompliance
             for tmc in TeamMarketCompliance.objects.filter(
                 game=game, team=team,
-            ).select_related('market'):
+            ).select_related('market').order_by('market_id'):
                 compliance[tmc.market.code] = float(tmc.compliance_level or 0)
         except Exception:
             pass
@@ -173,7 +173,7 @@ def _serialize_teams(game, round_number, scenario):
                 round__round_number=round_number,
             ).first()
             if sub:
-                for alloc in TalentAllocation.objects.filter(submission=sub):
+                for alloc in TalentAllocation.objects.filter(submission=sub).order_by('talent_pool'):
                     talent_allocation[alloc.talent_pool] = alloc.market_allocation or {}
         except Exception:
             pass
@@ -184,7 +184,7 @@ def _serialize_teams(game, round_number, scenario):
             from core.models.team_state import TeamPlant
             for plant in TeamPlant.objects.filter(
                 team=team, status='operational',
-            ).select_related('market'):
+            ).select_related('market').order_by('id'):
                 plants[plant.market.code] = True
         except Exception:
             pass
@@ -249,7 +249,7 @@ def _serialize_markets(game, round_number, scenario):
     from core.models.scenario import MarketConditionByRound
 
     markets = {}
-    for market in scenario.markets.all():
+    for market in scenario.markets.all().order_by('id'):
         condition = MarketConditionByRound.objects.filter(
             market=market, round_number=round_number,
         ).first()
@@ -265,7 +265,7 @@ def _serialize_markets(game, round_number, scenario):
         modifiers = []
         for mod in ActiveModifier.objects.filter(
             game=game, target_market=market,
-        ).filter(started_round__lte=round_number):
+        ).filter(started_round__lte=round_number).order_by('id'):
             if mod.expires_round is None or mod.expires_round > round_number:
                 modifiers.append({
                     'type': mod.modifier_type,
@@ -294,14 +294,14 @@ def _serialize_markets(game, round_number, scenario):
 def _serialize_ai_competitors(game, round_number, scenario):
     """Serialize AI competitor state."""
     competitors = {}
-    for comp in AICompetitorDefinition.objects.filter(scenario=scenario):
+    for comp in AICompetitorDefinition.objects.filter(scenario=scenario).order_by('id'):
         behavior = AICompetitorBehavior.objects.filter(ai_competitor=comp).first()
 
         # Get fit scores for this round
         fit_scores = {}
         for fit in AICompetitorFitByRound.objects.filter(
             ai_competitor=comp, round_number=round_number,
-        ).select_related('segment', 'market'):
+        ).select_related('segment', 'market').order_by('id'):
             market_code = fit.market.code if fit.market else 'global'
             seg_name = fit.segment.name if fit.segment else 'unknown'
             key = f"{market_code}_{seg_name}"
@@ -309,7 +309,7 @@ def _serialize_ai_competitors(game, round_number, scenario):
 
         # Market presence (competitors are in all markets by default)
         presence = {}
-        for market in scenario.markets.all():
+        for market in scenario.markets.all().order_by('id'):
             presence[market.code] = True
 
         competitors[str(comp.id)] = {
@@ -332,12 +332,12 @@ def _serialize_ai_competitors(game, round_number, scenario):
 def _serialize_ai_investors(game, round_number, scenario):
     """Serialize AI investor state."""
     investors = {}
-    for fund in AIInvestorFund.objects.filter(scenario=scenario):
+    for fund in AIInvestorFund.objects.filter(scenario=scenario).order_by('id'):
         # Holdings per team
         holdings = {}
         for holding in AIInvestorHolding.objects.filter(
             game=game, fund=fund, round_number=round_number,
-        ):
+        ).order_by('id'):
             holdings[holding.team_id] = {
                 'shares': holding.shares_held,
                 'pct': float(holding.holding_pct),
@@ -350,7 +350,7 @@ def _serialize_ai_investors(game, round_number, scenario):
         if round_number > 0:
             for holding in AIInvestorHolding.objects.filter(
                 game=game, fund=fund, round_number=round_number - 1,
-            ):
+            ).order_by('id'):
                 prev_holdings[holding.team_id] = {
                     'shares': holding.shares_held,
                     'pct': float(holding.holding_pct),
@@ -380,7 +380,7 @@ def _serialize_alliances(game):
     alliances = {}
     for alliance in TeamAllianceState.objects.filter(
         game=game,
-    ).select_related('partner_profile', 'team', 'market'):
+    ).select_related('partner_profile', 'team', 'market').order_by('id'):
         key = f"{alliance.team_id}_{alliance.market.code}_{alliance.partner_profile.partnership_code}"
         profile = alliance.partner_profile
 
@@ -416,14 +416,14 @@ def _serialize_governments(game, scenario):
 
     for gp in GovernmentProfile.objects.filter(
         scenario=scenario,
-    ).select_related('market'):
+    ).select_related('market').order_by('id'):
         market_code = gp.market.code
 
         # Per-team satisfaction records
         satisfaction_per_team = {}
         for gs in GovernmentSatisfaction.objects.filter(
             game=game, market=gp.market,
-        ):
+        ).order_by('id'):
             satisfaction_per_team[str(gs.team_id)] = {
                 'satisfaction': float(gs.satisfaction),
                 'objective_scores': gs.objective_scores or {},
@@ -461,7 +461,7 @@ def _serialize_round_events(game, round_number):
     events = []
     for event in EventInstance.objects.filter(
         game=game, round_number=round_number,
-    ).select_related('event_template'):
+    ).select_related('event_template').order_by('id'):
         events.append({
             'template_code': event.event_template.name if event.event_template else 'unknown',
             'name': event.event_template.name if event.event_template else '',
@@ -481,7 +481,7 @@ def _serialize_global_conditions(game, round_number, scenario):
 
     # Aggregate market growth rates
     growth_rates = {}
-    for market in scenario.markets.all():
+    for market in scenario.markets.all().order_by('id'):
         mc = MarketConditionByRound.objects.filter(
             market=market, round_number=round_number,
         ).first()

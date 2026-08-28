@@ -150,20 +150,32 @@ class CompetitionAuditTests(TestCase):
                              context)
 
     def test_output_manifest_covers_competitive_outputs_and_carried_state(self):
-        from core.services.resolution_manifest import complete_manifest
+        """V2-001: the published result *and* the state the next round reads.
+
+        The full section inventory and its exclusion justifications are locked
+        down in ``core.tests.test_manifest_determinism``; this checks that a
+        completed manifest really carries the expanded envelope and hashes the
+        narrative separately.
+        """
+        from core.services.resolution_manifest import (
+            MANIFEST_SCHEMA_VERSION, complete_manifest)
         manifest = ResolutionManifest.objects.create(
-            game=self.game, round=self.round, seed='s' * 64,
-            input_manifest={}, input_sha256='i' * 64)
+            game=self.game, round=self.round, schema_version=MANIFEST_SCHEMA_VERSION,
+            seed='s' * 64, input_manifest={}, input_sha256='i' * 64)
         complete_manifest(self.round)
         manifest.refresh_from_db()
-        self.assertEqual(set(manifest.output_manifest), {
-            'financials', 'market_revenue', 'product_market', 'adoption',
-            'performance', 'coherence', 'resilience', 'share_price',
-            'leaderboard', 'carried_team_state',
-        })
-        self.assertEqual(manifest.output_manifest['carried_team_state'][0]['team_id'],
-                         self.team.id)
+        sections = manifest.output_manifest['sections']
+        for name in ('financials', 'market_revenue', 'product_market', 'adoption',
+                     'performance', 'coherence', 'resilience', 'share_price',
+                     'leaderboard', 'team', 'team_platform', 'team_market_presence',
+                     'active_modifier', 'event_instance', 'decision_marketing'):
+            self.assertIn(name, sections)
+        team_rows = {row['_key'] for row in sections['team']}
+        self.assertEqual(team_rows, {f'team(game("Hardening game")|"T")'})
         self.assertEqual(len(manifest.output_sha256), 64)
+        self.assertEqual(len(manifest.narrative_sha256), 64)
+        self.assertNotEqual(manifest.output_sha256, manifest.narrative_sha256)
+        self.assertEqual(set(manifest.output_section_digests), set(sections))
 
     def test_failed_resolution_is_durably_visible_after_transaction_rollback(self):
         from unittest.mock import patch

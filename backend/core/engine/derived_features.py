@@ -205,7 +205,7 @@ def calculate_derived_features(context):
         _calculate_esg_features(team, context)
 
         # === PER-MARKET FEATURES ===
-        for market in MarketDefinition.objects.filter(scenario=context.scenario):
+        for market in MarketDefinition.objects.filter(scenario=context.scenario).order_by('id'):
             _calculate_market_features(team, market, context)
 
     context.log.append('CC-25: Derived features calculated')
@@ -343,7 +343,7 @@ def _calculate_market_features(team, market, context):
         if submission:
             for dm in DecisionMarketing.objects.filter(
                 submission=submission, market=market,
-            ):
+            ).order_by('team_product__name'):
                 dist_investment += float(dm.distribution_investment or 0)
                 sales_reps += dm.sales_team_count or 0
 
@@ -356,7 +356,7 @@ def _calculate_market_features(team, market, context):
         acq_dist_bonus = sum(
             m.value for m in TeamMarketModifier.objects.filter(
                 team=team, market=market, modifier_type='distribution_reach',
-            )
+            ).order_by('id')
         )
 
         dist_score = 1

@@ -34,7 +34,7 @@ def process_alliances(context):
     _initialize_new_alliance_states(game, round_number)
 
     # Process each active alliance
-    for alliance in TeamAllianceState.objects.filter(game=game).exclude(status='DISSOLVED'):
+    for alliance in TeamAllianceState.objects.filter(game=game).exclude(status='DISSOLVED').order_by('id'):
         partner = alliance.partner_profile
         team = alliance.team
         market = alliance.market
@@ -115,7 +115,8 @@ def _eval_market_investment(team, game, market, round_number, context):
 
     # Market-specific spend: marketing + compliance
     market_spend = Decimal('0')
-    for md in submission.marketing_decisions.filter(market=market):
+    for md in (submission.marketing_decisions.filter(market=market)
+               .order_by('team_product__name')):
         market_spend += md.promotion_budget
 
     from core.models.cc31_models import ComplianceInvestment
@@ -125,9 +126,11 @@ def _eval_market_investment(team, game, market, round_number, context):
 
     # Total spend across all markets
     total_spend = Decimal('0')
-    for md in submission.marketing_decisions.all():
+    for md in (submission.marketing_decisions.all()
+               .order_by('team_product__name', 'market__code')):
         total_spend += md.promotion_budget
-    for ci_all in ComplianceInvestment.objects.filter(submission=submission):
+    for ci_all in ComplianceInvestment.objects.filter(
+            submission=submission).order_by('market__code'):
         total_spend += ci_all.investment_amount
 
     if total_spend <= 0:
@@ -186,7 +189,8 @@ def _eval_localization(team, game, market, round_number, context):
     ).first()
     local_staff = 0
     if submission:
-        for alloc in TalentAllocation.objects.filter(submission=submission):
+        for alloc in TalentAllocation.objects.filter(
+                submission=submission).order_by('talent_pool'):
             local_staff += alloc.market_allocation.get(market.code, 0)
 
     staffing_score = min(1.0, local_staff / baseline) if baseline > 0 else 0.5
@@ -443,7 +447,7 @@ def _initialize_new_alliance_states(game, round_number):
     """Create TeamAllianceState for partnerships that have profiles but no state."""
     scenario = game.scenario
 
-    for team in game.teams.filter(participation_status='active'):
+    for team in game.teams.filter(participation_status='active').order_by('id'):
         active_partnerships = TeamPartnership.objects.filter(
             team=team, status='active',
         ).select_related('strategy_option', 'market')

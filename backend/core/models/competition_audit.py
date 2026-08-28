@@ -59,15 +59,41 @@ class OperatorAuditEvent(models.Model):
 
 
 class ResolutionManifest(models.Model):
+    """What one round was given and what it produced.
+
+    ``schema_version`` is the envelope version. Version 1 stored decision-event
+    metadata and three result tables; version 2 stores canonical snapshots of
+    every table that carries competitive state (see
+    ``core.services.resolution_manifest``). Old rows keep version 1 and are
+    never reinterpreted as the wider envelope, so a v1 hash can never be
+    mistaken for a v2 hash.
+    """
     game = models.ForeignKey('core.Game', on_delete=models.PROTECT)
     round = models.OneToOneField('core.Round', on_delete=models.PROTECT,
                                  related_name='resolution_manifest')
+    schema_version = models.PositiveSmallIntegerField(default=1)
     seed = models.CharField(max_length=64)
     input_manifest = models.JSONField(default=dict)
     input_sha256 = models.CharField(max_length=64)
+    input_section_digests = models.JSONField(default=dict)
+    input_body_path = models.TextField(blank=True, default='')
     output_manifest = models.JSONField(default=dict)
     output_sha256 = models.CharField(max_length=64, blank=True, default='')
+    output_section_digests = models.JSONField(default=dict)
+    output_body_path = models.TextField(blank=True, default='')
+    # Phase-2 prose is hashed separately: a narrative difference must be
+    # visible without failing an otherwise identical competitive replay.
+    narrative_manifest = models.JSONField(default=dict)
+    narrative_sha256 = models.CharField(max_length=64, blank=True, default='')
+    # Host configuration, deliberately outside every hash, so two matching
+    # runs can be shown to have happened on differently configured machines.
+    environment = models.JSONField(default=dict)
+    decision_event_count = models.PositiveIntegerField(default=0)
     code_revision = models.CharField(max_length=64, blank=True, default='')
+    # Content digest of the runtime source tree. A commit hash with a `-dirty`
+    # suffix names the commit but not the modifications on top of it; this
+    # names the exact code, tracked or not. Replay refuses a mismatch.
+    source_tree_sha256 = models.CharField(max_length=64, blank=True, default='')
     backup_path = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)

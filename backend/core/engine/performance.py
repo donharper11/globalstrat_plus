@@ -102,7 +102,9 @@ def _strategic_capability_component(team, current_round):
     rd_score = D('0')
     if hasattr(submission, 'budget_allocation'):
         rd_budget = D(str(submission.budget_allocation.rd_budget or 0))
-        rd_spend = sum(D(str(row.amount or 0)) for row in submission.rd_investments.all())
+        rd_spend = sum(D(str(row.amount or 0))
+                       for row in submission.rd_investments.all().order_by(
+                           'team_platform__name', 'feature__code', 'method'))
         rd_score = _ratio(rd_spend, rd_budget) if rd_budget > 0 else D('0')
 
     has_product_action = (

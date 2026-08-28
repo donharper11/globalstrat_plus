@@ -87,16 +87,63 @@ written ruling.
    explicitly approved recovery trail.
 5. **“The operator changed something.”** Review operator events in timestamp
    order; compare before/after, actor, reason and request ID.
-6. **“Prove the calculation.”** Export input/output manifests, revision and
-   seed, then follow `RECOVERY_RUNBOOK.md` on an isolated stack. A matching
-   expanded hash proves published outputs and carried team state, not excluded
-   narrative wording.
+6. **“Prove the calculation.”** Use `manage.py replay_round` — see *Prove a
+   round by replaying it* below. A matching competitive hash proves the
+   published outputs and the state carried into the next round; it does not
+   cover narrative wording, which is hashed and reported separately.
 
 Do not reconstruct it from memory. Check gateway and application logs for the
 request ID and response, then inspect the append-only decision audit ledger. If
 the server acknowledged an accepted version before the deadline, use that exact
 version through the logged correction workflow. If no accepted version exists,
 apply the published missing-submission rule uniformly.
+
+## Prove a round by replaying it
+
+Use this when a team disputes a result, or as a routine post-round check. It
+never touches the live database: every step below runs against an isolated
+database whose `DB_NAME` points at a disposable copy.
+
+1. **Export the recorded manifest first, from the live stack.** Do this before
+   any restore, because the restore overwrites the row that holds it.
+
+   ```bash
+   python3 manage.py replay_round --game-id <id> --round <n> --export-only \
+     --evidence-dir <evidence>/<incident>/recorded
+   ```
+
+2. **Replay against the isolated database.** `--restore` drops and rebuilds the
+   target schema from the pre-resolution backup, so confirm `DB_NAME` is the
+   disposable one before running it.
+
+   ```bash
+   DB_NAME=<disposable> COMPETITION_RECOVERY_ENABLED=true \
+   python3 manage.py replay_round --game-id <id> --round <n> \
+     --restore --confirm REPLAY-GAME-<id>-ROUND-<n> \
+     --expected-manifest <evidence>/<incident>/recorded/expected-manifest.json \
+     --evidence-dir <evidence>/<incident>/replay --wait-narrative 150
+   ```
+
+3. **Read the exit code.**
+   - `0` — the input verified and the competitive hash matched. The round is
+     reproduced exactly. A differing narrative hash is reported but is not a
+     mismatch: Phase-2 prose is outside the competitive envelope by design.
+   - `2` — **the input did not verify and the engine was not run.** The restored
+     state is not what resolution was given. The console names the differing
+     sections and rows; the full diff is in `input-verification.json`. Treat
+     this as a tampering or restore-integrity incident, not a scoring defect.
+   - `3` — the input verified but the competitive hash differs. This is a
+     genuine reproducibility failure. Preserve `replay-report.json`, stop
+     further lifecycle actions on the round, and escalate.
+
+4. **Retain** the evidence directory with the incident record: it holds the
+   recorded manifest, the input verification, the per-section diffs, both hash
+   sets, and the environment fingerprint of the machine that replayed.
+
+Add `--verify-only` to check a restored database without running the engine.
+Old rounds resolved under manifest schema version 1 are refused rather than
+silently compared — their envelope is narrower and their hashes are not
+comparable.
 
 ## Resolution fails or a scoring defect is confirmed
 

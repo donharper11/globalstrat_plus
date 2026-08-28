@@ -157,9 +157,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = os.environ.get('DJANGO_LANGUAGE_CODE', 'en-us')
 
-TIME_ZONE = 'UTC'
+# UTC everywhere by default. Django assigns os.environ['TZ'] from this value
+# and calls tzset(), so it is the *process* timezone, not just a display
+# preference — which is exactly why it is overridable: a determinism replay
+# has to be able to run the resolution process under a genuinely different
+# zone and show the competitive hash does not move.
+TIME_ZONE = os.environ.get('DJANGO_TIME_ZONE', 'UTC')
 
 USE_I18N = True
 
@@ -269,6 +274,13 @@ SC_ENGINE_STRICT = os.environ.get(
 # mode. The guarded management command refuses to execute unless enabled.
 COMPETITION_RECOVERY_ENABLED = os.environ.get(
     'COMPETITION_RECOVERY_ENABLED', 'false',
+).lower() in ('1', 'true', 'yes')
+
+# A round scored from an uncommitted working tree cannot be reconstructed: the
+# commit hash names the commit, not the modifications sitting on top of it.
+# Resolution refuses such a build when this is on (the default in production).
+COMPETITION_REQUIRE_CLEAN_BUILD = os.environ.get(
+    'COMPETITION_REQUIRE_CLEAN_BUILD', 'true' if IS_PRODUCTION else 'false',
 ).lower() in ('1', 'true', 'yes')
 
 # JWT Configuration (custom User model — uses PyJWT, not simplejwt)

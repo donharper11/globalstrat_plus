@@ -184,7 +184,8 @@ def _calculate_market_talent_multipliers(context):
 
         allocations = {}
         if submission:
-            for alloc in TalentAllocation.objects.filter(submission=submission):
+            for alloc in TalentAllocation.objects.filter(
+                submission=submission).order_by('talent_pool'):
                 allocations[alloc.talent_pool] = alloc
 
         # Get active markets

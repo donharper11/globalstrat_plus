@@ -99,7 +99,7 @@ def close_round(game_id, reason='manual'):
 def _lock_all_submissions(game, round_obj):
     """Lock every team's submission for this round, creating empty ones."""
     count = 0
-    for team in Team.objects.filter(game=game, participation_status='active'):
+    for team in Team.objects.filter(game=game, participation_status='active').order_by('id'):
         submission = DecisionSubmission.objects.filter(
             team=team, round=round_obj,
         ).first()

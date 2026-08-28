@@ -138,7 +138,7 @@ def _reset_strategy_features(team, strategy_features, current_round):
 
 def _process_market_entries(team, submission, current_round):
     """Process DecisionMarketEntry decisions."""
-    for entry_dec in submission.market_entries.all():
+    for entry_dec in submission.market_entries.all().order_by('market__code', 'action'):
         if entry_dec.action == 'enter':
             # Check if already present
             existing = TeamMarketPresence.objects.filter(
@@ -222,7 +222,8 @@ def _process_market_entries(team, submission, current_round):
 
 def _process_partnerships(team, submission, current_round):
     """Process DecisionPartnership decisions."""
-    for part_dec in submission.partnerships.all():
+    for part_dec in submission.partnerships.all().order_by(
+            'market__code', 'strategy_option__code', 'action'):
         if part_dec.action == 'establish':
             TeamPartnership.objects.create(
                 team=team,
@@ -253,7 +254,7 @@ def _process_partnerships(team, submission, current_round):
 
 def _process_plants(team, submission, current_round):
     """Process DecisionPlant decisions."""
-    for plant_dec in submission.plant_decisions.all():
+    for plant_dec in submission.plant_decisions.all().order_by('market__code', 'action'):
         market = plant_dec.market
 
         if plant_dec.action == 'build':
@@ -413,7 +414,7 @@ def _process_governance_commitments_differentiated(team, game, esg, commitment_t
     interaction_costs = Decimal('0')
 
     # Detect revocations: was active but not in current decisions
-    for tgc in TeamGovernanceCommitment.objects.filter(game=game, team=team, is_active=True):
+    for tgc in TeamGovernanceCommitment.objects.filter(game=game, team=team, is_active=True).order_by('id'):
         if tgc.commitment_type.code not in current_codes:
             # REVOCATION
             tgc.is_active = False
@@ -555,7 +556,7 @@ def _apply_ongoing_entry_mode_effects(team, strategy_features, current_round):
         for effect in StrategyOptionEffect.objects.filter(
             strategy_option__code=presence.entry_mode.code,
             strategy_option__scenario=team.game.scenario,
-        ):
+        ).order_by('id'):
             market = presence.market if effect.market_specific else None
             _apply_effect(team, effect, market, current_round)
 
@@ -567,7 +568,7 @@ def _apply_ongoing_partnership_effects(team, strategy_features, current_round):
     ).select_related('strategy_option')
 
     for partnership in partnerships:
-        for effect in partnership.strategy_option.effects.all():
+        for effect in partnership.strategy_option.effects.all().order_by('id'):
             market = partnership.market if effect.market_specific else None
             _apply_effect(team, effect, market, current_round)
 

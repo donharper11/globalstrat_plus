@@ -267,7 +267,7 @@ def generate_financial_statements(context):
         platform_book_value = D('0')
         try:
             from core.models.team_state import TeamPlatform
-            for _p in TeamPlatform.objects.filter(team=team):
+            for _p in TeamPlatform.objects.filter(team=team).order_by('id'):
                 platform_book_value += max(
                     (_p.capitalized_cost or D('0')) - (_p.accumulated_amortization or D('0')),
                     D('0'),

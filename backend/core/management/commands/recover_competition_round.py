@@ -61,6 +61,11 @@ class Command(BaseCommand):
                 f'matching build, or pass --allow-code-revision-mismatch '
                 f'(use --restore-only) to override.')
         verified = verify_backup(manifest.backup_path)
+        # The dump predates the manifest row, so restoring destroys the only
+        # copy of what resolution was given. Keep it in memory now; it is what
+        # the restored state is checked against before the engine re-runs.
+        recorded_input = dict(manifest.input_manifest)
+        manifest_schema_version = manifest.schema_version
         intent = {
             'action': 'restore_round_intent', 'actor': actor.username,
             'reason': reason, 'game_id': game_id, 'round_number': round_number,
@@ -89,6 +94,34 @@ class Command(BaseCommand):
         append_recovery_audit({**intent, 'action': 'restore_round_complete'})
 
         if not options['restore_only']:
+            # Verify before mutating: a restored state that does not rebuild to
+            # the recorded input manifest must not be re-scored. Version-1
+            # manifests predate the expanded envelope and cannot be checked
+            # this way, so they are reported rather than silently skipped.
+            from core.services.resolution_manifest import (
+                MANIFEST_SCHEMA_VERSION, build_input_manifest, diff_sections)
+            from core.services.canonical_json import canonical_sha256
+            if manifest_schema_version != MANIFEST_SCHEMA_VERSION:
+                self.stdout.write(self.style.WARNING(
+                    f'Manifest is schema version {manifest_schema_version}; '
+                    f'input verification requires version '
+                    f'{MANIFEST_SCHEMA_VERSION} and was skipped.'))
+            else:
+                rebuilt, _snapshot = build_input_manifest(game, round_obj)
+                if canonical_sha256(rebuilt) != canonical_sha256(recorded_input):
+                    diff = diff_sections(recorded_input.get('sections', {}),
+                                         rebuilt.get('sections', {}))
+                    append_recovery_audit({**intent,
+                                           'action': 'rerun_input_mismatch',
+                                           'sections': sorted(diff)})
+                    raise CommandError(
+                        'The restored state does not match the recorded input '
+                        f'manifest. Differing sections: {sorted(diff)}. The '
+                        f'round was not re-run. Use `manage.py replay_round '
+                        f'--verify-only` for the full per-row diff.')
+                self.stdout.write(self.style.SUCCESS(
+                    f'Input verified: {canonical_sha256(rebuilt)}'))
+
             from core.engine.advance_round import process_round
             result = process_round(game_id)
             round_obj.refresh_from_db()

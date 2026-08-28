@@ -89,7 +89,7 @@ def bootstrap_round_zero(game):
         platform_feature_levels = {}  # {platform_id: {feature_id: level}}
         for plat in platforms:
             levels = {}
-            for fl in TeamPlatformFeatureLevel.objects.filter(team_platform=plat):
+            for fl in TeamPlatformFeatureLevel.objects.filter(team_platform=plat).order_by('id'):
                 levels[fl.feature_id] = float(fl.current_level)
             platform_feature_levels[plat.id] = levels
         # Aggregate feature levels (best across platforms) for segment scoring
@@ -166,7 +166,8 @@ def bootstrap_round_zero(game):
 
                 # Use starter share to estimate adoption
                 avg_share = float(
-                    sum(sp.market_share_pct for sp in starter.starter_products.all())
+                    sum(sp.market_share_pct
+                        for sp in starter.starter_products.all().order_by('id'))
                 ) / max(starter.starter_products.count(), 1)
 
                 bass_p = float(segment.bass_p)
@@ -270,7 +271,8 @@ def bootstrap_round_zero(game):
 
         # Market revenue — home market
         home_share = D(str(
-            sum(float(sp.market_share_pct) for sp in starter.starter_products.all())
+            sum(float(sp.market_share_pct)
+            for sp in starter.starter_products.all().order_by('id'))
         ))
         RoundResultMarketRevenue.objects.update_or_create(
             game=game, round_number=0, team=team, market=home_market,

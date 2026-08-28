@@ -215,7 +215,7 @@ def calculate_logistics_tariffs(context):
     _partnership_cache = {}
     for team in context.teams:
         from core.models.scenario import MarketDefinition as _MD
-        for mkt in _MD.objects.filter(scenario=scenario):
+        for mkt in _MD.objects.filter(scenario=scenario).order_by('id'):
             _partnership_cache[(team.id, mkt.id)] = get_partnership_effects(team, mkt, context)
 
     for key, rev in context.revenue.items():
@@ -398,9 +398,11 @@ def calculate_operating_expenses(context):
 
         if submission:
             # R&D expense
-            for inv in submission.rd_investments.all():
+            for inv in submission.rd_investments.all().order_by(
+                    'team_platform__name', 'feature__code', 'method'):
                 rd_expense += inv.amount
-            for dev in submission.platform_developments.all():
+            for dev in submission.platform_developments.all().order_by(
+                    'platform_generation__generation_order', 'platform_name'):
                 if not capitalize_platform:
                     rd_expense += dev.committed_cost
                 else:
@@ -432,12 +434,13 @@ def calculate_operating_expenses(context):
             except ScenarioConfig.DoesNotExist:
                 sales_rep_cost = Decimal('100000')
 
-            for md in submission.marketing_decisions.all():
+            for md in submission.marketing_decisions.all().order_by(
+                    'team_product__name', 'market__code'):
                 rep_cost = sales_rep_cost * md.sales_team_count
                 marketing_expense += md.promotion_budget + rep_cost
 
             # Strategy expense: entry costs + exit costs + partnerships + ESG + acquisitions
-            for entry in submission.market_entries.all():
+            for entry in submission.market_entries.all().order_by('market__code', 'action'):
                 if entry.action == 'enter':
                     strategy_expense += entry.initial_investment
                 elif entry.action == 'exit':
@@ -448,7 +451,7 @@ def calculate_operating_expenses(context):
                     strategy_expense += exit_cost
 
             # Active partnerships (annual investment)
-            for p in TeamPartnership.objects.filter(team=team, status='active'):
+            for p in TeamPartnership.objects.filter(team=team, status='active').order_by('id'):
                 strategy_expense += p.annual_investment
 
             # ESG
@@ -466,7 +469,9 @@ def calculate_operating_expenses(context):
 
             # Acquisitions (base acquisition cost) — only charge if actually fulfilled
             from core.models.team_state import TeamAcquisition as _TeamAcqCost
-            for acq in submission.acquisitions.select_related('acquisition_target').all():
+            for acq in submission.acquisitions.select_related(
+                    'acquisition_target').all().order_by(
+                    'acquisition_target__target_name'):
                 if _TeamAcqCost.objects.filter(
                     team=team, acquisition_target=acq.acquisition_target,
                 ).exists():
@@ -476,12 +481,12 @@ def calculate_operating_expenses(context):
             from core.models.team_state import TeamAcquisition as _TeamAcq
             for tacq in _TeamAcq.objects.filter(
                 team=team, integration_complete=False,
-            ).select_related('acquisition_target'):
+            ).select_related('acquisition_target').order_by('id'):
                 strategy_expense += tacq.acquisition_target.integration_cost_per_round
 
             # Plant maintenance for operational plants
             from core.models.scenario import PlatformGenerationDefinition
-            for plant in TeamPlant.objects.filter(team=team, status='operational'):
+            for plant in TeamPlant.objects.filter(team=team, status='operational').order_by('id'):
                 # Use annual_maintenance_cost from platform gen (simplified)
                 strategy_expense += D('0')  # Maintenance handled at scenario level
 
@@ -538,7 +543,7 @@ def calculate_operating_expenses(context):
         # Capex (plant construction) - tracked separately for balance sheet
         capex = D('0')
         if submission:
-            for pd in submission.plant_decisions.all():
+            for pd in submission.plant_decisions.all().order_by('market__code', 'action'):
                 if pd.action == 'build':
                     market = pd.market
                     if market.plant_build_cost:
@@ -555,7 +560,7 @@ def calculate_operating_expenses(context):
         platform_amortization = D('0')
         if capitalize_platform and amortization_rounds > 0:
             from core.models.team_state import TeamPlatform
-            for platform in TeamPlatform.objects.filter(team=team):
+            for platform in TeamPlatform.objects.filter(team=team).order_by('id'):
                 cost = platform.capitalized_cost or D('0')
                 if cost <= 0:
                     continue
@@ -633,7 +638,7 @@ def calculate_tax(context):
     team_tax_structures = {}
     for tts in TeamTaxStructure.objects.filter(
         game=context.game,
-    ).select_related('current_structure'):
+    ).select_related('current_structure').order_by('id'):
         team_tax_structures[tts.team_id] = tts
 
     for team in context.teams:
@@ -815,7 +820,8 @@ def calculate_retirement_costs(context):
         team_retire_expense = D('0')
         team_liquidate_revenue = D('0')
 
-        for retire_dec in submission.product_retires.select_related('team_product').all():
+        for retire_dec in submission.product_retires.select_related(
+                'team_product').all().order_by('team_product__name'):
             product = retire_dec.team_product
 
             prev_round = current_round - 1
@@ -876,7 +882,7 @@ def calculate_repatriation_costs(context):
     team_tax_structures = {}
     for tts in TeamTaxStructure.objects.filter(
         game=context.game,
-    ).select_related('current_structure'):
+    ).select_related('current_structure').order_by('id'):
         team_tax_structures[tts.team_id] = tts
 
     for team in context.teams:
