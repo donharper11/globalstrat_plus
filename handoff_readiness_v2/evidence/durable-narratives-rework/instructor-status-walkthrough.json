@@ -1,0 +1,129 @@
+{
+  "code_revision": "49d6514b9b9723e8d4e6244bb58236a89a3551d6",
+  "endpoint": "GET /api/games/37/round-control/",
+  "game_id": 37,
+  "instructor": {
+    "status_code": 200,
+    "username": "cc22_browser_inst"
+  },
+  "narratives": {
+    "jobs": [
+      {
+        "attempts": 1,
+        "attempts_remaining": 2,
+        "claim_expires_at": null,
+        "claimed_at": null,
+        "completed_at": "2026-08-28T19:08:08.013693+00:00",
+        "created_at": "2026-08-28T12:39:25.215875+00:00",
+        "degraded": true,
+        "label": "Strategic briefings",
+        "last_error": "5/5 calls fell back to templates: All connection attempts failed",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "briefing",
+        "state": "succeeded",
+        "state_label": "Succeeded",
+        "template_version": 1
+      },
+      {
+        "attempts": 3,
+        "attempts_remaining": 0,
+        "claim_expires_at": null,
+        "claimed_at": null,
+        "completed_at": "2026-08-28T19:08:08.016728+00:00",
+        "created_at": "2026-08-28T12:39:25.221221+00:00",
+        "degraded": false,
+        "label": "Instructor coaching alerts",
+        "last_error": "HTTP 500 upstream error",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "coaching",
+        "state": "failed",
+        "state_label": "Failed \u2014 terminal, needs an operator retry",
+        "template_version": 1
+      },
+      {
+        "attempts": 0,
+        "attempts_remaining": 3,
+        "claim_expires_at": null,
+        "claimed_at": null,
+        "completed_at": null,
+        "created_at": "2026-08-28T12:39:25.218766+00:00",
+        "degraded": false,
+        "label": "Coherence RAG evaluation",
+        "last_error": "",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "coherence_rag",
+        "state": "pending",
+        "state_label": "Pending",
+        "template_version": 1
+      },
+      {
+        "attempts": 0,
+        "attempts_remaining": 3,
+        "claim_expires_at": null,
+        "claimed_at": null,
+        "completed_at": null,
+        "created_at": "2026-08-28T12:39:25.229125+00:00",
+        "degraded": false,
+        "label": "Compliance enforcement narratives",
+        "last_error": "",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "compliance",
+        "state": "pending",
+        "state_label": "Pending",
+        "template_version": 1
+      },
+      {
+        "attempts": 0,
+        "attempts_remaining": 3,
+        "claim_expires_at": "2026-08-28T19:13:08.019119+00:00",
+        "claimed_at": "2026-08-28T19:08:08.019114+00:00",
+        "completed_at": null,
+        "created_at": "2026-08-28T12:39:25.223790+00:00",
+        "degraded": false,
+        "label": "Market outlooks",
+        "last_error": "",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "outlook",
+        "state": "claimed",
+        "state_label": "Claimed by a worker",
+        "template_version": 1
+      },
+      {
+        "attempts": 0,
+        "attempts_remaining": 3,
+        "claim_expires_at": null,
+        "claimed_at": null,
+        "completed_at": null,
+        "created_at": "2026-08-28T12:39:25.226412+00:00",
+        "degraded": false,
+        "label": "Supply-chain event narratives",
+        "last_error": "",
+        "max_attempts": 3,
+        "model_name": "qwen-max",
+        "narrative_type": "sc_event",
+        "state": "pending",
+        "state_label": "Pending",
+        "template_version": 1
+      }
+    ],
+    "summary": {
+      "claimed": 1,
+      "degraded": 1,
+      "failed": 1,
+      "pending": 3,
+      "succeeded": 1,
+      "total": 6
+    }
+  },
+  "no_credential_in_response": true,
+  "source_tree_sha256": "0c284a835d41f1a6b1ab0e1ea76b8e20cfe1e0032c13a6def75fd3e9f651003b",
+  "student": {
+    "status_code": 403,
+    "username": "student1"
+  }
+}
