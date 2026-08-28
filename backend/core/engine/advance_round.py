@@ -64,10 +64,11 @@ def close_round(game_id, reason='manual'):
     Processing is a separate, instructor-triggered step (process_round).
     Idempotent — closing an already-closed round is a no-op.
     """
-    from core.services.competition_locks import lock_game_for_round_close
-    # This is acquired before physical row locks. It lets already-active
-    # decision transactions commit, then holds subsequent writes behind close.
-    lock_game_for_round_close(game_id)
+    from core.services.competition_locks import lock_game_for_lifecycle
+    # Step 1 of the documented lock order. It lets already-active decision
+    # transactions commit, then holds subsequent writes — and every other
+    # operator action — behind close until this transaction ends.
+    lock_game_for_lifecycle(game_id)
     game = Game.objects.select_for_update().get(id=game_id)
     round_obj = Round.objects.select_for_update().filter(
         game=game, round_number=game.current_round).first()
@@ -144,6 +145,12 @@ def process_round(game_id, dry_run=False):
         # manifests, and deterministic mutations. A concurrent caller waits
         # here, then observes `processed` before it can take another snapshot.
         with transaction.atomic():
+            from core.services.competition_locks import lock_game_for_lifecycle
+            # Step 1 of the documented lock order, before any row lock. A
+            # caller that already holds it (an operator view) re-acquires it
+            # harmlessly; a caller that does not — a management command, the
+            # deadline scheduler — gets the same serialisation.
+            lock_game_for_lifecycle(game_id)
             game_for_backup = Game.objects.select_for_update().get(id=game_id)
             round_for_backup = Round.objects.select_for_update().filter(
                 game=game_for_backup,
@@ -172,20 +179,23 @@ def process_round(game_id, dry_run=False):
             from core.services.resolution_manifest import complete_manifest
             complete_manifest(round_for_backup)
 
-        # Phase 2: background LLM calls
+        # Phase 2: background LLM calls, dispatched only once the resolution
+        # is durable. on_commit fires after the *outermost* transaction
+        # commits, so an operator view that wraps this call cannot have the
+        # narrative thread reading a round the database has not accepted yet.
         game = Game.objects.get(id=game_id)
         round_obj = Round.objects.filter(
             game=game, round_number=context._round_number,
         ).first()
 
         if round_obj:
-            thread = threading.Thread(
-                target=_run_phase_2,
-                args=(game.id, round_obj.id),
-                daemon=True,
-            )
-            thread.start()
-            logger.info("Phase 2 dispatched to background thread")
+            def _dispatch_phase_2(game_id=game.id, round_id=round_obj.id):
+                thread = threading.Thread(
+                    target=_run_phase_2, args=(game_id, round_id), daemon=True)
+                thread.start()
+                logger.info('Phase 2 dispatched to background thread')
+
+            transaction.on_commit(_dispatch_phase_2)
 
         return {
             'processed_round': context._round_number,
@@ -217,6 +227,8 @@ def advance_to_next_round(game_id, force=False):
     so results always exist before the game moves on (pass force=True to
     override).
     """
+    from core.services.competition_locks import lock_game_for_lifecycle
+    lock_game_for_lifecycle(game_id)
     game = Game.objects.select_for_update().get(id=game_id)
     round_obj = Round.objects.select_for_update().filter(
         game=game, round_number=game.current_round).first()

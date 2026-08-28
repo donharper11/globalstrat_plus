@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Alert, Button, Card, DatePicker, Descriptions, Modal, Popconfirm,
+  Alert, Button, Card, DatePicker, Descriptions, Input, Modal, Popconfirm,
   Progress, Space, Tag, Typography, message,
 } from 'antd';
 import dayjs from 'dayjs';
@@ -57,6 +57,8 @@ export default function RoundControlCard({ gameId, onChanged }) {
   const [deadlineValue, setDeadlineValue] = useState(null);
   const [reopenOpen, setReopenOpen] = useState(false);
   const [reopenValue, setReopenValue] = useState(null);
+  const [forceOpen, setForceOpen] = useState(false);
+  const [forceReason, setForceReason] = useState('');
 
   const load = useCallback(async () => {
     if (!gameId) return;
@@ -103,7 +105,21 @@ export default function RoundControlCard({ gameId, onChanged }) {
       await load();
       onChanged?.();
     } catch (err) {
-      message.error(err.response?.data?.error || confirmMsg || 'Action failed');
+      const body = err.response?.data;
+      // A 409 means another operator or the deadline scheduler moved the round
+      // under us. Say so, show the guidance the API sent, and refresh — the
+      // console is now showing a state that no longer exists.
+      const conflict = err.response?.status === 409;
+      const text = [body?.error || confirmMsg || 'Action failed', body?.guidance]
+        .filter(Boolean)
+        .join(' ');
+      if (conflict) {
+        message.warning(text, 6);
+        await load();
+        onChanged?.();
+      } else {
+        message.error(text, 6);
+      }
     } finally {
       setBusy(null);
     }
@@ -198,7 +214,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
           <Popconfirm
             title="Close this round now?"
             description="Students will be locked out immediately and all decisions submitted as they stand."
-            onConfirm={() => run('close', () => closeRound(gameId))}
+            onConfirm={() => run('close', () => closeRound(gameId, round))}
           >
             <Button danger={round.is_overdue} type={next === 'close' ? 'primary' : 'default'}
               loading={busy === 'close'}>
@@ -212,7 +228,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
             <Popconfirm
               title="Run post-round processing?"
               description="Scores events, R&D, adoption, revenue, costs, financial statements, performance index and the leaderboard. Takes a few seconds."
-              onConfirm={() => run('process', () => processRound(gameId))}
+              onConfirm={() => run('process', () => processRound(gameId, false, round))}
             >
               <Button type="primary" loading={busy === 'process'}>
                 Run post-round processing
@@ -241,15 +257,37 @@ export default function RoundControlCard({ gameId, onChanged }) {
         )}
 
         {round.status === 'open' && (
-          <Popconfirm
-            title="Close and process in one step?"
-            description="Skips the review pause. Use when you're sure the round is done."
-            onConfirm={() => run('force', () => processRound(gameId, true))}
-          >
-            <Button loading={busy === 'force'}>Close &amp; process now</Button>
-          </Popconfirm>
+          <Button loading={busy === 'force'} onClick={() => setForceOpen(true)}>
+            Close &amp; process now
+          </Button>
         )}
       </Space>
+
+      <Modal
+        title="Close and process in one step"
+        open={forceOpen}
+        onCancel={() => setForceOpen(false)}
+        okText="Close and process"
+        okButtonProps={{ danger: true, disabled: forceReason.trim().length < 10 }}
+        onOk={async () => {
+          await run('force',
+            () => processRound(gameId, true, round, forceReason.trim()));
+          setForceOpen(false);
+          setForceReason('');
+        }}
+      >
+        <Paragraph type="secondary">
+          This closes the round early and resolves it immediately, skipping the
+          review pause. Teams still editing lose whatever they had not saved.
+          The reason below is written to the operator audit record.
+        </Paragraph>
+        <Input.TextArea
+          rows={3}
+          value={forceReason}
+          onChange={(e) => setForceReason(e.target.value)}
+          placeholder="Why is closing early correct here? (at least 10 characters)"
+        />
+      </Modal>
 
       <Modal
         title="Set round deadline"
@@ -258,7 +296,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
         onOk={async () => {
           await run('deadline', () => setRoundDeadline(gameId, {
             deadline: deadlineValue ? deadlineValue.toISOString() : null,
-          }));
+          }, round));
           setDeadlineOpen(false);
         }}
         okText="Save deadline"
@@ -284,7 +322,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
             message.error('Pick a new deadline, or the round will close again straight away.');
             return;
           }
-          await run('reopen', () => reopenRound(gameId, reopenValue.toISOString()));
+          await run('reopen', () => reopenRound(gameId, reopenValue.toISOString(), round));
           setReopenOpen(false);
         }}
         okText="Reopen round"

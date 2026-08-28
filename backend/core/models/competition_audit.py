@@ -37,11 +37,23 @@ class DecisionAuditEvent(models.Model):
 
 
 class OperatorAuditEvent(models.Model):
+    """One row per operator attempt, committed or refused.
+
+    A refused attempt is recorded with ``outcome='rejected'``, an empty
+    ``after`` and the conflict that caused it. That keeps a race visible to
+    whoever investigates later without implying the round moved: the pair of
+    rows for two racing operators shows exactly one commit and one rejection.
+    """
+    OUTCOME_CHOICES = [('committed', 'Committed'), ('rejected', 'Rejected')]
+
     game = models.ForeignKey('core.Game', on_delete=models.PROTECT)
     round = models.ForeignKey('core.Round', on_delete=models.PROTECT,
                               null=True, blank=True)
     user = models.ForeignKey('core.User', on_delete=models.PROTECT)
     action = models.CharField(max_length=64)
+    outcome = models.CharField(max_length=16, choices=OUTCOME_CHOICES,
+                               default='committed')
+    conflict = models.JSONField(default=dict, blank=True)
     reason = models.TextField()
     before = models.JSONField(default=dict)
     after = models.JSONField(default=dict)

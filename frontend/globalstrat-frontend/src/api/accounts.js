@@ -1,23 +1,35 @@
 import client from './client';
 
 // ---- Round lifecycle control ----
+// Every mutating call carries what the console was showing. The API compares
+// it under its lock and answers 409 `state_moved` if the round changed since,
+// so an operator who clicks on a stale screen is told what happened instead of
+// getting a message about a state they never saw.
+const seen = (round) => (round
+  ? { expected_round_number: round.round_number, expected_status: round.status }
+  : {});
+
 export const getRoundControl = (gameId) =>
   client.get(`/games/${gameId}/round-control/`);
 
-export const closeRound = (gameId) =>
-  client.post(`/games/${gameId}/round-control/close/`);
+export const closeRound = (gameId, round) =>
+  client.post(`/games/${gameId}/round-control/close/`, seen(round));
 
-export const reopenRound = (gameId, deadline) =>
-  client.post(`/games/${gameId}/round-control/reopen/`, { deadline });
+export const reopenRound = (gameId, deadline, round) =>
+  client.post(`/games/${gameId}/round-control/reopen/`,
+    { deadline, ...seen(round) });
 
-export const processRound = (gameId, force = false) =>
-  client.post(`/games/${gameId}/round-control/process/`, { force });
+export const processRound = (gameId, force = false, round, reason) =>
+  client.post(`/games/${gameId}/round-control/process/`,
+    { force, ...(reason ? { reason } : {}), ...seen(round) });
 
-export const advanceToNextRound = (gameId, force = false) =>
-  client.post(`/games/${gameId}/round-control/advance/`, { force });
+export const advanceToNextRound = (gameId, force = false, round, reason) =>
+  client.post(`/games/${gameId}/round-control/advance/`,
+    { force, ...(reason ? { reason } : {}), ...seen(round) });
 
-export const setRoundDeadline = (gameId, payload) =>
-  client.post(`/games/${gameId}/round-control/deadline/`, payload);
+export const setRoundDeadline = (gameId, payload, round) =>
+  client.post(`/games/${gameId}/round-control/deadline/`,
+    { ...payload, ...seen(round) });
 
 // ---- Student accounts / passwords ----
 export const getStudentAccounts = (params) =>

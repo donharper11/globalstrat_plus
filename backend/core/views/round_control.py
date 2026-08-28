@@ -24,6 +24,8 @@ from rest_framework.views import APIView
 from core.models.core import Game, Round, Team
 from core.models.decisions import DecisionSubmission
 from core.permissions import IsInstructor
+from core.services.lifecycle import (
+    LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 
 logger = logging.getLogger(__name__)
 
@@ -115,35 +117,32 @@ class RoundCloseView(APIView):
     """
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, pk=game_id)
-        before_round = Round.objects.filter(game=game, round_number=game.current_round).first()
-        before = _round_payload(game, before_round)
-        from core.engine.advance_round import close_round
+        with operator_action(request, game_id, 'close_round') as action:
+            round_obj = action.check_expected(action.require_round())
+            before = action.before = _round_payload(action.game, round_obj)
+            if round_obj.status in ('closed', 'processed'):
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} is already '
+                    f'{round_obj.status}.',
+                    guidance='Refresh the console — the deadline scheduler or '
+                             'another operator closed it first.',
+                    code='round_already_closed')
+                raise error
 
-        try:
-            result = close_round(game.id, reason='manual')
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            from core.engine.advance_round import close_round
+            result = close_round(action.game.id, reason='manual')
 
-        if not result['changed']:
-            return Response(
-                {'error': f'Round {result["round"]} is already {result["status"]}.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        game.refresh_from_db()
-        round_obj = Round.objects.filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, game, round_obj, 'close_round', before,
-                              _round_payload(game, round_obj))
-        return Response({
-            'message': f'Round {result["round"]} closed. '
-                       f'{result["submissions_locked"]} submission(s) locked.',
-            'round': _round_payload(game, round_obj),
-        })
+            round_obj = action.require_round()
+            after = _round_payload(action.game, round_obj)
+            action.commit(before, after)
+            return Response({
+                'message': f'Round {result["round"]} closed. '
+                           f'{result["submissions_locked"]} submission(s) locked.',
+                'request_id': action.request_id,
+                'round': after,
+            })
 
 
 class RoundReopenView(APIView):
@@ -155,64 +154,66 @@ class RoundReopenView(APIView):
     """
     permission_classes = [IsInstructor]
 
-    @transaction.atomic
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game.objects.select_for_update(), pk=game_id)
-        round_obj = Round.objects.select_for_update().filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        if not round_obj:
-            return Response({'error': 'No current round.'},
-                            status=status.HTTP_404_NOT_FOUND)
+        with operator_action(request, game_id, 'reopen_round') as action:
+            game = action.game
+            round_obj = action.check_expected(action.require_round())
+            before = action.before = _round_payload(game, round_obj)
 
-        if round_obj.status == 'processed':
-            return Response(
-                {'error': f'Round {round_obj.round_number} has already been '
-                          f'processed and cannot be reopened.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if round_obj.status == 'open':
-            return Response({'error': 'Round is already open.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            if round_obj.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} has already been processed '
+                    f'and cannot be reopened.',
+                    guidance='Results exist for this round. Recovery is the only '
+                             'route back; see RECOVERY_RUNBOOK.md.',
+                    code='round_already_processed')
+                raise error
+            if round_obj.status == 'open':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} is already open.',
+                    guidance='Refresh the console — another operator reopened it.',
+                    code='round_already_open')
+                raise error
 
-        new_deadline = request.data.get('deadline')
-        if new_deadline:
-            parsed = parse_datetime(new_deadline)
-            if not parsed:
-                return Response({'error': 'Could not parse deadline.'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            if timezone.is_naive(parsed):
-                parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
-            round_obj.deadline = parsed
-        elif round_obj.deadline and round_obj.deadline <= timezone.now():
-            # Reopening without moving a past deadline would just let cron
-            # close it again within the minute.
-            return Response(
-                {'error': 'The deadline has already passed. Supply a new '
-                          'deadline when reopening, or it will close again.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            new_deadline = request.data.get('deadline')
+            if new_deadline:
+                parsed = parse_datetime(new_deadline)
+                if not parsed:
+                    raise LifecyclePrecondition('Could not parse deadline.')
+                if timezone.is_naive(parsed):
+                    parsed = timezone.make_aware(
+                        parsed, timezone.get_current_timezone())
+                round_obj.deadline = parsed
+            elif round_obj.deadline and round_obj.deadline <= timezone.now():
+                # Reopening without moving a past deadline would just let cron
+                # close it again within the minute.
+                raise LifecyclePrecondition(
+                    'The deadline has already passed.',
+                    guidance='Supply a new deadline when reopening, or the '
+                             'scheduler will close the round again within a minute.',
+                    code='deadline_in_past')
 
-        before = _round_payload(game, round_obj)
-        round_obj.status = 'open'
-        round_obj.closed_at = None
-        round_obj.close_reason = ''
-        round_obj.save(update_fields=['status', 'closed_at', 'close_reason', 'deadline'])
+            round_obj.status = 'open'
+            round_obj.closed_at = None
+            round_obj.close_reason = ''
+            round_obj.save(update_fields=[
+                'status', 'closed_at', 'close_reason', 'deadline'])
 
-        # Unlock submissions so teams can edit again.
-        unlocked = DecisionSubmission.objects.filter(
-            round=round_obj, team__in=Team.objects.filter(game=game),
-            status='locked',
-        ).update(status='draft', locked_at=None)
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, game, round_obj, 'reopen_round', before,
-                              _round_payload(game, round_obj))
+            # Unlock submissions so teams can edit again.
+            unlocked = DecisionSubmission.objects.filter(
+                round=round_obj, team__in=Team.objects.filter(game=game),
+                status='locked',
+            ).update(status='draft', locked_at=None)
 
-        return Response({
-            'message': f'Round {round_obj.round_number} reopened. '
-                       f'{unlocked} submission(s) unlocked.',
-            'round': _round_payload(game, round_obj),
-        })
+            after = _round_payload(game, action.require_round())
+            action.commit(before, after)
+            return Response({
+                'message': f'Round {round_obj.round_number} reopened. '
+                           f'{unlocked} submission(s) unlocked.',
+                'request_id': action.request_id,
+                'round': after,
+            })
 
 
 class RoundProcessView(APIView):
@@ -228,67 +229,78 @@ class RoundProcessView(APIView):
     """
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, pk=game_id)
-        round_obj = Round.objects.filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        if not round_obj:
-            return Response({'error': 'No current round.'},
-                            status=status.HTTP_404_NOT_FOUND)
+        with operator_action(request, game_id, 'process_round') as action:
+            game = action.game
+            round_obj = action.check_expected(action.require_round())
+            before = action.before = _round_payload(game, round_obj)
+            force = bool(request.data.get('force', False))
+            reason = ''
 
-        force = request.data.get('force', False)
+            # Exactly-once resolution: this is checked while holding the
+            # boundary, so a second operator arriving during Phase 1 waits here
+            # and then sees the finished state rather than resolving again.
+            if round_obj.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} has already been processed.',
+                    guidance='Refresh the console. If results look wrong, use '
+                             'recovery rather than processing again.',
+                    code='round_already_processed')
+                raise error
 
-        if round_obj.status == 'open':
-            if not force:
+            if round_obj.status == 'open':
+                if not force:
+                    error = LifecyclePrecondition(
+                        f'Round {round_obj.round_number} is still open.',
+                        guidance='Close it first, or resend with force=true and '
+                                 'a written reason to close and process in one step.',
+                        code='round_still_open')
+                    raise error
+                # force closes an open round early: an integrity bypass, so it
+                # is not available without a reason on the audit record.
+                reason = action.require_reason()
+                from core.engine.advance_round import close_round
+                close_round(game.id, reason='manual')
+                round_obj = action.require_round()
+
+            from core.engine.advance_round import process_round, RoundNotReadyError
+            try:
+                result = process_round(game.id)
+            except RoundNotReadyError as e:
+                # Operator-fixable precondition (e.g. a team is unlocked), not a
+                # server fault — report it as an actionable 400.
+                logger.warning('Round not ready to process for game %s: %s',
+                               game_id, e)
+                error = LifecyclePrecondition(
+                    str(e), guidance='Re-lock the team, or close the round, '
+                                     'then process again.',
+                    code='round_not_ready')
+                raise error
+            except Exception as e:
+                logger.exception('Processing failed for game %s', game_id)
+                # The engine marks the round FAILED outside its own rolled-back
+                # savepoint; returning a response rather than re-raising is what
+                # lets that record — and this audit row — commit.
+                action.record_fault(f'Post-round processing failed: {e}')
                 return Response(
-                    {'error': f'Round {round_obj.round_number} is still open. '
-                              f'Close it first, or pass force=true to close '
-                              f'and process in one step.',
-                     'teams_pending': _round_payload(game, round_obj)['teams_pending']},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {'error': f'Post-round processing failed: {e}',
+                     'request_id': action.request_id},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
-            from core.engine.advance_round import close_round
-            close_round(game.id, reason='manual')
 
-        elif round_obj.status == 'processed':
-            return Response(
-                {'error': f'Round {round_obj.round_number} has already been '
-                          f'processed. Advance to the next round.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        before = _round_payload(game, round_obj)
-        from core.engine.advance_round import process_round, RoundNotReadyError
-        try:
-            result = process_round(game.id)
-        except RoundNotReadyError as e:
-            # Operator-fixable precondition (e.g. a team is unlocked), not a
-            # server fault — report it as an actionable 400.
-            logger.warning('Round not ready to process for game %s: %s', game_id, e)
-            return Response(
-                {'error': str(e)}, status=status.HTTP_400_BAD_REQUEST,
-            )
-        except Exception as e:
-            logger.exception('Processing failed for game %s', game_id)
-            return Response(
-                {'error': f'Post-round processing failed: {e}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        game.refresh_from_db()
-        round_obj.refresh_from_db()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, game, round_obj, 'process_round', before,
-                              _round_payload(game, round_obj))
-        return Response({
-            'message': f'Round {result["processed_round"]} processed in '
-                       f'{result["phase_1_time"]:.1f}s. Results are available; '
-                       f'narratives are generating in the background.',
-            'phase_1_time': result['phase_1_time'],
-            'phase_2_status': result['phase_2_status'],
-            'round': _round_payload(game, round_obj),
-        })
+            game.refresh_from_db()
+            after = _round_payload(game, action.require_round())
+            action.commit(before, after, reason=reason)
+            return Response({
+                'message': f'Round {result["processed_round"]} processed in '
+                           f'{result["phase_1_time"]:.1f}s. Results are available; '
+                           f'narratives are generating in the background.',
+                'phase_1_time': result['phase_1_time'],
+                'phase_2_status': result['phase_2_status'],
+                'request_id': action.request_id,
+                'round': after,
+            })
 
 
 class RoundAdvanceView(APIView):
@@ -300,43 +312,61 @@ class RoundAdvanceView(APIView):
     """
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, pk=game_id)
-        old_round = Round.objects.filter(
-            game=game, round_number=game.current_round).first()
-        before = _round_payload(game, old_round)
-        force = request.data.get('force', False)
+        with operator_action(request, game_id, 'advance_round') as action:
+            game = action.game
+            old_round = action.check_expected(action.require_round())
+            before = action.before = _round_payload(game, old_round)
+            force = bool(request.data.get('force', False))
+            reason = ''
 
-        from core.engine.advance_round import advance_to_next_round
-        try:
-            result = advance_to_next_round(game.id, force=force)
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.exception('Advance failed for game %s', game_id)
-            return Response({'error': f'Advance failed: {e}'},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            if old_round.status != 'processed':
+                if not force:
+                    error = LifecyclePrecondition(
+                        f'Round {old_round.round_number} is "{old_round.status}", '
+                        f'not "processed".',
+                        guidance='Run post-round processing first, or resend with '
+                                 'force=true and a written reason to advance '
+                                 'without results.',
+                        code='round_not_processed')
+                    raise error
+                # Advancing past an unprocessed round leaves that round with no
+                # results at all, so the bypass is audited with a reason.
+                reason = action.require_reason()
 
-        game.refresh_from_db()
-        round_obj = Round.objects.filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, game, old_round, 'advance_round', before,
-                              _round_payload(game, round_obj))
+            from core.engine.advance_round import advance_to_next_round
+            try:
+                result = advance_to_next_round(game.id, force=True if force else False)
+            except ValueError as e:
+                error = LifecycleConflict(str(e), code='advance_refused',
+                                          guidance='Refresh the console.')
+                raise error
+            except Exception as e:
+                logger.exception('Advance failed for game %s', game_id)
+                action.record_fault(f'Advance failed: {e}', code='advance_failed')
+                return Response({'error': f'Advance failed: {e}',
+                                 'request_id': action.request_id},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        if result['next_round'] is None:
-            msg = f'Round {result["completed_round"]} was the last round. Game complete.'
-        else:
-            msg = f'Advanced to round {result["next_round"]}.'
+            game.refresh_from_db()
+            after = _round_payload(game, action.require_round())
+            action.commit(before, after, reason=reason)
 
-        return Response({
-            'message': msg,
-            'completed_round': result['completed_round'],
-            'next_round': result['next_round'],
-            'game_status': game.status,
-            'round': _round_payload(game, round_obj),
-        })
+            if result['next_round'] is None:
+                msg = (f'Round {result["completed_round"]} was the last round. '
+                       f'Game complete.')
+            else:
+                msg = f'Advanced to round {result["next_round"]}.'
+
+            return Response({
+                'message': msg,
+                'completed_round': result['completed_round'],
+                'next_round': result['next_round'],
+                'game_status': game.status,
+                'request_id': action.request_id,
+                'round': after,
+            })
 
 
 class RoundDeadlineView(APIView):
@@ -349,59 +379,61 @@ class RoundDeadlineView(APIView):
     """
     permission_classes = [IsInstructor]
 
-    @transaction.atomic
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game.objects.select_for_update(), pk=game_id)
-        round_obj = Round.objects.select_for_update().filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        if not round_obj:
-            return Response({'error': 'No current round.'},
-                            status=status.HTTP_404_NOT_FOUND)
-        if round_obj.status != 'open':
-            return Response(
-                {'error': 'Deadline changes are refused unless the round is open.'},
-                status=status.HTTP_409_CONFLICT,
-            )
+        with operator_action(request, game_id, 'set_deadline') as action:
+            game = action.game
+            round_obj = action.check_expected(action.require_round())
+            before = action.before = _round_payload(game, round_obj)
 
-        before = _round_payload(game, round_obj)
-        if 'minutes_from_now' in request.data:
-            try:
-                minutes = int(request.data['minutes_from_now'])
-            except (TypeError, ValueError):
-                return Response({'error': 'minutes_from_now must be a number.'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            round_obj.deadline = timezone.now() + timezone.timedelta(minutes=minutes)
-        elif 'deadline' in request.data:
-            raw = request.data['deadline']
-            if raw in (None, ''):
-                round_obj.deadline = None
+            # Checked under the boundary: a close committing a microsecond
+            # earlier must win, and this request must not extend a round that
+            # is already closed or resolved.
+            if round_obj.status != 'open':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} is "{round_obj.status}"; '
+                    f'deadline changes are refused unless the round is open.',
+                    guidance='Reopen the round with a new deadline if students '
+                             'still need time.',
+                    code='round_not_open')
+                raise error
+
+            if 'minutes_from_now' in request.data:
+                try:
+                    minutes = int(request.data['minutes_from_now'])
+                except (TypeError, ValueError):
+                    raise LifecyclePrecondition('minutes_from_now must be a number.')
+                round_obj.deadline = timezone.now() + timezone.timedelta(
+                    minutes=minutes)
+            elif 'deadline' in request.data:
+                raw = request.data['deadline']
+                if raw in (None, ''):
+                    round_obj.deadline = None
+                else:
+                    parsed = parse_datetime(raw)
+                    if not parsed:
+                        raise LifecyclePrecondition('Could not parse deadline.')
+                    if timezone.is_naive(parsed):
+                        parsed = timezone.make_aware(
+                            parsed, timezone.get_current_timezone())
+                    round_obj.deadline = parsed
             else:
-                parsed = parse_datetime(raw)
-                if not parsed:
-                    return Response({'error': 'Could not parse deadline.'},
-                                    status=status.HTTP_400_BAD_REQUEST)
-                if timezone.is_naive(parsed):
-                    parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
-                round_obj.deadline = parsed
-        else:
-            return Response({'error': 'Provide deadline or minutes_from_now.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                raise LifecyclePrecondition(
+                    'Provide deadline or minutes_from_now.')
 
-        round_obj.save(update_fields=['deadline'])
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, game, round_obj, 'set_deadline', before,
-                              _round_payload(game, round_obj))
+            round_obj.save(update_fields=['deadline'])
+            after = _round_payload(game, action.require_round())
+            action.commit(before, after)
 
-        warning = None
-        if round_obj.deadline and round_obj.deadline <= timezone.now() \
-                and round_obj.status == 'open':
-            warning = ('That deadline is in the past — the round will close '
-                       'within a minute.')
+            warning = None
+            if round_obj.deadline and round_obj.deadline <= timezone.now():
+                warning = ('That deadline is in the past — the round will close '
+                           'within a minute.')
 
-        return Response({
-            'message': 'Deadline updated.'
-                       if round_obj.deadline else 'Deadline cleared.',
-            'warning': warning,
-            'round': _round_payload(game, round_obj),
-        })
+            return Response({
+                'message': 'Deadline updated.'
+                           if round_obj.deadline else 'Deadline cleared.',
+                'warning': warning,
+                'request_id': action.request_id,
+                'round': after,
+            })

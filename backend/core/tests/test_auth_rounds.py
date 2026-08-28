@@ -481,6 +481,8 @@ class RoundLifecycleTests(_BaseFixture):
         self.assertEqual(self.round.close_reason, 'manual')
 
     def test_cannot_advance_before_processing(self):
+        """400: the operator can process the round and try again, so this is a
+        precondition rather than a conflict."""
         from core.engine.advance_round import close_round
         close_round(self.game.id)
         r = self.client.post(reverse('round-control-advance', args=[self.game.id]),
@@ -544,11 +546,14 @@ class RoundLifecycleTests(_BaseFixture):
         self.assertEqual(sub.status, 'draft')
 
     def test_cannot_reopen_a_processed_round(self):
+        """409, not 400: results exist, so no amount of retrying or extra
+        input makes a reopen legal. See core.services.lifecycle for the rule."""
         self.round.status = 'processed'
         self.round.save()
         r = self.client.post(reverse('round-control-reopen', args=[self.game.id]),
                              {}, format='json')
-        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.status_code, 409)
+        self.assertIn('guidance', r.data)
 
     def test_set_deadline_minutes_from_now(self):
         r = self.client.post(reverse('round-control-deadline', args=[self.game.id]),

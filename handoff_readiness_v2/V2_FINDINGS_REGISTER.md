@@ -8,7 +8,7 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-001 | Determinism boundary | P0 | `output_sha256` covered only financials, performance-index rows, and leaderboard rows. It omitted coherence, product/market outcomes, adoption, resilience, share price history, and mutable `Team` state carried into the next round. | Compare original `complete_manifest()` at `7452ee7` with `_run_phase_1()`. | **Closed** — see closure entry below |
 | V2-002 | Reconstruction / disputes | P1 | The input manifest stores decision-event IDs and payload hashes, but not the decision payload, scenario parameters, market state, starting team state, or engine configuration. The backup can reconstruct these, but the manifest alone cannot prove the calculation or explain an input. | Inspect `prepare_manifest()`: its fields are game/round IDs, six audit metadata fields, active team IDs, and scenario ID. | **Closed** — see closure entry below |
 | V2-003 | Dispute tooling | P1 | Instructor decision drill-down showed the stored snapshot and lock actor/time, but not each accepted save's actor, server timestamp, request ID, endpoint, payload, and hash. | V2 API/UI now exposes ordered audit evidence in the historical decisions modal. | Repaired |
-| V2-004 | Concurrent operator actions | P0 | Reopen, deadline change, and advance did not share the row-lock transaction used by close/process. | V2 adds atomic game/round locks and returns 409 for deadline mutation after close. Correction concurrency and an integration race remain pending. | Partially repaired |
+| V2-004 | Concurrent operator actions | P0 | Reopen, deadline change, and advance did not share the row-lock transaction used by close/process. Tracing the routes found the problem was wider: several endpoints read the round's status outside any lock and met the conflict inside the engine, where it surfaced as a 500 or a second resolution. | Compare the pre-repair `RoundProcessView` (unlocked status read, blanket `except Exception` → 500) and `InstructorExtendDeadlineView` (no lock, no transaction, silently reopened a closed round). | **Closed** — see closure entry below |
 | V2-005 | Failure visibility | P1 | A Phase-1 exception rolled back `PROCESSING`; `_mark_failed()` then required the rolled-back value, leaving no FAILED indicator. | Injected disk-full exception now leaves `Round.processing_status=FAILED`; focused and full suites pass. | Repaired |
 | V2-006 | Backend restart / narrative | P1 | Phase 2 runs only in a daemon thread. A worker restart can silently abandon it; no durable queued job or startup retry exists, and an abrupt process death cannot populate `narrative_error`. Numeric results remain valid, but operator visibility/recovery is incomplete. | Process a round, terminate the worker after Phase 2 dispatch and before completion, restart, then inspect `narrative_generated`, `narrative_error`, and logs. | Open |
 | V2-007 | Audit integrity | P1 | Audit models reject a second `.save()`, but queryset `.update()`/`.delete()` and direct SQL can alter them. The database does not enforce append-only history, so stored data alone cannot prove absence of operator/database tampering. | In an isolated database, call `DecisionAuditEvent.objects.filter(pk=...).update(action='tampered')`; it bypasses model `save()`. | Open |
@@ -127,6 +127,47 @@ it mutates anything.
   `<COMPETITION_BACKUP_DIR>/manifests/`, so it survives losing the database.
   The digest in the filename is the manifest's own `input_sha256` /
   `output_sha256`.
+
+### V2-004 — fail-closed operator concurrency (P0) — closed
+
+Every action that can change round state, decision state or the roster now
+passes through one coordination boundary — an exclusive advisory lock per game,
+taken before any row lock — and evaluates its preconditions *after* acquiring
+it. Student decision writes take the same lock shared, so they run concurrently
+with each other and are excluded by any operator action.
+
+Twelve entry points were brought onto it, five of which previously took no lock
+at all: `RoundProcessView`, `RoundAdvanceView`, `InstructorAdvanceRoundView`,
+`InstructorInjectEventView`, `InstructorInjectSCEventView`,
+`InstructorExtendDeadlineView` and `DecisionUnlockView` (the correction path
+the register recorded as still pending). The full inventory, the lock order,
+the 409/400 rule and the force-flag policy are in `OPERATOR_CONCURRENCY_MATRIX.md`.
+
+Two behaviours worth calling out:
+
+* **Refusals are audited.** `OperatorAuditEvent` gained `outcome` and
+  `conflict`. A rejected attempt is written *after* the transaction it refused
+  has rolled back, in its own transaction, with an empty `after` — so a race is
+  visible to whoever investigates without the row implying the round moved.
+* **Callers can prove they were not racing.** `expected_round_number` and
+  `expected_status` are compared under the lock; a mismatch is a 409
+  `state_moved` naming what changed, which is what separates losing a race from
+  asking too early. The console sends what it rendered.
+
+- Code: `core/services/lifecycle.py` (new), `competition_locks.py`,
+  `round_control.py`, `results_api.py`, `instructor_sc.py`, `decisions.py`,
+  `team_control.py`, `advance_round.py`, `check_round_deadlines.py`,
+  `recover_competition_round.py`, `competition_audit.py`; migration `0063`.
+  Phase-2 dispatch moved to `transaction.on_commit`, so a view wrapping
+  `process_round` cannot have the narrative thread read a round the database
+  has not accepted yet.
+- Tests: `core/tests/test_operator_concurrency.py` — 7 pairs × 100 races ×
+  both arrival orders, real threads and real PostgreSQL. Backend suite 338.
+- Evidence: `evidence/operator-concurrency/` — 700 races, **0 deadlocks, 0
+  5xx**, with advisory-lock rows sampled mid-race showing genuine contention
+  and status-code tallies showing both orders really won (process+process 47 /
+  53; process+correct 58 / 42).
+- Docs: `OPERATOR_CONCURRENCY_MATRIX.md`, operator runbook.
 
 ## Scope notes
 

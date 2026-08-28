@@ -90,8 +90,21 @@ class Command(BaseCommand):
                 )
                 continue
 
+            # The scan above ran outside the coordination boundary, so it is a
+            # guess: an operator may have closed, reopened or extended this
+            # round since. close_round takes the boundary and re-reads, and
+            # returns changed=False when the round moved on — which is why the
+            # scheduler racing a manual close is a no-op rather than a fault.
             try:
                 result = close_round(game.id, reason='deadline')
+                if not result['changed']:
+                    self.stdout.write(
+                        f'Skipped {label} — already {result["status"]} when the '
+                        f'scheduler reached it.'
+                    )
+                    logger.info('Deadline close skipped, already %s: %s',
+                                result['status'], label)
+                    continue
                 self.stdout.write(self.style.SUCCESS(
                     f'Closed {label} — deadline was '
                     f'{round_obj.deadline:%Y-%m-%d %H:%M}, '
@@ -109,6 +122,11 @@ class Command(BaseCommand):
             try:
                 process_round(game.id)
                 self.stdout.write(self.style.SUCCESS(f'  Processed {label}.'))
+            except ValueError as e:
+                # Already processed by an operator between close and here.
+                self.stdout.write(f'  Skipped processing {label}: {e}')
+                logger.info('Auto-process skipped for %s: %s', label, e)
+                continue
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'  Processing failed for {label}: {e}'))
                 logger.exception('Auto-process failed for %s', label)

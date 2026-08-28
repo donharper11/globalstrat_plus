@@ -17,6 +17,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.services.lifecycle import lifecycle_view
 from core.models.core import Game, Team, TeamMember, Round
 from core.models.decisions import (
     DecisionSubmission, DecisionBudgetAllocation, DecisionRDInvestment,
@@ -744,32 +745,59 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
 
 
 class DecisionUnlockView(APIView):
-    """POST — instructor-only unlock of a locked submission."""
+    """POST — instructor-only unlock of a locked submission for correction.
+
+    A correction changes what a round will be resolved from, so it runs on the
+    same coordination boundary as every other operator action. Without it, an
+    unlock could land between the engine's all-teams-locked precondition and
+    the read of that team's decisions, and the round would resolve from a
+    submission the operator believed they had taken back.
+    """
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id, team_id, round_number):
-        rnd = _get_round(game_id, round_number)
-        submission = get_object_or_404(
-            DecisionSubmission, team_id=team_id, round=rnd,
-        )
-        if submission.status != 'locked':
-            return Response(
-                {'detail': 'Submission is not locked.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        before = DecisionSubmissionSerializer(submission).data
-        submission.status = 'draft'
-        submission.locked_at = None
-        submission.locked_by = None
-        submission.save()
-        from core.services.competition_audit import (
-            record_decision_event, record_operator_event)
-        record_decision_event(request, submission.team.game, submission.team, rnd,
-                              'correction_unlock', before)
-        record_operator_event(
-            request, submission.team.game, rnd, 'unlock_submission_for_correction',
-            before, DecisionSubmissionSerializer(submission).data)
-        return Response(DecisionSubmissionSerializer(submission).data)
+        from core.services.lifecycle import (
+            LifecycleConflict, LifecyclePrecondition, operator_action)
+        from core.services.competition_locks import lock_team_for_decision_write
+
+        with operator_action(request, game_id, 'unlock_submission_for_correction') as action:
+            rnd = get_object_or_404(
+                Round.objects.select_for_update(),
+                game_id=game_id, round_number=round_number)
+            lock_team_for_decision_write(team_id)
+            submission = get_object_or_404(
+                DecisionSubmission.objects.select_for_update(),
+                team_id=team_id, round=rnd)
+            before = action.before = DecisionSubmissionSerializer(submission).data
+
+            if rnd.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_number} has already been processed; '
+                    f'unlocking now would not change its results.',
+                    guidance='Use the recovery workflow if a processed round '
+                             'must be corrected.',
+                    code='round_already_processed')
+                raise error
+            if submission.status != 'locked':
+                error = LifecycleConflict(
+                    'Submission is not locked.',
+                    guidance='Refresh — it may already have been unlocked.',
+                    code='submission_not_locked')
+                raise error
+
+            reason = action.require_reason()
+            submission.status = 'draft'
+            submission.locked_at = None
+            submission.locked_by = None
+            submission.save(update_fields=['status', 'locked_at', 'locked_by'])
+            after = DecisionSubmissionSerializer(submission).data
+
+            from core.services.competition_audit import record_decision_event
+            record_decision_event(request, submission.team.game, submission.team,
+                                  rnd, 'correction_unlock', before)
+            action.commit(before, after, reason=reason)
+            return Response({**after, 'request_id': action.request_id})
 
 
 # ---------------------------------------------------------------------------

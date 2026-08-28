@@ -71,7 +71,22 @@ class TeamParticipationControlTests(TestCase):
             'action': 'deactivate', 'reason': 'Voluntary competition withdrawal',
             'confirmation': 'DEACTIVATE TEAM wrong',
         }, format='json').status_code, 400)
-        self.assertEqual(OperatorAuditEvent.objects.count(), 0)
+
+        self.team.refresh_from_db()
+        self.assertEqual(self.team.participation_status, 'active')
+        # GSP-CRV2-02: a refused attempt at a destructive action is recorded,
+        # because "someone tried to withdraw a team and got the confirmation
+        # token wrong" is exactly what an investigator needs to see. The empty
+        # `after` is what stops the row implying anything happened.
+        self.assertEqual(
+            OperatorAuditEvent.objects.filter(outcome='committed').count(), 0)
+        rejections = OperatorAuditEvent.objects.filter(outcome='rejected')
+        self.assertEqual(rejections.count(), 2)
+        for event in rejections:
+            self.assertEqual(event.after, {})
+            self.assertTrue(event.request_id)
+            self.assertIn(event.conflict['code'],
+                          {'reason_required', 'confirmation_required'})
 
     def test_student_cannot_operate_control(self):
         response = self.client_for(self.student).post(self.url, {

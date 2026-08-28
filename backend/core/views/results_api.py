@@ -4,6 +4,7 @@ CC-10: Results API Views.
 Read-only endpoints for round results, leaderboard, competitor intel,
 and instructor dashboard/actions.
 """
+import logging
 from decimal import Decimal
 
 from django.db.models import Q
@@ -28,7 +29,11 @@ from core.models.scenario import MarketDefinition, EventTemplateDefinition
 from core.models.decisions import DecisionSubmission
 from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
+from core.services.lifecycle import (
+    LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
+
+logger = logging.getLogger(__name__)
 
 
 def _dec(v):
@@ -651,122 +656,211 @@ class InstructorDashboardView(APIView):
 
 
 class InstructorAdvanceRoundView(APIView):
-    """POST /api/games/{game_id}/instructor/advance-round/"""
+    """POST /api/games/{game_id}/instructor/advance-round/
+
+    The legacy one-step route: process the current round and open the next.
+    It passes through the same coordination boundary as the round-control
+    endpoints, so mixing the two consoles cannot resolve a round twice.
+    """
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, id=game_id)
+        with operator_action(request, game_id, 'advance_round_legacy') as action:
+            game = action.game
+            round_obj = action.require_round()
+            before = action.before = {'round_number': round_obj.round_number,
+                                      'status': round_obj.status,
+                                      'current_round': game.current_round}
+            force = bool(request.data.get('force', False))
+            reason = ''
 
-        # Check all teams locked (or allow override)
-        force = request.data.get('force', False)
-        if not force:
-            teams = Team.objects.filter(
-                game=game, participation_status='active',
-            )
-            for t in teams:
-                rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
-                dec_sub = DecisionSubmission.objects.filter(
-                    team=t, round=rnd,
-                ).first() if rnd else None
-                if not dec_sub or dec_sub.status != 'locked':
-                    return Response(
-                        {'error': f'Team "{t.name}" has not locked decisions. Use force=true to override.'},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+            if round_obj.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} has already been processed.',
+                    guidance='Refresh the console and advance instead.',
+                    code='round_already_processed')
+                raise error
 
-        # Run the full engine pipeline
-        try:
-            from core.engine.advance_round import advance_round
-            context = advance_round(game.id)
+            if force:
+                # Overriding the all-teams-locked check resolves the round with
+                # whatever a team had at that moment, so it needs a reason.
+                reason = action.require_reason()
+            else:
+                unlocked = _first_unlocked_team(game, round_obj)
+                if unlocked is not None:
+                    error = LifecyclePrecondition(
+                        f'Team "{unlocked}" has not locked decisions.',
+                        guidance='Lock or close the round first, or resend with '
+                                 'force=true and a written reason.',
+                        code='team_not_locked')
+                    raise error
+
+            from core.engine.advance_round import advance_round, RoundNotReadyError
+            try:
+                advance_round(game.id)
+            except RoundNotReadyError as e:
+                error = LifecyclePrecondition(str(e), code='round_not_ready')
+                raise error
+            except ValueError as e:
+                error = LifecycleConflict(str(e), code='advance_refused',
+                                          guidance='Refresh the console.')
+                raise error
+            except Exception as e:
+                logger.exception('Legacy advance failed for game %s', game_id)
+                action.record_fault(f'Round advance failed: {e}',
+                                    code='advance_failed')
+                return Response(
+                    {'error': f'Round advance failed: {e}',
+                     'request_id': action.request_id},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+
             game.refresh_from_db()
+            after = {'current_round': game.current_round}
+            action.commit(before, after, reason=reason)
             return Response({
                 'message': f'Round advanced to {game.current_round}.',
                 'current_round': game.current_round,
+                'request_id': action.request_id,
             })
-        except Exception as e:
-            return Response(
-                {'error': f'Round advance failed: {str(e)}'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+
+
+def _first_unlocked_team(game, round_obj):
+    """The name of the first active team without a locked submission, or None."""
+    locked_team_ids = set(DecisionSubmission.objects.filter(
+        round=round_obj, status='locked').values_list('team_id', flat=True))
+    team = Team.objects.filter(
+        game=game, participation_status='active',
+    ).exclude(id__in=locked_team_ids).order_by('id').first()
+    return team.name if team else None
 
 
 class InstructorInjectEventView(APIView):
     """POST /api/games/{game_id}/instructor/inject-event/"""
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, id=game_id)
-        template_id = request.data.get('event_template_id')
-        market_id = request.data.get('target_market_id')
+        with operator_action(request, game_id, 'inject_event') as action:
+            game = action.game
+            round_obj = action.require_round()
+            before = action.before = {'round_number': round_obj.round_number,
+                                      'status': round_obj.status}
 
-        template = get_object_or_404(EventTemplateDefinition, id=template_id)
-        target_market = None
-        if market_id:
-            target_market = get_object_or_404(MarketDefinition, id=market_id)
+            # An event injected while Phase 1 is running would land on one side
+            # or the other of fire_events depending on timing, so the round's
+            # inputs would depend on the clock. The boundary makes that
+            # impossible; this check makes the refusal explicit.
+            if round_obj.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} has already been processed; '
+                    f'an event injected now would not be part of it.',
+                    guidance='Advance to the next round and inject there.',
+                    code='round_already_processed')
+                raise error
 
-        event = EventInstance.objects.create(
-            game=game,
-            event_template=template,
-            round_number=game.current_round,
-            target_market=target_market,
-            narrative=template.description_template,
-        )
+            template_id = request.data.get('event_template_id')
+            market_id = request.data.get('target_market_id')
+            template = get_object_or_404(EventTemplateDefinition, id=template_id)
+            target_market = None
+            if market_id:
+                target_market = get_object_or_404(MarketDefinition, id=market_id)
 
-        return Response({
-            'message': f'Event "{template.name}" injected.',
-            'event_id': event.id,
-        }, status=status.HTTP_201_CREATED)
+            event = EventInstance.objects.create(
+                game=game,
+                event_template=template,
+                round_number=game.current_round,
+                target_market=target_market,
+                narrative=template.description_template,
+            )
+            action.commit(before, {
+                'event_template': template.name,
+                'round_number': game.current_round,
+                'target_market': target_market.code if target_market else None,
+            })
+
+            return Response({
+                'message': f'Event "{template.name}" injected.',
+                'event_id': event.id,
+                'request_id': action.request_id,
+            }, status=status.HTTP_201_CREATED)
 
 
 class InstructorExtendDeadlineView(APIView):
     """POST /api/games/{game_id}/instructor/extend-deadline/"""
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, id=game_id)
-        hours = request.data.get('hours', 24)
+        with operator_action(request, game_id, 'extend_deadline') as action:
+            game = action.game
+            round_obj = action.require_round()
+            before = action.before = {
+                'round_number': round_obj.round_number,
+                'status': round_obj.status,
+                'deadline': round_obj.deadline.isoformat()
+                            if round_obj.deadline else None}
+            try:
+                hours = int(request.data.get('hours', 24))
+            except (TypeError, ValueError):
+                raise LifecyclePrecondition('hours must be a number.')
 
-        # Extend the current Round's deadline. This used to write
-        # Game.round_deadline, a field nothing enforces and nothing else
-        # writes, so extending a deadline had no effect on the sim.
-        round_obj = Round.objects.filter(
-            game=game, round_number=game.current_round,
-        ).first()
-        if not round_obj:
-            return Response(
-                {'error': f'Game has no round {game.current_round}.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            # This route reopens a closed round as a side effect. That is a
+            # real state change, so it is refused once results exist and, like
+            # every other reopen, it is audited rather than silent.
+            if round_obj.status == 'processed':
+                error = LifecycleConflict(
+                    f'Round {round_obj.round_number} has already been processed; '
+                    f'its deadline cannot be extended.',
+                    guidance='Advance to the next round and set its deadline there.',
+                    code='round_already_processed')
+                raise error
 
-        base = round_obj.deadline or timezone.now()
-        if base < timezone.now():
-            # Extending an already-expired deadline should give students the
-            # full extension from now, not a window that is already spent.
-            base = timezone.now()
-        round_obj.deadline = base + timezone.timedelta(hours=int(hours))
+            reason = ''
+            if round_obj.status == 'closed':
+                # Reopening returns students to a round the deadline already
+                # ended. Same bar as an explicit reopen.
+                reason = action.require_reason()
 
-        reopened = False
-        if round_obj.status == 'closed':
-            round_obj.status = 'open'
-            round_obj.closed_at = None
-            round_obj.close_reason = ''
-            reopened = True
-            DecisionSubmission.objects.filter(
-                round=round_obj, team__in=Team.objects.filter(game=game),
-                status='locked',
-            ).update(status='draft', locked_at=None)
+            base = round_obj.deadline or timezone.now()
+            if base < timezone.now():
+                # Extending an already-expired deadline should give students the
+                # full extension from now, not a window that is already spent.
+                base = timezone.now()
+            round_obj.deadline = base + timezone.timedelta(hours=hours)
 
-        round_obj.save()
+            reopened = False
+            unlocked = 0
+            if round_obj.status == 'closed':
+                round_obj.status = 'open'
+                round_obj.closed_at = None
+                round_obj.close_reason = ''
+                reopened = True
+                unlocked = DecisionSubmission.objects.filter(
+                    round=round_obj, team__in=Team.objects.filter(game=game),
+                    status='locked',
+                ).update(status='draft', locked_at=None)
 
-        msg = f'Deadline extended by {hours} hour(s).'
-        if reopened:
-            msg += ' The round was closed, so it has been reopened and submissions unlocked.'
+            round_obj.save(update_fields=[
+                'deadline', 'status', 'closed_at', 'close_reason'])
+            action.commit(before, {
+                'status': round_obj.status,
+                'deadline': round_obj.deadline.isoformat(),
+                'reopened': reopened, 'submissions_unlocked': unlocked,
+            }, reason=reason)
 
-        return Response({
-            'message': msg,
-            'reopened': reopened,
-            'new_deadline': round_obj.deadline.isoformat(),
-        })
+            msg = f'Deadline extended by {hours} hour(s).'
+            if reopened:
+                msg += (' The round was closed, so it has been reopened and '
+                        f'{unlocked} submission(s) unlocked.')
+
+            return Response({
+                'message': msg,
+                'reopened': reopened,
+                'new_deadline': round_obj.deadline.isoformat(),
+                'request_id': action.request_id,
+            })
 
 
 class InstructorResearchQueriesView(APIView):

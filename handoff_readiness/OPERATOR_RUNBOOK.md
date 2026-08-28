@@ -98,6 +98,35 @@ the server acknowledged an accepted version before the deadline, use that exact
 version through the logged correction workflow. If no accepted version exists,
 apply the published missing-submission rule uniformly.
 
+## Two operators act at once
+
+Every lifecycle action — close, reopen, deadline, process, advance, event
+injection, correction unlock, team withdrawal — serialises on one boundary per
+game and re-reads the round after acquiring it. Concurrent actions cannot
+interleave; one wins and the other is told.
+
+Read the status code as an instruction:
+
+- **409 Conflict** — refresh and look again. Another operator, or the deadline
+  scheduler, already did this or moved the round past it. The response body
+  carries `guidance` saying so. Nothing you retype will change it; if the round
+  now needs a different action, take that one.
+- **400 Bad Request** — do something else first, or fix the request. "Close the
+  round first", "that team is not locked", "a reason is required".
+- **200** — it happened. The response carries a `request_id`; that is the
+  operator audit row for what you just did.
+
+Every attempt is recorded, including refusals. To see a race after the fact,
+read the operator audit events for the round: a race shows as exactly one row
+with `outcome='committed'` and one with `outcome='rejected'`, the rejected one
+carrying an empty `after` and the conflict that caused it. Two committed rows
+for the same action on the same round is a defect — escalate it.
+
+An override (`force=true`, a correction unlock, a team withdrawal) is refused
+without a written reason of at least ten characters, and the reason is stored
+on the audit row. Do not work around this; the reason is the record of why the
+override was correct.
+
 ## Prove a round by replaying it
 
 Use this when a team disputes a result, or as a routine post-round check. It

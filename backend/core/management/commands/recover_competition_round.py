@@ -83,6 +83,11 @@ class Command(BaseCommand):
 
         restore_database(verified['path'])
         connection.connect()
+        # Recovery replaces the whole database, so it must not overlap any
+        # operator action. Taking the boundary after the restore holds it for
+        # the re-run below; the restore itself is guarded by maintenance mode.
+        from core.services.competition_locks import lock_game_for_lifecycle
+        lock_game_for_lifecycle(game_id)
         game = Game.objects.get(pk=game_id)
         round_obj = Round.objects.get(game=game, round_number=round_number)
         actor = User.objects.get(username=options['actor'])

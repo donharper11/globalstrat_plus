@@ -1,0 +1,151 @@
+# Operator concurrency: inventory, lock order and compatibility matrix
+
+GSP-CRV2-02, closing V2-004. Evidence: `evidence/operator-concurrency/`.
+
+## The defect this closes
+
+V2-004 was recorded as "reopen, deadline change and advance did not share the
+row-lock transaction used by close/process". Tracing the routes showed the
+shape was wider than that: each lifecycle endpoint decided for itself what to
+lock and *when to check*. Several read the round's status outside any lock,
+decided they were allowed to proceed, and only met the conflict inside the
+engine — where it surfaced as a 500, or as a second resolution.
+
+Two examples that were live before this work:
+
+* `RoundProcessView` read `status` unlocked, then called `process_round`. Two
+  operators both saw `closed`, both proceeded; the loser hit
+  `ValueError('already been processed')` inside the engine, which the view's
+  blanket `except Exception` turned into **500**.
+* `InstructorExtendDeadlineView` reopened a closed round as a side effect —
+  unlocking every submission — with no lock, no transaction, no processed
+  check and no audit record.
+
+## One boundary, one order
+
+`core/services/competition_locks.py`. Every path acquires these in this order
+and none acquires them in reverse:
+
+| # | Lock | Taken by |
+|---|---|---|
+| 1 | `pg_advisory_xact_lock(GSR, game_id)` — exclusive | every operator action |
+| 1 | `pg_advisory_xact_lock_shared(GSR, game_id)` | every student decision write |
+| 2 | `Game` row, `select_for_update` | operator actions |
+| 3 | `Round` row, `select_for_update` | operator actions |
+| 4 | `pg_advisory_xact_lock(TEAM, team_id)` | team-scoped writes and corrections |
+| 5 | `Team` / `DecisionSubmission` rows | as needed |
+
+Student writes take level 1 *shared*, so they run concurrently with each other
+and are excluded by any operator action. Operator actions take it *exclusive*,
+so they are also excluded by each other — that single fact is what makes the
+matrix below finite.
+
+The advisory locks are transaction-scoped: PostgreSQL releases them at commit
+or rollback and they are re-entrant, so `process_round` re-acquiring the lock a
+view already holds costs nothing. That is deliberate — the engine entry points
+take the boundary themselves, so the deadline scheduler and the management
+commands get the same serialisation as the API.
+
+**Every precondition is evaluated after level 1 is held.** `operator_action()`
+yields the game row under the lock and a `round` property that re-reads on
+every access, so a view cannot accidentally validate against a copy it read
+earlier.
+
+## Inventory
+
+Every entry point that can change round state, decision state or the roster.
+
+| Entry point | Before | Now |
+|---|---|---|
+| `RoundCloseView` | engine locked; view read state unlocked | boundary; fresh re-read; 409 if already closed |
+| `RoundReopenView` | row locks only, no student-write barrier | boundary; 409 if processed or already open |
+| `RoundProcessView` | **no lock**; state read unlocked; races → 500 | boundary; 409 if processed; 400 if open without force |
+| `RoundAdvanceView` | **no lock**; state read unlocked | boundary; 400 if not processed; force needs a reason |
+| `RoundDeadlineView` | row locks only | boundary; 409 unless the round is open |
+| `InstructorAdvanceRoundView` (legacy) | **no lock**; every error → 500 | boundary; same codes as the modern route |
+| `InstructorInjectEventView` | **no lock, no audit** | boundary; 409 once processed; audited |
+| `InstructorExtendDeadlineView` | **no lock, no audit**; silently reopened | boundary; 409 once processed; reopen needs a reason; audited |
+| `DecisionUnlockView` (correction) | **no lock, no transaction** | boundary + team lock; 409 once processed; reason required |
+| `InstructorTeamParticipationView` | already on the boundary | aligned to `operator_action`; rejections audited |
+| `check_round_deadlines` (scheduler) | engine lock via `close_round` | re-validates under the boundary; a lost race is a logged no-op |
+| `recover_competition_round` | maintenance mode only | takes the boundary before the re-run |
+| Student decision writes | shared advisory + team lock | unchanged |
+
+## 409 or 400
+
+A stable promise about what the operator should do next:
+
+* **409 Conflict** — refresh and look again. The intent is already achieved
+  ("already closed", "already processed", "already open", "team already
+  withdrawn"), or the state is terminal for this action ("a processed round
+  cannot be reopened", "a correction cannot apply to a resolved round").
+* **400 Bad Request** — do something else first, or fix the request. "Close the
+  round first, or force", "that team is not locked", "a reason is required",
+  "unparseable deadline".
+
+Every refusal carries `error`, `code`, `guidance` and `request_id`.
+
+Callers may send `expected_round_number` and `expected_status`. When they do
+not match the state read under the lock, the answer is a 409 `state_moved`
+naming what changed — which is what separates *losing a race* from *asking too
+early*, since both otherwise produce the same message.
+
+## Force flags
+
+No `force` bypasses an integrity check without a written reason, and the reason
+lands on the audit row:
+
+| Route | What force bypasses | Requires |
+|---|---|---|
+| `RoundProcessView` | closing an open round early | instructor role + reason ≥ 10 chars |
+| `RoundAdvanceView` | advancing past an unresolved round | instructor role + reason ≥ 10 chars |
+| `InstructorAdvanceRoundView` | the all-teams-locked check | instructor role + reason ≥ 10 chars |
+| `InstructorExtendDeadlineView` | reopening a closed round | instructor role + reason ≥ 10 chars |
+| `DecisionUnlockView` | taking back a locked submission | instructor role + reason ≥ 10 chars |
+| `InstructorTeamParticipationView` | removing a team mid-competition | role + reason + exact confirmation token |
+
+## Audit
+
+One `OperatorAuditEvent` per attempt, with one request id:
+
+* `outcome='committed'` — `before`, `after`, the reason, the request id.
+* `outcome='rejected'` — `before`, an **empty** `after`, and the `conflict`
+  that caused it. A rejection is written *after* the transaction it refused
+  has rolled back, in its own transaction, so the refusal survives the rollback
+  it caused without the row implying anything changed.
+* `outcome='rejected'` with `conflict.code='engine_failure'` — the engine tried
+  and broke. Written inside the transaction, because the engine's own
+  `processing_status=FAILED` marker is written there and re-raising would roll
+  both back.
+
+The request id comes from `X-Request-ID` when the caller sends one and is
+minted otherwise; it is returned in the response body, so an operator can find
+the row for what they just did.
+
+## Retries
+
+Deadlock and serialization retries are deliberately almost absent. The lock
+order above is total, so PostgreSQL has no cycle to detect —
+`pg_stat_database.deadlocks` is asserted unchanged across every pair in the
+matrix. `retry_on_serialization_failure()` exists for idempotent reads and is
+not applied to anything that mutates, because a retried non-idempotent action
+is a second action.
+
+## The matrix
+
+Each pair runs 100 times in each arrival order against real PostgreSQL, with a
+thread barrier to make the two requests collide.
+`core/tests/test_operator_concurrency.py`.
+
+| Pair | Legal outcomes | Invariant asserted |
+|---|---|---|
+| close + extend | (200, 200), (200, 400) | round status and submission locks always agree |
+| close + reopen | (200, 200), (200, 409) | same; never closed-with-drafts or open-with-locks |
+| process + correct | (200, 409), (400, 200) | no round ever resolves from a draft submission |
+| process + process | (200, 409) | one manifest, one full result set, per round |
+| advance + correct | (200, 409) | a correction never lands on a resolved round |
+| deactivate + process | (200, 200) | the roster scored equals the roster the manifest recorded |
+| scheduler-close + manual-close | (200) or (409) | closed exactly once, with one close reason |
+
+Every pair additionally asserts: no 5xx, no thread left running, and
+`pg_stat_database.deadlocks` unchanged.

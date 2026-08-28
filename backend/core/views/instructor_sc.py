@@ -27,6 +27,8 @@ from core.models.sc_state import (
     ComplianceEnforcementEvent,
 )
 from core.permissions import IsInstructor
+from core.services.lifecycle import (
+    LifecycleConflict, lifecycle_view, operator_action)
 
 
 def _current_open_round(game):
@@ -215,27 +217,41 @@ class InstructorInjectSCEventView(APIView):
     fires (creating real SupplierState/LaneState) on the next round advance."""
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        game = get_object_or_404(Game, id=game_id)
-        template_id = request.data.get('event_template_id')
-        template = get_object_or_404(
-            EventTemplateDefinition, id=template_id,
-            scenario=game.scenario, category='supply_chain')
+        # A staged SC event becomes an input to the next resolution, so it goes
+        # through the same boundary as close and process. Injected while
+        # Phase 1 ran, it would land on one side or the other of run_sc_state
+        # depending on timing.
+        with operator_action(request, game_id, 'inject_sc_event') as action:
+            game = action.game
+            rnd = action.check_expected(action.require_round())
+            before = action.before = {'round_number': rnd.round_number,
+                                      'status': rnd.status}
+            template_id = request.data.get('event_template_id')
+            template = get_object_or_404(
+                EventTemplateDefinition, id=template_id,
+                scenario=game.scenario, category='supply_chain')
 
-        rnd = _current_open_round(game)
-        if rnd is None or rnd.status != 'open':
-            return Response(
-                {'detail': 'No open round to inject into; start/advance the game first.'},
-                status=status.HTTP_400_BAD_REQUEST)
+            if rnd.status != 'open':
+                raise LifecycleConflict(
+                    f'Round {rnd.round_number} is "{rnd.status}"; an event '
+                    f'staged now would not fire in it.',
+                    guidance='Inject into an open round, or advance first.',
+                    code='round_not_open')
 
-        inst = SCEventInstance.objects.create(
-            round=rnd, event_template=template, affects_all_teams=True,
-            fired_by_instructor=True,
-            resolution_data={'pending': True},
-        )
-        return Response({
-            'message': f'"{template.name}" queued — fires when round {rnd.round_number} is advanced.',
-            'sc_event_instance_id': inst.id,
-            'round_number': rnd.round_number,
-            'effect_summary': _event_effect_summary(template),
-        }, status=status.HTTP_201_CREATED)
+            inst = SCEventInstance.objects.create(
+                round=rnd, event_template=template, affects_all_teams=True,
+                fired_by_instructor=True,
+                resolution_data={'pending': True},
+            )
+            action.commit(before, {'event_template': template.name,
+                                   'round_number': rnd.round_number})
+            return Response({
+                'message': f'"{template.name}" queued — fires when round '
+                           f'{rnd.round_number} is advanced.',
+                'sc_event_instance_id': inst.id,
+                'round_number': rnd.round_number,
+                'effect_summary': _event_effect_summary(template),
+                'request_id': action.request_id,
+            }, status=status.HTTP_201_CREATED)
