@@ -182,7 +182,83 @@ equals the roster its input manifest *recorded*.
    The commit message and the matrix document name each one and its
    replacement.
 
-## Execution protocol compliance
+## Third submission — certification discipline
+
+`rework/GSP-CRV2-02-AUDIT-REWORK-2.md` accepted the lifecycle repairs and
+failed the certification. Both points were fair.
+
+**Harness profiles.** `ITERATIONS` was a module constant at 100, so the
+cheapest way to check an edit was a fifteen-minute release-scale run. That is
+the single fact that turned this handoff into a loop.
+`GSP_CRV2_02_ITERATIONS` now takes 1 (default), 10 or 100 and refuses anything
+else — an unexplained number in an evidence file is not certification, and a
+typo that silently ran 0 or 1000 would be worse than a refusal.
+`GSP_CRV2_02_EVIDENCE_DIR` refuses to run below 100, so a cheap sample cannot
+overwrite a release artifact; the guard is tested by pointing it at a path and
+asserting nothing is written. The whole matrix now runs in **33 seconds** at
+the default and 92 seconds at preflight.
+
+**What 100 means.** Total races per pair, not per arrival order. `_race`
+alternates which thread is released first by iteration parity, so 100 is 50
+each way. The code always did this; the module docstring said "in each arrival
+order" and was wrong. Docstring, evidence JSON (`arrival_orders`,
+`iterations_are_total_per_pair`) and a contract test now agree, and the
+per-iteration `arrival_order` is in each transcript.
+
+**Provenance read at run time.** Each pair's JSON now records the code revision
+and source-tree digest observed by the executing process. All twelve files
+carry `830b7ad` / `a35c665d…`, which is what shows the matrix came from one
+commit rather than from a tree that moved underneath it.
+
+### The first certification attempt failed
+
+Honestly reported because it explains the two freeze commits. The run at
+`5a3ca3c` produced all twelve pair files but failed one *contract* test of
+mine: `test_no_evidence_directory_is_fine_at_any_profile` passed `raw=None`,
+which means "read the environment" — so it asserted on the ambient one and
+disagreed only during a certification run, the single run where
+`GSP_CRV2_02_EVIDENCE_DIR` is set. The worst place for a test to first
+disagree.
+
+Per the protocol I stopped before the suite, diagnosed with focused tests
+(seconds), fixed it hermetically, verified under both a bare environment and a
+simulated certification one, deleted the superseded evidence so the tree was
+clean, re-froze at `830b7ad`, and certified once from there. The full backend
+suite was run exactly once, after the repair.
+
+### Actual command order, third submission
+
+| # | Command | Duration | Result |
+|---:|---|---:|---|
+| 1 | `dump_route_inventory --check` | <5 s | current |
+| 2 | `dump_manifest_schema --check` | <5 s | current |
+| 3 | `makemigrations --check --dry-run` | <10 s | no changes |
+| 4 | matrix, `ITERATIONS=100`, evidence dir set | **938 s** | 31 tests OK, 1200 races |
+| 5 | `manage.py test core` | **164 s** | **359 tests OK** |
+| 6 | `MANIFEST.sha256` regenerate + verify | <5 s | 15 files verify |
+| 7 | `git diff --check`, clean-tree, source digest | <5 s | clean, not dirty |
+
+Development and preflight before the freeze: whole matrix at 1 race/pair (33 s)
+and at 10 (92 s), plus focused profile and route-coverage tests. No
+release-scale run was used to explore.
+
+The suite is 164 s rather than the previous submission's 1024 s because the
+matrix inside it now runs at the cheap default — the parameterisation paid for
+itself immediately.
+
+### Entry criteria
+
+| Criterion | State |
+|---|---|
+| 1/10/100 profiles exist, semantics tested | Yes — `IterationProfileTests`, 6 tests |
+| Backend/test changes committed before final evidence | Yes — freeze `830b7ad`, clean tree |
+| 12 pairs × 100 total races, both orders controlled | Yes — 50/50 recorded per pair |
+| Matrix and suite each run once from the frozen commit | Yes — see the table above |
+| Route inventory 0 unguarded; request-ID tests green | Yes — 214/36/20/16/0 |
+| Evidence checksums and guards pass | Yes |
+| Completion report has command order, durations, counts | This section |
+
+## Execution protocol compliance (second submission, superseded)
 
 `handoffs/EXECUTION_PROTOCOL.md` became binding partway through this rework.
 Reporting against it honestly:

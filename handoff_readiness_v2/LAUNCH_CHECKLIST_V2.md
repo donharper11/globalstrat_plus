@@ -23,8 +23,8 @@
 - [ ] All infrastructure failure modes exercised in isolation.
 - [x] Submission audit evidence exposed in instructor tooling.
 - [x] Six dispute procedures added to runbook.
-- [x] Backend regression: 338/338 PASS, VM, 2026-08-28 (50 determinism +
-      10 operator-concurrency tests).
+- [x] Backend regression: 359/359 PASS, VM, 2026-08-28, from frozen commit
+      `830b7ad` (50 determinism + 31 operator-concurrency tests).
 - [x] Resolution refuses an unidentified build; replay refuses a source-tree
       mismatch before mutation.
 - [ ] Competition stack sets `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or
