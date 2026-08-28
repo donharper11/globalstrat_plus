@@ -258,8 +258,8 @@ def calculate_sc_disruption_costs(context):
 
     for team in context.teams:
         alt_rules, mode_rules = _contingency(team, rnd)
-        logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
-        allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd))
+        logs = list((LogisticsDecision.objects.filter(team=team, round=rnd)).order_by('lane__lane_id'))
+        allocs = list((SourcingAllocation.objects.filter(team=team, round=rnd)).order_by('critical_input_category', 'supplier__supplier_id'))
         # Real volume/COGS this team actually built and paid this round.
         team_units = sum(float(r.get('units_produced') or 0) for k, r in revenue.items() if k[0] == team.id)
         team_cogs = sum(float(c.get('total_cogs') or 0) for k, c in cogs.items() if k[0] == team.id)
@@ -331,10 +331,10 @@ def score_sc_resilience(context):
     cf_map = getattr(context, 'sc_capacity_factor', {})
 
     for team in context.teams:
-        allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd))
+        allocs = list((SourcingAllocation.objects.filter(team=team, round=rnd)).order_by('critical_input_category', 'supplier__supplier_id'))
         sdec = SourcingDecision.objects.filter(team=team, round=rnd).first()
-        logs = list(LogisticsDecision.objects.filter(team=team, round=rnd))
-        invs = list(InventoryDecision.objects.filter(team=team, round=rnd))
+        logs = list((LogisticsDecision.objects.filter(team=team, round=rnd)).order_by('lane__lane_id'))
+        invs = list((InventoryDecision.objects.filter(team=team, round=rnd)).order_by('product__name', 'market__code'))
 
         # Per-team disruption impact for THIS round — recorded on the resilience
         # history (which exists every round), so multi-round/recovery disruptions

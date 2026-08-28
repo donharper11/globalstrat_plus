@@ -259,9 +259,9 @@ def _calculate_esg_features(team, context):
 
     if commitment_types.exists():
         # NEW: Sum governance_quality boosts from active commitments
-        active_tgcs = TeamGovernanceCommitment.objects.filter(
+        active_tgcs = (TeamGovernanceCommitment.objects.filter(
             game=game, team=team, is_active=True,
-        ).select_related('commitment_type')
+        ).select_related('commitment_type')).order_by('commitment_type__code')
         gov_boost_sum = 0.0
         for tgc in active_tgcs:
             for benefit in (tgc.commitment_type.benefits or []):
@@ -272,9 +272,9 @@ def _calculate_esg_features(team, context):
         gov_level = min(round(gov_boost_sum * 10.6), 10)
 
         # Apply revocation penalty: drop governance_quality during penalty period
-        penalty_tgcs = TeamGovernanceCommitment.objects.filter(
+        penalty_tgcs = (TeamGovernanceCommitment.objects.filter(
             game=game, team=team, penalty_rounds_remaining__gt=0,
-        ).select_related('commitment_type')
+        ).select_related('commitment_type')).order_by('commitment_type__code')
         for tgc in penalty_tgcs:
             penalty = tgc.commitment_type.revocation_penalty or {}
             reg_penalty = float(penalty.get('regulator_penalty', 0))
@@ -411,7 +411,7 @@ def _update(team, feature_code, context, level, market=None):
 def _get_highest_platform_gen(team):
     """Get the highest platform generation order the team has access to."""
     from core.models.team_state import TeamPlatform
-    platforms = TeamPlatform.objects.filter(team=team).select_related('platform_generation')
+    platforms = (TeamPlatform.objects.filter(team=team).select_related('platform_generation')).order_by('name')
     if not platforms.exists():
         return 1
     return max(p.platform_generation.generation_order for p in platforms)

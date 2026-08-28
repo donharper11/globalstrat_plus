@@ -63,9 +63,9 @@ def calculate_revenue(context):
         if not submission:
             continue
 
-        mkt_decisions = DecisionMarketing.objects.filter(
+        mkt_decisions = (DecisionMarketing.objects.filter(
             submission=submission,
-        ).select_related('team_product', 'market')
+        ).select_related('team_product', 'market')).order_by('team_product__name', 'market__code')
 
         for mkt_dec in mkt_decisions:
             product = mkt_dec.team_product
@@ -73,13 +73,13 @@ def calculate_revenue(context):
 
             # Sum new adopters for this product in this market
             units_sold = Decimal('0')
-            adoptions = RoundResultAdoption.objects.filter(
+            adoptions = (RoundResultAdoption.objects.filter(
                 game=game,
                 round_number=current_round,
                 team=team,
                 market=market,
                 best_product=product,
-            )
+            )).order_by('pk')
             for adoption in adoptions:
                 units_sold += adoption.new_adopters
 

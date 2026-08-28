@@ -102,7 +102,7 @@ def _process_platform_development(team, submission, current_round):
         )
 
     # Advance existing in-development platforms
-    in_dev = TeamPlatform.objects.filter(team=team, status='in_development')
+    in_dev = (TeamPlatform.objects.filter(team=team, status='in_development')).order_by('name')
     for platform in in_dev:
         if platform.development_rounds_remaining is not None:
             platform.development_rounds_remaining -= 1
@@ -261,11 +261,11 @@ def _process_feature_investments(team, submission, scenario, current_round, cont
 
 def _apply_pending_gains(team, current_round):
     """Apply PendingFeatureGain records that are due this round."""
-    pending = PendingFeatureGain.objects.filter(
+    pending = (PendingFeatureGain.objects.filter(
         team_platform__team=team,
         applies_round=current_round,
         applied=False,
-    )
+    )).order_by('team_platform__name', 'feature__code')
     for pg in pending:
         tp = pg.team_platform
         feature = pg.feature

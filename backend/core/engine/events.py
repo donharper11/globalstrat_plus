@@ -91,7 +91,7 @@ def fire_events(context):
             template, primary_target, current_round, scenario,
         )
         # Append context enrichment
-        impacts = list(template.impacts.all())
+        impacts = list((template.impacts.all()).order_by('id'))
         context_text = generate_event_context(template, impacts)
 
         # RAG enhancement (CC-11) — deferred to Phase 2 when skip_rag is set
@@ -339,7 +339,7 @@ def update_market_conditions(context):
     scenario = context.scenario
     current_round = context.round_number
 
-    all_markets = MarketDefinition.objects.filter(scenario=scenario)
+    all_markets = (MarketDefinition.objects.filter(scenario=scenario)).order_by('code')
 
     for market in all_markets:
         state = MarketEffectiveState(market)
@@ -357,14 +357,14 @@ def update_market_conditions(context):
             pass
 
         # Layer on active event-driven modifiers
-        mkt_modifiers = ActiveModifier.objects.filter(
+        mkt_modifiers = (ActiveModifier.objects.filter(
             game=game,
             modifier_type='market_condition',
             target_market=market,
         ).filter(
             # Active: started <= current AND (expires is NULL or expires > current)
             started_round__lte=current_round,
-        ).exclude(expires_round__lte=current_round)
+        ).exclude(expires_round__lte=current_round)).order_by('pk')
 
         for mod in mkt_modifiers:
             if mod.target_field == 'growth_rate':
@@ -382,9 +382,9 @@ def update_market_conditions(context):
         context.markets[market.id] = state
 
         # Grow segment populations
-        segments = SegmentDefinition.objects.filter(
+        segments = (SegmentDefinition.objects.filter(
             scenario=scenario, market=market,
-        )
+        )).order_by('pk')
         for segment in segments:
             seg_state = SegmentEffectiveState(segment)
             base_pop = float(segment.population_size)
@@ -392,14 +392,14 @@ def update_market_conditions(context):
             seg_state.effective_population = (base_pop + growth) * state.demand_multiplier
 
             # Apply demand shock modifiers
-            shocks = ActiveModifier.objects.filter(
+            shocks = (ActiveModifier.objects.filter(
                 game=game,
                 modifier_type='demand_shock',
                 target_market=market,
                 started_round__lte=current_round,
             ).exclude(expires_round__lte=current_round).filter(
                 # Match segment or no segment (affects all)
-            )
+            )).order_by('pk')
             for shock in shocks:
                 if shock.target_segment is None or shock.target_segment_id == segment.id:
                     seg_state.effective_population *= float(shock.modifier_value)
@@ -407,13 +407,13 @@ def update_market_conditions(context):
             seg_state.effective_population = max(seg_state.effective_population, 0)
 
             # Load preference modifiers
-            pref_mods = ActiveModifier.objects.filter(
+            pref_mods = (ActiveModifier.objects.filter(
                 game=game,
                 modifier_type='preference',
                 started_round__lte=current_round,
             ).exclude(expires_round__lte=current_round).filter(
                 # Match this segment or all segments
-            )
+            )).order_by('pk')
             for pm in pref_mods:
                 if pm.target_segment is None or pm.target_segment_id == segment.id:
                     if pm.target_feature_id:
@@ -424,9 +424,9 @@ def update_market_conditions(context):
             context.segments[segment.id] = seg_state
 
     # Also handle segments without a specific market (global segments)
-    global_segments = SegmentDefinition.objects.filter(
+    global_segments = (SegmentDefinition.objects.filter(
         scenario=scenario, market__isnull=True,
-    )
+    )).order_by('pk')
     for segment in global_segments:
         seg_state = SegmentEffectiveState(segment)
         seg_state.effective_population = float(segment.population_size)
@@ -702,7 +702,7 @@ def _apply_strategy_effect_direct(context, team, feature_id, effect_type, effect
         return
 
     markets = [target_market] if target_market else list(
-        MarketDefinition.objects.filter(scenario=context.scenario)
+        (MarketDefinition.objects.filter(scenario=context.scenario)).order_by('code')
     )
 
     for market in markets:

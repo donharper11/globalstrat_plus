@@ -64,7 +64,7 @@ def update_leaderboard(context):
         reverse=True,
     )
 
-    markets = MarketDefinition.objects.filter(scenario=scenario)
+    markets = (MarketDefinition.objects.filter(scenario=scenario)).order_by('code')
 
     previous_key = None
     shared_rank = 0

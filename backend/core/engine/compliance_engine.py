@@ -31,7 +31,7 @@ def _team_xinjiang_exposure_pct(team, rnd):
     """% of the team's sourcing allocation (this round) that sits with
     Xinjiang-adjacent suppliers."""
     from core.models.sc_decisions import SourcingAllocation
-    allocs = list(SourcingAllocation.objects.filter(team=team, round=rnd).select_related('supplier'))
+    allocs = list((SourcingAllocation.objects.filter(team=team, round=rnd).select_related('supplier')).order_by('critical_input_category', 'supplier__supplier_id'))
     total = sum((a.allocation_pct or 0) for a in allocs)
     if total <= 0:
         return 0.0

@@ -104,9 +104,9 @@ def run_bass_adoption(context):
             total_attractiveness += raw_attract
 
         # AI competitors (CC-20: dynamic fit scores)
-        ai_competitors = AICompetitorDefinition.objects.filter(
+        ai_competitors = (AICompetitorDefinition.objects.filter(
             scenario=context.scenario,
-        )
+        )).order_by('name')
         for ai_comp in ai_competitors:
             ai_fit_score = calculate_ai_competitor_fit(
                 ai_comp, segment, market, current_round, context,
@@ -276,9 +276,9 @@ def _init_production_remaining(context):
         if not submission:
             continue
 
-        mkt_decisions = DecisionMarketing.objects.filter(
+        mkt_decisions = (DecisionMarketing.objects.filter(
             submission=submission,
-        )
+        )).order_by('team_product__name', 'market__code')
         for md in mkt_decisions:
             key = (team.id, md.team_product_id, md.market_id)
             existing = context.production_remaining.get(key, 0.0)
@@ -322,11 +322,11 @@ def _get_team_cumulative(game, team, segment, market, current_round):
 
 def _get_acquisition_market_share_bonus(team, market):
     """Sum market_share_gained from completed acquisitions in this market."""
-    completed = TeamAcquisition.objects.filter(
+    completed = (TeamAcquisition.objects.filter(
         team=team,
         acquisition_target__market=market,
         integration_complete=True,
-    ).select_related('acquisition_target')
+    ).select_related('acquisition_target')).order_by('acquisition_target__target_name')
     return sum(float(a.acquisition_target.market_share_gained or 0) for a in completed)
 
 

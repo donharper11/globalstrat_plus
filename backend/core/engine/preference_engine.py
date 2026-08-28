@@ -36,9 +36,9 @@ def calculate_fit_scores(context):
 
     for team in context.teams:
         # Get markets where team has active presence
-        presences = TeamMarketPresence.objects.filter(
+        presences = (TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).select_related('market')
+        ).select_related('market')).order_by('market__code')
         active_market_ids = [p.market_id for p in presences]
 
         # Get team's submission for marketing decisions
@@ -103,9 +103,9 @@ def calculate_fit_scores(context):
 
 def _score_global_segment(context, team, segment, seg_state):
     """Score a global segment (no market). Uses only strategy-layer features."""
-    preferences = SegmentPreference.objects.filter(
+    preferences = (SegmentPreference.objects.filter(
         segment=segment,
-    ).select_related('feature')
+    ).select_related('feature')).order_by('feature__code')
 
     total_weighted_score = 0.0
     total_weight = 0.0
@@ -148,9 +148,9 @@ def _calculate_product_segment_fit(
     Calculate fit between a product and a segment in a market.
     Central formula from 03-engine-logic.md Section 5.
     """
-    preferences = SegmentPreference.objects.filter(
+    preferences = (SegmentPreference.objects.filter(
         segment=segment,
-    ).select_related('feature')
+    ).select_related('feature')).order_by('feature__code')
 
     total_weighted_score = 0.0
     total_weight = 0.0
@@ -298,12 +298,12 @@ def _derive_price_competitiveness(
     team_price = float(mkt_decision.retail_price)
 
     # Calculate market average price from all teams' marketing decisions
-    all_mkt_decisions = DecisionMarketing.objects.filter(
+    all_mkt_decisions = (DecisionMarketing.objects.filter(
         submission__round__game=context.game,
         submission__round__round_number=context.round_number,
         market=market,
         team_product__positioning=product.positioning,
-    ).exclude(team_product__team=team)
+    ).exclude(team_product__team=team)).order_by('team_product__name', 'market__code')
 
     prices = [float(d.retail_price) for d in all_mkt_decisions]
     prices.append(team_price)
@@ -377,13 +377,13 @@ def _derive_brand_awareness(
     from core.models.decisions import DecisionMarketing as DM
 
     cumulative_spend = 0.0
-    historical = DM.objects.filter(
+    historical = (DM.objects.filter(
         submission__team=team,
         submission__round__game=context.game,
         submission__round__round_number__lte=current_round,
         market=market,
         team_product__team_platform=product.team_platform,
-    )
+    )).order_by('pk')
     for h in historical:
         cumulative_spend += float(h.promotion_budget)
 

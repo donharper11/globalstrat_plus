@@ -37,9 +37,9 @@ def apply_campaign_multipliers(context):
         if not submission:
             continue
 
-        mkt_decisions = DecisionMarketing.objects.filter(
+        mkt_decisions = (DecisionMarketing.objects.filter(
             submission=submission,
-        ).select_related('team_product', 'market')
+        ).select_related('team_product', 'market')).order_by('team_product__name', 'market__code')
 
         for mkt_dec in mkt_decisions:
             product = mkt_dec.team_product

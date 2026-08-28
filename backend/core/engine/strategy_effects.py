@@ -38,9 +38,9 @@ def apply_strategy_effects(context):
     current_round = context.round_number
 
     # Get all strategy-layer features for this scenario
-    strategy_features = FeatureDefinition.objects.filter(
+    strategy_features = (FeatureDefinition.objects.filter(
         scenario=scenario, layer='strategy',
-    )
+    )).order_by('code')
 
     for team in context.teams:
         # Reset strategy features to defaults for this round
@@ -101,9 +101,9 @@ def _reset_strategy_features(team, strategy_features, current_round):
                 team=team, feature=feature, round_number=current_round,
             ).delete()
 
-            prev_levels = TeamStrategyFeatureLevel.objects.filter(
+            prev_levels = (TeamStrategyFeatureLevel.objects.filter(
                 team=team, feature=feature, round_number=prev_round,
-            )
+            )).order_by('pk')
             if prev_levels.exists():
                 for prev in prev_levels:
                     TeamStrategyFeatureLevel.objects.create(
@@ -196,9 +196,9 @@ def _process_market_entries(team, submission, current_round):
                 presence.save()
 
         elif entry_dec.action == 'exit':
-            presences = TeamMarketPresence.objects.filter(
+            presences = (TeamMarketPresence.objects.filter(
                 team=team, market=entry_dec.market,
-            ).exclude(status='exited')
+            ).exclude(status='exited')).order_by('market__code')
             presences.update(status='exited')
 
             # Deactivate all TeamProductMarket entries for this market
@@ -349,9 +349,9 @@ def _process_esg(team, submission, strategy_features, current_round):
         game = Game.objects.filter(teams=team).first()
 
     scenario = game.scenario if game else None
-    commitment_types = GovernanceCommitmentType.objects.filter(
+    commitment_types = (GovernanceCommitmentType.objects.filter(
         scenario=scenario,
-    ) if scenario else GovernanceCommitmentType.objects.none()
+    )).order_by('code') if scenario else (GovernanceCommitmentType.objects.none()).order_by('code')
 
     if commitment_types.exists():
         # NEW: Differentiated governance processing
@@ -496,9 +496,9 @@ def _evaluate_interaction_condition(condition, team, game, esg):
 
     elif attr == 'uses_contract_manufacturing':
         # True if team has active presence in any market that uses contract manufacturing
-        presences = TeamMarketPresence.objects.filter(
+        presences = (TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).select_related('market')
+        ).select_related('market')).order_by('market__code')
         return any(p.market.contract_mfg_available for p in presences)
 
     elif attr == 'total_esg_investment':
@@ -538,9 +538,9 @@ def _process_financing(team, submission):
 
 def _apply_ongoing_entry_mode_effects(team, strategy_features, current_round):
     """Apply effects from active market presences."""
-    presences = TeamMarketPresence.objects.filter(
+    presences = (TeamMarketPresence.objects.filter(
         team=team, status__in=['active', 'setup'],
-    ).select_related('entry_mode')
+    ).select_related('entry_mode')).order_by('market__code')
 
     for presence in presences:
         # Advance setup presences
@@ -563,9 +563,9 @@ def _apply_ongoing_entry_mode_effects(team, strategy_features, current_round):
 
 def _apply_ongoing_partnership_effects(team, strategy_features, current_round):
     """Apply effects from active partnerships."""
-    partnerships = TeamPartnership.objects.filter(
+    partnerships = (TeamPartnership.objects.filter(
         team=team, status='active',
-    ).select_related('strategy_option')
+    ).select_related('strategy_option')).order_by('market__code', 'strategy_option__code', 'established_round')
 
     for partnership in partnerships:
         for effect in partnership.strategy_option.effects.all().order_by('id'):
@@ -646,9 +646,9 @@ def _process_compliance(team, submission, context):
     scenario = context.scenario
     scale_factor = float(get_config(scenario, 'compliance_scale_factor', default=5000000))
 
-    presences = TeamMarketPresence.objects.filter(
+    presences = (TeamMarketPresence.objects.filter(
         team=team, status='active',
-    ).select_related('market')
+    ).select_related('market')).order_by('market__code')
 
     for presence in presences:
         market = presence.market
@@ -706,9 +706,9 @@ def _process_ip_exposure(team, context):
     """
     CC-31A B3: Accumulate IP exposure for JV/licensing entry modes.
     """
-    presences = TeamMarketPresence.objects.filter(
+    presences = (TeamMarketPresence.objects.filter(
         team=team, status='active',
-    ).select_related('entry_mode')
+    ).select_related('entry_mode')).order_by('market__code')
 
     for presence in presences:
         mode_code = presence.entry_mode.code.upper() if presence.entry_mode else ''

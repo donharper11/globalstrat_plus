@@ -80,12 +80,12 @@ def _get_max_human_share(segment, market, round_number, context):
         return 0.0
 
     from core.models.results import RoundResultAdoption
-    adoptions = RoundResultAdoption.objects.filter(
+    adoptions = (RoundResultAdoption.objects.filter(
         game=context.game,
         segment=segment,
         market=market,
         round_number=round_number,
-    )
+    )).order_by('pk')
     max_share = 0.0
     for a in adoptions:
         share = float(a.team_share_pct) if a.team_share_pct else 0.0
@@ -97,11 +97,11 @@ def _get_max_human_share(segment, market, round_number, context):
 def _get_avg_human_price(market, round_number, context):
     """Get average retail price of human teams in this market."""
     from core.models.results_financials import RoundResultProductMarket
-    results = RoundResultProductMarket.objects.filter(
+    results = (RoundResultProductMarket.objects.filter(
         game=context.game,
         market=market,
         round_number=max(round_number - 1, 0),
-    )
+    )).order_by('pk')
     prices = [float(r.retail_price) for r in results if r.retail_price]
     if not prices:
         return None

@@ -145,9 +145,9 @@ def get_partnership_effects(team, market, context):
     CC-32D: Benefits are scaled by alliance satisfaction (benefit_delivery_pct).
     """
     effects = {}
-    partnerships = TeamPartnership.objects.filter(
+    partnerships = (TeamPartnership.objects.filter(
         team=team, market=market, status='active',
-    ).select_related('strategy_option')
+    ).select_related('strategy_option')).order_by('market__code', 'strategy_option__code', 'established_round')
 
     for p in partnerships:
         ptype = get_partnership_type(p)

@@ -261,13 +261,13 @@ def calculate_logistics_tariffs(context):
         )
 
         # Apply cost modifiers from events
-        cost_mods = ActiveModifier.objects.filter(
+        cost_mods = (ActiveModifier.objects.filter(
             game=context.game,
             modifier_type='cost',
             target_market_id=market_id,
             target_field='logistics_cost',
             started_round__lte=current_round,
-        ).exclude(expires_round__lte=current_round)
+        ).exclude(expires_round__lte=current_round)).order_by('pk')
         for mod in cost_mods:
             logistics_cost = (logistics_cost * (D('1') + mod.modifier_value)).quantize(
                 D('0.01'), rounding=ROUND_HALF_UP,
@@ -828,10 +828,10 @@ def calculate_retirement_costs(context):
             if prev_round < 0:
                 continue
 
-            prior_results = RoundResultProductMarket.objects.filter(
+            prior_results = (RoundResultProductMarket.objects.filter(
                 game=context.game, team=team, team_product=product,
                 round_number=prev_round,
-            )
+            )).order_by('pk')
 
             for pr in prior_results:
                 unsold = D(str(pr.units_unsold or 0))
@@ -939,9 +939,9 @@ def calculate_entry_mode_overhead(context):
     context.entry_mode_overhead = {}  # (team_id, market_id) → Decimal multiplier
 
     for team in context.teams:
-        presences = TeamMarketPresence.objects.filter(
+        presences = (TeamMarketPresence.objects.filter(
             team=team, status='active',
-        )
+        )).order_by('market__code')
         for presence in presences:
             # Check if this was an acquisition with integration strategy
             entry_dec = DecisionMarketEntry.objects.filter(
@@ -1019,9 +1019,9 @@ def process_tax_structure_costs(context):
 
             # Compliance investment reduces audit probability (up to 20%)
             from core.models.cc31_models import TeamMarketCompliance
-            compliance_records = TeamMarketCompliance.objects.filter(
+            compliance_records = (TeamMarketCompliance.objects.filter(
                 game=context.game, team=team,
-            )
+            )).order_by('market__code')
             if compliance_records.exists():
                 avg_compliance = sum(
                     float(c.compliance_level) for c in compliance_records
@@ -1091,9 +1091,9 @@ def _apply_regulator_modifiers(context):
         modifier = float(structure.regulator_modifier)
 
         # Apply to all active markets
-        active_markets = TeamMarketPresence.objects.filter(
+        active_markets = (TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).values_list('market_id', flat=True)
+        ).values_list('market_id', flat=True)).order_by('market__code')
 
         for market_id in active_markets:
             fl, created = TeamStrategyFeatureLevel.objects.get_or_create(

@@ -331,9 +331,9 @@ def _score_entry_mode_risk(team, context):
         context.scenario, 'high_commitment_threshold', default=5000000.0,
     )
 
-    presences = TeamMarketPresence.objects.filter(
+    presences = (TeamMarketPresence.objects.filter(
         team=team, status='active',
-    ).select_related('entry_mode', 'market')
+    ).select_related('entry_mode', 'market')).order_by('market__code')
 
     for presence in presences:
         risk = float(presence.market.regulatory_difficulty)
@@ -381,10 +381,10 @@ def _score_rd_alignment(team, submission, context):
         feature = inv.feature
         # Sum preference weights for this feature across active market segments
         total_weight = 0.0
-        prefs = SegmentPreference.objects.filter(
+        prefs = (SegmentPreference.objects.filter(
             feature=feature,
             segment__market_id__in=active_market_ids,
-        )
+        )).order_by('feature__code')
         for p in prefs:
             total_weight += float(p.weight)
 
@@ -670,10 +670,10 @@ def _compile_decision_summary(team, context):
     summary_parts = []
 
     # R&D investments
-    rd_decisions = DecisionRDInvestment.objects.filter(
+    rd_decisions = (DecisionRDInvestment.objects.filter(
         submission__team=team,
         submission__round__round_number=context.round_number,
-    ).select_related('feature', 'team_platform')
+    ).select_related('feature', 'team_platform')).order_by('team_platform__name', 'feature__code', 'method')
 
     if rd_decisions.exists():
         investments = [
@@ -683,10 +683,10 @@ def _compile_decision_summary(team, context):
         summary_parts.append("R&D Investments:\n" + '\n'.join(investments))
 
     # Market entries
-    entries = DecisionMarketEntry.objects.filter(
+    entries = (DecisionMarketEntry.objects.filter(
         submission__team=team,
         submission__round__round_number=context.round_number,
-    ).select_related('market', 'entry_mode')
+    ).select_related('market', 'entry_mode')).order_by('market__code', 'action')
 
     if entries.exists():
         entry_lines = [
@@ -698,10 +698,10 @@ def _compile_decision_summary(team, context):
         summary_parts.append("Market Entry:\n" + '\n'.join(entry_lines))
 
     # Marketing highlights
-    marketing = DecisionMarketing.objects.filter(
+    marketing = (DecisionMarketing.objects.filter(
         submission__team=team,
         submission__round__round_number=context.round_number,
-    ).select_related('team_product', 'market')
+    ).select_related('team_product', 'market')).order_by('team_product__name', 'market__code')
 
     if marketing.exists():
         mktg_lines = [

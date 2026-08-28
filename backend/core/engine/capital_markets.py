@@ -20,7 +20,7 @@ def process_capital_markets(context):
     For each team: calculate features, evaluate each fund's satisfaction,
     execute trades, and calculate new share price.
     """
-    funds = AIInvestorFund.objects.filter(scenario=context.scenario)
+    funds = (AIInvestorFund.objects.filter(scenario=context.scenario)).order_by('code')
     if not funds.exists():
         context.log.append('CC-26: No AI investor funds configured — skipping')
         return

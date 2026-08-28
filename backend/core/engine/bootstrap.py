@@ -38,9 +38,9 @@ def bootstrap_round_zero(game):
     adoption, leaderboard, etc. on first login.
     """
     scenario = game.scenario
-    teams = list(Team.objects.filter(game=game, participation_status='active'))
-    markets = list(MarketDefinition.objects.filter(scenario=scenario))
-    all_segments = list(SegmentDefinition.objects.filter(scenario=scenario))
+    teams = list((Team.objects.filter(game=game, participation_status='active')).order_by('pk'))
+    markets = list((MarketDefinition.objects.filter(scenario=scenario)).order_by('code'))
+    all_segments = list((SegmentDefinition.objects.filter(scenario=scenario)).order_by('pk'))
 
     # Ensure Round 0 exists and is processed
     round_obj, _ = Round.objects.get_or_create(
@@ -78,8 +78,8 @@ def bootstrap_round_zero(game):
 
     for team in teams:
         starter = team.firm_starter_profile
-        platforms = list(TeamPlatform.objects.filter(team=team, status='active'))
-        products = list(TeamProduct.objects.filter(team=team, status='active'))
+        platforms = list((TeamPlatform.objects.filter(team=team, status='active')).order_by('name'))
+        products = list((TeamProduct.objects.filter(team=team, status='active')).order_by('name'))
         home_presence = TeamMarketPresence.objects.filter(
             team=team, status='active',
         ).first()
@@ -153,7 +153,7 @@ def bootstrap_round_zero(game):
 
             if segment.segment_type == 'customer' and seg_market == home_market:
                 # Preference-weighted fit score
-                preferences = SegmentPreference.objects.filter(segment=segment)
+                preferences = (SegmentPreference.objects.filter(segment=segment)).order_by('feature__code')
                 total_wscore = 0.0
                 total_weight = 0.0
                 for pref in preferences:
@@ -330,7 +330,7 @@ def bootstrap_round_zero(game):
         # === CC-26: Initialize AI investor holdings and share price ===
         from core.models.cc26_models import AIInvestorFund, AIInvestorHolding, SharePriceHistory
 
-        investor_funds = AIInvestorFund.objects.filter(scenario=game.scenario)
+        investor_funds = (AIInvestorFund.objects.filter(scenario=game.scenario)).order_by('code')
         book_value = _q(total_equity / D('1000000'))  # total_equity / shares_outstanding
 
         for fund in investor_funds:
@@ -369,7 +369,7 @@ def bootstrap_round_zero(game):
     leaderboard_data.sort(key=lambda x: (-float(x['index']), -float(x['revenue'])))
     for rank, data in enumerate(leaderboard_data, 1):
         team = data['team']
-        presence = TeamMarketPresence.objects.filter(team=team, status='active')
+        presence = (TeamMarketPresence.objects.filter(team=team, status='active')).order_by('market__code')
         share_summary = {}
         for p in presence:
             rev = RoundResultMarketRevenue.objects.filter(

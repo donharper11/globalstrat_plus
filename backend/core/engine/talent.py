@@ -189,9 +189,9 @@ def _calculate_market_talent_multipliers(context):
                 allocations[alloc.talent_pool] = alloc
 
         # Get active markets
-        presences = TeamMarketPresence.objects.filter(
+        presences = (TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).select_related('market')
+        ).select_related('market')).order_by('market__code')
 
         for presence in presences:
             market = presence.market

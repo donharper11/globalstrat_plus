@@ -256,16 +256,39 @@ ORDER_EXEMPT = {
 }
 
 
+def _loop_iterators(node):
+    if isinstance(node, (ast.For, ast.AsyncFor)):
+        return [node.iter]
+    if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp,
+                         ast.GeneratorExp)):
+        return [generator.iter for generator in node.generators]
+    return []
+
+
 def _iterators(tree):
-    """Every iterator expression in a for-loop or comprehension."""
+    """Every iterator expression in a for-loop or comprehension.
+
+    Includes querysets reached through a local name: `rows = X.objects.filter()`
+    followed by `for row in rows` is the same defect as iterating the filter
+    inline, and it is the form that hid an unordered TeamMarketPresence scan
+    until a cross-environment replay produced a different coherence breakdown.
+    """
     found = []
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.For, ast.AsyncFor)):
-            found.append((node.lineno, node.iter))
-        elif isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp,
-                               ast.GeneratorExp)):
-            for generator in node.generators:
-                found.append((node.lineno, generator.iter))
+    for scope in ast.walk(tree):
+        if not isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef,
+                                  ast.Module)):
+            continue
+        assigned = {}
+        for node in ast.walk(scope):
+            if (isinstance(node, ast.Assign) and len(node.targets) == 1
+                    and isinstance(node.targets[0], ast.Name)):
+                assigned[node.targets[0].id] = node.value
+        for node in ast.walk(scope):
+            for iterator in _loop_iterators(node):
+                if isinstance(iterator, ast.Name) and iterator.id in assigned:
+                    found.append((node.lineno, assigned[iterator.id]))
+                else:
+                    found.append((node.lineno, iterator))
     return found
 
 

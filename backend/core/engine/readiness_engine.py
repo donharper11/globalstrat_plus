@@ -19,17 +19,17 @@ def apply_readiness_gating(context):
 
     for team in context.teams:
         # Get all active products for this team
-        products = TeamProduct.objects.filter(
+        products = (TeamProduct.objects.filter(
             team=team, status='active',
-        ).select_related('team_platform__platform_generation')
+        ).select_related('team_platform__platform_generation')).order_by('name')
 
         for product in products:
             platform_gen = product.team_platform.platform_generation
 
             # Get markets where this product is offered
-            product_markets = TeamProductMarket.objects.filter(
+            product_markets = (TeamProductMarket.objects.filter(
                 team_product=product, is_active=True,
-            ).select_related('market')
+            ).select_related('market')).order_by('market__code')
 
             for pm in product_markets:
                 market = pm.market

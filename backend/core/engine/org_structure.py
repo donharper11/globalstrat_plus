@@ -21,9 +21,9 @@ def _count_active_markets(team):
 
 def _get_avg_talent_level(team, round_number):
     """Get average talent level across all pools."""
-    states = TeamTalentState.objects.filter(
+    states = (TeamTalentState.objects.filter(
         team=team, round_number=round_number,
-    )
+    )).order_by('talent_pool')
     if not states.exists():
         return D('3.00')
     total = sum(s.talent_level for s in states)

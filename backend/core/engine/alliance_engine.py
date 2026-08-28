@@ -224,9 +224,9 @@ def _eval_communication(team, game, round_number):
     """Check if CC-32A communication scores exist."""
     try:
         from core.models.cc32_models import TeamCommunication
-        comms = TeamCommunication.objects.filter(
+        comms = (TeamCommunication.objects.filter(
             game=game, team=team, is_draft=False,
-        )
+        )).order_by('pk')
         if comms.exists():
             scores = [
                 c.evaluation.get('overall_score', 50) / 100
@@ -448,9 +448,9 @@ def _initialize_new_alliance_states(game, round_number):
     scenario = game.scenario
 
     for team in game.teams.filter(participation_status='active').order_by('id'):
-        active_partnerships = TeamPartnership.objects.filter(
+        active_partnerships = (TeamPartnership.objects.filter(
             team=team, status='active',
-        ).select_related('strategy_option', 'market')
+        ).select_related('strategy_option', 'market')).order_by('market__code', 'strategy_option__code', 'established_round')
 
         for tp in active_partnerships:
             code = tp.strategy_option.code if tp.strategy_option else ''

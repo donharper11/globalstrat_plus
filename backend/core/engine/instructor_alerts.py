@@ -58,7 +58,7 @@ def generate_post_round_alerts(game, round_number):
     Analyze all teams after a round is processed.
     Generate alerts for the instructor based on patterns.
     """
-    teams = Team.objects.filter(game=game, participation_status='active')
+    teams = (Team.objects.filter(game=game, participation_status='active')).order_by('pk')
     alerts = []
 
     for team in teams:
@@ -198,11 +198,11 @@ def generate_post_round_alerts(game, round_number):
                 pass  # Table may not exist yet
 
         # Entered new market
-        new_entries = DecisionMarketEntry.objects.filter(
+        new_entries = (DecisionMarketEntry.objects.filter(
             submission__team=team,
             submission__round__round_number=round_number,
             action='enter',
-        ).select_related('market', 'entry_mode')
+        ).select_related('market', 'entry_mode')).order_by('market__code', 'action')
         for entry in new_entries:
             market = entry.market
             mode_name = entry.entry_mode.name if entry.entry_mode else 'unknown mode'

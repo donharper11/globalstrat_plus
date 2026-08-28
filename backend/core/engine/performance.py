@@ -178,7 +178,7 @@ def _is_voluntarily_commercially_inactive(context, team, current_round):
     if submission is None:
         return True
 
-    marketing = list(submission.marketing_decisions.all())
+    marketing = list((submission.marketing_decisions.all()).order_by('team_product__name', 'market__code'))
     if not marketing:
         return True
 
@@ -224,7 +224,7 @@ def calculate_performance_index(context):
     current_round = context.round_number
     sensitivity = D(str(get_config(scenario, 'performance_index_sensitivity', default=20.0)))
 
-    all_segments = list(SegmentDefinition.objects.filter(scenario=scenario).select_related('market'))
+    all_segments = list((SegmentDefinition.objects.filter(scenario=scenario).select_related('market')).order_by('pk'))
     financials_by_team = getattr(context, 'financials', {}) or {}
     revenues = [D(str(values.get('total_revenue', 0) or 0)) for values in financials_by_team.values()]
     net_incomes = [abs(D(str(values.get('net_income', 0) or 0))) for values in financials_by_team.values()]

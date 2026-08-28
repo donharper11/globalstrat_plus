@@ -121,7 +121,7 @@ def calculate_investor_features(team, game, round_number):
     features['market_diversity'] = features['market_expansion']
 
     # === CC-31A B10: Technology Independence ===
-    active_platforms = TeamPlatform.objects.filter(team=team, status='active')
+    active_platforms = (TeamPlatform.objects.filter(team=team, status='active')).order_by('name')
     if active_platforms.exists():
         avg_dependency = sum(
             float(p.licensed_dependency_pct) for p in active_platforms
@@ -133,9 +133,9 @@ def calculate_investor_features(team, game, round_number):
 
     # === CC-31A: Compliance Efficiency ===
     from core.models.cc31_models import TeamMarketCompliance
-    compliance_records = TeamMarketCompliance.objects.filter(
+    compliance_records = (TeamMarketCompliance.objects.filter(
         game=game, team=team,
-    )
+    )).order_by('market__code')
     if compliance_records.exists():
         avg_compliance = sum(
             float(c.compliance_level) for c in compliance_records
