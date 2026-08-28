@@ -262,6 +262,25 @@ class AuditRejectionTests(AuditIntegrityBase):
 
 class AuditChainTests(AuditIntegrityBase):
 
+    def test_the_unchained_columns_are_the_declared_ones(self):
+        """Every audit column is either chained or excluded with a reason.
+
+        A column added later joins neither list on its own, so this fails and
+        someone decides — which is the point. "The chain covers this table" is
+        worth what the list of exclusions is worth.
+        """
+        for table, (model, fields) in audit_chain.PROJECTIONS.items():
+            with self.subTest(table=table):
+                actual = {f.attname for f in model._meta.fields}
+                self.assertEqual(set(fields) - actual, set(),
+                                 'projection names a column that does not exist')
+                excluded = actual - set(fields)
+                declared = set(audit_chain.UNCHAINED_FIELDS.get(table, {}))
+                self.assertEqual(
+                    excluded, declared,
+                    f'{table}: undeclared exclusions {sorted(excluded - declared)}, '
+                    f'stale declarations {sorted(declared - excluded)}')
+
     def test_an_audit_write_is_chained_when_its_transaction_commits(self):
         with self.captureOnCommitCallbacks(execute=True):
             self.make_decision_event()
@@ -488,13 +507,25 @@ class SensitiveReadInventoryTests(TestCase):
     def test_the_middleware_reads_the_generated_file_rather_than_rebuilding(self):
         """Rebuilding the inventory parses the source of every view, which
         measured 6.3 seconds. Doing that lazily would have charged it to the
-        first student to open a decision page in each worker process."""
+        first student to open a decision page in each worker process.
+
+        Asserted against the middleware's own lookup, not against the helper it
+        is supposed to call: the first version of this fix made
+        `logged_routes()` fast and left the middleware calling the slow scan,
+        and a test written against the helper passed anyway.
+        """
         from unittest.mock import patch
+        from core.middleware import SensitiveReadLogMiddleware
         from core.services import read_inventory
+
+        middleware = SensitiveReadLogMiddleware(lambda request: None)
         with patch.object(read_inventory, 'sensitive_routes',
                           side_effect=AssertionError('rebuilt the inventory')):
-            routes = read_inventory.logged_routes()
-        self.assertEqual(len(routes), 30)
+            category = middleware._sensitive(
+                'api/games/<int:game_id>/teams/<int:team_id>'
+                '/decisions/round/<int:round_number>/')
+        self.assertEqual(category, 'decisions')
+        self.assertEqual(len(middleware._routes), 30)
 
     def test_a_stale_inventory_falls_back_to_the_live_scan(self):
         """A generated file that no longer describes the URL conf must not be
@@ -506,9 +537,9 @@ class SensitiveReadInventoryTests(TestCase):
         stale['url_conf_route_count'] = 1
         with patch.object(read_inventory, 'load_inventory', return_value=stale):
             with self.assertLogs('core.services.read_inventory', 'WARNING') as logs:
-                routes = read_inventory.logged_routes()
+                routes = read_inventory.logged_route_categories()
         self.assertIn('stale', logs.output[0])
-        self.assertEqual(routes, {row['route']
+        self.assertEqual(routes, {row['route']: row['category']
                                   for row in read_inventory.sensitive_routes()
                                   if row['logged']})
 

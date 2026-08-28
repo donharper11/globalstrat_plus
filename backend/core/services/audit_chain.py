@@ -66,6 +66,25 @@ PROJECTIONS = {
     ),
 }
 
+# Columns a projection deliberately leaves out, with the reason. Written down
+# because "the chain covers this table" is only worth as much as the list of
+# what it does not cover, and an omission nobody recorded is indistinguishable
+# from one nobody noticed. `test_the_unchained_columns_are_the_declared_ones`
+# fails if a new column joins either list by accident.
+UNCHAINED_FIELDS = {
+    'competition_resolution_manifest': {
+        'input_manifest': 'covered by input_sha256',
+        'output_manifest': 'covered by output_sha256',
+        'narrative_manifest': 'covered by narrative_sha256',
+        'input_body_path': 'a path to content the digest already commits to',
+        'output_body_path': 'a path to content the digest already commits to',
+        'backup_path': 'a path to content the backup checksum already commits to',
+        'environment': 'host configuration, deliberately outside every hash so '
+                       'two matching runs can be shown to have happened on '
+                       'differently configured machines',
+    },
+}
+
 # Sealed in this order within one pass, so a chain rebuilt from the same rows
 # in the same pass produces the same digests.
 SEAL_ORDER = (

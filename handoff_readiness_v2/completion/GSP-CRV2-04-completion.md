@@ -3,8 +3,8 @@
 **Finding:** V2-007 (P1) — **closed**
 **New finding raised:** V2-017 (P1) — logged, not repaired here
 **Baseline:** `1752315` (branch `crv2-04-audit-integrity`, cut from `main`)
-**Freeze commit:** `db2fd08`
-**Runtime source digest:** `53bca53cbe952f91b6167e0c05831070c3c3ffd19e0b2523582ed98031e06c9a`
+**Freeze commit:** `02c2772` (clean tree, `git status --untracked-files=no` = 0)
+**Runtime source digest:** `c46455daa7bd7708e5ecbbcbe1ee51a77f64888806509f67e572cd360de78b85`
 **Evidence:** `handoff_readiness_v2/evidence/audit-integrity/`
 
 ## What the finding was, and what decided the design
@@ -104,9 +104,9 @@ detection working, prevention absent. Fixed by a statement-level
 guard is testable at all rather than installed where no test could reach it.
 
 Two harness defects were found in the same run and fixed: the walkthrough
-assumed a migrated database can serve a request (roughly fifty models are
-`managed=False`, so `users`, `enrollment` and `course` exist only where raw SQL
-created them), and the negative transcripts ran before the clean baseline was
+assumed a migrated database can serve a request (ten models are `managed=False`
+— `users`, `enrollment`, `course`, `section` and the grading tables — so they
+exist only where raw SQL created them), and the negative transcripts ran before the clean baseline was
 anchored, so an attack could be mistaken for the cause of a verification
 failure.
 
@@ -136,3 +136,84 @@ the SQL is in the evidence and its shape is tested, but pointing the
 competition stack at that role is a deployment action, not a code change. Until
 it is done, the reject layer is the triggers alone. Recorded in
 `AUDIT_INTEGRITY_OPERATIONS.md` under "Deployment action still open".
+
+## Commands, in the order they ran
+
+Certification ran from `02c2772` after three earlier freeze candidates were
+abandoned — the first because certification found the `TRUNCATE` hole, the
+second and third because reviewing the artifacts found defects that would have
+been submitted (a 6.3-second lazy inventory build, and a misleading guard
+report). Each abandoned candidate returned to Phase 3 rather than patching a
+certification in progress. The expensive step paid twice is the harness; the
+full backend suite ran once, from the final freeze.
+
+```bash
+# 1. static guards
+python3 manage.py dump_route_inventory --check     # current, 0 unguarded
+python3 manage.py dump_read_inventory --check      # current
+python3 manage.py dump_manifest_schema --check     # current
+python3 manage.py makemigrations --check --dry-run # no changes
+python3 manage.py check                            # 0 issues
+
+# 2. release-scale harness, against a database it creates and drops
+python3 handoff_readiness_v2/audit_integrity_evidence.py
+
+# 3. full backend suite, once
+python3 manage.py test core --noinput
+```
+
+| Run | Count | Duration |
+|---|---:|---:|
+| Focused `test_audit_integrity` (final) | 49 tests | 76.8 s |
+| Focused regression: hardening + determinism + durable narratives | 97 tests | 142.5 s |
+| Preflight concurrency sample (10 races/pair, 120 races) | 31 tests | 93.4 s |
+| Evidence harness (17 steps, all as expected) | — | 64.1 s |
+| Full backend suite | FULL_SUITE_COUNT | FULL_SUITE_TIME |
+
+Deliberately **not** run, per `EXECUTION_PROTOCOL.md`: CRV2-01's
+four-environment replay matrix, CRV2-02's 100-races-per-pair matrix, CRV2-03's
+SIGKILL and live-provider drills. Certification is task-local; GSP-CRV2-09
+regenerates the integrated set.
+
+## Auditor preflight checklist
+
+| Question | Answer |
+|---|---|
+| Did inventory start from registered routes/models, not from code using the new abstraction? | Yes — `urls.py`, the model registry and `pg_catalog`. It found two detector bugs before any code was written: substring matching flagged `DecisionLockedMixin` as a decision reader, and a class-only scan missed `RoundControlView`'s module-level helper. |
+| Is there an active legacy or alternate entry point? | Yes, two. Raw SQL and `manage.py shell` — covered by the triggers. Django admin — 216 write routes the lifecycle inventory cannot see, logged as **V2-017**. |
+| Does a failure/refusal audit survive rollback? | Yes. Read events are written by middleware after the response, outside the view's transaction; a 403 leaves a `denied` row, proven end to end in the walkthrough. |
+| Is each correlation ID generated once and identical everywhere? | Yes — `request_id_for` from GSP-CRV2-02, cached on the request. The walkthrough shows one `srv-…` id per read. |
+| Is background/external work delayed until the outer transaction commits? | Yes — `transaction.on_commit`, once per transaction, tested three ways including that a failed seal never breaks the write it followed. |
+| Do claimed environment values describe the executing process? | Yes — `provenance.json` records the revision, source digest, clean-tree state and database name observed by the harness process. |
+| Does provenance identify runtime bytes? | Yes — `source_tree_sha256`, and the harness refuses to run from a dirty tree. |
+| Do README commands run exactly as written? | Yes — every command in `AUDIT_INTEGRITY_OPERATIONS.md` appears in the evidence transcripts. |
+| Do P0/P1/P2 labels match their definitions? | V2-017 is P1: it degrades the audited boundary but reach is limited to Django `is_staff`, not the instructor role. |
+| Does each negative test prove mutation did not occur? | Yes — every rejection test re-reads the row and asserts the original value. The `TRUNCATE` test additionally asserts on the guard's own message, because PostgreSQL refuses `TRUNCATE` while FK trigger events are pending and an assertion satisfied by that refusal would pass with no guard installed. |
+
+## Rollback
+
+`0071` and `0070` reverse by dropping the triggers and functions; `0069` drops
+two new tables. No existing audit row is rewritten in either direction, and
+nothing backfills the chain — rows written before the chain existed are sealed
+by the first `seal_audit_chain` and are not retroactively claimed to have been
+protected earlier than they were.
+
+## Unresolved risks
+
+1. **The application still owns its audit tables.** Deployment action, above.
+2. **V2-017** leaves the admin outside the audited lifecycle boundary.
+3. **A read event deleted before the next seal leaves no trace.** Sealing on the
+   read path would take a global lock on a high-volume route; the window is one
+   audit write or one `seal_audit_chain` run.
+4. **The anchor schedule is the security property.** An anchor exported after a
+   tampering event certifies the tampered state. Stated in the operations guide;
+   not enforced by code.
+5. **`outcome='error'` is reachable but untested.** The middleware maps a 5xx
+   on a sensitive route to `error`; `allowed` and `denied` are both proven end
+   to end, that third branch is not. It affects only how an operator report
+   labels the row, never whether the row is written, so it was not worth
+   another freeze cycle to cover — but it is an untested branch and is named
+   here rather than left to be discovered.
+6. **Each logged read costs one INSERT.** 30 routes, some polled by the
+   frontend. Bounded at competition scale, unmeasured under GSP-CRV2-07's load
+   ceiling — that handoff should watch it.

@@ -94,3 +94,17 @@ every assertion about the inventory passing and nothing at all being logged.
 | 30 logged read routes | Covered by middleware, proven by resolver-format and end-to-end tests |
 | 1 exempt read route | Exempt with the reason above |
 | Application role = table owner | **Not closed by code.** Deployment action; SQL provided and tested, switch recorded as an open item |
+
+## 5. What the inventory did not predict
+
+Two things were found by attacking the implementation rather than by reading it,
+and both are recorded here because an inventory that only lists what was
+anticipated is worth less than one that says where it fell short.
+
+* **`TRUNCATE` was not on this list.** It fires no row-level trigger, so the
+  guards designed from the table above watched three audit rows disappear
+  without firing. Found by the certification harness, closed by a
+  statement-level trigger in migration `0071`.
+* **216 Django admin write routes are invisible to the lifecycle inventory.**
+  Found while reconciling the +5 admin routes this handoff added. Logged as
+  **V2-017**; not repaired here.

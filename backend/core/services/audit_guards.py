@@ -9,9 +9,10 @@ of the code that usually writes to it.
 
 The triggers stop everyone, including the owner, until the owner explicitly
 drops them — which is a privileged maintenance action, and the thing the hash
-chain and its external anchor exist to make visible afterwards. Privileges are
-the third layer: `provision_app_role_sql()` produces a login role that is not
-the owner and therefore cannot drop a trigger at all.
+chain and its external anchor exist to make visible afterwards. `TRUNCATE`
+needs a statement-level trigger of its own; see `TRUNCATE_SETTING` below.
+Privileges are the last layer: `provision_app_role_sql()` produces a login role
+that is not the owner and therefore cannot drop a trigger at all.
 
 The DDL lives here rather than only in the migration because `manage.py test`
 runs against a database built straight from the models with migrations

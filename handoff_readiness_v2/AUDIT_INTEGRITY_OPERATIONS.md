@@ -9,6 +9,7 @@ and the record of who read a team's decisions.
 |---|---|---|
 | `Model.save()` guard | Re-saving an audit object | Anything that skips the model layer |
 | Append-only triggers | `UPDATE`/`DELETE` from the ORM, raw SQL, admin, `psql`, `manage.py shell` — for every role, owner included | Someone who drops the trigger first |
+| Truncate triggers | `TRUNCATE`, which fires no row-level trigger and would otherwise empty an audit table in one statement with every `BEFORE DELETE` guard silent | The same |
 | Non-owner application role | The application dropping a trigger at all | Maintenance credentials |
 | Hash chain + external anchor | Nothing | Nothing — it **detects**, after the fact, and that is its whole job |
 
@@ -48,6 +49,25 @@ renamed, and the directory `fsync`ed, so a power loss cannot leave a half-file.
 **The anchor schedule is the whole security property.** An anchor exported
 after a tampering event certifies the tampered state. Export before
 maintenance, not after.
+
+### On the truncate guard
+
+`TRUNCATE` does not fire row-level triggers, so the append-only guards alone
+did not cover it — GSP-CRV2-04's own certification run found that out by trying
+it. A statement-level `BEFORE TRUNCATE` guard now refuses it on all five
+tables.
+
+That guard reads a session setting, `globalstrat.allow_truncate`. Django's
+`TransactionTestCase` resets the database by truncating every table, so without
+a way to say "this is a test database" the guard could only have been installed
+where no test could reach it. **Production must never set it.** If a database
+is behaving as though the guard is absent, check for it:
+
+```sql
+SHOW globalstrat.allow_truncate;   -- expect: unrecognized configuration parameter
+SELECT name, setting, source FROM pg_settings WHERE name = 'globalstrat.allow_truncate';
+ALTER DATABASE <db> RESET globalstrat.allow_truncate;   -- if it was ever set
+```
 
 ### Verifying the guards themselves
 

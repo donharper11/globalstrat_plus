@@ -298,9 +298,8 @@ class SensitiveReadLogMiddleware:
 
     def _sensitive(self, route):
         if self._routes is None:
-            from core.services.read_inventory import sensitive_routes
-            self._routes = {row['route']: row['category']
-                            for row in sensitive_routes() if row['logged']}
+            from core.services.read_inventory import logged_route_categories
+            self._routes = logged_route_categories()
         return self._routes.get(route)
 
     def __call__(self, request):

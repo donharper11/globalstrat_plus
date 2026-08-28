@@ -1,6 +1,6 @@
 """Regenerate the checked-in sensitive-read route inventory.
 
-`test_audit_integrity.ReadInventoryTests` compares the live URL conf against
+`test_audit_integrity.SensitiveReadInventoryTests` compares the live URL conf against
 `core/services/read_inventory.json`. Registering a view that serves decision
 rows or audit payloads changes the live inventory and fails that test, which
 makes an unlogged disclosure route a review event rather than a silent gap.

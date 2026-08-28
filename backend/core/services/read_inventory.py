@@ -9,7 +9,7 @@ that covers every route the application actually serves.
 A read route is **sensitive** when its view's source reads a model that stores
 participant-written decisions (`category='decisions'`) or one of the append-only
 audit records (`category='audit'`). Every sensitive route is logged by
-`core.middleware.sensitive_reads.SensitiveReadLogMiddleware`, which matches on
+`core.middleware.SensitiveReadLogMiddleware`, which matches on
 the resolved route pattern, so a new view is covered the moment it is
 registered. Routes that only mention such a model incidentally appear in
 `EXEMPTIONS` with a reason someone has reviewed.
@@ -154,8 +154,8 @@ def sensitive_routes():
     return rows
 
 
-def logged_routes():
-    """The route patterns the middleware must record a read event for.
+def logged_route_categories():
+    """`{route pattern: category}` for every route the middleware must record.
 
     Read from the generated file rather than rebuilt. Rebuilding reads and
     parses the source of every registered view, which measured 6.3 seconds —
@@ -174,7 +174,8 @@ def logged_routes():
         recorded = inventory.get('url_conf_route_count')
         live = registered_route_count()
         if recorded is not None and recorded == live:
-            return {row['route'] for row in inventory['routes'] if row['logged']}
+            return {row['route']: row['category']
+                    for row in inventory['routes'] if row['logged']}
         logging.getLogger(__name__).warning(
             'read_inventory.json is stale (%s routes recorded, %s registered); '
             'rebuilding. Run manage.py dump_read_inventory.', recorded, live)
@@ -182,7 +183,13 @@ def logged_routes():
         logging.getLogger(__name__).warning(
             'read_inventory.json unusable (%s); rebuilding from the URL conf.',
             error)
-    return {row['route'] for row in sensitive_routes() if row['logged']}
+    return {row['route']: row['category']
+            for row in sensitive_routes() if row['logged']}
+
+
+def logged_routes():
+    """The route patterns the middleware must record a read event for."""
+    return set(logged_route_categories())
 
 
 def registered_route_count():

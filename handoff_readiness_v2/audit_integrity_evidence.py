@@ -171,12 +171,13 @@ def main():
               + role_sql.stdout)
 
         # 4. The legacy tables migrations do not create.
-        #    Roughly fifty models are managed=False: `users`, `enrollment`,
-        #    `course` and friends are raw-SQL tables that no migration builds,
-        #    so a freshly migrated database has the audit tables and the
-        #    triggers but cannot serve a request. The test runner solves this
-        #    by flipping the flag; the same is done here so the walkthrough can
-        #    exercise real HTTP against the migrated schema.
+        #    Ten models are managed=False: `users`, `enrollment`, `course`,
+        #    `section` and the grading tables are raw-SQL tables that no
+        #    migration builds, so a freshly migrated database has the audit
+        #    tables and the triggers but cannot serve a request. The test
+        #    runner solves this by flipping the flag; the same is done here so
+        #    the walkthrough can exercise real HTTP against the migrated
+        #    schema.
         legacy = manage(database, 'shell', '-c', LEGACY_TABLES_SCRIPT)
         step('create managed=False legacy tables', legacy)
         write('legacy-tables.txt', legacy.stdout + legacy.stderr)
@@ -421,9 +422,9 @@ from django.conf import settings
 from core.authentication import create_access_token
 from core.models import Game, SensitiveReadEvent, Team, User
 
-# No Course/Section is created: `course` is one of the roughly fifty
-# managed=False legacy tables that migrations never create, so a migrated
-# database does not have it. Cohort ownership is GSP-CRV2-03's boundary and is
+# No Course/Section is created: `course` is one of the ten managed=False
+# legacy tables that migrations never create, so a migrated database does not
+# have it. Cohort ownership is GSP-CRV2-03's boundary and is
 # tested there; what this walkthrough has to show is the read record.
 settings.ALLOWED_HOSTS = list(settings.ALLOWED_HOSTS) + ['testserver']
 
