@@ -1,0 +1,49 @@
+{
+  "all_steps_as_expected": false,
+  "code_revision": "142795ca01bbc9274f6f4e9f238bcec590e43658",
+  "database": "gsp_adversarial_20260828224029",
+  "generated_at": "2026-08-28T22:41:13.944888+00:00",
+  "steps": [
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "migrate"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "create managed=False legacy tables"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "seed a playable game"
+    },
+    {
+      "as_expected": true,
+      "detail": "67 across 14 decision types",
+      "step": "dimensions discovered"
+    },
+    {
+      "as_expected": true,
+      "detail": "0 unprobed",
+      "step": "every decision type reachable by PATCH was probed"
+    },
+    {
+      "as_expected": false,
+      "detail": "1 divergence(s)",
+      "step": "full and partial APIs refuse the same payloads"
+    },
+    {
+      "as_expected": true,
+      "detail": "",
+      "step": "negative-investment value-loop probe ran"
+    },
+    {
+      "as_expected": false,
+      "detail": "cash advantage 5120000.00",
+      "step": "a negative ESG investment does not pay the team"
+    }
+  ],
+  "working_tree_clean": true
+}

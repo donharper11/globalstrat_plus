@@ -1,0 +1,1693 @@
+{
+  "decision_types": {
+    "acquisitions": {
+      "fields": {
+        "acquisition_target": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "acquisitions",
+      "serializer": "DecisionAcquisitionSerializer"
+    },
+    "budget": {
+      "fields": {
+        "marketing_budget": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "marketing_budget must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "marketing_budget must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        },
+        "rd_budget": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "rd_budget must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "rd_budget must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        },
+        "strategy_budget": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "strategy_budget must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "strategy_budget must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        }
+      },
+      "one_to_one": true,
+      "related_name": "budget_allocation",
+      "serializer": "DecisionBudgetAllocationSerializer"
+    },
+    "esg": {
+      "fields": {
+        "environmental_investment": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "governance_commitments": {
+          "declared": {},
+          "kind": "json",
+          "required": false
+        },
+        "social_investment": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        }
+      },
+      "one_to_one": true,
+      "related_name": "esg",
+      "serializer": "DecisionESGSerializer"
+    },
+    "event-responses": {
+      "fields": {
+        "event_instance": {
+          "declared": {},
+          "kind": "reference",
+          "required": false
+        },
+        "response": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "event_responses",
+      "serializer": "DecisionEventResponseSerializer"
+    },
+    "financing": {
+      "fields": {
+        "debt_repayment": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "debt_repayment must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "debt_repayment must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "dividend_per_share": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 4,
+            "max_digits": 10
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": true
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 10 digits in total."
+            },
+            "large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 6 digits before the decimal point."
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 6 digits before the decimal point."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "dividend_per_share must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 6 digits before the decimal point."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "new_debt": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "new_debt must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "new_debt must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "new_equity": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "new_equity must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "new_equity must be >= 0."
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        }
+      },
+      "one_to_one": true,
+      "related_name": "financing",
+      "serializer": "DecisionFinancingSerializer"
+    },
+    "market-entry": {
+      "fields": {
+        "action": {
+          "declared": {
+            "choices": [
+              "enter",
+              "change_mode",
+              "exit"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "entry_mode": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "initial_investment": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        },
+        "integration_strategy": {
+          "declared": {
+            "choices": [
+              "FULL",
+              "BRAND_PRESERVE",
+              "DUAL_BRAND"
+            ]
+          },
+          "kind": "choice",
+          "required": false
+        },
+        "market": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "market_entries",
+      "serializer": "DecisionMarketEntrySerializer"
+    },
+    "marketing": {
+      "fields": {
+        "campaign_focus_feature_ids": {
+          "declared": {},
+          "kind": "json",
+          "required": true
+        },
+        "channel_digital_pct": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 4,
+            "max_digits": 5
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "channel_trade_pct": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 4,
+            "max_digits": 5
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "channel_traditional_pct": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 4,
+            "max_digits": 5
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 5 digits in total."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "demand_estimate": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "demand_estimate must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "demand_estimate must be >= 0."
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "distribution_channel_detail": {
+          "declared": {},
+          "kind": "json",
+          "required": false
+        },
+        "distribution_investment": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "distribution_strategy": {
+          "declared": {
+            "choices": [
+              "mass_retail",
+              "selective_retail",
+              "exclusive_retail",
+              "direct_online",
+              "hybrid"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "market": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "production_source_market": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "production_volume": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "production_volume must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "production_volume must be >= 0."
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "promotion_budget": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "promotion_budget must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "promotion_budget must be >= 0."
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": true
+        },
+        "retail_price": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "retail_price must be > 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "retail_price must be > 0."
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "zero": {
+              "accepted": false,
+              "error": "retail_price must be > 0."
+            }
+          },
+          "required": true
+        },
+        "sales_team_count": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": false
+        },
+        "team_product": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "marketing_decisions",
+      "serializer": "DecisionMarketingSerializer"
+    },
+    "partnerships": {
+      "fields": {
+        "action": {
+          "declared": {
+            "choices": [
+              "establish",
+              "modify",
+              "terminate"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "annual_investment": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        },
+        "market": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "strategy_option": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "partnerships",
+      "serializer": "DecisionPartnershipSerializer"
+    },
+    "plants": {
+      "fields": {
+        "action": {
+          "declared": {
+            "choices": [
+              "build",
+              "expand",
+              "contract_mfg"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "capacity_units": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "contract_mfg_volume": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "market": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "plant_decisions",
+      "serializer": "DecisionPlantSerializer"
+    },
+    "platforms": {
+      "fields": {
+        "committed_cost": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": true
+        },
+        "feature_levels": {
+          "declared": {},
+          "kind": "json",
+          "required": false
+        },
+        "method": {
+          "declared": {
+            "choices": [
+              "in_house",
+              "license",
+              "partnership"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "platform_generation": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "platform_name": {
+          "declared": {
+            "max_length": 100
+          },
+          "kind": "text",
+          "required": false
+        }
+      },
+      "one_to_one": false,
+      "related_name": "platform_developments",
+      "serializer": "DecisionPlatformDevelopmentSerializer"
+    },
+    "product-retires": {
+      "fields": {
+        "team_product": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "timing": {
+          "declared": {
+            "choices": [
+              "immediate",
+              "end_of_round"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "product_retires",
+      "serializer": "DecisionProductRetireSerializer"
+    },
+    "products": {
+      "fields": {
+        "positioning": {
+          "declared": {
+            "choices": [
+              "budget",
+              "mainstream",
+              "premium",
+              "ultra_premium"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "product_name": {
+          "declared": {
+            "max_length": 200
+          },
+          "kind": "text",
+          "required": true
+        },
+        "target_market_ids": {
+          "declared": {},
+          "kind": "json",
+          "required": true
+        },
+        "team_platform": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "product_creates",
+      "serializer": "DecisionProductCreateSerializer"
+    },
+    "rd": {
+      "fields": {
+        "amount": {
+          "accepts_negative": false,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": false,
+              "error": "amount must be >= 0."
+            },
+            "negative_one": {
+              "accepted": false,
+              "error": "amount must be >= 0."
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": false
+        },
+        "calculated_cost": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": false
+        },
+        "feature": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        },
+        "method": {
+          "declared": {
+            "choices": [
+              "in_house",
+              "license"
+            ]
+          },
+          "kind": "choice",
+          "required": true
+        },
+        "target_level": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_large": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "negative_one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "one": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true,
+              "blocked_elsewhere": true
+            }
+          },
+          "required": false
+        },
+        "team_platform": {
+          "declared": {},
+          "kind": "reference",
+          "required": true
+        }
+      },
+      "one_to_one": false,
+      "related_name": "rd_investments",
+      "serializer": "DecisionRDInvestmentSerializer"
+    },
+    "talent": {
+      "fields": {
+        "commercial_headcount": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "commercial_salary_level": {
+          "declared": {
+            "choices": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "kind": "choice",
+          "required": false
+        },
+        "commercial_training_budget": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "operations_headcount": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "operations_salary_level": {
+          "declared": {
+            "choices": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "kind": "choice",
+          "required": false
+        },
+        "operations_training_budget": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "rd_headcount": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "max_value": 2147483647,
+            "min_value": -2147483648
+          },
+          "kind": "numeric",
+          "probes": {
+            "huge": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": false,
+              "error": "Ensure this value is less than or equal to 2147483647."
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        },
+        "rd_salary_level": {
+          "declared": {
+            "choices": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "kind": "choice",
+          "required": false
+        },
+        "rd_training_budget": {
+          "accepts_negative": true,
+          "accepts_unbounded_magnitude": false,
+          "declared": {
+            "decimal_places": 2,
+            "max_digits": 15
+          },
+          "kind": "numeric",
+          "probes": {
+            "fraction": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 2 decimal places."
+            },
+            "huge": {
+              "accepted": false,
+              "error": "Ensure that there are no more than 15 digits in total."
+            },
+            "large": {
+              "accepted": true
+            },
+            "negative_large": {
+              "accepted": true
+            },
+            "negative_one": {
+              "accepted": true
+            },
+            "one": {
+              "accepted": true
+            },
+            "overflow_int32": {
+              "accepted": true
+            },
+            "zero": {
+              "accepted": true
+            }
+          },
+          "required": false
+        }
+      },
+      "one_to_one": true,
+      "related_name": "talent",
+      "serializer": "DecisionTalentSerializer"
+    }
+  },
+  "path_uniformity": {
+    "checks": [
+      {
+        "conclusive": true,
+        "control_distinct_pair_accepted_by_full_api": true,
+        "control_item": {
+          "amount": "1000.00",
+          "feature": 2,
+          "method": "in_house",
+          "target_level": 1,
+          "team_platform": 1
+        },
+        "full_api_error": "[ErrorDetail(string='Only one R&D investment per platform feature is allowed in a round.', code='invalid')]",
+        "full_api_rejects": true,
+        "item": {
+          "amount": "1000.00",
+          "feature": 1,
+          "method": "in_house",
+          "target_level": 1,
+          "team_platform": 1
+        },
+        "partial_api_error": null,
+        "partial_api_rejects": false,
+        "payload": "two R&D investments naming the same platform and feature",
+        "why_it_matters": "The whole-submission serializer rejects this because the outcome would otherwise depend on row order \u2014 the defect class V2-012 was raised for. The per-type PATCH path validates each row on its own and never runs the cross-row rule."
+      }
+    ],
+    "divergences": [
+      {
+        "conclusive": true,
+        "control_distinct_pair_accepted_by_full_api": true,
+        "control_item": {
+          "amount": "1000.00",
+          "feature": 2,
+          "method": "in_house",
+          "target_level": 1,
+          "team_platform": 1
+        },
+        "full_api_error": "[ErrorDetail(string='Only one R&D investment per platform feature is allowed in a round.', code='invalid')]",
+        "full_api_rejects": true,
+        "item": {
+          "amount": "1000.00",
+          "feature": 1,
+          "method": "in_house",
+          "target_level": 1,
+          "team_platform": 1
+        },
+        "partial_api_error": null,
+        "partial_api_rejects": false,
+        "payload": "two R&D investments naming the same platform and feature",
+        "why_it_matters": "The whole-submission serializer rejects this because the outcome would otherwise depend on row order \u2014 the defect class V2-012 was raised for. The per-type PATCH path validates each row on its own and never runs the cross-row rule."
+      }
+    ]
+  },
+  "totals": {
+    "decision_types": 14,
+    "dimensions": 67,
+    "numeric_dimensions_accepting_negative": 20,
+    "path_divergences": 1,
+    "unprobed_types": 0
+  }
+}

@@ -15,6 +15,23 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## New findings raised by GSP-CRV2-06
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-018 | Decision validation / value loop | **P0** | GSP-CRV2-06 (raised) | Twelve investment and headcount fields accept a **negative** value at the serializer, and `costs.py` adds several of them directly into `strategy_expense`. A negative investment is therefore income. Measured on a resolved round: a team entering `environmental_investment = -5,000,000` reported `strategy_expense = -4,850,000` against an identical control team's `+150,000`, turning a **$1,130,000 loss into a $3,990,000 profit with zero revenue** and $5,120,000 more closing cash. The field has no lower bound, so the amount is arbitrary. Reachable through the ordinary decision API by any team member. | `evidence/adversarial-balance/value-loop.json`: two otherwise identical teams in one game, one field differing only in sign, resolved through `_run_phase_1`. `strategy_expense_delta` is exactly the injected amount. | Open — logged before repair |
+| V2-019 | API uniformity / determinism | **P1** | GSP-CRV2-06 (raised) | `PUT /decisions/round/<n>/` rejects two R&D investments naming the same platform and feature — *"Only one R&D investment per platform feature is allowed in a round."* `PATCH /decisions/round/<n>/rd/` **accepts** the identical payload, because the rule is a cross-row check in `DecisionSubmissionSerializer.validate()` and the per-type handler validates each row alone. The rule exists because the result would otherwise depend on row order, which is the V2-012 defect class. A team using the per-type endpoint can store the state the full endpoint was changed to forbid. | `evidence/adversarial-balance/dimension-inventory.json`, `path_uniformity`. The check carries a control — a distinct platform/feature pair the full API must accept — and reports itself inconclusive if the control fails. | Open — logged before repair |
+
+Both were found in Phase 1, from the serializer registry and a controlled
+engine probe, before any optimizer was built.
+
+The uniformity check reported "no divergence" twice before it measured
+anything: first the platform/feature pair was unavailable to the team, so both
+paths refused for an unrelated reason; then `team` and `round` were missing, so
+DRF never called `validate()` and the cross-row rule was never reached. Two
+refusals for the wrong reason, and one silence, all read as agreement. The
+control was added so that cannot recur.
+
 ## New finding raised by GSP-CRV2-04
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
