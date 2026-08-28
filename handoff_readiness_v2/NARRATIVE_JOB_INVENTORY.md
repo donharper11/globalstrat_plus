@@ -37,6 +37,12 @@ Two new findings, logged before repair:
   reads coherence, so rank and the performance index are unaffected — this is a
   grading defect, not a ranking one.
 
+> **Status at `49d6514`.** Both findings are closed. This section records what
+> the Phase-1 inventory found, before repair, and is left as written.
+> V2-015 was repaired for all three producers; V2-016 was closed by removing
+> the Phase-2 write path entirely rather than defaulting it off. See the
+> findings register.
+
 `SCEventInstance.resolution_data` is the clearest case: one JSON column holds
 both `{'pending', 'applied'}` — flags that decide whether an
 instructor-injected event fires, and which are genuinely competitive — and the

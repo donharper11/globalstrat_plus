@@ -1,10 +1,16 @@
 # GSP-CRV2-03 completion report — durable Phase-2 narrative execution
 
-**Finding closed:** V2-006 (P1)
-**Findings opened:** V2-015 (P1, repaired here), V2-016 (P1, rules decision)
-**Frozen revision:** `ef01237a6542f5950f8447531a927ce96046bb7e`
-**Source tree digest:** `1e17a18eba73b33876449d9982048197ce33acf9fa184eac22bd073186d750c3`
+**Findings closed:** V2-006 (P1), V2-015 (P1), V2-016 (P1)
+**Current frozen revision:** `49d6514b9b9723e8d4e6244bb58236a89a3551d6`
+**Current source tree digest:** `0c284a835d41f1a6b1ab0e1ea76b8e20cfe1e0032c13a6def75fd3e9f651003b`
 **Branch:** `crv2-03-durable-narratives`, on the GSP-CRV2-02 baseline `7272a2f`
+
+> **Superseded in part.** The body below describes the first submission, frozen
+> at `ef01237`, and is kept as written. Two of its statements no longer hold:
+> V2-016 was left for the rules owner, and the coherence blend was a
+> default-off setting. The audit rejected both. See the **rework addendum** at
+> the end for the current disposition; where the two disagree, the addendum is
+> authoritative.
 
 ## What Phase 1 found before any code was written
 
@@ -68,6 +74,9 @@ starts the rows are still there.
   **off** by default, with the RAG evaluation recorded as instructor commentary
   beside the score instead. Turning it on restores both defects knowingly and
   is a rules decision, not an operational one.
+  **— Superseded at `49d6514`:** the audit rejected a default-off switch, the
+  write path was removed outright, and setting the flag now stops resolution.
+  See the rework addendum.
 
 ## Certification
 
@@ -113,7 +122,12 @@ freeze candidate, which is the exemption the budget allows.
 
 ## Unresolved risks
 
-1. **V2-016 needs a rules decision.** Default is now the deterministic formula
+1. **V2-016 needs a rules decision.**
+   **— Withdrawn at `49d6514`:** V2-016 is closed. Published coherence and the
+   grades derived from it are the deterministic formula score; retrieval is
+   commentary. Nothing is outstanding for the rules owner. The original text
+   follows as written.
+   Default is now the deterministic formula
    score. If the competition wants the RAG blend, it belongs inside Phase 1 with
    the rest of scoring — which makes an LLM outage block a round rather than
    degrade its prose. There is no third option where it both affects grades and
@@ -134,3 +148,74 @@ freeze candidate, which is the exemption the budget allows.
    resolved before this change keep whatever Phase 2 wrote into their hashed
    rows. The data migration moves SC prose out, which changes where text is
    stored but no published result.
+
+
+---
+
+# Rework addendum — `49d6514`
+
+Two audits followed the first submission. Both are closed.
+
+## Rework 1 (audited at `a339782`) — two runtime blockers
+
+**R1, instructor observability.** The job rows carried type, state, degradation,
+model name, template version, attempts and a sanitized error, and nothing read
+them but a management command. `GET /api/games/<id>/round-control/` — the
+existing round-status surface — now returns a `narratives` block with those
+fields and a state summary. No new subsystem, no frontend workflow. The
+endpoint is also scoped to the cohort that owns the game, following the
+ownership rule already used for student accounts, because `IsInstructor` checks
+only the role and this data carries a model name and error text.
+
+**R2, unsafe RAG configuration.** `COMPETITION_RAG_AFFECTS_COHERENCE` could let
+Phase 2 write a hashed field that grading reads. Default-off was rejected as
+insufficient — a supported deployment could flip it — so the write path was
+removed rather than gated, and `require_safe_rag_configuration()` now stops
+resolution before the transaction opens if the retired flag is set.
+
+Focused verification: 8 endpoint/isolation tests (8.1 s), 62 round-control
+contract tests (47.1 s), and `core.tests.test_durable_narratives` once from the
+freeze — 35 tests, 47.0 s. Evidence:
+`evidence/durable-narratives-rework/`. The SIGKILL drill, live-provider matrix,
+determinism matrix, concurrency matrix and full suite were not re-run; their
+evidence stands against its own revision `ef01237`.
+
+## Rework 2 (documentation only) — the record contradicted the code
+
+The runtime passed independent verification; the release record did not match
+it. `V2_FINDINGS_REGISTER.md` still marked V2-016 open and assigned it to the
+rules owner, and the operator guide still told operators that enabling the flag
+blends the LLM score into the published number. Neither was true at `49d6514`,
+and leaving them would have made the final audit report a P1 NO-GO for a defect
+that no longer exists.
+
+Corrected: the register closes V2-016 with the adopted rule, and the operator
+guide says plainly that the flag is retired and setting it stops resolution.
+No runtime code was changed and no tests were run; the source tree digest is
+unchanged at `0c284a835d41f1a6b1ab0e1ea76b8e20cfe1e0032c13a6def75fd3e9f651003b`.
+
+## Adopted rule for V2-016
+
+**Published coherence, and the grades derived from it, are the deterministic
+formula score. Retrieval is instructor commentary and nothing else.**
+
+Nothing is outstanding for the rules owner. Including retrieval in a grade is
+still a legitimate choice, but it is now a Phase-1 change — inside the
+transaction the manifest hashes, certified with the rest of scoring — and not a
+configuration flag.
+
+## Unresolved risks, restated at `49d6514`
+
+Item 1 of the original list is withdrawn: V2-016 is closed and needs no rules
+decision. Items 2–5 stand as written — worker supervision is still a deployment
+action, retry has no notion of operator-approved content, `degraded` is per job
+rather than per team, and rounds resolved before the split still do not
+reconcile with their manifests.
+
+One item is added:
+
+6. **`calculate_coherence(context, skip_rag=False)` keeps a permissive
+   default.** No supported path reaches it — `_run_phase_1` always passes
+   `skip_rag=True`, which the audit confirmed — so it is a trap for a future
+   caller rather than a live defect. Changing the signature was out of scope
+   for a focused rework and is left flagged.

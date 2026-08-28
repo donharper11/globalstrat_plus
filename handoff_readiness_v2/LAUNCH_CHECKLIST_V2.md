@@ -37,9 +37,13 @@
 - [x] Frontend production build PASS (warnings), 2026-08-28.
 - [ ] Frontend Jest: one suite blocked by Node 18 vs router v7 (requires Node 20).
 
-Decision: **NO-GO for a prize competition at this checkpoint.** GSP-CRV2-01
-(V2-001, V2-002, V2-012, V2-013, V2-014) is closed with cross-environment
-evidence from a named revision, but V2-010/V2-011 await a rules disposition and
-the remaining v2 acceptance exercises — adversarial balance, load and failure
-modes, post-close retrieval, durable narratives, audit integrity — are
-incomplete. v1 GO cannot substitute for them.
+Decision: **NO-GO for a prize competition at this checkpoint.**
+
+Closed with evidence from named revisions: GSP-CRV2-01 (V2-001, V2-002,
+V2-012, V2-013, V2-014), GSP-CRV2-02 (V2-004), GSP-CRV2-03 (V2-006, V2-015,
+V2-016).
+
+Outstanding: V2-010 and V2-011 await a rules disposition, and the remaining v2
+acceptance exercises — adversarial balance, load and failure modes, post-close
+retrieval, audit integrity — are incomplete. Two deployment actions are also
+unticked above. v1 GO cannot substitute for any of them.

@@ -30,7 +30,7 @@ published result is never P2.
 | V2-014 | Narrative envelope | **P1** | GSP-CRV2-01 (closed) | A narrative section's prose is separated into `narrative_rows` by the snapshot, and the narrative envelope was built from `rows` alone. `narrative_sha256` hashed briefing ids and round numbers, not a word of text — so a replay against a deliberately different model produced an identical narrative hash and the "prose differs, result does not" claim was unverifiable. | Two runs of game 36 round 1 under different endpoints reported the same `narrative_sha256`. | **Repaired** — the envelope carries `prose` and `prose_digests`; tests require that changing a briefing changes the narrative hash and leaves the competitive hash alone. |
 
 | V2-015 | Narrative / manifest reconciliation | **P1** | GSP-CRV2-03 | Phase 2 writes into rows and fields that `output_sha256` covers, after that hash has been taken: `RoundResultCoherence.rag_score/blended_score/breakdown`, `SCEventInstance.resolution_data['narrative']`, and newly created `InstructorAlert` coaching rows. The hash never moves — it is computed inside the Phase-1 transaction — so every replay matches; what diverges is the *stored database* from the manifest that certified it, which no replay compares. | Resolve a round with an API key configured, wait for Phase 2, then rebuild the output manifest and compare with the stored `output_sha256`. | **Repaired in GSP-CRV2-03** — see closure entry. |
-| V2-016 | LLM reaches a graded number | **P1** | Competition-rules owner (via GSP-CRV2-09) | `RoundResultCoherence.blended_score` is read by `core/services/grading.py`. With an LLM reachable, coherence is `0.6·formula + 0.4·RAG`; without one, the formula score stands. Two identical competitions therefore grade differently depending on an external service's availability. Rank is unaffected: neither `performance.py` nor `leaderboard.py` reads coherence. | `grep blended_score core/services/grading.py`; compare a round resolved with and without `DASHSCOPE_API_KEY`. | Open — rules decision required, see disposition below. |
+| V2-016 | LLM reaches a graded number | **P1** | GSP-CRV2-03 (closed) | `RoundResultCoherence.blended_score` is read by `core/services/grading.py`. With an LLM reachable, coherence was `0.6·formula + 0.4·RAG`; without one, the formula score stood. Two identical competitions therefore graded differently depending on an external service's availability. Rank was unaffected: neither `performance.py` nor `leaderboard.py` reads coherence. | `grep blended_score core/services/grading.py`; compare a round resolved with and without `DASHSCOPE_API_KEY`. | **Closed** at `49d6514` — see closure entry below |
 
 ### Disposition required for V2-010 and V2-011
 
@@ -53,24 +53,40 @@ ambiguous.
   to match. Option (a) is the smaller change and matches `core/engine/rng.py`'s
   documented convention.
 
-### Disposition required for V2-016
+### V2-016 — LLM reaches a graded number (P1) — closed at `49d6514`
 
-GSP-CRV2-03 makes the RAG blend *durable, idempotent and observable*, and stops
-it silently diverging the database from its manifest (V2-015). It deliberately
-does **not** decide whether an LLM should influence a grade at all, because that
-changes published coherence values. The choice:
+**Adopted rule: published coherence and the grades derived from it are the
+deterministic formula score. Retrieval is instructor commentary and nothing
+else.**
 
-* **(a) Coherence is a formula score.** The RAG evaluation is recorded and shown
-  as commentary but never blended into `blended_score`. Grades then depend only
-  on the deterministic engine, and a narrative outage cannot change them. This
-  is the option consistent with every other guarantee in the v2 work.
-* **(b) The blend stays.** Then the RAG call is part of scoring, not narration,
-  and it must move inside the Phase-1 transaction with the rest of the engine —
-  which reintroduces an external dependency into resolution, and means an LLM
-  outage blocks a round rather than degrading its prose.
+The first GSP-CRV2-03 submission made the blend configurable and defaulted it
+off. The audit rejected that: a setting a supported deployment can flip is not
+a safe competition configuration, and default-off left the defect one
+environment variable away. The rework removed the Phase-2 write path outright.
 
-There is no third option in which the blend both affects grades and lives
-outside the certified envelope. Today it does exactly that.
+At `49d6514`:
+
+* `update_coherence_with_rag()` writes no competitive field in any
+  configuration. It records the evaluation as an `InstructorAlert` with
+  `source='narrative'`, which the manifest keeps outside the competitive
+  section.
+* `COMPETITION_RAG_AFFECTS_COHERENCE` is retired. The name survives only so a
+  stack still setting it fails loudly:
+  `require_safe_rag_configuration()` runs before the resolution transaction
+  opens, so a misconfigured stack stops without taking a backup or a lock.
+  Silently ignoring the flag would be worse than either behaviour — an operator
+  who set it deliberately would believe retrieval was being graded when it is
+  not.
+* `core/tests/test_durable_narratives.py::CoherenceIsolationTests` proves all
+  three legs: flag unset, flag set with the job run, and resolution attempted
+  with the flag set.
+
+Grading retrieval remains a legitimate rules choice. It is now a Phase-1
+change — inside the transaction the manifest hashes, certified with the rest of
+scoring — and not a flag. Nothing is outstanding for the rules owner.
+
+- Evidence: `evidence/durable-narratives-rework/`.
+- Completion: `completion/GSP-CRV2-03-completion.md`, rework addendum.
 
 ## Closure entries
 

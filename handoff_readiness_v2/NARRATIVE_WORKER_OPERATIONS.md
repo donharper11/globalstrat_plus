@@ -112,12 +112,33 @@ passed through `sanitize_error()` before it reaches a row an instructor can
 read. `model_name` and `model_endpoint` are configuration and are recorded, so
 a disputed briefing can be attributed to the model that wrote it.
 
-## The coherence switch
+## `COMPETITION_RAG_AFFECTS_COHERENCE` is retired — leave it unset
 
-`COMPETITION_RAG_AFFECTS_COHERENCE` is **off** by default. With it off,
-coherence is the deterministic formula score and the retrieval-grounded
-evaluation is recorded beside it as instructor commentary. With it on, the LLM
-score is blended into the published number — which makes a graded value depend
-on an external service answering, and puts Phase 2 back inside the competitive
-hash. See V2-016; turning it on is a competition-rules decision, not an
-operational one.
+**Setting it stops round resolution.** It does not enable anything.
+
+The flag used to blend the Phase-2 retrieval score into the published coherence
+score. That number is inside the competitive hash and is read by
+`services/grading.py`, so a student's mark depended on whether an external
+service answered. The write path was removed in the GSP-CRV2-03 rework
+(`49d6514`), and the flag name survives only so a stack still setting it fails
+loudly instead of quietly not doing what its name says.
+
+If it is set, `require_safe_rag_configuration()` raises before the resolution
+transaction opens — no backup, no lock, no partial state — and the message says
+why:
+
+```
+COMPETITION_RAG_AFFECTS_COHERENCE is set, but the Phase-2 path it enabled has
+been removed ... Unset it to resolve rounds.
+```
+
+**To fix:** remove it from the environment file and restart. There is no
+configuration in which Phase 2 changes a grade or the competitive manifest.
+
+Published coherence is the deterministic formula score. The retrieval
+evaluation is recorded as instructor commentary — an `InstructorAlert` with
+`source='narrative'`, outside the competitive section — and is visible on the
+round-status endpoint alongside the rest of the narrative queue. Grading
+retrieval is still a legitimate rules choice, but it is a Phase-1 change
+certified with the rest of scoring, not an operational switch. See V2-016
+(closed).
