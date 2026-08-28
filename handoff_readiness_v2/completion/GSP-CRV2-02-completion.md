@@ -181,3 +181,63 @@ equals the roster its input manifest *recorded*.
    referenced them, but deletion is irreversible for any unknown integration.
    The commit message and the matrix document name each one and its
    replacement.
+
+## Execution protocol compliance
+
+`handoffs/EXECUTION_PROTOCOL.md` became binding partway through this rework.
+Reporting against it honestly:
+
+**Frozen revision:** `7a5c4ee92732d0549aeb36a90272017ef9a6b881`
+**Source tree digest:** `da8995064b6a5f196d6cef09f4d11379b9ae3450a4b83d53c01e12b7e588eaa5`
+**Evidence commit:** `c75f6f9`; working tree clean, `code_revision_is_dirty: false`.
+
+### Expensive runs, this rework
+
+| Operation | Count | Duration | Scale |
+|---|---:|---:|---|
+| Concurrency matrix | 1 | 908 s | 12 pairs × 100 races = 1200 |
+| Full backend suite | 1 | 1024 s | 353 tests |
+| Focused pair runs (development) | 3 | 8–320 s | 1–4 pairs at 100 races |
+
+**Where I exceeded the intent of the budget.** The three focused runs used 100
+races per pair rather than the 1 race/pair development default, because the
+harness's iteration count was a module constant rather than an option when
+those runs happened. That cost roughly six extra minutes; the protocol's
+`ITERATIONS` should become a CLI/profile option and I have not made that change.
+
+**Where I violated the ordering.** Phase 4 requires guards → matrix → suite →
+checksums → freeze verification, all *from* the freeze commit. My actual order
+was: code complete → matrix → docs → suite → freeze commit → guards →
+checksums. The evidence therefore predates the commit that certifies it.
+
+I can show the gap is not material, and the auditor should check the claim
+rather than take it: no file under `backend/` has an mtime later than the start
+of the matrix run (matrix ran 09:52:01–10:07:10; newest backend source file is
+older than 09:52:01), so the runtime bytes that produced the evidence are the
+bytes in `7a5c4ee`. `SUMMARY.json` records the revision, the digest and that
+confirmation. If the auditor wants certification strictly from the frozen
+commit, the matrix needs one 15-minute re-run; I did not spend it, because the
+protocol also says not to repeat release runs silently.
+
+### Preflight checklist
+
+| Question | Answer |
+|---|---|
+| Did inventory start from registered routes, not code using the new abstraction? | Yes — `route_inventory.py` walks the URL conf. This was the defect: the first submission did the opposite. |
+| Is there an active legacy or alternate entry point? | No. 0 of 214 unguarded; six removed; 16 exemptions each with a reviewed reason. |
+| Does a failure/refusal audit survive rollback? | Yes — rejections are written after the refused transaction rolls back, in their own transaction. An engine *fault* is written inside it instead, so the FAILED marker and its audit row commit together. |
+| Is each correlation ID generated once and identical in response/audit/log? | Yes — cached on the request and on the Django request DRF wraps. Tested for supplied and generated ids across commits, 409s and 400s. |
+| Is background work delayed until the outer transaction commits? | Yes — Phase 2 dispatch via `transaction.on_commit`. |
+| Do claimed environment values describe the executing process? | Not applicable to this handoff; the concurrency evidence records `pg_stat_database.deadlocks` and live `pg_locks` rows sampled from the executing sessions. |
+| Does provenance identify runtime bytes, including untracked files? | Yes — `build_identity()` digests every runtime source file under `backend/` regardless of git state. |
+| Do README commands run exactly as written against stored artifacts? | Yes — the reproduce block was run as written. |
+| Do P0/P1/P2 labels match their definitions? | V2-004 is P0 (blocks). No new findings were opened by this rework. |
+| Does each negative test prove mutation did not occur? | Yes — the all-or-nothing schedule test asserts no round moved; the correction races assert no round resolved from a draft; the pause race asserts `current_round` was not rewound. |
+
+### What I would do differently
+
+The three defects this rework fixed — the missed routes, the request-id, and
+the bulk-schedule partial write — were all findable by inventory and contract
+tests costing seconds. I found two of them only because an auditor read the URL
+conf. Phase 1 of the protocol exists for exactly that, and running it first
+would have saved both FAIL cycles.
