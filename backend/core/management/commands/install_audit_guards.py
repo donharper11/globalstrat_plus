@@ -71,6 +71,10 @@ class Command(BaseCommand):
 
         install(connection)
         rows = installed_triggers(connection)
+        tables = sorted({row['table'] for row in rows})
         self.stdout.write(self.style.SUCCESS(
-            f'Installed {len(rows)} append-only guards: '
-            + ', '.join(r['table'] for r in rows)))
+            f'Installed {len(rows)} guards across {len(tables)} audit tables '
+            f'(UPDATE/DELETE and TRUNCATE on each):'))
+        for table in tables:
+            names = sorted(r['trigger'] for r in rows if r['table'] == table)
+            self.stdout.write(f"  {table}: {', '.join(names)}")
