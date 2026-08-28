@@ -165,14 +165,25 @@ def main():
                 'non-owner application role:\n\n'
               + role_sql.stdout)
 
-        # 4. Seed a round's worth of audit rows through the application.
+        # 4. The legacy tables migrations do not create.
+        #    Roughly fifty models are managed=False: `users`, `enrollment`,
+        #    `course` and friends are raw-SQL tables that no migration builds,
+        #    so a freshly migrated database has the audit tables and the
+        #    triggers but cannot serve a request. The test runner solves this
+        #    by flipping the flag; the same is done here so the walkthrough can
+        #    exercise real HTTP against the migrated schema.
+        legacy = manage(database, 'shell', '-c', LEGACY_TABLES_SCRIPT)
+        step('create managed=False legacy tables', legacy)
+        write('legacy-tables.txt', legacy.stdout + legacy.stderr)
+
+        # 5. Seed a round's worth of audit rows through the application.
         seeded = manage(database, 'shell', '-c', SEED_SCRIPT)
         if not step('seed audit rows through the ORM', seeded):
             print(seeded.stdout, seeded.stderr)
             raise SystemExit('seeding failed')
         write('seed.txt', seeded.stdout + seeded.stderr)
 
-        # 5. Chain and anchor, verified.
+        # 6. Chain and anchor, verified.
         backup_dir = str(EVIDENCE / 'anchor-store')
         env_extra = {'COMPETITION_BACKUP_DIR': backup_dir}
         step('seal', manage(database, 'seal_audit_chain', '--json',
@@ -186,7 +197,7 @@ def main():
         step('verify (clean)', verified)
         write('chain-verification-clean.json', verified.stdout)
 
-        # 6. Negative transcripts: every bypass, attempted for real.
+        # 7. Negative transcripts: every bypass, attempted for real.
         negatives = []
         for title, statement in NEGATIVE_STATEMENTS:
             result = psql(database, statement)
@@ -206,7 +217,7 @@ def main():
               + '\nSame attempts through the ORM and the admin:\n\n'
               + orm.stdout + orm.stderr)
 
-        # 7. The privileged change, and proof the external check catches it.
+        # 8. The privileged change, and proof the external check catches it.
         tamper = []
         table = 'competition_decision_audit_event'
         tamper.append(psql(database,
@@ -231,7 +242,7 @@ def main():
               + f'\n--> exit {broken.returncode} '
                 f'({"detected" if broken.returncode else "MISSED"})\n')
 
-        # 8. Read evidence walkthrough, end to end over HTTP.
+        # 9. Read evidence walkthrough, end to end over HTTP.
         walk = manage(database, 'shell', '-c', WALKTHROUGH_SCRIPT)
         step('read-evidence walkthrough', walk)
         write('read-evidence-walkthrough.txt', walk.stdout + walk.stderr)
@@ -240,7 +251,7 @@ def main():
         record['all_steps_as_expected'] = all(s['as_expected'] for s in transcript)
         write('provenance.json', json.dumps(record, indent=2, sort_keys=True))
 
-        # 9. Checksums last.
+        # 10. Checksums last.
         lines = []
         for path in sorted(EVIDENCE.rglob('*')):
             if path.is_file() and path.name != 'SHA256SUMS':
@@ -255,6 +266,28 @@ def main():
             psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
             print(f'Dropped {database}')
 
+
+LEGACY_TABLES_SCRIPT = r'''
+from django.apps import apps
+from django.db import connection
+
+existing = set(connection.introspection.table_names())
+unmanaged = [m for m in apps.get_models() if not m._meta.managed]
+created = []
+for model in unmanaged:
+    model._meta.managed = True
+with connection.schema_editor() as editor:
+    for model in unmanaged:
+        if model._meta.db_table in existing:
+            continue
+        editor.create_model(model)
+        created.append(model._meta.db_table)
+for model in unmanaged:
+    model._meta.managed = False
+print(f'{len(unmanaged)} managed=False models; created {len(created)} tables')
+for name in sorted(created):
+    print('  ', name)
+'''
 
 SEED_SCRIPT = r'''
 from django.contrib.auth.models import User as DjangoUser
