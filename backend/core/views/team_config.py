@@ -14,6 +14,8 @@ from core.models.core import Game, Team, Round
 from core.models.scenario import MarketDefinition
 from core.models.decisions import DecisionSubmission
 from core.permissions import IsInstructor
+from core.services.lifecycle import (
+    LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
 
 
@@ -74,16 +76,32 @@ class InstructorTeamConfigView(APIView):
             'locked': _has_round1_submissions(game),
         })
 
+    @lifecycle_view
     def put(self, request, game_id):
+        # A team's home market is a competitive input: it drives trust,
+        # cultural distance and repatriation cost. Changing it while a round
+        # resolves would score half the round against one market and half
+        # against another, so it runs on the lifecycle boundary and the
+        # "no submissions yet" check is made under it.
+        with operator_action(request, game_id, 'set_team_config') as action:
+            return self._put(request, action)
+
+    def _put(self, request, action):
         language = get_user_language(request)
-        game = get_object_or_404(Game, id=game_id)
+        game = action.game
+        game_id = game.id
+        action.before = {'teams': [
+            {'team_id': team.id, 'name': team.name,
+             'home_market': team.home_market.code if team.home_market else None}
+            for team in Team.objects.filter(game=game).order_by('id')]}
 
         # Validation: cannot change after first Round 1 submission exists
         if _has_round1_submissions(game):
-            return Response(
-                {'error': 'Cannot change home markets after Round 1 decisions have been submitted.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise LifecyclePrecondition(
+                'Cannot change home markets after Round 1 decisions have been '
+                'submitted.',
+                guidance='Team configuration is fixed once play starts.',
+                code='round_1_started')
 
         teams_data = request.data.get('teams', [])
         if not teams_data:
@@ -144,7 +162,11 @@ class InstructorTeamConfigView(APIView):
                 team.save(update_fields=save_fields)
             updated.append(_team_payload(team, language))
 
-        return Response({'teams': updated})
+        action.commit(action.before, {'teams': [
+            {'team_id': team.id, 'name': team.name,
+             'home_market': team.home_market.code if team.home_market else None}
+            for team in Team.objects.filter(game=game).order_by('id')]})
+        return Response({'teams': updated, 'request_id': action.request_id})
 
 
 class InstructorRandomizeHomeMarketsView(APIView):

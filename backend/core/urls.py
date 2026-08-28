@@ -77,8 +77,6 @@ from .views import (
     SimulationStateViewSet, SimulationSettingsViewSet,
     SimulationParametersViewSet, DashboardViewSet,
     # Round deadline management
-    RoundLockView, RoundUnlockView, RoundExtendView,
-    RoundScheduleSetView, BulkScheduleView,
     DecisionStatusView, SendReminderView,
     # Programs (placeholder — will become platforms/products in CC-2)
     ProgramViewSet, ProgramTypeViewSet,
@@ -120,7 +118,7 @@ from .views import (
     # Course Management
     CourseViewSet, SectionViewSet,
     RosterViewSet, TeamManagementView, SimulationControlView,
-    RoundScheduleView, GameRoundScheduleView,
+    GameRoundScheduleView,
     # Grading
     GradingRubricViewSet, GradingRubricCategoryViewSet,
     GradingComponentMappingViewSet, TeamGradeViewSet,
@@ -260,16 +258,10 @@ urlpatterns = [
     path('roster/', RosterViewSet.as_view(), name='roster'),
     path('team-management/', TeamManagementView.as_view(), name='team-management'),
     path('simulation-control/', SimulationControlView.as_view(), name='simulation-control'),
-    path('round-schedule/', RoundScheduleView.as_view(), name='round-schedule'),
     # ---- Round Deadline Management ----
-    path('rounds/<int:round_id>/lock/', RoundLockView.as_view(), name='round-lock'),
-    path('rounds/<int:round_id>/unlock/', RoundUnlockView.as_view(), name='round-unlock'),
-    path('rounds/<int:round_id>/extend/', RoundExtendView.as_view(), name='round-extend'),
-    path('rounds/<int:round_id>/schedule/', RoundScheduleSetView.as_view(), name='round-schedule-set'),
     path('rounds/<int:round_id>/decision-status/', DecisionStatusView.as_view(), name='round-decision-status'),
     path('rounds/<int:round_id>/send-reminder/', SendReminderView.as_view(), name='round-send-reminder'),
     path('rounds/current/my-status/', DecisionStatusView.as_view(), name='my-decision-status'),
-    path('instances/<int:instance_id>/bulk-schedule/', BulkScheduleView.as_view(), name='bulk-schedule'),
     # ---- Grading ----
     path('grades/seed-rubric/', SeedRubricView.as_view(), name='grades-seed-rubric'),
     path('grades/calculate/', CalculateGradesView.as_view(), name='grades-calculate'),

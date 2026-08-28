@@ -3,6 +3,10 @@
 **Finding:** V2-004 (P0)  
 **Owner:** backend lifecycle/concurrency engineer
 
+**Execution:** Follow `handoffs/EXECUTION_PROTOCOL.md`. Build the registered
+mutation-route inventory and coverage guard before implementation. Use one race
+per pair during development, 10 at preflight, and 100 only after code freeze.
+
 ## Objective
 
 Every conflicting operator action must serialize on one coordination boundary,
@@ -32,10 +36,12 @@ deactivate+process and scheduler-close+manual-close.
 
 ## Acceptance
 
-Use PostgreSQL transactional integration tests with barriers, not mocks. Repeat
-each pair at least 100 times with both arrival orders. Assert final round state,
-decision locks, exactly-once resolution, audit completeness, no partial output
-and no unexplained 500. Capture DB lock/deadlock evidence and API responses.
+Use PostgreSQL transactional integration tests with barriers, not mocks. In
+final certification repeat each pair exactly 100 times, controlling scheduling
+so both arrival orders have deliberate coverage rather than relying on chance.
+Assert final round state, decision locks, exactly-once resolution, audit
+completeness, no partial output and no unexplained 500. Capture DB lock/deadlock
+evidence and API responses.
 
 Store results under `handoff_readiness_v2/evidence/operator-concurrency/` and
 close V2-004 only after the whole matrix passes.

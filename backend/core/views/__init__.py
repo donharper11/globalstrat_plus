@@ -49,9 +49,7 @@ from core.rag.views import ActiveEventsView, EventHistoryView, ResearchQueryView
 from .course import (
     CourseViewSet, SectionViewSet,
     RosterViewSet, TeamManagementView, SimulationControlView,
-    RoundScheduleView, GameRoundScheduleView,
-    RoundLockView, RoundUnlockView, RoundExtendView,
-    RoundScheduleSetView, BulkScheduleView,
+    GameRoundScheduleView,
     DecisionStatusView, SendReminderView,
 )
 from .grading import (

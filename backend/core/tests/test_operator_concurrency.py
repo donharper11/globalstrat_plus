@@ -20,7 +20,7 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User as DjangoUser
 from django.db import connection, connections
-from django.test import TransactionTestCase
+from django.test import SimpleTestCase, TransactionTestCase
 from django.utils import timezone
 from rest_framework.test import APIClient
 
@@ -640,4 +640,359 @@ class SchedulerVersusManualCloseTests(OperatorConcurrencyBase,
                 game=self.game, round=round_obj, action='close_round')
             self.assertEqual(events.count(), 1)
             self.assertIn(events.first().outcome, ('committed', 'rejected'))
+        self.assertEqual(deadlock_count(), before_deadlocks)
+
+
+# ---------------------------------------------------------------------------
+# Route coverage: the guard that stops a future bypass
+# ---------------------------------------------------------------------------
+
+class RouteCoverageTests(SimpleTestCase):
+    """Built from the URL conf, so a route cannot escape by being forgotten.
+
+    The first pass at this handoff traced the routes it knew about and declared
+    the boundary universal; five registered lifecycle endpoints had never been
+    looked at. This test starts where the application starts.
+    """
+
+    def test_no_registered_route_mutates_lifecycle_state_unguarded(self):
+        from core.services.route_inventory import unguarded_routes
+        offenders = unguarded_routes()
+        self.assertFalse(offenders, 'Registered routes that can move round, '
+                         'game, participation or submission state without the '
+                         'lifecycle boundary:\n' + '\n'.join(
+                             f'  {entry["route"]} [{",".join(entry["methods"])}] '
+                             f'{entry["view"]}' for entry in offenders.values()))
+
+    def test_inventory_matches_the_checked_in_copy(self):
+        """Route drift is a review event, not a silent change in coverage."""
+        from core.services.route_inventory import build_inventory, load_inventory
+        live, stored = build_inventory(), load_inventory()
+        if live != stored:
+            live_routes, stored_routes = live['routes'], stored['routes']
+            added = sorted(set(live_routes) - set(stored_routes))
+            removed = sorted(set(stored_routes) - set(live_routes))
+            changed = sorted(k for k in set(live_routes) & set(stored_routes)
+                             if live_routes[k] != stored_routes[k])
+            self.fail(
+                f'Route inventory drifted. Added: {added[:5]}; removed: '
+                f'{removed[:5]}; changed: {changed[:5]}. Review the change, '
+                f'then run `manage.py dump_route_inventory`.')
+
+    def test_every_exemption_still_names_a_registered_view(self):
+        from core.services.route_inventory import EXEMPTIONS, mutating_routes
+        registered = {entry['view'] for entry in mutating_routes().values()}
+        for view, reason in EXEMPTIONS.items():
+            self.assertIn(view, registered,
+                          f'Exemption for {view} no longer matches any route')
+            self.assertGreater(len(reason), 40,
+                               f'Exemption for {view} needs a reviewed reason')
+
+    def test_the_removed_legacy_routes_are_gone(self):
+        """They were BECSR leftovers that 500'd on every call and gave a second
+        meaning to lock/unlock/extend. Their absence is the repair."""
+        from django.urls import NoReverseMatch, reverse
+        for name in ('round-lock', 'round-unlock', 'round-extend',
+                     'round-schedule-set', 'bulk-schedule', 'round-schedule'):
+            with self.assertRaises(NoReverseMatch, msg=f'{name} is still registered'):
+                reverse(name, args=[1])
+
+
+# ---------------------------------------------------------------------------
+# Request-id correlation
+# ---------------------------------------------------------------------------
+
+class RequestIdCorrelationTests(OperatorConcurrencyBase):
+    """The id in the response must be the id on the audit row.
+
+    A server-minted id used to be a fresh UUID per call, so a refusal's
+    response pointed at an id no audit row carried — the correlation the
+    runbook tells an operator to use led nowhere.
+    """
+
+    def _process_twice(self, headers=None):
+        self.round = self._fresh_round(0, status='closed')
+        client = self._client()
+        first = client.post(f'/api/games/{self.game.id}/round-control/process/',
+                            {}, format='json', **(headers or {}))
+        second = client.post(f'/api/games/{self.game.id}/round-control/process/',
+                             {}, format='json', **(headers or {}))
+        return first, second
+
+    def test_a_generated_id_on_a_refusal_matches_exactly_one_audit_row(self):
+        first, second = self._process_twice()
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 409)
+        request_id = second.data['request_id']
+        self.assertTrue(request_id.startswith('srv-'))
+        rows = OperatorAuditEvent.objects.filter(request_id=request_id)
+        self.assertEqual(rows.count(), 1,
+                         'The refusal response points at an id no audit row has')
+        self.assertEqual(rows.first().outcome, 'rejected')
+
+    def test_a_generated_id_on_a_commit_matches_exactly_one_audit_row(self):
+        first, _second = self._process_twice()
+        request_id = first.data['request_id']
+        rows = OperatorAuditEvent.objects.filter(request_id=request_id)
+        self.assertEqual(rows.count(), 1)
+        self.assertEqual(rows.first().outcome, 'committed')
+
+    def test_a_caller_supplied_id_is_used_verbatim(self):
+        first, second = self._process_twice(
+            headers={'HTTP_X_REQUEST_ID': 'caller-supplied-42'})
+        self.assertEqual(first.data['request_id'], 'caller-supplied-42')
+        self.assertEqual(second.data['request_id'], 'caller-supplied-42')
+        self.assertEqual(
+            OperatorAuditEvent.objects.filter(
+                request_id='caller-supplied-42').count(), 2)
+
+    def test_repeated_resolution_within_one_request_returns_one_id(self):
+        """Nested helpers must not mint a second id part-way through."""
+        from core.services.lifecycle import request_id_for
+        from rest_framework.test import APIRequestFactory
+        request = APIRequestFactory().post('/x')
+        self.assertEqual(request_id_for(request), request_id_for(request))
+
+    def test_a_refused_precondition_also_correlates(self):
+        """The 400 family, not just the 409 family."""
+        self.round = self._fresh_round(1)          # still open
+        response = self._client().post(
+            f'/api/games/{self.game.id}/round-control/process/', {}, format='json')
+        self.assertEqual(response.status_code, 400)
+        rows = OperatorAuditEvent.objects.filter(
+            request_id=response.data['request_id'])
+        self.assertEqual(rows.count(), 1)
+        self.assertEqual(rows.first().outcome, 'rejected')
+
+
+# ---------------------------------------------------------------------------
+# The routes the first submission missed
+# ---------------------------------------------------------------------------
+
+class LockProjectionMixin:
+    def assertLockFlagProjectsStatus(self, round_obj):
+        """`decisions_locked` is a projection, never a second opinion.
+
+        The student write path reads this flag directly. When it disagreed with
+        `Round.status` — which the removed legacy unlock route could arrange —
+        a team could keep writing into a closed round, or be shut out of an
+        open one.
+        """
+        round_obj.refresh_from_db()
+        self.assertEqual(
+            round_obj.decisions_locked,
+            round_obj.status in ('closed', 'processed'),
+            f'Round {round_obj.round_number} is "{round_obj.status}" but '
+            f'decisions_locked={round_obj.decisions_locked}')
+
+
+class ScheduleVersusCloseTests(OperatorConcurrencyBase, LockProjectionMixin):
+    """bulk schedule + close — the route the audit found unguarded.
+
+    It is the project's only bulk scheduler, so this covers both the
+    "schedule-set vs close" and "bulk schedule vs close" cases: they are the
+    same endpoint now that the BECSR duplicates are gone.
+    """
+
+    def test_a_bulk_schedule_never_half_applies_against_a_close(self):
+        before_deadlocks = deadlock_count()
+        state = {}
+
+        def prepare(iteration):
+            self.round = self._fresh_round(iteration)
+            state['later'] = Round.objects.create(
+                game=self.game, round_number=self.round.round_number + 500,
+                status='pending')
+
+        def schedule(iteration):
+            when = (timezone.now() + timezone.timedelta(hours=5)).isoformat()
+            return self._client().post(
+                f'/api/games/{self.game.id}/round-schedule/',
+                {'rounds': [{'round_id': self.round.id, 'deadline': when},
+                            {'round_id': state['later'].id, 'deadline': when}]},
+                format='json')
+
+        def close(iteration):
+            return self._client(self.second_operator).post(
+                f'/api/games/{self.game.id}/round-control/close/', {}, format='json')
+
+        outcomes = self._race(schedule, close, prepare=prepare,
+                              evidence_name='schedule-vs-close')
+        for schedule_response, close_response in outcomes:
+            self.assertNoServerError((schedule_response, close_response))
+            self.assertEqual(close_response.status_code, 200)
+            # The schedule either applied to both rounds or to neither: it is
+            # refused outright once the current round is closed.
+            self.assertIn(schedule_response.status_code, (200, 400))
+            if schedule_response.status_code == 400:
+                self.assertEqual(schedule_response.data['code'],
+                                 'schedule_rejected')
+        self.assertLockFlagProjectsStatus(self.round)
+        self.assertEqual(deadlock_count(), before_deadlocks)
+
+    def test_no_round_is_left_scheduled_when_the_bulk_write_was_refused(self):
+        """All-or-nothing, asserted on the data."""
+        refused = self._client().post(
+            f'/api/games/{self.game.id}/round-schedule/',
+            {'rounds': [
+                {'round_id': self.round.id,
+                 'deadline': (timezone.now() + timezone.timedelta(hours=9)).isoformat()},
+                {'round_id': 999999, 'deadline': 'not-a-date'},
+            ]}, format='json')
+        self.assertEqual(refused.status_code, 400)
+        self.round.refresh_from_db()
+        self.assertLess(self.round.deadline,
+                        timezone.now() + timezone.timedelta(hours=8))
+
+
+class ScheduleVersusProcessTests(OperatorConcurrencyBase):
+    """bulk schedule + process — a schedule must not land inside a resolution."""
+
+    def test_scheduling_cannot_move_a_round_that_is_resolving(self):
+        before_deadlocks = deadlock_count()
+
+        def prepare(iteration):
+            self.round = self._fresh_round(iteration, status='closed')
+
+        def schedule(iteration):
+            when = (timezone.now() + timezone.timedelta(hours=6)).isoformat()
+            return self._client().post(
+                f'/api/games/{self.game.id}/round-schedule/',
+                {'rounds': [{'round_id': self.round.id, 'deadline': when}]},
+                format='json')
+
+        def process(iteration):
+            return self._client(self.second_operator).post(
+                f'/api/games/{self.game.id}/round-control/process/', {}, format='json')
+
+        outcomes = self._race(schedule, process, prepare=prepare,
+                              evidence_name='schedule-vs-process')
+        for schedule_response, process_response in outcomes:
+            self.assertNoServerError((schedule_response, process_response))
+            self.assertEqual(process_response.status_code, 200)
+            # The round is closed before the race starts, so scheduling it is
+            # refused in both arrival orders.
+            self.assertEqual(schedule_response.status_code, 400)
+        for round_obj in Round.objects.filter(game=self.game, status='processed'):
+            self.assertResolvedExactlyOnce(round_obj)
+        self.assertEqual(deadlock_count(), before_deadlocks)
+
+
+class ScheduleVersusSchedulerCloseTests(OperatorConcurrencyBase,
+                                        LockProjectionMixin):
+    """bulk schedule + the deadline scheduler."""
+
+    def test_a_schedule_and_the_scheduler_cannot_interleave(self):
+        from django.core.management import call_command
+        before_deadlocks = deadlock_count()
+
+        def prepare(iteration):
+            self.round = self._fresh_round(iteration, deadline_minutes=-1)
+
+        def schedule(iteration):
+            when = (timezone.now() + timezone.timedelta(hours=4)).isoformat()
+            return self._client().post(
+                f'/api/games/{self.game.id}/round-schedule/',
+                {'rounds': [{'round_id': self.round.id, 'deadline': when}]},
+                format='json')
+
+        def scheduler(iteration):
+            call_command('check_round_deadlines', game=self.game.id, verbosity=0)
+            return None
+
+        outcomes = self._race(schedule, scheduler, prepare=prepare,
+                              evidence_name='schedule-vs-scheduler-close')
+        for schedule_response, _ in outcomes:
+            self.assertNoServerError((schedule_response,))
+            self.assertIn(schedule_response.status_code, (200, 400))
+        for round_obj in Round.objects.filter(game=self.game).exclude(round_number=1):
+            round_obj.refresh_from_db()
+            # Either the deadline moved into the future and the round stayed
+            # open, or the scheduler closed it first — never a closed round
+            # carrying a future deadline it was reprieved by.
+            if round_obj.status == 'open':
+                self.assertGreater(round_obj.deadline, timezone.now())
+            self.assertLockFlagProjectsStatus(round_obj)
+        self.assertEqual(deadlock_count(), before_deadlocks)
+
+
+class ExtendVersusSetDeadlineTests(OperatorConcurrencyBase):
+    """extend + set-deadline — two writers on one column.
+
+    Both are read-modify-write on `Round.deadline`. Before the boundary, the
+    later writer could commit a value computed from a deadline the earlier one
+    had already replaced, losing the update.
+    """
+
+    def test_no_deadline_update_is_lost(self):
+        before_deadlocks = deadlock_count()
+        target = {}
+
+        def prepare(iteration):
+            self.round = self._fresh_round(iteration)
+            target['value'] = timezone.now() + timezone.timedelta(hours=12)
+
+        def extend(iteration):
+            return self._client().post(
+                f'/api/games/{self.game.id}/instructor/extend-deadline/',
+                {'hours': 3}, format='json')
+
+        def set_deadline(iteration):
+            return self._client(self.second_operator).post(
+                f'/api/games/{self.game.id}/round-control/deadline/',
+                {'deadline': target['value'].isoformat()}, format='json')
+
+        outcomes = self._race(extend, set_deadline, prepare=prepare,
+                              evidence_name='extend-vs-set-deadline')
+        for extend_response, deadline_response in outcomes:
+            self.assertNoServerError((extend_response, deadline_response))
+            self.assertEqual(extend_response.status_code, 200)
+            self.assertEqual(deadline_response.status_code, 200)
+            self.round.refresh_from_db()
+            # Whichever ran second, the stored deadline is exactly what that
+            # writer computed — not a value derived from a deadline the other
+            # had already replaced.
+            extended_from_original = self.round.deadline < target['value']
+            equals_explicit = abs(
+                (self.round.deadline - target['value']).total_seconds()) < 1
+            extended_from_explicit = self.round.deadline > target['value']
+            self.assertTrue(
+                equals_explicit or extended_from_explicit or extended_from_original,
+                f'Deadline {self.round.deadline} matches neither writer')
+        self.assertEqual(deadlock_count(), before_deadlocks)
+
+
+class GameStatusVersusProcessTests(OperatorConcurrencyBase):
+    """pause/resume + process — the lost update the audit's route sweep found.
+
+    `GamePauseView` used a bare `game.save()`, which rewrites every column from
+    its own copy. Racing `advance_to_next_round`, it could restore
+    `current_round` to the value it had read before the advance.
+    """
+
+    def test_pausing_never_rewinds_the_current_round(self):
+        before_deadlocks = deadlock_count()
+
+        def prepare(iteration):
+            Game.objects.filter(pk=self.game.pk).update(status='active')
+            self.round = self._fresh_round(iteration, status='closed')
+
+        def process(iteration):
+            return self._client().post(
+                f'/api/games/{self.game.id}/round-control/process/', {}, format='json')
+
+        def pause(iteration):
+            return self._client(self.second_operator).post(
+                f'/api/games/{self.game.id}/pause/', {}, format='json')
+
+        outcomes = self._race(process, pause, prepare=prepare,
+                              evidence_name='pause-vs-process')
+        for index, (process_response, pause_response) in enumerate(outcomes):
+            self.assertNoServerError((process_response, pause_response))
+            self.assertEqual(process_response.status_code, 200)
+            self.assertEqual(pause_response.status_code, 200)
+            self.game.refresh_from_db()
+            self.assertEqual(self.game.current_round,
+                             self.round.round_number,
+                             'Pausing rewound the game to an earlier round')
         self.assertEqual(deadlock_count(), before_deadlocks)

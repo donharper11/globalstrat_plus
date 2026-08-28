@@ -197,8 +197,12 @@ class RoundReopenView(APIView):
             round_obj.status = 'open'
             round_obj.closed_at = None
             round_obj.close_reason = ''
+            # Clear the projection with the status it projects (see close_round).
+            round_obj.decisions_locked = False
+            round_obj.lock_reason = ''
             round_obj.save(update_fields=[
-                'status', 'closed_at', 'close_reason', 'deadline'])
+                'status', 'closed_at', 'close_reason', 'deadline',
+                'decisions_locked', 'lock_reason'])
 
             # Unlock submissions so teams can edit again.
             unlocked = DecisionSubmission.objects.filter(

@@ -82,7 +82,14 @@ def close_round(game_id, reason='manual'):
     round_obj.status = 'closed'
     round_obj.closed_at = timezone.now()
     round_obj.close_reason = reason
-    round_obj.save(update_fields=['status', 'closed_at', 'close_reason'])
+    # `decisions_locked` is a projection of round status, not a second source
+    # of truth. The student write path reads it directly, so a round that is
+    # closed while the flag says otherwise would let a team keep writing. It is
+    # only ever set here and cleared by reopen.
+    round_obj.decisions_locked = True
+    round_obj.lock_reason = reason[:64]
+    round_obj.save(update_fields=['status', 'closed_at', 'close_reason',
+                                  'decisions_locked', 'lock_reason'])
 
     # Freeze whatever each team had at the moment of close, so late edits
     # can't slip in and so processing sees a stable snapshot.

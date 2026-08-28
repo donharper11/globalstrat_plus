@@ -202,14 +202,42 @@ class OperatorAction:
         }
 
 
-def request_id_for(request):
-    """The caller's correlation id, or one minted for it.
+_REQUEST_ID_ATTRIBUTE = '_gsp_request_id'
 
-    Every committed action carries exactly one, and it comes back in the
-    response so an operator can find the audit row for what they just did.
+
+def request_id_for(request):
+    """The caller's correlation id, or one minted for it — resolved once.
+
+    The value is cached on the request. Without that, a server-minted id is a
+    fresh UUID on every call, so the id an operator sees in a refusal response
+    is not the id on the audit row for that refusal — the correlation the
+    runbook tells them to use silently points at nothing. Any code that needs
+    the id for this request, at any depth, gets the same one.
     """
-    supplied = (request.headers.get('X-Request-ID') or '').strip()
-    return supplied[:128] if supplied else f'srv-{uuid.uuid4()}'
+    cached = getattr(request, _REQUEST_ID_ATTRIBUTE, None)
+    if cached:
+        return cached
+    headers = getattr(request, 'headers', None) or {}
+    try:
+        supplied = (headers.get('X-Request-ID') or '').strip()
+    except AttributeError:
+        supplied = ''
+    request_id = supplied[:128] if supplied else f'srv-{uuid.uuid4()}'
+    try:
+        setattr(request, _REQUEST_ID_ATTRIBUTE, request_id)
+    except AttributeError:
+        # A request object that refuses attributes (a bare mock in a test)
+        # still gets a usable id; it just cannot be cached.
+        pass
+    # DRF wraps the Django request; cache on both so a handler that unwraps it
+    # does not mint a second id.
+    underlying = getattr(request, '_request', None)
+    if underlying is not None and not getattr(underlying, _REQUEST_ID_ATTRIBUTE, None):
+        try:
+            setattr(underlying, _REQUEST_ID_ATTRIBUTE, request_id)
+        except AttributeError:
+            pass
+    return request_id
 
 
 @contextlib.contextmanager

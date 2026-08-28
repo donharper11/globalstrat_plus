@@ -11,8 +11,9 @@
       justified exemptions, AST guard + forward/reverse insertion test;
       `ORDERING_AUDIT.md`.
 - [ ] Random/extremal exploit search, optimizer and sensitivity plots complete.
-- [x] Operator concurrency fail-closed — 12 entry points on one boundary, 700
-      races, 0 deadlocks, 0 5xx; `OPERATOR_CONCURRENCY_MATRIX.md`.
+- [x] Operator concurrency fail-closed — 0 of 214 registered mutating routes
+      unguarded, 1200 races, 0 deadlocks, 0 5xx;
+      `OPERATOR_CONCURRENCY_MATRIX.md`.
 - [x] Deploy freeze and break-glass path documented.
 - [ ] Fresh post-deploy backup restored on isolated stack.
 - [x] Field pinned: 24 teams × 4 members / 96 sessions.

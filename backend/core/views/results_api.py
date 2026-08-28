@@ -832,18 +832,22 @@ class InstructorExtendDeadlineView(APIView):
 
             reopened = False
             unlocked = 0
+            fields = ['deadline']
             if round_obj.status == 'closed':
                 round_obj.status = 'open'
                 round_obj.closed_at = None
                 round_obj.close_reason = ''
+                round_obj.decisions_locked = False
+                round_obj.lock_reason = ''
+                fields += ['status', 'closed_at', 'close_reason',
+                           'decisions_locked', 'lock_reason']
                 reopened = True
                 unlocked = DecisionSubmission.objects.filter(
                     round=round_obj, team__in=Team.objects.filter(game=game),
                     status='locked',
                 ).update(status='draft', locked_at=None)
 
-            round_obj.save(update_fields=[
-                'deadline', 'status', 'closed_at', 'close_reason'])
+            round_obj.save(update_fields=fields)
             action.commit(before, {
                 'status': round_obj.status,
                 'deadline': round_obj.deadline.isoformat(),

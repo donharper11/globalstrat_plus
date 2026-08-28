@@ -34,6 +34,8 @@ from core.models.financials import (
 )
 from core.models.core import SimulationState
 from core.permissions import IsInstructor
+from core.services.lifecycle import (
+    LifecyclePrecondition, lifecycle_view, operator_action)
 from core.serializers.course import (
     CourseSerializer, CourseListSerializer,
     SectionSerializer, SectionDetailSerializer,
@@ -1062,437 +1064,91 @@ class GameRoundScheduleView(APIView):
             'rounds': result,
         })
 
+    @lifecycle_view
     def post(self, request, game_id):
-        import datetime as dt
+        """Bulk-set round deadlines. All rounds or none.
+
+        This is the project's only bulk scheduler. It runs on the game
+        lifecycle boundary, validates every row before writing any of them, and
+        applies them in round order — so a close or a resolution running at the
+        same time either sees the whole new schedule or none of it, and a
+        partially scheduled game cannot exist.
+        """
         from django.utils.dateparse import parse_datetime
-        from core.models.core import Game
 
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        with operator_action(request, game_id, 'set_round_schedule') as action:
+            game = action.game
+            rounds_data = request.data.get('rounds', [])
+            if not rounds_data:
+                raise LifecyclePrecondition('rounds list is required.')
 
-        rounds_data = request.data.get('rounds', [])
-        if not rounds_data:
-            return Response({'error': 'rounds list is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        updated = 0
-        errors = []
-        for item in rounds_data:
-            round_id = item.get('round_id')
-            try:
-                r = Round.objects.get(pk=round_id, game=game)
-            except Round.DoesNotExist:
-                errors.append(f"Round {round_id} not found in game {game_id}.")
-                continue
-
-            opened_at = item.get('opened_at')
-            deadline_val = item.get('deadline')
-
-            if opened_at:
-                parsed = parse_datetime(opened_at)
-                if parsed is None:
-                    errors.append(f"Invalid opened_at for round {round_id}.")
+            # Validate everything first; a bulk schedule that half-applies is
+            # worse than one that is refused.
+            planned, errors = [], []
+            for item in rounds_data:
+                round_id = item.get('round_id')
+                round_obj = Round.objects.select_for_update().filter(
+                    pk=round_id, game=game).first()
+                if round_obj is None:
+                    errors.append(f'Round {round_id} not found in game {game_id}.')
                     continue
-                r.opened_at = parsed
-
-            if deadline_val:
-                parsed = parse_datetime(deadline_val)
-                if parsed is None:
-                    errors.append(f"Invalid deadline for round {round_id}.")
+                if round_obj.status in ('closed', 'processed'):
+                    errors.append(
+                        f'Round {round_obj.round_number} is '
+                        f'"{round_obj.status}"; its schedule can no longer '
+                        f'change.')
                     continue
-                r.deadline = parsed
+                changes = {}
+                for field in ('opened_at', 'deadline'):
+                    raw = item.get(field)
+                    if not raw:
+                        continue
+                    parsed = parse_datetime(raw)
+                    if parsed is None:
+                        errors.append(f'Invalid {field} for round {round_id}.')
+                        break
+                    if timezone.is_naive(parsed):
+                        parsed = timezone.make_aware(
+                            parsed, timezone.get_current_timezone())
+                    changes[field] = parsed
+                else:
+                    if changes:
+                        planned.append((round_obj, changes))
+            if errors:
+                raise LifecyclePrecondition(
+                    '; '.join(errors),
+                    guidance='Nothing was scheduled. Fix the listed rounds and '
+                             'resend the whole schedule.',
+                    code='schedule_rejected')
 
-            r.save()
-            updated += 1
+            action.before = {'rounds': [
+                {'round_number': round_obj.round_number,
+                 'deadline': round_obj.deadline.isoformat()
+                             if round_obj.deadline else None}
+                for round_obj, _ in sorted(planned,
+                                           key=lambda pair: pair[0].round_number)]}
 
-        resp = {'updated': updated, 'game_id': game_id}
-        if errors:
-            resp['errors'] = errors
-        return Response(resp)
+            # Stable order: ascending round number, so two schedulers on the
+            # same game queue rather than interleave.
+            for round_obj, changes in sorted(planned,
+                                             key=lambda pair: pair[0].round_number):
+                for field, value in changes.items():
+                    setattr(round_obj, field, value)
+                round_obj.save(update_fields=sorted(changes))
+
+            after = {'rounds': [
+                {'round_number': round_obj.round_number,
+                 'deadline': round_obj.deadline.isoformat()
+                             if round_obj.deadline else None}
+                for round_obj, _ in sorted(planned,
+                                           key=lambda pair: pair[0].round_number)]}
+            action.commit(action.before, after)
+            return Response({'updated': len(planned), 'game_id': game_id,
+                             'request_id': action.request_id})
 
 
 # RoundScheduleView
 # ===================================================================
-
-class RoundScheduleView(APIView):
-    """
-    Manage round scheduling for a simulation instance.
-
-    GET  ?instance_id=<id>  — list all rounds with their schedule
-    POST {instance_id, rounds: [{round_id, start_date, start_time, end_date, end_time}, ...]}
-         — bulk-update round schedule
-    PUT  {instance_id, auto_advance: true/false}
-         — toggle auto-advance for the simulation instance
-    """
-    permission_classes = [IsInstructor]
-
-    def get(self, request):
-        instance_id = request.query_params.get('instance_id')
-        if not instance_id:
-            return Response(
-                {'error': 'instance_id query parameter is required.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            instance = SimulationInstance.objects.get(instance_id=instance_id)
-        except SimulationInstance.DoesNotExist:
-            return Response(
-                {'error': 'Simulation instance not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        # Find the SimulationState to get game_id
-        state = SimulationState.objects.filter(
-            instance_id=instance.instance_id,
-        ).first()
-
-        # Get rounds for this game
-        rounds_qs = Round.objects.all().order_by('round_number')
-        if state and state.current_round_id:
-            current_round = Round.objects.filter(
-                round_id=state.current_round_id,
-            ).first()
-            if current_round and current_round.game_id is not None:
-                rounds_qs = rounds_qs.filter(game_id=current_round.game_id)
-
-        # Compute display status for each round based on position and dates
-        import datetime as dt
-        now = timezone.now()
-        today = now.date()
-        current_time = now.time()
-        active_round_number = instance.current_round or 0
-        sim_status = instance.status  # setup, active, paused, completed
-
-        rounds_data = []
-        for r in rounds_qs:
-            # Derive display_status from round position + dates
-            if sim_status in ('setup',) or active_round_number == 0:
-                # Simulation hasn't started — all rounds are pending
-                display_status = 'Pending'
-            elif r.round_number < active_round_number:
-                display_status = 'Completed'
-            elif r.round_number == active_round_number:
-                if sim_status == 'completed':
-                    display_status = 'Completed'
-                elif sim_status == 'paused':
-                    display_status = 'Paused'
-                else:
-                    display_status = 'In Progress'
-            else:
-                # Future round — check if it has scheduled dates
-                if r.start_date:
-                    start_dt = dt.datetime.combine(
-                        r.start_date,
-                        r.start_time or dt.time(0, 0),
-                    )
-                    if timezone.is_aware(now):
-                        start_dt = timezone.make_aware(
-                            start_dt, timezone.get_current_timezone()
-                        )
-                    if now >= start_dt:
-                        display_status = 'In Progress'
-                    else:
-                        display_status = 'Pending'
-                else:
-                    display_status = 'Pending'
-
-            rounds_data.append({
-                'round_id': r.round_id,
-                'round_number': r.round_number,
-                'start_date': r.start_date.isoformat() if r.start_date else None,
-                'start_time': r.start_time.isoformat() if r.start_time else None,
-                'end_date': r.end_date.isoformat() if r.end_date else None,
-                'end_time': r.end_time.isoformat() if r.end_time else None,
-                'deadline': r.deadline.isoformat() if r.deadline else None,
-                'decisions_locked': r.decisions_locked,
-                'lock_reason': r.lock_reason,
-                'auto_advance': r.auto_advance,
-                'status': display_status,
-            })
-
-        return Response({
-            'instance_id': instance.instance_id,
-            'current_round': instance.current_round,
-            'total_rounds': instance.total_rounds,
-            'auto_advance': instance.auto_advance,
-            'rounds': rounds_data,
-        })
-
-    def post(self, request):
-        """Bulk-update round schedule."""
-        instance_id = request.data.get('instance_id')
-        rounds_updates = request.data.get('rounds', [])
-
-        if not instance_id:
-            return Response(
-                {'error': 'instance_id is required.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            SimulationInstance.objects.get(instance_id=instance_id)
-        except SimulationInstance.DoesNotExist:
-            return Response(
-                {'error': 'Simulation instance not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        if not rounds_updates or not isinstance(rounds_updates, list):
-            return Response(
-                {'error': 'rounds must be a non-empty list.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        updated = 0
-        errors = []
-
-        for item in rounds_updates:
-            round_id = item.get('round_id')
-            if not round_id:
-                errors.append({'item': item, 'error': 'Missing round_id.'})
-                continue
-
-            try:
-                r = Round.objects.get(round_id=round_id)
-            except Round.DoesNotExist:
-                errors.append({'item': item, 'error': f'Round {round_id} not found.'})
-                continue
-
-            changed = False
-            for field in ('start_date', 'end_date'):
-                if field in item:
-                    setattr(r, field, item[field] or None)
-                    changed = True
-            for field in ('start_time', 'end_time'):
-                if field in item:
-                    setattr(r, field, item[field] or None)
-                    changed = True
-
-            if changed:
-                r.save()
-                updated += 1
-
-        return Response({
-            'updated': updated,
-            'errors': errors,
-        })
-
-    def put(self, request):
-        """Toggle auto_advance on the simulation instance."""
-        instance_id = request.data.get('instance_id')
-        auto_advance = request.data.get('auto_advance')
-
-        if not instance_id:
-            return Response(
-                {'error': 'instance_id is required.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if auto_advance is None:
-            return Response(
-                {'error': 'auto_advance is required.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            instance = SimulationInstance.objects.get(instance_id=instance_id)
-        except SimulationInstance.DoesNotExist:
-            return Response(
-                {'error': 'Simulation instance not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        instance.auto_advance = bool(auto_advance)
-        instance.save()
-
-        return Response({
-            'instance_id': instance.instance_id,
-            'auto_advance': instance.auto_advance,
-        })
-
-
-class RoundLockView(APIView):
-    """POST /api/rounds/<round_id>/lock/ — manually lock decisions."""
-    permission_classes = [IsInstructor]
-
-    def post(self, request, round_id):
-        try:
-            r = Round.objects.get(round_id=round_id)
-        except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        before = {'decisions_locked': r.decisions_locked, 'lock_reason': r.lock_reason}
-        r.decisions_locked = True
-        r.lock_reason = 'instructor_locked'
-        r.save()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, r.game, r, 'legacy_lock_round', before,
-                              {'decisions_locked': True, 'lock_reason': r.lock_reason})
-        return Response({
-            'round_id': r.round_id,
-            'decisions_locked': True,
-            'lock_reason': r.lock_reason,
-        })
-
-
-class RoundUnlockView(APIView):
-    """POST /api/rounds/<round_id>/unlock/ — manually unlock decisions."""
-    permission_classes = [IsInstructor]
-
-    def post(self, request, round_id):
-        try:
-            r = Round.objects.get(round_id=round_id)
-        except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        before = {'decisions_locked': r.decisions_locked, 'lock_reason': r.lock_reason}
-        r.decisions_locked = False
-        r.lock_reason = None
-        r.save()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, r.game, r, 'legacy_unlock_round', before,
-                              {'decisions_locked': False, 'lock_reason': ''})
-        return Response({
-            'round_id': r.round_id,
-            'decisions_locked': False,
-            'lock_reason': None,
-        })
-
-
-class RoundExtendView(APIView):
-    """POST /api/rounds/<round_id>/extend/ — extend deadline by N hours."""
-    permission_classes = [IsInstructor]
-
-    def post(self, request, round_id):
-        import datetime as dt
-        hours = request.data.get('hours', 0)
-        try:
-            hours = int(hours)
-        except (ValueError, TypeError):
-            return Response({'error': 'hours must be an integer.'}, status=status.HTTP_400_BAD_REQUEST)
-        if hours <= 0:
-            return Response({'error': 'hours must be positive.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            r = Round.objects.get(round_id=round_id)
-        except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        before = {'deadline': r.deadline.isoformat() if r.deadline else None}
-        if r.deadline:
-            r.deadline = r.deadline + dt.timedelta(hours=hours)
-        else:
-            r.deadline = timezone.now() + dt.timedelta(hours=hours)
-
-        # Also extend end_date/end_time to stay consistent
-        r.end_date = r.deadline.date()
-        r.end_time = r.deadline.time()
-        r.save()
-        from core.services.competition_audit import record_operator_event
-        record_operator_event(request, r.game, r, 'extend_deadline', before,
-                              {'deadline': r.deadline.isoformat(), 'hours': hours})
-        return Response({
-            'round_id': r.round_id,
-            'deadline': r.deadline.isoformat(),
-        })
-
-
-class RoundScheduleSetView(APIView):
-    """PUT /api/rounds/<round_id>/schedule/ — set start time, deadline, auto-advance."""
-    permission_classes = [IsInstructor]
-
-    def put(self, request, round_id):
-        import datetime as dt
-        try:
-            r = Round.objects.get(round_id=round_id)
-        except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        start_datetime = request.data.get('start_datetime')
-        deadline = request.data.get('deadline')
-        auto_advance = request.data.get('auto_advance')
-
-        if start_datetime:
-            parsed = dt.datetime.fromisoformat(start_datetime)
-            r.start_date = parsed.date()
-            r.start_time = parsed.time()
-
-        if deadline:
-            parsed = dt.datetime.fromisoformat(deadline)
-            r.deadline = parsed
-            r.end_date = parsed.date()
-            r.end_time = parsed.time()
-
-        if auto_advance is not None:
-            r.auto_advance = bool(auto_advance)
-
-        r.save()
-        return Response({
-            'round_id': r.round_id,
-            'start_date': r.start_date.isoformat() if r.start_date else None,
-            'start_time': r.start_time.isoformat() if r.start_time else None,
-            'deadline': r.deadline.isoformat() if r.deadline else None,
-            'auto_advance': r.auto_advance,
-        })
-
-
-class BulkScheduleView(APIView):
-    """POST /api/instances/<instance_id>/bulk-schedule/ — schedule all remaining rounds."""
-    permission_classes = [IsInstructor]
-
-    def post(self, request, instance_id):
-        import datetime as dt
-
-        try:
-            instance = SimulationInstance.objects.get(instance_id=instance_id)
-        except SimulationInstance.DoesNotExist:
-            return Response({'error': 'Instance not found.'}, status=status.HTTP_404_NOT_FOUND)
-
-        start_datetime = request.data.get('start_datetime')
-        duration_hours = request.data.get('duration_hours', 48)
-        grace_period_minutes = request.data.get('grace_period_minutes', 15)
-
-        if not start_datetime:
-            return Response({'error': 'start_datetime is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            current_start = dt.datetime.fromisoformat(start_datetime)
-            duration_hours = int(duration_hours)
-            grace_period_minutes = int(grace_period_minutes)
-        except (ValueError, TypeError) as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        state = SimulationState.objects.filter(instance_id=instance_id).first()
-        current_round_num = instance.current_round or 0
-
-        # Get rounds for this game, ordered by round_number
-        rounds_qs = Round.objects.all().order_by('round_number')
-        if state and state.current_round_id:
-            current_round = Round.objects.filter(round_id=state.current_round_id).first()
-            if current_round and current_round.game_id is not None:
-                rounds_qs = rounds_qs.filter(game_id=current_round.game_id)
-
-        scheduled = 0
-        for r in rounds_qs:
-            if r.round_number <= current_round_num:
-                continue
-            r.start_date = current_start.date()
-            r.start_time = current_start.time()
-            deadline = current_start + dt.timedelta(hours=duration_hours)
-            r.deadline = deadline
-            r.end_date = deadline.date()
-            r.end_time = deadline.time()
-            r.save()
-            scheduled += 1
-            current_start = deadline + dt.timedelta(minutes=grace_period_minutes)
-
-        return Response({
-            'scheduled': scheduled,
-            'instance_id': instance_id,
-        })
-
 
 class DecisionStatusView(APIView):
     """

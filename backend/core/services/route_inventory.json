@@ -1,0 +1,2440 @@
+{
+  "exempt": 16,
+  "exemptions": {
+    "core.views.core.UserViewSet": "Writes User rows and User.team. Reads Team.objects to resolve the assignment target; writes no round, game or participation field.",
+    "core.views.course.TeamManagementView": "Assigns enrollments to teams and renames teams. Writes Enrollment and Team.name; touches no round state and not participation_status.",
+    "core.views.programs.ProgramViewSet": "Writes Program rows. It reaches Round.objects only through DecisionLockedMixin, which reads Round.decisions_locked to gate student writes and never assigns to it.",
+    "core.views.scenario_views.GameCreateView": "Creates a new Game and its Rounds. There is no existing lifecycle for the new game to race, and no other game is touched."
+  },
+  "guarded": 20,
+  "lifecycle_mutating_routes": 36,
+  "routes": {
+    "admin/auth/group/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/auth/group/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/auth/user/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/auth/user/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/activemodifier/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/activemodifier/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/aicompetitordefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/aicompetitordefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/aicompetitorfitbyround/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/aicompetitorfitbyround/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/complianceinvestment/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/complianceinvestment/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/culturaldistancematrix/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/culturaldistancematrix/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionacquisition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionacquisition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionbudgetallocation/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionbudgetallocation/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionesg/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionesg/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisioneventresponse/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisioneventresponse/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionfinancing/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionfinancing/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionmarketentry/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionmarketentry/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionmarketing/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionmarketing/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionpartnership/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionpartnership/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionplant/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionplant/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionplatformdevelopment/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionplatformdevelopment/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionproductcreate/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionproductcreate/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionproductretire/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionproductretire/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionrdinvestment/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionrdinvestment/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionresearchallocation/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionresearchallocation/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionsubmission/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionsubmission/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/entrymodedefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/entrymodedefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/eventimpactdefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/eventimpactdefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/eventinstance/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/eventinstance/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/eventresponsedefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/eventresponsedefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/eventtemplatedefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/eventtemplatedefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/featuredefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/featuredefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/firmstarterplatformconfig/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/firmstarterplatformconfig/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/firmstarterproduct/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/firmstarterproduct/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/firmstarterprofile/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/firmstarterprofile/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/game/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/game/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/leaderboardentry/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/leaderboardentry/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/marketconditionbyround/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/marketconditionbyround/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/marketdefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/marketdefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/marketintelligencebrief/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/marketintelligencebrief/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/marketreadiness/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/marketreadiness/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/origintrustmodifier/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/origintrustmodifier/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/pendingfeaturegain/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/pendingfeaturegain/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/platformfeatureceiling/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/platformfeatureceiling/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/platformgenerationdefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/platformgenerationdefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/researchquerylog/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/researchquerylog/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/round/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/round/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultadoption/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultadoption/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultcoherence/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultcoherence/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultfinancials/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultfinancials/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultmarketrevenue/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultmarketrevenue/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultperformanceindex/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultperformanceindex/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/roundresultproductmarket/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/roundresultproductmarket/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/scenario/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/scenario/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/scenarioconfig/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/scenarioconfig/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/segmentdefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/segmentdefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/segmentpreference/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/segmentpreference/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/strategyoptiondefinition/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/strategyoptiondefinition/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/strategyoptioneffect/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/strategyoptioneffect/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/talentallocation/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/talentallocation/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/team/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/team/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teammarketcompliance/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teammarketcompliance/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teammarketpresence/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teammarketpresence/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teammember/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teammember/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teampartnership/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teampartnership/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamplant/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamplant/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamplatform/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamplatform/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamplatformfeaturelevel/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamplatformfeaturelevel/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamproduct/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamproduct/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamproductmarket/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamproductmarket/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/teamstrategyfeaturelevel/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/teamstrategyfeaturelevel/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "api/^courses/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^courses/$",
+      "uses_boundary": false,
+      "view": "core.views.course.CourseViewSet"
+    },
+    "api/^courses/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^courses/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.course.CourseViewSet"
+    },
+    "api/^courses/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^courses/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.course.CourseViewSet"
+    },
+    "api/^courses\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^courses\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.course.CourseViewSet"
+    },
+    "api/^decisions/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^decisions/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.DecisionViewSet"
+    },
+    "api/^decisions/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^decisions/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.DecisionViewSet"
+    },
+    "api/^decisions/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^decisions/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.DecisionViewSet"
+    },
+    "api/^decisions\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^decisions\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.DecisionViewSet"
+    },
+    "api/^fire-events/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^fire-events/$",
+      "uses_boundary": false,
+      "view": "core.views.events.FireEventsViewSet"
+    },
+    "api/^fire-events\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^fire-events\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.events.FireEventsViewSet"
+    },
+    "api/^grading-categories/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-categories/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricCategoryViewSet"
+    },
+    "api/^grading-categories/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-categories/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricCategoryViewSet"
+    },
+    "api/^grading-categories/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-categories/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricCategoryViewSet"
+    },
+    "api/^grading-categories\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-categories\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricCategoryViewSet"
+    },
+    "api/^grading-components/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-components/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingComponentMappingViewSet"
+    },
+    "api/^grading-components/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-components/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingComponentMappingViewSet"
+    },
+    "api/^grading-components/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-components/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingComponentMappingViewSet"
+    },
+    "api/^grading-components\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-components\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingComponentMappingViewSet"
+    },
+    "api/^grading-rubrics/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-rubrics/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricViewSet"
+    },
+    "api/^grading-rubrics/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-rubrics/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricViewSet"
+    },
+    "api/^grading-rubrics/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^grading-rubrics/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricViewSet"
+    },
+    "api/^grading-rubrics\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^grading-rubrics\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.GradingRubricViewSet"
+    },
+    "api/^instructor-actions/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-actions/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorActionViewSet"
+    },
+    "api/^instructor-actions/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-actions/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorActionViewSet"
+    },
+    "api/^instructor-actions/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-actions/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorActionViewSet"
+    },
+    "api/^instructor-actions\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-actions\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorActionViewSet"
+    },
+    "api/^instructor-evaluations/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-evaluations/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorEvaluationViewSet"
+    },
+    "api/^instructor-evaluations/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-evaluations/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorEvaluationViewSet"
+    },
+    "api/^instructor-evaluations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-evaluations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorEvaluationViewSet"
+    },
+    "api/^instructor-evaluations\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-evaluations\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorEvaluationViewSet"
+    },
+    "api/^instructor-feedback-templates/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-feedback-templates/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorFeedbackTemplateViewSet"
+    },
+    "api/^instructor-feedback-templates/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-feedback-templates/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorFeedbackTemplateViewSet"
+    },
+    "api/^instructor-feedback-templates/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-feedback-templates/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorFeedbackTemplateViewSet"
+    },
+    "api/^instructor-feedback-templates\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-feedback-templates\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorFeedbackTemplateViewSet"
+    },
+    "api/^instructor-notes/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-notes/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorNoteViewSet"
+    },
+    "api/^instructor-notes/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-notes/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorNoteViewSet"
+    },
+    "api/^instructor-notes/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-notes/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorNoteViewSet"
+    },
+    "api/^instructor-notes\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-notes\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorNoteViewSet"
+    },
+    "api/^instructor-scenario-customizations/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-scenario-customizations/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorScenarioCustomizationViewSet"
+    },
+    "api/^instructor-scenario-customizations/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-scenario-customizations/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorScenarioCustomizationViewSet"
+    },
+    "api/^instructor-scenario-customizations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^instructor-scenario-customizations/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorScenarioCustomizationViewSet"
+    },
+    "api/^instructor-scenario-customizations\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^instructor-scenario-customizations\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.instructor.InstructorScenarioCustomizationViewSet"
+    },
+    "api/^message-responses/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^message-responses/$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.MessageResponseViewSet"
+    },
+    "api/^message-responses/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^message-responses/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.MessageResponseViewSet"
+    },
+    "api/^message-responses/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^message-responses/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.MessageResponseViewSet"
+    },
+    "api/^message-responses\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^message-responses\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.MessageResponseViewSet"
+    },
+    "api/^program-features/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^program-features/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramFeatureViewSet"
+    },
+    "api/^program-features/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^program-features/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramFeatureViewSet"
+    },
+    "api/^program-features/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^program-features/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramFeatureViewSet"
+    },
+    "api/^program-features\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^program-features\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramFeatureViewSet"
+    },
+    "api/^program-portfolios/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^program-portfolios/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramPortfolioViewSet"
+    },
+    "api/^program-portfolios/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^program-portfolios/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramPortfolioViewSet"
+    },
+    "api/^program-portfolios/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^program-portfolios/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramPortfolioViewSet"
+    },
+    "api/^program-portfolios\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^program-portfolios\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramPortfolioViewSet"
+    },
+    "api/^programs/$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^programs/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^programs/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^programs/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^programs/(?P<pk>[^/.]+)/accelerate/$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^programs/(?P<pk>[^/.]+)/accelerate/$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^programs/(?P<pk>[^/.]+)/accelerate\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^programs/(?P<pk>[^/.]+)/accelerate\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^programs/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^programs/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^programs\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^programs\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.programs.ProgramViewSet"
+    },
+    "api/^sections/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^sections/$",
+      "uses_boundary": false,
+      "view": "core.views.course.SectionViewSet"
+    },
+    "api/^sections/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^sections/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.course.SectionViewSet"
+    },
+    "api/^sections/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^sections/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.course.SectionViewSet"
+    },
+    "api/^sections\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^sections\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.course.SectionViewSet"
+    },
+    "api/^simulation-state/(?P<pk>[^/.]+)/advance/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^simulation-state/(?P<pk>[^/.]+)/advance/$",
+      "uses_boundary": true,
+      "view": "core.views.core.SimulationStateViewSet"
+    },
+    "api/^simulation-state/(?P<pk>[^/.]+)/advance\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^simulation-state/(?P<pk>[^/.]+)/advance\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": true,
+      "view": "core.views.core.SimulationStateViewSet"
+    },
+    "api/^student-grade-adjustments/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^student-grade-adjustments/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.StudentGradeAdjustmentViewSet"
+    },
+    "api/^student-grade-adjustments/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^student-grade-adjustments/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.StudentGradeAdjustmentViewSet"
+    },
+    "api/^student-grade-adjustments/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^student-grade-adjustments/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.StudentGradeAdjustmentViewSet"
+    },
+    "api/^student-grade-adjustments\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^student-grade-adjustments\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.StudentGradeAdjustmentViewSet"
+    },
+    "api/^team-grades/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^team-grades/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.TeamGradeViewSet"
+    },
+    "api/^team-grades/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^team-grades/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.grading.TeamGradeViewSet"
+    },
+    "api/^team-grades/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^team-grades/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.TeamGradeViewSet"
+    },
+    "api/^team-grades\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^team-grades\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.grading.TeamGradeViewSet"
+    },
+    "api/^team-notifications/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^team-notifications/$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.TeamNotificationViewSet"
+    },
+    "api/^team-notifications/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^team-notifications/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.TeamNotificationViewSet"
+    },
+    "api/^team-notifications/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^team-notifications/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.TeamNotificationViewSet"
+    },
+    "api/^team-notifications\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^team-notifications\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.messaging.TeamNotificationViewSet"
+    },
+    "api/^teams/$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^teams/$",
+      "uses_boundary": false,
+      "view": "core.views.core.TeamViewSet"
+    },
+    "api/^teams/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^teams/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.core.TeamViewSet"
+    },
+    "api/^teams/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^teams/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.TeamViewSet"
+    },
+    "api/^teams\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^teams\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.TeamViewSet"
+    },
+    "api/^users/$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users/$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/(?P<pk>[^/.]+)/$|delete,patch,put": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^users/(?P<pk>[^/.]+)/$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/(?P<pk>[^/.]+)/assign-team/$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users/(?P<pk>[^/.]+)/assign-team/$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/(?P<pk>[^/.]+)/assign-team\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users/(?P<pk>[^/.]+)/assign-team\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "delete",
+        "patch",
+        "put"
+      ],
+      "route": "api/^users/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/bulk-upload/$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users/bulk-upload/$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users/bulk-upload\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users/bulk-upload\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/^users\\.(?P<format>[a-z0-9]+)/?$|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/^users\\.(?P<format>[a-z0-9]+)/?$",
+      "uses_boundary": false,
+      "view": "core.views.core.UserViewSet"
+    },
+    "api/auth/login/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/auth/login/",
+      "uses_boundary": false,
+      "view": "core.views.auth.LoginView"
+    },
+    "api/auth/logout/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/auth/logout/",
+      "uses_boundary": false,
+      "view": "core.views.auth.LogoutView"
+    },
+    "api/games/<int:game_id>/activate/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/activate/",
+      "uses_boundary": true,
+      "view": "core.views.scenario_views.GameActivateView"
+    },
+    "api/games/<int:game_id>/archive/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/archive/",
+      "uses_boundary": true,
+      "view": "core.views.scenario_views.GameArchiveView"
+    },
+    "api/games/<int:game_id>/delete/|delete": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete"
+      ],
+      "route": "api/games/<int:game_id>/delete/",
+      "uses_boundary": false,
+      "view": "core.views.scenario_views.GameDeleteView"
+    },
+    "api/games/<int:game_id>/disclosure-overrides/<int:override_id>/|delete": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete"
+      ],
+      "route": "api/games/<int:game_id>/disclosure-overrides/<int:override_id>/",
+      "uses_boundary": false,
+      "view": "core.views.overrides.DisclosureOverrideDeleteView"
+    },
+    "api/games/<int:game_id>/disclosure-overrides/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/disclosure-overrides/",
+      "uses_boundary": false,
+      "view": "core.views.overrides.DisclosureOverrideListCreateView"
+    },
+    "api/games/<int:game_id>/instructor/advance-round/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/advance-round/",
+      "uses_boundary": true,
+      "view": "core.views.results_api.InstructorAdvanceRoundView"
+    },
+    "api/games/<int:game_id>/instructor/alerts/<int:alert_id>/acknowledge/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/alerts/<int:alert_id>/acknowledge/",
+      "uses_boundary": false,
+      "view": "core.views.instructor_alerts.InstructorAlertAcknowledgeView"
+    },
+    "api/games/<int:game_id>/instructor/extend-deadline/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/extend-deadline/",
+      "uses_boundary": true,
+      "view": "core.views.results_api.InstructorExtendDeadlineView"
+    },
+    "api/games/<int:game_id>/instructor/inject-event/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/inject-event/",
+      "uses_boundary": true,
+      "view": "core.views.results_api.InstructorInjectEventView"
+    },
+    "api/games/<int:game_id>/instructor/inject-sc-event/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/inject-sc-event/",
+      "uses_boundary": true,
+      "view": "core.views.instructor_sc.InstructorInjectSCEventView"
+    },
+    "api/games/<int:game_id>/instructor/randomize-home-markets/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/randomize-home-markets/",
+      "uses_boundary": false,
+      "view": "core.views.team_config.InstructorRandomizeHomeMarketsView"
+    },
+    "api/games/<int:game_id>/instructor/team-config/|put": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "put"
+      ],
+      "route": "api/games/<int:game_id>/instructor/team-config/",
+      "uses_boundary": true,
+      "view": "core.views.team_config.InstructorTeamConfigView"
+    },
+    "api/games/<int:game_id>/instructor/teams/<int:team_id>/participation/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/instructor/teams/<int:team_id>/participation/",
+      "uses_boundary": true,
+      "view": "core.views.team_control.InstructorTeamParticipationView"
+    },
+    "api/games/<int:game_id>/pause/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/pause/",
+      "uses_boundary": true,
+      "view": "core.views.scenario_views.GamePauseView"
+    },
+    "api/games/<int:game_id>/reset/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/reset/",
+      "uses_boundary": true,
+      "view": "core.views.scenario_views.GameResetView"
+    },
+    "api/games/<int:game_id>/resilience-weight-overrides/<int:override_id>/|delete": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete"
+      ],
+      "route": "api/games/<int:game_id>/resilience-weight-overrides/<int:override_id>/",
+      "uses_boundary": false,
+      "view": "core.views.overrides.ResilienceWeightOverrideDeleteView"
+    },
+    "api/games/<int:game_id>/resilience-weight-overrides/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/resilience-weight-overrides/",
+      "uses_boundary": false,
+      "view": "core.views.overrides.ResilienceWeightOverrideListCreateView"
+    },
+    "api/games/<int:game_id>/resume/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/resume/",
+      "uses_boundary": true,
+      "view": "core.views.scenario_views.GameResumeView"
+    },
+    "api/games/<int:game_id>/round-control/advance/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-control/advance/",
+      "uses_boundary": true,
+      "view": "core.views.round_control.RoundAdvanceView"
+    },
+    "api/games/<int:game_id>/round-control/close/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-control/close/",
+      "uses_boundary": true,
+      "view": "core.views.round_control.RoundCloseView"
+    },
+    "api/games/<int:game_id>/round-control/deadline/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-control/deadline/",
+      "uses_boundary": true,
+      "view": "core.views.round_control.RoundDeadlineView"
+    },
+    "api/games/<int:game_id>/round-control/process/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-control/process/",
+      "uses_boundary": true,
+      "view": "core.views.round_control.RoundProcessView"
+    },
+    "api/games/<int:game_id>/round-control/reopen/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-control/reopen/",
+      "uses_boundary": true,
+      "view": "core.views.round_control.RoundReopenView"
+    },
+    "api/games/<int:game_id>/round-schedule/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/round-schedule/",
+      "uses_boundary": true,
+      "view": "core.views.course.GameRoundScheduleView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/briefing/<int:briefing_id>/read/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/briefing/<int:briefing_id>/read/",
+      "uses_boundary": false,
+      "view": "core.views.briefing.BriefingReadView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/communications/<int:assignment_id>/draft/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/communications/<int:assignment_id>/draft/",
+      "uses_boundary": true,
+      "view": "core.views.cc32a_views.CommunicationDraftView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/communications/<int:assignment_id>/submit/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/communications/<int:assignment_id>/submit/",
+      "uses_boundary": true,
+      "view": "core.views.cc32a_views.CommunicationSubmitView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/context/org-structure/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/org-structure/",
+      "uses_boundary": true,
+      "view": "core.views.cc32b_views.OrgStructureContextView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/context/tax-structure/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/tax-structure/",
+      "uses_boundary": true,
+      "view": "core.views.cc32c_views.TaxStructureContextView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/<str:decision_type>/|patch": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "patch"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/<str:decision_type>/",
+      "uses_boundary": true,
+      "view": "core.views.decisions.DecisionPartialUpdateView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/lock/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/lock/",
+      "uses_boundary": true,
+      "view": "core.views.decisions.DecisionLockView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/unlock/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/unlock/",
+      "uses_boundary": true,
+      "view": "core.views.decisions.DecisionUnlockView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/|post,put": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post",
+        "put"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/",
+      "uses_boundary": true,
+      "view": "core.views.decisions.DecisionSubmissionView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/forecast/scenarios/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/forecast/scenarios/",
+      "uses_boundary": false,
+      "view": "core.views.cc15_views.ForecastScenarioView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/research/query/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/research/query/",
+      "uses_boundary": false,
+      "view": "core.rag.views.ResearchQueryView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/inventory/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/inventory/",
+      "uses_boundary": true,
+      "view": "core.views.sc_views.InventoryView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/logistics/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/logistics/",
+      "uses_boundary": true,
+      "view": "core.views.sc_views.LogisticsView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sourcing/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/sourcing/",
+      "uses_boundary": true,
+      "view": "core.views.sc_views.SourcingView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/trade-finance/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/trade-finance/",
+      "uses_boundary": true,
+      "view": "core.views.sc_views.TradeFinanceView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/tools/analysis/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/tools/analysis/",
+      "uses_boundary": false,
+      "view": "core.views.cc15_views.FrameworkAnalysisView"
+    },
+    "api/games/create/|post": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/create/",
+      "uses_boundary": false,
+      "view": "core.views.scenario_views.GameCreateView"
+    },
+    "api/grades/calculate/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/grades/calculate/",
+      "uses_boundary": false,
+      "view": "core.views.grading.CalculateGradesView"
+    },
+    "api/grades/override/|delete,post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "post"
+      ],
+      "route": "api/grades/override/",
+      "uses_boundary": false,
+      "view": "core.views.grading.OverrideGradeView"
+    },
+    "api/grades/seed-rubric/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/grades/seed-rubric/",
+      "uses_boundary": false,
+      "view": "core.views.grading.SeedRubricView"
+    },
+    "api/instructor/student-accounts/<int:user_id>/password/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/instructor/student-accounts/<int:user_id>/password/",
+      "uses_boundary": false,
+      "view": "core.views.instructor_accounts.StudentPasswordResetView"
+    },
+    "api/instructor/student-accounts/bulk-reset/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/instructor/student-accounts/bulk-reset/",
+      "uses_boundary": false,
+      "view": "core.views.instructor_accounts.BulkPasswordResetView"
+    },
+    "api/onboarding/complete/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/onboarding/complete/",
+      "uses_boundary": false,
+      "view": "core.views.onboarding.OnboardingCompleteView"
+    },
+    "api/persona/consult/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/persona/consult/",
+      "uses_boundary": false,
+      "view": "core.views.persona_engine.PersonaConsultView"
+    },
+    "api/persona/reply/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/persona/reply/",
+      "uses_boundary": false,
+      "view": "core.views.persona_engine.PersonaReplyView"
+    },
+    "api/resources/search/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/resources/search/",
+      "uses_boundary": false,
+      "view": "core.views.resources.ResourceSearchView"
+    },
+    "api/roster/|delete,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "post",
+        "put"
+      ],
+      "route": "api/roster/",
+      "uses_boundary": false,
+      "view": "core.views.course.RosterViewSet"
+    },
+    "api/rounds/<int:round_id>/send-reminder/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/rounds/<int:round_id>/send-reminder/",
+      "uses_boundary": false,
+      "view": "core.views.course.SendReminderView"
+    },
+    "api/simulation-control/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/simulation-control/",
+      "uses_boundary": true,
+      "view": "core.views.course.SimulationControlView"
+    },
+    "api/team-management/|put": {
+      "exempt": true,
+      "lifecycle_mutating": true,
+      "methods": [
+        "put"
+      ],
+      "route": "api/team-management/",
+      "uses_boundary": false,
+      "view": "core.views.course.TeamManagementView"
+    },
+    "api/user/preferences/|put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "put"
+      ],
+      "route": "api/user/preferences/",
+      "uses_boundary": false,
+      "view": "core.views.auth.LanguagePreferenceView"
+    }
+  },
+  "total_mutating_routes": 214,
+  "unguarded": 0
+}

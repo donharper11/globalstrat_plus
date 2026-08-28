@@ -128,7 +128,14 @@ it mutates anything.
   The digest in the filename is the manifest's own `input_sha256` /
   `output_sha256`.
 
-### V2-004 — fail-closed operator concurrency (P0) — closed
+### V2-004 — fail-closed operator concurrency (P0) — closed (second submission)
+
+The first submission was returned FAIL. Its inventory was built by tracing the
+routes its author knew about, so five registered lifecycle endpoints were never
+examined, and a server-minted request id was regenerated per call so a refusal
+response pointed at an id no audit row carried. Both are repaired below, and
+the inventory is now built mechanically from `urls.py` — which found **nine
+more** unguarded routes than the audit had listed.
 
 Every action that can change round state, decision state or the roster now
 passes through one coordination boundary — an exclusive advisory lock per game,
@@ -136,12 +143,31 @@ taken before any row lock — and evaluates its preconditions *after* acquiring
 it. Student decision writes take the same lock shared, so they run concurrently
 with each other and are excluded by any operator action.
 
-Twelve entry points were brought onto it, five of which previously took no lock
-at all: `RoundProcessView`, `RoundAdvanceView`, `InstructorAdvanceRoundView`,
-`InstructorInjectEventView`, `InstructorInjectSCEventView`,
-`InstructorExtendDeadlineView` and `DecisionUnlockView` (the correction path
-the register recorded as still pending). The full inventory, the lock order,
-the 409/400 rule and the force-flag policy are in `OPERATOR_CONCURRENCY_MATRIX.md`.
+**Twenty** entry points are on it and **zero** registered mutating routes are
+unguarded, measured from the URL conf rather than from calls to the boundary
+(`core/services/route_inventory.py`, checked in as `route_inventory.json`).
+Sixteen routes carry view-keyed reviewed exemptions, each stating what was
+checked. `RouteCoverageTests` fails on drift or on a new bypass.
+
+**Six routes were removed rather than repaired.** All came from BECSR; four
+queried `Round.objects.get(round_id=...)` — a field this project's `Round` does
+not have — and so returned **500 to every caller**, and all six duplicated
+close, reopen, deadline or bulk scheduling under a second vocabulary. "Lock"
+and "unlock" meant `Round.decisions_locked`, a flag the *student write path*
+reads independently of `Round.status`, so legacy unlock could let students
+write into a closed round. That flag is now a projection maintained only by
+close/reopen, with a test asserting it always equals
+`status in ('closed', 'processed')`.
+
+Newly guarded in this submission: `GameRoundScheduleView` (the only bulk
+scheduler; now validate-all-then-write), `GameActivateView`, `GamePauseView`,
+`GameResumeView`, `GameArchiveView`, `GameResetView` and
+`InstructorTeamConfigView`. The five game-status views used bare `game.save()`,
+which rewrites every column from its own copy and could rewind
+`Game.current_round` past a concurrent advance.
+
+The full inventory, the lock order, the 409/400 rule and the force-flag policy
+are in `OPERATOR_CONCURRENCY_MATRIX.md`.
 
 Two behaviours worth calling out:
 
@@ -153,20 +179,28 @@ Two behaviours worth calling out:
   `expected_status` are compared under the lock; a mismatch is a 409
   `state_moved` naming what changed, which is what separates losing a race from
   asking too early. The console sends what it rendered.
+* **One request id per request.** Resolved once and cached on the request. It
+  was previously regenerated on each call, so a server-minted id in a refusal
+  response was not the id on that refusal's audit row — the correlation the
+  runbook tells an operator to use led nowhere. Tests assert the response id
+  matches exactly one audit row, for supplied and generated ids alike and for
+  commits, conflicts and preconditions.
 
-- Code: `core/services/lifecycle.py` (new), `competition_locks.py`,
-  `round_control.py`, `results_api.py`, `instructor_sc.py`, `decisions.py`,
-  `team_control.py`, `advance_round.py`, `check_round_deadlines.py`,
-  `recover_competition_round.py`, `competition_audit.py`; migration `0063`.
+- Code: `core/services/lifecycle.py` and `route_inventory.py` (new),
+  `competition_locks.py`, `round_control.py`, `results_api.py`,
+  `scenario_views.py`, `course.py`, `team_config.py`, `instructor_sc.py`,
+  `decisions.py`, `team_control.py`, `advance_round.py`,
+  `check_round_deadlines.py`, `recover_competition_round.py`,
+  `competition_audit.py`; migration `0063`.
   Phase-2 dispatch moved to `transaction.on_commit`, so a view wrapping
   `process_round` cannot have the narrative thread read a round the database
   has not accepted yet.
-- Tests: `core/tests/test_operator_concurrency.py` — 7 pairs × 100 races ×
-  both arrival orders, real threads and real PostgreSQL. Backend suite 338.
-- Evidence: `evidence/operator-concurrency/` — 700 races, **0 deadlocks, 0
+- Tests: `core/tests/test_operator_concurrency.py` — 12 pairs × 100 races ×
+  both arrival orders, plus route-coverage and request-id correlation tests.
+- Evidence: `evidence/operator-concurrency/` — **1200 races, 0 deadlocks, 0
   5xx**, with advisory-lock rows sampled mid-race showing genuine contention
-  and status-code tallies showing both orders really won (process+process 47 /
-  53; process+correct 58 / 42).
+  and status-code tallies showing both orders really won (process+process
+  53 / 47; schedule+close 52 / 48).
 - Docs: `OPERATOR_CONCURRENCY_MATRIX.md`, operator runbook.
 
 ## Scope notes

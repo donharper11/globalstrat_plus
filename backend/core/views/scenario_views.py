@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
+from core.services.lifecycle import (
+    LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 import json
 import random
 
@@ -525,48 +527,54 @@ class GameTeamsView(APIView):
         })
 
 
+def _game_state(game):
+    """The lifecycle state an operator audit row needs to be readable."""
+    return {'game_id': game.id, 'name': game.name, 'status': game.status,
+            'current_round': game.current_round}
+
+
 class GameActivateView(APIView):
     """POST /api/games/<game_id>/activate/ — move game from setup to active."""
 
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response(
-                {'error': f'Game {game_id} not found.'},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        with operator_action(request, game_id, 'activate_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            if game.status != 'setup':
+                raise LifecycleConflict(
+                    f"Game is already '{game.status}'. Only 'setup' games can "
+                    f"be activated.",
+                    guidance='Refresh — another operator may have activated it.',
+                    code='game_not_in_setup')
 
-        if game.status != 'setup':
-            return Response(
-                {'error': f"Game is already '{game.status}'. Only 'setup' games can be activated."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            round_1 = Round.objects.select_for_update().filter(
+                game=game, round_number=1).first()
+            if not round_1:
+                raise LifecyclePrecondition('Round 1 not found for this game.')
 
-        # Open Round 1 for play
-        round_1 = Round.objects.filter(game=game, round_number=1).first()
-        if not round_1:
-            return Response(
-                {'error': 'Round 1 not found for this game.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            round_1.status = 'open'
+            round_1.opened_at = timezone.now()
+            round_1.save(update_fields=['status', 'opened_at'])
 
-        round_1.status = 'open'
-        round_1.opened_at = timezone.now()
-        round_1.save()
+            game.current_round = 1
+            game.status = 'active'
+            # update_fields, always: a bare save() on a Game rewrites every
+            # column from this copy, and would undo a concurrent advance's
+            # current_round.
+            game.save(update_fields=['current_round', 'status'])
 
-        game.current_round = 1
-        game.status = 'active'
-        game.save()
-
-        return Response({
-            'game_id': game.id,
-            'game_name': game.name,
-            'status': game.status,
-            'current_round': game.current_round,
-        })
+            after = _game_state(game)
+            action.commit(before, after)
+            return Response({
+                'game_id': game.id,
+                'game_name': game.name,
+                'status': game.status,
+                'current_round': game.current_round,
+                'request_id': action.request_id,
+            })
 
 
 class GamePauseView(APIView):
@@ -574,26 +582,29 @@ class GamePauseView(APIView):
 
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # Pausing stops the deadline scheduler from closing this game's rounds,
+        # so it is a lifecycle change even though it only writes one column.
+        with operator_action(request, game_id, 'pause_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            if game.status != 'active':
+                raise LifecycleConflict(
+                    f"Game is '{game.status}', not 'active'. Cannot pause.",
+                    guidance='Refresh — another operator may have paused or '
+                             'completed it.',
+                    code='game_not_active')
 
-        if game.status != 'active':
-            return Response(
-                {'error': f"Game is '{game.status}', not 'active'. Cannot pause."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        game.status = 'paused'
-        game.save()
-
-        return Response({
-            'game_id': game.id,
-            'status': game.status,
-            'current_round': game.current_round,
-        })
+            game.status = 'paused'
+            game.save(update_fields=['status'])
+            action.commit(before, _game_state(game))
+            return Response({
+                'game_id': game.id,
+                'status': game.status,
+                'current_round': game.current_round,
+                'request_id': action.request_id,
+            })
 
 
 class GameResetView(APIView):
@@ -601,26 +612,33 @@ class GameResetView(APIView):
 
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        # The most destructive of the five: it reopens rounds and sends the
+        # game back to round 0. Racing a resolution it would strand results for
+        # a round the game no longer believes it is on.
+        with operator_action(request, game_id, 'reset_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            reason = action.require_reason()
 
-        # Close any open round, reset Round 1 to pending
-        Round.objects.filter(game=game, status='open').update(
-            status='pending', opened_at=None,
-        )
+            reopened = Round.objects.filter(game=game, status='open').update(
+                status='pending', opened_at=None, deadline=None,
+                decisions_locked=False, lock_reason='')
+            game.current_round = 0
+            game.status = 'setup'
+            game.save(update_fields=['current_round', 'status'])
 
-        game.current_round = 0
-        game.status = 'setup'
-        game.save()
-
-        return Response({
-            'game_id': game.id,
-            'status': game.status,
-            'current_round': game.current_round,
-        })
+            after = _game_state(game)
+            after['rounds_reset'] = reopened
+            action.commit(before, after, reason=reason)
+            return Response({
+                'game_id': game.id,
+                'status': game.status,
+                'current_round': game.current_round,
+                'rounds_reset': reopened,
+                'request_id': action.request_id,
+            })
 
 
 class GameResumeView(APIView):
@@ -628,26 +646,26 @@ class GameResumeView(APIView):
 
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        with operator_action(request, game_id, 'resume_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            if game.status != 'paused':
+                raise LifecycleConflict(
+                    f"Game is '{game.status}', not 'paused'. Cannot resume.",
+                    guidance='Refresh — another operator may have resumed it.',
+                    code='game_not_paused')
 
-        if game.status != 'paused':
-            return Response(
-                {'error': f"Game is '{game.status}', not 'paused'. Cannot resume."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        game.status = 'active'
-        game.save()
-
-        return Response({
-            'game_id': game.id,
-            'status': game.status,
-            'current_round': game.current_round,
-        })
+            game.status = 'active'
+            game.save(update_fields=['status'])
+            action.commit(before, _game_state(game))
+            return Response({
+                'game_id': game.id,
+                'status': game.status,
+                'current_round': game.current_round,
+                'request_id': action.request_id,
+            })
 
 
 class GameArchiveView(APIView):
@@ -655,30 +673,32 @@ class GameArchiveView(APIView):
 
     permission_classes = [IsInstructor]
 
+    @lifecycle_view
     def post(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        with operator_action(request, game_id, 'archive_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            if game.status == 'archived':
+                raise LifecycleConflict(
+                    'Game is already archived.',
+                    guidance='Refresh — another operator archived it.',
+                    code='game_already_archived')
+            reason = action.require_reason()
 
-        if game.status == 'archived':
-            return Response(
-                {'error': 'Game is already archived.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            game.status = 'archived'
+            game.save(update_fields=['status'])
 
-        game.status = 'archived'
-        game.save()
+            # Clear SimulationInstance link so section can host a new game
+            from core.models.course import SimulationInstance
+            SimulationInstance.objects.filter(game_id=game.id).delete()
 
-        # Clear SimulationInstance link so section can host a new game
-        from core.models.course import SimulationInstance
-        SimulationInstance.objects.filter(game_id=game.id).delete()
-
-        return Response({
-            'game_id': game.id,
-            'status': game.status,
-            'message': 'Game archived. Section is now free for a new game.',
-        })
+            action.commit(before, _game_state(game), reason=reason)
+            return Response({
+                'game_id': game.id,
+                'status': game.status,
+                'message': 'Game archived. Section is now free for a new game.',
+                'request_id': action.request_id,
+            })
 
 
 def _delete_game_cascade(game):

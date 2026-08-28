@@ -12,12 +12,21 @@ Every owner must read:
 2. `handoff_readiness_v2/V2_FINDINGS_REGISTER.md`
 3. `handoff_readiness_v2/DETERMINISM_BOUNDARY.md`
 4. `specs/STANDING-DISCIPLINE.md`
-5. This file and the assigned handoff.
+5. `handoff_readiness_v2/handoffs/EXECUTION_PROTOCOL.md`
+6. This file and the assigned handoff.
 
 Work only in `/home/ubuntu/projects/globalstrat+`. All destructive, load and
 failure injection must use disposable isolated stacks. Production is read-only.
 Log new findings before repairing them. Do not close a verification gate from
 code inspection alone.
+
+## Cost control is part of correctness
+
+Follow `EXECUTION_PROTOCOL.md`: inventory before implementation; never run
+concurrent Django suites against one database; use cheap harness settings while
+coding; freeze a clean commit before expensive evidence; run the full suite and
+release-scale evidence once per freeze candidate. Repeated certification runs
+are not a substitute for focused diagnosis.
 
 ## Baseline warning
 
@@ -43,9 +52,14 @@ Handoffs 06–08 may build harnesses earlier, but their final evidence must use
 the integrated release candidate produced by 01–05. Handoff 09 must be owned by
 someone who did not implement 01–08.
 
+Each builder certifies only their assigned handoff. Do not regenerate previous
+handoffs' expensive evidence after every merge; GSP-CRV2-09 performs the single
+integrated regeneration on the final release candidate.
+
 ## Universal completion report
 
 Each owner records: baseline revision, changed files/migrations, tests and exact
 commands, isolated-stack identity, evidence paths/hashes, findings opened or
-closed, rollback notes, and unresolved risks. “Tests pass” without counts and
-artifacts is not a completion report.
+closed, rollback notes, unresolved risks, and duration/count of every full suite
+or release-scale harness run. “Tests pass” without counts and artifacts is not
+a completion report.

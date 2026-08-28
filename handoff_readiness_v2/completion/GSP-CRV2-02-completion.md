@@ -2,7 +2,55 @@
 
 **Finding closed:** V2-004 (P0)
 **Date:** 2026-08-28
-**Branch:** `crv2-02-operator-concurrency`, on the GSP-CRV2-01 baseline `bb1cbe2`
+**Branch:** `crv2-02-rework`, on the GSP-CRV2-01 baseline `bb1cbe2`
+
+## Second submission — what the audit sent back
+
+`rework/GSP-CRV2-02-AUDIT-REWORK.md` returned FAIL on two points.
+
+**1. Five registered lifecycle routes bypassed the boundary.** The audit was
+right, and understated it. My inventory had been built by *tracing the routes I
+knew about* and then checking they used `operator_action()` — which cannot find
+a route nobody thought to look at. Rebuilding it mechanically from `urls.py`
+found **fourteen** unguarded lifecycle-mutating routes, nine more than the
+audit listed: the five it named plus `GameActivateView`, `GamePauseView`,
+`GameResumeView`, `GameArchiveView`, `GameResetView`, `GameRoundScheduleView`,
+`InstructorTeamConfigView`, `GameCreateView` and `RoundScheduleView`.
+
+The five game-status views were the worst of the additions: each used a bare
+`game.save()`, which rewrites every column from its own in-memory copy, so
+pausing a game concurrently with an advance could restore `Game.current_round`
+to the value it had read beforehand. There is now a race asserting it cannot.
+
+Six routes were **removed** rather than repaired. Four returned 500 to every
+caller — they queried `Round.objects.get(round_id=...)`, and this project's
+`Round` has no `round_id` — and all six were a second vocabulary for actions
+that already had one. "Lock" and "unlock" meant `Round.decisions_locked`, a
+flag the student write path reads independently of `Round.status`; legacy
+unlock could therefore let students write into a closed round. That flag is now
+a projection maintained only by close/reopen, with a test asserting it always
+agrees with status. No client referenced any of the six.
+
+`core/services/route_inventory.py` walks the URL conf, reads each view's source
+*and its bases'*, and flags a route when it writes lifecycle state — including
+a bare `.save()` beside a lifecycle query, because that is a write whether the
+author meant it as one. Result: **214 mutating routes, 36 lifecycle-mutating,
+20 on the boundary, 16 view-keyed reviewed exemptions, 0 unguarded.**
+`RouteCoverageTests` fails on drift, on a new bypass, or on an exemption that
+no longer matches a registered view. `manage.py dump_route_inventory --check`
+is the CI guard.
+
+**2. A generated refusal id did not match its audit row.** `request_id_for()`
+minted a fresh UUID on every call, and it was called once by
+`operator_action()` for the audit row and again by `lifecycle_view()` for the
+response. The id is now resolved once and cached on the request (and on the
+Django request DRF wraps), so every audit row, response body and log line for
+one request carries the same value. Tests assert the response id matches
+exactly one audit row — supplied and generated ids, commits, 409s and 400s.
+
+**Evidence expanded** from 7 pairs to 12: bulk schedule against close, process
+and the deadline scheduler; extend against set-deadline; pause against process.
+1200 races, still 0 deadlocks and 0 5xx.
 
 ## What the inventory found
 
@@ -82,16 +130,17 @@ token).
 
 ```bash
 cd backend
-python3 manage.py test core --noinput                        # 338 passed
+python3 manage.py dump_route_inventory --check    # route coverage guard
+python3 manage.py test core --noinput                        # 353 passed
 GSP_CRV2_02_EVIDENCE_DIR=../handoff_readiness_v2/evidence/operator-concurrency \
 python3 manage.py test core.tests.test_operator_concurrency -v 2 --noinput
 ```
 
-7 pairs × 100 races × both arrival orders = **700 races**, real threads against
-real PostgreSQL with a barrier, no mocks. **0 deadlocks, 0 5xx.**
+12 pairs × 100 races × both arrival orders = **1200 races**, real threads
+against real PostgreSQL with a barrier, no mocks. **0 deadlocks, 0 5xx.**
 
-The status-code tallies show both orders genuinely won — process+process 47/53,
-process+correct 58/42, close+reopen 52/48 — and each pair's JSON records
+The status-code tallies show both orders genuinely won — process+process 53/47,
+process+correct 58/42, schedule+close 52/48 — and each pair's JSON records
 advisory-lock rows sampled mid-race with a waiter present, so the boundary was
 contended rather than the races quietly missing each other.
 
@@ -122,3 +171,13 @@ equals the roster its input manifest *recorded*.
 5. **The fixture is a minimal two-team scenario.** Coordination does not depend
    on scoring richness, but a full-field race has not been run; that belongs
    with the load work.
+6. **The route detector is a heuristic over source text.** It over-flags by
+   design — a lifecycle query beside any `.save()` counts — so the judgement
+   lives in the sixteen exemptions, each of which states what was checked. A
+   view that mutated lifecycle state through a helper in another module with no
+   local query or field assignment would slip past it. The behavioural races,
+   not the detector, are what prove a route is safe.
+7. **Six routes were deleted.** They returned 500 to every caller and no client
+   referenced them, but deletion is irreversible for any unknown integration.
+   The commit message and the matrix document name each one and its
+   replacement.
