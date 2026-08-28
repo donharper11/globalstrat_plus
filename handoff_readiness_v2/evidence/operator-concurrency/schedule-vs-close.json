@@ -1,98 +1,111 @@
 {
   "advisory_locks_observed_during_race": [
     {
-      "game_id": 21,
-      "granted": true,
-      "mode": "ExclusiveLock",
-      "namespace": 4674386,
-      "pid": 361276
-    },
-    {
-      "game_id": 21,
+      "game_id": 17,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361277
+      "pid": 360168
     },
     {
-      "game_id": 21,
+      "game_id": 17,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361277
+      "pid": 360167
     },
     {
-      "game_id": 21,
+      "game_id": 17,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361278
+      "pid": 360168
     },
     {
-      "game_id": 21,
+      "game_id": 17,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 360169
+    },
+    {
+      "game_id": 17,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361279
+      "pid": 360170
     },
     {
-      "game_id": 21,
+      "game_id": 17,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361280
+      "pid": 360170
     },
     {
-      "game_id": 21,
+      "game_id": 17,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 360171
+    },
+    {
+      "game_id": 17,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361281
+      "pid": 360172
     },
     {
-      "game_id": 21,
+      "game_id": 17,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 361281
+      "pid": 360172
     }
   ],
   "deadlocks_after": 0,
   "deadlocks_before": 0,
   "iterations": 100,
-  "pair": "scheduler-vs-manual-close",
+  "pair": "schedule-vs-close",
   "status_code_pairs": {
-    "command+200": 93,
-    "command+409": 7
+    "200+200": 52,
+    "400+200": 48
   },
   "transcript": [
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 2 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-fd1750ab-7743-42ad-91f4-a82057179a35"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 0,
       "second": {
         "body": {
           "message": "Round 2 closed. 0 submission(s) locked.",
-          "request_id": "srv-08fbcb3b-04d8-4e92-9a41-f24f7089e8e6",
+          "request_id": "srv-39df7071-7dab-4f3c-ab6a-efecc99d0fbd",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.186587+00:00",
-            "deadline": "2026-08-28T10:06:04.147643+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.385452+00:00",
+            "deadline": "2026-08-28T11:04:09.345664+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.147639+00:00",
+            "opened_at": "2026-08-28T10:04:09.345662+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1232,
+            "round_id": 828,
             "round_number": 2,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -106,30 +119,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-d79bc390-8afd-419e-acb9-4fd32d3c6f6c",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 1,
       "second": {
         "body": {
           "message": "Round 3 closed. 0 submission(s) locked.",
-          "request_id": "srv-859a62cd-5e2c-4d91-bee3-91c062c7481f",
+          "request_id": "srv-b197f7ed-633c-49d9-9dce-db55978c95dc",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.250937+00:00",
-            "deadline": "2026-08-28T10:06:04.208738+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.472221+00:00",
+            "deadline": "2026-08-28T15:04:09.431807+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.208733+00:00",
+            "opened_at": "2026-08-28T10:04:09.416107+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1233,
+            "round_id": 830,
             "round_number": 3,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -143,30 +161,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 4 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b3c56cd6-7590-4466-9465-b424ca44a82f"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 2,
       "second": {
         "body": {
           "message": "Round 4 closed. 0 submission(s) locked.",
-          "request_id": "srv-da3cffbc-1deb-4b30-9102-1b0f09788afc",
+          "request_id": "srv-41a0d7aa-16dd-4568-914e-e4d1fc240a19",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.305502+00:00",
-            "deadline": "2026-08-28T10:06:04.268883+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.534508+00:00",
+            "deadline": "2026-08-28T11:04:09.490498+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.268880+00:00",
+            "opened_at": "2026-08-28T10:04:09.490494+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1234,
+            "round_id": 832,
             "round_number": 4,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -180,30 +204,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-84cac04f-ec7d-478c-9adf-4dfbe0b204d8",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 3,
       "second": {
         "body": {
           "message": "Round 5 closed. 0 submission(s) locked.",
-          "request_id": "srv-bbdcb3f0-ac76-4233-8773-2d4350ff7a00",
+          "request_id": "srv-2747811e-4bdb-4427-9c59-634cee84da4a",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.368006+00:00",
-            "deadline": "2026-08-28T10:06:04.326718+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.616383+00:00",
+            "deadline": "2026-08-28T15:04:09.577851+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.326713+00:00",
+            "opened_at": "2026-08-28T10:04:09.563962+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1235,
+            "round_id": 834,
             "round_number": 5,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -217,30 +246,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 6 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-382d6f7e-e122-4bde-8d2b-8a24d7f24caa"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 4,
       "second": {
         "body": {
           "message": "Round 6 closed. 0 submission(s) locked.",
-          "request_id": "srv-e3dadf9a-9aa4-4be8-bec2-a5ab81b9b6ba",
+          "request_id": "srv-80fedbca-c9d3-49c4-a03b-abbdca053f76",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.424949+00:00",
-            "deadline": "2026-08-28T10:06:04.385147+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.673595+00:00",
+            "deadline": "2026-08-28T11:04:09.633307+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.385144+00:00",
+            "opened_at": "2026-08-28T10:04:09.633302+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1236,
+            "round_id": 836,
             "round_number": 6,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -254,48 +289,78 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-21d6432e-431b-4ccf-9d81-cb726f7768be",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 5,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 7 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-0c1c1c4b-edc5-4a4c-bd62-492e02fc38e5"
+          "message": "Round 7 closed. 0 submission(s) locked.",
+          "request_id": "srv-0148c853-ae4a-4d0a-a6c2-57324f890157",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:09.757415+00:00",
+            "deadline": "2026-08-28T15:04:09.715578+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:09.701005+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 838,
+            "round_number": 7,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 8 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-6d63a491-ac03-4e54-9348-f72efb698c9e"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 6,
       "second": {
         "body": {
           "message": "Round 8 closed. 0 submission(s) locked.",
-          "request_id": "srv-317fba84-8e15-4854-ad4a-1baff80fda9c",
+          "request_id": "srv-009e1ed6-97d2-4437-bfc0-7b9ad4b3f805",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.531084+00:00",
-            "deadline": "2026-08-28T10:06:04.491757+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.813872+00:00",
+            "deadline": "2026-08-28T11:04:09.773684+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.491740+00:00",
+            "opened_at": "2026-08-28T10:04:09.773616+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1238,
+            "round_id": 840,
             "round_number": 8,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -309,30 +374,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-3ad7a081-c5dc-4b3b-8f6b-6e559b0e5f91",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 7,
       "second": {
         "body": {
           "message": "Round 9 closed. 0 submission(s) locked.",
-          "request_id": "srv-d8384c88-2582-454d-bce6-186b6dc1a85f",
+          "request_id": "srv-c02bc350-19e2-450b-9fbc-f4417db02923",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.584179+00:00",
-            "deadline": "2026-08-28T10:06:04.547833+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.884888+00:00",
+            "deadline": "2026-08-28T15:04:09.850522+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.547829+00:00",
+            "opened_at": "2026-08-28T10:04:09.837361+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1239,
+            "round_id": 842,
             "round_number": 9,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -346,30 +416,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 10 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-598f0fb9-a1a7-475c-bf4b-01dbdf896e3a"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 8,
       "second": {
         "body": {
           "message": "Round 10 closed. 0 submission(s) locked.",
-          "request_id": "srv-08d9b382-ecc3-4e69-9ffa-0f6a106d6be4",
+          "request_id": "srv-b1aa47c8-1eea-4c0a-8bcd-3e5d789e05cc",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.638330+00:00",
-            "deadline": "2026-08-28T10:06:04.599640+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:09.940151+00:00",
+            "deadline": "2026-08-28T11:04:09.898828+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.599637+00:00",
+            "opened_at": "2026-08-28T10:04:09.898823+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1240,
+            "round_id": 844,
             "round_number": 10,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -383,30 +459,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-a2b5fb18-c7d9-4628-9a1c-ded22025371d",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 9,
       "second": {
         "body": {
           "message": "Round 11 closed. 0 submission(s) locked.",
-          "request_id": "srv-929ef6ca-79ae-4623-b65f-c620bebc5634",
+          "request_id": "srv-42a389cd-c567-4460-871b-d12e54eebf7a",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.695118+00:00",
-            "deadline": "2026-08-28T10:06:04.655896+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.013394+00:00",
+            "deadline": "2026-08-28T15:04:09.976068+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.655884+00:00",
+            "opened_at": "2026-08-28T10:04:09.962057+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1241,
+            "round_id": 846,
             "round_number": 11,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -420,30 +501,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 12 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-1763b68c-4d00-4ba5-b3f2-f0316fa88058"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 10,
       "second": {
         "body": {
           "message": "Round 12 closed. 0 submission(s) locked.",
-          "request_id": "srv-faeddb75-9590-43c7-8fab-66a16eea5400",
+          "request_id": "srv-06a01661-9baf-4387-a110-42044ddbf43f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.750742+00:00",
-            "deadline": "2026-08-28T10:06:04.711928+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.072753+00:00",
+            "deadline": "2026-08-28T11:04:10.030705+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.711925+00:00",
+            "opened_at": "2026-08-28T10:04:10.030701+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1242,
+            "round_id": 848,
             "round_number": 12,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -457,30 +544,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-9d75a4c6-f96c-41cc-b6d2-9e433d1cc0b3",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 11,
       "second": {
         "body": {
           "message": "Round 13 closed. 0 submission(s) locked.",
-          "request_id": "srv-59aa512c-6042-46be-9607-b118dd5fcf23",
+          "request_id": "srv-bbae8538-b156-4ebf-970a-85f22a352c8f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.806330+00:00",
-            "deadline": "2026-08-28T10:06:04.767448+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.151886+00:00",
+            "deadline": "2026-08-28T15:04:10.114109+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.767446+00:00",
+            "opened_at": "2026-08-28T10:04:10.098735+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1243,
+            "round_id": 850,
             "round_number": 13,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -494,30 +586,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 14 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-71acfe7b-89af-42dc-bac5-29ca8145a390"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 12,
       "second": {
         "body": {
           "message": "Round 14 closed. 0 submission(s) locked.",
-          "request_id": "srv-cdb0acdd-0433-41d7-aad6-d94241001eee",
+          "request_id": "srv-0c868c77-cfe7-456a-8042-a55a73c079f0",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.862973+00:00",
-            "deadline": "2026-08-28T10:06:04.823256+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.206274+00:00",
+            "deadline": "2026-08-28T11:04:10.165694+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.823252+00:00",
+            "opened_at": "2026-08-28T10:04:10.165691+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1244,
+            "round_id": 852,
             "round_number": 14,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -531,30 +629,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-adc7c3df-9800-4af4-be27-7902d0337b65",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 13,
       "second": {
         "body": {
           "message": "Round 15 closed. 0 submission(s) locked.",
-          "request_id": "srv-7918b199-2b7d-48a0-9e6f-51cc77786fd7",
+          "request_id": "srv-1ac727bb-fa63-40a0-92b3-ae9765bcb3e7",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.920321+00:00",
-            "deadline": "2026-08-28T10:06:04.879639+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.283943+00:00",
+            "deadline": "2026-08-28T15:04:10.247294+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.879636+00:00",
+            "opened_at": "2026-08-28T10:04:10.232257+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1245,
+            "round_id": 854,
             "round_number": 15,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -568,30 +671,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 16 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4091e519-eed1-4a29-8b7f-47eb39d6a3a6"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 14,
       "second": {
         "body": {
           "message": "Round 16 closed. 0 submission(s) locked.",
-          "request_id": "srv-fe06414c-0a9b-4c24-8123-a701bb967582",
+          "request_id": "srv-594b03ae-ec11-419b-ac0b-6bbc346b6be5",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:04.977680+00:00",
-            "deadline": "2026-08-28T10:06:04.938265+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.341452+00:00",
+            "deadline": "2026-08-28T11:04:10.299798+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.938261+00:00",
+            "opened_at": "2026-08-28T10:04:10.299795+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1246,
+            "round_id": 856,
             "round_number": 16,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -605,30 +714,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-953cdd15-efcf-4f4d-b49b-7516ba4538ac",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 15,
       "second": {
         "body": {
           "message": "Round 17 closed. 0 submission(s) locked.",
-          "request_id": "srv-61ac6c50-3dc4-4f37-8d34-6bf59b092540",
+          "request_id": "srv-a961a894-7d9a-481c-b52d-97c95632033e",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.034210+00:00",
-            "deadline": "2026-08-28T10:06:04.995360+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.419843+00:00",
+            "deadline": "2026-08-28T15:04:10.381477+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:04.995356+00:00",
+            "opened_at": "2026-08-28T10:04:10.367077+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1247,
+            "round_id": 858,
             "round_number": 17,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -642,30 +756,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 18 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5c59610c-fb3f-4811-b3a9-83affc1cc48d"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 16,
       "second": {
         "body": {
           "message": "Round 18 closed. 0 submission(s) locked.",
-          "request_id": "srv-61f67da2-7e88-4f4f-bd24-5f9f05b43975",
+          "request_id": "srv-db9674c3-c9db-4abe-aad4-5aa8b6df7bc9",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.091862+00:00",
-            "deadline": "2026-08-28T10:06:05.051426+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.475756+00:00",
+            "deadline": "2026-08-28T11:04:10.436488+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.051424+00:00",
+            "opened_at": "2026-08-28T10:04:10.436485+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1248,
+            "round_id": 860,
             "round_number": 18,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -679,30 +799,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-8cac676e-fd67-4d2e-bb25-922a04d6e18a",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 17,
       "second": {
         "body": {
           "message": "Round 19 closed. 0 submission(s) locked.",
-          "request_id": "srv-afd71656-c7ba-4169-939a-9869a2c3602b",
+          "request_id": "srv-15173597-c7c1-4571-bac3-5ff60ed2deed",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.147509+00:00",
-            "deadline": "2026-08-28T10:06:05.109275+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.547355+00:00",
+            "deadline": "2026-08-28T15:04:10.511040+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.109273+00:00",
+            "opened_at": "2026-08-28T10:04:10.497867+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1249,
+            "round_id": 862,
             "round_number": 19,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -716,30 +841,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 20 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-07353faf-9581-431f-8f98-02f9872683f0"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 18,
       "second": {
         "body": {
           "message": "Round 20 closed. 0 submission(s) locked.",
-          "request_id": "srv-3be874bf-2c12-4f22-86d4-fe21ded37388",
+          "request_id": "srv-d4455260-a94c-4f27-aaf9-1e076f6478a1",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.203053+00:00",
-            "deadline": "2026-08-28T10:06:05.163451+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.599518+00:00",
+            "deadline": "2026-08-28T11:04:10.561869+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.163447+00:00",
+            "opened_at": "2026-08-28T10:04:10.561865+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1250,
+            "round_id": 864,
             "round_number": 20,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -753,30 +884,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-849eaefe-71b4-4c99-8a21-f1b5910b1dea",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 19,
       "second": {
         "body": {
           "message": "Round 21 closed. 0 submission(s) locked.",
-          "request_id": "srv-00615165-03e5-455b-80f6-6b08e6bba30e",
+          "request_id": "srv-7ce9e8a2-1449-4dcd-b558-717aa5b1de06",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.261857+00:00",
-            "deadline": "2026-08-28T10:06:05.221215+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.675630+00:00",
+            "deadline": "2026-08-28T15:04:10.635992+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.221212+00:00",
+            "opened_at": "2026-08-28T10:04:10.622806+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1251,
+            "round_id": 866,
             "round_number": 21,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -790,30 +926,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 22 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-710e2a62-cd18-475a-8e14-a71196612ab9"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 20,
       "second": {
         "body": {
           "message": "Round 22 closed. 0 submission(s) locked.",
-          "request_id": "srv-1566bee1-393b-46bc-956d-2b21570b4f48",
+          "request_id": "srv-29c4c98d-3222-4b6b-b009-e323f990f1c8",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.315170+00:00",
-            "deadline": "2026-08-28T10:06:05.278101+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.727753+00:00",
+            "deadline": "2026-08-28T11:04:10.690308+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.278099+00:00",
+            "opened_at": "2026-08-28T10:04:10.690305+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1252,
+            "round_id": 868,
             "round_number": 22,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -827,30 +969,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-985220b2-79fe-4988-99f1-2394563383b3",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 21,
       "second": {
         "body": {
           "message": "Round 23 closed. 0 submission(s) locked.",
-          "request_id": "srv-d91fb051-f070-4695-84d8-1098090469b0",
+          "request_id": "srv-42715ccc-9581-41fe-9522-d7efd87708ec",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.369028+00:00",
-            "deadline": "2026-08-28T10:06:05.331945+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.810150+00:00",
+            "deadline": "2026-08-28T15:04:10.769691+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.331942+00:00",
+            "opened_at": "2026-08-28T10:04:10.754608+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1253,
+            "round_id": 870,
             "round_number": 23,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -864,30 +1011,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 24 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-0b1e1856-3a27-41b6-95f2-9a32d69fd524"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 22,
       "second": {
         "body": {
           "message": "Round 24 closed. 0 submission(s) locked.",
-          "request_id": "srv-46810bfd-9a25-4434-9d52-0fa5fa4fb985",
+          "request_id": "srv-25ea071d-9cfd-4508-b3fb-9e0ca6c880cd",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.421937+00:00",
-            "deadline": "2026-08-28T10:06:05.385712+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.866722+00:00",
+            "deadline": "2026-08-28T11:04:10.822385+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.385708+00:00",
+            "opened_at": "2026-08-28T10:04:10.822382+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1254,
+            "round_id": 872,
             "round_number": 24,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -901,30 +1054,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-0844fc36-c5cc-4f21-aa11-109fb25e7445",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 23,
       "second": {
         "body": {
           "message": "Round 25 closed. 0 submission(s) locked.",
-          "request_id": "srv-c03ba940-ec96-4f53-a9c3-c8dcad1922a1",
+          "request_id": "srv-67cf1891-9fb7-436d-afcd-9f494fbd001e",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.479040+00:00",
-            "deadline": "2026-08-28T10:06:05.438899+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.944990+00:00",
+            "deadline": "2026-08-28T15:04:10.908594+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.438895+00:00",
+            "opened_at": "2026-08-28T10:04:10.894541+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1255,
+            "round_id": 874,
             "round_number": 25,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -938,30 +1096,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 26 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a20aaef1-7485-4b41-a397-b4683dbef407"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 24,
       "second": {
         "body": {
           "message": "Round 26 closed. 0 submission(s) locked.",
-          "request_id": "srv-0f525677-e476-4510-bc04-75bfced741a5",
+          "request_id": "srv-0112967c-1e9d-4ca1-90b1-a281cea2ef34",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.531845+00:00",
-            "deadline": "2026-08-28T10:06:05.495047+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:10.998697+00:00",
+            "deadline": "2026-08-28T11:04:10.957357+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.495045+00:00",
+            "opened_at": "2026-08-28T10:04:10.957352+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1256,
+            "round_id": 876,
             "round_number": 26,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -975,30 +1139,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-c0a211e3-dc4f-4db8-939d-d2fc6738ded1",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 25,
       "second": {
         "body": {
           "message": "Round 27 closed. 0 submission(s) locked.",
-          "request_id": "srv-32234458-c70b-4135-a5f1-00e9193d0437",
+          "request_id": "srv-003db45c-6a47-40fc-8d71-28a712a6fc56",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.587155+00:00",
-            "deadline": "2026-08-28T10:06:05.548775+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.074700+00:00",
+            "deadline": "2026-08-28T15:04:11.036459+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.548772+00:00",
+            "opened_at": "2026-08-28T10:04:11.022766+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1257,
+            "round_id": 878,
             "round_number": 27,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1012,30 +1181,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 28 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-268084a2-c763-4a64-bdf3-836151aefe84"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 26,
       "second": {
         "body": {
           "message": "Round 28 closed. 0 submission(s) locked.",
-          "request_id": "srv-6d04ee3f-bc97-4f81-a9a0-e5a03db10ef6",
+          "request_id": "srv-5b5e4c02-e66a-470a-8ff7-fc303beb73e7",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.658076+00:00",
-            "deadline": "2026-08-28T10:06:05.616662+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.161192+00:00",
+            "deadline": "2026-08-28T11:04:11.094513+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.616657+00:00",
+            "opened_at": "2026-08-28T10:04:11.094509+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1258,
+            "round_id": 880,
             "round_number": 28,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1049,48 +1224,77 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-06aa7672-3a06-4005-a0cd-32ea1233d3a1",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 27,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 29 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-2e51bc88-3417-4088-a0a9-9fe7b089b79a"
+          "message": "Round 29 closed. 0 submission(s) locked.",
+          "request_id": "srv-e93c5ad6-6191-4f34-b3a4-b2e053539a48",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:11.237097+00:00",
+            "deadline": "2026-08-28T15:04:11.200138+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:11.184140+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 882,
+            "round_number": 29,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-b3295abb-817f-4b8e-8552-862f443c0146",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 28,
       "second": {
         "body": {
           "message": "Round 30 closed. 0 submission(s) locked.",
-          "request_id": "srv-34ef6388-754c-468a-b20d-e780f0f1ac62",
+          "request_id": "srv-2f711542-6d6a-47e0-83ee-e34c723098bb",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.766689+00:00",
-            "deadline": "2026-08-28T10:06:05.730053+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.301994+00:00",
+            "deadline": "2026-08-28T15:04:11.267627+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.730050+00:00",
+            "opened_at": "2026-08-28T10:04:11.251592+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1260,
+            "round_id": 884,
             "round_number": 30,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1104,30 +1308,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-ddfbab55-7f08-4b36-8b20-32669cd65eac",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 29,
       "second": {
         "body": {
           "message": "Round 31 closed. 0 submission(s) locked.",
-          "request_id": "srv-53e41970-9aeb-4b77-865b-129cf4e261c2",
+          "request_id": "srv-1889da3e-6811-47c3-aad7-f5f335b1d403",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.825093+00:00",
-            "deadline": "2026-08-28T10:06:05.783366+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.366061+00:00",
+            "deadline": "2026-08-28T15:04:11.329554+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.783363+00:00",
+            "opened_at": "2026-08-28T10:04:11.315590+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1261,
+            "round_id": 886,
             "round_number": 31,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1141,30 +1350,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 32 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-f64e904a-d861-44f3-a70e-6df5ea0946cf"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 30,
       "second": {
         "body": {
           "message": "Round 32 closed. 0 submission(s) locked.",
-          "request_id": "srv-48d3772f-0a4a-4609-8c52-62b4f0c76490",
+          "request_id": "srv-c76023c1-383a-426a-bd66-f5f9b6593236",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.891104+00:00",
-            "deadline": "2026-08-28T10:06:05.843810+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.421734+00:00",
+            "deadline": "2026-08-28T11:04:11.379381+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.843806+00:00",
+            "opened_at": "2026-08-28T10:04:11.379377+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1262,
+            "round_id": 888,
             "round_number": 32,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1178,30 +1393,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-f5960a18-3f8d-449b-a1d5-fddc70503486",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 31,
       "second": {
         "body": {
           "message": "Round 33 closed. 0 submission(s) locked.",
-          "request_id": "srv-eb0df387-7de8-454f-bd71-db33eb11a7d2",
+          "request_id": "srv-bb402dc8-5a9a-4695-8412-44b4301d7af2",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:05.950117+00:00",
-            "deadline": "2026-08-28T10:06:05.911547+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.503111+00:00",
+            "deadline": "2026-08-28T15:04:11.467705+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.911543+00:00",
+            "opened_at": "2026-08-28T10:04:11.452314+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1263,
+            "round_id": 890,
             "round_number": 33,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1215,30 +1435,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 34 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-71c8fd51-d3c6-42c5-804c-ba3d0bf9518c"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 32,
       "second": {
         "body": {
           "message": "Round 34 closed. 0 submission(s) locked.",
-          "request_id": "srv-ebce1428-301d-4b5a-be9e-d59842ee9a96",
+          "request_id": "srv-dc5b5b69-e0f3-4574-897e-218ba84e5734",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.005138+00:00",
-            "deadline": "2026-08-28T10:06:05.968390+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.556645+00:00",
+            "deadline": "2026-08-28T11:04:11.516015+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:05.968387+00:00",
+            "opened_at": "2026-08-28T10:04:11.516011+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1264,
+            "round_id": 892,
             "round_number": 34,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1252,30 +1478,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-0f4d1bd3-5aa8-4c9e-b85a-706bde0e5ca0",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 33,
       "second": {
         "body": {
           "message": "Round 35 closed. 0 submission(s) locked.",
-          "request_id": "srv-250c81a3-332c-4c5d-a70c-7fcc0b9a8dab",
+          "request_id": "srv-a6f3fb39-ab19-4557-bc82-c9339eb91db2",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.062841+00:00",
-            "deadline": "2026-08-28T10:06:06.022366+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.636809+00:00",
+            "deadline": "2026-08-28T15:04:11.597028+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.022362+00:00",
+            "opened_at": "2026-08-28T10:04:11.582938+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1265,
+            "round_id": 894,
             "round_number": 35,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1289,30 +1520,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 36 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-70cf8d29-5966-45d9-9473-d552fce91178"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 34,
       "second": {
         "body": {
           "message": "Round 36 closed. 0 submission(s) locked.",
-          "request_id": "srv-34c07591-9df5-4fd5-90aa-cc992874ad70",
+          "request_id": "srv-a4fe9628-2a17-4022-b15f-3e83f6ebf5d2",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.117191+00:00",
-            "deadline": "2026-08-28T10:06:06.079986+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.693114+00:00",
+            "deadline": "2026-08-28T11:04:11.652983+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.079984+00:00",
+            "opened_at": "2026-08-28T10:04:11.652978+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1266,
+            "round_id": 896,
             "round_number": 36,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1326,30 +1563,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-e9e23f5e-9d86-48be-96e9-e5afb927f62e",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 35,
       "second": {
         "body": {
           "message": "Round 37 closed. 0 submission(s) locked.",
-          "request_id": "srv-cb80a4bb-1a3d-44e7-bea6-536e0578b9b3",
+          "request_id": "srv-fcc81959-a933-4d24-a468-0350a4d69611",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.172434+00:00",
-            "deadline": "2026-08-28T10:06:06.133459+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.768553+00:00",
+            "deadline": "2026-08-28T15:04:11.728593+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.133457+00:00",
+            "opened_at": "2026-08-28T10:04:11.715949+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1267,
+            "round_id": 898,
             "round_number": 37,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1363,30 +1605,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 38 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-9fdc8da4-00a1-422d-a909-22c87583adec"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 36,
       "second": {
         "body": {
           "message": "Round 38 closed. 0 submission(s) locked.",
-          "request_id": "srv-d4f2af80-e401-4caa-a3e3-d0d0d949d148",
+          "request_id": "srv-9274a584-843a-4f28-b39e-3b397657c5e1",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.227304+00:00",
-            "deadline": "2026-08-28T10:06:06.189218+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.821852+00:00",
+            "deadline": "2026-08-28T11:04:11.781680+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.189215+00:00",
+            "opened_at": "2026-08-28T10:04:11.781654+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1268,
+            "round_id": 900,
             "round_number": 38,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1400,30 +1648,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-1689944f-d8d1-4245-9460-d80890c024ae",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 37,
       "second": {
         "body": {
           "message": "Round 39 closed. 0 submission(s) locked.",
-          "request_id": "srv-646dfa04-4b27-4924-99cb-0946f59148b6",
+          "request_id": "srv-555b6b40-160a-469e-9da7-5235f4f85595",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.287299+00:00",
-            "deadline": "2026-08-28T10:06:06.246810+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.903285+00:00",
+            "deadline": "2026-08-28T15:04:11.862374+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.246807+00:00",
+            "opened_at": "2026-08-28T10:04:11.846930+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1269,
+            "round_id": 902,
             "round_number": 39,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1437,30 +1690,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 40 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e6348a40-b684-4bc7-af2a-78bc60c1cb89"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 38,
       "second": {
         "body": {
           "message": "Round 40 closed. 0 submission(s) locked.",
-          "request_id": "srv-58d606d7-1f84-4651-b06b-26dba3a1c7b6",
+          "request_id": "srv-f92b813c-dea2-40c8-ae62-beddc309417f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.344035+00:00",
-            "deadline": "2026-08-28T10:06:06.304308+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:11.959035+00:00",
+            "deadline": "2026-08-28T11:04:11.918218+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.304305+00:00",
+            "opened_at": "2026-08-28T10:04:11.918214+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1270,
+            "round_id": 904,
             "round_number": 40,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1474,30 +1733,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-da07fe51-1ae9-472c-a207-dbfd7aaa9efe",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 39,
       "second": {
         "body": {
           "message": "Round 41 closed. 0 submission(s) locked.",
-          "request_id": "srv-14b9927f-4ede-442d-9bd7-222baaecf002",
+          "request_id": "srv-09e777af-dfe3-43d9-a273-cb6b63d4951d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.401039+00:00",
-            "deadline": "2026-08-28T10:06:06.361168+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.037058+00:00",
+            "deadline": "2026-08-28T15:04:12.001192+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.361165+00:00",
+            "opened_at": "2026-08-28T10:04:11.985637+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1271,
+            "round_id": 906,
             "round_number": 41,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1511,30 +1775,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 42 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-aae1800b-9951-4806-980b-96b7655f28aa"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 40,
       "second": {
         "body": {
           "message": "Round 42 closed. 0 submission(s) locked.",
-          "request_id": "srv-963f4b4e-0fc7-47bc-9485-f79af8e57f1b",
+          "request_id": "srv-eb7886be-bbef-4f5a-b91f-647219f1bc95",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.456322+00:00",
-            "deadline": "2026-08-28T10:06:06.417690+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.092298+00:00",
+            "deadline": "2026-08-28T11:04:12.049556+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.417684+00:00",
+            "opened_at": "2026-08-28T10:04:12.049553+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1272,
+            "round_id": 908,
             "round_number": 42,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1548,30 +1818,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-3799c2fc-4e3e-4219-a959-4bd74b7ed197",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 41,
       "second": {
         "body": {
           "message": "Round 43 closed. 0 submission(s) locked.",
-          "request_id": "srv-bdf54093-6942-4b9c-98db-7cd9b9ee15f7",
+          "request_id": "srv-3bd79cd8-bb0c-4754-b708-438fd651c1d5",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.512104+00:00",
-            "deadline": "2026-08-28T10:06:06.473510+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.171589+00:00",
+            "deadline": "2026-08-28T15:04:12.134182+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.473504+00:00",
+            "opened_at": "2026-08-28T10:04:12.120465+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1273,
+            "round_id": 910,
             "round_number": 43,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1585,30 +1860,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 44 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-075b86ac-f013-436c-90f0-8325109b9aed"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 42,
       "second": {
         "body": {
           "message": "Round 44 closed. 0 submission(s) locked.",
-          "request_id": "srv-abf82884-b5a1-4a51-a437-b4418ec48758",
+          "request_id": "srv-e3ad5b4d-a9f0-4cac-9d83-8ca1bce6825f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.573387+00:00",
-            "deadline": "2026-08-28T10:06:06.532293+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.229063+00:00",
+            "deadline": "2026-08-28T11:04:12.184625+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.532288+00:00",
+            "opened_at": "2026-08-28T10:04:12.184621+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1274,
+            "round_id": 912,
             "round_number": 44,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1622,30 +1903,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-2774ed9b-1f53-4125-a58f-513d717c26c8",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 43,
       "second": {
         "body": {
           "message": "Round 45 closed. 0 submission(s) locked.",
-          "request_id": "srv-a634fa3c-4f42-4c27-9ba4-56ca7fad1cde",
+          "request_id": "srv-4b03dc42-0bf1-4185-b31b-7ced9404adf7",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.629145+00:00",
-            "deadline": "2026-08-28T10:06:06.591326+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.316108+00:00",
+            "deadline": "2026-08-28T15:04:12.272702+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.591322+00:00",
+            "opened_at": "2026-08-28T10:04:12.256245+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1275,
+            "round_id": 914,
             "round_number": 45,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1659,30 +1945,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 46 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-c93c18bb-92ea-43d5-82ef-ae9f320023fb"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 44,
       "second": {
         "body": {
           "message": "Round 46 closed. 0 submission(s) locked.",
-          "request_id": "srv-0be68637-a901-434c-bb18-3004f4a3b239",
+          "request_id": "srv-171393c1-390f-40d7-8997-9f66b9eace61",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.689133+00:00",
-            "deadline": "2026-08-28T10:06:06.649868+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.375228+00:00",
+            "deadline": "2026-08-28T11:04:12.332915+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.649863+00:00",
+            "opened_at": "2026-08-28T10:04:12.332910+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1276,
+            "round_id": 916,
             "round_number": 46,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1696,48 +1988,78 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-feb6b99a-74da-4bda-bf4b-cfe81898a1ee",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 45,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 47 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-1e806cc8-4db6-42a0-8c74-bdc2a67f80f5"
+          "message": "Round 47 closed. 0 submission(s) locked.",
+          "request_id": "srv-9acb51bc-be54-4bf0-832b-01203135535b",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:12.447256+00:00",
+            "deadline": "2026-08-28T15:04:12.411511+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:12.397493+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 918,
+            "round_number": 47,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 48 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-cfd5edfa-d9d6-4c3c-a946-5274a1dbc102"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 46,
       "second": {
         "body": {
           "message": "Round 48 closed. 0 submission(s) locked.",
-          "request_id": "srv-e1484b6e-e468-4b70-81d5-a70430032fa9",
+          "request_id": "srv-c83201f6-0e27-437c-8889-9237feff9980",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.793663+00:00",
-            "deadline": "2026-08-28T10:06:06.755633+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.504825+00:00",
+            "deadline": "2026-08-28T11:04:12.467238+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.755631+00:00",
+            "opened_at": "2026-08-28T10:04:12.467233+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1278,
+            "round_id": 920,
             "round_number": 48,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1751,30 +2073,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-573d7fbf-569e-4dab-8948-c2d7815f323d",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 47,
       "second": {
         "body": {
           "message": "Round 49 closed. 0 submission(s) locked.",
-          "request_id": "srv-23a55476-e50d-4e3a-beed-bea8542b6c7c",
+          "request_id": "srv-512001b8-896f-423e-9ecd-59b42432f78f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.851077+00:00",
-            "deadline": "2026-08-28T10:06:06.810544+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.585653+00:00",
+            "deadline": "2026-08-28T15:04:12.543947+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.810541+00:00",
+            "opened_at": "2026-08-28T10:04:12.529066+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1279,
+            "round_id": 922,
             "round_number": 49,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1788,30 +2115,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 50 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-978cdca0-4a7f-4a19-98ed-9b6b03babe76"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 48,
       "second": {
         "body": {
           "message": "Round 50 closed. 0 submission(s) locked.",
-          "request_id": "srv-79f3163d-04dd-45f7-bcd0-118befb08b9d",
+          "request_id": "srv-270ba17c-b06a-4e88-982c-df5a1c578055",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.904413+00:00",
-            "deadline": "2026-08-28T10:06:06.867940+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.652306+00:00",
+            "deadline": "2026-08-28T11:04:12.600540+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.867938+00:00",
+            "opened_at": "2026-08-28T10:04:12.600535+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1280,
+            "round_id": 924,
             "round_number": 50,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1825,30 +2158,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-d06dba13-048a-40ca-af99-9909e0e449e8",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 49,
       "second": {
         "body": {
           "message": "Round 51 closed. 0 submission(s) locked.",
-          "request_id": "srv-359dc2c7-9318-471f-ba44-add73d9c6240",
+          "request_id": "srv-b0f43a10-8d25-4e8d-84e9-a8be4b4baf33",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:06.962174+00:00",
-            "deadline": "2026-08-28T10:06:06.922258+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.741457+00:00",
+            "deadline": "2026-08-28T15:04:12.701410+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.922255+00:00",
+            "opened_at": "2026-08-28T10:04:12.684624+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1281,
+            "round_id": 926,
             "round_number": 51,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1862,30 +2200,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 52 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-3ae87d62-4a72-42ac-8814-c28e5eac905c"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 50,
       "second": {
         "body": {
           "message": "Round 52 closed. 0 submission(s) locked.",
-          "request_id": "srv-faa28bdc-db5f-43ac-8b26-50f85b82c49f",
+          "request_id": "srv-6c9015d9-243a-4276-9510-cb4e9f36778d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.020165+00:00",
-            "deadline": "2026-08-28T10:06:06.979627+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.796703+00:00",
+            "deadline": "2026-08-28T11:04:12.756260+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:06.979623+00:00",
+            "opened_at": "2026-08-28T10:04:12.756257+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1282,
+            "round_id": 928,
             "round_number": 52,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1899,30 +2243,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-3eb228d6-cd06-4532-91eb-c098fef63a2f",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 51,
       "second": {
         "body": {
           "message": "Round 53 closed. 0 submission(s) locked.",
-          "request_id": "srv-5eb50298-d3ba-455f-94bf-d8eb29c56962",
+          "request_id": "srv-bf1e974b-97de-4e2b-8dd9-82f69ec1c74f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.081000+00:00",
-            "deadline": "2026-08-28T10:06:07.039836+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.868256+00:00",
+            "deadline": "2026-08-28T15:04:12.833969+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.039831+00:00",
+            "opened_at": "2026-08-28T10:04:12.820066+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1283,
+            "round_id": 930,
             "round_number": 53,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1936,30 +2285,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 54 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-105f93cb-496e-4918-a3a3-10d12e415ba2"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 52,
       "second": {
         "body": {
           "message": "Round 54 closed. 0 submission(s) locked.",
-          "request_id": "srv-3fb9f64e-7735-4c3c-9419-3bc7445c69df",
+          "request_id": "srv-a1230df0-0d91-4caa-9a98-168ee11bd5a3",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.140019+00:00",
-            "deadline": "2026-08-28T10:06:07.097616+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.922507+00:00",
+            "deadline": "2026-08-28T11:04:12.883856+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.097613+00:00",
+            "opened_at": "2026-08-28T10:04:12.883852+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1284,
+            "round_id": 932,
             "round_number": 54,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -1973,30 +2328,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-037ceb8e-742c-43db-80e0-1de4d29f0aa6",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 53,
       "second": {
         "body": {
           "message": "Round 55 closed. 0 submission(s) locked.",
-          "request_id": "srv-6f8a5976-a6ff-4c50-9d98-33d2c59574e2",
+          "request_id": "srv-00470961-5d71-4673-8ee0-5255feabd53d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.192941+00:00",
-            "deadline": "2026-08-28T10:06:07.156952+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:12.992542+00:00",
+            "deadline": "2026-08-28T15:04:12.957649+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.156949+00:00",
+            "opened_at": "2026-08-28T10:04:12.943609+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1285,
+            "round_id": 934,
             "round_number": 55,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2010,48 +2370,78 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 56 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-2f80ee0a-1b8d-4fd1-b4cd-db672a413724"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 54,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 56 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-ea595bb5-7982-4235-b3ef-2d8a82c0f276"
+          "message": "Round 56 closed. 0 submission(s) locked.",
+          "request_id": "srv-0edf6e58-eb39-4484-8e3f-efbf5a70940a",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:13.054957+00:00",
+            "deadline": "2026-08-28T11:04:13.007911+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:13.007905+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 936,
+            "round_number": 56,
+            "seconds_remaining": 3599,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-cb2d39d1-5e5e-4c63-925f-efff7fa7b201",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 55,
       "second": {
         "body": {
           "message": "Round 57 closed. 0 submission(s) locked.",
-          "request_id": "srv-cddf673f-81cf-42c0-8ba9-698ad5a5149c",
+          "request_id": "srv-803112ad-683b-4f26-a2d6-a9a8798a5977",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.299357+00:00",
-            "deadline": "2026-08-28T10:06:07.260757+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.137937+00:00",
+            "deadline": "2026-08-28T15:04:13.100672+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.260753+00:00",
+            "opened_at": "2026-08-28T10:04:13.086109+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1287,
+            "round_id": 938,
             "round_number": 57,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2065,30 +2455,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 58 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-3ff2b75d-1492-4708-a9f7-d24d07606079"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 56,
       "second": {
         "body": {
           "message": "Round 58 closed. 0 submission(s) locked.",
-          "request_id": "srv-0fb34411-7711-4819-a7cb-2068f69a536c",
+          "request_id": "srv-5a045f40-8e70-41f8-a15f-fab3d2142753",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.352631+00:00",
-            "deadline": "2026-08-28T10:06:07.316221+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.192004+00:00",
+            "deadline": "2026-08-28T11:04:13.153208+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.316217+00:00",
+            "opened_at": "2026-08-28T10:04:13.153203+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1288,
+            "round_id": 940,
             "round_number": 58,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2102,30 +2498,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-2cedfb88-bbe3-4f2a-9001-bdfa104adf16",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 57,
       "second": {
         "body": {
           "message": "Round 59 closed. 0 submission(s) locked.",
-          "request_id": "srv-919b3bf0-3283-4a33-a3e4-e82e4631150e",
+          "request_id": "srv-8ce0fd3b-31d3-459b-bb51-5191ce6a5882",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.404818+00:00",
-            "deadline": "2026-08-28T10:06:07.369479+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.393223+00:00",
+            "deadline": "2026-08-28T15:04:13.231855+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.369476+00:00",
+            "opened_at": "2026-08-28T10:04:13.217374+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1289,
+            "round_id": 942,
             "round_number": 59,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2139,30 +2540,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 60 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-391228c9-d6e2-41c4-933c-c39b04dcb661"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 58,
       "second": {
         "body": {
           "message": "Round 60 closed. 0 submission(s) locked.",
-          "request_id": "srv-9c3c4446-ae6c-4611-b759-876375b2e639",
+          "request_id": "srv-782b3284-26ca-47a7-a1a4-7dfdf50cf04d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.459650+00:00",
-            "deadline": "2026-08-28T10:06:07.420563+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.447578+00:00",
+            "deadline": "2026-08-28T11:04:13.405835+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.420559+00:00",
+            "opened_at": "2026-08-28T10:04:13.405831+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1290,
+            "round_id": 944,
             "round_number": 60,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2176,48 +2583,78 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-f151e525-8afe-4af6-9f5f-ea5b693429d4",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 59,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 61 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-394a1abd-9c38-4d57-a65e-05366d2bb6a3"
+          "message": "Round 61 closed. 0 submission(s) locked.",
+          "request_id": "srv-f528bbf6-d0d3-4658-8c7e-57e07b6533b5",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:13.525750+00:00",
+            "deadline": "2026-08-28T15:04:13.484954+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:13.472185+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 946,
+            "round_number": 61,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 62 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-0e05e068-4572-43d1-87bc-c6e3c2401af8"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 60,
       "second": {
         "body": {
           "message": "Round 62 closed. 0 submission(s) locked.",
-          "request_id": "srv-b87fe292-1d79-4143-b21c-652c203e4305",
+          "request_id": "srv-f2e6c7d5-e6ed-405c-b76f-8e92e7b835b7",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.562701+00:00",
-            "deadline": "2026-08-28T10:06:07.527832+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.581927+00:00",
+            "deadline": "2026-08-28T11:04:13.540169+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.527829+00:00",
+            "opened_at": "2026-08-28T10:04:13.540165+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1292,
+            "round_id": 948,
             "round_number": 62,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2231,30 +2668,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-239e064c-a0eb-47ef-8a13-20b0eedbe37f",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 61,
       "second": {
         "body": {
           "message": "Round 63 closed. 0 submission(s) locked.",
-          "request_id": "srv-d953b6f5-fff2-4fd6-8764-d6c8916ffd27",
+          "request_id": "srv-c15c94e3-abe5-40fe-ac6a-2ecd6cfb1654",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.618708+00:00",
-            "deadline": "2026-08-28T10:06:07.578779+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.665841+00:00",
+            "deadline": "2026-08-28T15:04:13.623916+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.578775+00:00",
+            "opened_at": "2026-08-28T10:04:13.609059+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1293,
+            "round_id": 950,
             "round_number": 63,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2268,30 +2710,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 64 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-7d815a6c-e582-4314-89e2-0f8b1d5d6487"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 62,
       "second": {
         "body": {
           "message": "Round 64 closed. 0 submission(s) locked.",
-          "request_id": "srv-b8df52f3-3d53-4890-afef-929251ac3bfc",
+          "request_id": "srv-67270168-745f-4ad1-af5d-efbf55b5e40c",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.671564+00:00",
-            "deadline": "2026-08-28T10:06:07.635568+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.722230+00:00",
+            "deadline": "2026-08-28T11:04:13.681339+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.635565+00:00",
+            "opened_at": "2026-08-28T10:04:13.681322+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1294,
+            "round_id": 952,
             "round_number": 64,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2305,30 +2753,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-3ddbcb97-d085-43e7-89bf-803b4dc696c7",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 63,
       "second": {
         "body": {
           "message": "Round 65 closed. 0 submission(s) locked.",
-          "request_id": "srv-5de3e66b-77d6-4952-81ee-66c5b24ebb19",
+          "request_id": "srv-c3f95e4e-17b3-4187-9df9-6941591a5233",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.724966+00:00",
-            "deadline": "2026-08-28T10:06:07.687852+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.802431+00:00",
+            "deadline": "2026-08-28T15:04:13.764850+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.687832+00:00",
+            "opened_at": "2026-08-28T10:04:13.749935+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1295,
+            "round_id": 954,
             "round_number": 65,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2342,30 +2795,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 66 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-ff143833-fedc-4c75-b37c-479be3d2b06a"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 64,
       "second": {
         "body": {
           "message": "Round 66 closed. 0 submission(s) locked.",
-          "request_id": "srv-74598903-358b-47b2-a5a0-45bf3d836809",
+          "request_id": "srv-40bdc6d4-1e8b-4146-8375-a6c312d884b1",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.783321+00:00",
-            "deadline": "2026-08-28T10:06:07.741317+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.857061+00:00",
+            "deadline": "2026-08-28T11:04:13.817278+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.741298+00:00",
+            "opened_at": "2026-08-28T10:04:13.817256+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1296,
+            "round_id": 956,
             "round_number": 66,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2379,30 +2838,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-a91d4dbd-9b2c-4258-9585-fc7ab962d527",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 65,
       "second": {
         "body": {
           "message": "Round 67 closed. 0 submission(s) locked.",
-          "request_id": "srv-eaed42ce-e932-4d57-ae4f-0b72e2fbe5af",
+          "request_id": "srv-907c2711-b5d2-4195-8172-564cadaa62bf",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.838699+00:00",
-            "deadline": "2026-08-28T10:06:07.801962+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.932289+00:00",
+            "deadline": "2026-08-28T15:04:13.897338+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.801957+00:00",
+            "opened_at": "2026-08-28T10:04:13.880979+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1297,
+            "round_id": 958,
             "round_number": 67,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2416,30 +2880,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 68 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b614497c-ee49-4a4b-84c8-1593a414a4a9"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 66,
       "second": {
         "body": {
           "message": "Round 68 closed. 0 submission(s) locked.",
-          "request_id": "srv-0df9f001-7463-433b-be33-048f08b3e5f9",
+          "request_id": "srv-854e150f-c41c-4e23-81f3-a83f03b2bba8",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.892091+00:00",
-            "deadline": "2026-08-28T10:06:07.855518+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:13.984618+00:00",
+            "deadline": "2026-08-28T11:04:13.947955+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.855514+00:00",
+            "opened_at": "2026-08-28T10:04:13.947952+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1298,
+            "round_id": 960,
             "round_number": 68,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2453,30 +2923,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-f0bbc125-4b6a-46a3-937a-9c18e7f0958c",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 67,
       "second": {
         "body": {
           "message": "Round 69 closed. 0 submission(s) locked.",
-          "request_id": "srv-64e3a69d-74a0-4cca-9402-55cf5f16cf08",
+          "request_id": "srv-4ece9326-3af0-4c18-87e5-5f0443162e32",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:07.950927+00:00",
-            "deadline": "2026-08-28T10:06:07.910198+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.062372+00:00",
+            "deadline": "2026-08-28T15:04:14.022366+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.910194+00:00",
+            "opened_at": "2026-08-28T10:04:14.009940+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1299,
+            "round_id": 962,
             "round_number": 69,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2490,30 +2965,35 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-a18db404-fcfb-4ccb-a274-fbd4b15fc40e",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 68,
       "second": {
         "body": {
           "message": "Round 70 closed. 0 submission(s) locked.",
-          "request_id": "srv-a3080d56-69fe-4a37-817e-7fad80b4eafa",
+          "request_id": "srv-b542bda3-f171-4568-83e9-1b4d90cee65d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.018573+00:00",
-            "deadline": "2026-08-28T10:06:07.968572+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.142012+00:00",
+            "deadline": "2026-08-28T15:04:14.100922+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:07.968567+00:00",
+            "opened_at": "2026-08-28T10:04:14.076132+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1300,
+            "round_id": 964,
             "round_number": 70,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2527,30 +3007,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-acfd0ddf-611f-4897-8b0f-af6f2799a5cc",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 69,
       "second": {
         "body": {
           "message": "Round 71 closed. 0 submission(s) locked.",
-          "request_id": "srv-38b692f2-1297-4063-9ebe-b0e346db8a87",
+          "request_id": "srv-9c7b2acb-9cc4-4228-985b-9a1d064e16dd",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.069685+00:00",
-            "deadline": "2026-08-28T10:06:08.035019+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.210530+00:00",
+            "deadline": "2026-08-28T15:04:14.176721+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.035016+00:00",
+            "opened_at": "2026-08-28T10:04:14.161611+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1301,
+            "round_id": 966,
             "round_number": 71,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2564,30 +3049,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 72 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-a50f9832-4061-4cef-85e3-bae8c641dc0a"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 70,
       "second": {
         "body": {
           "message": "Round 72 closed. 0 submission(s) locked.",
-          "request_id": "srv-6f7e2f6f-34f3-4a0c-bbdc-bf189900e1ae",
+          "request_id": "srv-9280a8b3-5430-4029-a105-ff60dd5163db",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.125115+00:00",
-            "deadline": "2026-08-28T10:06:08.086405+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.267080+00:00",
+            "deadline": "2026-08-28T11:04:14.224984+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.086401+00:00",
+            "opened_at": "2026-08-28T10:04:14.224979+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1302,
+            "round_id": 968,
             "round_number": 72,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2601,30 +3092,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-b81d44a4-5b80-4f1d-8e30-f87367ff8ae9",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 71,
       "second": {
         "body": {
           "message": "Round 73 closed. 0 submission(s) locked.",
-          "request_id": "srv-8e2aba82-af7f-41b9-895d-3b9459b52d94",
+          "request_id": "srv-5cad635a-fb72-446b-b10a-f5f2a87b6469",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.181357+00:00",
-            "deadline": "2026-08-28T10:06:08.143368+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.339880+00:00",
+            "deadline": "2026-08-28T15:04:14.303705+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.143364+00:00",
+            "opened_at": "2026-08-28T10:04:14.290749+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1303,
+            "round_id": 970,
             "round_number": 73,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2638,30 +3134,35 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-8e325aee-4a55-4978-8051-d190a8b6a2dc",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 72,
       "second": {
         "body": {
           "message": "Round 74 closed. 0 submission(s) locked.",
-          "request_id": "srv-ccc5b618-3588-42ae-a00e-f10578cf10ee",
+          "request_id": "srv-4f899ece-8a2a-46f1-b455-44b07f9bd708",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.231116+00:00",
-            "deadline": "2026-08-28T10:06:08.197334+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.407927+00:00",
+            "deadline": "2026-08-28T15:04:14.372820+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.197315+00:00",
+            "opened_at": "2026-08-28T10:04:14.355779+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1304,
+            "round_id": 972,
             "round_number": 74,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2675,30 +3176,36 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 75 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-21ce6d8d-a5d1-422d-9911-db19ce0f7bc4"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 73,
       "second": {
         "body": {
           "message": "Round 75 closed. 0 submission(s) locked.",
-          "request_id": "srv-63c226d6-9e78-4d1f-b9bd-3024482ae675",
+          "request_id": "srv-cf726194-a54f-4a61-b2e9-62eaf636a19e",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.283595+00:00",
-            "deadline": "2026-08-28T10:06:08.246795+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.464460+00:00",
+            "deadline": "2026-08-28T11:04:14.423941+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.246792+00:00",
+            "opened_at": "2026-08-28T10:04:14.423926+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1305,
+            "round_id": 974,
             "round_number": 75,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2712,30 +3219,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 76 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-d153da92-4c15-43b6-a949-dc4f0b98a042"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 74,
       "second": {
         "body": {
           "message": "Round 76 closed. 0 submission(s) locked.",
-          "request_id": "srv-77eb4f8e-4c11-4b7a-b870-28240d9f82ab",
+          "request_id": "srv-5ce2c29c-0d1c-4b77-ae3e-ce8f90aa5411",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.341847+00:00",
-            "deadline": "2026-08-28T10:06:08.301390+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.526779+00:00",
+            "deadline": "2026-08-28T11:04:14.488577+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.301386+00:00",
+            "opened_at": "2026-08-28T10:04:14.488574+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1306,
+            "round_id": 976,
             "round_number": 76,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2749,30 +3262,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-f4418355-3fed-47ea-8c6b-996d762ecedb",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 75,
       "second": {
         "body": {
           "message": "Round 77 closed. 0 submission(s) locked.",
-          "request_id": "srv-1365702e-c9ff-4207-90a0-d9317cea9812",
+          "request_id": "srv-080b6c30-8124-4d88-ad67-fd3a6f15cc6f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.394977+00:00",
-            "deadline": "2026-08-28T10:06:08.358287+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.604543+00:00",
+            "deadline": "2026-08-28T15:04:14.566041+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.358282+00:00",
+            "opened_at": "2026-08-28T10:04:14.551352+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1307,
+            "round_id": 978,
             "round_number": 77,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2786,30 +3304,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 78 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-bfe31582-cf13-4fe2-8ce2-ff6d624d0931"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 76,
       "second": {
         "body": {
           "message": "Round 78 closed. 0 submission(s) locked.",
-          "request_id": "srv-4c089d13-9480-4104-9ba4-5bfd621f5545",
+          "request_id": "srv-24530d50-253f-475e-ae42-d1d53a7ff8eb",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.450372+00:00",
-            "deadline": "2026-08-28T10:06:08.410900+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.657589+00:00",
+            "deadline": "2026-08-28T11:04:14.620441+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.410870+00:00",
+            "opened_at": "2026-08-28T10:04:14.620439+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1308,
+            "round_id": 980,
             "round_number": 78,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2823,48 +3347,78 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-012bc472-52c7-4610-8160-d3b56ebf982a",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 77,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 79 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-a238bdf5-49fb-4de0-bfdd-0d55f4c33294"
+          "message": "Round 79 closed. 0 submission(s) locked.",
+          "request_id": "srv-76c22efd-ea94-480d-95b3-6831cd813a84",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:14.731097+00:00",
+            "deadline": "2026-08-28T15:04:14.695516+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:14.682157+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 982,
+            "round_number": 79,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 80 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-5c5e31b3-8fed-4875-a7b9-1740da50dd2d"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 78,
       "second": {
         "body": {
           "message": "Round 80 closed. 0 submission(s) locked.",
-          "request_id": "srv-93aa69f1-9973-4746-bca8-85cc1ce8b1bf",
+          "request_id": "srv-bcd34b3f-4cf2-493f-bebb-688d93a658b9",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.555718+00:00",
-            "deadline": "2026-08-28T10:06:08.521192+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.786727+00:00",
+            "deadline": "2026-08-28T11:04:14.745924+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.521190+00:00",
+            "opened_at": "2026-08-28T10:04:14.745903+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1310,
+            "round_id": 984,
             "round_number": 80,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2878,30 +3432,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-b7e29f0e-d901-4f00-93df-030fd4af90bd",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 79,
       "second": {
         "body": {
           "message": "Round 81 closed. 0 submission(s) locked.",
-          "request_id": "srv-5cdf50da-7702-4606-9cde-c6653a08e059",
+          "request_id": "srv-5793911f-66a8-47f7-81be-13aee32c3452",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.606740+00:00",
-            "deadline": "2026-08-28T10:06:08.571733+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.868142+00:00",
+            "deadline": "2026-08-28T15:04:14.827783+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.571730+00:00",
+            "opened_at": "2026-08-28T10:04:14.812534+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1311,
+            "round_id": 986,
             "round_number": 81,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2915,30 +3474,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 82 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e6086cc6-47d2-4f4d-b532-9563eeef5b6d"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 80,
       "second": {
         "body": {
           "message": "Round 82 closed. 0 submission(s) locked.",
-          "request_id": "srv-c872369c-76ce-4dc3-950f-76a7892e3b75",
+          "request_id": "srv-dd92d53b-8a44-49c6-ae89-6fd138d714cd",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.667318+00:00",
-            "deadline": "2026-08-28T10:06:08.625466+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.921678+00:00",
+            "deadline": "2026-08-28T11:04:14.881500+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.625462+00:00",
+            "opened_at": "2026-08-28T10:04:14.881497+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1312,
+            "round_id": 988,
             "round_number": 82,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2952,30 +3517,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-7a5ebede-68be-4923-a37d-53b3d12704f4",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 81,
       "second": {
         "body": {
           "message": "Round 83 closed. 0 submission(s) locked.",
-          "request_id": "srv-038b5749-bd70-4816-a18d-15082e6d392f",
+          "request_id": "srv-41fadbc9-8045-42c8-b7ee-dc931c918cd8",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.728798+00:00",
-            "deadline": "2026-08-28T10:06:08.687373+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:14.997797+00:00",
+            "deadline": "2026-08-28T15:04:14.962588+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.687369+00:00",
+            "opened_at": "2026-08-28T10:04:14.949202+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1313,
+            "round_id": 990,
             "round_number": 83,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -2989,30 +3559,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 84 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-b72b1dc5-5d94-4df7-929b-7b2c6ae079e8"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 82,
       "second": {
         "body": {
           "message": "Round 84 closed. 0 submission(s) locked.",
-          "request_id": "srv-54d75125-f4f0-476b-92bb-668c4e97c3e6",
+          "request_id": "srv-89b7e307-777b-4c79-a194-3dc8dffaf25f",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.787009+00:00",
-            "deadline": "2026-08-28T10:06:08.745082+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.051850+00:00",
+            "deadline": "2026-08-28T11:04:15.013659+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.745080+00:00",
+            "opened_at": "2026-08-28T10:04:15.013655+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1314,
+            "round_id": 992,
             "round_number": 84,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3026,30 +3602,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-37891e1e-d2a8-44cd-9c48-7c9a6247de97",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 83,
       "second": {
         "body": {
           "message": "Round 85 closed. 0 submission(s) locked.",
-          "request_id": "srv-a08d3af8-3fb1-496f-972e-b79ae9899818",
+          "request_id": "srv-3da31b6d-eafd-4646-bc9a-bb5aaa21976c",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.846703+00:00",
-            "deadline": "2026-08-28T10:06:08.804238+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.123372+00:00",
+            "deadline": "2026-08-28T15:04:15.088367+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.804235+00:00",
+            "opened_at": "2026-08-28T10:04:15.074913+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1315,
+            "round_id": 994,
             "round_number": 85,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3063,30 +3644,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 86 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-e27012d7-f64f-4755-ba97-024216ec41c7"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 84,
       "second": {
         "body": {
           "message": "Round 86 closed. 0 submission(s) locked.",
-          "request_id": "srv-a9cd9c5a-61df-422c-aaa8-08f32413264b",
+          "request_id": "srv-4a22c662-c893-452c-9581-6b5418c00b80",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.906781+00:00",
-            "deadline": "2026-08-28T10:06:08.864377+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.175468+00:00",
+            "deadline": "2026-08-28T11:04:15.137142+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.864373+00:00",
+            "opened_at": "2026-08-28T10:04:15.137138+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1316,
+            "round_id": 996,
             "round_number": 86,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3100,30 +3687,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-da192496-feb8-441a-a8ef-0fbac6235c7e",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 85,
       "second": {
         "body": {
           "message": "Round 87 closed. 0 submission(s) locked.",
-          "request_id": "srv-66180712-a501-48a6-9152-05c85b15f5c6",
+          "request_id": "srv-139dc79e-1329-4d30-a668-5b9e95169c05",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:08.961994+00:00",
-            "deadline": "2026-08-28T10:06:08.923343+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.246457+00:00",
+            "deadline": "2026-08-28T15:04:15.210000+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.923340+00:00",
+            "opened_at": "2026-08-28T10:04:15.196754+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1317,
+            "round_id": 998,
             "round_number": 87,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3137,30 +3729,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 88 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-08bd165e-712b-476f-9046-71cac8f76f91"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 86,
       "second": {
         "body": {
           "message": "Round 88 closed. 0 submission(s) locked.",
-          "request_id": "srv-b9deecf3-000e-49a4-ad3d-a55e43783e09",
+          "request_id": "srv-c7cb0466-bbd1-4df1-a706-a52986d087ba",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.015434+00:00",
-            "deadline": "2026-08-28T10:06:08.977934+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.297959+00:00",
+            "deadline": "2026-08-28T11:04:15.260057+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:08.977931+00:00",
+            "opened_at": "2026-08-28T10:04:15.260053+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1318,
+            "round_id": 1000,
             "round_number": 88,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3174,30 +3772,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-271424c9-94e1-4f40-86ac-12a64677ce56",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 87,
       "second": {
         "body": {
           "message": "Round 89 closed. 0 submission(s) locked.",
-          "request_id": "srv-fdbf0494-0a5e-44d8-90c7-6f947888aec8",
+          "request_id": "srv-f0fe62ee-d48c-4841-b09e-2e54abaa0a22",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.070678+00:00",
-            "deadline": "2026-08-28T10:06:09.032458+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.370404+00:00",
+            "deadline": "2026-08-28T15:04:15.334914+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.032455+00:00",
+            "opened_at": "2026-08-28T10:04:15.320306+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1319,
+            "round_id": 1002,
             "round_number": 89,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3211,30 +3814,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 90 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-4f07818b-f07b-4404-8469-f19c655baf1e"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 88,
       "second": {
         "body": {
           "message": "Round 90 closed. 0 submission(s) locked.",
-          "request_id": "srv-de978311-fecd-47b8-837a-60e367292e87",
+          "request_id": "srv-af02bf3b-847a-4c30-81b0-847cb4f0c907",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.121711+00:00",
-            "deadline": "2026-08-28T10:06:09.086213+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.423247+00:00",
+            "deadline": "2026-08-28T11:04:15.384995+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.086210+00:00",
+            "opened_at": "2026-08-28T10:04:15.384991+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1320,
+            "round_id": 1004,
             "round_number": 90,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3248,30 +3857,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-bb69bcfd-a4d1-45b6-b7ce-8da8c0d46584",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 89,
       "second": {
         "body": {
           "message": "Round 91 closed. 0 submission(s) locked.",
-          "request_id": "srv-6ecbd5d3-83c2-4b28-8ac5-d2fde8aca8a5",
+          "request_id": "srv-1e59add3-8304-45d0-9aca-17f2379943cd",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.177290+00:00",
-            "deadline": "2026-08-28T10:06:09.139228+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.497070+00:00",
+            "deadline": "2026-08-28T15:04:15.460411+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.139224+00:00",
+            "opened_at": "2026-08-28T10:04:15.446819+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1321,
+            "round_id": 1006,
             "round_number": 91,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3285,30 +3899,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 92 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-8795047d-242e-465e-8ae4-fcb6155da4f1"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 90,
       "second": {
         "body": {
           "message": "Round 92 closed. 0 submission(s) locked.",
-          "request_id": "srv-8547aeff-d3e7-4b89-8848-091d4134f100",
+          "request_id": "srv-7d96b0fb-825d-428c-8115-4e8c2f62999d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.232402+00:00",
-            "deadline": "2026-08-28T10:06:09.194630+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.547208+00:00",
+            "deadline": "2026-08-28T11:04:15.511240+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.194625+00:00",
+            "opened_at": "2026-08-28T10:04:15.511237+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1322,
+            "round_id": 1008,
             "round_number": 92,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3322,30 +3942,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-7ae3838c-81b9-4c40-91ae-820650778dfe",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 91,
       "second": {
         "body": {
           "message": "Round 93 closed. 0 submission(s) locked.",
-          "request_id": "srv-ff48c53f-57a2-4a53-a708-32420d0a96cc",
+          "request_id": "srv-53d44038-558b-4e82-ba09-61f4ebdacdcf",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.288968+00:00",
-            "deadline": "2026-08-28T10:06:09.250267+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.630286+00:00",
+            "deadline": "2026-08-28T15:04:15.587352+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.250265+00:00",
+            "opened_at": "2026-08-28T10:04:15.574044+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1323,
+            "round_id": 1010,
             "round_number": 93,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3359,30 +3984,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 94 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-fdb222f4-e97e-4ac1-8d30-b0c0b5ae8696"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 92,
       "second": {
         "body": {
           "message": "Round 94 closed. 0 submission(s) locked.",
-          "request_id": "srv-08ddc70d-eb39-4b9c-a643-c3c3ef26f98e",
+          "request_id": "srv-91d2296c-cfd8-4036-83e3-f18b0d205340",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.344173+00:00",
-            "deadline": "2026-08-28T10:06:09.305808+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.683570+00:00",
+            "deadline": "2026-08-28T11:04:15.644401+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.305805+00:00",
+            "opened_at": "2026-08-28T10:04:15.644397+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1324,
+            "round_id": 1012,
             "round_number": 94,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3396,48 +4027,78 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-5dee033a-b934-4d7e-be2c-8ce447914f88",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 93,
       "second": {
         "body": {
-          "code": "round_already_closed",
-          "error": "Round 95 is already closed.",
-          "guidance": "Refresh the console \u2014 the deadline scheduler or another operator closed it first.",
-          "request_id": "srv-78c4585e-3c6d-4085-9d77-1bd5abbc2f80"
+          "message": "Round 95 closed. 0 submission(s) locked.",
+          "request_id": "srv-249741e4-3872-476a-a7aa-67a0ec8e24b3",
+          "round": {
+            "close_reason": "manual",
+            "closed_at": "2026-08-28T10:04:15.756090+00:00",
+            "deadline": "2026-08-28T15:04:15.721135+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "process",
+            "opened_at": "2026-08-28T10:04:15.708456+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 1014,
+            "round_number": 95,
+            "seconds_remaining": 17999,
+            "status": "closed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 96 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-9beacd0f-1b94-4443-9f51-33c7f0e0f7c6"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 94,
       "second": {
         "body": {
           "message": "Round 96 closed. 0 submission(s) locked.",
-          "request_id": "srv-bfa0729c-b08d-4355-b56e-895c31d645a3",
+          "request_id": "srv-38e27950-4299-4775-bcd9-c01ce134dc60",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.455033+00:00",
-            "deadline": "2026-08-28T10:06:09.416942+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.806304+00:00",
+            "deadline": "2026-08-28T11:04:15.768512+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.416940+00:00",
+            "opened_at": "2026-08-28T10:04:15.768508+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1326,
+            "round_id": 1016,
             "round_number": 96,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3451,30 +4112,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-81bd6678-733c-45d3-9375-6e80f7155e09",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 95,
       "second": {
         "body": {
           "message": "Round 97 closed. 0 submission(s) locked.",
-          "request_id": "srv-ace03fbd-51d8-40fd-a33f-753a24fbba29",
+          "request_id": "srv-b5bacc7d-a9ad-4590-9102-1e7d3ccaf55d",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.513739+00:00",
-            "deadline": "2026-08-28T10:06:09.471667+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.880803+00:00",
+            "deadline": "2026-08-28T15:04:15.844545+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.471652+00:00",
+            "opened_at": "2026-08-28T10:04:15.832190+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1327,
+            "round_id": 1018,
             "round_number": 97,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3488,30 +4154,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 98 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-316c2aa4-d859-4531-8c4f-846a4ffeeb5f"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 96,
       "second": {
         "body": {
           "message": "Round 98 closed. 0 submission(s) locked.",
-          "request_id": "srv-e9dd4a0c-8aa4-42f2-ba13-43a0bdca37ca",
+          "request_id": "srv-960a289f-c2e0-48d6-8d97-2a641bd8d9df",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.571294+00:00",
-            "deadline": "2026-08-28T10:06:09.530714+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.931535+00:00",
+            "deadline": "2026-08-28T11:04:15.893077+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.530710+00:00",
+            "opened_at": "2026-08-28T10:04:15.893073+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1328,
+            "round_id": 1020,
             "round_number": 98,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3525,30 +4197,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-c698b486-1a1e-4e32-95c0-6f64c9542288",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 97,
       "second": {
         "body": {
           "message": "Round 99 closed. 0 submission(s) locked.",
-          "request_id": "srv-8453ffcd-c9ff-4d1d-a6b0-33b3fe22a514",
+          "request_id": "srv-5481f2c6-6e90-4054-84c2-243356b7b4b0",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.623547+00:00",
-            "deadline": "2026-08-28T10:06:09.587996+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:15.997752+00:00",
+            "deadline": "2026-08-28T15:04:15.965588+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.587971+00:00",
+            "opened_at": "2026-08-28T10:04:15.952379+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1329,
+            "round_id": 1022,
             "round_number": 99,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3562,30 +4239,36 @@
     {
       "arrival_order": "first-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "code": "schedule_rejected",
+          "error": "Round 100 is \"closed\"; its schedule can no longer change.",
+          "guidance": "Nothing was scheduled. Fix the listed rounds and resend the whole schedule.",
+          "request_id": "srv-1c6cd15b-6494-40ea-aeac-ffa57ca651e7"
+        },
+        "kind": "api",
+        "status_code": 400
       },
       "iteration": 98,
       "second": {
         "body": {
           "message": "Round 100 closed. 0 submission(s) locked.",
-          "request_id": "srv-983e2d03-b243-46d0-9957-26c599264c4a",
+          "request_id": "srv-ef432a21-9bf5-4d2f-8498-e746b24af85b",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.679111+00:00",
-            "deadline": "2026-08-28T10:06:09.641402+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:16.049237+00:00",
+            "deadline": "2026-08-28T11:04:16.010713+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.641399+00:00",
+            "opened_at": "2026-08-28T10:04:16.010709+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1330,
+            "round_id": 1024,
             "round_number": 100,
-            "seconds_remaining": -60,
+            "seconds_remaining": 3599,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -3599,30 +4282,35 @@
     {
       "arrival_order": "second-first",
       "first": {
-        "kind": "management-command",
-        "status_code": null
+        "body": {
+          "game_id": 17,
+          "request_id": "srv-e38a3c20-581a-4131-8905-6aad8eec203f",
+          "updated": 2
+        },
+        "kind": "api",
+        "status_code": 200
       },
       "iteration": 99,
       "second": {
         "body": {
           "message": "Round 101 closed. 0 submission(s) locked.",
-          "request_id": "srv-7f4db382-11b1-428c-9de7-354eea21babd",
+          "request_id": "srv-3e1899c7-754b-435b-aa37-568bd23ef3b0",
           "round": {
             "close_reason": "manual",
-            "closed_at": "2026-08-28T10:07:09.739137+00:00",
-            "deadline": "2026-08-28T10:06:09.698459+00:00",
-            "is_overdue": true,
+            "closed_at": "2026-08-28T10:04:16.122090+00:00",
+            "deadline": "2026-08-28T15:04:16.085440+00:00",
+            "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "process",
-            "opened_at": "2026-08-28T10:07:09.698455+00:00",
+            "opened_at": "2026-08-28T10:04:16.073426+00:00",
             "phase_1_duration": null,
             "phase_2_duration": null,
             "processed_at": null,
             "processing_status": "PENDING",
-            "round_id": 1331,
+            "round_id": 1026,
             "round_number": 101,
-            "seconds_remaining": -60,
+            "seconds_remaining": 17999,
             "status": "closed",
             "teams_locked": 2,
             "teams_pending": 0,

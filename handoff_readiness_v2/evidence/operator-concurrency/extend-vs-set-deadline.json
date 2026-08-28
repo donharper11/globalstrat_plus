@@ -1,0 +1,4469 @@
+{
+  "advisory_locks_observed_during_race": [
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357778
+    },
+    {
+      "game_id": 5,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357779
+    },
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357779
+    },
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357780
+    },
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357781
+    },
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357782
+    },
+    {
+      "game_id": 5,
+      "granted": false,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357783
+    },
+    {
+      "game_id": 5,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 357783
+    }
+  ],
+  "deadlocks_after": 0,
+  "deadlocks_before": 0,
+  "iterations": 100,
+  "pair": "extend-vs-set-deadline",
+  "status_code_pairs": {
+    "200+200": 100
+  },
+  "transcript": [
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.298933+00:00",
+          "reopened": false,
+          "request_id": "srv-570bd686-ee38-40a4-93d8-1cac6bfa88d6"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 0,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8c8f8e7a-672f-4908-b199-5dbbee1bffce",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.298933+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.287668+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 407,
+            "round_number": 2,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.341876+00:00",
+          "reopened": false,
+          "request_id": "srv-3866f79c-e3d4-4f9c-ac9c-eb77847cf60c"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 1,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-9b73a7d4-885a-43ee-a670-b8209adba591",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.353840+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.341872+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 408,
+            "round_number": 3,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.404708+00:00",
+          "reopened": false,
+          "request_id": "srv-2b10a965-3c52-427a-b3cf-80a4934bec06"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 2,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-a7a9ff10-ae67-4362-9597-71b399816a67",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.404708+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.393627+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 409,
+            "round_number": 4,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.440448+00:00",
+          "reopened": false,
+          "request_id": "srv-a56c9c59-b2e9-4f0f-ab43-c36fba14cdbd"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 3,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-245c494b-4079-46aa-8c97-4abf721019f8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.453371+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.440444+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 410,
+            "round_number": 5,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.503483+00:00",
+          "reopened": false,
+          "request_id": "srv-2a03b5f9-7ddb-4fe0-a2a9-7df8b3ce8126"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 4,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-f9fb4b59-b8c1-4f98-820b-0bb5195154e6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.503483+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.490932+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 411,
+            "round_number": 6,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.544527+00:00",
+          "reopened": false,
+          "request_id": "srv-6c662560-ae75-42ad-887e-a80659f1d6e7"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 5,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-e8fb8ab3-f409-445e-b685-f71faa82824a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.554869+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.544524+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 412,
+            "round_number": 7,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.605311+00:00",
+          "reopened": false,
+          "request_id": "srv-d4c44d02-5a84-44e0-b042-2a122086b016"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 6,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-3c3eaa52-2b29-4143-afd4-d9b113b1314b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.605311+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.592696+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 413,
+            "round_number": 8,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.643262+00:00",
+          "reopened": false,
+          "request_id": "srv-da286be2-3602-48f8-8e54-f756f80ae68a"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 7,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-110f10be-bda1-4019-96db-1460ff117adf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.654079+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.643260+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 414,
+            "round_number": 9,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.705414+00:00",
+          "reopened": false,
+          "request_id": "srv-cbdfecaf-74b4-43aa-93fb-a8fe5200c5cb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 8,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-f0c60935-e6b3-45c0-a8ce-7fa95ee61b7f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.705414+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.694119+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 415,
+            "round_number": 10,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.743055+00:00",
+          "reopened": false,
+          "request_id": "srv-57d4ecbd-f0a4-4f48-bb61-02baab998de0"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 9,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-ca25c2e2-5fe8-475d-b66f-21c481f4e91f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.755363+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.743049+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 416,
+            "round_number": 11,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.806159+00:00",
+          "reopened": false,
+          "request_id": "srv-3bcb6ac2-9105-4752-a188-3eb4602e766b"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 10,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-6dffb1d4-d8bc-4d36-a5b8-d6432458c9ba",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.806159+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.793726+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 417,
+            "round_number": 12,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.843515+00:00",
+          "reopened": false,
+          "request_id": "srv-ee67ed4c-ed53-4617-b7d2-974308ad85eb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 11,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-81fe20cd-640a-4fbb-b1b5-902957bf878e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.856803+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.843512+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 418,
+            "round_number": 13,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:58.907174+00:00",
+          "reopened": false,
+          "request_id": "srv-5aa13315-e2e8-42ae-bb9a-4c90f70c3b0d"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 12,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-dd497f94-a516-458b-84bb-93f57d1885d3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.907174+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.895458+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 419,
+            "round_number": 14,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:58.945339+00:00",
+          "reopened": false,
+          "request_id": "srv-f1476ef5-18ba-47bf-ba44-c4dd413c1fbc"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 13,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-aca7ce53-9884-45df-9fcd-4ab552cd0db0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:58.958186+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:58.945335+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 420,
+            "round_number": 15,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.012575+00:00",
+          "reopened": false,
+          "request_id": "srv-731dde01-860a-4de7-ba2c-14748d30a4fb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-17dbdf3b-d730-4f38-8201-5c1590cd5fb1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.012575+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.000587+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 421,
+            "round_number": 16,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.051662+00:00",
+          "reopened": false,
+          "request_id": "srv-1fb7dbc8-a1f8-4676-87eb-7965945c80af"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 15,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-012c76f9-b09b-4997-bb25-ecb80aadd913",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.063305+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.051658+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 422,
+            "round_number": 17,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.115346+00:00",
+          "reopened": false,
+          "request_id": "srv-65cdce0b-d70b-4aec-894e-2b8e770930a4"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 16,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-e7649787-8213-4d4a-9d96-fc24bfebc257",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.115346+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.102965+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 423,
+            "round_number": 18,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.156392+00:00",
+          "reopened": false,
+          "request_id": "srv-5de65774-cc03-4920-be90-025d5d3b40a6"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 17,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-227fb0c7-cc9c-4e1d-a272-48c4f344bf3a",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.168455+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.156389+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 424,
+            "round_number": 19,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.214046+00:00",
+          "reopened": false,
+          "request_id": "srv-7e92a113-be71-4688-b469-3906635d4c2c"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 18,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-38096fe5-10fc-489f-8856-5e29281d8e4b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.214046+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.203202+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 425,
+            "round_number": 20,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.252374+00:00",
+          "reopened": false,
+          "request_id": "srv-21df5418-12fa-4587-a1eb-9f42e7aac120"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 19,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-f5c51f36-ec41-429a-9b09-388b6fa81368",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.263621+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.252358+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 426,
+            "round_number": 21,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.318625+00:00",
+          "reopened": false,
+          "request_id": "srv-c1587c29-fa2e-42aa-b228-a5953406fb29"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 20,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-2e81aa11-ce19-478a-ae33-4001f65069ad",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.318625+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.305713+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 427,
+            "round_number": 22,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.363227+00:00",
+          "reopened": false,
+          "request_id": "srv-2c1ec73f-9d5e-4a3b-b000-5df4eb511db7"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 21,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-53c34942-d1c0-40ea-bd4d-da9bd69c6de3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.375424+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.363222+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 428,
+            "round_number": 23,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.434370+00:00",
+          "reopened": false,
+          "request_id": "srv-f404f948-7f5b-4619-b968-4b3baa7169ff"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 22,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-928d719d-536f-4a61-938f-292538e2b0cc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.434370+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.419999+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 429,
+            "round_number": 24,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.474525+00:00",
+          "reopened": false,
+          "request_id": "srv-063a5e5f-537d-4fbf-9090-95fb6649e2dc"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 23,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-23d9689d-8da7-41cd-abf3-b5fda95392b1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.487498+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.474519+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 430,
+            "round_number": 25,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.549305+00:00",
+          "reopened": false,
+          "request_id": "srv-bb60d5a7-c646-4196-a019-f08400baaa11"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 24,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-63916b7b-6a21-47cd-bd17-120bade3c312",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.549305+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.534978+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 431,
+            "round_number": 26,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.592386+00:00",
+          "reopened": false,
+          "request_id": "srv-8574f3bd-198c-469e-ab72-65e4e3dbb4bd"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 25,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-77131c40-1f61-4754-a40d-dbd851909f2c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.605505+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.592382+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 432,
+            "round_number": 27,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.658901+00:00",
+          "reopened": false,
+          "request_id": "srv-ea15d7bf-0063-4503-a714-8bb9af405dc5"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 26,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-d3699b81-1df7-46e4-908f-ec04d3176e4c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.658901+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.646697+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 433,
+            "round_number": 28,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.695247+00:00",
+          "reopened": false,
+          "request_id": "srv-f97c7d15-9059-4172-8758-3c5ac86332d2"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 27,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-e02c9b82-50e5-43e4-ad3b-1c5d26ce1413",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.708479+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.695244+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 434,
+            "round_number": 29,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.762757+00:00",
+          "reopened": false,
+          "request_id": "srv-9761ffc9-0c91-4338-86ef-644878ce29ef"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 28,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-3a328310-e7c1-430f-91af-2a9127587b53",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.762757+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.751499+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 435,
+            "round_number": 30,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.801246+00:00",
+          "reopened": false,
+          "request_id": "srv-66b19525-eaf8-4134-a0b1-9047c972f665"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 29,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-267ffa4d-1208-40fe-b8c5-30e2d18dcbfb",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.812980+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.801243+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 436,
+            "round_number": 31,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.863044+00:00",
+          "reopened": false,
+          "request_id": "srv-1783fd5b-16b0-4c2e-aa87-3123706176d7"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 30,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-4f14011e-9807-4db2-86e1-7b12b7feb525",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.863044+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.851855+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 437,
+            "round_number": 32,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:56:59.902550+00:00",
+          "reopened": false,
+          "request_id": "srv-c0b0d837-a4bc-4cd2-9f49-ab3a2fd37737"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 31,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-80aa7a78-947e-484d-b67d-5e6a36f5285b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.913632+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.902547+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 438,
+            "round_number": 33,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:56:59.965389+00:00",
+          "reopened": false,
+          "request_id": "srv-2fe3748e-a563-4baf-8d90-d52556e212bf"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 32,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-bfa0b82d-2f06-4ad8-96f3-7a7a66ac58b8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:56:59.965389+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:56:59.953578+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 439,
+            "round_number": 34,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.003541+00:00",
+          "reopened": false,
+          "request_id": "srv-8193d19a-bdb1-475c-a543-a2f1d41772f9"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 33,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-1c92c797-4f16-4e70-868e-65c3ab2b555e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.014433+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.003538+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 440,
+            "round_number": 35,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.064669+00:00",
+          "reopened": false,
+          "request_id": "srv-98c3ea9d-7cec-4b5a-a610-f8cf2a013331"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 34,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-5d1de4c1-0a6c-42e9-8a03-28e8ce811135",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.064669+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.053913+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 441,
+            "round_number": 36,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.119975+00:00",
+          "reopened": false,
+          "request_id": "srv-ee48cf46-cc7f-4387-bd94-6cb741d48aca"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 35,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c96f0e21-8bc9-4e19-b267-f2252908db6f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.119975+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.108114+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 442,
+            "round_number": 37,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.175753+00:00",
+          "reopened": false,
+          "request_id": "srv-0c3feb56-eaaa-424f-88b3-ce542ba7e929"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 36,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-7428c9b7-ef7a-407b-b5d4-3fc41142651f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.175753+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.163902+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 443,
+            "round_number": 38,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.214243+00:00",
+          "reopened": false,
+          "request_id": "srv-45c33e87-a2d7-45b8-b2b3-5cd8e3532edb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 37,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-1a3f2852-92e0-4f58-9572-5c4570812340",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.226041+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.214240+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 444,
+            "round_number": 39,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.279304+00:00",
+          "reopened": false,
+          "request_id": "srv-702e45da-4822-4b74-82f2-b27b21dc6c9a"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 38,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-0bf0329c-4682-42d0-8c4f-cf2bc9993c8b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.279304+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.267643+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 445,
+            "round_number": 40,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.322172+00:00",
+          "reopened": false,
+          "request_id": "srv-80883b80-831d-4ed0-b1ab-0f9f421f5df4"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 39,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-322c0548-61f1-487a-994a-d9ac0c961fce",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.335045+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.322155+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 446,
+            "round_number": 41,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.390734+00:00",
+          "reopened": false,
+          "request_id": "srv-f2e556df-3484-45bf-93d2-56a57fa1d68f"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 40,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-7cd741ff-3538-450d-b211-079873826020",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.390734+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.378816+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 447,
+            "round_number": 42,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.447311+00:00",
+          "reopened": false,
+          "request_id": "srv-1549af6d-d7f5-4cca-b2b3-745ed0d2c022"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 41,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c4d2fbc5-768f-4e37-b70c-72169da3a866",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.447311+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.435635+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 448,
+            "round_number": 43,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.501960+00:00",
+          "reopened": false,
+          "request_id": "srv-e0f95c78-fe9b-4e67-a443-6702adbb5b77"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 42,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-834f6add-c7fa-4c97-b142-f2d43e3c49e2",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.501960+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.488937+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 449,
+            "round_number": 44,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.546189+00:00",
+          "reopened": false,
+          "request_id": "srv-6c621de5-7b5e-4c25-850f-c9c0f948bcbb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 43,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-682d5894-80e4-449d-b3bb-3c2841b55ae4",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.559123+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.546185+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 450,
+            "round_number": 45,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.620384+00:00",
+          "reopened": false,
+          "request_id": "srv-d8561231-0aa3-4223-882c-5b801f6ac98f"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 44,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-efefe51e-e589-4ce2-a4e6-257cd0408b93",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.620384+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.606262+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 451,
+            "round_number": 46,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.663261+00:00",
+          "reopened": false,
+          "request_id": "srv-e63ae209-303c-46a6-ae7b-96640cd88538"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 45,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-9c4c412a-6334-4a1b-a8f3-c0df55012136",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.677605+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.663257+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 452,
+            "round_number": 47,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.733026+00:00",
+          "reopened": false,
+          "request_id": "srv-15eb1d19-c726-425f-8698-3941fbb9f442"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 46,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-3710b63d-faa7-41c7-bdba-6219c14b41b1",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.733026+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.721345+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 453,
+            "round_number": 48,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.792534+00:00",
+          "reopened": false,
+          "request_id": "srv-db5ca666-b087-4944-8029-f37268231b17"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 47,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-b5a2a0a2-354a-4f4f-886d-289cad4fa778",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.792534+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.778358+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 454,
+            "round_number": 49,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.838646+00:00",
+          "reopened": false,
+          "request_id": "srv-e4c0eb0b-2f81-48fa-993e-17099e8eafe0"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 48,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c4da0b08-a612-4f2b-937e-417c24d10ea6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.851243+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.838642+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 455,
+            "round_number": 50,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:00.920128+00:00",
+          "reopened": false,
+          "request_id": "srv-13ebf183-911e-4379-82fb-7508759187fb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 49,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-cc28690c-bdd9-4c30-9906-d211f1bee42c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.932048+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.920124+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 456,
+            "round_number": 51,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:00.990479+00:00",
+          "reopened": false,
+          "request_id": "srv-7a5b07b2-2bbb-425d-bbbb-4b6ea6aeed09"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 50,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-090be172-7fc6-4833-bc89-8eab006985dc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:00.990479+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:00.976665+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 457,
+            "round_number": 52,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.032601+00:00",
+          "reopened": false,
+          "request_id": "srv-d4214aad-61fd-474c-bdb4-0dbff7dffdec"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 51,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-6aaf4efd-2025-4cde-919b-e4a547253cd0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.044078+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.032599+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 458,
+            "round_number": 53,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.100732+00:00",
+          "reopened": false,
+          "request_id": "srv-0df0647d-9dbf-4167-be34-405431467e16"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 52,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-04bdb09a-5417-42e0-9353-4fe850356584",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.100732+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.088270+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 459,
+            "round_number": 54,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.140197+00:00",
+          "reopened": false,
+          "request_id": "srv-411e3d99-0283-4990-b79c-19fe86b8514e"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 53,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-5fdda2b1-6fde-4750-b387-ce14621d6776",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.153483+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.140194+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 460,
+            "round_number": 55,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.208021+00:00",
+          "reopened": false,
+          "request_id": "srv-95a2a779-fb17-4f3d-be28-576fa92ac3a3"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 54,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-420b3dba-0533-46c9-bc8e-2156280b4a97",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.208021+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.195971+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 461,
+            "round_number": 56,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.249891+00:00",
+          "reopened": false,
+          "request_id": "srv-f90b7ee8-3f16-467e-b30b-d782f882b681"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 55,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-54142b7d-3894-439d-9a85-32a40991a816",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.262225+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.249887+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 462,
+            "round_number": 57,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.317406+00:00",
+          "reopened": false,
+          "request_id": "srv-22d7b958-d62b-4748-9b79-a883e2f0afb0"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 56,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8c668619-59b8-451e-ae8e-00a8be41c7e3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.317406+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.304724+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 463,
+            "round_number": 58,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.359544+00:00",
+          "reopened": false,
+          "request_id": "srv-1c0611a6-5bc8-44c9-ae03-c82a8b3e0cec"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 57,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-aa6b2e11-e8c6-49d7-b383-b29dfa076cbf",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.371057+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.359541+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 464,
+            "round_number": 59,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.427000+00:00",
+          "reopened": false,
+          "request_id": "srv-fab26290-b1df-4055-878d-4b454014f8b5"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 58,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-442d7894-58ac-4b66-8ae9-d2c8866f1c92",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.427000+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.414375+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 465,
+            "round_number": 60,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.467927+00:00",
+          "reopened": false,
+          "request_id": "srv-1f7424eb-5b41-43ea-9368-bc5b6e0ee165"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 59,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-85a2d791-a2a0-4ebe-b3e2-4545bfbd4ed6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.479641+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.467922+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 466,
+            "round_number": 61,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.543253+00:00",
+          "reopened": false,
+          "request_id": "srv-c4470745-0c92-4778-ad1e-4345c9328388"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 60,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-a54e6add-d4e7-4f99-b677-c448c8b786c8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.543253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.527489+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 467,
+            "round_number": 62,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.598920+00:00",
+          "reopened": false,
+          "request_id": "srv-73d6f65a-6cbe-458e-a4e6-bf67117c084f"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 61,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-7191efa7-89d7-48f6-8d62-895557a2828b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.598920+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.586504+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 468,
+            "round_number": 63,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.654557+00:00",
+          "reopened": false,
+          "request_id": "srv-815f8d65-83ec-4751-af6b-f8b7d5560589"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 62,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-e0d1b214-a1aa-4d14-8b97-c0741a03483b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.654557+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.641618+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 469,
+            "round_number": 64,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.699713+00:00",
+          "reopened": false,
+          "request_id": "srv-2eb5b546-8801-41fc-9ecf-1b16c902604e"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 63,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-cf24b038-0c6d-4083-ba38-977a8c9c0645",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.713676+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.699708+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 470,
+            "round_number": 65,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.774070+00:00",
+          "reopened": false,
+          "request_id": "srv-66881d55-433c-46ad-ba54-11010c3f070a"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 64,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-65d112de-36ef-462f-bb47-e2e688db1b21",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.774070+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.760686+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 471,
+            "round_number": 66,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.817762+00:00",
+          "reopened": false,
+          "request_id": "srv-d06a2964-d7ea-4c6e-a6d9-ba4facb9c5d0"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 65,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-d3bf0cc8-5a60-4b6e-ac1b-063caed49d4f",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.829601+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.817759+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 472,
+            "round_number": 67,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.885609+00:00",
+          "reopened": false,
+          "request_id": "srv-ce057dac-65f2-4543-9b9f-d147609df781"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 66,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-a7b29178-5b98-4c23-85fc-077040c90a71",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.885609+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.872834+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 473,
+            "round_number": 68,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:01.926786+00:00",
+          "reopened": false,
+          "request_id": "srv-331b3c47-a3d7-4fa1-b7e4-b2f6d53499fc"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 67,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-0fc6ec1d-8261-4d2a-96be-4044b3115535",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.938384+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.926783+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 474,
+            "round_number": 69,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:01.991582+00:00",
+          "reopened": false,
+          "request_id": "srv-069d8c55-aa02-493c-9963-0c321741bd9c"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 68,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c3a87c87-4e8e-46fb-ab61-b31152c4ba45",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:01.991582+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:01.979264+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 475,
+            "round_number": 70,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.031807+00:00",
+          "reopened": false,
+          "request_id": "srv-e7ae6624-5cd2-4a86-af28-1f39cba79151"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 69,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-607c4913-186b-4915-93dc-23e88587f59d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.044294+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.031803+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 476,
+            "round_number": 71,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.096990+00:00",
+          "reopened": false,
+          "request_id": "srv-ccfe3d9f-136d-43bd-82e4-a7ddb750cdd9"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 70,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-fc187c64-418b-438f-aea1-1dfe5ecf0d26",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.096990+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.086047+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 477,
+            "round_number": 72,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.140060+00:00",
+          "reopened": false,
+          "request_id": "srv-11705e8a-1c17-44d2-bca7-7c8335a328b0"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 71,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-aa8ed887-b63a-4cb6-b529-dea6f298971c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.153041+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.140042+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 478,
+            "round_number": 73,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.205893+00:00",
+          "reopened": false,
+          "request_id": "srv-a3f11ee3-a287-4368-b006-e4e65d9926ac"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 72,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-9091e3e8-aad3-4723-a5ef-b2d48e0c8f49",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.205893+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.194104+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 479,
+            "round_number": 74,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.248601+00:00",
+          "reopened": false,
+          "request_id": "srv-d65c84ee-0d9b-456b-b13c-69a69cde6ef8"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 73,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-bfe59708-c553-4622-bda2-7d2c14fbd9f0",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.260023+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.248597+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 480,
+            "round_number": 75,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.314654+00:00",
+          "reopened": false,
+          "request_id": "srv-1cfedd23-bf36-4b86-8d53-b1c165efe2d8"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 74,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-aa99ed0a-a5ab-48ee-ad4b-e3ca64e72716",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.314654+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.302564+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 481,
+            "round_number": 76,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.363089+00:00",
+          "reopened": false,
+          "request_id": "srv-a2b5e37d-9a82-45f7-ab8b-1ef18cd0ae5e"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 75,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-5fe142ef-2b13-4d31-9de9-18941873abfc",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.378326+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.363077+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 482,
+            "round_number": 77,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.430108+00:00",
+          "reopened": false,
+          "request_id": "srv-3e463e66-d572-4f49-a549-59361a484203"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 76,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8cf6aa27-40c3-4c83-ba74-af1b5d172d62",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.448743+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.430077+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 483,
+            "round_number": 78,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.546738+00:00",
+          "reopened": false,
+          "request_id": "srv-be4789cf-51cc-4ca5-8d35-62804df60057"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 77,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-15f9d879-54e1-44aa-b5f2-904bda9710ae",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.546738+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.533314+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 484,
+            "round_number": 79,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.619020+00:00",
+          "reopened": false,
+          "request_id": "srv-a8cae978-fcb3-4099-a98d-f6875b795c26"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 78,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-04e2eb83-6f9d-4684-ad14-4f368bbb0fc3",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.619020+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.603647+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 485,
+            "round_number": 80,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.665219+00:00",
+          "reopened": false,
+          "request_id": "srv-c7f9f43f-1f14-4c0a-be87-71cdf825dc4e"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 79,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-4c442294-53df-4a73-9dbc-74a91fe6969e",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.678264+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.665214+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 486,
+            "round_number": 81,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.741967+00:00",
+          "reopened": false,
+          "request_id": "srv-680ed560-b8ca-4af6-9097-2e5a9b354e28"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 80,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-aae4f3bd-ea53-49ef-8e89-8f0d099710b8",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.741967+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.727518+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 487,
+            "round_number": 82,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.782999+00:00",
+          "reopened": false,
+          "request_id": "srv-424d9c3e-2995-4ae8-8a58-a6ebf02059b5"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 81,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-4eb73aaa-5817-430a-8fa4-d1f0c7bdea95",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.794691+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.782994+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 488,
+            "round_number": 83,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.847750+00:00",
+          "reopened": false,
+          "request_id": "srv-5f1fd8b7-25ed-43f4-8f93-b8c266ec76a2"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 82,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-d04a4a16-0be7-41e5-a9b8-c809f00ef968",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.847750+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.834939+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 489,
+            "round_number": 84,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:02.894777+00:00",
+          "reopened": false,
+          "request_id": "srv-35b9096b-7474-4532-9531-7dd4929a4cbf"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 83,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8b049b5b-2cef-43d6-8b0d-e8ee17e3706b",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.907494+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.894774+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 490,
+            "round_number": 85,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:02.971091+00:00",
+          "reopened": false,
+          "request_id": "srv-24b01fcd-ff54-479b-a9b6-ae3a260c9839"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 84,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8ab3d8f5-9c0a-461d-9ad3-10460f828833",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:02.971091+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:02.959948+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 491,
+            "round_number": 86,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.027579+00:00",
+          "reopened": false,
+          "request_id": "srv-5458940f-9554-4172-85b6-2712dcc7ed1e"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 85,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-cadbd927-bf50-4f7e-86d6-6b723739d860",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.027579+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.014081+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 492,
+            "round_number": 87,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.084547+00:00",
+          "reopened": false,
+          "request_id": "srv-4f325cc8-8c5e-4723-8031-6ed19b945ae8"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 86,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c144921a-5a7d-4e7a-86eb-b09f5cc260ce",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.084547+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.071163+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 493,
+            "round_number": 88,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.129680+00:00",
+          "reopened": false,
+          "request_id": "srv-b30b9636-9176-426e-9c36-d13ad802ac54"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 87,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-c5962242-73ba-4792-84ec-f180ce6ae8d6",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.141615+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.129663+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 494,
+            "round_number": 89,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.199030+00:00",
+          "reopened": false,
+          "request_id": "srv-9833eb2b-0df0-4326-8523-754f566613d5"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 88,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-26e0cde2-c3f2-4c42-94d1-25496c925009",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.199030+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.185625+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 495,
+            "round_number": 90,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.244868+00:00",
+          "reopened": false,
+          "request_id": "srv-55fcc7da-e043-4030-9e05-fcf9c17b46fe"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 89,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-7bc76ca8-ee94-47df-9b6c-2f6991dae2f9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.257106+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.244863+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 496,
+            "round_number": 91,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.315152+00:00",
+          "reopened": false,
+          "request_id": "srv-06073eb3-21b4-4696-a4fa-0a14962758f4"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 90,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-8a880e37-36b6-4fd2-af5f-1db97ddb79e9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.315152+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.301809+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 497,
+            "round_number": 92,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.374543+00:00",
+          "reopened": false,
+          "request_id": "srv-1e4a75c4-aa3d-4f6e-9782-5009ef674f46"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 91,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-200713bc-d3cb-43f4-86b6-a58c6a62b8fe",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.374543+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.361283+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 498,
+            "round_number": 93,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.434306+00:00",
+          "reopened": false,
+          "request_id": "srv-a2b8b0c9-80f4-4e4f-842d-2e708d5858e4"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 92,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-930cfa34-adb1-4735-ba6e-8a249e477941",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.434306+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.419835+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 499,
+            "round_number": 94,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.483249+00:00",
+          "reopened": false,
+          "request_id": "srv-bc2b8399-de01-49c7-b0ee-ac1c2b090cbc"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 93,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-a6b7627c-6228-4665-8cb9-d16b129cd7c7",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.496031+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.483245+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 500,
+            "round_number": 95,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.559039+00:00",
+          "reopened": false,
+          "request_id": "srv-126b4cf0-7ccb-42a7-92aa-334922292b47"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 94,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-4d98d2a9-c9c3-4d09-b6bc-759a2b0e66ec",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.559039+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.544857+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 501,
+            "round_number": 96,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.603731+00:00",
+          "reopened": false,
+          "request_id": "srv-3d202b2c-eaf8-489a-9756-9ab96aeb0afb"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 95,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-95195b65-e7e6-470a-b33b-7ffe164e5b3d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.617325+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.603727+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 502,
+            "round_number": 97,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.677512+00:00",
+          "reopened": false,
+          "request_id": "srv-31e016c5-7061-491f-8a0b-72967984f348"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 96,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-3034b79b-6e6d-4a3d-9575-26693486a079",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.677512+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.663395+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 503,
+            "round_number": 98,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.723298+00:00",
+          "reopened": false,
+          "request_id": "srv-48e66200-1a85-4917-a7e6-193e354a954a"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 97,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-cde11cd6-f011-447e-92fa-44f30fb74b30",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.735304+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.723294+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 504,
+            "round_number": 99,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-29T00:57:03.797300+00:00",
+          "reopened": false,
+          "request_id": "srv-435609f3-0706-4f46-b290-b0bbbf04f192"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 98,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-4edf4017-ca6c-456e-8a36-0a16bf9d4586",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.797300+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.784697+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 505,
+            "round_number": 100,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    },
+    {
+      "arrival_order": "second-first",
+      "first": {
+        "body": {
+          "message": "Deadline extended by 3 hour(s).",
+          "new_deadline": "2026-08-28T13:57:03.842843+00:00",
+          "reopened": false,
+          "request_id": "srv-275283f0-ff44-4076-93e3-9d011fb1f588"
+        },
+        "kind": "api",
+        "status_code": 200
+      },
+      "iteration": 99,
+      "second": {
+        "body": {
+          "message": "Deadline updated.",
+          "request_id": "srv-2887808f-6d74-4a80-ba54-d56c40002469",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T21:57:03.856243+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "await_deadline",
+            "opened_at": "2026-08-28T09:57:03.842838+00:00",
+            "phase_1_duration": null,
+            "phase_2_duration": null,
+            "processed_at": null,
+            "processing_status": "PENDING",
+            "round_id": 506,
+            "round_number": 101,
+            "seconds_remaining": 43199,
+            "status": "open",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          },
+          "warning": null
+        },
+        "kind": "api",
+        "status_code": 200
+      }
+    }
+  ]
+}

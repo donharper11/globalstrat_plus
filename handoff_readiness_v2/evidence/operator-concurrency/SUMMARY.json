@@ -1,12 +1,24 @@
 {
+  "expensive_runs": {
+    "concurrency_matrix": {
+      "count": 1,
+      "races": 1200,
+      "seconds": 908
+    },
+    "full_backend_suite": {
+      "count": 1,
+      "seconds": 1024,
+      "tests": 353
+    }
+  },
   "finding": "V2-004",
+  "frozen_revision": "7a5c4ee92732d0549aeb36a90272017ef9a6b881",
   "handoff": "GSP-CRV2-02",
   "iterations_per_pair": 100,
   "pairs": [
     {
       "advisory_lock_rows_observed": 9,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
       "deadlock_delta": 0,
       "evidence_file": "advance-vs-correct.json",
       "iterations": 100,
@@ -18,33 +30,30 @@
     {
       "advisory_lock_rows_observed": 8,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
       "deadlock_delta": 0,
       "evidence_file": "close-vs-extend.json",
       "iterations": 100,
       "pair": "close-vs-extend",
       "status_code_pairs": {
-        "200+200": 49,
-        "200+400": 51
+        "200+200": 47,
+        "200+400": 53
       }
     },
     {
-      "advisory_lock_rows_observed": 8,
-      "advisory_lock_waiters_observed": 2,
-      "both_arrival_orders_exercised": true,
+      "advisory_lock_rows_observed": 7,
+      "advisory_lock_waiters_observed": 1,
       "deadlock_delta": 0,
       "evidence_file": "close-vs-reopen.json",
       "iterations": 100,
       "pair": "close-vs-reopen",
       "status_code_pairs": {
-        "200+200": 52,
-        "200+409": 48
+        "200+200": 56,
+        "200+409": 44
       }
     },
     {
       "advisory_lock_rows_observed": 9,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
       "deadlock_delta": 0,
       "evidence_file": "deactivate-vs-process.json",
       "iterations": 100,
@@ -54,9 +63,30 @@
       }
     },
     {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 2,
+      "deadlock_delta": 0,
+      "evidence_file": "extend-vs-set-deadline.json",
+      "iterations": 100,
+      "pair": "extend-vs-set-deadline",
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 2,
+      "deadlock_delta": 0,
+      "evidence_file": "pause-vs-process.json",
+      "iterations": 100,
+      "pair": "pause-vs-process",
+      "status_code_pairs": {
+        "200+200": 100
+      }
+    },
+    {
       "advisory_lock_rows_observed": 9,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
       "deadlock_delta": 0,
       "evidence_file": "process-vs-correct.json",
       "iterations": 100,
@@ -69,34 +99,76 @@
     {
       "advisory_lock_rows_observed": 9,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
       "deadlock_delta": 0,
       "evidence_file": "process-vs-process.json",
       "iterations": 100,
       "pair": "process-vs-process",
       "status_code_pairs": {
-        "200+409": 47,
-        "409+200": 53
+        "200+409": 53,
+        "409+200": 47
       }
     },
     {
       "advisory_lock_rows_observed": 9,
       "advisory_lock_waiters_observed": 3,
-      "both_arrival_orders_exercised": true,
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-close.json",
+      "iterations": 100,
+      "pair": "schedule-vs-close",
+      "status_code_pairs": {
+        "200+200": 52,
+        "400+200": 48
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 6,
+      "advisory_lock_waiters_observed": 2,
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-process.json",
+      "iterations": 100,
+      "pair": "schedule-vs-process",
+      "status_code_pairs": {
+        "400+200": 100
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 2,
+      "deadlock_delta": 0,
+      "evidence_file": "schedule-vs-scheduler-close.json",
+      "iterations": 100,
+      "pair": "schedule-vs-scheduler-close",
+      "status_code_pairs": {
+        "200+command": 90,
+        "400+command": 10
+      }
+    },
+    {
+      "advisory_lock_rows_observed": 8,
+      "advisory_lock_waiters_observed": 3,
       "deadlock_delta": 0,
       "evidence_file": "scheduler-vs-manual-close.json",
       "iterations": 100,
       "pair": "scheduler-vs-manual-close",
       "status_code_pairs": {
-        "command+200": 92,
-        "command+409": 8
+        "command+200": 93,
+        "command+409": 7
       }
     }
   ],
+  "route_coverage": {
+    "exempt": 16,
+    "guarded": 20,
+    "lifecycle_mutating_routes": 36,
+    "total_mutating_routes": 214,
+    "unguarded": 0
+  },
+  "runtime_code_unchanged_during_evidence": true,
+  "source_tree_sha256": "da8995064b6a5f196d6cef09f4d11379b9ae3450a4b83d53c01e12b7e588eaa5",
   "totals": {
     "deadlocks": 0,
-    "pairs": 7,
-    "races": 700,
+    "pairs": 12,
+    "races": 1200,
     "server_errors": 0
   }
 }

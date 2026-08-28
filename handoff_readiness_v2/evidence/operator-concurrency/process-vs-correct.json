@@ -1,67 +1,67 @@
 {
   "advisory_locks_observed_during_race": [
     {
-      "game_id": 6,
+      "game_id": 8,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342856
+      "pid": 358702
     },
     {
-      "game_id": 6,
+      "game_id": 8,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342857
+      "pid": 358703
     },
     {
-      "game_id": 6,
+      "game_id": 8,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342857
+      "pid": 358703
     },
     {
-      "game_id": 6,
-      "granted": true,
-      "mode": "ExclusiveLock",
-      "namespace": 4674386,
-      "pid": 342858
-    },
-    {
-      "game_id": 6,
+      "game_id": 8,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342859
+      "pid": 358705
     },
     {
-      "game_id": 6,
+      "game_id": 8,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342859
+      "pid": 358704
     },
     {
-      "game_id": 6,
+      "game_id": 8,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 358705
+    },
+    {
+      "game_id": 8,
+      "granted": true,
+      "mode": "ExclusiveLock",
+      "namespace": 4674386,
+      "pid": 358706
+    },
+    {
+      "game_id": 8,
       "granted": false,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342861
+      "pid": 358707
     },
     {
-      "game_id": 6,
+      "game_id": 8,
       "granted": true,
       "mode": "ExclusiveLock",
       "namespace": 4674386,
-      "pid": 342860
-    },
-    {
-      "game_id": 6,
-      "granted": true,
-      "mode": "ExclusiveLock",
-      "namespace": 4674386,
-      "pid": 342861
+      "pid": 358707
     }
   ],
   "deadlocks_after": 0,
@@ -80,7 +80,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 2. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-16b048f6-9147-4330-b02d-bd68a9389cf1"
+          "request_id": "srv-de4ad6bf-4766-4edd-853f-1720acd9ed02"
         },
         "kind": "api",
         "status_code": 400
@@ -94,7 +94,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 813,
+          "id": 1217,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -105,12 +105,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-6023ab8f-b7df-4379-b740-a97d576d2583",
+          "request_id": "srv-cb77b507-3102-44fb-8cc2-dbf4ba734de7",
           "research_allocations": [],
-          "round": 408,
+          "round": 610,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -122,25 +122,25 @@
       "first": {
         "body": {
           "message": "Round 3 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5537402629852295,
+          "phase_1_time": 0.5710582733154297,
           "phase_2_status": "dispatched",
-          "request_id": "srv-ec1bde3c-df33-4d60-b730-04d04169d266",
+          "request_id": "srv-7f438a3c-5888-4062-94b1-2957f80932fa",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:16.694973+00:00",
+            "deadline": "2026-08-28T10:59:40.618885+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:16.694971+00:00",
-            "phase_1_duration": 0.5537402629852295,
+            "opened_at": "2026-08-28T09:59:40.618881+00:00",
+            "phase_1_duration": 0.5710582733154297,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:17.490790+00:00",
+            "processed_at": "2026-08-28T09:59:41.427799+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 409,
+            "round_id": 611,
             "round_number": 3,
-            "seconds_remaining": 3599,
+            "seconds_remaining": 3598,
             "status": "processed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -156,7 +156,7 @@
           "code": "round_already_processed",
           "error": "Round 3 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-d317a945-ef11-4f4e-a2c5-e44af7f70043"
+          "request_id": "srv-9ca760b5-70ce-49b8-bcc6-ebb87ac08f5a"
         },
         "kind": "api",
         "status_code": 409
@@ -169,7 +169,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 4. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-a9a2c14b-a127-4dda-afe1-546908b1947b"
+          "request_id": "srv-69bf7fc3-a84f-407e-a71e-ad6e5676ca47"
         },
         "kind": "api",
         "status_code": 400
@@ -183,7 +183,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 817,
+          "id": 1221,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -194,12 +194,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-3243bb89-b532-4dce-ba9e-5b6b5cb56cef",
+          "request_id": "srv-0677a434-daef-4475-98ab-ee989351e4b8",
           "research_allocations": [],
-          "round": 410,
+          "round": 612,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -210,26 +210,26 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 5 processed in 0.5s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5439114570617676,
+          "message": "Round 5 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6931419372558594,
           "phase_2_status": "dispatched",
-          "request_id": "srv-15dedd48-b97b-4b34-9023-744a2faf7037",
+          "request_id": "srv-38e79153-5925-4d0d-9491-1c6073d917b7",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:18.017666+00:00",
+            "deadline": "2026-08-28T10:59:42.017251+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:18.017663+00:00",
-            "phase_1_duration": 0.5439114570617676,
+            "opened_at": "2026-08-28T09:59:42.017247+00:00",
+            "phase_1_duration": 0.6931419372558594,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:18.789373+00:00",
+            "processed_at": "2026-08-28T09:59:42.994921+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 411,
+            "round_id": 613,
             "round_number": 5,
-            "seconds_remaining": 3599,
+            "seconds_remaining": 3598,
             "status": "processed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -245,7 +245,7 @@
           "code": "round_already_processed",
           "error": "Round 5 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-088126d8-1e8d-4620-a10d-52203b295148"
+          "request_id": "srv-fc5c004a-c79f-482e-af0a-dfe5f31dd872"
         },
         "kind": "api",
         "status_code": 409
@@ -256,23 +256,23 @@
       "first": {
         "body": {
           "message": "Round 6 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5744075775146484,
+          "phase_1_time": 0.5782978534698486,
           "phase_2_status": "dispatched",
-          "request_id": "srv-81a96656-3c05-4969-a162-386f5d783797",
+          "request_id": "srv-a9bcae2d-e89f-4e5d-bdb7-7da8fafceeac",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:19.020098+00:00",
+            "deadline": "2026-08-28T10:59:43.266400+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:19.020080+00:00",
-            "phase_1_duration": 0.5744075775146484,
+            "opened_at": "2026-08-28T09:59:43.266397+00:00",
+            "phase_1_duration": 0.5782978534698486,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:19.830934+00:00",
+            "processed_at": "2026-08-28T09:59:44.112567+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 412,
+            "round_id": 614,
             "round_number": 6,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -290,7 +290,7 @@
           "code": "round_already_processed",
           "error": "Round 6 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-56c471ac-ee58-4a55-8c7f-7e428716e200"
+          "request_id": "srv-31f05dd6-191a-4775-a6fa-7823a0c43936"
         },
         "kind": "api",
         "status_code": 409
@@ -301,23 +301,23 @@
       "first": {
         "body": {
           "message": "Round 7 processed in 0.5s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5238261222839355,
+          "phase_1_time": 0.5435197353363037,
           "phase_2_status": "dispatched",
-          "request_id": "srv-6e7946f6-10cb-43c4-aa30-295bbd3a34d7",
+          "request_id": "srv-e5f59328-b3a0-4145-9e97-e64653e14dce",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:20.081829+00:00",
+            "deadline": "2026-08-28T10:59:44.359697+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:20.081827+00:00",
-            "phase_1_duration": 0.5238261222839355,
+            "opened_at": "2026-08-28T09:59:44.359693+00:00",
+            "phase_1_duration": 0.5435197353363037,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:20.846508+00:00",
+            "processed_at": "2026-08-28T09:59:45.146725+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 413,
+            "round_id": 615,
             "round_number": 7,
             "seconds_remaining": 3599,
             "status": "processed",
@@ -335,7 +335,7 @@
           "code": "round_already_processed",
           "error": "Round 7 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-762f0a31-4adf-40d5-a923-901f242ed594"
+          "request_id": "srv-d049a42c-99b2-4e17-b4a4-afaf56cb6e3f"
         },
         "kind": "api",
         "status_code": 409
@@ -348,7 +348,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 8. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-f19db23f-317e-4bf1-aea7-c33fbb352b77"
+          "request_id": "srv-ab56276c-fb0b-4b2d-b15d-bf6c29c6a15a"
         },
         "kind": "api",
         "status_code": 400
@@ -362,7 +362,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 825,
+          "id": 1229,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -373,12 +373,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-7cdf8fb0-c82b-42f0-b399-738085510843",
+          "request_id": "srv-c88f4f7c-e6d6-4956-9615-93244e7a6ce2",
           "research_allocations": [],
-          "round": 414,
+          "round": 616,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -390,23 +390,23 @@
       "first": {
         "body": {
           "message": "Round 9 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5710465908050537,
+          "phase_1_time": 0.5624604225158691,
           "phase_2_status": "dispatched",
-          "request_id": "srv-b57ed62d-0fff-4686-ab23-ef8eb24b5b3f",
+          "request_id": "srv-0a6ff8bd-4abe-48b7-be72-6de9d19ffdc1",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:21.399826+00:00",
+            "deadline": "2026-08-28T10:59:45.711932+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:21.399823+00:00",
-            "phase_1_duration": 0.5710465908050537,
+            "opened_at": "2026-08-28T09:59:45.711930+00:00",
+            "phase_1_duration": 0.5624604225158691,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:22.201530+00:00",
+            "processed_at": "2026-08-28T09:59:46.525582+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 415,
+            "round_id": 617,
             "round_number": 9,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -424,7 +424,7 @@
           "code": "round_already_processed",
           "error": "Round 9 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-ab332754-e559-44cd-a200-886d01d79383"
+          "request_id": "srv-fd3945da-d99f-4952-8e4c-aefa55215d00"
         },
         "kind": "api",
         "status_code": 409
@@ -437,7 +437,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 10. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-bdc92edc-aec2-41e0-8bbe-6371fd61d18e"
+          "request_id": "srv-7dd68fd8-2619-40a0-922d-2560a19c3fec"
         },
         "kind": "api",
         "status_code": 400
@@ -451,7 +451,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 829,
+          "id": 1233,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -462,12 +462,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-72be33ae-a985-43a2-a92b-e3da7e4b905d",
+          "request_id": "srv-5e5c3f54-8a43-4e50-8001-92d58c35fbb7",
           "research_allocations": [],
-          "round": 416,
+          "round": 618,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -479,25 +479,25 @@
       "first": {
         "body": {
           "message": "Round 11 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5606415271759033,
+          "phase_1_time": 0.5519099235534668,
           "phase_2_status": "dispatched",
-          "request_id": "srv-0c7e0cda-66c2-4967-9368-3ff534eee6c0",
+          "request_id": "srv-2069ae12-135b-4581-a9aa-343ef1312ed6",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:22.838795+00:00",
+            "deadline": "2026-08-28T10:59:47.075675+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:22.838790+00:00",
-            "phase_1_duration": 0.5606415271759033,
+            "opened_at": "2026-08-28T09:59:47.075672+00:00",
+            "phase_1_duration": 0.5519099235534668,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:23.645033+00:00",
+            "processed_at": "2026-08-28T09:59:47.866214+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 417,
+            "round_id": 619,
             "round_number": 11,
-            "seconds_remaining": 3598,
+            "seconds_remaining": 3599,
             "status": "processed",
             "teams_locked": 2,
             "teams_pending": 0,
@@ -513,7 +513,7 @@
           "code": "round_already_processed",
           "error": "Round 11 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-19e1be76-c339-4044-a3b0-9ab0fa0bae85"
+          "request_id": "srv-fa1bdbd1-ec66-4aec-bbb0-4e34e416fbf6"
         },
         "kind": "api",
         "status_code": 409
@@ -526,7 +526,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 12. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-67c9c55a-05d3-47a1-976d-cc8a203cee4e"
+          "request_id": "srv-ddd2933c-0585-4684-81c8-2592222905cf"
         },
         "kind": "api",
         "status_code": 400
@@ -540,7 +540,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 833,
+          "id": 1237,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -551,12 +551,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-d75e6694-b6ba-42a1-8ca2-92f7e2ce4a12",
+          "request_id": "srv-beba5732-747a-481b-8576-d5773bf01cb4",
           "research_allocations": [],
-          "round": 418,
+          "round": 620,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -568,23 +568,23 @@
       "first": {
         "body": {
           "message": "Round 13 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5949618816375732,
+          "phase_1_time": 0.5649347305297852,
           "phase_2_status": "dispatched",
-          "request_id": "srv-522297d2-867a-4272-84b9-1ed1d643ef3b",
+          "request_id": "srv-9e664b30-8d34-4d7b-b2d3-0293b602f623",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:24.243626+00:00",
+            "deadline": "2026-08-28T10:59:48.425682+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:24.243624+00:00",
-            "phase_1_duration": 0.5949618816375732,
+            "opened_at": "2026-08-28T09:59:48.425679+00:00",
+            "phase_1_duration": 0.5649347305297852,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:25.102265+00:00",
+            "processed_at": "2026-08-28T09:59:49.236103+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 419,
+            "round_id": 621,
             "round_number": 13,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -602,7 +602,7 @@
           "code": "round_already_processed",
           "error": "Round 13 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-b6b26cb9-1ea5-435d-858e-42dc8fdb97a5"
+          "request_id": "srv-989dc12f-2f2d-41b2-80a4-a55c16354182"
         },
         "kind": "api",
         "status_code": 409
@@ -613,23 +613,23 @@
       "first": {
         "body": {
           "message": "Round 14 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.596670389175415,
+          "phase_1_time": 0.582047700881958,
           "phase_2_status": "dispatched",
-          "request_id": "srv-54b17a82-a4f6-4ecc-b11e-eb23b896e635",
+          "request_id": "srv-9d9740dc-8f66-4fcb-ad91-c5d98234e40b",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:25.383204+00:00",
+            "deadline": "2026-08-28T10:59:49.492439+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:25.383183+00:00",
-            "phase_1_duration": 0.596670389175415,
+            "opened_at": "2026-08-28T09:59:49.492424+00:00",
+            "phase_1_duration": 0.582047700881958,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:26.248346+00:00",
+            "processed_at": "2026-08-28T09:59:50.325115+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 420,
+            "round_id": 622,
             "round_number": 14,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -647,7 +647,7 @@
           "code": "round_already_processed",
           "error": "Round 14 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-ea195866-54a0-481a-bbda-0b5f4254c8a3"
+          "request_id": "srv-e91b0374-3eef-46a3-ac3e-9439e37f9328"
         },
         "kind": "api",
         "status_code": 409
@@ -657,69 +657,25 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 15. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-bf0b36ef-8b67-4c76-8239-0c880779793d"
-        },
-        "kind": "api",
-        "status_code": 400
-      },
-      "iteration": 13,
-      "second": {
-        "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 839,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-f7d67202-0497-48e6-9f9c-ea363631d606",
-          "research_allocations": [],
-          "round": 421,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
-        },
-        "kind": "api",
-        "status_code": 200
-      }
-    },
-    {
-      "arrival_order": "first-first",
-      "first": {
-        "body": {
-          "message": "Round 16 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5698833465576172,
+          "message": "Round 15 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5910422801971436,
           "phase_2_status": "dispatched",
-          "request_id": "srv-02525513-3ee3-4ddb-b5eb-02c3228f5373",
+          "request_id": "srv-7b680f77-2eec-4d2a-87f3-acb1c6a0d051",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:26.837282+00:00",
+            "deadline": "2026-08-28T10:59:50.585356+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:26.837279+00:00",
-            "phase_1_duration": 0.5698833465576172,
+            "opened_at": "2026-08-28T09:59:50.585354+00:00",
+            "phase_1_duration": 0.5910422801971436,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:27.664822+00:00",
+            "processed_at": "2026-08-28T09:59:51.423137+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 422,
-            "round_number": 16,
+            "round_id": 623,
+            "round_number": 15,
             "seconds_remaining": 3598,
             "status": "processed",
             "teams_locked": 2,
@@ -730,16 +686,60 @@
         "kind": "api",
         "status_code": 200
       },
-      "iteration": 14,
+      "iteration": 13,
       "second": {
         "body": {
           "code": "round_already_processed",
-          "error": "Round 16 has already been processed; unlocking now would not change its results.",
+          "error": "Round 15 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-54c5904b-170b-444e-9252-96e6e69aaabb"
+          "request_id": "srv-06327cb5-1dc0-408c-978c-8102b80ad3f8"
         },
         "kind": "api",
         "status_code": 409
+      }
+    },
+    {
+      "arrival_order": "first-first",
+      "first": {
+        "body": {
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 16. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-a08c4801-2802-4747-9dbf-352f737bbaf4"
+        },
+        "kind": "api",
+        "status_code": 400
+      },
+      "iteration": 14,
+      "second": {
+        "body": {
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1245,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-424fe6c6-f768-4a53-a4f8-c9c1d12e220a",
+          "research_allocations": [],
+          "round": 624,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
+        },
+        "kind": "api",
+        "status_code": 200
       }
     },
     {
@@ -747,23 +747,23 @@
       "first": {
         "body": {
           "message": "Round 17 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.5874993801116943,
+          "phase_1_time": 0.5532259941101074,
           "phase_2_status": "dispatched",
-          "request_id": "srv-0341491a-6d07-4399-b159-f74bf2127689",
+          "request_id": "srv-157eb5c9-ced8-4ae7-86a7-43ab9f452827",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:27.918458+00:00",
+            "deadline": "2026-08-28T10:59:51.979762+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:27.918453+00:00",
-            "phase_1_duration": 0.5874993801116943,
+            "opened_at": "2026-08-28T09:59:51.979759+00:00",
+            "phase_1_duration": 0.5532259941101074,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:28.760447+00:00",
+            "processed_at": "2026-08-28T09:59:52.793297+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 423,
+            "round_id": 625,
             "round_number": 17,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -781,7 +781,7 @@
           "code": "round_already_processed",
           "error": "Round 17 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-44ac0a85-572a-44ae-b2c8-73770ef05d83"
+          "request_id": "srv-590d709d-b823-4020-87b3-d228928ef885"
         },
         "kind": "api",
         "status_code": 409
@@ -794,7 +794,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 18. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-cff1b5ee-6d0c-47b9-8056-9fe593829110"
+          "request_id": "srv-b5f6f20b-c168-4a36-9692-fd66bafc93e0"
         },
         "kind": "api",
         "status_code": 400
@@ -808,7 +808,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 845,
+          "id": 1249,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -819,12 +819,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-f3e3c62f-81e8-4781-b919-0accc1898579",
+          "request_id": "srv-57951283-63a6-4962-a36a-0ef90ce838e1",
           "research_allocations": [],
-          "round": 424,
+          "round": 626,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -836,23 +836,23 @@
       "first": {
         "body": {
           "message": "Round 19 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6026875972747803,
+          "phase_1_time": 0.600071907043457,
           "phase_2_status": "dispatched",
-          "request_id": "srv-278ea2a0-78c4-4d2d-a755-630cd14254ef",
+          "request_id": "srv-0b9160fd-6652-4126-a9ae-5f77bb8e1c7c",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:29.335134+00:00",
+            "deadline": "2026-08-28T10:59:53.411120+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:29.335119+00:00",
-            "phase_1_duration": 0.6026875972747803,
+            "opened_at": "2026-08-28T09:59:53.411116+00:00",
+            "phase_1_duration": 0.600071907043457,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:30.184024+00:00",
+            "processed_at": "2026-08-28T09:59:54.278020+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 425,
+            "round_id": 627,
             "round_number": 19,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -870,7 +870,7 @@
           "code": "round_already_processed",
           "error": "Round 19 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-6e68d266-6ab3-4dcf-a836-48456e565696"
+          "request_id": "srv-c7de6314-f712-4c50-b3e5-02acbd2a5588"
         },
         "kind": "api",
         "status_code": 409
@@ -880,69 +880,68 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "message": "Round 20 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6433970928192139,
-          "phase_2_status": "dispatched",
-          "request_id": "srv-05b96f10-be59-4b2e-9268-5c4065ec4a17",
-          "round": {
-            "close_reason": "",
-            "closed_at": null,
-            "deadline": "2026-08-28T09:39:30.455782+00:00",
-            "is_overdue": false,
-            "narrative_error": "",
-            "narrative_generated": false,
-            "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:30.455778+00:00",
-            "phase_1_duration": 0.6433970928192139,
-            "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:31.358078+00:00",
-            "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 426,
-            "round_number": 20,
-            "seconds_remaining": 3598,
-            "status": "processed",
-            "teams_locked": 2,
-            "teams_pending": 0,
-            "teams_total": 2
-          }
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 20. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-2e9a0ead-2c80-4111-9049-f46b658cbb8f"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 400
       },
       "iteration": 18,
       "second": {
         "body": {
-          "code": "round_already_processed",
-          "error": "Round 20 has already been processed; unlocking now would not change its results.",
-          "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-60ea2276-8e59-4edd-8db3-5a2d6733fa13"
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1253,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-230129f6-11b7-498f-9bc2-fd5e7780c730",
+          "research_allocations": [],
+          "round": 628,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 21 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6273221969604492,
+          "message": "Round 21 processed in 0.5s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5436303615570068,
           "phase_2_status": "dispatched",
-          "request_id": "srv-e4c89966-7437-4eea-951b-8abe68bf1dcb",
+          "request_id": "srv-64e39e05-a72f-44c3-89eb-e39c3fb94b92",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:32.004521+00:00",
+            "deadline": "2026-08-28T10:59:54.841392+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:32.004518+00:00",
-            "phase_1_duration": 0.6273221969604492,
+            "opened_at": "2026-08-28T09:59:54.841388+00:00",
+            "phase_1_duration": 0.5436303615570068,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:32.910802+00:00",
+            "processed_at": "2026-08-28T09:59:55.647353+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 427,
+            "round_id": 629,
             "round_number": 21,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -960,7 +959,7 @@
           "code": "round_already_processed",
           "error": "Round 21 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-4fb458c6-83e2-4341-8f69-cc163710767b"
+          "request_id": "srv-eba29223-eeda-4ab2-b889-42400415ffaa"
         },
         "kind": "api",
         "status_code": 409
@@ -970,44 +969,45 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 22. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-28a0338d-ce0d-45e1-89bc-593bf4ba5aea"
+          "message": "Round 22 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.5646746158599854,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-24e8ade4-8e37-42b2-8fef-ab668b970642",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T10:59:55.902963+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T09:59:55.902944+00:00",
+            "phase_1_duration": 0.5646746158599854,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T09:59:56.727973+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 630,
+            "round_number": 22,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 400
+        "status_code": 200
       },
       "iteration": 20,
       "second": {
         "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 853,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-ede447e7-d0f3-4245-ae39-95f3f966bfb1",
-          "research_allocations": [],
-          "round": 428,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
+          "code": "round_already_processed",
+          "error": "Round 22 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-323abbd9-92d9-4a54-a7cd-d37cc00ac1c0"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 409
       }
     },
     {
@@ -1015,23 +1015,23 @@
       "first": {
         "body": {
           "message": "Round 23 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6101703643798828,
+          "phase_1_time": 0.5807969570159912,
           "phase_2_status": "dispatched",
-          "request_id": "srv-b04e2c2d-b687-4fc6-a0f0-3954c86267d2",
+          "request_id": "srv-9770d820-bef9-4946-915a-121168ed8882",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:33.549740+00:00",
+            "deadline": "2026-08-28T10:59:56.984984+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:33.549737+00:00",
-            "phase_1_duration": 0.6101703643798828,
+            "opened_at": "2026-08-28T09:59:56.984979+00:00",
+            "phase_1_duration": 0.5807969570159912,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:34.443976+00:00",
+            "processed_at": "2026-08-28T09:59:57.838300+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 429,
+            "round_id": 631,
             "round_number": 23,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1049,7 +1049,7 @@
           "code": "round_already_processed",
           "error": "Round 23 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-d2854a95-78d3-40c9-baa5-b074e1afa47d"
+          "request_id": "srv-3b93cbc1-5a7b-495c-bb46-2882f21f4176"
         },
         "kind": "api",
         "status_code": 409
@@ -1062,7 +1062,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 24. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-b8e46ed8-7826-4802-bf2e-048e3ae1561e"
+          "request_id": "srv-f14234a3-97d0-4a6b-82a9-c0484058a969"
         },
         "kind": "api",
         "status_code": 400
@@ -1076,7 +1076,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 857,
+          "id": 1261,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1087,12 +1087,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-b49725a4-7cdb-4020-a57a-59f5d1e3930c",
+          "request_id": "srv-a0388ac0-fc16-45d0-99ff-defcf225476a",
           "research_allocations": [],
-          "round": 430,
+          "round": 632,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1104,23 +1104,23 @@
       "first": {
         "body": {
           "message": "Round 25 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.589900016784668,
+          "phase_1_time": 0.5811853408813477,
           "phase_2_status": "dispatched",
-          "request_id": "srv-fd35c3d8-7d72-4b19-9c07-804deea053b1",
+          "request_id": "srv-76b1d992-028b-4b2b-86e9-beed16135b31",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:35.037312+00:00",
+            "deadline": "2026-08-28T10:59:58.454261+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:35.037309+00:00",
-            "phase_1_duration": 0.589900016784668,
+            "opened_at": "2026-08-28T09:59:58.454259+00:00",
+            "phase_1_duration": 0.5811853408813477,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:35.903010+00:00",
+            "processed_at": "2026-08-28T09:59:59.314918+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 431,
+            "round_id": 633,
             "round_number": 25,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1138,7 +1138,7 @@
           "code": "round_already_processed",
           "error": "Round 25 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-986c63de-85e2-4e15-97f1-3405c6f803af"
+          "request_id": "srv-18cfb54a-5909-422d-8422-47f06f70df41"
         },
         "kind": "api",
         "status_code": 409
@@ -1151,7 +1151,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 26. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-23344a11-03e8-4890-89c3-a610aed62053"
+          "request_id": "srv-2c65e596-dffc-47db-b442-0497d5e40cea"
         },
         "kind": "api",
         "status_code": 400
@@ -1165,7 +1165,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 861,
+          "id": 1265,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1176,12 +1176,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-be82e8a7-1f40-4514-96de-b67b29845d88",
+          "request_id": "srv-dc2f34d5-28dc-433a-8429-79df5b474bab",
           "research_allocations": [],
-          "round": 432,
+          "round": 634,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1193,23 +1193,23 @@
       "first": {
         "body": {
           "message": "Round 27 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6239807605743408,
+          "phase_1_time": 0.5619757175445557,
           "phase_2_status": "dispatched",
-          "request_id": "srv-5f96aeae-70e6-4199-8e50-f1afc2375ae3",
+          "request_id": "srv-f5e321fc-7c46-44b4-a053-1004f8acebf7",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:36.496210+00:00",
+            "deadline": "2026-08-28T10:59:59.914274+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:36.496207+00:00",
-            "phase_1_duration": 0.6239807605743408,
+            "opened_at": "2026-08-28T09:59:59.914269+00:00",
+            "phase_1_duration": 0.5619757175445557,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:37.391533+00:00",
+            "processed_at": "2026-08-28T10:00:00.780180+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 433,
+            "round_id": 635,
             "round_number": 27,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1227,7 +1227,7 @@
           "code": "round_already_processed",
           "error": "Round 27 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-a4a250ea-a432-4a75-b418-db92a7992a80"
+          "request_id": "srv-5b24d1a7-c948-4323-997f-439dc0475ce0"
         },
         "kind": "api",
         "status_code": 409
@@ -1240,7 +1240,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 28. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-a8dda758-be66-4d58-a5f9-108a46c4aaaa"
+          "request_id": "srv-0b9955f4-9298-46de-a1a0-179aac73d613"
         },
         "kind": "api",
         "status_code": 400
@@ -1254,7 +1254,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 865,
+          "id": 1269,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1265,12 +1265,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-bee4b13d-dc23-4acc-9cea-96dcc661f471",
+          "request_id": "srv-7dc67972-4b6f-4530-b0bf-17cc5e137428",
           "research_allocations": [],
-          "round": 434,
+          "round": 636,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1281,24 +1281,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 29 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6076898574829102,
+          "message": "Round 29 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7434110641479492,
           "phase_2_status": "dispatched",
-          "request_id": "srv-a7e0e823-9d02-42df-96da-18642b25eb3f",
+          "request_id": "srv-f6536f3f-7f5e-4f87-9b57-770d7071ca16",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:38.003942+00:00",
+            "deadline": "2026-08-28T11:00:01.397006+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:38.003939+00:00",
-            "phase_1_duration": 0.6076898574829102,
+            "opened_at": "2026-08-28T10:00:01.397002+00:00",
+            "phase_1_duration": 0.7434110641479492,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:38.899007+00:00",
+            "processed_at": "2026-08-28T10:00:02.439396+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 435,
+            "round_id": 637,
             "round_number": 29,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1316,7 +1316,7 @@
           "code": "round_already_processed",
           "error": "Round 29 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e1795ff3-9b76-4aed-a8ea-9b2ee6c17b1f"
+          "request_id": "srv-2d5074fc-62b4-4d00-8599-5b2598e43b21"
         },
         "kind": "api",
         "status_code": 409
@@ -1329,7 +1329,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 30. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-3800dce3-c39e-43f5-b2e6-506a88627797"
+          "request_id": "srv-8caceb74-65e3-4733-a213-0bf32fba0e3c"
         },
         "kind": "api",
         "status_code": 400
@@ -1343,7 +1343,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 869,
+          "id": 1273,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1354,12 +1354,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-7acd9e4e-ad57-4170-b329-d497a775c686",
+          "request_id": "srv-a569032f-9173-44a9-be3f-844e9d47f255",
           "research_allocations": [],
-          "round": 436,
+          "round": 638,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1370,24 +1370,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 31 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6311681270599365,
+          "message": "Round 31 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6647117137908936,
           "phase_2_status": "dispatched",
-          "request_id": "srv-f4641610-69cc-452b-939d-ed19f14b3f40",
+          "request_id": "srv-38b79ddc-fff8-4989-a333-2bea6cdc1b52",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:39.565098+00:00",
+            "deadline": "2026-08-28T11:00:03.210371+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:39.565095+00:00",
-            "phase_1_duration": 0.6311681270599365,
+            "opened_at": "2026-08-28T10:00:03.210365+00:00",
+            "phase_1_duration": 0.6647117137908936,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:40.504106+00:00",
+            "processed_at": "2026-08-28T10:00:04.184227+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 437,
+            "round_id": 639,
             "round_number": 31,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1405,7 +1405,7 @@
           "code": "round_already_processed",
           "error": "Round 31 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-53571d5a-2819-4877-8386-4672a7ed37fd"
+          "request_id": "srv-2900f651-0535-4ddb-ae1a-1171d7e0d9c9"
         },
         "kind": "api",
         "status_code": 409
@@ -1416,23 +1416,23 @@
       "first": {
         "body": {
           "message": "Round 32 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6252868175506592,
+          "phase_1_time": 0.6083004474639893,
           "phase_2_status": "dispatched",
-          "request_id": "srv-7fcc3adc-894c-4eda-a1a1-067f9dfd4533",
+          "request_id": "srv-534da533-5383-4a42-ab83-cbec4b369ff7",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:40.784066+00:00",
+            "deadline": "2026-08-28T11:00:04.459742+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:40.784061+00:00",
-            "phase_1_duration": 0.6252868175506592,
+            "opened_at": "2026-08-28T10:00:04.459740+00:00",
+            "phase_1_duration": 0.6083004474639893,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:41.683727+00:00",
+            "processed_at": "2026-08-28T10:00:05.339654+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 438,
+            "round_id": 640,
             "round_number": 32,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1450,7 +1450,7 @@
           "code": "round_already_processed",
           "error": "Round 32 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-887e591b-dc56-495a-acca-c62336945f04"
+          "request_id": "srv-70226e0e-988f-4da0-a551-090fe51ca978"
         },
         "kind": "api",
         "status_code": 409
@@ -1460,24 +1460,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 33 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7157771587371826,
+          "message": "Round 33 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6123058795928955,
           "phase_2_status": "dispatched",
-          "request_id": "srv-e11d9939-5d52-4549-a6b5-66cc2a981a48",
+          "request_id": "srv-ad0d65ba-af2e-49e3-ad79-4b04dbc23cb0",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:41.972787+00:00",
+            "deadline": "2026-08-28T11:00:05.628694+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:41.972783+00:00",
-            "phase_1_duration": 0.7157771587371826,
+            "opened_at": "2026-08-28T10:00:05.628662+00:00",
+            "phase_1_duration": 0.6123058795928955,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:42.986388+00:00",
+            "processed_at": "2026-08-28T10:00:06.534790+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 439,
+            "round_id": 641,
             "round_number": 33,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1495,7 +1495,7 @@
           "code": "round_already_processed",
           "error": "Round 33 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-75f773a3-07eb-430e-b32d-115b8584867f"
+          "request_id": "srv-9833f6e8-a3bc-4dfd-8c6f-9a3eee38fed2"
         },
         "kind": "api",
         "status_code": 409
@@ -1508,7 +1508,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 34. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-ddf69a17-70dd-432c-b030-999a8dcbbb7b"
+          "request_id": "srv-2d198cf6-b6f0-41bb-b01c-bbc8c8fe6a6e"
         },
         "kind": "api",
         "status_code": 400
@@ -1522,7 +1522,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 877,
+          "id": 1281,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1533,12 +1533,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-9641a8e6-2139-433d-be8f-cfb7af05ff47",
+          "request_id": "srv-3579ecaa-0fa5-45ff-9e36-8d27155c05c0",
           "research_allocations": [],
-          "round": 440,
+          "round": 642,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1550,23 +1550,23 @@
       "first": {
         "body": {
           "message": "Round 35 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6145226955413818,
+          "phase_1_time": 0.5752894878387451,
           "phase_2_status": "dispatched",
-          "request_id": "srv-01a03aa0-140f-4790-bc99-c12f44b156cc",
+          "request_id": "srv-d3f61fb1-6337-44b4-91b5-17d7fb8764cd",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:43.649654+00:00",
+            "deadline": "2026-08-28T11:00:07.178718+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:43.649652+00:00",
-            "phase_1_duration": 0.6145226955413818,
+            "opened_at": "2026-08-28T10:00:07.178714+00:00",
+            "phase_1_duration": 0.5752894878387451,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:44.549440+00:00",
+            "processed_at": "2026-08-28T10:00:08.041538+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 441,
+            "round_id": 643,
             "round_number": 35,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1584,7 +1584,7 @@
           "code": "round_already_processed",
           "error": "Round 35 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-9fb8c298-1c23-4a95-905e-c6f146dd5eb0"
+          "request_id": "srv-26ad35fa-07b3-48bf-a52a-eea45ee0c041"
         },
         "kind": "api",
         "status_code": 409
@@ -1594,45 +1594,44 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "message": "Round 36 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6025981903076172,
-          "phase_2_status": "dispatched",
-          "request_id": "srv-5fb7ffd8-157e-45f1-8838-13b8b0589b1e",
-          "round": {
-            "close_reason": "",
-            "closed_at": null,
-            "deadline": "2026-08-28T09:39:44.842282+00:00",
-            "is_overdue": false,
-            "narrative_error": "",
-            "narrative_generated": false,
-            "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:44.842279+00:00",
-            "phase_1_duration": 0.6025981903076172,
-            "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:45.725407+00:00",
-            "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 442,
-            "round_number": 36,
-            "seconds_remaining": 3598,
-            "status": "processed",
-            "teams_locked": 2,
-            "teams_pending": 0,
-            "teams_total": 2
-          }
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 36. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-85160944-5ca8-4c72-bfb8-6aa0f68003f5"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 400
       },
       "iteration": 34,
       "second": {
         "body": {
-          "code": "round_already_processed",
-          "error": "Round 36 has already been processed; unlocking now would not change its results.",
-          "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-98c4f2d8-a3ae-4cb1-8c3b-d3aa58de6820"
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1285,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-ad29de27-1260-44e2-a81f-a82c8cb8529e",
+          "research_allocations": [],
+          "round": 644,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
@@ -1640,23 +1639,23 @@
       "first": {
         "body": {
           "message": "Round 37 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6418986320495605,
+          "phase_1_time": 0.614539623260498,
           "phase_2_status": "dispatched",
-          "request_id": "srv-93dc5e1f-ff2e-4cbe-8990-c6c0b45afdfd",
+          "request_id": "srv-612460f1-b6d4-4557-862b-05d43ea97c20",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:45.998179+00:00",
+            "deadline": "2026-08-28T11:00:08.667251+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:45.998177+00:00",
-            "phase_1_duration": 0.6418986320495605,
+            "opened_at": "2026-08-28T10:00:08.667248+00:00",
+            "phase_1_duration": 0.614539623260498,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:46.920442+00:00",
+            "processed_at": "2026-08-28T10:00:09.564166+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 443,
+            "round_id": 645,
             "round_number": 37,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1674,7 +1673,7 @@
           "code": "round_already_processed",
           "error": "Round 37 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-5701d311-f7bb-4726-9ec2-5f0cfddcad84"
+          "request_id": "srv-94aac74a-0339-4aa0-a8dd-8eebf0a15b27"
         },
         "kind": "api",
         "status_code": 409
@@ -1687,7 +1686,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 38. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-7a5431fa-8b25-47cc-a780-418afb70f754"
+          "request_id": "srv-54107c3e-2d47-4b58-a6a4-83e11a9080b9"
         },
         "kind": "api",
         "status_code": 400
@@ -1701,7 +1700,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 885,
+          "id": 1289,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1712,12 +1711,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-7a62cfc7-9334-45c6-a589-d283f88ceee9",
+          "request_id": "srv-f02433d1-721b-4369-86e6-fc95ed0c7322",
           "research_allocations": [],
-          "round": 444,
+          "round": 646,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1728,24 +1727,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 39 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6186635494232178,
+          "message": "Round 39 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6675078868865967,
           "phase_2_status": "dispatched",
-          "request_id": "srv-c6b2dfdf-8fff-46ac-b070-1c1256105f2a",
+          "request_id": "srv-9da30834-0216-41f8-b5db-c10fd59cdac8",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:47.586726+00:00",
+            "deadline": "2026-08-28T11:00:10.408815+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:47.586723+00:00",
-            "phase_1_duration": 0.6186635494232178,
+            "opened_at": "2026-08-28T10:00:10.408810+00:00",
+            "phase_1_duration": 0.6675078868865967,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:48.540798+00:00",
+            "processed_at": "2026-08-28T10:00:11.368741+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 445,
+            "round_id": 647,
             "round_number": 39,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1763,7 +1762,7 @@
           "code": "round_already_processed",
           "error": "Round 39 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-f90e084b-6a4d-473f-afb6-624800f980e8"
+          "request_id": "srv-4328211d-4b28-4e4b-a19f-0f6d4083c7d9"
         },
         "kind": "api",
         "status_code": 409
@@ -1776,7 +1775,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 40. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-94f3bb11-227c-4d8e-8a2d-f32963f7024e"
+          "request_id": "srv-7aff142c-2405-4a39-a65a-c432e1bdbc64"
         },
         "kind": "api",
         "status_code": 400
@@ -1790,7 +1789,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 889,
+          "id": 1293,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1801,12 +1800,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-0e2ddee8-cf37-4b07-ad61-850234c35e1e",
+          "request_id": "srv-2913bdf0-1c0a-424b-ba0a-e0f19e1bf96b",
           "research_allocations": [],
-          "round": 446,
+          "round": 648,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1818,23 +1817,23 @@
       "first": {
         "body": {
           "message": "Round 41 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6552832126617432,
+          "phase_1_time": 0.7026145458221436,
           "phase_2_status": "dispatched",
-          "request_id": "srv-ce500e8c-72b1-4fe8-940e-4781d9c709d7",
+          "request_id": "srv-dda5ae15-ed83-4e53-93a9-afb52043f40e",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:49.187834+00:00",
+            "deadline": "2026-08-28T11:00:12.086532+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:49.187831+00:00",
-            "phase_1_duration": 0.6552832126617432,
+            "opened_at": "2026-08-28T10:00:12.086528+00:00",
+            "phase_1_duration": 0.7026145458221436,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:50.127719+00:00",
+            "processed_at": "2026-08-28T10:00:13.082713+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 447,
+            "round_id": 649,
             "round_number": 41,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1852,7 +1851,7 @@
           "code": "round_already_processed",
           "error": "Round 41 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-0d376d84-cf60-4dfc-b437-0558a91812a3"
+          "request_id": "srv-79829393-0d48-44c4-a88d-5900fa9090da"
         },
         "kind": "api",
         "status_code": 409
@@ -1865,7 +1864,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 42. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-cda853c1-5b88-4daf-84f1-ef5b5f825fa2"
+          "request_id": "srv-12572bf4-22b3-464d-901a-e48ce4e5723e"
         },
         "kind": "api",
         "status_code": 400
@@ -1879,7 +1878,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 893,
+          "id": 1297,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1890,12 +1889,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-cdd3db60-1933-47bd-8733-9617af1aaa88",
+          "request_id": "srv-e4d676de-6882-41ca-b11c-53ca71254299",
           "research_allocations": [],
-          "round": 448,
+          "round": 650,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1907,23 +1906,23 @@
       "first": {
         "body": {
           "message": "Round 43 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6624329090118408,
+          "phase_1_time": 0.6723182201385498,
           "phase_2_status": "dispatched",
-          "request_id": "srv-7174d0ca-eca0-4340-bfb6-ebff7ffdf0f0",
+          "request_id": "srv-dcb1a837-a64a-40dd-bad2-fc539c437e4e",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:50.789900+00:00",
+            "deadline": "2026-08-28T11:00:13.779391+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:50.789897+00:00",
-            "phase_1_duration": 0.6624329090118408,
+            "opened_at": "2026-08-28T10:00:13.779388+00:00",
+            "phase_1_duration": 0.6723182201385498,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:51.790273+00:00",
+            "processed_at": "2026-08-28T10:00:14.767805+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 449,
+            "round_id": 651,
             "round_number": 43,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -1941,7 +1940,7 @@
           "code": "round_already_processed",
           "error": "Round 43 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e1ad8e29-01d0-4a32-82d3-077e0b59273a"
+          "request_id": "srv-0b1017b8-32f5-4a75-a1f3-76915395e47c"
         },
         "kind": "api",
         "status_code": 409
@@ -1954,7 +1953,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 44. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-0b19bd1a-1ca7-404a-9a0c-495b7387a62c"
+          "request_id": "srv-bb257f7d-c1f9-4df6-ab97-2a10800acc3c"
         },
         "kind": "api",
         "status_code": 400
@@ -1968,7 +1967,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 897,
+          "id": 1301,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -1979,12 +1978,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-5430b132-25db-4768-bf71-5e0b6fb6d355",
+          "request_id": "srv-dc128886-27fd-46ee-9eba-f8ef8da5acc5",
           "research_allocations": [],
-          "round": 450,
+          "round": 652,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -1996,23 +1995,23 @@
       "first": {
         "body": {
           "message": "Round 45 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6693317890167236,
+          "phase_1_time": 0.6507871150970459,
           "phase_2_status": "dispatched",
-          "request_id": "srv-daa7a186-b41d-4d9a-9f33-73839a8bd33e",
+          "request_id": "srv-c63859f9-4952-4735-b1df-8975df7d87f3",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:52.495186+00:00",
+            "deadline": "2026-08-28T11:00:15.426950+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:52.495173+00:00",
-            "phase_1_duration": 0.6693317890167236,
+            "opened_at": "2026-08-28T10:00:15.426947+00:00",
+            "phase_1_duration": 0.6507871150970459,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:53.565003+00:00",
+            "processed_at": "2026-08-28T10:00:16.382984+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 451,
+            "round_id": 653,
             "round_number": 45,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2030,7 +2029,7 @@
           "code": "round_already_processed",
           "error": "Round 45 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e95cc3b7-8ed8-40cc-998a-f8f8546d3e34"
+          "request_id": "srv-39b6b99e-d147-439a-8f03-d4df5758de24"
         },
         "kind": "api",
         "status_code": 409
@@ -2043,7 +2042,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 46. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-be09ddfd-e64a-41f6-839b-ca86e3ac0653"
+          "request_id": "srv-96741343-5037-44b6-ae66-2def18f818ad"
         },
         "kind": "api",
         "status_code": 400
@@ -2057,7 +2056,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 901,
+          "id": 1305,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2068,12 +2067,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-d456c39a-cc1f-4dd3-acec-df324d35d5fc",
+          "request_id": "srv-5d3e60f8-6eb2-4372-b7fe-e9d7cbe13bee",
           "research_allocations": [],
-          "round": 452,
+          "round": 654,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2084,24 +2083,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 47 processed in 0.6s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6450836658477783,
+          "message": "Round 47 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6681816577911377,
           "phase_2_status": "dispatched",
-          "request_id": "srv-83149086-dc5d-430a-9904-62e96c38d773",
+          "request_id": "srv-f0ecba78-fedb-47cb-9f0d-c96ec000c73b",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:54.236990+00:00",
+            "deadline": "2026-08-28T11:00:17.057539+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:54.236986+00:00",
-            "phase_1_duration": 0.6450836658477783,
+            "opened_at": "2026-08-28T10:00:17.057534+00:00",
+            "phase_1_duration": 0.6681816577911377,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:55.186681+00:00",
+            "processed_at": "2026-08-28T10:00:18.034703+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 453,
+            "round_id": 655,
             "round_number": 47,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2119,7 +2118,7 @@
           "code": "round_already_processed",
           "error": "Round 47 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-43aefbd0-63ed-4205-a131-a61189c089c3"
+          "request_id": "srv-f58bf6c1-958d-42e3-8b42-a1a018566cbb"
         },
         "kind": "api",
         "status_code": 409
@@ -2132,7 +2131,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 48. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-55e117b9-7041-43ee-9b1d-bb3b7c31c599"
+          "request_id": "srv-909699e7-7e60-4f19-84fc-dfaab42d8d4c"
         },
         "kind": "api",
         "status_code": 400
@@ -2146,7 +2145,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 905,
+          "id": 1309,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2157,12 +2156,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-c7dbfe57-fd85-4222-afe9-da1276441e66",
+          "request_id": "srv-a53317e3-f47b-4897-a6b4-e48a9188bc96",
           "research_allocations": [],
-          "round": 454,
+          "round": 656,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2173,24 +2172,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 49 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6937782764434814,
+          "message": "Round 49 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6194090843200684,
           "phase_2_status": "dispatched",
-          "request_id": "srv-ab4a57af-554d-4465-b107-77b05f68ada1",
+          "request_id": "srv-75af312d-6523-41bc-9aec-a8840bf368c2",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:55.888252+00:00",
+            "deadline": "2026-08-28T11:00:18.728403+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:55.888250+00:00",
-            "phase_1_duration": 0.6937782764434814,
+            "opened_at": "2026-08-28T10:00:18.728400+00:00",
+            "phase_1_duration": 0.6194090843200684,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:56.913991+00:00",
+            "processed_at": "2026-08-28T10:00:19.667165+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 455,
+            "round_id": 657,
             "round_number": 49,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2208,7 +2207,7 @@
           "code": "round_already_processed",
           "error": "Round 49 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-c77d5d5f-a0e7-4d67-ad1e-4f263edb56ae"
+          "request_id": "srv-406b5351-50a8-4fbe-b37a-ff30e7aac07a"
         },
         "kind": "api",
         "status_code": 409
@@ -2221,7 +2220,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 50. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-51de9a90-c332-44e0-bdc4-8d8dcc254fe7"
+          "request_id": "srv-2e83b727-6954-412c-9a42-fbb16ffbb17e"
         },
         "kind": "api",
         "status_code": 400
@@ -2235,7 +2234,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 909,
+          "id": 1313,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2246,12 +2245,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-1d034f43-8ca3-4154-9b96-03853b77caed",
+          "request_id": "srv-7105b8a0-c0f4-47bd-a7f6-30cb4e6c3608",
           "research_allocations": [],
-          "round": 456,
+          "round": 658,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2263,23 +2262,23 @@
       "first": {
         "body": {
           "message": "Round 51 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6848917007446289,
+          "phase_1_time": 0.6653463840484619,
           "phase_2_status": "dispatched",
-          "request_id": "srv-2d0b5cc9-cafc-436c-8c16-118d66861214",
+          "request_id": "srv-18a5b793-0db1-4012-bf7b-4df5255ae8b5",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:57.600158+00:00",
+            "deadline": "2026-08-28T11:00:20.375594+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:57.600155+00:00",
-            "phase_1_duration": 0.6848917007446289,
+            "opened_at": "2026-08-28T10:00:20.375592+00:00",
+            "phase_1_duration": 0.6653463840484619,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:39:58.622281+00:00",
+            "processed_at": "2026-08-28T10:00:21.347256+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 457,
+            "round_id": 659,
             "round_number": 51,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2297,7 +2296,7 @@
           "code": "round_already_processed",
           "error": "Round 51 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-5b7a2788-a76f-4cec-8d58-e4e4843fc59d"
+          "request_id": "srv-fb04ea8c-951d-465a-8d69-2a588d034ef5"
         },
         "kind": "api",
         "status_code": 409
@@ -2310,7 +2309,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 52. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-bc73def1-2154-4eda-89ff-b79bbde51fa9"
+          "request_id": "srv-aca53344-6b7b-44f1-a645-98a55e171bb0"
         },
         "kind": "api",
         "status_code": 400
@@ -2324,7 +2323,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 913,
+          "id": 1317,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2335,12 +2334,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-4f13a635-8d39-4a74-95e7-04045127be54",
+          "request_id": "srv-6e647a40-b5b2-47bc-a1de-faec461769de",
           "research_allocations": [],
-          "round": 458,
+          "round": 660,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2352,23 +2351,23 @@
       "first": {
         "body": {
           "message": "Round 53 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6855413913726807,
+          "phase_1_time": 0.7375380992889404,
           "phase_2_status": "dispatched",
-          "request_id": "srv-3b05d274-3593-4414-b2a0-2cf8704f5929",
+          "request_id": "srv-2eeca16b-ae78-443b-adac-687361329277",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:39:59.332338+00:00",
+            "deadline": "2026-08-28T11:00:22.093422+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:39:59.332334+00:00",
-            "phase_1_duration": 0.6855413913726807,
+            "opened_at": "2026-08-28T10:00:22.093416+00:00",
+            "phase_1_duration": 0.7375380992889404,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:00.315361+00:00",
+            "processed_at": "2026-08-28T10:00:23.156587+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 459,
+            "round_id": 661,
             "round_number": 53,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2386,7 +2385,7 @@
           "code": "round_already_processed",
           "error": "Round 53 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-a8b9b8da-a354-42eb-a629-f36824f77ed1"
+          "request_id": "srv-f02e162c-02f3-4e68-9087-839dfb9af35c"
         },
         "kind": "api",
         "status_code": 409
@@ -2399,7 +2398,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 54. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-4c2b93a0-3ef9-4071-b3f0-4010a3239f58"
+          "request_id": "srv-35061fcd-44ab-40c8-ab4a-f53a47101497"
         },
         "kind": "api",
         "status_code": 400
@@ -2413,7 +2412,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 917,
+          "id": 1321,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2424,12 +2423,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-22659806-8b8d-463f-9a7f-ced0382e95fa",
+          "request_id": "srv-9b850c28-4aa2-4212-b363-3cb458cb9d09",
           "research_allocations": [],
-          "round": 460,
+          "round": 662,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2440,24 +2439,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 55 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7406857013702393,
+          "message": "Round 55 processed in 0.6s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6405866146087646,
           "phase_2_status": "dispatched",
-          "request_id": "srv-64f5e91f-135e-412c-ba90-511aa52c4e8d",
+          "request_id": "srv-5ee82f8d-cb81-45eb-8162-16aff9273546",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:01.005901+00:00",
+            "deadline": "2026-08-28T11:00:23.861221+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:01.005898+00:00",
-            "phase_1_duration": 0.7406857013702393,
+            "opened_at": "2026-08-28T10:00:23.861218+00:00",
+            "phase_1_duration": 0.6405866146087646,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:02.050727+00:00",
+            "processed_at": "2026-08-28T10:00:24.818994+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 461,
+            "round_id": 663,
             "round_number": 55,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2475,7 +2474,7 @@
           "code": "round_already_processed",
           "error": "Round 55 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-5f8430ff-a36b-48d0-8875-d8dfad8da2f1"
+          "request_id": "srv-607e6e68-9c42-4411-ac4f-efbb5fc0713c"
         },
         "kind": "api",
         "status_code": 409
@@ -2488,7 +2487,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 56. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-0f01afe0-6c81-4c5f-932d-f5eadfade467"
+          "request_id": "srv-f1c430b4-57a1-4428-bb50-fdd923f0f5ca"
         },
         "kind": "api",
         "status_code": 400
@@ -2502,7 +2501,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 921,
+          "id": 1325,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2513,12 +2512,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-dc362ca6-7461-405a-b473-866a442f35a8",
+          "request_id": "srv-8177ddb4-243a-452c-99f3-70a56a71c44e",
           "research_allocations": [],
-          "round": 462,
+          "round": 664,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2529,24 +2528,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 57 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8080241680145264,
+          "message": "Round 57 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7201240062713623,
           "phase_2_status": "dispatched",
-          "request_id": "srv-a9e09d32-bb03-47c2-86bc-d7240d32a017",
+          "request_id": "srv-bc84d587-bf1d-4abe-a5c4-4ab0018238d5",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:02.927741+00:00",
+            "deadline": "2026-08-28T11:00:25.502565+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:02.927737+00:00",
-            "phase_1_duration": 0.8080241680145264,
+            "opened_at": "2026-08-28T10:00:25.502562+00:00",
+            "phase_1_duration": 0.7201240062713623,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:04.120040+00:00",
+            "processed_at": "2026-08-28T10:00:26.643017+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 463,
+            "round_id": 665,
             "round_number": 57,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2564,7 +2563,7 @@
           "code": "round_already_processed",
           "error": "Round 57 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-9f5461b2-4aa0-4ced-83a4-c1b778ccfd1b"
+          "request_id": "srv-664123f0-a667-436b-bc96-87bb0edd8163"
         },
         "kind": "api",
         "status_code": 409
@@ -2577,7 +2576,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 58. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-23b1a0e1-a190-45fd-ac87-10894c6b3af4"
+          "request_id": "srv-6cf97082-72ea-40c7-a66e-bc7a56b7a701"
         },
         "kind": "api",
         "status_code": 400
@@ -2591,7 +2590,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 925,
+          "id": 1329,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2602,12 +2601,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-728fad0e-a0cb-4135-b6bc-5c33b89b3a5e",
+          "request_id": "srv-d52cba1b-95d7-4f21-9954-5168d0dabf36",
           "research_allocations": [],
-          "round": 464,
+          "round": 666,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2619,23 +2618,23 @@
       "first": {
         "body": {
           "message": "Round 59 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6944746971130371,
+          "phase_1_time": 0.6746282577514648,
           "phase_2_status": "dispatched",
-          "request_id": "srv-b2148741-94a7-4fe4-8a53-e82b822117a6",
+          "request_id": "srv-c27d667f-4a04-4905-bf20-7dcbe47d007f",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:04.834662+00:00",
+            "deadline": "2026-08-28T11:00:27.374034+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:04.834657+00:00",
-            "phase_1_duration": 0.6944746971130371,
+            "opened_at": "2026-08-28T10:00:27.374030+00:00",
+            "phase_1_duration": 0.6746282577514648,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:05.848700+00:00",
+            "processed_at": "2026-08-28T10:00:28.380910+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 465,
+            "round_id": 667,
             "round_number": 59,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2653,7 +2652,7 @@
           "code": "round_already_processed",
           "error": "Round 59 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-37c9ca57-cd36-48d4-91cf-33941b165f2f"
+          "request_id": "srv-3e463f98-f2e1-40e8-bf86-003be22542c4"
         },
         "kind": "api",
         "status_code": 409
@@ -2663,44 +2662,45 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 60. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-00701863-f028-4ab3-8509-8a97abf6757f"
+          "message": "Round 60 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7157342433929443,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-9f507dea-fbb5-4a10-8189-93c66234d0a9",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T11:00:28.713824+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T10:00:28.713821+00:00",
+            "phase_1_duration": 0.7157342433929443,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T10:00:29.765836+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 668,
+            "round_number": 60,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 400
+        "status_code": 200
       },
       "iteration": 58,
       "second": {
         "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 929,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-f62671f7-d1ff-40f0-a524-c6d08c8e3d5a",
-          "research_allocations": [],
-          "round": 466,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
+          "code": "round_already_processed",
+          "error": "Round 60 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-beae63ec-6ce0-4874-b227-5e26771ad6fc"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 409
       }
     },
     {
@@ -2708,23 +2708,23 @@
       "first": {
         "body": {
           "message": "Round 61 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6661591529846191,
+          "phase_1_time": 0.6836028099060059,
           "phase_2_status": "dispatched",
-          "request_id": "srv-1db34ce3-b70b-42ef-a3a7-443e27c92315",
+          "request_id": "srv-5ce0fa06-9295-4a5c-b483-6b1f6f3513fb",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:06.557078+00:00",
+            "deadline": "2026-08-28T11:00:30.100679+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:06.557075+00:00",
-            "phase_1_duration": 0.6661591529846191,
+            "opened_at": "2026-08-28T10:00:30.100675+00:00",
+            "phase_1_duration": 0.6836028099060059,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:07.541053+00:00",
+            "processed_at": "2026-08-28T10:00:31.132103+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 467,
+            "round_id": 669,
             "round_number": 61,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2742,7 +2742,7 @@
           "code": "round_already_processed",
           "error": "Round 61 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-2e882a4e-199c-4f66-a201-48fbd9a7f569"
+          "request_id": "srv-776fbf14-1c07-49fd-936e-8bc6a808eb4c"
         },
         "kind": "api",
         "status_code": 409
@@ -2755,7 +2755,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 62. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-86f6cbe1-51e5-438c-8832-383d9b123b85"
+          "request_id": "srv-11b67519-27a3-4dba-8a2b-72c059d58c47"
         },
         "kind": "api",
         "status_code": 400
@@ -2769,7 +2769,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 933,
+          "id": 1337,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2780,12 +2780,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-298c65dd-6e29-48fe-8331-fafa3859cf15",
+          "request_id": "srv-0ca2ca4e-6113-4859-bd10-c7418003359f",
           "research_allocations": [],
-          "round": 468,
+          "round": 670,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2797,23 +2797,23 @@
       "first": {
         "body": {
           "message": "Round 63 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6806058883666992,
+          "phase_1_time": 0.704434871673584,
           "phase_2_status": "dispatched",
-          "request_id": "srv-6d690dcb-1754-4f23-b864-184724e82d29",
+          "request_id": "srv-ca9fb793-9ad4-401b-8bdc-4c08a685710f",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:08.241063+00:00",
+            "deadline": "2026-08-28T11:00:31.889851+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:08.241060+00:00",
-            "phase_1_duration": 0.6806058883666992,
+            "opened_at": "2026-08-28T10:00:31.889847+00:00",
+            "phase_1_duration": 0.704434871673584,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:09.345855+00:00",
+            "processed_at": "2026-08-28T10:00:32.927105+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 469,
+            "round_id": 671,
             "round_number": 63,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2831,7 +2831,7 @@
           "code": "round_already_processed",
           "error": "Round 63 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-aed2a460-ce48-4b77-bed7-a4440d08b9c9"
+          "request_id": "srv-3bd34637-d84e-4503-8736-fafe172cdb03"
         },
         "kind": "api",
         "status_code": 409
@@ -2844,7 +2844,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 64. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-42287d25-d52b-4399-bc7a-f960709ea79c"
+          "request_id": "srv-302466e4-661c-484f-a58d-d6ebe6061b28"
         },
         "kind": "api",
         "status_code": 400
@@ -2858,7 +2858,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 937,
+          "id": 1341,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2869,12 +2869,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-fae61946-3852-423c-9e45-1b6578aa8780",
+          "request_id": "srv-dad47fcb-1358-4592-bb3e-e6b8d4294732",
           "research_allocations": [],
-          "round": 470,
+          "round": 672,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2886,23 +2886,23 @@
       "first": {
         "body": {
           "message": "Round 65 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.680485725402832,
+          "phase_1_time": 0.7322680950164795,
           "phase_2_status": "dispatched",
-          "request_id": "srv-1551ea52-d912-4f87-8413-c1187c666c54",
+          "request_id": "srv-bd2411b1-5d9f-4dd1-bd9b-826cffd77cb3",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:10.068722+00:00",
+            "deadline": "2026-08-28T11:00:33.667593+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:10.068719+00:00",
-            "phase_1_duration": 0.680485725402832,
+            "opened_at": "2026-08-28T10:00:33.667590+00:00",
+            "phase_1_duration": 0.7322680950164795,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:11.077749+00:00",
+            "processed_at": "2026-08-28T10:00:34.733013+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 471,
+            "round_id": 673,
             "round_number": 65,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -2920,7 +2920,7 @@
           "code": "round_already_processed",
           "error": "Round 65 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-fda48256-dccf-49e1-8abc-c074a6477746"
+          "request_id": "srv-ffdf4d35-dd91-4ad1-ada2-b8083d6b29fd"
         },
         "kind": "api",
         "status_code": 409
@@ -2933,7 +2933,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 66. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-47dcaa66-2484-489e-9ed6-a82590e7f239"
+          "request_id": "srv-f0f3480b-ef3f-4b46-b772-594d6bf2d324"
         },
         "kind": "api",
         "status_code": 400
@@ -2947,7 +2947,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 941,
+          "id": 1345,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -2958,12 +2958,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-e13a8efb-abc6-478c-aa23-7aed6fd083b9",
+          "request_id": "srv-a1fbea27-6647-45ce-9ef9-18307b01af81",
           "research_allocations": [],
-          "round": 472,
+          "round": 674,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -2974,24 +2974,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 67 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7565333843231201,
+          "message": "Round 67 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.6742453575134277,
           "phase_2_status": "dispatched",
-          "request_id": "srv-f4d87998-256b-49da-945c-782237c8ed52",
+          "request_id": "srv-bb335996-d059-42fa-a02f-0eba853a9a69",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:11.856479+00:00",
+            "deadline": "2026-08-28T11:00:35.459323+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:11.856476+00:00",
-            "phase_1_duration": 0.7565333843231201,
+            "opened_at": "2026-08-28T10:00:35.459320+00:00",
+            "phase_1_duration": 0.6742453575134277,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:12.941269+00:00",
+            "processed_at": "2026-08-28T10:00:36.497892+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 473,
+            "round_id": 675,
             "round_number": 67,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3009,7 +3009,7 @@
           "code": "round_already_processed",
           "error": "Round 67 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-19506318-b8e6-49bc-938c-ecee9840796d"
+          "request_id": "srv-6474b7c5-02c7-4b92-992d-a80bda047965"
         },
         "kind": "api",
         "status_code": 409
@@ -3022,7 +3022,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 68. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-dc1c26e7-77bb-40f6-8a8a-64197ddd2cc9"
+          "request_id": "srv-5cae3c06-3d94-4937-b9cb-8d9cbd8b9b83"
         },
         "kind": "api",
         "status_code": 400
@@ -3036,7 +3036,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 945,
+          "id": 1349,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3047,12 +3047,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-53a14141-c1ea-4e01-b462-81c712bbe771",
+          "request_id": "srv-1d57d34a-7207-499f-a2a2-beb756ecc61b",
           "research_allocations": [],
-          "round": 474,
+          "round": 676,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3064,23 +3064,23 @@
       "first": {
         "body": {
           "message": "Round 69 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7315988540649414,
+          "phase_1_time": 0.7169392108917236,
           "phase_2_status": "dispatched",
-          "request_id": "srv-54e3910e-faea-4a87-8470-a022db54993a",
+          "request_id": "srv-c5b8d4df-fdc7-471d-8790-8dfd3b705ef2",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:13.707759+00:00",
+            "deadline": "2026-08-28T11:00:37.233900+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:13.707757+00:00",
-            "phase_1_duration": 0.7315988540649414,
+            "opened_at": "2026-08-28T10:00:37.233898+00:00",
+            "phase_1_duration": 0.7169392108917236,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:14.767720+00:00",
+            "processed_at": "2026-08-28T10:00:38.317970+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 475,
+            "round_id": 677,
             "round_number": 69,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3098,7 +3098,7 @@
           "code": "round_already_processed",
           "error": "Round 69 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e54aebe4-8520-47fa-8850-e463c01fa22f"
+          "request_id": "srv-0d83c00d-7f06-41bf-b216-718408168a25"
         },
         "kind": "api",
         "status_code": 409
@@ -3111,7 +3111,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 70. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-04c2c096-74d0-4671-9211-671e066069bc"
+          "request_id": "srv-935a53a4-a0e5-4b98-81a9-399444bfe448"
         },
         "kind": "api",
         "status_code": 400
@@ -3125,7 +3125,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 949,
+          "id": 1353,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3136,12 +3136,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-b893743d-41de-4c0a-aeec-ddd57452a060",
+          "request_id": "srv-92c819c1-f04e-4036-a4c1-0956396f126a",
           "research_allocations": [],
-          "round": 476,
+          "round": 678,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3153,23 +3153,23 @@
       "first": {
         "body": {
           "message": "Round 71 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6791913509368896,
+          "phase_1_time": 0.6968927383422852,
           "phase_2_status": "dispatched",
-          "request_id": "srv-317d9ccf-e464-445c-a640-44c302f698d9",
+          "request_id": "srv-5e9fd863-f294-47fe-82ed-90264e9e6504",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:15.497356+00:00",
+            "deadline": "2026-08-28T11:00:39.078061+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:15.497352+00:00",
-            "phase_1_duration": 0.6791913509368896,
+            "opened_at": "2026-08-28T10:00:39.078057+00:00",
+            "phase_1_duration": 0.6968927383422852,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:16.536829+00:00",
+            "processed_at": "2026-08-28T10:00:40.131941+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 477,
+            "round_id": 679,
             "round_number": 71,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3187,7 +3187,7 @@
           "code": "round_already_processed",
           "error": "Round 71 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-bb528a1e-13c2-456a-888b-44e8bd5a4979"
+          "request_id": "srv-cd4b6a8e-c13f-4f58-b34c-b3adefee3cdd"
         },
         "kind": "api",
         "status_code": 409
@@ -3200,7 +3200,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 72. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-f6caca8d-f26c-4bdb-89d9-259ce04c5f4e"
+          "request_id": "srv-7f6e4c1c-97d2-4ef0-8532-14d70660ff61"
         },
         "kind": "api",
         "status_code": 400
@@ -3214,7 +3214,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 953,
+          "id": 1357,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3225,12 +3225,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-98ea5afd-12c4-453e-90b4-0b6d7d6d69fe",
+          "request_id": "srv-465f6c68-2d69-4cae-a383-00598d0a3c62",
           "research_allocations": [],
-          "round": 478,
+          "round": 680,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3242,23 +3242,23 @@
       "first": {
         "body": {
           "message": "Round 73 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.6813323497772217,
+          "phase_1_time": 0.7475523948669434,
           "phase_2_status": "dispatched",
-          "request_id": "srv-a0df8e8f-081b-4499-8d69-7fe01265fd41",
+          "request_id": "srv-8fef6c4d-499b-4433-b1c5-105f9c658206",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:17.241734+00:00",
+            "deadline": "2026-08-28T11:00:41.021650+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:17.241721+00:00",
-            "phase_1_duration": 0.6813323497772217,
+            "opened_at": "2026-08-28T10:00:41.021647+00:00",
+            "phase_1_duration": 0.7475523948669434,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:18.271511+00:00",
+            "processed_at": "2026-08-28T10:00:42.118289+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 479,
+            "round_id": 681,
             "round_number": 73,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3276,7 +3276,7 @@
           "code": "round_already_processed",
           "error": "Round 73 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e60cf53a-9ff4-4b55-aba3-b108874b403e"
+          "request_id": "srv-bd0ce0cb-8874-4df5-a4fc-fc92cfde6ad2"
         },
         "kind": "api",
         "status_code": 409
@@ -3289,7 +3289,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 74. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-aa7ae3e2-ee95-47ba-b78b-cc332ae2f37f"
+          "request_id": "srv-60f0c4ca-ae1b-4d3b-b9e1-db8e59a4c0ce"
         },
         "kind": "api",
         "status_code": 400
@@ -3303,7 +3303,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 957,
+          "id": 1361,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3314,12 +3314,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-85236879-4424-4478-a39e-a483a66370d5",
+          "request_id": "srv-11a29af7-f14f-4b7a-b187-44da5d71bf18",
           "research_allocations": [],
-          "round": 480,
+          "round": 682,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3331,23 +3331,23 @@
       "first": {
         "body": {
           "message": "Round 75 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.759533166885376,
+          "phase_1_time": 0.7643954753875732,
           "phase_2_status": "dispatched",
-          "request_id": "srv-b4fe249e-2f3e-41b3-9b49-4bcb5a1e17a0",
+          "request_id": "srv-e9b52468-36bf-4946-a60e-6dc5dcec5364",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:19.019806+00:00",
+            "deadline": "2026-08-28T11:00:42.944061+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:19.019804+00:00",
-            "phase_1_duration": 0.759533166885376,
+            "opened_at": "2026-08-28T10:00:42.944059+00:00",
+            "phase_1_duration": 0.7643954753875732,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:20.109503+00:00",
+            "processed_at": "2026-08-28T10:00:44.057318+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 481,
+            "round_id": 683,
             "round_number": 75,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3365,7 +3365,7 @@
           "code": "round_already_processed",
           "error": "Round 75 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-f3ff7431-2bb6-40b3-9554-6b365fdd41a0"
+          "request_id": "srv-258afcc0-6adb-4ab7-bdee-5f25d63d4d21"
         },
         "kind": "api",
         "status_code": 409
@@ -3378,7 +3378,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 76. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-cc222365-55c8-40bb-ac0e-1f32838e56ee"
+          "request_id": "srv-79539a8c-e4bb-417b-b86e-404ca9094411"
         },
         "kind": "api",
         "status_code": 400
@@ -3392,7 +3392,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 961,
+          "id": 1365,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3403,12 +3403,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-4e016a7b-705a-4e83-a3d1-ac8aa42c0238",
+          "request_id": "srv-b85ecbc2-290a-47b2-99e8-b08e5a4340df",
           "research_allocations": [],
-          "round": 482,
+          "round": 684,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3420,23 +3420,23 @@
       "first": {
         "body": {
           "message": "Round 77 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7262058258056641,
+          "phase_1_time": 0.7198276519775391,
           "phase_2_status": "dispatched",
-          "request_id": "srv-f39cf744-b512-4d35-a5bf-9f64d365692e",
+          "request_id": "srv-0f8dbdbe-0933-4148-84e4-7f6325f48524",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:20.905859+00:00",
+            "deadline": "2026-08-28T11:00:44.869469+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:20.905855+00:00",
-            "phase_1_duration": 0.7262058258056641,
+            "opened_at": "2026-08-28T10:00:44.869466+00:00",
+            "phase_1_duration": 0.7198276519775391,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:21.987126+00:00",
+            "processed_at": "2026-08-28T10:00:45.929014+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 483,
+            "round_id": 685,
             "round_number": 77,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3454,7 +3454,7 @@
           "code": "round_already_processed",
           "error": "Round 77 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-935bceb4-6df2-4ea6-90b2-e4f74322b096"
+          "request_id": "srv-b584b7bd-6e86-4ee6-a548-5c4b7cd695fa"
         },
         "kind": "api",
         "status_code": 409
@@ -3464,45 +3464,44 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "message": "Round 78 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8025252819061279,
-          "phase_2_status": "dispatched",
-          "request_id": "srv-f3801080-1d41-49a7-80ac-46d5eaf89a69",
-          "round": {
-            "close_reason": "",
-            "closed_at": null,
-            "deadline": "2026-08-28T09:40:22.338737+00:00",
-            "is_overdue": false,
-            "narrative_error": "",
-            "narrative_generated": false,
-            "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:22.338734+00:00",
-            "phase_1_duration": 0.8025252819061279,
-            "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:23.633094+00:00",
-            "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 484,
-            "round_number": 78,
-            "seconds_remaining": 3598,
-            "status": "processed",
-            "teams_locked": 2,
-            "teams_pending": 0,
-            "teams_total": 2
-          }
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 78. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-469bc7ae-8b9c-4364-ac3d-8d4b3e1684ce"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 400
       },
       "iteration": 76,
       "second": {
         "body": {
-          "code": "round_already_processed",
-          "error": "Round 78 has already been processed; unlocking now would not change its results.",
-          "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-47847565-cfb3-47e4-906b-41757e54a18a"
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1369,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-e95af721-9c1b-47f9-9055-555d3ab43a58",
+          "research_allocations": [],
+          "round": 686,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
@@ -3510,23 +3509,23 @@
       "first": {
         "body": {
           "message": "Round 79 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7249221801757812,
+          "phase_1_time": 0.7124767303466797,
           "phase_2_status": "dispatched",
-          "request_id": "srv-7fdbafa6-1198-4cba-b3e9-5806670fd9ef",
+          "request_id": "srv-11a8153e-cf84-4019-bdcd-ad7d7e81b4e8",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:24.036453+00:00",
+            "deadline": "2026-08-28T11:00:46.712749+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:24.036450+00:00",
-            "phase_1_duration": 0.7249221801757812,
+            "opened_at": "2026-08-28T10:00:46.712723+00:00",
+            "phase_1_duration": 0.7124767303466797,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:25.141920+00:00",
+            "processed_at": "2026-08-28T10:00:47.800538+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 485,
+            "round_id": 687,
             "round_number": 79,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3544,7 +3543,7 @@
           "code": "round_already_processed",
           "error": "Round 79 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-1a42f72f-e332-4efb-95bf-a06b979abb9f"
+          "request_id": "srv-4341c3bf-3130-4040-aebe-37498946ba2d"
         },
         "kind": "api",
         "status_code": 409
@@ -3557,7 +3556,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 80. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-9183a71a-af90-4ccd-b276-df9d87055e52"
+          "request_id": "srv-369e5ec2-f1f9-4aa1-810c-6a4788b8a85f"
         },
         "kind": "api",
         "status_code": 400
@@ -3571,7 +3570,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 969,
+          "id": 1373,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3582,12 +3581,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-ed413344-7bb7-43b1-b02c-6955a5dcf24d",
+          "request_id": "srv-055266f2-c28c-4138-9bbe-ae5474da3e32",
           "research_allocations": [],
-          "round": 486,
+          "round": 688,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3599,23 +3598,23 @@
       "first": {
         "body": {
           "message": "Round 81 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7024641036987305,
+          "phase_1_time": 0.7404999732971191,
           "phase_2_status": "dispatched",
-          "request_id": "srv-399db205-587a-4f9a-a845-fbe079429e17",
+          "request_id": "srv-15573208-fe06-42ab-9a49-90ab1bc6ca4e",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:25.898989+00:00",
+            "deadline": "2026-08-28T11:00:48.540881+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:25.898986+00:00",
-            "phase_1_duration": 0.7024641036987305,
+            "opened_at": "2026-08-28T10:00:48.540878+00:00",
+            "phase_1_duration": 0.7404999732971191,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:26.937764+00:00",
+            "processed_at": "2026-08-28T10:00:49.627338+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 487,
+            "round_id": 689,
             "round_number": 81,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3633,7 +3632,7 @@
           "code": "round_already_processed",
           "error": "Round 81 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-19d4b0ff-b708-4579-9565-2ba113f8e618"
+          "request_id": "srv-20bf1227-f1d1-43b1-b92b-5e13822e70b6"
         },
         "kind": "api",
         "status_code": 409
@@ -3646,7 +3645,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 82. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-9f55fc78-5384-4d46-98bc-1306b592e235"
+          "request_id": "srv-a40b4a36-4af7-4c7a-abf7-63d2ebafdaf2"
         },
         "kind": "api",
         "status_code": 400
@@ -3660,7 +3659,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 973,
+          "id": 1377,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3671,12 +3670,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-609e6e89-97e0-444f-97a7-58d800076327",
+          "request_id": "srv-7e0c2ceb-513d-4b58-b5ea-91e3b608fd33",
           "research_allocations": [],
-          "round": 488,
+          "round": 690,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3688,23 +3687,23 @@
       "first": {
         "body": {
           "message": "Round 83 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7638430595397949,
+          "phase_1_time": 0.7516541481018066,
           "phase_2_status": "dispatched",
-          "request_id": "srv-ce076825-8772-4b63-bce2-92bdba4df8b7",
+          "request_id": "srv-21a4cdc6-ee4c-4ec4-9345-43ed5be26751",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:27.720400+00:00",
+            "deadline": "2026-08-28T11:00:50.378796+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:27.720397+00:00",
-            "phase_1_duration": 0.7638430595397949,
+            "opened_at": "2026-08-28T10:00:50.378793+00:00",
+            "phase_1_duration": 0.7516541481018066,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:28.876634+00:00",
+            "processed_at": "2026-08-28T10:00:51.473641+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 489,
+            "round_id": 691,
             "round_number": 83,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3722,7 +3721,7 @@
           "code": "round_already_processed",
           "error": "Round 83 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-4a28be54-483d-4844-b188-ca979940cef5"
+          "request_id": "srv-4b11b3cd-7250-44f4-bf3d-85e18ff07ba1"
         },
         "kind": "api",
         "status_code": 409
@@ -3735,7 +3734,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 84. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-6825e018-5f31-4563-aa04-840c4e8d01b6"
+          "request_id": "srv-e1b04118-ac3f-4010-9da6-632a7d31632c"
         },
         "kind": "api",
         "status_code": 400
@@ -3749,7 +3748,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 977,
+          "id": 1381,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -3760,12 +3759,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-998542c2-b38e-417b-945a-1dfa955de40d",
+          "request_id": "srv-9f1ac0a2-9f1c-4d3a-b3e2-aa23b21d69d6",
           "research_allocations": [],
-          "round": 490,
+          "round": 692,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -3776,24 +3775,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 85 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7347791194915771,
+          "message": "Round 85 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7849013805389404,
           "phase_2_status": "dispatched",
-          "request_id": "srv-edd72ec8-6936-40ee-97b9-cddf556f42eb",
+          "request_id": "srv-bc6c76f6-1ab9-4fd4-8f61-8b09a1e7ffa9",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:29.682042+00:00",
+            "deadline": "2026-08-28T11:00:52.323325+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:29.682030+00:00",
-            "phase_1_duration": 0.7347791194915771,
+            "opened_at": "2026-08-28T10:00:52.323320+00:00",
+            "phase_1_duration": 0.7849013805389404,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:30.773291+00:00",
+            "processed_at": "2026-08-28T10:00:53.461870+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 491,
+            "round_id": 693,
             "round_number": 85,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3811,7 +3810,7 @@
           "code": "round_already_processed",
           "error": "Round 85 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-b829abd2-b3ca-44fd-ab95-90dd8e43057a"
+          "request_id": "srv-7bb00c69-a514-4c0a-aee8-adbb29de5855"
         },
         "kind": "api",
         "status_code": 409
@@ -3821,68 +3820,69 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 86. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-4c261ed6-b528-4212-a37e-43c9cf807cc7"
+          "message": "Round 86 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7733960151672363,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-8572ba52-e98c-45d2-b102-56796d86b48c",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T11:00:53.822230+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T10:00:53.822227+00:00",
+            "phase_1_duration": 0.7733960151672363,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T10:00:55.092512+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 694,
+            "round_number": 86,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 400
+        "status_code": 200
       },
       "iteration": 84,
       "second": {
         "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 981,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-f727746a-e96c-4a28-85f7-ea0662e49e4f",
-          "research_allocations": [],
-          "round": 492,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
+          "code": "round_already_processed",
+          "error": "Round 86 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-74812f49-3a69-450d-8d92-0487f9db9b99"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 409
       }
     },
     {
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 87 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8441817760467529,
+          "message": "Round 87 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.746971845626831,
           "phase_2_status": "dispatched",
-          "request_id": "srv-18705409-7e26-4394-96e2-1850e2a5372e",
+          "request_id": "srv-77f52bf4-11e5-4740-8207-68a34726fda4",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:31.580799+00:00",
+            "deadline": "2026-08-28T11:00:55.493695+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:31.580795+00:00",
-            "phase_1_duration": 0.8441817760467529,
+            "opened_at": "2026-08-28T10:00:55.493691+00:00",
+            "phase_1_duration": 0.746971845626831,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:32.791020+00:00",
+            "processed_at": "2026-08-28T10:00:56.615013+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 493,
+            "round_id": 695,
             "round_number": 87,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3900,7 +3900,7 @@
           "code": "round_already_processed",
           "error": "Round 87 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-72f043e2-2e3a-4807-b7dc-40a6ab2e0fd5"
+          "request_id": "srv-fff2dbf7-b19c-4883-90e6-f2bc678f709e"
         },
         "kind": "api",
         "status_code": 409
@@ -3910,68 +3910,69 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 88. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-c0ea8b47-d4b9-4121-a060-03c059aae0f9"
+          "message": "Round 88 processed in 0.7s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7381746768951416,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-52413c82-c163-4dab-b86a-85bdd7ca124d",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T11:00:56.977845+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T10:00:56.977843+00:00",
+            "phase_1_duration": 0.7381746768951416,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T10:00:58.073219+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 696,
+            "round_number": 88,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 400
+        "status_code": 200
       },
       "iteration": 86,
       "second": {
         "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 985,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-3aafc750-92b3-4822-bdd6-eabb355b6df3",
-          "research_allocations": [],
-          "round": 494,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
+          "code": "round_already_processed",
+          "error": "Round 88 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-c8a4f84a-fc76-4251-8f1e-3fb9b2f9c028"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 409
       }
     },
     {
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 89 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7138409614562988,
+          "message": "Round 89 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8020503520965576,
           "phase_2_status": "dispatched",
-          "request_id": "srv-b1c65444-5024-4c8d-b137-0c2a4dd127fe",
+          "request_id": "srv-cc1dfada-47d4-4422-80f9-e321ac9c10b4",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:33.627001+00:00",
+            "deadline": "2026-08-28T11:00:58.436519+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:33.626998+00:00",
-            "phase_1_duration": 0.7138409614562988,
+            "opened_at": "2026-08-28T10:00:58.436516+00:00",
+            "phase_1_duration": 0.8020503520965576,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:34.703177+00:00",
+            "processed_at": "2026-08-28T10:00:59.652578+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 495,
+            "round_id": 697,
             "round_number": 89,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -3989,7 +3990,7 @@
           "code": "round_already_processed",
           "error": "Round 89 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-3bdf224a-0beb-4e80-9e94-ec6d9e6125c9"
+          "request_id": "srv-c8b67553-b374-41da-8bcf-b7d4b76c5aaa"
         },
         "kind": "api",
         "status_code": 409
@@ -3999,45 +4000,44 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "message": "Round 90 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7320444583892822,
-          "phase_2_status": "dispatched",
-          "request_id": "srv-32b5023f-a281-49ce-bb76-150e00f8c337",
-          "round": {
-            "close_reason": "",
-            "closed_at": null,
-            "deadline": "2026-08-28T09:40:35.050041+00:00",
-            "is_overdue": false,
-            "narrative_error": "",
-            "narrative_generated": false,
-            "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:35.050038+00:00",
-            "phase_1_duration": 0.7320444583892822,
-            "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:36.249531+00:00",
-            "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 496,
-            "round_number": 90,
-            "seconds_remaining": 3598,
-            "status": "processed",
-            "teams_locked": 2,
-            "teams_pending": 0,
-            "teams_total": 2
-          }
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 90. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-d830b8be-de20-4ee5-9521-03587664e8c5"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 400
       },
       "iteration": 88,
       "second": {
         "body": {
-          "code": "round_already_processed",
-          "error": "Round 90 has already been processed; unlocking now would not change its results.",
-          "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e9e22f32-3922-48ab-a96f-02b2f37a45e5"
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1393,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-0e5fe182-0251-424c-b19e-c80393a4ef0d",
+          "research_allocations": [],
+          "round": 698,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
@@ -4045,23 +4045,23 @@
       "first": {
         "body": {
           "message": "Round 91 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7796845436096191,
+          "phase_1_time": 0.7550337314605713,
           "phase_2_status": "dispatched",
-          "request_id": "srv-9bf50c42-ec37-4fea-af2b-d6f88d0c47ff",
+          "request_id": "srv-71315ab1-413a-4ea6-a9cd-66ff84c862e1",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:36.624157+00:00",
+            "deadline": "2026-08-28T11:01:00.508911+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:36.624140+00:00",
-            "phase_1_duration": 0.7796845436096191,
+            "opened_at": "2026-08-28T10:01:00.508908+00:00",
+            "phase_1_duration": 0.7550337314605713,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:37.801818+00:00",
+            "processed_at": "2026-08-28T10:01:01.658892+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 497,
+            "round_id": 699,
             "round_number": 91,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4079,7 +4079,7 @@
           "code": "round_already_processed",
           "error": "Round 91 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-71e92dfd-1b01-4339-8f9c-6b93610cdf4f"
+          "request_id": "srv-92b907e3-c02d-437b-b773-57a8cfd447f9"
         },
         "kind": "api",
         "status_code": 409
@@ -4092,7 +4092,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 92. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-0a3b540e-371d-4609-97d1-64927f3d2fe2"
+          "request_id": "srv-90d17264-19a1-48c6-a5d3-64bf8f32a49e"
         },
         "kind": "api",
         "status_code": 400
@@ -4106,7 +4106,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 993,
+          "id": 1397,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -4117,12 +4117,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-6ac0056a-9d47-42dc-b3f4-17e2e62d6a9c",
+          "request_id": "srv-9c9cbd7f-2389-44f6-9dd5-fa96002eb444",
           "research_allocations": [],
-          "round": 498,
+          "round": 700,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -4133,24 +4133,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 93 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8037652969360352,
+          "message": "Round 93 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.883002758026123,
           "phase_2_status": "dispatched",
-          "request_id": "srv-bd06b38b-2373-488f-bd36-70aaa53e05bd",
+          "request_id": "srv-09796c26-e957-4d68-9daa-dcd6c2aa11b6",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:38.592745+00:00",
+            "deadline": "2026-08-28T11:01:02.791440+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:38.592743+00:00",
-            "phase_1_duration": 0.8037652969360352,
+            "opened_at": "2026-08-28T10:01:02.791435+00:00",
+            "phase_1_duration": 0.883002758026123,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:39.764260+00:00",
+            "processed_at": "2026-08-28T10:01:04.125350+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 499,
+            "round_id": 701,
             "round_number": 93,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4168,7 +4168,7 @@
           "code": "round_already_processed",
           "error": "Round 93 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-e321a31e-36af-485a-87c9-a2957609adbc"
+          "request_id": "srv-8b61989e-79bf-452b-8791-75cd1c105e00"
         },
         "kind": "api",
         "status_code": 409
@@ -4181,7 +4181,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 94. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-64cff99e-f87d-405b-a726-eb498f605cb4"
+          "request_id": "srv-8be6f301-9fd0-4947-ab85-c6072dfcf230"
         },
         "kind": "api",
         "status_code": 400
@@ -4195,7 +4195,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 997,
+          "id": 1401,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -4206,12 +4206,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-7b3b513f-85a8-4533-a992-d72987c2afad",
+          "request_id": "srv-dd7767da-575c-48ea-b6a6-c3d460a67b54",
           "research_allocations": [],
-          "round": 500,
+          "round": 702,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -4223,23 +4223,23 @@
       "first": {
         "body": {
           "message": "Round 95 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.761559009552002,
+          "phase_1_time": 0.7692196369171143,
           "phase_2_status": "dispatched",
-          "request_id": "srv-39b519d9-c6e6-4bdd-87e9-becfedff3eeb",
+          "request_id": "srv-c9e15212-e6a2-4dd8-a308-524fbef6d1d3",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:40.614951+00:00",
+            "deadline": "2026-08-28T11:01:04.938291+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:40.614947+00:00",
-            "phase_1_duration": 0.761559009552002,
+            "opened_at": "2026-08-28T10:01:04.938288+00:00",
+            "phase_1_duration": 0.7692196369171143,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:41.756526+00:00",
+            "processed_at": "2026-08-28T10:01:06.077143+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 501,
+            "round_id": 703,
             "round_number": 95,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4257,7 +4257,7 @@
           "code": "round_already_processed",
           "error": "Round 95 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-b0cec65a-0a54-4fb1-be09-bcc7bc07a3ad"
+          "request_id": "srv-62586903-4942-4cb3-b9e8-daf81adc27ec"
         },
         "kind": "api",
         "status_code": 409
@@ -4270,7 +4270,7 @@
           "code": "round_not_ready",
           "error": "Team \"Team 0\" has not locked decisions for round 96. Re-lock the team (or close the round) before processing.",
           "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-f8c24be0-576e-495c-8604-70e4e207322c"
+          "request_id": "srv-15806570-2ba6-421a-b897-933ed13807ec"
         },
         "kind": "api",
         "status_code": 400
@@ -4284,7 +4284,7 @@
           "esg": null,
           "event_responses": [],
           "financing": null,
-          "id": 1001,
+          "id": 1405,
           "locked_at": null,
           "locked_by": null,
           "market_entries": [],
@@ -4295,12 +4295,12 @@
           "product_creates": [],
           "product_retires": [],
           "rd_investments": [],
-          "request_id": "srv-664fd89b-03a6-474f-8012-6fc0a22262af",
+          "request_id": "srv-2fa34da7-b58a-42c4-b9ee-5426e8271dc1",
           "research_allocations": [],
-          "round": 502,
+          "round": 704,
           "status": "draft",
           "talent_allocations": [],
-          "team": 11,
+          "team": 15,
           "team_notes": null
         },
         "kind": "api",
@@ -4311,24 +4311,24 @@
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 97 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7420949935913086,
+          "message": "Round 97 processed in 0.8s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.7936728000640869,
           "phase_2_status": "dispatched",
-          "request_id": "srv-6ec6f52d-c659-4232-a9bd-399e6cfeb551",
+          "request_id": "srv-0558c00a-5fa1-49e3-bb18-61735fb9ba50",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:42.589940+00:00",
+            "deadline": "2026-08-28T11:01:07.014437+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:42.589937+00:00",
-            "phase_1_duration": 0.7420949935913086,
+            "opened_at": "2026-08-28T10:01:07.014434+00:00",
+            "phase_1_duration": 0.7936728000640869,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:43.723434+00:00",
+            "processed_at": "2026-08-28T10:01:08.220687+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 503,
+            "round_id": 705,
             "round_number": 97,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4346,7 +4346,7 @@
           "code": "round_already_processed",
           "error": "Round 97 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-89c75c06-727a-4d6d-8872-d71b9ba232ee"
+          "request_id": "srv-109c13f0-ce8a-49ae-9ffc-d22c628d28ea"
         },
         "kind": "api",
         "status_code": 409
@@ -4356,68 +4356,69 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "code": "round_not_ready",
-          "error": "Team \"Team 0\" has not locked decisions for round 98. Re-lock the team (or close the round) before processing.",
-          "guidance": "Re-lock the team, or close the round, then process again.",
-          "request_id": "srv-b6e7899c-b8ac-4769-9401-1da92727394a"
+          "message": "Round 98 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.8893258571624756,
+          "phase_2_status": "dispatched",
+          "request_id": "srv-e6e718f4-fcf9-4da0-9a3c-a213370ddf49",
+          "round": {
+            "close_reason": "",
+            "closed_at": null,
+            "deadline": "2026-08-28T11:01:08.799253+00:00",
+            "is_overdue": false,
+            "narrative_error": "",
+            "narrative_generated": false,
+            "next_action": "advance",
+            "opened_at": "2026-08-28T10:01:08.799250+00:00",
+            "phase_1_duration": 0.8893258571624756,
+            "phase_2_duration": null,
+            "processed_at": "2026-08-28T10:01:10.105244+00:00",
+            "processing_status": "RESULTS_AVAILABLE",
+            "round_id": 706,
+            "round_number": 98,
+            "seconds_remaining": 3598,
+            "status": "processed",
+            "teams_locked": 2,
+            "teams_pending": 0,
+            "teams_total": 2
+          }
         },
         "kind": "api",
-        "status_code": 400
+        "status_code": 200
       },
       "iteration": 96,
       "second": {
         "body": {
-          "acquisitions": [],
-          "budget_allocation": null,
-          "compliance_investments": [],
-          "esg": null,
-          "event_responses": [],
-          "financing": null,
-          "id": 1005,
-          "locked_at": null,
-          "locked_by": null,
-          "market_entries": [],
-          "marketing_decisions": [],
-          "partnerships": [],
-          "plant_decisions": [],
-          "platform_developments": [],
-          "product_creates": [],
-          "product_retires": [],
-          "rd_investments": [],
-          "request_id": "srv-50e609c1-6125-42c1-8cef-729fcba25cee",
-          "research_allocations": [],
-          "round": 504,
-          "status": "draft",
-          "talent_allocations": [],
-          "team": 11,
-          "team_notes": null
+          "code": "round_already_processed",
+          "error": "Round 98 has already been processed; unlocking now would not change its results.",
+          "guidance": "Use the recovery workflow if a processed round must be corrected.",
+          "request_id": "srv-5408befe-19fc-4d83-9ade-698e85c65327"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 409
       }
     },
     {
       "arrival_order": "second-first",
       "first": {
         "body": {
-          "message": "Round 99 processed in 0.8s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8299670219421387,
+          "message": "Round 99 processed in 0.9s. Results are available; narratives are generating in the background.",
+          "phase_1_time": 0.850740909576416,
           "phase_2_status": "dispatched",
-          "request_id": "srv-750eb1a5-fa4f-4742-beb7-21572aa332ba",
+          "request_id": "srv-4adaab40-1ca2-490f-bd1e-cbda7d91f352",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:44.556845+00:00",
+            "deadline": "2026-08-28T11:01:10.546039+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:44.556842+00:00",
-            "phase_1_duration": 0.8299670219421387,
+            "opened_at": "2026-08-28T10:01:10.546035+00:00",
+            "phase_1_duration": 0.850740909576416,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:45.748212+00:00",
+            "processed_at": "2026-08-28T10:01:11.842499+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 505,
+            "round_id": 707,
             "round_number": 99,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4435,7 +4436,7 @@
           "code": "round_already_processed",
           "error": "Round 99 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-2b93020e-3720-4546-9709-03e3f36a46ad"
+          "request_id": "srv-b01fe0e2-341e-44f5-999f-981f302a5b43"
         },
         "kind": "api",
         "status_code": 409
@@ -4445,45 +4446,44 @@
       "arrival_order": "first-first",
       "first": {
         "body": {
-          "message": "Round 100 processed in 0.7s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.7317838668823242,
-          "phase_2_status": "dispatched",
-          "request_id": "srv-45505f9c-29cf-47db-9519-489df1549470",
-          "round": {
-            "close_reason": "",
-            "closed_at": null,
-            "deadline": "2026-08-28T09:40:46.142358+00:00",
-            "is_overdue": false,
-            "narrative_error": "",
-            "narrative_generated": false,
-            "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:46.142354+00:00",
-            "phase_1_duration": 0.7317838668823242,
-            "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:47.257612+00:00",
-            "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 506,
-            "round_number": 100,
-            "seconds_remaining": 3598,
-            "status": "processed",
-            "teams_locked": 2,
-            "teams_pending": 0,
-            "teams_total": 2
-          }
+          "code": "round_not_ready",
+          "error": "Team \"Team 0\" has not locked decisions for round 100. Re-lock the team (or close the round) before processing.",
+          "guidance": "Re-lock the team, or close the round, then process again.",
+          "request_id": "srv-1c8b4fd6-10d0-46e8-847f-fdde3819d32a"
         },
         "kind": "api",
-        "status_code": 200
+        "status_code": 400
       },
       "iteration": 98,
       "second": {
         "body": {
-          "code": "round_already_processed",
-          "error": "Round 100 has already been processed; unlocking now would not change its results.",
-          "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-58062eb9-0e46-4858-8a65-e5231cabcad4"
+          "acquisitions": [],
+          "budget_allocation": null,
+          "compliance_investments": [],
+          "esg": null,
+          "event_responses": [],
+          "financing": null,
+          "id": 1413,
+          "locked_at": null,
+          "locked_by": null,
+          "market_entries": [],
+          "marketing_decisions": [],
+          "partnerships": [],
+          "plant_decisions": [],
+          "platform_developments": [],
+          "product_creates": [],
+          "product_retires": [],
+          "rd_investments": [],
+          "request_id": "srv-b828ebae-20af-44c3-ae91-10944cc81e97",
+          "research_allocations": [],
+          "round": 708,
+          "status": "draft",
+          "talent_allocations": [],
+          "team": 15,
+          "team_notes": null
         },
         "kind": "api",
-        "status_code": 409
+        "status_code": 200
       }
     },
     {
@@ -4491,23 +4491,23 @@
       "first": {
         "body": {
           "message": "Round 101 processed in 0.9s. Results are available; narratives are generating in the background.",
-          "phase_1_time": 0.8510377407073975,
+          "phase_1_time": 0.8534948825836182,
           "phase_2_status": "dispatched",
-          "request_id": "srv-3697d10f-a5ad-47e1-a545-b899ecf1e989",
+          "request_id": "srv-739e734a-d414-4df7-864d-7c32bbd64768",
           "round": {
             "close_reason": "",
             "closed_at": null,
-            "deadline": "2026-08-28T09:40:47.780414+00:00",
+            "deadline": "2026-08-28T11:01:12.933975+00:00",
             "is_overdue": false,
             "narrative_error": "",
             "narrative_generated": false,
             "next_action": "advance",
-            "opened_at": "2026-08-28T08:40:47.780411+00:00",
-            "phase_1_duration": 0.8510377407073975,
+            "opened_at": "2026-08-28T10:01:12.933972+00:00",
+            "phase_1_duration": 0.8534948825836182,
             "phase_2_duration": null,
-            "processed_at": "2026-08-28T08:40:49.045654+00:00",
+            "processed_at": "2026-08-28T10:01:14.218926+00:00",
             "processing_status": "RESULTS_AVAILABLE",
-            "round_id": 507,
+            "round_id": 709,
             "round_number": 101,
             "seconds_remaining": 3598,
             "status": "processed",
@@ -4525,7 +4525,7 @@
           "code": "round_already_processed",
           "error": "Round 101 has already been processed; unlocking now would not change its results.",
           "guidance": "Use the recovery workflow if a processed round must be corrected.",
-          "request_id": "srv-fed83348-0942-4267-8f57-2f28395c1618"
+          "request_id": "srv-9495f34f-8e4f-4d56-ba37-2de53637a07c"
         },
         "kind": "api",
         "status_code": 409
