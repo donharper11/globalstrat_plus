@@ -343,7 +343,8 @@ concurrency or determinism matrices, no narrative drills):
 | Focused guard + rejection tests (18, incl. 3 new) | OK, 4.6 s |
 | Same tests against the audited defect | 1 failure — `test_the_setting_alone_cannot_authorize_truncation` |
 | Disposable-database negative walkthrough | 7/7 steps as expected; the audited SQL refused, 3 rows before and 3 after |
-| `makemigrations --check`, `manage.py check`, `git diff --check` | clean |
+| `makemigrations --check`, `manage.py check`, route/read/manifest inventories | clean, all current |
+| `git diff --check` | clean on source; reports trailing whitespace inside `installed-functions.txt`, which is verbatim `psql` table output and is not edited |
 
 The reverted-code run matters more than the passing one: it is what
 distinguishes a test that covers the defect from a test that merely passes
