@@ -8,6 +8,8 @@ import { LockOutlined, HomeOutlined, ReloadOutlined, RocketOutlined, CheckCircle
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
+import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
+import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
   getInstructorDashboard, advanceRound, injectEvent,
   extendDeadline, getResearchQueries,
@@ -82,6 +84,7 @@ const InstructorDashboard = () => {
   const [drillRound, setDrillRound] = useState(null);
   const [drillData, setDrillData] = useState(null);
   const [drillLoading, setDrillLoading] = useState(false);
+  const [drillError, setDrillError] = useState(null);
   // Course/Roster management
   const [courses, setCourses] = useState([]);
   const [sections, setSections] = useState([]);
@@ -368,10 +371,22 @@ const InstructorDashboard = () => {
     setDrillTeam(teamId);
     setDrillRound(round || dashboard?.current_round);
     setDrillLoading(true);
+    setDrillError(null);
     try {
       const res = await getTeamDecisions(gameId, teamId, round || dashboard.current_round);
       setDrillData(res.data);
-    } catch { setDrillData(null); }
+    } catch (err) {
+      // A failed request used to be stored as `null`, which the modal rendered
+      // as "no submission data" — the same thing it shows for a team that
+      // genuinely submitted nothing. On the one screen an instructor opens to
+      // defend a disputed result, that made a server error look like evidence.
+      setDrillData(null);
+      setDrillError(
+        err?.response?.data?.detail
+        || err?.message
+        || 'The request failed.'
+      );
+    }
     setDrillLoading(false);
   };
 
@@ -2102,37 +2117,26 @@ const InstructorDashboard = () => {
 
       {/* Team Decisions Drill-Down Modal */}
       <Modal title={`${t('instructor.team_decisions')} — ${teams.find(tm => tm.team_id === drillTeam)?.team_name || ''}`}
-        open={!!drillTeam} onCancel={() => { setDrillTeam(null); setDrillData(null); }}
+        open={!!drillTeam} onCancel={() => { setDrillTeam(null); setDrillData(null); setDrillError(null); }}
         width={800} footer={null}>
-        <div style={{ marginBottom: 12 }}>
-          <Text strong>{t('instructor.round')}: </Text>
-          <Select value={drillRound} onChange={r => openDrill(drillTeam, r)} style={{ width: 120 }}
-            options={Array.from({ length: dashboard?.current_round || 0 }, (_, i) => ({ value: i + 1, label: `${t('instructor.round')} ${i + 1}` }))}
-          />
-        </div>
-        {drillLoading ? <LoadingSpinner /> : !drillData ? <Empty description={t('instructor.no_submission_data')} /> : (
+        <AuditRoundSelect
+          value={drillRound}
+          currentRound={dashboard?.current_round}
+          onChange={r => openDrill(drillTeam, r)}
+          label={t('instructor.round')}
+        />
+        {drillLoading ? <LoadingSpinner /> : drillError ? (
+          <Alert type="error" showIcon
+            message={t('instructor.decisions_load_failed')}
+            description={drillError} />
+        ) : !drillData ? <Empty description={t('instructor.no_submission_data')} /> : (
           <div>
             <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{drillData.status}</Tag>
             {drillData.submission_origin_label && <Tag color={drillData.submission_origin === 'defaulted_missing' ? 'red' : drillData.submission_origin === 'deadline_locked' ? 'gold' : 'default'} style={{ marginLeft: 4 }}>{drillData.submission_origin_label}</Tag>}
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
             {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
 
-            {drillData.audit_events?.length > 0 && (
-              <Card size="small" title="Submission audit evidence" style={{ marginTop: 12 }}>
-                <Table dataSource={drillData.audit_events} rowKey="id" size="small"
-                  pagination={{ pageSize: 8 }} scroll={{ x: 1000 }}
-                  columns={[
-                    { title: 'Time (server)', dataIndex: 'server_timestamp', render: v => new Date(v).toLocaleString() },
-                    { title: 'Actor', dataIndex: 'actor' },
-                    { title: 'Action', dataIndex: 'action' },
-                    { title: 'Endpoint', dataIndex: 'endpoint' },
-                    { title: 'Request ID', dataIndex: 'request_id', render: v => v || '—' },
-                    { title: 'Payload SHA-256', dataIndex: 'payload_sha256', render: v => <Text code copyable>{v}</Text> },
-                    { title: 'Payload', dataIndex: 'payload', render: v => <Text code copyable>{JSON.stringify(v)}</Text> },
-                  ]}
-                />
-              </Card>
-            )}
+            <AuditEvidenceTable events={drillData.audit_events} />
 
             {drillData.budget && (
               <Descriptions title={t('instructor.budget_allocation')} size="small" bordered column={{ xs: 1, sm: 2, md: 3 }} style={{ marginTop: 12 }}>

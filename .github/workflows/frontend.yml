@@ -1,0 +1,72 @@
+# Frontend verification, on the same runtime and the same commands used locally.
+#
+# The runtime is read from `.nvmrc` rather than written here, so there is one
+# place to change it. GSP-CRV2-05 exists because "it works on this machine"
+# depended on which `node` a shell happened to pick up: the host has 16, 20 and
+# 22 installed and no pin, and the audited failure was reported against the
+# system 18.
+name: frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/globalstrat-frontend/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    paths:
+      - 'frontend/globalstrat-frontend/**'
+      - '.github/workflows/frontend.yml'
+
+defaults:
+  run:
+    working-directory: frontend/globalstrat-frontend
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: 'frontend/globalstrat-frontend/.nvmrc'
+          cache: npm
+          cache-dependency-path: frontend/globalstrat-frontend/package-lock.json
+
+      - name: Record the runtime
+        run: |
+          node --version
+          npm --version
+
+      # `npm ci` installs from the lockfile and fails if package.json and the
+      # lockfile disagree, which is the check that keeps the lock authoritative.
+      # No install flags beyond noise suppression: peer resolution stays strict,
+      # because `--legacy-peer-deps` was tried here and produced a tree whose
+      # `ajv-keywords@5` could not find the `ajv@8` it peers on, so the install
+      # succeeded and the build did not.
+      - name: Clean install
+        run: npm ci --no-audit --no-fund
+
+      - name: Jest
+        run: npm test -- --watchAll=false
+        env:
+          CI: true
+
+      - name: Production build
+        run: npm run build
+        env:
+          CI: true
+
+      # A second lockfile is a second source of truth that nothing validates.
+      # yarn.lock was removed in GSP-CRV2-05; this stops it coming back.
+      - name: Refuse a second lockfile
+        run: |
+          if [ -f yarn.lock ] || [ -f pnpm-lock.yaml ]; then
+            echo "Only package-lock.json is authoritative; remove the other lockfile." >&2
+            exit 1
+          fi
+
+      # `npm ci` does not write to package-lock.json. If it changed, the tree
+      # and the lockfile disagreed before this run started.
+      - name: Lockfile is unchanged by installing
+        run: git diff --exit-code -- package-lock.json
