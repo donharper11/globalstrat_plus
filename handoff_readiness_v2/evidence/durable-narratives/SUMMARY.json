@@ -1,0 +1,104 @@
+{
+  "all_hashes_unchanged": true,
+  "expensive_runs": {
+    "full_backend_suite": {
+      "count": 1,
+      "seconds": 199,
+      "tests": 387
+    },
+    "provider_drills": {
+      "count": 3,
+      "seconds": 86
+    },
+    "restart_drill": {
+      "count": 1,
+      "seconds": 67
+    }
+  },
+  "finding": "V2-006",
+  "findings_opened": [
+    "V2-015",
+    "V2-016"
+  ],
+  "frozen_revision": [
+    "ef01237a6542f5950f8447531a927ce96046bb7e"
+  ],
+  "handoff": "GSP-CRV2-03",
+  "provider_scenarios": {
+    "no-api-key": {
+      "all_jobs_terminal": true,
+      "backlog": {
+        "claimed": 0,
+        "degraded": 5,
+        "failed": 0,
+        "pending": 0,
+        "stale_claims": 0,
+        "succeeded": 6
+      },
+      "competitive_hash_unchanged": true,
+      "llm_endpoint": "",
+      "llm_key_configured": false,
+      "no_secret_in_any_field": true
+    },
+    "unreachable-endpoint": {
+      "all_jobs_terminal": true,
+      "backlog": {
+        "claimed": 0,
+        "degraded": 5,
+        "failed": 0,
+        "pending": 0,
+        "stale_claims": 0,
+        "succeeded": 6
+      },
+      "competitive_hash_unchanged": true,
+      "llm_endpoint": "http://127.0.0.1:9/v1/chat/completions",
+      "llm_key_configured": true,
+      "no_secret_in_any_field": true
+    },
+    "working-endpoint": {
+      "all_jobs_terminal": true,
+      "backlog": {
+        "claimed": 0,
+        "degraded": 0,
+        "failed": 0,
+        "pending": 0,
+        "stale_claims": 0,
+        "succeeded": 6
+      },
+      "competitive_hash_unchanged": true,
+      "llm_endpoint": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "llm_key_configured": true,
+      "no_secret_in_any_field": true
+    }
+  },
+  "restart_drill": {
+    "all_jobs_terminal": true,
+    "backlog_after": {
+      "claimed": 0,
+      "degraded": 0,
+      "failed": 0,
+      "pending": 0,
+      "stale_claims": 0,
+      "succeeded": 6
+    },
+    "backlog_before": {
+      "claimed": 0,
+      "degraded": 0,
+      "failed": 0,
+      "pending": 6,
+      "stale_claims": 0,
+      "succeeded": 0
+    },
+    "competitive_hash_unchanged": true,
+    "killed_while_holding": {
+      "claim_expires_at": "2026-08-28T13:24:49.982705+00:00",
+      "claimed_by": "ai-react:1910852:774a2d9a",
+      "narrative_type": "briefing"
+    },
+    "no_job_left_claimed": true,
+    "orphaned_claims_after_sigkill": 1
+  },
+  "source_tree_sha256": [
+    "1e17a18eba73b33876449d9982048197ce33acf9fa184eac22bd073186d750c3"
+  ]
+}

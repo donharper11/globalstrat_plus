@@ -14,6 +14,11 @@
 - [x] Operator concurrency fail-closed — 0 of 214 registered mutating routes
       unguarded, 1200 races, 0 deadlocks, 0 5xx;
       `OPERATOR_CONCURRENCY_MATRIX.md`.
+- [x] Phase-2 narratives durable and recoverable — jobs committed with the
+      numbers, SIGKILL drill recovers, competitive hash unmoved;
+      `NARRATIVE_WORKER_OPERATIONS.md`.
+- [ ] Narrative worker supervised in the competition stack (systemd unit
+      documented; deployment action outstanding).
 - [x] Deploy freeze and break-glass path documented.
 - [ ] Fresh post-deploy backup restored on isolated stack.
 - [x] Field pinned: 24 teams × 4 members / 96 sessions.
@@ -23,8 +28,8 @@
 - [ ] All infrastructure failure modes exercised in isolation.
 - [x] Submission audit evidence exposed in instructor tooling.
 - [x] Six dispute procedures added to runbook.
-- [x] Backend regression: 359/359 PASS, VM, 2026-08-28, from frozen commit
-      `830b7ad` (50 determinism + 31 operator-concurrency tests).
+- [x] Backend regression: 387/387 PASS, VM, 2026-08-28, from frozen commit
+      `ef01237` (50 determinism + 31 concurrency + 28 durable-narrative tests).
 - [x] Resolution refuses an unidentified build; replay refuses a source-tree
       mismatch before mutation.
 - [ ] Competition stack sets `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or

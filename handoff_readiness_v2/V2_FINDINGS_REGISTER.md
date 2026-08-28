@@ -10,7 +10,7 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-003 | Dispute tooling | P1 | Instructor decision drill-down showed the stored snapshot and lock actor/time, but not each accepted save's actor, server timestamp, request ID, endpoint, payload, and hash. | V2 API/UI now exposes ordered audit evidence in the historical decisions modal. | Repaired |
 | V2-004 | Concurrent operator actions | P0 | Reopen, deadline change, and advance did not share the row-lock transaction used by close/process. Tracing the routes found the problem was wider: several endpoints read the round's status outside any lock and met the conflict inside the engine, where it surfaced as a 500 or a second resolution. | Compare the pre-repair `RoundProcessView` (unlocked status read, blanket `except Exception` → 500) and `InstructorExtendDeadlineView` (no lock, no transaction, silently reopened a closed round). | **Closed** — see closure entry below |
 | V2-005 | Failure visibility | P1 | A Phase-1 exception rolled back `PROCESSING`; `_mark_failed()` then required the rolled-back value, leaving no FAILED indicator. | Injected disk-full exception now leaves `Round.processing_status=FAILED`; focused and full suites pass. | Repaired |
-| V2-006 | Backend restart / narrative | P1 | Phase 2 runs only in a daemon thread. A worker restart can silently abandon it; no durable queued job or startup retry exists, and an abrupt process death cannot populate `narrative_error`. Numeric results remain valid, but operator visibility/recovery is incomplete. | Process a round, terminate the worker after Phase 2 dispatch and before completion, restart, then inspect `narrative_generated`, `narrative_error`, and logs. | Open |
+| V2-006 | Backend restart / narrative | P1 | Phase 2 runs only in a daemon thread. A worker restart can silently abandon it; no durable queued job or startup retry exists, and an abrupt process death cannot populate `narrative_error`. Numeric results remain valid, but operator visibility/recovery is incomplete. | Process a round, terminate the worker after Phase 2 dispatch and before completion, restart, then inspect `narrative_generated`, `narrative_error`, and logs. | **Closed** — see closure entry below |
 | V2-007 | Audit integrity | P1 | Audit models reject a second `.save()`, but queryset `.update()`/`.delete()` and direct SQL can alter them. The database does not enforce append-only history, so stored data alone cannot prove absence of operator/database tampering. | In an isolated database, call `DecisionAuditEvent.objects.filter(pk=...).update(action='tampered')`; it bypasses model `save()`. | Open |
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | Open |
@@ -224,6 +224,38 @@ Two behaviours worth calling out:
   and status-code tallies showing both orders really won (process+process
   53 / 47; schedule+close 52 / 48).
 - Docs: `OPERATOR_CONCURRENCY_MATRIX.md`, operator runbook.
+
+### V2-006 — durable Phase-2 narrative execution (P1) — closed
+
+Resolving a round writes six `NarrativeJob` rows **in the same transaction as
+the numbers**: if the results committed, the outstanding work is recorded.
+Workers claim with `SELECT … FOR UPDATE SKIP LOCKED` under a lease, so several
+run without coordinating and a worker that dies leaves a lease the next one
+reclaims — nothing has to notice the death. Attempts are bounded, `failed` is
+terminal and visible, and `retry_narrative_jobs` requeues without re-running
+scoring.
+
+`Round.processing_status` and `narrative_error` still drive the console, but
+they are now a projection of the job rows rather than the only record, which is
+what makes an abrupt death survivable.
+
+A job that finishes on template fallbacks is recorded as `degraded` rather than
+plainly `succeeded`. The drills found that: with an unreachable provider every
+job reported success, because each producer falls back — correct for students,
+who still get a briefing, and silent for operators.
+
+- Code: `core/models/narrative_jobs.py`, `core/services/narrative_jobs.py`,
+  `core/engine/narratives.py` (per-type runners), `advance_round.py`,
+  `coherence.py`, `manifest_sections.py`, `manifest_snapshot.py`,
+  `run_narrative_worker`, `retry_narrative_jobs`; migrations `0064`–`0068`.
+- Tests: `core/tests/test_durable_narratives.py` — 28 tests covering enqueue,
+  claim/lease/reclaim, timeout / 429 / 500 / malformed output / no key,
+  idempotency, isolation and secret redaction. Backend suite **387**.
+- Evidence: `evidence/durable-narratives/` — a real SIGKILL of a worker holding
+  a claimed job, with recovery; three provider conditions including the live
+  model. Competitive hash unchanged in every case.
+- Docs: `NARRATIVE_WORKER_OPERATIONS.md` (supervision, leases, backlog
+  alerting), `NARRATIVE_JOB_INVENTORY.md` (the Phase-1 inventory).
 
 ## Scope notes
 
