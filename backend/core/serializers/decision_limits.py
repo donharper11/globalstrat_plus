@@ -18,6 +18,7 @@ reason this looked covered. A field is protected by being in this table, and
 `test_decision_limits` fails if a numeric decision field is in neither this
 table nor `NEGATIVE_ALLOWED`.
 """
+from django.core.exceptions import FieldError
 from rest_framework import serializers
 
 # Serializer class name → fields that must be >= 0.
@@ -116,3 +117,109 @@ class _NonNegative:
 
     def __repr__(self):
         return f'<NonNegative {self.field_name}>'
+
+
+# ---------------------------------------------------------------------------
+# The same policy, asked of persisted rows
+# ---------------------------------------------------------------------------
+# The serializer guards above stop a negative value entering through either
+# supported API. They say nothing about a row that is already in the database:
+# a data migration, an import, `manage.py shell`, the admin, or a restore can
+# put one there, and the engine reads rows rather than payloads. So scoring
+# asks the same question of what it is about to score.
+#
+# The answer is to refuse, not to clamp. A clamped value silently changes a
+# team's submitted decision into a different one and scores that instead, which
+# is a worse failure than not scoring: it is wrong and it is invisible. The
+# engine stops and names the row.
+
+# How each protected model reaches a game and round. Everything a team submits
+# through the decision endpoints hangs off `DecisionSubmission`; the supply
+# chain rows carry their own team and round.
+_SCOPE_FILTERS = {
+    'submission': lambda game, rnd: {
+        'submission__team__game': game, 'submission__round': rnd},
+    'team_round': lambda game, rnd: {'team__game': game, 'round': rnd},
+}
+
+_SCOPE_BY_MODEL = {
+    'SourcingAllocation': 'team_round',
+}
+
+
+def protected_model_fields():
+    """`{model: (field, ...)}` derived from the serializer table.
+
+    Derived rather than declared a second time: two tables would be two places
+    to forget, and the point of this module is that there is one.
+    """
+    import importlib
+
+    mapping = {}
+    for module_name in ('core.serializers.decisions',
+                        'core.serializers.sc_serializers'):
+        module = importlib.import_module(module_name)
+        for serializer_name, fields in NON_NEGATIVE_FIELDS.items():
+            serializer_cls = getattr(module, serializer_name, None)
+            if serializer_cls is None:
+                continue
+            model = serializer_cls.Meta.model
+            mapping.setdefault(model, ())
+            mapping[model] = tuple(dict.fromkeys(mapping[model] + tuple(fields)))
+    return mapping
+
+
+def persisted_violations(game, round_obj):
+    """Every persisted decision row holding a negative protected value.
+
+    Returns a list of dicts naming the model, row, field and value, so the
+    refusal can say which row to correct rather than that something is wrong.
+    """
+    violations = []
+    for model, fields in sorted(protected_model_fields().items(),
+                                key=lambda item: item[0].__name__):
+        scope = _SCOPE_BY_MODEL.get(model.__name__, 'submission')
+        try:
+            queryset = model.objects.filter(
+                **_SCOPE_FILTERS[scope](game, round_obj))
+        except FieldError as error:
+            # A model whose scope filter no longer matches its fields is
+            # reported rather than skipped: an unscannable table is an
+            # unchecked table, and silence here would read as "no violations".
+            violations.append({
+                'model': model.__name__, 'row': None, 'field': None,
+                'value': None,
+                'detail': (f'{model.__name__} could not be scoped to this '
+                           f'round: {error}'),
+            })
+            continue
+        for row in queryset.order_by('pk'):
+            for field in fields:
+                value = getattr(row, field, None)
+                if value is not None and value < 0:
+                    violations.append({
+                        'model': model.__name__,
+                        'row': row.pk,
+                        'submission': getattr(row, 'submission_id', None),
+                        'team': getattr(row, 'team_id', None),
+                        'field': field,
+                        'value': str(value),
+                    })
+    return violations
+
+
+def describe_violations(violations, limit=10):
+    parts = []
+    for item in violations[:limit]:
+        if item.get('detail'):
+            parts.append(item['detail'])
+            continue
+        where = (f"submission {item['submission']}"
+                 if item.get('submission') is not None
+                 else f"team {item.get('team')}")
+        parts.append(
+            f"{item['model']} row {item['row']} ({where}): "
+            f"{item['field']} = {item['value']}")
+    if len(violations) > limit:
+        parts.append(f'... and {len(violations) - limit} more')
+    return '; '.join(parts)

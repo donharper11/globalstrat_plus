@@ -26,19 +26,29 @@ Complete this stage before any release-scale search.
 4. Probe zero, negative, maximum, oversized, duplicate, boundary, rounding, and
    missing/default values with focused contract tests.
 
-### Findings already established
+### Findings established by Stage 1
 
-- **Duplicate R&D divergence:** the whole-submission API rejects two investments
-  for the same platform+feature; the per-type R&D API accepts them. Repair by
-  sharing the cross-row rule across both paths. Include a distinct-feature
-  accepted control.
-- **Negative investments become income:** twelve fields accept negative values
-  that flow into `strategy_expense`. Confirm with the current two-team Phase-1
-  probe, then reject them through shared validation across both API paths.
+- **V2-018 — negative decisions become income (P0, repaired at `47b0a4e`):**
+  the complete inventory found 21 fields, including negative headcount multiplied
+  by salary bands. API validation now rejects them through the central
+  `decision_limits.py` policy. Before Stage 2, add a fail-closed engine
+  precondition for persisted rows that bypass serializers; do not clamp or
+  reinterpret them. The engine must refuse scoring before competitive mutation
+  and name the offending row/field.
+- **V2-019 — withdrawn:** the reported whole-versus-partial duplicate-R&D
+  divergence did not exist. The initial comparison exercised serializers rather
+  than both endpoints; `DecisionPartialUpdateView` already ran the assembled-list
+  validator. Preserve the API-level regression/control tests and the shared
+  `ListSerializer` consolidation, but do not report this as a repaired exploit.
 
-Log each finding before repair. These are validation/correctness repairs, not
-competition-rule changes. Run focused API and engine tests only. Once they pass,
-commit the legal-space freeze and record its source identity.
+The two surfaces do not expose identical decision sets. Uniformity applies to
+their intersection; fields exposed by only one surface must still obey the same
+central legal-space policy and the engine precondition.
+
+These are validation/correctness repairs, not competition-rule changes. Run
+focused API and engine tests only. Stage 1 closes only when both API validation
+and the persisted-row engine precondition pass, then commit the final legal-space
+freeze and record its source identity.
 
 ### Candidate rule findings
 
@@ -110,7 +120,8 @@ or CRV2-04 integrity evidence. Cite them where the probe crosses those controls.
 ## Acceptance
 
 - Whole and partial APIs enforce the same legal decision space.
-- No negative-cost income loop or duplicate-row ordering dependency remains.
+- No negative-cost income loop remains through API or persisted-row bypass. The
+  duplicate-R&D regression remains uniform across the API intersection.
 - Report the strongest legal strategy and its distribution/margin over the
   competent baseline on holdout seeds; a simple bootstrap interval is sufficient
   when enough samples exist, otherwise report the complete distribution.

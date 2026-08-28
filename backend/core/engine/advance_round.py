@@ -32,6 +32,20 @@ class RoundNotReadyError(ValueError):
     report it as an actionable 400 rather than a 500."""
 
 
+class InvalidPersistedDecisionError(RoundNotReadyError):
+    """A stored decision row holds a value the decision rules forbid.
+
+    Separate from `RoundNotReadyError` so it can be recognised, and a subclass
+    of it so existing callers keep reporting it as an actionable 400: like an
+    unlocked team, it is something an operator fixes and retries.
+
+    The engine refuses rather than correcting the value. A negative investment
+    that scoring clamps to zero is a team's decision quietly replaced with a
+    different one, and the result looks ordinary. Refusing is louder and
+    truthful.
+    """
+
+
 def _run_sc_step(step_name, fn, context):
     """Run a supply-chain step and fail the atomic resolution on error."""
     try:
@@ -353,6 +367,23 @@ def _run_phase_1(game_id):
                 f'Team "{team.name}" has not locked decisions for round {current_round}. '
                 f'Re-lock the team (or close the round) before processing.'
             )
+
+    # The decision rules, asked of what is actually stored. The serializers
+    # refuse a negative investment at both write paths, but the engine scores
+    # rows, and rows can also arrive from a data migration, an import, the
+    # admin, `manage.py shell` or a restore. V2-018: a negative value flows
+    # into `strategy_expense` as income, and a negative headcount multiplied by
+    # a salary band was worth fifty billion.
+    from core.serializers.decision_limits import (describe_violations,
+                                                  persisted_violations)
+    violations = persisted_violations(game, current_round_obj)
+    if violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(violations)} stored decision value(s) are negative where the '
+            f'decision rules require zero or more. Correct the row(s) and '
+            f'retry. {describe_violations(violations)}'
+        )
 
     # Mark processing started only after preconditions pass.
     current_round_obj.processing_status = 'PROCESSING'

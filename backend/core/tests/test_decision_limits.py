@@ -335,3 +335,124 @@ class DuplicateRdRowApiTests(DecisionApiBase):
             self.assertEqual(
                 DecisionRDInvestment.objects.filter(submission=submission).count(),
                 0, 'a refused duplicate payload was stored')
+
+
+class PersistedRowEngineGuardTests(TestCase):
+    """The engine scores rows, not payloads.
+
+    The serializer guards stop a negative value entering through either
+    supported API. A row can still arrive from a data migration, an import, the
+    admin, `manage.py shell` or a restore, and scoring would read it. So the
+    same policy is applied to what is about to be scored, and scoring refuses
+    rather than correcting: a clamped value is a team's decision silently
+    replaced with a different one, scored as though it were theirs.
+    """
+
+    def setUp(self):
+        from core.models.core import TeamMember  # noqa: F401
+        owner = DjangoUser.objects.create(username=f'owner-eng-{id(self)}')
+        self.scenario = Scenario.objects.create(
+            name=f'Engine {id(self)}', industry_label='T', description='d',
+            starting_cash=1000, num_rounds=4)
+        market = MarketDefinition.objects.create(
+            scenario=self.scenario, name='Home', code='HM', description='d',
+            currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
+            entry_cost_base=0, tax_rate=0, regulatory_difficulty=1,
+            infrastructure_quality=1)
+        profile = FirmStarterProfile.objects.create(
+            scenario=self.scenario, profile_name='S', description='d',
+            home_market=market, starting_cash=1000, starting_debt=0)
+        self.game = Game.objects.create(
+            scenario=self.scenario, name='Engine game', current_round=1,
+            status='active', created_by=owner)
+        self.round = Round.objects.create(
+            game=self.game, round_number=1, status='open',
+            opened_at=timezone.now())
+        self.team = Team.objects.create(
+            game=self.game, name='T1', firm_starter_profile=profile,
+            performance_index=100, cash_on_hand=1000, total_equity=1000)
+        self.submission = DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='locked',
+            locked_at=timezone.now())
+
+    def esg(self, amount):
+        """Straight to the database, exactly as a bypass would."""
+        from core.models.decisions import DecisionESG
+        DecisionESG.objects.filter(submission=self.submission).delete()
+        return DecisionESG.objects.create(
+            submission=self.submission,
+            environmental_investment=Decimal(amount),
+            social_investment=Decimal('0'))
+
+    def resolve(self):
+        from core.engine.advance_round import _run_phase_1
+        return _run_phase_1(self.game.id)
+
+    def test_a_negative_row_written_past_the_serializers_is_refused(self):
+        from core.engine.advance_round import InvalidPersistedDecisionError
+        row = self.esg('-5000000')
+        # The row exists: the ORM wrote it without asking a serializer.
+        self.assertEqual(row.environmental_investment, Decimal('-5000000'))
+        with self.assertRaises(InvalidPersistedDecisionError):
+            self.resolve()
+
+    def test_the_refusal_names_the_row_and_the_field(self):
+        from core.engine.advance_round import InvalidPersistedDecisionError
+        row = self.esg('-5000000')
+        with self.assertRaises(InvalidPersistedDecisionError) as caught:
+            self.resolve()
+        message = str(caught.exception)
+        self.assertIn('DecisionESG', message)
+        self.assertIn(str(row.pk), message)
+        self.assertIn('environmental_investment', message)
+        self.assertIn('-5000000', message)
+
+    def test_a_refused_round_leaves_no_competitive_result(self):
+        from core.engine.advance_round import InvalidPersistedDecisionError
+        from core.models import (RoundResultFinancials,
+                                 RoundResultPerformanceIndex)
+        self.esg('-5000000')
+        with self.assertRaises(InvalidPersistedDecisionError):
+            self.resolve()
+
+        self.assertFalse(
+            RoundResultFinancials.objects.filter(game=self.game).exists())
+        self.assertFalse(
+            RoundResultPerformanceIndex.objects.filter(game=self.game).exists())
+        # The round must not be left mid-flight either.
+        self.round.refresh_from_db()
+        self.assertNotEqual(self.round.processing_status, 'PROCESSING')
+        self.assertNotEqual(self.round.status, 'processed')
+        self.team.refresh_from_db()
+        self.assertEqual(self.team.cash_on_hand, 1000)
+
+    def test_zero_and_positive_persisted_values_still_resolve(self):
+        """The control. A precondition that refuses everything is not a guard."""
+        for amount in ('0', '250000'):
+            with self.subTest(amount=amount):
+                Round.objects.filter(pk=self.round.pk).update(
+                    status='open', processing_status='')
+                self.round.refresh_from_db()
+                self.esg(amount)
+                # Resolution may still fail for unrelated scenario reasons; what
+                # must not happen is a refusal about this policy.
+                from core.engine.advance_round import InvalidPersistedDecisionError
+                try:
+                    self.resolve()
+                except InvalidPersistedDecisionError as error:
+                    self.fail(f'{amount} was refused by the decision policy: {error}')
+                except Exception:
+                    pass
+
+    def test_the_scan_covers_every_protected_model(self):
+        """The precondition is only worth what it looks at."""
+        from core.serializers import decision_limits
+        mapping = decision_limits.protected_model_fields()
+        names = {m.__name__ for m in mapping}
+        for expected in ('DecisionESG', 'DecisionTalent', 'DecisionMarketing',
+                         'DecisionRDInvestment', 'DecisionPlant',
+                         'DecisionPartnership', 'DecisionMarketEntry',
+                         'DecisionPlatformDevelopment', 'SourcingAllocation'):
+            self.assertIn(expected, names)
+        total = sum(len(f) for f in mapping.values())
+        self.assertEqual(total, 21, f'expected 21 protected fields, found {total}')

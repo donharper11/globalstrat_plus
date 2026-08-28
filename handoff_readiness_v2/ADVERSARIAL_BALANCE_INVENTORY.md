@@ -22,7 +22,7 @@ creates and drops, seeded through the project's own `setup_test_game`.
 Full data: `evidence/adversarial-balance/dimension-inventory.json`, which records
 every probe value and the serializer's verdict for each.
 
-## 2. Twelve dimensions accept a negative investment
+## 2. Thirteen dimensions accepted a negative investment
 
 Cleanly accepted — the field itself raised no error:
 
@@ -34,6 +34,14 @@ Cleanly accepted — the field itself raised no error:
 | `plants` | `capacity_units`, `contract_mfg_volume` |
 | `platforms` | `committed_cost` |
 | `talent` | `rd_headcount`, `commercial_headcount`, `operations_headcount`, and the three matching `*_training_budget` fields |
+
+Seven more accepted a negative value but were masked in the first probe because
+another field in the same payload failed first — five on `marketing`
+(`channel_digital_pct`, `channel_traditional_pct`, `channel_trade_pct`,
+`distribution_investment`, `sales_team_count`) and two on `rd`
+(`calculated_cost`, `target_level`). A guard that depends on a neighbouring
+field failing is not a guard, so they are covered too, along with
+`SourcingAllocation.volume_commitment_units`: **21 fields in total**.
 
 The money fields most people would think of first — `rd_budget`,
 `marketing_budget`, `strategy_budget`, `retail_price`, `promotion_budget`,
@@ -52,44 +60,84 @@ A negative value there is not a smaller cost; it is income. Whether the engine
 actually pays it out is a question for the engine, not for the source — see the
 value-loop probe result in the completion report.
 
-## 3. The two API paths do not refuse the same payloads
+## 3. Two defences, and what each one covers
 
-**Confirmed divergence.** Two R&D investments naming the same platform and the
-same feature:
+V2-018 is closed by two separate mechanisms, because they cover different
+things and neither covers both.
 
-| Path | Verdict |
+### API prevention — the value cannot enter
+
+`core/serializers/decision_limits.py` holds one table of the fields that cannot
+be negative. A mixin attaches the rule at field level, so each field reports its
+own refusal and a payload with two bad fields names both. Both write surfaces
+use the same serializer classes, so both enforce it; **21 fields** are covered
+(13 that accepted a negative cleanly, 7 that were masked in the first probe by
+another field failing first, and 1 supply-chain field).
+
+A test fails if the table names a field a serializer does not have, or if a
+named field has no guard attached. The contract tests fail against the
+pre-repair serializers.
+
+### Engine fail-closed defence — the value cannot be scored
+
+Validation covers the supported APIs. It says nothing about a row already in
+the database: a data migration, an import, the admin, `manage.py shell` or a
+restore can write one, and the engine scores rows rather than payloads.
+
+`_run_phase_1` now applies the same table to the persisted decisions before any
+competitive mutation, and raises `InvalidPersistedDecisionError` naming the
+model, row id, submission and field. It **refuses; it does not clamp**. A
+clamped value is a team's submitted decision quietly replaced with a different
+one and scored as though it were theirs — wrong, and invisible. The refusal
+happens before `processing_status` is set, so no result rows, no partial
+scoring, and no round left mid-flight.
+
+`InvalidPersistedDecisionError` subclasses `RoundNotReadyError`, so existing
+callers keep reporting it as an actionable 400: like an unlocked team, it is
+something an operator corrects and retries.
+
+Five focused tests cover it, and all five fail with the precondition removed.
+
+### One check found a bug in itself
+
+The scanner reports a model it cannot scope rather than skipping it, on the
+grounds that an unscannable table is an unchecked table and silence would read
+as "no violations". The first version passed the filter dictionary positionally
+instead of as keyword arguments, so *every* model was unscannable — and that
+choice turned a silent no-op into a loud, obviously wrong refusal that named
+nine models at once. Had it skipped quietly, the precondition would have
+scanned nothing and passed.
+
+## 3b. The two write surfaces cover different decision sets
+
+API uniformity only means anything for fields both endpoints accept.
+
+| Reachable only per-type (PATCH) | Reachable only whole-submission (PUT) |
 |---|---|
-| `PUT /decisions/round/<n>/` (whole submission) | **rejected** — *"Only one R&D investment per platform feature is allowed in a round."* |
-| `PATCH /decisions/round/<n>/rd/` (per type) | **accepted** |
+| `talent` | `compliance_investments`, `research_allocations`, `talent_allocations`, `team_notes` |
 
-The rule lives in `DecisionSubmissionSerializer.validate()`. The PATCH handler
-validates each row with `DecisionRDInvestmentSerializer` on its own and never
-runs it, because it is a cross-row rule and PATCH never sees the rows together.
+`talent` is not a field of `DecisionSubmissionSerializer`, so a `talent` key in
+that payload is ignored rather than validated. A test asserts it is ignored and
+not stored — silent acceptance would be the dangerous outcome.
 
-That rule is not cosmetic. Its docstring says why it exists: *"Reject ambiguous
-R&D payloads whose result could depend on row order"* — the defect class raised
-as V2-012, where an unordered iteration changed a published competitive hash.
-The partial endpoint lets a team store exactly the state the full endpoint was
-changed to forbid.
+## 3c. The duplicate R&D divergence was filed in error
 
-### This check reported "no divergence" twice before it measured anything
+Recorded because the mistake is instructive. The check compared
+`DecisionSubmissionSerializer` with `DecisionRDInvestmentSerializer` and
+reported the result as "the API accepts". It never made a request, so it could
+not see that `DecisionPartialUpdateView` calls the cross-row rule itself — it
+has since `86c2ad4`. Both endpoints always refused the duplicate, and
+API-level tests confirm it by passing unchanged against the pre-repair code.
 
-Worth recording, because it is the failure mode this whole handoff is exposed
-to:
+Before it reached even that state it reported "no divergence" twice, for two
+different wrong reasons: an unavailable platform/feature pair, then missing
+`team` and `round` fields that stopped DRF calling `validate()` at all.
 
-1. **First version** picked the first platform and feature it found. Both paths
-   rejected the payload — because that feature was not available on the team's
-   platform generation. Two refusals for an unrelated reason are indistinguishable
-   from agreement.
-2. **Second version** used a valid pair, and both paths accepted. `team` and
-   `round` are required fields of the submission serializer, and DRF only calls
-   `validate()` once every field has validated — so the cross-row rule was never
-   reached, and its silence read as approval.
-
-The check now carries a control: a *distinct* platform/feature pair that the
-full API must accept. If the control is refused, the check declares itself
-inconclusive rather than reporting a result. A probe that cannot distinguish
-"allowed" from "rejected for some other reason" is not evidence.
+What was real is narrower and is not an exploit: the rule lived in two places,
+so a third caller using `DecisionRDInvestmentSerializer(many=True)` directly
+would have missed it. It now lives in `DecisionRDInvestmentListSerializer` and
+runs wherever the rows arrive together. The API-level regression and control
+tests are kept.
 
 ## 4. What the scoring function rewards
 
