@@ -124,7 +124,7 @@ const SupplyChainPanel = () => {
           </Text>
         </Space>
       ),
-      children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.resolution_data?.narrative || t('sc.dashboard.disruption_occurred')}</Paragraph>,
+      children: <Paragraph style={{ margin: 0, fontSize: 13 }}>{e.narrative || t('sc.dashboard.disruption_occurred')}</Paragraph>,
     })),
     ...compliance.slice(0, 12).map((e) => {
       const active = e.freeze_until_round >= currentRound || e.round_number === currentRound;

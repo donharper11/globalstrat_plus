@@ -5,6 +5,11 @@ Covers the prompt builders (right facts + guardrail + RAG grounding), the store
 functions (LLM content when present, factual template fallback when absent), and
 the no-API-key fallback path.
 """
+
+# GSP-CRV2-03: the SC narrative moved from resolution_data['narrative'] to a
+# dedicated column. That JSON holds the fire/applied flags the engine reads,
+# so it is inside the competitive hash; the prose is not and must not be.
+
 from decimal import Decimal as D
 from unittest.mock import patch
 
@@ -77,7 +82,7 @@ class CC17NarrativeTest(TestCase):
         N._store_sc_event_narratives(self.game, self.round, results)
         N._store_compliance_narratives(self.game, self.round, results)
         self.sc_event.refresh_from_db(); self.comp_event.refresh_from_db()
-        self.assertEqual(self.sc_event.resolution_data['narrative'], 'The quake shook Taiwan fabs.')
+        self.assertEqual(self.sc_event.narrative, 'The quake shook Taiwan fabs.')
         self.assertEqual(self.comp_event.narrative, 'Shipment detained under UFLPA.')
 
     # -- store: fallback template when no LLM ---------------------------
@@ -86,7 +91,7 @@ class CC17NarrativeTest(TestCase):
         N._store_compliance_narratives(self.game, self.round, {})
         self.sc_event.refresh_from_db(); self.comp_event.refresh_from_db()
         # SC fallback uses the template description or a factual sentence.
-        self.assertTrue(self.sc_event.resolution_data['narrative'])
+        self.assertTrue(self.sc_event.narrative)
         # Compliance fallback states regime + cost + freeze factually.
         self.assertIn('Uyghur Forced Labor Prevention Act', self.comp_event.narrative)
         self.assertIn('$500,000', self.comp_event.narrative)
@@ -98,5 +103,5 @@ class CC17NarrativeTest(TestCase):
         with self.settings(DASHSCOPE_API_KEY=''):
             N.generate_round_narratives(self.game, self.round)
         self.sc_event.refresh_from_db(); self.comp_event.refresh_from_db()
-        self.assertTrue(self.sc_event.resolution_data.get('narrative'))
+        self.assertTrue(self.sc_event.narrative)
         self.assertTrue(self.comp_event.narrative)
