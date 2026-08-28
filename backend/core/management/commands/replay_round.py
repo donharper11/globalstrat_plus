@@ -272,8 +272,12 @@ class Command(BaseCommand):
                 if recorded_output.get('section_digests', {}).get(name) !=
                 replayed.output_section_digests.get(name)}
         if options['wait_narrative']:
-            output_report['post_phase_2'] = self._wait_for_phase_2(
+            phase_2, narrative_body = self._wait_for_phase_2(
                 round_obj, options['wait_narrative'])
+            output_report['post_phase_2'] = phase_2
+            # The prose itself, not only its digest: "the narrative differed"
+            # is a claim a reader should be able to check.
+            self._write(evidence, 'post-phase2-narrative.json', narrative_body)
 
         self._write(evidence, 'replay-report.json', output_report)
         self._write(evidence, 'replayed-manifest.json', self._export(replayed))
@@ -360,7 +364,7 @@ class Command(BaseCommand):
             'llm_endpoint': getattr(settings, 'DASHSCOPE_COMPATIBLE_URL', ''),
             'llm_model': getattr(settings, 'DASHSCOPE_MODEL', ''),
             'llm_key_configured': bool(getattr(settings, 'DASHSCOPE_API_KEY', '')),
-        }
+        }, narrative
 
     def _print_diffs(self, section_diffs, scalar_diffs):
         for name, value in sorted(scalar_diffs.items()):
