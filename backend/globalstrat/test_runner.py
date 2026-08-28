@@ -56,9 +56,17 @@ class GlobalStratTestRunner(DiscoverRunner):
         # exactly where they need to be provable. Installed from the same
         # module the migration uses, so the two cannot drift.
         from django.db import connections
-        from core.services.audit_guards import install
+        from core.services.audit_guards import TRUNCATE_SETTING, install
         for alias in connections:
             install(connections[alias])
+        # `TransactionTestCase` resets between tests by truncating every table,
+        # which the audit guards refuse. Announcing "this is a test database"
+        # per connection keeps the reset working while leaving the guard itself
+        # installed, so a test can still turn it off for one transaction and
+        # watch the truncate fail. Production sets this nowhere.
+        _allow_truncate_in_tests(TRUNCATE_SETTING)
+        for alias in connections:
+            _announce_test_database(connections[alias], TRUNCATE_SETTING)
         return config
 
     def teardown_databases(self, old_config, **kwargs):
@@ -75,3 +83,24 @@ class GlobalStratTestRunner(DiscoverRunner):
         super().teardown_test_environment(**kwargs)
         for model in self._unmanaged:
             model._meta.managed = False
+
+
+def _announce_test_database(connection, setting):
+    with connection.cursor() as cursor:
+        cursor.execute(f"SET {setting} = 'on'")
+
+
+def _allow_truncate_in_tests(setting):
+    """Set the marker on every connection Django opens from here on.
+
+    Django closes and reopens connections between tests and for each thread a
+    `TransactionTestCase` starts, so setting it once on the current connection
+    would hold until the first reconnect and then stop holding.
+    """
+    from django.db.backends.signals import connection_created
+
+    def handler(sender, connection, **kwargs):
+        _announce_test_database(connection, setting)
+
+    connection_created.connect(handler, weak=False,
+                               dispatch_uid='globalstrat-allow-truncate')

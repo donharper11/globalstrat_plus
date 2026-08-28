@@ -34,10 +34,26 @@ MANIFEST_TABLE = 'competition_resolution_manifest'
 
 REJECT_FUNCTION = 'competition_audit_reject_change'
 MANIFEST_FUNCTION = 'competition_manifest_reject_change'
+TRUNCATE_FUNCTION = 'competition_audit_reject_truncate'
+
+# `TRUNCATE` does not fire row-level triggers, so the guards above let it
+# through: one statement empties the audit log and every `BEFORE DELETE`
+# trigger stays silent. It needs a statement-level trigger of its own.
+#
+# The escape hatch exists because Django's `TransactionTestCase` resets the
+# database by truncating every table, so a guard with no way to say "this is a
+# test database" could only be installed where no test could reach it. The
+# setting is never set in production, and a test that wants to prove the guard
+# turns it off for one transaction.
+TRUNCATE_SETTING = 'globalstrat.allow_truncate'
 
 
 def _trigger_name(table):
     return f'{table}_append_only'
+
+
+def _truncate_trigger_name(table):
+    return f'{table}_no_truncate'
 
 
 FUNCTIONS_SQL = f"""
@@ -68,7 +84,21 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION {TRUNCATE_FUNCTION}() RETURNS trigger AS $$
+BEGIN
+    IF COALESCE(current_setting('{TRUNCATE_SETTING}', true), 'off') = 'on' THEN
+        RETURN NULL;
+    END IF;
+    RAISE EXCEPTION
+        'append-only audit table %: TRUNCATE is not permitted', TG_TABLE_NAME
+        USING ERRCODE = 'insufficient_privilege',
+              HINT = 'Truncating an audit table destroys the evidence it holds.';
+END;
+$$ LANGUAGE plpgsql;
 """
+
+ALL_TABLES = PROTECTED_TABLES + (MANIFEST_TABLE,)
 
 
 def install_sql():
@@ -85,16 +115,25 @@ def install_sql():
     statements.append(
         f'CREATE TRIGGER {name} BEFORE UPDATE OR DELETE ON {MANIFEST_TABLE} '
         f'FOR EACH ROW EXECUTE FUNCTION {MANIFEST_FUNCTION}();')
+    for table in ALL_TABLES:
+        name = _truncate_trigger_name(table)
+        statements.append(f'DROP TRIGGER IF EXISTS {name} ON {table};')
+        statements.append(
+            f'CREATE TRIGGER {name} BEFORE TRUNCATE ON {table} '
+            f'FOR EACH STATEMENT EXECUTE FUNCTION {TRUNCATE_FUNCTION}();')
     return statements
 
 
 def uninstall_sql():
     statements = []
-    for table in PROTECTED_TABLES + (MANIFEST_TABLE,):
+    for table in ALL_TABLES:
         statements.append(
             f'DROP TRIGGER IF EXISTS {_trigger_name(table)} ON {table};')
+        statements.append(
+            f'DROP TRIGGER IF EXISTS {_truncate_trigger_name(table)} ON {table};')
     statements.append(f'DROP FUNCTION IF EXISTS {REJECT_FUNCTION}();')
     statements.append(f'DROP FUNCTION IF EXISTS {MANIFEST_FUNCTION}();')
+    statements.append(f'DROP FUNCTION IF EXISTS {TRUNCATE_FUNCTION}();')
     return statements
 
 
@@ -116,8 +155,10 @@ def installed_triggers(connection):
         cursor.execute("""
             SELECT c.relname, t.tgname, t.tgenabled
             FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid
-            WHERE NOT t.tgisinternal AND t.tgname LIKE '%%_append_only'
-            ORDER BY c.relname
+            WHERE NOT t.tgisinternal
+              AND (t.tgname LIKE '%%_append_only'
+                   OR t.tgname LIKE '%%_no_truncate')
+            ORDER BY c.relname, t.tgname
         """)
         return [{'table': row[0], 'trigger': row[1], 'enabled': row[2] == 'O'}
                 for row in cursor.fetchall()]
@@ -125,14 +166,17 @@ def installed_triggers(connection):
 
 def missing_guards(connection):
     """Guard triggers that should be installed and are not, or are disabled."""
-    live = {row['table']: row for row in installed_triggers(connection)}
+    live = {(row['table'], row['trigger']): row
+            for row in installed_triggers(connection)}
     missing = []
-    for table in PROTECTED_TABLES + (MANIFEST_TABLE,):
-        row = live.get(table)
-        if row is None:
-            missing.append({'table': table, 'problem': 'trigger missing'})
-        elif not row['enabled']:
-            missing.append({'table': table, 'problem': 'trigger disabled'})
+    for table in ALL_TABLES:
+        for name, label in ((_trigger_name(table), 'append-only trigger'),
+                            (_truncate_trigger_name(table), 'truncate trigger')):
+            row = live.get((table, name))
+            if row is None:
+                missing.append({'table': table, 'problem': f'{label} missing'})
+            elif not row['enabled']:
+                missing.append({'table': table, 'problem': f'{label} disabled'})
     return missing
 
 
@@ -145,7 +189,7 @@ def provision_app_role_sql(role, password_placeholder='<password>'):
     application as this role turns "the app must not rewrite audit history"
     from a convention into something the database enforces.
     """
-    audit_tables = PROTECTED_TABLES + (MANIFEST_TABLE,)
+    audit_tables = ALL_TABLES
     statements = [
         f"-- Run as the database owner. Replace {password_placeholder}.",
         f"CREATE ROLE {role} LOGIN PASSWORD '{password_placeholder}';",
@@ -165,7 +209,7 @@ def provision_app_role_sql(role, password_placeholder='<password>'):
 
 def privilege_report(connection, roles=None):
     """Who may UPDATE, DELETE or TRUNCATE each audit table."""
-    audit_tables = PROTECTED_TABLES + (MANIFEST_TABLE,)
+    audit_tables = ALL_TABLES
     with connection.cursor() as cursor:
         if roles is None:
             cursor.execute(

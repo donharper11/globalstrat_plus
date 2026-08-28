@@ -172,7 +172,21 @@ def main():
             raise SystemExit('seeding failed')
         write('seed.txt', seeded.stdout + seeded.stderr)
 
-        # 5. Negative transcripts: every bypass, attempted for real.
+        # 5. Chain and anchor, verified.
+        backup_dir = str(EVIDENCE / 'anchor-store')
+        env_extra = {'COMPETITION_BACKUP_DIR': backup_dir}
+        step('seal', manage(database, 'seal_audit_chain', '--json',
+                            env_extra=env_extra))
+        anchor = manage(database, 'export_audit_anchor', '--json',
+                        env_extra=env_extra)
+        step('export anchor', anchor)
+        write('anchor-export.json', anchor.stdout)
+        verified = manage(database, 'verify_audit_chain', '--json',
+                          env_extra=env_extra)
+        step('verify (clean)', verified)
+        write('chain-verification-clean.json', verified.stdout)
+
+        # 6. Negative transcripts: every bypass, attempted for real.
         negatives = []
         for title, statement in NEGATIVE_STATEMENTS:
             result = psql(database, statement)
@@ -191,20 +205,6 @@ def main():
               + '\n'.join(negatives)
               + '\nSame attempts through the ORM and the admin:\n\n'
               + orm.stdout + orm.stderr)
-
-        # 6. Chain and anchor, verified.
-        backup_dir = str(EVIDENCE / 'anchor-store')
-        env_extra = {'COMPETITION_BACKUP_DIR': backup_dir}
-        step('seal', manage(database, 'seal_audit_chain', '--json',
-                            env_extra=env_extra))
-        anchor = manage(database, 'export_audit_anchor', '--json',
-                        env_extra=env_extra)
-        step('export anchor', anchor)
-        write('anchor-export.json', anchor.stdout)
-        verified = manage(database, 'verify_audit_chain', '--json',
-                          env_extra=env_extra)
-        step('verify (clean)', verified)
-        write('chain-verification-clean.json', verified.stdout)
 
         # 7. The privileged change, and proof the external check catches it.
         tamper = []
@@ -382,8 +382,11 @@ from django.test import Client
 from django.conf import settings
 from core.authentication import create_access_token
 from core.models import Game, SensitiveReadEvent, Team, User
-from core.models.course import Course, Section
 
+# No Course/Section is created: `course` is one of the roughly fifty
+# managed=False legacy tables that migrations never create, so a migrated
+# database does not have it. Cohort ownership is GSP-CRV2-03's boundary and is
+# tested there; what this walkthrough has to show is the read record.
 settings.ALLOWED_HOSTS = list(settings.ALLOWED_HOSTS) + ['testserver']
 
 game = Game.objects.first()
@@ -391,13 +394,6 @@ team = Team.objects.first()
 instructor = User.objects.get(username='evidence-instructor')
 student = User.objects.create(username='evidence-student', role='student',
                               password_hash='x')
-course = Course.objects.create(course_code='EVID', course_name='Evidence',
-                               instructor_id=instructor.user_id, is_active=True)
-section = Section.objects.create(course_id=course.course_id, section_code='S1',
-                                 section_name='S1', max_teams=4,
-                                 team_size_min=1, team_size_max=4,
-                                 is_active=True)
-Game.objects.filter(pk=game.pk).update(section_id=section.section_id)
 
 def get(user, url):
     client = Client()

@@ -118,6 +118,39 @@ class AuditGuardInstallationTests(AuditIntegrityBase):
             audit_guards.install(connection)
         self.assertEqual(audit_guards.missing_guards(connection), [])
 
+    def test_truncate_is_refused(self):
+        """The bypass the row-level guards did not cover.
+
+        `TRUNCATE` fires no row trigger, so until a statement-level guard was
+        added one statement emptied the audit log while every `BEFORE DELETE`
+        trigger stayed silent. The test database announces itself so Django can
+        still reset between tests, so proving the guard means withdrawing that
+        announcement for one transaction.
+        """
+        # Deliberately not preceded by an insert in this transaction:
+        # PostgreSQL refuses TRUNCATE outright while foreign-key trigger events
+        # are pending, and an assertion satisfied by that refusal would pass
+        # with no guard installed at all.
+        with self.assertRaises(REFUSED) as caught:
+            with transaction.atomic():
+                self.raw(f"SET LOCAL {audit_guards.TRUNCATE_SETTING} = 'off'")
+                self.raw('TRUNCATE competition_decision_audit_event CASCADE')
+        self.assertIn('TRUNCATE is not permitted', str(caught.exception))
+
+        # And the reset path the test runner depends on still works.
+        self.raw('TRUNCATE competition_decision_audit_event CASCADE')
+
+    def test_every_audit_table_refuses_truncate(self):
+        for table in audit_guards.ALL_TABLES:
+            with self.subTest(table=table):
+                with self.assertRaises(REFUSED) as caught:
+                    with transaction.atomic():
+                        self.raw(
+                            f"SET LOCAL {audit_guards.TRUNCATE_SETTING} = 'off'")
+                        self.raw(f'TRUNCATE {table} CASCADE')
+                self.assertIn('TRUNCATE is not permitted',
+                              str(caught.exception))
+
     def test_the_provisioned_role_is_denied_update_and_delete(self):
         statements = audit_guards.provision_app_role_sql('globalstrat_app')
         joined = '\n'.join(statements)
