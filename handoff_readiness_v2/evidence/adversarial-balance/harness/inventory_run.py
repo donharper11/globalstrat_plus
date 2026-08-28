@@ -204,6 +204,7 @@ print('rounds', list(Round.objects.filter(game=game).values_list('round_number',
 PROBE = (HERE / 'probe_body.py').read_text(encoding='utf-8')
 VALUE_LOOP = (HERE / 'value_loop_body.py').read_text(encoding='utf-8')
 NEGATIVE_SWEEP = (HERE / 'negative_sweep_body.py').read_text(encoding='utf-8')
+SEED_PROBE = (HERE / 'seed_probe_body.py').read_text(encoding='utf-8')
 
 
 if __name__ == '__main__':
