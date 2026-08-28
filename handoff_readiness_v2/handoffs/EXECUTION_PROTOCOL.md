@@ -97,7 +97,8 @@ From the frozen commit, run in this order:
 
 1. migration/schema/static guards;
 2. release-scale task harness;
-3. full backend/frontend regression suite once;
+3. full backend/frontend regression suite once, except where the handoff
+   explicitly assigns the integrated suite to GSP-CRV2-09;
 4. checksum/index generation last;
 5. `git diff --check` and clean-source verification.
 
@@ -108,6 +109,12 @@ Do not rerun full suites/matrices to see if a failure flakes.
 Do not run another handoff's release-scale harness here. For example, CRV2-02
 runs its concurrency matrix but not CRV2-01's four-environment replay. Cross-task
 integrated certification is reserved for CRV2-09.
+
+GSP-CRV2-07 and 08 are integration/playthrough handoffs. Their specifications
+override the generic per-handoff suite step: they run focused checks and their
+named walkthroughs, then GSP-CRV2-09 runs the single integrated backend/frontend
+suite. Earlier release-scale artifacts are reviewed and sampled, not reproduced,
+unless later code touched their proven boundary or their provenance is invalid.
 
 ## Phase 5 — handoff to audit
 
