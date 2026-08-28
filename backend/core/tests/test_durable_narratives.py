@@ -321,16 +321,12 @@ class IsolationAndIdempotencyTests(DurableNarrativeBase):
         self.assertTrue(commentary.exists())
         self.assertIn('Weak alignment', commentary.first().detail)
 
-    def test_the_blend_can_be_restored_by_a_rules_decision(self):
-        from django.test import override_settings
-        from core.models.results_financials import RoundResultCoherence
-        self.resolve()
-        self.stub_llm(content='{"score": 20, "feedback": "Weak alignment."}')
-        with override_settings(COMPETITION_RAG_AFFECTS_COHERENCE=True):
-            narrative_jobs.drain(game_id=self.game.id)
-        coherence = RoundResultCoherence.objects.filter(
-            game=self.game, round_number=1).first()
-        self.assertEqual(float(coherence.rag_score), 20.0)
+    # Removed with the setting it described. It asserted that
+    # COMPETITION_RAG_AFFECTS_COHERENCE could restore the Phase-2 write into
+    # the graded, hashed coherence row — which is the configuration the audit
+    # required be made impossible, not merely discouraged. What replaces it is
+    # CoherenceIsolationTests: no configuration reaches a grade, and resolution
+    # refuses to run while the retired flag is set.
 
     def test_narrative_alerts_stay_out_of_the_competitive_section(self):
         from core.models.cc21_models import InstructorAlert
