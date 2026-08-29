@@ -38,13 +38,17 @@ def _request(method, url, token=None, payload=None, request_id=None,
     started = time.perf_counter()
     try:
         with urllib.request.urlopen(req, timeout=timeout) as response:
+            # The whole body: truncating it to 400 bytes for diagnostics cut
+            # the access token mid-string, so every login parsed as malformed
+            # JSON and no session authenticated. Error bodies are truncated at
+            # the point of recording instead.
             body = response.read()
             return {'status': response.status,
                     'ms': (time.perf_counter() - started) * 1000,
-                    'body': body[:400]}
+                    'body': body}
     except urllib.error.HTTPError as exc:
         return {'status': exc.code, 'ms': (time.perf_counter() - started) * 1000,
-                'body': exc.read()[:400]}
+                'body': exc.read()[:400]}   # diagnostics only, never parsed
     except Exception as exc:
         # Transport failure: no HTTP answer at all. Distinct from a 4xx, and
         # counted against the error budget.
@@ -77,7 +81,14 @@ class Session:
         if result['status'] != 200:
             self.login_failed = result.get('error') or result['status']
             return False
-        self.token = json.loads(result['body'])['access']
+        try:
+            self.token = json.loads(result['body'])['access']
+        except (ValueError, KeyError) as exc:
+            # A 200 whose body cannot yield a token is a driver fault, not a
+            # product one, and must be visible as such rather than as a silent
+            # unauthenticated session.
+            self.login_failed = f'200 but no usable token: {exc}'
+            return False
         return True
 
     def refresh(self):

@@ -23,7 +23,7 @@ import urllib.error
 import urllib.request
 
 HERE = pathlib.Path(__file__).resolve().parent
-BACKEND = HERE.parents[4] / 'backend'
+BACKEND = HERE.parents[3] / 'backend'  # .../globalstrat+/backend
 ADVERSARIAL = HERE.parents[1] / 'adversarial-balance' / 'harness'
 sys.path.insert(0, str(ADVERSARIAL))
 import inventory_run as R  # noqa: E402
@@ -70,20 +70,37 @@ def disposable_stack(label, seed=True):
                 f'sys.path.insert(0, {str(HERE)!r})\n'
                 f'sys.path.insert(0, {str(ADVERSARIAL)!r})\n'
                 'import seed_field\n'
+                # Compute first, print the marker afterwards. Printing it
+                # first put the seeder's own scenario-loading output between
+                # the marker and the JSON, so a failure surfaced as a JSON
+                # decode error over unrelated log lines.
+                'seeded = seed_field.run()\n'
                 'print("---SEED---")\n'
-                'print(json.dumps(seed_field.run(), default=str))\n'
+                'print(json.dumps(seeded, default=str))\n'
             )
             result = R.manage(database, 'shell', '-c', body, timeout=1800)
             if '---SEED---' not in result.stdout:
-                print(result.stdout[-4000:]); print(result.stderr[-4000:])
-                raise SystemExit('seeding failed')
-            seeded = json.loads(
-                result.stdout.split('---SEED---', 1)[1].strip().splitlines()[0])
+                print(result.stdout[-6000:]); print(result.stderr[-4000:])
+                raise SystemExit('seeding failed; see the traceback above')
+            tail = result.stdout.split('---SEED---', 1)[1].strip()
+            try:
+                seeded = json.loads(tail.splitlines()[0])
+            except (ValueError, IndexError):
+                print(tail[:4000]); print(result.stderr[-2000:])
+                raise SystemExit('seeding raised; see the traceback above')
             print(f"Seeded game {seeded['game_id']}: {seeded['teams']} teams, "
                   f"{len(seeded['identities'])} identities", flush=True)
 
+        # GLOBALSTRAT_ENV=production is deliberate: the load profile should
+        # exercise the settings the deployment uses, not a debug path. That
+        # guard refuses to boot without explicit secrets, which is the control
+        # working, so test-only values are supplied for this disposable stack
+        # rather than weakening the environment.
         env = dict(os.environ, DB_NAME=database, PYTHONUNBUFFERED='1',
-                   GLOBALSTRAT_ENV='production')
+                   GLOBALSTRAT_ENV='production',
+                   DJANGO_SECRET_KEY='crv2-07-load-test-key-' + database,
+                   DB_PASSWORD=os.environ.get('DB_PASSWORD',
+                                              '***REMOVED-CREDENTIAL-V2-048***'))
         log = open(HERE.parent / f'gunicorn-{label}.log', 'w')
         process = subprocess.Popen(
             ['gunicorn', '-c', 'gunicorn.conf.py',

@@ -20,6 +20,7 @@ def run():
     from django.utils import timezone
 
     from core.models import Enrollment, Game, Round, Scenario, Team, User
+    from core.models.course import Section
     from core.models.scenario import FirmStarterProfile
     from core.utils.passwords import hash_password
 
@@ -35,6 +36,13 @@ def run():
     call_command('setup_test_game', '--scenario', str(chosen.id), verbosity=0)
 
     game = Game.objects.order_by('-id').first()
+    # Enrollment carries a non-null section: a student is enrolled in a
+    # section, not directly in a game. setup_test_game already created one for
+    # this game, so the seeded identities join that rather than inventing a
+    # second one.
+    section = Section.objects.order_by('section_id').first()
+    if section is None:
+        raise RuntimeError('setup_test_game left no section to enrol into')
     profile = FirmStarterProfile.objects.filter(
         scenario=game.scenario).order_by('id').first()
 
@@ -61,11 +69,10 @@ def run():
                           'team_id': team.id})
             User.objects.filter(pk=user.pk).update(
                 password_hash=hashed, team_id=team.id, role='student')
-            Enrollment.objects.get_or_create(
-                user_id=user.user_id, team_id=team.id,
-                defaults={'is_active': True})
-            Enrollment.objects.filter(
-                user_id=user.user_id, team_id=team.id).update(is_active=True)
+            Enrollment.objects.update_or_create(
+                user_id=user.user_id, section=section,
+                defaults={'team_id': team.id, 'is_active': True,
+                          'enrolled_at': timezone.now()})
             identities.append({'username': username, 'password': PASSWORD,
                                'team_id': team.id, 'user_id': user.user_id,
                                'member_index': member})
@@ -80,6 +87,7 @@ def run():
     rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
     return {
         'game_id': game.id,
+        'section_id': section.section_id,
         'scenario': chosen.name,
         'round_number': rnd.round_number if rnd else None,
         'teams': len(teams),
