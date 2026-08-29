@@ -161,7 +161,7 @@ def outcomes(team_id, product_id, market_id):
     ad_rows = list(RoundResultAdoption.objects
                    .filter(team_id=team_id, round_number=rnd.round_number,
                            market_id=market_id)
-                   .order_by('segment__code', 'id'))
+                   .order_by('segment__name', 'id'))
     ad = next((r for r in ad_rows if r.best_product_id == product_id), None)
     fin = (RoundResultFinancials.objects
            .filter(team_id=team_id, round_number=rnd.round_number)
@@ -179,9 +179,9 @@ def outcomes(team_id, product_id, market_id):
         'adoption_pool': str(ad.adoption_pool) if ad else None,
         'fit_score': str(ad.fit_score) if ad else None,
         'adjusted_fit_score': str(ad.adjusted_fit_score) if ad else None,
-        'best_product_segment': ad.segment.code if ad else None,
+        'best_product_segment': ad.segment.name if ad else None,
         'adoption_by_segment': [
-            {'segment': r.segment.code,
+            {'segment': r.segment.name,
              'best_product_id': r.best_product_id,
              'is_this_product': r.best_product_id == product_id,
              'fit_score': str(r.fit_score),
