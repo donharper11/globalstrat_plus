@@ -24,7 +24,8 @@ team through `freeze_until_round` (blocking sales in `calculate_revenue` via
 """
 from decimal import Decimal as D
 
-from core.engine.sc_engine import _seed
+from core.engine.rng import get_rng
+from core.engine.sc_engine import _cohort_key
 
 
 def _team_xinjiang_exposure_pct(team, rnd):
@@ -118,7 +119,7 @@ def enforce_compliance(context):
     all_markets = list(MarketDefinition.objects.filter(
         scenario=context.scenario).order_by('id'))
     market_by_code = {m.code: m for m in all_markets}
-    rng = random.Random(_seed(game.id, round_number, context.scenario.id) ^ 0x0C0FFEE)
+    class_id = _cohort_key(game)
 
     for team in context.teams:
         for regime in regimes:
@@ -139,7 +140,23 @@ def enforce_compliance(context):
                 prob = float(regime.baseline_enforcement_probability_per_round or 0)
                 if mitigated:
                     prob *= (1 - _mitigation_reduction_pct(regime) / 100.0)
-                if rng.random() >= prob:
+                # V2-011: one stream per (team, regime, market) operation.
+                # A single sequential RNG meant draw n belonged to whichever
+                # triple reached it n-th, so adding or withdrawing a team moved
+                # every later team's enforcement outcome — one team's presence
+                # decided another team's result.
+                #
+                # Keyed on domain identity where the model carries it:
+                # `regime.regime_id` is a scenario code and `market.code` is
+                # the market's own code. Team is keyed on `id` rather than
+                # `name`, deliberately: instructors can rename a team mid-game
+                # through team management, and a rename must not resegment that
+                # team's stream.
+                enforcement_rng = get_rng(
+                    class_id, round_number,
+                    f'compliance_enforcement:{regime.regime_id}:'
+                    f'{team.id}:{market.code}')
+                if enforcement_rng.random() >= prob:
                     continue
 
                 # Fire.

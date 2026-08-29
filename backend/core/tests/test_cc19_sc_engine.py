@@ -24,7 +24,7 @@ from core.models.decisions import DecisionSubmission, DecisionMarketing
 from core.models.results import RoundResultAdoption
 from core.engine.sc_engine import (
     run_sc_state, calculate_sc_disruption_costs, score_sc_resilience,
-    _capacity_factor, _seed,
+    _capacity_factor, _cohort_key,
 )
 from core.engine.revenue import calculate_revenue
 
@@ -191,9 +191,13 @@ class CC19SCEngineTest(TestCase):
         self.assertEqual(rs.disruption_impact['disruption_cost'], 6789.0)
         self.assertEqual(rs.disruption_impact['capacity_factor'], 0.6)
 
-    def test_seed_deterministic(self):
-        self.assertEqual(_seed(1, 2, 3), _seed(1, 2, 3))
-        self.assertNotEqual(_seed(1, 2, 3), _seed(1, 3, 3))
+    def test_cohort_key_matches_the_shared_rule(self):
+        """V2-010: one cohort rule across every subsystem."""
+        class _G:
+            def __init__(self, section_id, id):
+                self.section_id, self.id = section_id, id
+        self.assertEqual(_cohort_key(_G(7, 42)), 7)
+        self.assertEqual(_cohort_key(_G(None, 42)), 42)
 
 
 class CC19SCFailClosedHardeningTest(TestCase):

@@ -23,6 +23,8 @@ Two channels, both landing in net income (not a direct cash poke):
 Determinism: all stochastic draws use a per-(game, round, scenario) seed.
 """
 import hashlib
+
+from core.engine.rng import get_rng
 import random
 from collections import defaultdict
 from decimal import Decimal
@@ -38,9 +40,15 @@ DEFAULT_BACKUP_SUPPLIER_PREMIUM_PCT = 0.15   # unit-cost premium paid on reroute
 DEFAULT_AIR_MODE_PREMIUM_MULT = 2.0          # air freight ≈ 2× sea for switched volume
 
 
-def _seed(game_id, round_number, scenario_id):
-    h = hashlib.sha256(f'{game_id}-{round_number}-{scenario_id}'.encode()).hexdigest()
-    return int(h, 16) % (2 ** 32)
+def _cohort_key(game):
+    """The cohort a game's random stream belongs to.
+
+    V2-010: this engine seeded on `game.id` while `events.py` seeded on
+    `game.section_id or game.id`, so two sections of one class received the
+    same event stream and different supply-chain streams. One rule, stated
+    once, used by every subsystem.
+    """
+    return game.section_id or game.id
 
 
 def _D(x):
@@ -159,7 +167,7 @@ def run_sc_state(context):
         return
     game = context.game
     round_number = context.round_number
-    rng = random.Random(_seed(game.id, round_number, scenario.id))
+    class_id = _cohort_key(game)
 
     suppliers_by_code = {s.supplier_id: s for s in Supplier.objects.filter(scenario=scenario)}
     lanes_by_code = {l.lane_id: l for l in ShippingLane.objects.filter(scenario=scenario)}
@@ -199,7 +207,13 @@ def run_sc_state(context):
             continue
         if SCEventInstance.objects.filter(event_template=tmpl, round__game=game).count() >= (tmpl.max_occurrences or 1):
             continue
-        if rng.random() >= float(tmpl.probability_per_round or 0):
+        # V2-011: one stream per template, not one stream shared by every
+        # template in queryset order. A draw used to belong to whichever
+        # template reached it n-th, so inserting or removing a template moved
+        # every later template's outcome.
+        trigger_rng = get_rng(class_id, round_number,
+                              f'sc_event_trigger:{tmpl.id}')
+        if trigger_rng.random() >= float(tmpl.probability_per_round or 0):
             continue
         inst = SCEventInstance.objects.create(round=rnd, event_template=tmpl, affects_all_teams=True, resolution_data={})
         fired.append(inst)
