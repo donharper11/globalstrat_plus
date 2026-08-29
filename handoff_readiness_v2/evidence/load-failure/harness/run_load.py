@@ -37,6 +37,9 @@ THRESHOLDS = {
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('profile', choices=sorted(PROFILES))
+    parser.add_argument('--deep-activity', action='store_true',
+                        help='sample pg_stat_activity during the run; a '
+                             'diagnostic that measurably slows the run')
     args = parser.parse_args()
     spec = PROFILES[args.profile]
 
@@ -56,7 +59,8 @@ def main():
               flush=True)
         result = driver.run_profile(
             base, identities, seeded['game_id'], seeded['round_number'],
-            spec['duration'], database=database)
+            spec['duration'], database=database,
+            deep_activity=args.deep_activity)
 
         # Server-side timing straight from gunicorn's access log, so a slow
         # request can be attributed to the server or to the client that

@@ -264,7 +264,17 @@ def sample_database(database, stop, samples, interval=2.0):
 
 
 def run_profile(base, identities, game_id, round_number, duration,
-                final_minute_writes=3, verbose=True, database=None):
+                final_minute_writes=3, verbose=True, database=None,
+                deep_activity=False):
+    """`deep_activity` samples pg_stat_activity twice a minute.
+
+    It located the advisory-lock waits and proved the sign-in stall was not
+    database-side, and it is off for measurement runs because it spawns psql
+    subprocesses from the same process that drives 96 threads: with it on,
+    throughput fell to 4690 requests where the same profile otherwise reached
+    13778, and client-observed p95 ran at three times the server's own figure.
+    An instrument that changes the reading is a diagnostic, not a gauge.
+    """
     sessions = [Session(base, identity, game_id, round_number)
                 for identity in identities]
     # A barrier rather than a sleep: the window opens when the cohort is
@@ -289,10 +299,11 @@ def run_profile(base, identities, game_id, round_number, duration,
                                         args=(stop, checkpoint_samples),
                                         daemon=True)
         checkpointer.start()
-        activity_sampler = threading.Thread(
-            target=sample_activity, args=(database, stop, activity_samples),
-            daemon=True)
-        activity_sampler.start()
+        if deep_activity:
+            activity_sampler = threading.Thread(
+                target=sample_activity, args=(database, stop, activity_samples),
+                daemon=True)
+            activity_sampler.start()
 
     launched = time.time()
     for t in threads:
