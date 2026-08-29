@@ -151,19 +151,54 @@ class Session:
             self.lock()
 
 
+def sample_database(database, stop, samples, interval=2.0):
+    """Peak database use has to be sampled while the load runs.
+
+    The first field run read connection count after the profile finished and
+    recorded 1, which is an idle stack rather than a peak. This samples on a
+    thread until told to stop.
+    """
+    import subprocess
+    query = ("SELECT count(*) FROM pg_stat_activity WHERE datname = "
+             f"'{database}'")
+    while not stop.is_set():
+        try:
+            out = subprocess.run(
+                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            value = out.stdout.strip()
+            if value.isdigit():
+                samples.append(int(value))
+        except Exception:
+            pass
+        stop.wait(interval)
+
+
 def run_profile(base, identities, game_id, round_number, duration,
-                final_minute_writes=3, verbose=True):
+                final_minute_writes=3, verbose=True, database=None):
     sessions = [Session(base, identity, game_id, round_number)
                 for identity in identities]
     threads = [threading.Thread(target=s.run,
                                 args=(duration, final_minute_writes),
                                 daemon=True) for s in sessions]
+    connection_samples = []
+    stop = threading.Event()
+    sampler = None
+    if database:
+        sampler = threading.Thread(target=sample_database,
+                                   args=(database, stop, connection_samples),
+                                   daemon=True)
+        sampler.start()
+
     started = time.time()
     for t in threads:
         t.start()
     for t in threads:
         t.join(timeout=duration + 600)
     elapsed = time.time() - started
+    stop.set()
+    if sampler:
+        sampler.join(timeout=15)
 
     samples = [s for session in sessions for s in session.samples]
     interactive = [s for s in samples if s['kind'] in ('refresh', 'save', 'lock')]
@@ -188,6 +223,11 @@ def run_profile(base, identities, game_id, round_number, duration,
                             and 400 <= s['status'] < 500)
 
     return {
+        'db_connection_samples': len(connection_samples),
+        'db_connections_peak': max(connection_samples) if connection_samples else None,
+        'db_connections_mean': (round(sum(connection_samples)
+                                      / len(connection_samples), 1)
+                                if connection_samples else None),
         'sessions_requested': len(identities),
         'sessions_authenticated': sum(1 for s in sessions if s.token),
         'login_failures': [s.login_failed for s in sessions if s.login_failed][:5],

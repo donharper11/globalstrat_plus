@@ -56,7 +56,7 @@ def main():
               flush=True)
         result = driver.run_profile(
             base, identities, seeded['game_id'], seeded['round_number'],
-            spec['duration'])
+            spec['duration'], database=database)
 
         # Database state, read from the server while the stack is still up.
         body = (
@@ -102,8 +102,12 @@ def main():
         breaches.append(
             f"error rate {result['error_rate_pct']}% exceeds "
             f"{THRESHOLDS['error_rate_pct']}%")
-    if db.get('connections_now', 0) > THRESHOLDS['db_connections']:
-        breaches.append(f"peak connections {db['connections_now']} exceeds "
+    peak = result.get('db_connections_peak')
+    if peak is None:
+        breaches.append('database connections were never sampled during the '
+                        'run, so saturation is unmeasured')
+    elif peak > THRESHOLDS['db_connections']:
+        breaches.append(f"peak connections {peak} exceeds "
                         f"{THRESHOLDS['db_connections']}")
     if db.get('deadlocks', 0) > THRESHOLDS['deadlocks']:
         breaches.append(f"{db['deadlocks']} deadlocks")
@@ -134,7 +138,10 @@ def main():
     print(f"errors          : {result['transport_failures']} transport, "
           f"{result['server_errors']} 5xx  -> {result['error_rate_pct']}%")
     print(f"business 4xx    : {result['business_refusals_4xx']} (not errors)")
-    print(f"database        : {db}")
+    print(f"db connections  : peak {result.get('db_connections_peak')}, "
+          f"mean {result.get('db_connections_mean')} over "
+          f"{result.get('db_connection_samples')} samples during load")
+    print(f"db after run    : {db}")
     print(f"reconciliation  : acknowledged "
           f"{reconciliation.get('acknowledged_writes')}, lost "
           f"{reconciliation.get('lost_write_count')}, duplicated "

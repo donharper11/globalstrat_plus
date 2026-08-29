@@ -1,0 +1,74 @@
+{
+  "code_revision": "b07835d5b05f58503e47aa7680542b8a1f6e2920",
+  "database": {
+    "commits": 120846,
+    "connections_now": 1,
+    "deadlocks": 0,
+    "max_connections": 100,
+    "rollbacks": 0,
+    "waiting_on_locks": 0
+  },
+  "passed": false,
+  "profile": "field",
+  "reconciliation": {
+    "acknowledged_writes": 2427,
+    "audit_rows_with_request_id": 2427,
+    "duplicated_write_count": 0,
+    "duplicated_writes": {},
+    "lost_write_count": 0,
+    "lost_writes": [],
+    "reconciles": true,
+    "refused_but_recorded": [],
+    "refused_but_recorded_count": 0,
+    "refused_writes": 0,
+    "unexplained_row_count": 0,
+    "unexplained_rows": []
+  },
+  "result": {
+    "business_refusals_4xx": 8,
+    "elapsed_seconds": 211.0,
+    "error_rate_pct": 0.0,
+    "interactive_requests": 4944,
+    "latency_ms": {
+      "max": 24321.4,
+      "p50": 3287.3,
+      "p95": 4099.7,
+      "p99": 13880.7
+    },
+    "login_failures": [],
+    "per_kind_p95": {
+      "lock": 4170.6,
+      "refresh": 4091.6,
+      "save": 4102.4
+    },
+    "requests_total": 5040,
+    "server_errors": 0,
+    "sessions_authenticated": 96,
+    "sessions_requested": 96,
+    "status_distribution": {
+      "200": 5032,
+      "400": 8
+    },
+    "throughput_rps": 23.9,
+    "transport_failures": 0
+  },
+  "scenario": "Consumer Electronics 2026",
+  "spec": {
+    "duration": 180,
+    "evidence": true,
+    "sessions": 96
+  },
+  "teams": 24,
+  "threshold_breaches": [
+    "p95 4099.7 ms exceeds 2000 ms",
+    "max 24321.4 ms exceeds 10000 ms"
+  ],
+  "thresholds": {
+    "db_connections": 80,
+    "deadlocks": 0,
+    "error_rate_pct": 0.5,
+    "lock_waits": 0,
+    "max_ms": 10000,
+    "p95_ms": 2000
+  }
+}
