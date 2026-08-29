@@ -8,7 +8,7 @@ REPO = EVIDENCE.parents[2]
 sys.path.insert(0, str(HERE))
 import inventory_run as R  # noqa: E402
 
-REQUIRED_PROOF = ('reached_intended_row', 'market_average_price',
+REQUIRED_PROOF = ('reached_intended_row', 'reference_price', 'price_ratio',
                   'price_fit_score', 'rival_rows_at_this_positioning',
                   'stored_price', 'rows_matching_coordinates')
 # adoption_pool and fit_score are deliberately absent: they are None when no
@@ -95,11 +95,11 @@ def main():
             s = report['subjects'][label]
             print(f"\n--- {label}: {s['team']} / {s['product']} in {s['group']} "
                   f"({s['rival_rows']} rival row(s)) ---")
-            print(f"  {'price':>8} {'avg price':>12} {'price fit':>10} "
+            print(f"  {'price':>8} {'reference':>12} {'price fit':>10} "
                   f"{'units sold':>12} {'revenue':>14} {'index':>8}")
             for price, cell in s['by_price'].items():
                 p, o = cell['proof'], cell['outcomes']
-                print(f"  {price:>8} {p['market_average_price']:>12.2f} "
+                print(f"  {price:>8} {p['reference_price']:>12.2f} "
                       f"{p['price_fit_score']:>10.4f} {o['units_sold']:>12} "
                       f"{o['total_revenue']:>14} {o['index_value']:>8}")
             print(f"  units constant across prices: "

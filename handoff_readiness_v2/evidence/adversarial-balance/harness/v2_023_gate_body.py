@@ -112,18 +112,25 @@ if alone is None or shared is None:
     raise SystemExit(0)
 
 
-def market_average_price(team_id, product_id, market_id, own_price):
-    """The average the engine computes: rivals at this positioning, then self."""
+def price_comparison(team_id, product_id, market_id, own_price):
+    """What the price is scored against, and how many rivals share the group.
+
+    Under the V2-023 disposition the comparison is a scenario constant, so the
+    rival count no longer enters the score at all. It is still recorded,
+    because the whole point of the repair is that it stops mattering: a run
+    where the isolated and shared teams score alike is only evidence if it also
+    shows they really were isolated and shared.
+    """
+    from core.engine.utils import scenario_reference_price
     from core.models.team_state import TeamProduct
     positioning = TeamProduct.objects.get(pk=product_id).positioning
     rivals = (DecisionMarketing.objects
               .filter(submission__round=rnd, market_id=market_id,
                       team_product__positioning=positioning)
               .exclude(team_product__team_id=team_id)
-              .order_by('pk'))
-    prices = [float(r.retail_price) for r in rivals]
-    prices.append(float(own_price))
-    return sum(prices) / len(prices), len(prices) - 1
+              .count())
+    reference = scenario_reference_price(game.scenario)
+    return reference, float(own_price) / reference, rivals
 
 
 def price_fit(team_id, product_id, market_id):
@@ -244,9 +251,10 @@ def evaluate_at_price(target, price):
             'exactly_one_row': proof['rows_matching_coordinates'] == 1,
         }
         proof['reached_intended_row'] = all(proof['checks'].values())
-        avg, rivals = market_average_price(
+        reference, ratio, rivals = price_comparison(
             target['team_id'], target['product_id'], target['market_id'], price)
-        proof['market_average_price'] = avg
+        proof['reference_price'] = reference
+        proof['price_ratio'] = ratio
         proof['rival_rows_at_this_positioning'] = rivals
         proof['price_fit_score'] = price_fit(
             target['team_id'], target['product_id'], target['market_id'])
