@@ -76,19 +76,23 @@ Controls: 13 focused tests for the two rules, 108 passing across the affected
 set (`test_scoring_dispositions`, `test_cc18_compliance`, `test_equity_issuance`,
 `test_decision_limits`, `test_engine`).
 
-### Open question raised by the V2-022 repair
+### V2-022 supplementary disposition — compliance-frozen teams (adopted)
 
-Two compliance tests asserted the opposite rule and were reversed rather than
-deleted: a team with real production and promotion but zero revenue used to be
-explicitly *not* inactive, on the grounds that a compliance freeze can prevent
-sales despite genuine commercial intent.
+A compliance-frozen team whose realised revenue is below the material revenue
+floor **receives the commercial-inactivity composite cap.** Production intent
+does not exempt it.
 
-Under the adopted rule that team **is** inactive, so **a team frozen out of its
-market by compliance enforcement now takes the 0.25 composite cap on top of the
-freeze.** The disposition is explicit that declarations do not exempt a team,
-and that is implemented as written — but a compliance freeze is a penalty the
-engine imposed, not a choice the team made, and the double penalty may not be
-intended. Flagged for the rules owner; not decided here.
+The two controls address different consequences and are meant to stack:
+
+* the **compliance freeze** is the consequence of a compliance failure;
+* the **inactivity cap** stops a team without material realised sales from
+  keeping a competitively misleading composite score.
+
+This reverses the previous behaviour, where a team with real production and
+promotion but no revenue was explicitly not classified as inactive. Two tests in
+`test_cc18_compliance` asserted that older rule; they are preserved and reversed
+rather than deleted, and one now asserts the compliance-frozen, below-floor case
+directly.
 
 ### Superseded — the disposition request as originally filed
 

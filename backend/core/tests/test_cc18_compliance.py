@@ -492,11 +492,26 @@ class CC18ComplianceTest(TestCase):
         ctx = _Ctx(self.game, 8, [self.team], self.scenario)
         ctx.financials = {self.team.id: {'total_revenue': D('0')}}
         ctx.compliance_freezes = {(self.team.id, self.na.id)}
-        # Also reversed by V2-022, and worth stating plainly: a team frozen out
-        # of its market by compliance enforcement now classifies as
-        # commercially inactive, because it realised no revenue. The freeze is
-        # the engine's own penalty rather than the team's choice, so this is a
-        # second penalty on top of it. Raised as an open question against
-        # V2-022 rather than resolved here.
+        # V2-022 supplementary disposition, adopted: a compliance-frozen team
+        # whose realised revenue is below the material floor takes the
+        # inactivity cap as well as the freeze. The two controls answer
+        # different questions — the freeze is the consequence of a compliance
+        # failure, the cap stops a team without material sales keeping a
+        # competitively misleading composite — so they are meant to stack.
+        # Production intent does not exempt it.
         floor = material_revenue_floor([D('0')])
-        self.assertTrue(is_commercially_inactive(D('0'), floor))
+        self.assertTrue(
+            is_commercially_inactive(D('0'), floor),
+            'a frozen team with no realised revenue must take the cap')
+
+        # And with other teams selling, so the floor is set by their revenue
+        # rather than the $1 minimum: still inactive, still capped.
+        busy_cohort_floor = material_revenue_floor(
+            [D('0'), D('5000000'), D('3000000')])
+        self.assertEqual(busy_cohort_floor, D('50000.00'))
+        self.assertTrue(
+            is_commercially_inactive(D('0'), busy_cohort_floor),
+            'the freeze does not exempt a team from the inactivity cap')
+        self.assertTrue(
+            is_commercially_inactive(D('49999.99'), busy_cohort_floor),
+            'nor does revenue just below the floor')

@@ -121,3 +121,33 @@ class ScreeningAnalysisContractTests(SimpleTestCase):
         payload.pop('baseline_metrics')
         with self.assertRaises(self.report.UnreadableScreeningReport):
             self.report.classify(payload)
+
+
+class AuditGuardRunnerRegressionTests(SimpleTestCase):
+    """The test runner must only touch databases it actually created.
+
+    GSP-CRV2-04 made the runner install the append-only audit guards into the
+    test database, because migrations are disabled there and a guard that lives
+    only in a migration is one no test can observe. It iterated every
+    *configured* connection rather than the ones Django built, so a suite of
+    nothing but `SimpleTestCase` — which needs no database — died on
+    "relation competition_sensitive_read_event does not exist" before a single
+    test ran.
+
+    This module is that suite. Its existence is most of the regression; the
+    assertions below pin the shape so the loop cannot quietly go back to
+    iterating aliases.
+    """
+
+    def test_the_runner_installs_only_into_created_connections(self):
+        import inspect
+        from globalstrat.test_runner import GlobalStratTestRunner
+        source = inspect.getsource(GlobalStratTestRunner.setup_databases)
+        self.assertIn('created = [entry[0] for entry in config]', source)
+        self.assertNotIn('for alias in connections:', source,
+                         'the runner is iterating configured aliases again, '
+                         'which breaks any suite that needs no database')
+
+    def test_this_suite_needs_no_database(self):
+        """If it ever does, the regression above stops being exercised."""
+        self.assertEqual(self.databases, set())
