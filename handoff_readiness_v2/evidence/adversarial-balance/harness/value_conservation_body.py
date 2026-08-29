@@ -193,7 +193,8 @@ def run(verbose=True):
     }
 
     def ledger_capture(into):
-        from core.models.results import RoundResultProductMarket
+        from core.models.results_financials import (
+            RoundResultProductMarket)
         rows = {}
         for rnd_no in range(1, game.current_round + 1):
             fin = RoundResultFinancials.objects.filter(
