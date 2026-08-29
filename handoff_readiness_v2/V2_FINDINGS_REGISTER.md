@@ -253,7 +253,7 @@ documented baseline, every mutation proved to reach the row scoring reads
 (`v2-025-attribution.json`). Baseline: strategy expense $3,900,000, revenue
 $887,174.40, capability 0.6200, satisfaction 0.5772, index 56.54.
 
-| arm | cost | revenue | capability | satisfaction | net income | index |
+| arm | cost | revenue | capability | composite (`satisfaction_score`) | net income | index |
 |---|---|---|---|---|---|---|
 | rd headcount → 0 | -500,000 | 0 | **0.0000** | +0.0008 | +500,000 | +0.02 |
 | commercial headcount → 0 | -300,000 | -420 | **0.0000** | +0.0005 | +299,582 | +0.01 |
@@ -275,11 +275,13 @@ actions, and never reads headcount at all; the word does not appear in
 offsetting term. The single-round index gain is +0.03, and the tournament
 measured +0.22 over three rounds, which is that gain compounding through cash.
 
-**Satisfaction moves the wrong way.** Emptying all three pools *raises* the
-satisfaction score by 0.0014. Firing the entire workforce is scored as a small
-improvement in stakeholder satisfaction. That is a second finding inside the
-first, and it is not a rounding artefact -- the three pools move it +0.0008,
-+0.0005 and 0.0000 separately, consistently upward.
+**The "satisfaction" column is not satisfaction, and the reading taken from it
+was wrong.** `RoundResultPerformanceIndex.satisfaction_score` stores the final
+composite score despite its legacy name. The +0.0014 recorded against
+all-headcount-zero is therefore the composite moving with the index (+0.03), not
+stakeholder satisfaction rewarding redundancies. No separate satisfaction sign
+defect exists and none is registered. The attribution table's column is retained
+because it is what the field is called, and is read here as the composite.
 
 **The other two stripped inputs contribute nothing, for two different reasons.**
 ESG at zero changes nothing because the documented baseline already invests

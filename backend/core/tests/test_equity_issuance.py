@@ -55,6 +55,12 @@ class EquityIssuanceTests(TestCase):
         ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='high_price_elasticity',
             config_value='1.5', description='V2-023 elasticity')
+        for key, value in (('optimal_rd_headcount', '60'),
+                           ('optimal_commercial_headcount', '40'),
+                           ('optimal_operations_headcount', '50')):
+            ScenarioConfig.objects.create(
+                scenario=self.scenario, config_key=key, config_value=value,
+                description='V2-025 staffing optimum')
         profile = FirmStarterProfile.objects.create(
             scenario=self.scenario, profile_name='S', description='d',
             home_market=market, starting_cash=1000, starting_debt=0)

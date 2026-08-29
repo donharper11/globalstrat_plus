@@ -431,10 +431,12 @@ def _run_phase_1(game_id):
     # through a round that has already mutated state (V2-023).
     from core.engine.utils import (InvalidScenarioConfiguration,
                                    scenario_high_price_elasticity,
+                                   scenario_optimal_headcounts,
                                    scenario_reference_price)
     try:
         scenario_reference_price(game.scenario)
         scenario_high_price_elasticity(game.scenario)
+        scenario_optimal_headcounts(game.scenario)
     except InvalidScenarioConfiguration as exc:
         raise InvalidScenarioConfigurationError(
             f'Round {current_round} cannot be scored: {exc} Set the value in '

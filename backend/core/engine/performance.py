@@ -11,7 +11,8 @@ from core.models.results_financials import RoundResultPerformanceIndex
 # InvalidScenarioConfiguration is re-exported: it moved to utils when the
 # preference engine needed it too, and callers already import it from here.
 from core.engine.utils import (  # noqa: F401
-    InvalidScenarioConfiguration, get_config)
+    InvalidScenarioConfiguration, get_config, scenario_optimal_headcounts,
+    staffing_adequacy)
 
 D = Decimal
 
@@ -123,7 +124,17 @@ def _financial_component(context, team, max_revenue, max_abs_net_income):
     return _clamp01(revenue_score * D('0.40') + profit_score * D('0.40') + debt_score * D('0.20'))
 
 
-def _strategic_capability_component(team, current_round, rd_spend_target):
+def _strategic_capability_component(team, current_round, rd_spend_target,
+                                    optimal_headcounts):
+    """Capability earned by decisions, scaled by whether anyone is staffed.
+
+    V2-025. The score below is what the team's spending and actions earn; the
+    multiplicative staffing factor is whether it has the people to do any of
+    it. Before this, emptying all three talent pools saved $1,200,000 of
+    payroll and moved this component by exactly 0.0000 -- headcount was not
+    read here at all -- so stripping the firm was free index, and won 9 of 9
+    holdout cells independently of opponents.
+    """
     submission = (
         DecisionSubmission.objects
         .filter(team=team, round__round_number=current_round)
@@ -154,7 +165,20 @@ def _strategic_capability_component(team, current_round, rd_spend_target):
 
     product_score = D('1') if has_product_action else D('0.45')
     strategy_score = D('1') if has_strategy_action else D('0.45')
-    return _clamp01(rd_score * D('0.40') + product_score * D('0.30') + strategy_score * D('0.30'))
+    earned = _clamp01(rd_score * D('0.40') + product_score * D('0.30')
+                      + strategy_score * D('0.30'))
+
+    from core.models.talent import DecisionTalent
+    try:
+        talent = submission.talent
+    except DecisionTalent.DoesNotExist:
+        talent = None
+    headcounts = {
+        pool: (getattr(talent, f'{pool}_headcount', 0) if talent else 0)
+        for pool in ('rd', 'commercial', 'operations')
+    }
+    adequacy = D(str(staffing_adequacy(headcounts, optimal_headcounts)))
+    return _clamp01(earned * adequacy)
 
 
 def _market_component(context, team, customer_score, max_revenue):
@@ -251,6 +275,7 @@ def calculate_performance_index(context):
     sensitivity = D(str(get_config(scenario, 'performance_index_sensitivity', default=20.0)))
     # Fails closed: a scenario without a usable target is not scored at all.
     rd_spend_target = scenario_rd_spend_target(scenario)
+    optimal_headcounts = scenario_optimal_headcounts(scenario)
 
     all_segments = list((SegmentDefinition.objects.filter(scenario=scenario).select_related('market')).order_by('pk'))
     financials_by_team = getattr(context, 'financials', {}) or {}
@@ -275,7 +300,7 @@ def calculate_performance_index(context):
         )
         market_score = _market_component(context, team, customer_score, max_revenue)
         capability_score = _strategic_capability_component(
-            team, current_round, rd_spend_target)
+            team, current_round, rd_spend_target, optimal_headcounts)
         financial_score = _financial_component(context, team, max_revenue, max_abs_net_income)
         stakeholder_score = _stakeholder_component(context, team, stakeholder_fit, active_market_ids)
         resilience_score = _execution_resilience_component(context, team, max_revenue, active_market_ids)

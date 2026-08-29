@@ -101,11 +101,13 @@ def process_talent(context):
             ))
 
             # Headcount efficiency
-            optimal_headcount = {
-                'rd': int(get_config(context.scenario, 'optimal_rd_headcount', 60)),
-                'commercial': int(get_config(context.scenario, 'optimal_commercial_headcount', 40)),
-                'operations': int(get_config(context.scenario, 'optimal_operations_headcount', 50)),
-            }[pool]
+            # V2-025: the same scenario-authored values strategic capability
+            # is scored against, through the same accessor. These used to
+            # carry hardcoded 60/40/50 fallbacks; a silent default is not
+            # acceptable for a competition denominator.
+            from core.engine.utils import scenario_optimal_headcounts
+            optimal_headcount = scenario_optimal_headcounts(
+                context.scenario)[pool]
 
             headcount_ratio = headcount / max(optimal_headcount, 1)
             if headcount_ratio < 0.5:

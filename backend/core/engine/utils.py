@@ -77,6 +77,61 @@ def high_price_demand_multiplier(retail_price, reference_price, elasticity):
     return (price / reference_price) ** (-elasticity)
 
 
+OPTIMAL_HEADCOUNT_CONFIG_KEYS = {
+    'rd': 'optimal_rd_headcount',
+    'commercial': 'optimal_commercial_headcount',
+    'operations': 'optimal_operations_headcount',
+}
+
+
+def scenario_optimal_headcounts(scenario):
+    """The staffing level each pool is scored against, or refuse to score.
+
+    V2-025. Strategic capability is multiplied by staffing adequacy, and these
+    are its denominators. `talent.py` has always read these keys with hardcoded
+    fallbacks of 60/40/50; a silent fallback is tolerable for a display score
+    and is not tolerable for a competition denominator, because it decides what
+    the competition rewards without anyone authoring it. Both consumers now go
+    through here.
+    """
+    values = {}
+    for pool, key in OPTIMAL_HEADCOUNT_CONFIG_KEYS.items():
+        raw = get_config(scenario, key, default=None)
+        if raw is None:
+            raise InvalidScenarioConfiguration(
+                f'scenario {getattr(scenario, "id", scenario)} has no {key!r} '
+                f'configured; strategic capability cannot be scored without '
+                f'the staffing level the {pool} pool is measured against')
+        value = float(raw)
+        if not math.isfinite(value) or value <= 0:
+            raise InvalidScenarioConfiguration(
+                f'scenario {getattr(scenario, "id", scenario)} sets '
+                f'{key}={raw!r}; it must be a positive number, because it is '
+                f'the denominator of the {pool} staffing adequacy ratio')
+        values[pool] = value
+    return values
+
+
+def staffing_adequacy(headcounts, optimal_headcounts):
+    """Mean of `clamp01(headcount / optimal)` across the three pools.
+
+    Multiplicative, so an unstaffed firm scores no strategic capability at all
+    rather than scoring the same as a staffed one and keeping the payroll. The
+    attribution measured the defect precisely: emptying every pool saved
+    $1,200,000 and moved capability by exactly 0.0000, because nothing in
+    `performance.py` read headcount.
+
+    Clamped at 1 per pool, so overstaffing buys nothing, and averaged with
+    equal weight, so each pool's contribution to the factor is exactly a third.
+    """
+    total = 0.0
+    for pool in OPTIMAL_HEADCOUNT_CONFIG_KEYS:
+        optimal = optimal_headcounts[pool]
+        ratio = float(headcounts.get(pool, 0) or 0) / optimal
+        total += max(0.0, min(1.0, ratio))
+    return total / len(OPTIMAL_HEADCOUNT_CONFIG_KEYS)
+
+
 def scenario_reference_price(scenario):
     """The scenario-authored price all retail prices are scored against.
 

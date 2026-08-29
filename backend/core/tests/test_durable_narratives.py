@@ -45,6 +45,12 @@ def build_game(name):
     ScenarioConfig.objects.create(
         scenario=scenario, config_key='high_price_elasticity',
         config_value='1.5', description='V2-023 elasticity')
+    for _key, _value in (('optimal_rd_headcount', '60'),
+                         ('optimal_commercial_headcount', '40'),
+                         ('optimal_operations_headcount', '50')):
+        ScenarioConfig.objects.create(
+            scenario=scenario, config_key=_key, config_value=_value,
+            description='V2-025 staffing optimum')
     market = MarketDefinition.objects.create(
         scenario=scenario, name='Home', code='HM', description='d',
         currency_code='USD', exchange_rate_base=1, base_growth_rate=0,

@@ -40,6 +40,12 @@ class ScoringFixture(TestCase):
         ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='rd_spend_target',
             config_value='2000000', description='target')
+        for key, value in (('optimal_rd_headcount', '60'),
+                           ('optimal_commercial_headcount', '40'),
+                           ('optimal_operations_headcount', '50')):
+            ScenarioConfig.objects.create(
+                scenario=self.scenario, config_key=key, config_value=value,
+                description='V2-025 staffing optimum')
         self.market = MarketDefinition.objects.create(
             scenario=self.scenario, name='Home', code='HM', description='d',
             currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
@@ -75,6 +81,7 @@ class ScoringFixture(TestCase):
 
     def capability(self, declared_budget, rd_spend):
         from core.engine.performance import _strategic_capability_component
+        from core.engine.utils import scenario_optimal_headcounts
         sub, _ = DecisionSubmission.objects.get_or_create(
             team=self.team, round=self.round, defaults={'status': 'locked'})
         DecisionBudgetAllocation.objects.filter(submission=sub).delete()
@@ -88,8 +95,23 @@ class ScoringFixture(TestCase):
                 submission=sub, team_platform=self.platform,
                 feature=self.feature, method='in_house',
                 amount=D(rd_spend), target_level=1)
+        # V2-025: capability is now multiplied by staffing adequacy. These
+        # tests isolate the R&D term, so the fixture is staffed at each pool's
+        # optimum and the factor is exactly 1.
+        from core.models.talent import DecisionTalent
+        optima = scenario_optimal_headcounts(self.scenario)
+        DecisionTalent.objects.filter(submission=sub).delete()
+        DecisionTalent.objects.create(
+            submission=sub,
+            rd_headcount=int(optima['rd']),
+            commercial_headcount=int(optima['commercial']),
+            operations_headcount=int(optima['operations']),
+            rd_salary_level=3, commercial_salary_level=3,
+            operations_salary_level=3, rd_training_budget=D('0'),
+            commercial_training_budget=D('0'),
+            operations_training_budget=D('0'))
         target = scenario_rd_spend_target(self.scenario)
-        return _strategic_capability_component(self.team, 1, target)
+        return _strategic_capability_component(self.team, 1, target, optima)
 
 
 class RdSpendTargetTests(ScoringFixture):
