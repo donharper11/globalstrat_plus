@@ -148,7 +148,7 @@ def run(verbose=True):
                     team=subject, status='active'):
                 TeamProductMarket.objects.get_or_create(
                     team_product=tp, market=foreign_market,
-                    defaults={'is_active': True})
+                    defaults={'is_active': True, 'first_offered_round': 1})
                 TeamProductMarket.objects.filter(
                     team_product=tp, market=foreign_market).update(
                         is_active=True)
