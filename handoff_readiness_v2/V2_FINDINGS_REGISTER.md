@@ -15,6 +15,61 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## New findings raised by GSP-CRV2-06 Stage 2 rule probes
+
+Both measured by same-game transactional counterfactual at `b43c132`: one team,
+one frozen checkpoint, one decision changed, everything rolled back. The
+baseline was resolved twice and the delta was exactly zero on every metric, so
+these differences are the rule and not noise. Evidence:
+`evidence/adversarial-balance/rule-probes.json`.
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-021 | Scoring / strategic capability | **P1** | Rules owner (raised by GSP-CRV2-06) | `_strategic_capability_component` scores R&D as `rd_spend / rd_budget`, clamped to 1, and capability carries 0.25 of the performance index. The denominator is the team's *own declared budget*, so the ratio measures self-consistency rather than investment. Declaring **$1** and spending **$1** scores 1.00 where a $100,000 programme against a $2,000,000 budget scores 0.05. Measured: index **56.54 → 58.45 (+1.91)**, composite **0.5772 → 0.6724 (+0.0952)**, while spending **$99,999 less** — cheaper *and* higher-scoring, and independent of what any opponent does. | `rule-probes.json` → `capability_ratio`. Single round; the multi-round trade-off is unmeasured — see the uncertainty note below. | Open — disposition requested |
+| V2-022 | Scoring / anti-exploit guard | **P1** | Rules owner (raised by GSP-CRV2-06) | `_is_voluntarily_commercially_inactive` caps the composite at 0.25 only when *every* marketing row has production, promotion, distribution and sales staffing at or below zero. It tests the **decisions**, not the outcome. Setting `production_volume = 1` on one row defeats it: composite **0.2500 → 0.4123 (+0.1623)**, index **50.00 → 53.25 (+3.25)** — for **$181.86**. Critically, **`total_revenue` is `0.00` in both cases**: the team sold nothing. The guard is escaped by declaring an intention to produce, not by competing. | `rule-probes.json` → `one_unit_bypass`. The hypothesis was "sell one unit"; the measurement shows no sale is needed. | Open — disposition requested |
+
+### Disposition requested — V2-021
+
+The ratio needs a denominator the team does not choose. Three candidates, in
+the order I would rank them:
+
+1. **Normalise against the cohort, as the other components already do.**
+   `_market_component` and `_financial_component` both score with
+   `_ratio(value, max_across_teams)`. Scoring R&D spend the same way makes
+   capability comparable between firms and removes the incentive to shrink the
+   denominator. Smallest conceptual change; consistent with the surrounding code.
+2. **Normalise against a scenario-configured target R&D spend.** Stable across
+   cohorts and explainable to students, but adds a parameter per scenario.
+3. **Normalise against the team's own revenue or asset base.** Defensible as an
+   intensity measure, but couples capability to size in a way the current model
+   does not.
+
+### Disposition requested — V2-022
+
+The guard should test what happened, not what was declared. Concrete options:
+
+1. **Cap on outcome, not intent** — apply the composite cap when revenue is
+   below a configured floor rather than when the decisions are all zero. This
+   also closes the variant found here, where revenue was zero and the cap still
+   did not apply.
+2. **Require materiality** — treat production below a threshold relative to
+   demand or capacity as inactivity, so a token unit does not qualify as
+   competing.
+
+Option 1 is the smaller change and matches the guard's stated purpose. Note that
+`_enforce_zero_revenue_invariant` is a *separate* control keyed on zero revenue;
+whichever option is chosen, the two guards should be brought onto the same
+definition rather than left with different tests for the same idea.
+
+### Uncertainty on both
+
+These are **single-round** measurements. A team declaring a $1 R&D budget also
+funds no real R&D, so its feature levels should fall behind over a full game;
+whether the index gain survives multiple rounds is unmeasured. Establishing that
+is Stage 3's multi-round search, which is blocked on V2-010/V2-011. Neither
+finding is claimed as a proven whole-game dominant strategy — each is a
+demonstrated, repeatable, opponent-independent advantage within a round.
+
 ## New finding raised by GSP-CRV2-06 Stage 2
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
