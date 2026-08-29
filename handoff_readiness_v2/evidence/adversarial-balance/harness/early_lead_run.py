@@ -9,12 +9,15 @@ sys.path.insert(0, str(HERE))
 import checksums  # noqa: E402
 import inventory_run as R  # noqa: E402
 
+# One database per mode. Running both playthroughs in a single process left
+# the second one on state the first had already advanced: the subject entered
+# its front-loaded first round at an index of 50.000 -- the inactive floor --
+# against 58.620 in the clean run, and the gap series was unusable.
 BODY = '''
 import sys, json
 sys.path.insert(0, {harness!r})
 import early_lead_body
-report = {{'subject_only': early_lead_body.run('subject_only'),
-          'challenger': early_lead_body.run('challenger')}}
+report = early_lead_body.run({mode!r})
 print("---EARLY-LEAD-JSON---")
 print(json.dumps(report, default=str))
 '''
@@ -29,23 +32,31 @@ def main():
         raise SystemExit('Refusing to record evidence from a dirty tree:\n  '
                          + '\n  '.join(dirty.splitlines()))
 
-    database = f"gsp_lead_{datetime.datetime.now():%Y%m%d%H%M%S}"
-    print(f'Creating disposable database {database}')
-    if R.psql('postgres', f'CREATE DATABASE {database}').returncode != 0:
-        raise SystemExit('could not create the database')
+    def play(mode):
+        database = f"gsp_lead_{mode}_{datetime.datetime.now():%Y%m%d%H%M%S}"
+        print(f'Creating disposable database {database} for {mode}')
+        if R.psql('postgres', f'CREATE DATABASE {database}').returncode != 0:
+            raise SystemExit('could not create the database')
+        try:
+            R.manage(database, 'migrate', '--noinput')
+            R.manage(database, 'shell', '-c', R.LEGACY_TABLES)
+            result = R.manage(database, 'shell', '-c',
+                              BODY.format(harness=str(HERE), mode=mode),
+                              timeout=7200)
+            marker = '---EARLY-LEAD-JSON---'
+            if result.returncode != 0 or marker not in result.stdout:
+                print(result.stdout[-5000:]); print(result.stderr[-5000:])
+                raise SystemExit(f'the early-lead probe did not run ({mode})')
+            return json.loads(
+                result.stdout.split(marker, 1)[1].strip().splitlines()[0])
+        finally:
+            R.psql('postgres',
+                   f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
+            print(f'Dropped {database}')
+
     try:
-        R.manage(database, 'migrate', '--noinput')
-        R.manage(database, 'shell', '-c', R.LEGACY_TABLES)
-        result = R.manage(database, 'shell', '-c',
-                          BODY.format(harness=str(HERE)), timeout=7200)
-        marker = '---EARLY-LEAD-JSON---'
-        if result.returncode != 0 or marker not in result.stdout:
-            print(result.stdout[-5000:]); print(result.stderr[-5000:])
-            raise SystemExit('the early-lead probe did not run')
-        both = json.loads(
-            result.stdout.split(marker, 1)[1].strip().splitlines()[0])
-        report = both['subject_only']
-        report['challenger_run'] = both['challenger']
+        report = play('subject_only')
+        report['challenger_run'] = play('challenger')
         report['code_revision'] = revision
 
         # The probe's own precondition: without a lead there is no lock-in to
@@ -102,8 +113,7 @@ def main():
         print(f"inventory: {len(listed)} artifacts, verified")
         return 0
     finally:
-        R.psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
-        print(f'Dropped {database}')
+        pass
 
 
 if __name__ == '__main__':
