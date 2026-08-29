@@ -95,16 +95,23 @@ def main():
             s = report['subjects'][label]
             print(f"\n--- {label}: {s['team']} / {s['product']} in {s['group']} "
                   f"({s['rival_rows']} rival row(s)) ---")
-            print(f"  {'price':>8} {'reference':>12} {'price fit':>10} "
+            print(f"  {'price':>9} {'reference':>10} {'price fit':>10} "
                   f"{'units sold':>12} {'revenue':>14} {'index':>8}")
             for price, cell in s['by_price'].items():
                 p, o = cell['proof'], cell['outcomes']
-                print(f"  {price:>8} {p['reference_price']:>12.2f} "
+                print(f"  {price:>9} {p['reference_price']:>10.2f} "
                       f"{p['price_fit_score']:>10.4f} {o['units_sold']:>12} "
                       f"{o['total_revenue']:>14} {o['index_value']:>8}")
             print(f"  units constant across prices: "
                   f"{s['units_constant_across_prices']}")
-        print(f"\nhypothesis supported: {report['hypothesis_supported']}")
+        print(f"\nexploit present: {report['exploit_present']}")
+        print(f"tail is bounded: {report['tail_is_bounded']}")
+        for label, subject in report['subjects'].items():
+            print(f"  {label}: fit constant above clamp "
+                  f"{subject['price_fit_constant_above_clamp']}, units fall "
+                  f"{subject['units_fall_above_clamp']}, revenue falls "
+                  f"{subject['revenue_falls_above_clamp']}, best revenue at "
+                  f"${subject['best_revenue_price']}")
         print(f"wrote {EVIDENCE / 'v2-023-gate.json'}")
         return 0
     finally:

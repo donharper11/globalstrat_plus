@@ -94,8 +94,11 @@ JOINT_PRICE = {
     'why': 'Revenue is price times units sold, and units sold is bounded by '
            'both production and demand. Either field alone traces a curve that '
            'depends entirely on where the other one was pinned.',
+    # $2,000 is already above the price-fit clamp at 1.5x the $420 reference,
+    # so the original three prices measured nothing about the tail. $20,000 and
+    # $200,000 are where revenue used to keep scaling with price unopposed.
     'grid': [('marketing', 'retail_price', p, 'marketing', 'production_volume', v)
-             for p in ('50', '420', '2000')
+             for p in ('50', '420', '2000', '20000', '200000')
              for v in ('0', '20000', '60000')],
 }
 

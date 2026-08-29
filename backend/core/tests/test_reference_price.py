@@ -19,7 +19,9 @@ from django.utils import timezone
 
 from core.engine.preference_engine import _derive_price_competitiveness
 from core.engine.utils import (InvalidScenarioConfiguration, RoundContext,
-                               _config_cache, scenario_reference_price)
+                               _config_cache, high_price_demand_multiplier,
+                               scenario_high_price_elasticity,
+                               scenario_reference_price)
 from core.models import Game, Round, Scenario, Team
 from core.models.decisions import DecisionMarketing, DecisionSubmission
 from core.models.scenario import (FirmStarterProfile, MarketDefinition,
@@ -28,6 +30,7 @@ from core.models.team_state import TeamPlatform, TeamProduct
 
 F_MIN, F_MAX = 0.0, 1.0
 REFERENCE = '420'
+ELASTICITY = '1.5'
 
 
 class ReferencePriceFixture(TestCase):
@@ -47,6 +50,9 @@ class ReferencePriceFixture(TestCase):
         self.config = ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='reference_price',
             config_value=REFERENCE, description='reference')
+        self.elasticity_config = ScenarioConfig.objects.create(
+            scenario=self.scenario, config_key='high_price_elasticity',
+            config_value=ELASTICITY, description='elasticity')
         self.market = MarketDefinition.objects.create(
             scenario=self.scenario, name='Home', code='HM', description='d',
             currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
@@ -267,5 +273,136 @@ class DeterministicInputEnvelope(ReferencePriceFixture):
         before = digest()
         self.config.config_value = '999'
         self.config.save(update_fields=['config_value'])
+        _config_cache.clear()
+        self.assertNotEqual(before, digest())
+
+
+class HighPriceTail(ReferencePriceFixture):
+    """Above the price-fit clamp, demand must still fall.
+
+    `price_competitiveness` is a bounded feature: with f_max 1.0 it reaches
+    zero at 1.5x the reference -- $630 here -- and clamps. Every price above
+    that scores identically, so fit alone cannot bound the tail, and revenue
+    went on multiplying by price. These tests probe above the clamp, which the
+    first round of V2-023 evidence did not: it stopped at $2,000 and reported a
+    response measured entirely below the point where the response stops.
+    """
+
+    def multiplier(self, price):
+        return high_price_demand_multiplier(
+            float(price), float(REFERENCE), float(ELASTICITY))
+
+    def test_price_fit_really_does_clamp_above_the_floor(self):
+        """The premise of the defect, asserted rather than assumed."""
+        clamped = [self.score(self.alone, self.alone_product, price)
+                   for price in ('630', '2000', '20000', '200000')]
+        self.assertEqual(clamped, [0.0, 0.0, 0.0, 0.0])
+
+    def test_demand_keeps_falling_above_the_clamp_point(self):
+        prices = ('630', '2000', '20000', '200000')
+        multipliers = [self.multiplier(p) for p in prices]
+        self.assertEqual(multipliers, sorted(multipliers, reverse=True))
+        for earlier, later in zip(multipliers, multipliers[1:]):
+            self.assertLess(later, earlier)
+
+    def test_revenue_falls_as_price_rises_above_the_reference(self):
+        """Revenue is price x multiplier x whatever fit leaves; the first two
+        terms alone must already be falling, or the tail is unbounded."""
+        revenue = [float(price) * self.multiplier(price)
+                   for price in ('420', '630', '2000', '20000', '200000')]
+        for earlier, later in zip(revenue, revenue[1:]):
+            self.assertLess(later, earlier)
+
+    def test_revenue_is_bounded_over_an_unbounded_price_range(self):
+        """No price, however large, beats the reference on revenue."""
+        at_reference = float(REFERENCE) * self.multiplier(REFERENCE)
+        for price in ('1000', '10000', '1000000', '100000000'):
+            with self.subTest(price=price):
+                self.assertLess(float(price) * self.multiplier(price),
+                                at_reference)
+
+    def test_the_multiplier_is_one_at_and_below_the_reference(self):
+        for price in ('1', '50', '419', '420'):
+            with self.subTest(price=price):
+                self.assertEqual(self.multiplier(price), 1.0)
+
+    def test_the_multiplier_is_continuous_at_the_reference(self):
+        just_above = self.multiplier('420.01')
+        self.assertLess(just_above, 1.0)
+        self.assertAlmostEqual(just_above, 1.0, places=4)
+
+    def test_the_multiplier_ignores_every_other_team(self):
+        """Absolute, not a share adjustment: nothing about rivals enters it."""
+        before = self.multiplier('2000')
+        self._decision(self.rival, self.rival_product, '2000')
+        self._decision(self.shared, self.shared_product, '50')
+        self.assertEqual(self.multiplier('2000'), before)
+
+
+class ElasticityConfiguration(ReferencePriceFixture):
+    def test_a_valid_elasticity_is_returned(self):
+        self.assertEqual(scenario_high_price_elasticity(self.scenario), 1.5)
+
+    def test_missing_elasticity_is_refused(self):
+        self.elasticity_config.delete()
+        _config_cache.clear()
+        with self.assertRaises(InvalidScenarioConfiguration):
+            scenario_high_price_elasticity(self.scenario)
+
+    def test_an_elasticity_of_one_or_less_is_refused(self):
+        """At exactly 1 revenue is flat above the reference, not falling."""
+        for value in ('1', '1.0', '0.5', '0', '-2'):
+            with self.subTest(value=value):
+                self.elasticity_config.config_value = value
+                self.elasticity_config.save(update_fields=['config_value'])
+                _config_cache.clear()
+                with self.assertRaises(InvalidScenarioConfiguration):
+                    scenario_high_price_elasticity(self.scenario)
+
+    def test_a_non_finite_elasticity_is_refused(self):
+        for value in ('inf', '-inf', 'nan'):
+            with self.subTest(value=value):
+                self.elasticity_config.config_value = value
+                self.elasticity_config.save(update_fields=['config_value'])
+                _config_cache.clear()
+                with self.assertRaises(InvalidScenarioConfiguration):
+                    scenario_high_price_elasticity(self.scenario)
+
+    def test_resolution_refuses_before_any_competitive_write(self):
+        from core.engine.advance_round import (
+            InvalidScenarioConfigurationError, _run_phase_1)
+        for team, product in ((self.alone, self.alone_product),
+                              (self.shared, self.shared_product),
+                              (self.rival, self.rival_product)):
+            self._decision(team, product, '420')
+        DecisionSubmission.objects.filter(round=self.round).update(
+            status='locked')
+        self.round.status = 'closed'
+        self.round.save(update_fields=['status'])
+
+        self.elasticity_config.config_value = '0.9'
+        self.elasticity_config.save(update_fields=['config_value'])
+        _config_cache.clear()
+        with self.assertRaises(InvalidScenarioConfigurationError):
+            _run_phase_1(self.game.id)
+        self.round.refresh_from_db()
+        self.assertNotEqual(
+            self.round.processing_status, 'PROCESSING',
+            'the round was marked processing before configuration was checked')
+
+    def test_the_elasticity_is_in_the_deterministic_input_envelope(self):
+        from core.services.manifest_sections import (CONFIG_SECTION_NAMES,
+                                                     INPUT_SECTIONS)
+        from core.services.manifest_snapshot import build_snapshot
+        sections = tuple(s for s in INPUT_SECTIONS
+                         if s.name in CONFIG_SECTION_NAMES)
+
+        def digest():
+            return build_snapshot(sections, 'input', self.scenario.id,
+                                  self.game.id).section_digests()['scenario_config']
+
+        before = digest()
+        self.elasticity_config.config_value = '2.75'
+        self.elasticity_config.save(update_fields=['config_value'])
         _config_cache.clear()
         self.assertNotEqual(before, digest())

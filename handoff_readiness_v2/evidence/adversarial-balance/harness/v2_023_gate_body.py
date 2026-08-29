@@ -24,7 +24,13 @@ from django.utils import timezone
 import baseline as BASE
 import counterfactual as CF
 
-PRICES = ['50', '420', '2000']
+# The clamp point is 1.5x the reference -- $630 on a $420 reference -- above
+# which price competitiveness is a constant zero. The first round of V2-023
+# evidence stopped at $2,000 and reported a price response measured entirely
+# below the point where the response stops. These prices span two orders of
+# magnitude above the clamp so the tail is measured rather than assumed.
+PRICES = ['50', '420', '2000', '20000', '200000']
+CLAMP_MULTIPLE = 1.5
 FIXED_VOLUME = 20000
 
 if not DjangoUser.objects.filter(is_superuser=True).exists():
@@ -286,6 +292,19 @@ for label in ('alone', 'shared'):
         per_price[price] = evaluate_at_price(target, price)
     units = {p: v['outcomes']['units_sold'] for p, v in per_price.items()}
     fits = {p: v['proof']['price_fit_score'] for p, v in per_price.items()}
+    revenues = {p: v['outcomes']['total_revenue'] for p, v in per_price.items()}
+    incomes = {p: v['outcomes']['net_income'] for p, v in per_price.items()}
+    reference = per_price[PRICES[0]]['proof']['reference_price']
+
+    # Everything at or above the clamp point scores the same zero on price
+    # fit, so this is exactly the range where fit cannot bound revenue and the
+    # elasticity has to.
+    above_clamp = [p for p in PRICES
+                   if float(p) >= reference * CLAMP_MULTIPLE]
+    tail_units = [float(units[p]) for p in above_clamp]
+    tail_revenue = [float(revenues[p]) for p in above_clamp]
+    strictly_falling = lambda xs: all(b < a for a, b in zip(xs, xs[1:]))
+
     result['subjects'][label] = {
         'group': target['group'],
         'team': target['team'],
@@ -294,13 +313,30 @@ for label in ('alone', 'shared'):
         'by_price': per_price,
         'units_sold_by_price': units,
         'price_fit_by_price': fits,
+        'revenue_by_price': revenues,
+        'net_income_by_price': incomes,
         'units_constant_across_prices': len(set(units.values())) == 1,
         'price_fit_constant_across_prices': len(set(fits.values())) == 1,
+        'prices_above_clamp': above_clamp,
+        'price_fit_constant_above_clamp': len(
+            {fits[p] for p in above_clamp}) == 1,
+        'units_fall_above_clamp': strictly_falling(tail_units),
+        'revenue_falls_above_clamp': strictly_falling(tail_revenue),
+        'best_revenue_price': max(revenues, key=lambda p: float(revenues[p])),
     }
 
 result['gate_usable'] = True
-result['hypothesis_supported'] = bool(
-    result['subjects']['alone']['units_constant_across_prices']
-    and not result['subjects']['shared']['units_constant_across_prices'])
+# The exploit, restated for the rework: demand constant while revenue scales
+# with price. It is closed only if both subjects keep losing demand above the
+# clamp and neither maximises revenue at the top of the range.
+result['exploit_present'] = bool(any(
+    subject['price_fit_constant_above_clamp']
+    and not subject['units_fall_above_clamp']
+    for subject in result['subjects'].values()))
+result['tail_is_bounded'] = bool(all(
+    subject['units_fall_above_clamp']
+    and subject['revenue_falls_above_clamp']
+    and subject['best_revenue_price'] != PRICES[-1]
+    for subject in result['subjects'].values()))
 print('---V2023-GATE-JSON---')
 print(json.dumps(result, default=str))

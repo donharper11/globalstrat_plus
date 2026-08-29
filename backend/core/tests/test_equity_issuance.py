@@ -51,6 +51,9 @@ class EquityIssuanceTests(TestCase):
         ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='reference_price',
             config_value='420', description='V2-023 reference')
+        ScenarioConfig.objects.create(
+            scenario=self.scenario, config_key='high_price_elasticity',
+            config_value='1.5', description='V2-023 elasticity')
         profile = FirmStarterProfile.objects.create(
             scenario=self.scenario, profile_name='S', description='d',
             home_market=market, starting_cash=1000, starting_debt=0)

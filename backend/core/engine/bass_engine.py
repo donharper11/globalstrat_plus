@@ -13,7 +13,9 @@ from core.models.team_state import TeamMarketPresence, TeamProductMarket, TeamAc
 from core.models.scenario import AICompetitorFitByRound, AICompetitorDefinition, AICompetitorBehavior
 from core.engine.ai_competitors import calculate_ai_competitor_fit
 from core.models.results import RoundResultAdoption
-from core.engine.utils import get_config
+from core.engine.utils import (get_config, high_price_demand_multiplier,
+                               scenario_high_price_elasticity,
+                               scenario_reference_price)
 
 
 def run_bass_adoption(context):
@@ -34,6 +36,22 @@ def run_bass_adoption(context):
     competition_sharpness = get_config(
         scenario, 'competition_sharpness', default=1.5,
     )
+
+    # V2-023 rework. Preference fit scores price on a bounded feature that
+    # reaches its floor at 1.5x the reference price and clamps there, so above
+    # that point price stops reducing demand through fit while revenue keeps
+    # multiplying by price -- the original unbounded scaling, surviving above
+    # the clamp. This multiplier is an absolute demand response with no floor.
+    reference_price = scenario_reference_price(scenario)
+    high_price_elasticity = scenario_high_price_elasticity(scenario)
+    retail_prices = {
+        (team_id, product_id, market_id): float(price)
+        for team_id, product_id, market_id, price in DecisionMarketing.objects
+        .filter(submission__round__game=game,
+                submission__round__round_number=current_round)
+        .values_list('submission__team_id', 'team_product_id', 'market_id',
+                     'retail_price')
+    }
 
     # Initialize production remaining from marketing decisions
     _init_production_remaining(context)
@@ -150,6 +168,19 @@ def run_bass_adoption(context):
                 team_share = attract / total_attractiveness
 
             team_new_adopters = adoption_pool * team_share
+
+            # Absolute high-price demand response, before the production cap:
+            # a team cannot sell what nobody will buy at that price, and the
+            # production ceiling is a separate constraint. Applied to the
+            # team's own adopters rather than to its share, so that every team
+            # raising price together still loses demand.
+            price_multiplier = 1.0
+            if product:
+                price = retail_prices.get((team.id, product.id, market.id))
+                if price is not None:
+                    price_multiplier = high_price_demand_multiplier(
+                        price, reference_price, high_price_elasticity)
+                    team_new_adopters *= price_multiplier
 
             # Cap by production availability
             if product:

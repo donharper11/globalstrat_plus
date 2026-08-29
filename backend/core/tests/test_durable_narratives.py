@@ -42,6 +42,9 @@ def build_game(name):
     ScenarioConfig.objects.create(
         scenario=scenario, config_key='reference_price',
         config_value='420', description='V2-023 reference')
+    ScenarioConfig.objects.create(
+        scenario=scenario, config_key='high_price_elasticity',
+        config_value='1.5', description='V2-023 elasticity')
     market = MarketDefinition.objects.create(
         scenario=scenario, name='Home', code='HM', description='d',
         currency_code='USD', exchange_rate_base=1, base_growth_rate=0,

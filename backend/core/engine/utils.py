@@ -29,6 +29,54 @@ class InvalidScenarioConfiguration(ValueError):
     """
 
 
+HIGH_PRICE_ELASTICITY_CONFIG_KEY = 'high_price_elasticity'
+
+
+def scenario_high_price_elasticity(scenario):
+    """Demand elasticity applied to prices above the reference.
+
+    Must be strictly greater than 1. The bounded preference feature reaches its
+    floor at 1.5x the reference and clamps there, so above that point price no
+    longer reduces demand through fit at all while revenue keeps multiplying by
+    price. An exponent of exactly 1 would leave revenue flat above the
+    reference rather than falling; anything below 1 leaves it growing. Strictly
+    greater than 1 is what makes the high-price tail bounded.
+    """
+    raw = get_config(scenario, HIGH_PRICE_ELASTICITY_CONFIG_KEY, default=None)
+    if raw is None:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} has no '
+            f'{HIGH_PRICE_ELASTICITY_CONFIG_KEY!r} configured; demand above '
+            f'the reference price would be unbounded in revenue without it')
+    elasticity = float(raw)
+    if not math.isfinite(elasticity):
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} sets '
+            f'{HIGH_PRICE_ELASTICITY_CONFIG_KEY}={raw!r}, which is not a '
+            f'finite number')
+    if elasticity <= 1:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} sets '
+            f'{HIGH_PRICE_ELASTICITY_CONFIG_KEY}={elasticity}; it must be '
+            f'strictly greater than 1, or revenue does not fall as price rises '
+            f'above the reference')
+    return elasticity
+
+
+def high_price_demand_multiplier(retail_price, reference_price, elasticity):
+    """`(price / reference) ** -elasticity` above the reference, else 1.0.
+
+    Absolute, not a share adjustment. A penalty applied to competitive share
+    would cancel out when every team raised price together, leaving collective
+    inflation free; this reduces the team's own adopters whatever anyone else
+    does. Continuous at the reference, where the multiplier is exactly 1.0.
+    """
+    price = float(retail_price)
+    if price <= reference_price:
+        return 1.0
+    return (price / reference_price) ** (-elasticity)
+
+
 def scenario_reference_price(scenario):
     """The scenario-authored price all retail prices are scored against.
 
