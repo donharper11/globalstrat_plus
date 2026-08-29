@@ -294,7 +294,7 @@ instrument catalogue, and this scenario declares no instruments, so the field
 has no legal value. The probe refused rather than reporting a vacuous pass, and
 the field was replaced with `inventory.buffer_days`.
 
-| V2-027 | Balance / early-lead lock-in | **Not confirmed — withdrawn as filed** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Withdrawn as filed.** The confirmation contradicted it and identified the cause: compliance enforcement, not the front-load. |
+| V2-027 | Balance / early-lead lock-in | **Withdrawn permanently — measured, no lock-in** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Withdrawn permanently.** Measured under controlled conditions: the lead erodes unaided and the strongest legal counter reverses it. |
 
 **Withdrawn on the confirmation evidence.** The confirmation run reproduced the
 same front-load against the same baseline opponents and the leader finished
@@ -336,11 +336,45 @@ unless the trailing team scores a strictly higher composite. That is a property
 of the formula and is not in question. Whether it produces an unassailable lead
 in play is exactly what remains unmeasured.
 
-**To measure it would need** repeated playthroughs across fixture identities
-with enforcement recorded per round, so the first-mover effect can be separated
-from freeze incidence -- or a fixture in which enforcement is held constant
-between the two teams. Neither is in this handoff's budget, and no
-performance-index change should rest on the evidence that exists.
+**Measured under control, and the lock-in is not there.** Two playthroughs with
+every exogenous shock silenced in scenario data -- five compliance regimes and
+thirty-eight event templates, twenty of them supply-chain, all set to zero
+probability -- with the baseline run twice and identical round for round, no
+sales stopping and the inactivity cap never applying:
+
+| | gap when front-load ended | gap at end | composite gap at end | adopter gap at end |
+|---|---|---|---|---|
+| both return to baseline | 2.53 | **1.88** | -0.0007 | +48,965.70 |
+| challenger plays the strongest legal counter | 2.53 | **-4.39** | -0.0867 | **-111,034.30** |
+
+**Classification: an intended first-mover return, and a reversible one.** With
+neither team doing anything special the lead decays on its own -- 2.53, 2.38,
+1.92, 1.90, 1.88 -- and the composite gap settles at -0.0007, meaning
+current-round performance is equal to four decimal places. What remains is the
+accumulated index plus a retained adopter advantage of 48,965 that the leader
+paid for. Against the strongest catch-up plan already constructed, the
+challenger takes the lead outright by round 4 and finishes 4.39 ahead, having
+built an adopter base 111,034 larger than the leader's. A lead that erodes
+unaided and reverses under a legal counter is not unassailable.
+
+**The 17.72 gap was the freeze.** Under control the same front-load produces a
+peak margin of 2.53, not 17.72. The original figure was compliance enforcement
+in the challenger's revenue-bearing market, not a property of the scoring rule,
+and the finding was filed on a single playthrough that could not tell the two
+apart.
+
+**No performance-index change is warranted on this evidence.** The integrator
+property is real -- no decay term, so a gap persists unless the trailing team
+scores a higher composite -- but under controlled conditions the trailing team
+does score higher, both by simply playing on and far more so when it counters.
+
+**Harness lesson, recorded because it caused the error.** The original probe
+measured index, rank, cash and adopters, and could not say *why* a team's
+revenue went to zero. Two rounds of enforcement were therefore indistinguishable
+from a structural advantage. Every playthrough probe now records, per team per
+round, whether sales stopped, whether the inactivity cap applied, and which
+compliance freezes and events fired. A balance measurement that cannot explain
+its own outliers will eventually report one as a finding.
 
 **Bounds, so this is not read as more than it is.** One counter-strategy was
 tested. Front-loading later fails to close the gap; that is not a proof that no
