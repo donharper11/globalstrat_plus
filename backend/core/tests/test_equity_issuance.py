@@ -42,11 +42,15 @@ class EquityIssuanceTests(TestCase):
             currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
             entry_cost_base=0, tax_rate=0, regulatory_difficulty=1,
             infrastructure_quality=1)
-        # V2-021: scoring refuses to run without a positive R&D spend target,
-        # by design, so a scenario built in a fixture has to declare one.
+        # V2-021 and V2-023: scoring refuses to run without a positive R&D
+        # spend target or a positive retail price reference, by design, so a
+        # scenario built in a fixture has to declare both.
         ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='rd_spend_target',
             config_value='2000000', description='V2-021 target')
+        ScenarioConfig.objects.create(
+            scenario=self.scenario, config_key='reference_price',
+            config_value='420', description='V2-023 reference')
         profile = FirmStarterProfile.objects.create(
             scenario=self.scenario, profile_name='S', description='d',
             home_market=market, starting_cash=1000, starting_debt=0)

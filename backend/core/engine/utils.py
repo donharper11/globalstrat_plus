@@ -12,6 +12,49 @@ _logger = logging.getLogger(__name__)
 
 _config_cache = {}  # scenario_id -> {key: value}
 
+REFERENCE_PRICE_CONFIG_KEY = 'reference_price'
+
+
+class InvalidScenarioConfiguration(ValueError):
+    """A scenario value scoring depends on is missing or unusable.
+
+    Raised rather than defaulted. A silent fallback would change what the
+    competition rewards without anyone deciding to, which is the failure mode
+    V2-021 was, and the failure mode V2-023 punished: price competitiveness
+    fell back to the team's own price and stopped measuring anything.
+
+    Defined here rather than beside either scorer because both the performance
+    index and the preference engine need it, and utils is the module they
+    already share.
+    """
+
+
+def scenario_reference_price(scenario):
+    """The scenario-authored price all retail prices are scored against.
+
+    Deliberately independent of any team decision and of roster composition:
+    the V2-023 exploit existed because the comparison price was derived from
+    the very decision being scored, so a team alone in its positioning was
+    always exactly average and price stopped affecting demand.
+
+    Refuses rather than falling back. A fallback to a team or cohort price is
+    the defect, not a recovery from it.
+    """
+    raw = get_config(scenario, REFERENCE_PRICE_CONFIG_KEY, default=None)
+    if raw is None:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} has no '
+            f'{REFERENCE_PRICE_CONFIG_KEY!r} configured; retail price cannot '
+            f'be scored without a reference independent of team decisions')
+    price = float(raw)
+    if price <= 0:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} sets '
+            f'{REFERENCE_PRICE_CONFIG_KEY}={price}; it must be greater than '
+            f'zero, because it is the denominator of the price ratio')
+    return price
+
+
 def get_config(scenario, key, default=None, cast_type=float):
     """Load a scenario configuration value, with in-memory cache."""
     scenario_id = scenario.id if hasattr(scenario, 'id') else scenario

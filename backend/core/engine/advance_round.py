@@ -32,6 +32,20 @@ class RoundNotReadyError(ValueError):
     report it as an actionable 400 rather than a 500."""
 
 
+class InvalidScenarioConfigurationError(RoundNotReadyError):
+    """The scenario is missing a value scoring cannot proceed without.
+
+    A subclass of `RoundNotReadyError` for the same reason as its sibling
+    below: an operator fixes the scenario and retries, so it is an actionable
+    400 rather than an engine failure.
+
+    Checked before any competitive write. The V2-023 disposition requires
+    configuration to fail closed rather than fall back to a team or cohort
+    price, and a fallback discovered halfway through resolution would already
+    have mutated state.
+    """
+
+
 class InvalidPersistedDecisionError(RoundNotReadyError):
     """A stored decision row holds a value the decision rules forbid.
 
@@ -384,6 +398,19 @@ def _run_phase_1(game_id):
             f'decision rules require zero or more. Correct the row(s) and '
             f'retry. {describe_violations(violations)}'
         )
+
+    # Scenario configuration is validated here, before the first competitive
+    # write, so a missing or unusable value cannot be discovered halfway
+    # through a round that has already mutated state (V2-023).
+    from core.engine.utils import (InvalidScenarioConfiguration,
+                                   scenario_reference_price)
+    try:
+        scenario_reference_price(game.scenario)
+    except InvalidScenarioConfiguration as exc:
+        raise InvalidScenarioConfigurationError(
+            f'Round {current_round} cannot be scored: {exc} Set the value in '
+            f'scenario configuration and retry.'
+        ) from exc
 
     # Mark processing started only after preconditions pass.
     current_round_obj.processing_status = 'PROCESSING'

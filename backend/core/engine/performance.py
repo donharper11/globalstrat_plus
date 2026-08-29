@@ -8,7 +8,10 @@ from core.models.scenario import SegmentDefinition
 from core.models.team_state import TeamMarketPresence
 from core.models.decisions import DecisionSubmission
 from core.models.results_financials import RoundResultPerformanceIndex
-from core.engine.utils import get_config
+# InvalidScenarioConfiguration is re-exported: it moved to utils when the
+# preference engine needed it too, and callers already import it from here.
+from core.engine.utils import (  # noqa: F401
+    InvalidScenarioConfiguration, get_config)
 
 D = Decimal
 
@@ -35,13 +38,6 @@ COMMERCIAL_INACTIVITY_COMPOSITE_CAP = D('0.25')
 RD_SPEND_TARGET_CONFIG_KEY = 'rd_spend_target'
 
 
-class InvalidScenarioConfiguration(ValueError):
-    """A scenario value scoring depends on is missing or unusable.
-
-    Raised rather than defaulted. A silent fallback would change what the
-    competition rewards without anyone deciding to, which is the failure mode
-    V2-021 was.
-    """
 
 
 def scenario_rd_spend_target(scenario):

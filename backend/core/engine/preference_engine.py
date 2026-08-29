@@ -21,7 +21,8 @@ from core.models.scenario import (
 from core.models.results import ActiveModifier
 from core.models.financials import FinancialExpense
 from core.models.cc31_models import TeamMarketCompliance
-from core.engine.utils import gaussian_fit, clamp, get_config
+from core.engine.utils import (
+    clamp, gaussian_fit, get_config, scenario_reference_price)
 
 
 def calculate_fit_scores(context):
@@ -288,33 +289,33 @@ def _get_marketing_feature_value(
 def _derive_price_competitiveness(
     context, team, product, market, mkt_decision, f_min, f_max,
 ):
+    """price_competitiveness against a scenario-authored reference price.
+
+    ratio < 1 = cheaper than the reference = high competitiveness.
+
+    V2-023 rules disposition. This previously scored price against the average
+    of teams sharing the product's positioning in the market, with the team's
+    own price appended to that average. A team alone in its positioning was
+    therefore compared against itself: the ratio was exactly 1.0 at every
+    price, the feature was a constant 0.5, and price had no effect on demand at
+    all -- measured at 3600.37 units sold at $50, $420 and $2,000 alike, with
+    revenue rising fortyfold. Self-inclusion also dampened price response for
+    teams that did share a positioning.
+
+    The reference is scenario-authored and independent of every team decision
+    and of roster composition, so a team's price score cannot be changed by
+    what its rivals do, by who joins or leaves, or by choosing an unoccupied
+    positioning.
     """
-    price_competitiveness: inverse ratio vs market average price.
-    ratio < 1 = cheaper = high competitiveness.
-    """
+    reference_price = scenario_reference_price(context.scenario)
+
     if not mkt_decision:
         return (f_max + f_min) / 2
 
     team_price = float(mkt_decision.retail_price)
-
-    # Calculate market average price from all teams' marketing decisions
-    all_mkt_decisions = (DecisionMarketing.objects.filter(
-        submission__round__game=context.game,
-        submission__round__round_number=context.round_number,
-        market=market,
-        team_product__positioning=product.positioning,
-    ).exclude(team_product__team=team)).order_by('team_product__name', 'market__code')
-
-    prices = [float(d.retail_price) for d in all_mkt_decisions]
-    prices.append(team_price)
-    market_avg_price = sum(prices) / len(prices) if prices else team_price
-
-    if market_avg_price == 0:
-        return (f_max + f_min) / 2
-
-    ratio = team_price / market_avg_price
+    price_ratio = team_price / reference_price
     # ratio of 0.5 → ~max, ratio of 1.0 → ~mid, ratio of 1.5 → ~min
-    value = f_max * (1.5 - ratio)
+    value = f_max * (1.5 - price_ratio)
     return clamp(value, f_min, f_max)
 
 

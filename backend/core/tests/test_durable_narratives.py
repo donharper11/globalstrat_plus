@@ -21,7 +21,7 @@ from django.utils import timezone
 from core.models import Game, Round, Scenario, Team
 from core.models.narrative_jobs import NarrativeJob
 from core.models.scenario import (FirmStarterProfile, MarketDefinition,
-                                  SegmentDefinition)
+                                  ScenarioConfig, SegmentDefinition)
 from core.services import narrative_jobs
 from core.services.canonical_json import canonical_sha256
 
@@ -31,6 +31,17 @@ def build_game(name):
     scenario = Scenario.objects.create(
         name=f'Narrative {name}', industry_label='Test', description='d',
         starting_cash=1000000, num_rounds=50, performance_index_base=100)
+    # Scoring refuses to run without these, by design: V2-021's R&D target is
+    # the denominator of the capability score, and V2-023's price reference is
+    # the denominator of the price ratio. The R&D target was missing here from
+    # the V2-021 change onwards and left this module failing; both are declared
+    # now.
+    ScenarioConfig.objects.create(
+        scenario=scenario, config_key='rd_spend_target',
+        config_value='2000000', description='V2-021 target')
+    ScenarioConfig.objects.create(
+        scenario=scenario, config_key='reference_price',
+        config_value='420', description='V2-023 reference')
     market = MarketDefinition.objects.create(
         scenario=scenario, name='Home', code='HM', description='d',
         currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
