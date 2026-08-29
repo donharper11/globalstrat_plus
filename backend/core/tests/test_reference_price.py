@@ -21,7 +21,8 @@ from core.engine.preference_engine import _derive_price_competitiveness
 from core.engine.utils import (InvalidScenarioConfiguration, RoundContext,
                                _config_cache, high_price_demand_multiplier,
                                scenario_high_price_elasticity,
-                               scenario_reference_price)
+                               scenario_reference_price,
+                               scenario_reference_prices)
 from core.models import Game, Round, Scenario, Team
 from core.models.decisions import DecisionMarketing, DecisionSubmission
 from core.models.scenario import (FirmStarterProfile, MarketDefinition,
@@ -29,7 +30,13 @@ from core.models.scenario import (FirmStarterProfile, MarketDefinition,
 from core.models.team_state import TeamPlatform, TeamProduct
 
 F_MIN, F_MAX = 0.0, 1.0
-REFERENCE = '420'
+# The authored tier references: the starting price schedule, promoted into
+# scenario configuration. A single global reference scored a premium product at
+# its own authored price as 1.667x, clamping its competitiveness to zero and
+# taking 53% of its demand -- the tiers were penalised for existing.
+TIERS = {'budget': '250', 'mainstream': '420', 'premium': '700',
+         'ultra_premium': '1000'}
+REFERENCE = TIERS['mainstream']
 ELASTICITY = '1.5'
 
 
@@ -47,9 +54,13 @@ class ReferencePriceFixture(TestCase):
         self.scenario = Scenario.objects.create(
             name=f'Reference {id(self)}', industry_label='T', description='d',
             starting_cash=1000, num_rounds=4)
-        self.config = ScenarioConfig.objects.create(
-            scenario=self.scenario, config_key='reference_price',
-            config_value=REFERENCE, description='reference')
+        self.tier_config = {
+            positioning: ScenarioConfig.objects.create(
+                scenario=self.scenario,
+                config_key=f'reference_price_{positioning}',
+                config_value=value, description=f'{positioning} reference')
+            for positioning, value in TIERS.items()}
+        self.config = self.tier_config['mainstream']
         self.elasticity_config = ScenarioConfig.objects.create(
             scenario=self.scenario, config_key='high_price_elasticity',
             config_value=ELASTICITY, description='elasticity')
@@ -83,6 +94,10 @@ class ReferencePriceFixture(TestCase):
         self.alone_product = self._product(self.alone, 'Solo', 'premium')
         self.shared_product = self._product(self.shared, 'Crowd', 'mainstream')
         self.rival_product = self._product(self.rival, 'Rival', 'mainstream')
+        self.tier_products = {
+            positioning: self._product(self.alone, f'P-{positioning}',
+                                       positioning)
+            for positioning in TIERS}
         self.context = RoundContext(self.game, 1)
 
     def _team(self, name, profile):
@@ -127,11 +142,47 @@ class PriceResponse(ReferencePriceFixture):
         self.assertTrue(scores[0] > scores[1] > scores[2],
                         f'price competitiveness did not fall: {scores}')
 
-    def test_the_reference_price_scores_as_exactly_average(self):
-        """$420 is the midpoint by construction; the seed depends on it."""
-        self.assertAlmostEqual(
-            self.score(self.alone, self.alone_product, REFERENCE),
-            (F_MAX + F_MIN) / 2, places=9)
+    def test_every_tier_scores_exactly_average_at_its_own_reference(self):
+        for positioning, price in TIERS.items():
+            with self.subTest(positioning=positioning):
+                self.assertAlmostEqual(
+                    self.score(self.alone, self.tier_products[positioning],
+                               price),
+                    (F_MAX + F_MIN) / 2, places=9)
+
+    def test_every_authored_starting_price_has_multiplier_one(self):
+        for positioning, price in TIERS.items():
+            with self.subTest(positioning=positioning):
+                self.assertEqual(
+                    high_price_demand_multiplier(
+                        float(price), float(TIERS[positioning]),
+                        float(ELASTICITY)),
+                    1.0)
+
+    def test_equal_relative_deviations_are_treated_equally_across_tiers(self):
+        """The tiers differ in price and must not differ in treatment."""
+        for factor in (0.6, 0.8, 1.0, 1.25, 1.6):
+            scores, multipliers = set(), set()
+            for positioning, price in TIERS.items():
+                deviated = str(round(float(price) * factor, 2))
+                scores.add(round(self.score(
+                    self.alone, self.tier_products[positioning], deviated), 9))
+                multipliers.add(round(high_price_demand_multiplier(
+                    float(deviated), float(price), float(ELASTICITY)), 9))
+            with self.subTest(factor=factor):
+                self.assertEqual(len(scores), 1, f'{factor}: {scores}')
+                self.assertEqual(len(multipliers), 1, f'{factor}: {multipliers}')
+
+    def test_the_high_price_tail_is_bounded_within_every_tier(self):
+        for positioning, price in TIERS.items():
+            reference = float(price)
+            revenue = [p * high_price_demand_multiplier(
+                p, reference, float(ELASTICITY))
+                for p in (reference, reference * 1.5, reference * 5,
+                          reference * 50, reference * 500)]
+            with self.subTest(positioning=positioning):
+                for earlier, later in zip(revenue, revenue[1:]):
+                    self.assertLess(later, earlier)
 
     def test_the_isolated_exploit_probe_fails(self):
         """The original exploit: 40x the price, unchanged competitiveness."""
@@ -145,12 +196,24 @@ class PriceResponse(ReferencePriceFixture):
 
 
 class IndependenceOfOtherTeams(ReferencePriceFixture):
-    def test_isolated_and_shared_teams_score_alike_at_the_same_price(self):
-        for price in ('50', '420', '2000'):
-            with self.subTest(price=price):
+    def test_isolated_and_shared_teams_are_treated_alike(self):
+        """Sharing a positioning must not change how a price is scored.
+
+        The two subjects sit in different tiers -- alone is premium, shared is
+        mainstream -- so the comparison is at equal *relative* prices, which is
+        what equal treatment means once each tier has its own reference. The
+        earlier version compared equal absolute prices and passed only because
+        every tier shared one reference; under the revised rule that comparison
+        asks a premium product and a mainstream product to score the same at
+        $420, which is the incoherence this revision removes.
+        """
+        for factor in (0.25, 0.5, 1.0, 1.5, 3.0):
+            alone_price = str(round(float(TIERS['premium']) * factor, 2))
+            shared_price = str(round(float(TIERS['mainstream']) * factor, 2))
+            with self.subTest(factor=factor):
                 self.assertAlmostEqual(
-                    self.score(self.alone, self.alone_product, price),
-                    self.score(self.shared, self.shared_product, price),
+                    self.score(self.alone, self.alone_product, alone_price),
+                    self.score(self.shared, self.shared_product, shared_price),
                     places=9)
 
     def test_adding_a_team_does_not_move_an_existing_score(self):
@@ -204,20 +267,30 @@ class IndependenceOfOtherTeams(ReferencePriceFixture):
 
 
 class ConfigurationFailsClosed(ReferencePriceFixture):
-    def test_missing_reference_is_refused(self):
-        self.config.delete()
-        _config_cache.clear()
-        with self.assertRaises(InvalidScenarioConfiguration):
-            scenario_reference_price(self.scenario)
+    def test_every_legal_positioning_must_have_a_reference(self):
+        for positioning in TIERS:
+            with self.subTest(positioning=positioning):
+                row = self.tier_config[positioning]
+                value = row.config_value
+                row.delete()
+                _config_cache.clear()
+                with self.assertRaises(InvalidScenarioConfiguration):
+                    scenario_reference_prices(self.scenario)
+                self.tier_config[positioning] = ScenarioConfig.objects.create(
+                    scenario=self.scenario,
+                    config_key=f'reference_price_{positioning}',
+                    config_value=value, description='restored')
+                _config_cache.clear()
+        self.config = self.tier_config['mainstream']
 
-    def test_zero_and_negative_references_are_refused(self):
-        for value in ('0', '-1', '-420.5'):
+    def test_zero_negative_and_non_finite_references_are_refused(self):
+        for value in ('0', '-1', '-420.5', 'nan', 'inf'):
             with self.subTest(value=value):
                 self.config.config_value = value
                 self.config.save(update_fields=['config_value'])
                 _config_cache.clear()
                 with self.assertRaises(InvalidScenarioConfiguration):
-                    scenario_reference_price(self.scenario)
+                    scenario_reference_prices(self.scenario)
 
     def test_scoring_refuses_rather_than_falling_back_to_a_team_price(self):
         """The fallback is the defect; there must not be one."""
@@ -251,6 +324,20 @@ class ConfigurationFailsClosed(ReferencePriceFixture):
 
 
 class DeterministicInputEnvelope(ReferencePriceFixture):
+    def test_the_complete_mapping_and_elasticity_are_in_the_manifest(self):
+        from core.services.manifest_sections import (CONFIG_SECTION_NAMES,
+                                                     INPUT_SECTIONS)
+        from core.services.manifest_snapshot import build_snapshot
+        sections = tuple(s for s in INPUT_SECTIONS
+                         if s.name in CONFIG_SECTION_NAMES)
+        rows = build_snapshot(sections, 'input', self.scenario.id,
+                              self.game.id).rows['scenario_config']
+        keys = {row.get('config_key') for row in rows}
+        for positioning in TIERS:
+            with self.subTest(positioning=positioning):
+                self.assertIn(f'reference_price_{positioning}', keys)
+        self.assertIn('high_price_elasticity', keys)
+
     def test_the_reference_price_is_in_the_input_manifest(self):
         from core.services.manifest_sections import (CONFIG_SECTION_NAMES,
                                                      INPUT_SECTIONS)
@@ -293,9 +380,18 @@ class HighPriceTail(ReferencePriceFixture):
             float(price), float(REFERENCE), float(ELASTICITY))
 
     def test_price_fit_really_does_clamp_above_the_floor(self):
-        """The premise of the defect, asserted rather than assumed."""
-        clamped = [self.score(self.alone, self.alone_product, price)
-                   for price in ('630', '2000', '20000', '200000')]
+        """The premise of the defect, asserted rather than assumed.
+
+        The clamp point is 1.5x the product's *own* tier reference. This test
+        previously used $630 against the alone product, which is premium: $630
+        is below the $700 premium reference, so it scored 0.6 rather than
+        clamping. The old figure was the clamp point of a single global $420
+        reference that no longer exists.
+        """
+        reference = float(TIERS['premium'])
+        clamped = [self.score(self.alone, self.alone_product, str(price))
+                   for price in (reference * 1.5, reference * 5,
+                                 reference * 50, reference * 500)]
         self.assertEqual(clamped, [0.0, 0.0, 0.0, 0.0])
 
     def test_demand_keeps_falling_above_the_clamp_point(self):

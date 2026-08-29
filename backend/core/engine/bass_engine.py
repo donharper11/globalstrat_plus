@@ -13,9 +13,10 @@ from core.models.team_state import TeamMarketPresence, TeamProductMarket, TeamAc
 from core.models.scenario import AICompetitorFitByRound, AICompetitorDefinition, AICompetitorBehavior
 from core.engine.ai_competitors import calculate_ai_competitor_fit
 from core.models.results import RoundResultAdoption
-from core.engine.utils import (get_config, high_price_demand_multiplier,
+from core.engine.utils import (InvalidScenarioConfiguration,
+                               get_config, high_price_demand_multiplier,
                                scenario_high_price_elasticity,
-                               scenario_reference_price)
+                               scenario_reference_prices)
 
 
 def run_bass_adoption(context):
@@ -42,15 +43,19 @@ def run_bass_adoption(context):
     # that point price stops reducing demand through fit while revenue keeps
     # multiplying by price -- the original unbounded scaling, surviving above
     # the clamp. This multiplier is an absolute demand response with no floor.
-    reference_price = scenario_reference_price(scenario)
+    reference_prices = scenario_reference_prices(scenario)
     high_price_elasticity = scenario_high_price_elasticity(scenario)
+    # Keyed with the product's positioning: the elasticity is measured against
+    # the same tier reference that price competitiveness is, so a premium
+    # product priced at the premium reference is not treated as expensive.
     retail_prices = {
-        (team_id, product_id, market_id): float(price)
-        for team_id, product_id, market_id, price in DecisionMarketing.objects
+        (team_id, product_id, market_id): (float(price), positioning)
+        for team_id, product_id, market_id, price, positioning
+        in DecisionMarketing.objects
         .filter(submission__round__game=game,
                 submission__round__round_number=current_round)
         .values_list('submission__team_id', 'team_product_id', 'market_id',
-                     'retail_price')
+                     'retail_price', 'team_product__positioning')
     }
 
     # Initialize production remaining from marketing decisions
@@ -176,10 +181,17 @@ def run_bass_adoption(context):
             # raising price together still loses demand.
             price_multiplier = 1.0
             if product:
-                price = retail_prices.get((team.id, product.id, market.id))
-                if price is not None:
+                entry = retail_prices.get((team.id, product.id, market.id))
+                if entry is not None:
+                    price, positioning = entry
+                    if positioning not in reference_prices:
+                        raise InvalidScenarioConfiguration(
+                            f'product {product.id} has positioning '
+                            f'{positioning!r}, which has no authored reference '
+                            f'price; demand cannot be scored for it')
                     price_multiplier = high_price_demand_multiplier(
-                        price, reference_price, high_price_elasticity)
+                        price, reference_prices[positioning],
+                        high_price_elasticity)
                     team_new_adopters *= price_multiplier
 
             # Cap by production availability

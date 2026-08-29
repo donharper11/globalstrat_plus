@@ -131,9 +131,13 @@ def build_minimal_game(name):
     ScenarioConfig.objects.create(
         scenario=scenario, config_key='rd_spend_target',
         config_value='2000000', description='V2-021 target')
-    ScenarioConfig.objects.create(
-        scenario=scenario, config_key='reference_price',
-        config_value='420', description='V2-023 reference')
+    for _k, _v in (('reference_price_budget', '250'),
+                   ('reference_price_mainstream', '420'),
+                   ('reference_price_premium', '700'),
+                   ('reference_price_ultra_premium', '1000')):
+        ScenarioConfig.objects.create(
+            scenario=scenario, config_key=_k, config_value=_v,
+            description='V2-023 tier reference')
     ScenarioConfig.objects.create(
         scenario=scenario, config_key='high_price_elasticity',
         config_value='1.5', description='V2-023 elasticity')

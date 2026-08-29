@@ -39,7 +39,7 @@ def run():
     from core.engine.performance import (material_revenue_floor,
                                          scenario_rd_spend_target)
     from core.engine.utils import (scenario_optimal_headcounts,
-                                   scenario_reference_price)
+                                   scenario_reference_prices)
     from core.models import DecisionSubmission, Game, Round, Team
     from core.models.decisions import DecisionMarketing, DecisionRDInvestment
     from core.models.talent import DecisionTalent
@@ -55,7 +55,7 @@ def run():
 
     target = scenario_rd_spend_target(scenario)
     optima = scenario_optimal_headcounts(scenario)
-    reference = D(str(scenario_reference_price(scenario)))
+    references = scenario_reference_prices(scenario)
 
     started = time.time()
     checks = {}
@@ -86,11 +86,23 @@ def run():
             'optima': {p: int(v) for p, v in optima.items()},
             'pass': all(pools[p] == int(optima[p]) for p in pools)}
 
-        prices = sorted({str(r.retail_price) for r in
-                         DecisionMarketing.objects.filter(submission=submission)})
-        checks['pricing_uses_the_scenario_reference'] = {
-            'prices': prices, 'reference': str(reference),
-            'pass': all(D(p) == reference for p in prices)}
+        # Each product against its own tier's reference, never one global
+        # figure: a premium product priced at the mainstream reference is not
+        # competent play, it is a premium product sold as mainstream.
+        rows = list(DecisionMarketing.objects.filter(submission=submission)
+                    .select_related('team_product'))
+        priced = [{'product': r.team_product.name,
+                   'positioning': r.team_product.positioning,
+                   'price': str(r.retail_price),
+                   'tier_reference': str(references.get(
+                       r.team_product.positioning)),
+                   'matches': (r.team_product.positioning in references
+                               and D(str(r.retail_price))
+                               == D(str(references[r.team_product.positioning])))}
+                  for r in rows]
+        checks['pricing_uses_each_products_tier_reference'] = {
+            'rows': priced, 'references': {k: str(v) for k, v in references.items()},
+            'pass': bool(priced) and all(row['matches'] for row in priced)}
 
         assessment = funding_need.assess_submission(submission)
         checks['financing_legal_under_v2_024'] = {

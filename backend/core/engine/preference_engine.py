@@ -302,12 +302,15 @@ def _derive_price_competitiveness(
     revenue rising fortyfold. Self-inclusion also dampened price response for
     teams that did share a positioning.
 
-    The reference is scenario-authored and independent of every team decision
-    and of roster composition, so a team's price score cannot be changed by
-    what its rivals do, by who joins or leaves, or by choosing an unoccupied
-    positioning.
+    The reference is scenario-authored per positioning tier and independent of
+    every team decision and of roster composition, so a team's price score
+    cannot be changed by what its rivals do, by who joins or leaves, or by
+    choosing an unoccupied positioning. A single global reference was the first
+    form of this repair and made the tiers incoherent: a premium product at its
+    own authored starting price scored zero competitiveness for being premium.
     """
-    reference_price = scenario_reference_price(context.scenario)
+    reference_price = scenario_reference_price(
+        context.scenario, product.positioning)
 
     if not mkt_decision:
         return (f_max + f_min) / 2

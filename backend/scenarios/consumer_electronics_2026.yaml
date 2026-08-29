@@ -47,9 +47,18 @@ config:
   high_price_elasticity:
   - '1.5'
   - Demand elasticity above the reference price; must be > 1 so revenue cannot grow without bound (V2-023)
-  reference_price:
+  reference_price_budget:
+  - '250'
+  - Budget reference price (V2-023)
+  reference_price_mainstream:
   - '420'
-  - Retail price that scores as exactly average competitiveness (V2-023)
+  - Mainstream reference price (V2-023)
+  reference_price_premium:
+  - '700'
+  - Premium reference price (V2-023)
+  reference_price_ultra_premium:
+  - '1000'
+  - Ultra-premium reference price (V2-023)
   rd_spend_target:
   - '2000000'
   - R&D spend that earns full strategic-capability credit (V2-021)

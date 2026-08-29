@@ -42,7 +42,10 @@ class FundingFixture(TestCase):
         self.scenario = Scenario.objects.create(
             name=f'Funding {id(self)}', industry_label='T', description='d',
             starting_cash=OPENING_CASH, num_rounds=4)
-        for key, value in (('reference_price', '420'),
+        for key, value in (('reference_price_budget', '250'),
+                           ('reference_price_mainstream', '420'),
+                           ('reference_price_premium', '700'),
+                           ('reference_price_ultra_premium', '1000'),
                            ('high_price_elasticity', '1.5'),
                            ('rd_spend_target', '2000000'),
                            ('sales_rep_cost_per_round', '100000')):

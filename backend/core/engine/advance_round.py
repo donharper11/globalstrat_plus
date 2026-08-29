@@ -432,9 +432,9 @@ def _run_phase_1(game_id):
     from core.engine.utils import (InvalidScenarioConfiguration,
                                    scenario_high_price_elasticity,
                                    scenario_optimal_headcounts,
-                                   scenario_reference_price)
+                                   scenario_reference_prices)
     try:
-        scenario_reference_price(game.scenario)
+        scenario_reference_prices(game.scenario)
         scenario_high_price_elasticity(game.scenario)
         scenario_optimal_headcounts(game.scenario)
     except InvalidScenarioConfiguration as exc:

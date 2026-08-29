@@ -12,12 +12,13 @@ V2-025 rule. A baseline below the optima concedes a 26% capability multiplier
 to any candidate that reaches them, which is not a strategy beating competent
 play -- it is competent play being defined incorrectly.
 
-Pricing note: every product is priced at the scenario reference. The
-positioning schedule `load_demo` seeds -- $250/$420/$700/$1000 -- predates
-V2-023, which scores every price against one scenario reference. A $700 premium
-product is 1.667x that reference: price fit clamps to zero and the high-price
-elasticity takes 53% of its demand. Those are starting prices, not competent
-play.
+Pricing note: every product is priced at its own positioning's authored
+reference. The tier references are the starting schedule -- $250/$420/$700/$1000
+-- promoted into scenario configuration, so a product priced at its tier scores
+exactly average competitiveness and carries no demand penalty. An earlier form
+of this handoff scored every tier against a single $420 reference, which made
+premium positioning incoherent: a premium product at its authored price scored
+zero for being premium.
 
 Not invented for this handoff. These are the numbers the project's own
 `load_demo` command scripts as competent play — budget split, price and volume
@@ -112,8 +113,8 @@ def build(submission, team):
     DecisionTalent.objects.create(submission=submission, **talent)
 
     DecisionMarketing.objects.filter(submission=submission).delete()
-    from core.engine.utils import scenario_reference_price
-    reference_price = D(str(scenario_reference_price(team.game.scenario)))
+    from core.engine.utils import scenario_reference_prices
+    reference_prices = scenario_reference_prices(team.game.scenario)
     home = team.home_market
     for product in TeamProduct.objects.filter(
             team=team, status='active').order_by('id'):
@@ -130,7 +131,7 @@ def build(submission, team):
                 submission=submission,
                 team_product=product,
                 market_id=tpm.market_id,
-                retail_price=reference_price,
+                retail_price=D(str(reference_prices[positioning])),
                 promotion_budget=PROMO_BY_POSITIONING.get(positioning, DEFAULT_PROMO),
                 campaign_focus_feature_ids=focus or [],
                 production_volume=volume,

@@ -47,7 +47,10 @@ class StaffingFixture(TestCase):
             name=f'Staffing {id(self)}', industry_label='T', description='d',
             starting_cash=1000000, num_rounds=4)
         self.config = {}
-        for key, value in (('reference_price', '420'),
+        for key, value in (('reference_price_budget', '250'),
+                           ('reference_price_mainstream', '420'),
+                           ('reference_price_premium', '700'),
+                           ('reference_price_ultra_premium', '1000'),
                            ('high_price_elasticity', '1.5'),
                            ('rd_spend_target', '2000000'),
                            ('optimal_rd_headcount', '60'),

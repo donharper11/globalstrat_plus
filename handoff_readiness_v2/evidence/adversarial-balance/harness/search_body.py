@@ -97,15 +97,16 @@ def write_candidate(submission, team, genome):
     detail = {'direct_online': online, 'selective_retail': selective,
               'mass_retail': sales - online - selective}
 
-    from core.engine.utils import scenario_reference_price
-    reference_price = scenario_reference_price(team.game.scenario)
+    from core.engine.utils import scenario_reference_prices
+    reference_prices = scenario_reference_prices(team.game.scenario)
     for row in DecisionMarketing.objects.filter(
             submission=submission).select_related('team_product'):
         positioning = row.team_product.positioning
-        # Multipliers scale the baseline, and the baseline now prices at the
-        # scenario reference, so `price_multiplier` is literally the ratio to
-        # the reference that V2-023 scores against.
-        base_price = reference_price
+        # Multipliers scale the baseline, and the baseline prices each product
+        # at its own tier reference, so `price_multiplier` is literally the
+        # ratio to that tier's reference which V2-023 scores against. The same
+        # multiplier therefore means the same thing in every tier.
+        base_price = reference_prices[positioning]
         base_volume = BASE.VOLUME_BY_POSITIONING.get(positioning, BASE.DEFAULT_VOLUME)
         base_promo = BASE.PROMO_BY_POSITIONING.get(positioning, BASE.DEFAULT_PROMO)
         row.retail_price = _money(base_price * genome['price_multiplier'])

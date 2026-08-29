@@ -12,7 +12,19 @@ _logger = logging.getLogger(__name__)
 
 _config_cache = {}  # scenario_id -> {key: value}
 
-REFERENCE_PRICE_CONFIG_KEY = 'reference_price'
+# One authored reference per positioning tier. A single global reference made
+# premium positioning economically incoherent: V2-023 scored every price against
+# $420, so a premium product at its own authored starting price of $700 was
+# 1.667x the reference -- price fit clamped to zero and the elasticity removed
+# 53% of its demand. The tiers were penalised for being the tiers the scenario
+# author created. Making every product price at $420 would have passed the
+# competency gate by erasing the price tiers instead of pricing them.
+REFERENCE_PRICE_CONFIG_KEYS = {
+    'budget': 'reference_price_budget',
+    'mainstream': 'reference_price_mainstream',
+    'premium': 'reference_price_premium',
+    'ultra_premium': 'reference_price_ultra_premium',
+}
 
 
 class InvalidScenarioConfiguration(ValueError):
@@ -132,30 +144,48 @@ def staffing_adequacy(headcounts, optimal_headcounts):
     return total / len(OPTIMAL_HEADCOUNT_CONFIG_KEYS)
 
 
-def scenario_reference_price(scenario):
-    """The scenario-authored price all retail prices are scored against.
+def scenario_reference_prices(scenario):
+    """The authored reference price for every legal positioning tier.
 
     Deliberately independent of any team decision and of roster composition:
     the V2-023 exploit existed because the comparison price was derived from
     the very decision being scored, so a team alone in its positioning was
-    always exactly average and price stopped affecting demand.
+    always exactly average and price stopped affecting demand. Per-tier
+    references keep that property -- a tier's reference is authored, not
+    computed from who is selling in it -- while letting a premium product be
+    scored against premium expectations rather than against a budget price.
 
-    Refuses rather than falling back. A fallback to a team or cohort price is
-    the defect, not a recovery from it.
+    Every legal positioning must have a positive, finite reference. Refuses
+    rather than falling back: a fallback to a team price, a cohort price or
+    another tier's price is the defect, not a recovery from it.
     """
-    raw = get_config(scenario, REFERENCE_PRICE_CONFIG_KEY, default=None)
-    if raw is None:
+    prices = {}
+    for positioning, key in REFERENCE_PRICE_CONFIG_KEYS.items():
+        raw = get_config(scenario, key, default=None)
+        if raw is None:
+            raise InvalidScenarioConfiguration(
+                f'scenario {getattr(scenario, "id", scenario)} has no {key!r} '
+                f'configured; retail price for {positioning!r} products cannot '
+                f'be scored without a reference independent of team decisions')
+        price = float(raw)
+        if not math.isfinite(price) or price <= 0:
+            raise InvalidScenarioConfiguration(
+                f'scenario {getattr(scenario, "id", scenario)} sets '
+                f'{key}={raw!r}; it must be a positive, finite number, because '
+                f'it is the denominator of the {positioning} price ratio')
+        prices[positioning] = price
+    return prices
+
+
+def scenario_reference_price(scenario, positioning):
+    """The authored reference for one positioning, or refuse to score it."""
+    prices = scenario_reference_prices(scenario)
+    if positioning not in prices:
         raise InvalidScenarioConfiguration(
-            f'scenario {getattr(scenario, "id", scenario)} has no '
-            f'{REFERENCE_PRICE_CONFIG_KEY!r} configured; retail price cannot '
-            f'be scored without a reference independent of team decisions')
-    price = float(raw)
-    if price <= 0:
-        raise InvalidScenarioConfiguration(
-            f'scenario {getattr(scenario, "id", scenario)} sets '
-            f'{REFERENCE_PRICE_CONFIG_KEY}={price}; it must be greater than '
-            f'zero, because it is the denominator of the price ratio')
-    return price
+            f'product positioning {positioning!r} has no authored reference '
+            f'price in scenario {getattr(scenario, "id", scenario)}; scoring '
+            f'refuses rather than borrowing another tier\'s reference')
+    return prices[positioning]
 
 
 def get_config(scenario, key, default=None, cast_type=float):
