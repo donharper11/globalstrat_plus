@@ -21,6 +21,16 @@ worker_class = 'sync'
 timeout = 120
 keepalive = 5
 
+# CRV2-07. Without preloading, each of the 17 workers imports Django and warms
+# its own caches on the first request it happens to receive. At field load the
+# eight slowest requests of the whole run all landed in a single second, 18.3
+# to 18.7 seconds in, at up to 18283 ms, while p99 for the run was 1720 ms:
+# workers reaching their first request late, with traffic queued behind them.
+# Preloading imports the application once in the arbiter before forking, so no
+# request pays that cost. This matters most at the moment a class starts and
+# every student signs in at once.
+preload_app = True
+
 # Logging
 accesslog = '-'
 errorlog = '-'
