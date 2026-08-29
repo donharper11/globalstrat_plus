@@ -81,11 +81,17 @@ def context_identity(game, rnd):
     }
 
 
-def evaluate(game, rnd, team, write_decisions):
+def evaluate(game, rnd, team, write_decisions, capture=None):
     """Resolve once from the checkpoint and roll back. Returns metrics.
 
     `write_decisions()` writes every team's decisions inside the transaction,
     so a probe differs from the baseline only in what it changes.
+
+    `capture(into)` is called inside the transaction, after resolution and
+    before the rollback, for callers that need more than `read_metrics`
+    returns. Anything read after `evaluate` returns is read from a database
+    that has already been rewound — result rows in particular are gone, and a
+    caller doing that gets `None` for every field.
     """
     from core.engine.advance_round import _run_phase_1
 
@@ -97,6 +103,8 @@ def evaluate(game, rnd, team, write_decisions):
             write_decisions()
             _run_phase_1(game.id)
             captured.update(read_metrics(game, team, rnd.round_number))
+            if capture is not None:
+                capture(captured)
             raise _Rollback()
     except _Rollback:
         pass

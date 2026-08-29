@@ -222,11 +222,18 @@ def evaluate_at_price(target, price):
         proof['price_fit_score'] = price_fit(
             target['team_id'], target['product_id'], target['market_id'])
 
+    # Read inside the transaction. The previous version read them after
+    # `evaluate` returned, by which point the rollback had removed every result
+    # row, and the gate refused on seven missing diagnostics — correctly, but
+    # for a reason that was mine rather than the model's.
+    def capture(into):
+        into['detail'] = outcomes(target['team_id'], target['product_id'],
+                                  target['market_id'])
+
     metrics = CF.evaluate(game, rnd, Team.objects.get(pk=target['team_id']),
-                          mutate)
+                          mutate, capture=capture)
     return {'proof': proof,
-            'outcomes': outcomes(target['team_id'], target['product_id'],
-                                 target['market_id']),
+            'outcomes': metrics.pop('detail', {}),
             'composite': metrics}
 
 
