@@ -247,6 +247,54 @@ same identity, so the fixture's own team advantage divides out.
 | V2-024 | Balance / opponent-independent dominance | **P1** | GSP-CRV2-06 Stage 3 | Issuing equity raises the performance index at no cost in the index. `equity-raise` -- the documented baseline plus `new_equity = $20,000,000` and nothing else -- beat competent play in **9 of 9 holdout cells**, worst-case **+0.66**, median +0.66. Its advantage is near-identical against competent (0.670), diverse (0.680) and incumbent (0.660) opponents, which is what opponent independence looks like in the data: the strategy does not compete for anything, it improves its own balance sheet. | `stage3-tournament.json`. Same-game counterfactual, three rounds per candidate, every candidate checked against the `decision_limits` policy before resolution. | **Open — stops the handoff.** |
 | V2-025 | Balance / cost-minimisation dominance | **P1 pending attribution** | GSP-CRV2-06 Stage 3 | Stripping the firm to nothing beats competent play. `skeleton-crew` -- zero R&D, commercial and operations headcount, zero ESG, zero strategy budget, everything else at baseline -- won **9 of 9 holdout cells**, worst-case **+0.22**. `rd-starved` won every discovery population on the same mechanism (worst +0.08). The saved cost raises net income, and the capability and satisfaction components do not charge enough for the loss to offset it. | `stage3-tournament.json`, discovery and holdout tables. | **Open — P1 pending attribution.** The strategy won 9 of 9 holdout cells independently of opponents, which is the same property that makes V2-024 a P1; the provisional label is on which stripped input pays, not on the severity. Attribution runs before any weighting change. |
 
+**V2-025 attribution, measured before any weighting change.** Each stripped
+input varied on its own from one frozen checkpoint, everything else at the
+documented baseline, every mutation proved to reach the row scoring reads
+(`v2-025-attribution.json`). Baseline: strategy expense $3,900,000, revenue
+$887,174.40, capability 0.6200, satisfaction 0.5772, index 56.54.
+
+| arm | cost | revenue | capability | satisfaction | net income | index |
+|---|---|---|---|---|---|---|
+| rd headcount → 0 | -500,000 | 0 | **0.0000** | +0.0008 | +500,000 | +0.02 |
+| commercial headcount → 0 | -300,000 | -420 | **0.0000** | +0.0005 | +299,582 | +0.01 |
+| operations headcount → 0 | -400,000 | 0 | **0.0000** | 0.0000 | +162,043 | +0.00 |
+| all headcount → 0 | -1,200,000 | -420 | **0.0000** | +0.0014 | +961,624 | +0.03 |
+| ESG → 0 | 0 | 0 | 0 | 0 | 0 | 0.00 |
+| ESG → +1,000,000 | +1,000,000 | +19,676 | 0.0000 | -0.0005 | -980,407 | -0.01 |
+| strategy budget → 0 | 0 | 0 | 0 | 0 | 0 | 0.00 |
+| R&D amount → 0 | 0 | 0 | **-0.0200** | -0.0049 | +100,000 | -0.09 |
+| R&D amount → baseline | 0 | 0 | 0 | 0 | 0 | 0.00 |
+| R&D amount → target | 0 | 0 | **+0.3800** | +0.0916 | -1,900,000 | **+1.84** |
+
+**Headcount is the mechanism, and the reason is that nothing charges for it.**
+Payroll is a real cash cost -- $1.2M across the three pools -- while the
+capability component moves by exactly 0.0000 when every pool is emptied.
+`_strategic_capability_component` reads R&D spend, product actions and strategy
+actions, and never reads headcount at all; the word does not appear in
+`performance.py`. So the saving converts directly into net income with no
+offsetting term. The single-round index gain is +0.03, and the tournament
+measured +0.22 over three rounds, which is that gain compounding through cash.
+
+**Satisfaction moves the wrong way.** Emptying all three pools *raises* the
+satisfaction score by 0.0014. Firing the entire workforce is scored as a small
+improvement in stakeholder satisfaction. That is a second finding inside the
+first, and it is not a rounding artefact -- the three pools move it +0.0008,
++0.0005 and 0.0000 separately, consistently upward.
+
+**The other two stripped inputs contribute nothing, for two different reasons.**
+ESG at zero changes nothing because the documented baseline already invests
+nothing, so `skeleton-crew`'s ESG term was a no-op; the positive-ESG arm was run
+to establish the sign, and shows ESG *costs* index (-0.01) while raising revenue
+(+$19,676). Strategy budget at zero changes nothing because it is a declared
+budget, inert exactly as V2-021 established for R&D.
+
+**The R&D gap the tournament left is now closed, and it inverts the picture.**
+Actual R&D spend at the scenario target is worth **+1.84 index** -- sixty times
+the headcount saving -- and zero spend costs -0.09. R&D intensity is strongly
+rewarded. The tournament's "low-cost versus meaningful R&D" family measured
+none of this because it varied `rd_budget`, the declared figure V2-021 made
+inert, while actual spend sat pinned at the baseline in all three arms.
+
 **V2-024 mechanism, confirmed in code.** `performance.py:110`
 `_financial_component` scores `debt_score = 1 - clamp01(debt_to_equity / 2)` at
 20% of the financial component. Issuing equity increases `total_equity`, which
