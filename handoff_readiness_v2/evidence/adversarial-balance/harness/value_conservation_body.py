@@ -234,9 +234,13 @@ def run(verbose=True):
                         submission.status = 'locked'
                         submission.locked_at = timezone.now()
                         submission.save(update_fields=['status', 'locked_at'])
+                    _run_phase_1(game.id)
+                    # After resolution, never before. The first version proved
+                    # engagement immediately before _run_phase_1, so it counted
+                    # positions the engine had not opened yet and reported
+                    # every FX arm as not engaged.
                     if mutate is not None and step == 0:
                         proof.update(prove(rnd) or {})
-                    _run_phase_1(game.id)
                     if step < ROUNDS - 1:
                         advance_to_next_round(game.id)
                 ledger_capture(captured)
@@ -253,16 +257,30 @@ def run(verbose=True):
 
     started = time.time()
 
-    # ---- control: production and sales pinned at zero --------------------
-    control = evaluate('control', None, None, production_volume=0)
+    # Two controls. An arm that runs with production must be compared against a
+    # control that also produces, or the delta is the sale of 20,000 units and
+    # not the decision under test -- which is what made three arms look like
+    # value creation.
+    controls = {
+        'zero_production': evaluate('control_zero_production', None, None,
+                                    production_volume=0),
+        'with_production': evaluate('control_with_production', None, None,
+                                    production_volume=20000),
+    }
+    report['controls'] = {k: v['ledger'] for k, v in controls.items()}
+    control = controls['zero_production']
     report['control'] = control
 
     def arm(label, mutate, prove, production_volume=0, why=''):
         result = evaluate(label, mutate, prove,
                           production_volume=production_volume)
+        matched = controls['with_production' if production_volume
+                          else 'zero_production']
+        result['control_used'] = ('with_production' if production_volume
+                                  else 'zero_production')
         deltas = {}
         for rnd_no, row in result['ledger'].items():
-            base = control['ledger'].get(rnd_no, {})
+            base = matched['ledger'].get(rnd_no, {})
             deltas[rnd_no] = {
                 k: str(D(row[k]) - D(base[k])) if k in base else None
                 for k in row}
@@ -413,15 +431,25 @@ def run(verbose=True):
     ledger = result['ledger']
     revenues = [D(row['total_revenue']) for row in ledger.values()]
     totals = [D(ledger[k]['cash_plus_inventory']) for k in sorted(ledger)]
+    result['revenue_by_round'] = [str(r) for r in revenues]
+    baseline_revenue = [D(controls['with_production']['ledger'][k]
+                          ['total_revenue'])
+                        for k in sorted(controls['with_production']['ledger'])]
+    result['revenue_vs_normal_trading'] = [
+        str(r) for r in baseline_revenue]
     result['sales_really_are_zero'] = all(r == 0 for r in revenues)
+    result['sales_effectively_suppressed'] = all(
+        r <= b / D('1000') for r, b in zip(revenues, baseline_revenue)
+        if b > 0)
     result['cash_plus_inventory_by_round'] = [str(t) for t in totals]
     result['value_conserved'] = all(
         later <= earlier for earlier, later in zip(totals, totals[1:]))
     result['creates_value'] = not result['value_conserved']
-    if not result['sales_really_are_zero']:
+    if not (result['sales_really_are_zero']
+            or result['sales_effectively_suppressed']):
         result['inconclusive'] = (
-            'revenue was not zero, so this did not test carrying stock '
-            'without sales')
+            'sales were not suppressed, so this did not test carrying stock '
+            'without selling it')
 
     # ---- Trade finance: unexercisable if the catalogue is empty ----------
     if instruments:
