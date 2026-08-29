@@ -46,7 +46,7 @@ from core.models import (DecisionSubmission, Game, OperatorAuditEvent,
                          ResolutionManifest, Round, Scenario, Team, User)
 from core.models.results_financials import LeaderboardEntry, RoundResultFinancials
 from core.models.scenario import (FirmStarterProfile, MarketDefinition,
-                                  SegmentDefinition)
+                                  ScenarioConfig, SegmentDefinition)
 
 
 ITERATION_PROFILES = (1, 10, 100)
@@ -125,6 +125,15 @@ def build_minimal_game(name):
     scenario = Scenario.objects.create(
         name=f'Concurrency {name}', industry_label='Test', description='d',
         starting_cash=1000000, num_rounds=1000, performance_index_base=100)
+    # Scoring refuses to run without these (V2-021, V2-023): they are the
+    # denominators of the capability score and the price ratio, and the price
+    # reference is checked before the round's first competitive write.
+    ScenarioConfig.objects.create(
+        scenario=scenario, config_key='rd_spend_target',
+        config_value='2000000', description='V2-021 target')
+    ScenarioConfig.objects.create(
+        scenario=scenario, config_key='reference_price',
+        config_value='420', description='V2-023 reference')
     market = MarketDefinition.objects.create(
         scenario=scenario, name='Home', code='HM', description='d',
         currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
