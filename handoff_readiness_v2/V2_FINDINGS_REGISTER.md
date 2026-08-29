@@ -245,7 +245,7 @@ same identity, so the fixture's own team advantage divides out.
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
 | V2-024 | Balance / opponent-independent dominance | **P1** | GSP-CRV2-06 Stage 3 | Issuing equity raises the performance index at no cost in the index. `equity-raise` -- the documented baseline plus `new_equity = $20,000,000` and nothing else -- beat competent play in **9 of 9 holdout cells**, worst-case **+0.66**, median +0.66. Its advantage is near-identical against competent (0.670), diverse (0.680) and incumbent (0.660) opponents, which is what opponent independence looks like in the data: the strategy does not compete for anything, it improves its own balance sheet. | `stage3-tournament.json`. Same-game counterfactual, three rounds per candidate, every candidate checked against the `decision_limits` policy before resolution. | **Open — stops the handoff.** |
-| V2-025 | Balance / cost-minimisation dominance | **P1 pending attribution** | GSP-CRV2-06 Stage 3 | Stripping the firm to nothing beats competent play. `skeleton-crew` -- zero R&D, commercial and operations headcount, zero ESG, zero strategy budget, everything else at baseline -- won **9 of 9 holdout cells**, worst-case **+0.22**. `rd-starved` won every discovery population on the same mechanism (worst +0.08). The saved cost raises net income, and the capability and satisfaction components do not charge enough for the loss to offset it. | `stage3-tournament.json`, discovery and holdout tables. | **Open — P1 pending attribution.** The strategy won 9 of 9 holdout cells independently of opponents, which is the same property that makes V2-024 a P1; the provisional label is on which stripped input pays, not on the severity. Attribution runs before any weighting change. |
+| V2-025 | Balance / cost-minimisation dominance | **P1 closed by rules change** | GSP-CRV2-06 Stage 3 | Stripping the firm to nothing beats competent play. `skeleton-crew` -- zero R&D, commercial and operations headcount, zero ESG, zero strategy budget, everything else at baseline -- won **9 of 9 holdout cells**, worst-case **+0.22**. `rd-starved` won every discovery population on the same mechanism (worst +0.08). The saved cost raises net income, and the capability and satisfaction components do not charge enough for the loss to offset it. | `stage3-tournament.json`, `v2-025-attribution.json`, `v2-025-recheck.json`. | **Closed.** Strategic capability is now multiplied by staffing adequacy. Re-evaluated across the same nine holdout cells: skeleton-crew went from 9/9 cells won at +0.22 to **0/9 at -7.17 worst case**, and no zero-headcount variant retains an opponent-independent advantage. |
 
 **V2-025 attribution, measured before any weighting change.** Each stripped
 input varied on its own from one frozen checkpoint, everything else at the
@@ -330,6 +330,40 @@ population -- identical to the baseline, because they *were* the baseline in
 every respect that scoring reads. `rd-starved`'s +0.11 comes from zeroing
 headcount and research budget, not from R&D. That family tested cost, not R&D
 intensity, and the R&D dimension remains unexercised by this tournament.
+
+**V2-025 re-evaluation, the nine existing holdout cells.**
+
+| candidate | worst | median | best | cells won |
+|---|---|---|---|---|
+| skeleton-crew | -7.17 | -7.14 | -7.12 | **0/9** |
+| rd-actual-zero | -0.24 | -0.23 | -0.22 | 0/9 |
+| rd-actual-target | +4.29 | +4.35 | +4.40 | 9/9 |
+
+Both closure conditions are met: skeleton-crew no longer wins every cell, and
+no zero-headcount variant produces an opponent-independent advantage.
+
+The incumbent population plays skeleton-crew here, where the tournament's played
+equity-raise. The V2-024 rule now refuses equity-raise outright, so it cannot
+form a population at all; "incumbent" therefore does not mean the same thing
+across the two runs, and the artifact records it.
+
+**A limitation this run exposed in the harness baseline, not in the game.**
+`rd-actual-target` beats the baseline in all nine cells by about +4.3. That is
+not an exploit: it costs $1,900,000 of real cash and buys capability, which is
+the game rewarding investment. It is large because **the harness baseline
+underspends R&D**. `baseline.py` declares an `rd_budget` of $2,000,000 -- the
+documented competent figure -- while writing a single `DecisionRDInvestment`
+row of `OPTIONAL_AMOUNT`, $100,000, a placeholder chosen so that every decision
+type had a row to vary. Declared and actual differ by twenty times, and only
+actual spend reaches scoring.
+
+Every advantage figure in this handoff is measured against that baseline, so
+each is relative to a competitor that underspends R&D. The V2-024 and V2-025
+findings are unaffected in kind, because both were strategies that gained
+*without* cost and would gain against any baseline; but the absolute margins
+would be smaller against a baseline that spent the documented R&D budget. This
+is recorded as a limitation of the evidence rather than corrected, because
+correcting it means re-running the tournament, which the disposition excludes.
 
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
