@@ -1,0 +1,178 @@
+{
+  "blocking_failures": [],
+  "code_revision": "33905ef3964b7a15d5ea03b57211f713fd4e0c0f",
+  "distinct_outcomes": 2,
+  "elapsed_seconds": 113.1,
+  "every_identity_is_repeatable": true,
+  "every_pair_differs_on_every_stream": true,
+  "identities": {
+    "identity-a": 963306,
+    "identity-b": 903617,
+    "identity-c": 908083
+  },
+  "identities_are_distinct": true,
+  "identities_change_the_outcome": false,
+  "identity_is_stable": true,
+  "outcome_signatures": {
+    "identity-a": [
+      57.99,
+      "-93806183.08",
+      "2677259.38"
+    ],
+    "identity-b": [
+      57.99,
+      "-93879997.11",
+      "2644455.07"
+    ],
+    "identity-c": [
+      57.99,
+      "-93879997.11",
+      "2644455.07"
+    ]
+  },
+  "per_identity_baseline": {
+    "identity-a": {
+      "first": {
+        "best_rival_index": 55.36,
+        "cash_closing": "-93806183.08",
+        "field": 4,
+        "field_margin": 2.63,
+        "index": 57.99,
+        "net_income": "-24206018.12",
+        "rank": 1,
+        "total_revenue": "2677259.38"
+      },
+      "repeatable": true
+    },
+    "identity-b": {
+      "first": {
+        "best_rival_index": 55.42,
+        "cash_closing": "-93879997.11",
+        "field": 4,
+        "field_margin": 2.57,
+        "index": 57.99,
+        "net_income": "-24251419.64",
+        "rank": 1,
+        "total_revenue": "2644455.07"
+      },
+      "repeatable": true
+    },
+    "identity-c": {
+      "first": {
+        "best_rival_index": 55.42,
+        "cash_closing": "-93879997.11",
+        "field": 4,
+        "field_margin": 2.57,
+        "index": 57.99,
+        "net_income": "-24251419.64",
+        "rank": 1,
+        "total_revenue": "2644455.07"
+      },
+      "repeatable": true
+    }
+  },
+  "seeds": [
+    "identity-a",
+    "identity-b",
+    "identity-c"
+  ],
+  "stream_differences": {
+    "identity-a vs identity-b": {
+      "all_differ": true,
+      "per_stream": {
+        "alliance_partner_defection:1": {
+          "a": 0.3273205713821219,
+          "b": 0.03605568847319818,
+          "differs": true
+        },
+        "compliance_enforcement:eu_battery:1:EU": {
+          "a": 0.9576051121144002,
+          "b": 0.4877818429953731,
+          "differs": true
+        },
+        "event_trigger:1": {
+          "a": 0.9179309683471074,
+          "b": 0.7068217286839419,
+          "differs": true
+        },
+        "sc_event_trigger:1": {
+          "a": 0.7890704660737531,
+          "b": 0.3148460186678823,
+          "differs": true
+        },
+        "tax_audit:1": {
+          "a": 0.861603131378232,
+          "b": 0.02668217196544187,
+          "differs": true
+        }
+      }
+    },
+    "identity-a vs identity-c": {
+      "all_differ": true,
+      "per_stream": {
+        "alliance_partner_defection:1": {
+          "a": 0.3273205713821219,
+          "b": 0.2860373603379551,
+          "differs": true
+        },
+        "compliance_enforcement:eu_battery:1:EU": {
+          "a": 0.9576051121144002,
+          "b": 0.979995452361177,
+          "differs": true
+        },
+        "event_trigger:1": {
+          "a": 0.9179309683471074,
+          "b": 0.025125516443474716,
+          "differs": true
+        },
+        "sc_event_trigger:1": {
+          "a": 0.7890704660737531,
+          "b": 0.5688532922156554,
+          "differs": true
+        },
+        "tax_audit:1": {
+          "a": 0.861603131378232,
+          "b": 0.30967106445454695,
+          "differs": true
+        }
+      }
+    },
+    "identity-b vs identity-c": {
+      "all_differ": true,
+      "per_stream": {
+        "alliance_partner_defection:1": {
+          "a": 0.03605568847319818,
+          "b": 0.2860373603379551,
+          "differs": true
+        },
+        "compliance_enforcement:eu_battery:1:EU": {
+          "a": 0.4877818429953731,
+          "b": 0.979995452361177,
+          "differs": true
+        },
+        "event_trigger:1": {
+          "a": 0.7068217286839419,
+          "b": 0.025125516443474716,
+          "differs": true
+        },
+        "sc_event_trigger:1": {
+          "a": 0.3148460186678823,
+          "b": 0.5688532922156554,
+          "differs": true
+        },
+        "tax_audit:1": {
+          "a": 0.02668217196544187,
+          "b": 0.30967106445454695,
+          "differs": true
+        }
+      }
+    }
+  },
+  "stream_probes": [
+    "event_trigger:1",
+    "sc_event_trigger:1",
+    "compliance_enforcement:eu_battery:1:EU",
+    "tax_audit:1",
+    "alliance_partner_defection:1"
+  ]
+}

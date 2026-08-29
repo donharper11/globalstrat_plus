@@ -123,6 +123,22 @@ def write_candidate(submission, team, genome):
     esg.social_investment = _money(genome['social_investment'])
     esg.save()
 
+    # Financing is optional and absent from GENES on purpose: the preserved
+    # discovery batch was drawn without it, and folding it into the random
+    # genome would make that evidence describe a space it never sampled.
+    # Targeted candidates set these explicitly; everything else leaves the
+    # zeros the baseline writes.
+    financing_keys = ('new_debt', 'new_equity', 'dividend_per_share')
+    if any(key in genome for key in financing_keys):
+        from core.models.decisions import DecisionFinancing
+        financing = DecisionFinancing.objects.filter(
+            submission=submission).first()
+        if financing is not None:
+            for key in financing_keys:
+                if key in genome:
+                    setattr(financing, key, _money(genome[key]))
+            financing.save()
+
 
 class IllegalCandidate(Exception):
     """A candidate wrote something the decision rules forbid.
