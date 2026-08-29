@@ -21,8 +21,15 @@ from django.core.management import call_command
 from django.test import Client
 
 FIELD_PATH = 'trade_finance.buyer_payment_instrument'
+COMPANION_PATH = 'trade_finance.lc_doc_prep_investment'
 PROTECTED_KEY = 'buyer_payment_instrument'
-PROTECTED_VALUE = 'LOCKED-INSTRUMENT-SENTINEL'
+# The value must be a real instrument id: the write serializer validates it
+# against the scenario catalogue, so an invented sentinel is rejected before
+# the disclosure question is ever reached. That has a consequence the probe
+# has to respect -- the catalogue endpoint lists every instrument id by
+# design, so finding the id there is not the team's decision leaking. Team
+# surfaces are therefore searched for the id *inside a trade_finance decision
+# row*, and the catalogue is reported as its own separate question.
 
 
 def run():
@@ -68,7 +75,7 @@ def run():
     report = {
         'field_path': FIELD_PATH,
         'protected_key': PROTECTED_KEY,
-        'sentinel': PROTECTED_VALUE,
+        'sentinel': None,
         'game': game.id,
         'team': team.id,
         'student': student.user_id,
@@ -97,6 +104,17 @@ def run():
         'reached_the_application': control.status_code == 200,
     }
 
+    from core.models import TradeFinanceInstrument
+    instrument = (TradeFinanceInstrument.objects
+                  .filter(scenario=game.scenario).order_by('id').first())
+    if instrument is None:
+        report['refused'] = ('the scenario declares no trade finance '
+                             'instruments, so the gated field has no legal '
+                             'value and the probe cannot run')
+        return report
+    protected_value = instrument.instrument_id
+    report['sentinel'] = protected_value
+
     rnd = Round.objects.get(game=game, round_number=game.current_round)
     segment = SegmentDefinition.objects.filter(
         scenario=game.scenario, segment_type='customer').order_by('id').first()
@@ -111,7 +129,7 @@ def run():
         tf_url,
         data=json.dumps({'trade_finance': [{
             'segment': segment.id, 'market': market.id,
-            'buyer_payment_instrument': PROTECTED_VALUE,
+            'buyer_payment_instrument': protected_value,
             'lc_doc_prep_investment': 'standard'}]}),
         content_type='application/json')
     record('write_before_unlock_is_refused',
@@ -121,20 +139,25 @@ def run():
     # --- 2. the reachable path that persists a locked value ---------------
     # An instructor lowers the unlock round for their class, the team writes
     # the field legally, and the instructor restores the schedule.
-    override = ClassProgressiveDisclosureOverride.objects.create(
-        game=game, field_path=FIELD_PATH, override_unlock_round=1,
-        created_by=instructor)
+    # Both gated fields on this row have to be unlocked, or the write is
+    # refused for the companion field and says nothing about this one.
+    overrides = [
+        ClassProgressiveDisclosureOverride.objects.create(
+            game=game, field_path=path, override_unlock_round=1,
+            created_by=instructor)
+        for path in (FIELD_PATH, COMPANION_PATH)]
     allowed_write = client.post(
         tf_url,
         data=json.dumps({'trade_finance': [{
             'segment': segment.id, 'market': market.id,
-            'buyer_payment_instrument': PROTECTED_VALUE,
+            'buyer_payment_instrument': protected_value,
             'lc_doc_prep_investment': 'standard'}]}),
         content_type='application/json')
     record('write_while_overridden_is_accepted',
            status=allowed_write.status_code,
            accepted=allowed_write.status_code < 400)
-    override.delete()
+    for entry in overrides:
+        entry.delete()
     record('override_removed_field_is_locked_again',
            effective_unlock=get_effective_unlock_round(game, FIELD_PATH),
            current_round=game.current_round)
@@ -156,22 +179,55 @@ def run():
         'decision_summary': f'{base}/decisions/round/{rnd.round_number}/summary/',
         'decision_submission': f'{base}/decisions/round/{rnd.round_number}/',
     }
+    def decision_rows_expose(payload):
+        """Does this payload carry the team's own locked decision value?"""
+        found = []
+
+        def walk(node):
+            if isinstance(node, dict):
+                if node.get(PROTECTED_KEY) == protected_value:
+                    found.append(node)
+                for value in node.values():
+                    walk(value)
+            elif isinstance(node, list):
+                for item in node:
+                    walk(item)
+        walk(payload)
+        return found
+
     exposures = {}
     for name, url in surfaces.items():
         response = client.get(url)
         text = response.content.decode('utf-8', 'replace')
+        try:
+            payload = json.loads(text)
+        except ValueError:
+            payload = None
+        rows = decision_rows_expose(payload) if payload is not None else []
         exposures[name] = {
             'url': url,
             'status': response.status_code,
-            'sentinel_in_body': PROTECTED_VALUE in text,
-            'protected_key_in_body': PROTECTED_KEY in text,
+            'decision_row_exposes_value': bool(rows),
+            'value_appears_anywhere': protected_value in text,
+            'is_catalogue_surface': name == 'scenario_instrument_catalogue',
         }
         record(f'read_before_unlock:{name}',
                status=response.status_code,
-               leaks_value=PROTECTED_VALUE in text)
+               leaks_decision=bool(rows))
     report['read_surfaces_before_unlock'] = exposures
     report['leaking_surfaces'] = [
-        name for name, e in exposures.items() if e['sentinel_in_body']]
+        name for name, e in exposures.items()
+        if e['decision_row_exposes_value']]
+    catalogue = exposures.get('scenario_instrument_catalogue', {})
+    report['catalogue_lists_gated_mechanic_before_unlock'] = {
+        'status': catalogue.get('status'),
+        'lists_instruments': catalogue.get('value_appears_anywhere'),
+        'note': ('the catalogue endpoint carries no permission class beyond '
+                 'authentication and no round gate; it lists every instrument '
+                 'id at round 1 for a mechanic authored to unlock at round 4. '
+                 'Reported as its own question rather than as the team '
+                 'decision leaking.'),
+    }
 
     # --- 4. another class's disclosure state must not unlock this one -----
     foreign = None
@@ -194,12 +250,13 @@ def run():
         game=game, field_path=FIELD_PATH,
         override_unlock_round=game.current_round, created_by=instructor)
     after = client.get(tf_url)
-    record('read_after_unlock',
-           status=after.status_code,
-           value_present=PROTECTED_VALUE in after.content.decode(
-               'utf-8', 'replace'))
-    report['readable_after_unlock'] = PROTECTED_VALUE in after.content.decode(
-        'utf-8', 'replace')
+    record('read_after_unlock', status=after.status_code)
+    try:
+        after_payload = json.loads(after.content.decode('utf-8', 'replace'))
+    except ValueError:
+        after_payload = None
+    report['readable_after_unlock'] = bool(
+        decision_rows_expose(after_payload) if after_payload else False)
     advanced.delete()
 
     report['probe_is_valid'] = bool(

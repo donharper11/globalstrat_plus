@@ -1,49 +1,55 @@
 {
   "authored_unlock_round": 4,
   "class_isolation_holds": true,
-  "code_revision": "fa0b993bc7f9ae4027da06e9e08509301591e678",
+  "code_revision": "45679f2cdb4835881aa60bcf97f030e80033da4e",
   "current_round": 1,
-  "elapsed_seconds": 0.2,
+  "elapsed_seconds": 0.3,
   "field_path": "trade_finance.buyer_payment_instrument",
   "game": 1,
   "leaking_surfaces": [],
+  "positive_control": {
+    "reached_the_application": true,
+    "status": 200,
+    "url": "/api/games/1/teams/1/decisions/round/1/summary/"
+  },
+  "probe_is_valid": false,
   "protected_key": "buyer_payment_instrument",
   "read_gate_holds": true,
   "read_surfaces_before_unlock": {
     "decision_submission": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/games/1/teams/1/decisions/round/1/"
     },
     "decision_summary": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/games/1/teams/1/decisions/round/1/summary/"
     },
     "hedge_positions": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/games/1/teams/1/sc/hedge-positions/"
     },
     "scenario_instrument_catalogue": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/scenarios/1/trade-finance-instruments/"
     },
     "team_trade_finance_direct_round_object": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/games/1/teams/1/sc/round/1/trade-finance/"
     },
     "team_trade_finance_list": {
       "protected_key_in_body": false,
       "sentinel_in_body": false,
-      "status": 400,
+      "status": 200,
       "url": "/api/games/1/teams/1/sc/round/1/trade-finance/"
     }
   },
@@ -72,32 +78,32 @@
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:team_trade_finance_list"
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:team_trade_finance_direct_round_object"
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:hedge_positions"
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:scenario_instrument_catalogue"
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:decision_summary"
     },
     {
       "leaks_value": false,
-      "status": 400,
+      "status": 200,
       "step": "read_before_unlock:decision_submission"
     },
     {
@@ -107,7 +113,7 @@
       "step": "foreign_override_does_not_unlock"
     },
     {
-      "status": 400,
+      "status": 200,
       "step": "read_after_unlock",
       "value_present": false
     }
