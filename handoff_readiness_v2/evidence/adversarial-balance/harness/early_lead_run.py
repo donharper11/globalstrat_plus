@@ -53,6 +53,19 @@ def main():
         if bad:
             raise SystemExit(f'inventory does not verify: {bad}')
 
+        if not report['lead_was_established']:
+            raise SystemExit(
+                'REFUSED: the front-loaded strategy never established a lead, '
+                'so there is no lock-in to test. A probe that cannot get '
+                'ahead cannot say whether being ahead is self-sustaining.')
+
+        (EVIDENCE / 'early-lead-probe.json').write_text(
+            json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')
+        listed = checksums.regenerate(EVIDENCE)
+        bad = checksums.verify(EVIDENCE)
+        if bad:
+            raise SystemExit(f'inventory does not verify: {bad}')
+
         if not report['all_mutations_reached_their_row']:
             missed = [n for n, a in report['arms'].items()
                       if 'proof' in a and a['proof']
