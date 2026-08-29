@@ -19,13 +19,40 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-020 | Engine / equity issuance | **P0** | GSP-CRV2-06 (raised) | `generate_financial_statements` prices newly issued shares with `share_price_est = total_equity / shares_outstanding` at `financials.py:212`, but `total_equity` is not assigned until line 262 — fifty lines later, inside the same per-team loop. For the **first** team in the loop that raises equity this is `UnboundLocalError`, and because the call sits inside `_run_phase_1`, **the whole round fails to resolve for every team**. For any **later** team it silently holds the *previous team's* closing equity, so one company's shares are priced off another company's balance sheet and the dilution written to the leaderboard is wrong. Raising equity is an ordinary legal decision exposed by `DecisionFinancing.new_equity`. | Found by Stage 2 screening: setting `financing.new_equity` to its funded maximum crashed resolution. Nothing in the repository exercises `new_equity > 0` — every test and seed command sets it to `0`, which is why it survived. Inherited from the baseline snapshot `2509518`, so it predates globalstrat+. | Open — logged before repair |
+| V2-020 | Engine / equity issuance | **P0** | GSP-CRV2-06 (raised) | `generate_financial_statements` prices newly issued shares with `share_price_est = total_equity / shares_outstanding` at `financials.py:212`, but `total_equity` is not assigned until line 262 — fifty lines later, inside the same per-team loop. For the **first** team in the loop that raises equity this is `UnboundLocalError`, and because the call sits inside `_run_phase_1`, **the whole round fails to resolve for every team**. For any **later** team it silently holds the *previous team's* closing equity, so one company's shares are priced off another company's balance sheet and the dilution written to the leaderboard is wrong. Raising equity is an ordinary legal decision exposed by `DecisionFinancing.new_equity`. | Found by Stage 2 screening: setting `financing.new_equity` to its funded maximum crashed resolution. Nothing in the repository exercises `new_equity > 0` — every test and seed command sets it to `0`, which is why it survived. Inherited from the baseline snapshot `2509518`, so it predates globalstrat+. | **Closed** at `c781c8f` under an adopted rules disposition — see the closure entry below |
 
-The pricing basis is a rules-visible choice, not just a missing assignment:
-closing equity depends on the equity being raised, so it cannot price the raise.
-The repair uses the equity the team held when the round opened, which is the
-only non-circular figure available at that point. Flagged for the rules owner
-rather than decided silently.
+### V2-020 rules disposition — adopted
+
+**Adopted formula:**
+
+```
+issuance_price = opening_total_equity / opening_shares_outstanding
+```
+
+Book equity per share, measured before the raise. Adopted because it preserves
+the apparent intent of the defective expression, is available before the raise,
+is specific to the issuing team, is deterministic, avoids pricing a raise with
+the equity that raise creates, and is the smallest change from what was there.
+
+**Considered and not adopted:** the latest price from `SharePriceHistory`. That
+would move the model from book-value issuance to market-price issuance and
+needs policy for missing and stale prices — a larger rules change than the
+defect required.
+
+**Verification at `c781c8f`** (`core/tests/test_equity_issuance.py`, 7 tests):
+
+| Requirement | Test |
+|---|---|
+| First team raising equity resolves | `test_the_first_team_raising_equity_does_not_fail_the_round` — every team is still scored |
+| Teams price from their own opening equity, never another's | `test_shares_are_priced_off_the_issuing_team_s_own_equity` |
+| Equal equity-per-share ratios price identically | `test_equal_book_value_per_share_gives_equal_issuance_price` — $1m/1,000 shares and $10m/10,000 shares issue the same count |
+| Different ratios give the counts the rule requires | `test_different_ratios_give_the_share_counts_the_rule_requires` — exact counts derived from the formula, and a fiftieth of the price buys fifty times the shares |
+| No-raise behaviour unchanged | `test_a_team_that_raises_nothing_is_unchanged` |
+| Replay inputs carry every opening value used | `test_the_manifest_captures_every_opening_value_the_price_uses` — `total_equity` and `shares_outstanding` are both in the input manifest's `team` section |
+| The defect's shape cannot return | `test_equity_is_not_priced_from_a_figure_computed_later` |
+
+Three of these fail against the unrepaired engine; the no-raise control passes
+either way, which is what makes it a control.
 
 ## New findings raised by GSP-CRV2-06
 

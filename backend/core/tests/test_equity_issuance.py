@@ -1,4 +1,13 @@
-"""V2-020 — raising equity must resolve, and price off the right balance sheet.
+"""V2-020 — the adopted equity-issuance rule, and the defect it replaced.
+
+**Adopted rule:** `issuance_price = opening_total_equity / opening_shares_outstanding`
+— book equity per share, measured before the raise.
+
+It keeps the apparent intent of the original expression, is available before the
+raise, is specific to the issuing team, is deterministic, and does not price a
+raise with the equity that raise creates. Pricing from `SharePriceHistory`
+instead would move the model from book-value to market-price issuance and needs
+policy for missing and stale prices; that was considered and not adopted.
 
 `generate_financial_statements` priced new shares with `total_equity`, which is
 not assigned until fifty lines later in the same per-team loop. The first team
@@ -51,6 +60,12 @@ class EquityIssuanceTests(TestCase):
             game=self.game, name='Second', firm_starter_profile=profile,
             performance_index=100, cash_on_hand=D('50000000'),
             total_equity=D('50000000'), shares_outstanding=1000)
+        # Same book value per share as `First` ($1,000), reached with ten times
+        # the equity over ten times the shares.
+        self.equal_ratio = Team.objects.create(
+            game=self.game, name='EqualRatio', firm_starter_profile=profile,
+            performance_index=100, cash_on_hand=D('10000000'),
+            total_equity=D('10000000'), shares_outstanding=10000)
 
     def submit(self, team, new_equity=D('0')):
         sub, _ = DecisionSubmission.objects.get_or_create(
@@ -76,12 +91,14 @@ class EquityIssuanceTests(TestCase):
         """The crash: it took the whole game down, not just one team."""
         self.submit(self.first, new_equity=D('100000'))
         self.submit(self.second)
+        self.submit(self.equal_ratio)
         self.resolve()  # must not raise
 
         from core.models import RoundResultFinancials
         self.assertEqual(
             RoundResultFinancials.objects.filter(
-                game=self.game, round_number=1).count(), 2,
+                game=self.game, round_number=1).count(),
+            Team.objects.filter(game=self.game).count(),
             'every team must still be scored')
 
     def test_shares_are_priced_off_the_issuing_team_s_own_equity(self):
@@ -95,6 +112,7 @@ class EquityIssuanceTests(TestCase):
         raise_amount = D('1000000')
         self.submit(self.first, new_equity=raise_amount)
         self.submit(self.second, new_equity=raise_amount)
+        self.submit(self.equal_ratio)
         self.resolve()
 
         self.first.refresh_from_db()
@@ -113,6 +131,7 @@ class EquityIssuanceTests(TestCase):
         """The control."""
         self.submit(self.first)
         self.submit(self.second)
+        self.submit(self.equal_ratio)
         self.resolve()
         self.first.refresh_from_db()
         self.assertEqual(self.first.shares_outstanding, 1000)
@@ -131,3 +150,75 @@ class EquityIssuanceTests(TestCase):
         self.assertNotIn('total_equity /', pricing,
                          'share pricing reads the closing equity again')
         self.assertIn('opening_equity', pricing)
+
+    # -- the adopted rule, stated as arithmetic -----------------------------
+
+    def expected_shares(self, team, raise_amount):
+        """What the adopted formula requires, computed from the same inputs.
+
+        Deliberately derived here rather than read back from the engine: a test
+        that asks the engine what it did cannot say whether that was right.
+        """
+        from core.engine.financials import _calculate_subscription_rate
+        rate = _calculate_subscription_rate(team, self.game, 1)
+        actual = (raise_amount * D(str(rate))).quantize(D('0.01'))
+        price = D(team.total_equity) / max(D(str(team.shares_outstanding)), D('1'))
+        return int(actual / max(price, D('1')))
+
+    def test_equal_book_value_per_share_gives_equal_issuance_price(self):
+        """`First` and `EqualRatio` both open at $1,000 of equity per share —
+        one with $1m over 1,000 shares, the other $10m over 10,000. The same
+        raise must therefore issue the same number of shares to both."""
+        raise_amount = D('1000000')
+        self.submit(self.first, new_equity=raise_amount)
+        self.submit(self.second)
+        self.submit(self.equal_ratio, new_equity=raise_amount)
+        self.resolve()
+
+        self.first.refresh_from_db()
+        self.equal_ratio.refresh_from_db()
+        first_new = self.first.shares_outstanding - 1000
+        equal_new = self.equal_ratio.shares_outstanding - 10000
+        self.assertEqual(first_new, equal_new,
+                         'equal book value per share must price identically')
+        self.assertGreater(first_new, 0)
+
+    def test_different_ratios_give_the_share_counts_the_rule_requires(self):
+        """Not merely "different" — the exact counts the adopted formula gives.
+
+        `First` opens at $1,000 a share and `Second` at $50,000, so the same
+        money must buy fifty times as many shares at `First`.
+        """
+        raise_amount = D('1000000')
+        expected_first = self.expected_shares(self.first, raise_amount)
+        expected_second = self.expected_shares(self.second, raise_amount)
+
+        self.submit(self.first, new_equity=raise_amount)
+        self.submit(self.second, new_equity=raise_amount)
+        self.submit(self.equal_ratio)
+        self.resolve()
+
+        self.first.refresh_from_db()
+        self.second.refresh_from_db()
+        self.assertEqual(self.first.shares_outstanding - 1000, expected_first)
+        self.assertEqual(self.second.shares_outstanding - 1000, expected_second)
+        self.assertEqual(expected_first, expected_second * 50,
+                         'a fiftieth of the price must buy fifty times the shares')
+
+    def test_the_manifest_captures_every_opening_value_the_price_uses(self):
+        """The rule is only replayable if its inputs are in the envelope.
+
+        `opening_total_equity` and `opening_shares_outstanding` are both read
+        from `Team` before the raise. A replay that did not carry them could
+        not reproduce the issuance, and GSP-CRV2-01's guarantee would be
+        narrower than it claims.
+        """
+        from core.services.resolution_manifest import build_input_manifest
+        body, _snapshot = build_input_manifest(self.game, self.round)
+
+        sections = body.get('sections', {})
+        self.assertIn('team', sections, 'the input manifest has no team section')
+        team_section = sections['team']
+        rendered = str(team_section)
+        self.assertIn('total_equity', rendered)
+        self.assertIn('shares_outstanding', rendered)
