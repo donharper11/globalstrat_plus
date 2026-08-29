@@ -263,6 +263,30 @@ instrument catalogue, and this scenario declares no instruments, so the field
 has no legal value. The probe refused rather than reporting a vacuous pass, and
 the field was replaced with `inventory.buffer_days`.
 
+| V2-027 | Balance / early-lead lock-in | **P1** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Open — stops the handoff.** |
+
+**The mechanism, from both directions.** Investment costs index in the round it
+is made, while the adopter base it buys persists and compounds. The subject's
+margin *rises* when it stops spending, because it keeps the asset and drops the
+cost. The challenger's index *falls* when it starts spending, for the same
+reason, and the base it buys is smaller because the subject already holds the
+adopters. Early investment is rewarded and identical later investment is
+punished, which is what makes the lead unreachable rather than merely large.
+
+**Bounds, so this is not read as more than it is.** One counter-strategy was
+tested. Front-loading later fails to close the gap; that is not a proof that no
+legal strategy closes it, and none is claimed. One scenario, one fixture
+identity, a four-team field, six rounds, and a two-round front-load: other
+schedules, fields and lengths are unmeasured. What is established is that the
+one obvious counter -- do what the leader did -- makes the challenger worse off
+and leaves the gap seven times wider than when it started.
+
+**The tournament could not have found this.** Its candidates were single
+policies applied every round, so no candidate ever built a lead and then
+stopped working to see whether the lead held itself up. "No candidate exceeded
+competent play" and "a lead is unassailable once established" are compatible,
+and the second is the one this probe was asked to test.
+
 ## New findings raised by the GSP-CRV2-06 Stage 3 tournament
 
 Measured by the bounded adversarial tournament at `stage3-tournament.json`:
