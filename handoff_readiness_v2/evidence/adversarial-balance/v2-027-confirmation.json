@@ -1,0 +1,793 @@
+{
+  "absolute_bound": {
+    "caveat": "assumes composite 1.0 -- market, capability, financial, stakeholder and resilience all at maximum in the same round. Market and financial are scored relative to the highest revenue in the field, so maximising them requires already out-earning the leader. This is the formula ceiling, not a plan.",
+    "max_advantage_per_round_over_this_leader": "8.6500",
+    "max_index_change_per_round": "10.0",
+    "rounds_to_close": "-1.66"
+  },
+  "any_strategy_closed_the_gap": [
+    "max_capability",
+    "price_volume_capture",
+    "financing_funded_scale",
+    "combined_best"
+  ],
+  "attainable_bound": {
+    "best_composite_advantage_per_round": "0.4053",
+    "by_strategy": {
+      "combined_best": "0.3593",
+      "financing_funded_scale": "0.4053",
+      "max_capability": "0.3602",
+      "price_volume_capture": "0.3558"
+    },
+    "index_advantage_per_round": "8.1060",
+    "rounds_to_close": "-1.77"
+  },
+  "code_revision": "8556d9f66f83d272979e79310e2935d1b7e86e81",
+  "component_weights": {
+    "capability": "0.25",
+    "financial": "0.15",
+    "market": "0.30",
+    "resilience": "0.15",
+    "stakeholder": "0.15"
+  },
+  "index_rule": "index_change = (composite - 0.5) * sensitivity; new_index = max(0, previous_index + index_change). The index integrates with no decay term, so a gap persists unless the trailing team scores a higher composite than the leader.",
+  "leader_composite_while_baseline": "0.5675",
+  "measured_gap_at_end_of_control": "-14.32",
+  "persistence_decomposition": {
+    "accumulated_index_gap": "-14.32",
+    "challenger_adopters": "120000.00",
+    "current_round_composite_gap": "-0.0388",
+    "current_round_index_effect": "-0.7760",
+    "leader_adopters": "128965.70",
+    "reading": "the share of the standing gap explained by current-round performance is the composite gap times sensitivity; the remainder is carried by the accumulated index, which has no decay term, and by the adopter stock bought earlier."
+  },
+  "runs": {
+    "combined_best": {
+      "best_challenger_composite_while_countering": "0.6461",
+      "best_composite_advantage_per_round": "0.3593",
+      "closed_materially": true,
+      "elapsed_seconds": 38.9,
+      "gap_at_end": "-17.01",
+      "gap_change": "-18.63",
+      "gap_closed": true,
+      "gap_when_countering_began": "1.62",
+      "identity_failures": [],
+      "scenario": "Consumer Electronics 2026",
+      "series": [
+        {
+          "challenger": {
+            "cash_closing": "23146886.00",
+            "composite": "0.6384",
+            "cumulative_adopters": "20000.00",
+            "index": "57.77",
+            "index_change": "2.77",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0023",
+          "index_gap": "-0.05",
+          "leader": {
+            "cash_closing": "13513336.31",
+            "composite": "0.6361",
+            "cumulative_adopters": "48965.70",
+            "index": "57.72",
+            "index_change": "2.72",
+            "total_revenue": "9793140.00"
+          },
+          "phase": "leader front-loading",
+          "round": 1
+        },
+        {
+          "challenger": {
+            "cash_closing": "-2580010.00",
+            "composite": "0.5787",
+            "cumulative_adopters": "40000.00",
+            "index": "59.34",
+            "index_change": "1.57",
+            "total_revenue": "6787200.00"
+          },
+          "composite_gap": "0.0833",
+          "index_gap": "1.62",
+          "leader": {
+            "cash_closing": "-14700745.69",
+            "composite": "0.6620",
+            "cumulative_adopters": "88965.70",
+            "index": "60.96",
+            "index_change": "3.24",
+            "total_revenue": "13606442.62"
+          },
+          "phase": "leader front-loading",
+          "round": 2
+        },
+        {
+          "challenger": {
+            "cash_closing": "-39826950.00",
+            "composite": "0.6461",
+            "cumulative_adopters": "100000.00",
+            "index": "62.26",
+            "index_change": "2.92",
+            "total_revenue": "14112000.00"
+          },
+          "composite_gap": "-0.0880",
+          "index_gap": "-0.14",
+          "leader": {
+            "cash_closing": "-38451665.69",
+            "composite": "0.5581",
+            "cumulative_adopters": "108965.70",
+            "index": "62.12",
+            "index_change": "1.16",
+            "total_revenue": "6720000.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 3
+        },
+        {
+          "challenger": {
+            "cash_closing": "-75194926.40",
+            "composite": "0.6093",
+            "cumulative_adopters": "160000.00",
+            "index": "64.45",
+            "index_change": "2.19",
+            "total_revenue": "13970880.00"
+          },
+          "composite_gap": "-0.3593",
+          "index_gap": "-7.33",
+          "leader": {
+            "cash_closing": "-68719265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "57.12",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 4
+        },
+        {
+          "challenger": {
+            "cash_closing": "-110431016.40",
+            "composite": "0.6091",
+            "cumulative_adopters": "220000.00",
+            "index": "66.63",
+            "index_change": "2.18",
+            "total_revenue": "14112000.00"
+          },
+          "composite_gap": "-0.3591",
+          "index_gap": "-14.51",
+          "leader": {
+            "cash_closing": "-99829265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "52.12",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 5
+        },
+        {
+          "challenger": {
+            "cash_closing": "-145393333.60",
+            "composite": "0.6093",
+            "cumulative_adopters": "280000.00",
+            "index": "68.82",
+            "index_change": "2.19",
+            "total_revenue": "14394240.00"
+          },
+          "composite_gap": "-0.1246",
+          "index_gap": "-17.01",
+          "leader": {
+            "cash_closing": "-126192817.69",
+            "composite": "0.4847",
+            "cumulative_adopters": "128965.70",
+            "index": "51.81",
+            "index_change": "-0.31",
+            "total_revenue": "6854400.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 6
+        }
+      ],
+      "strategy": "combined_best",
+      "why": "the strongest combined legal plan: capability, capture and financing together"
+    },
+    "financing_funded_scale": {
+      "best_challenger_composite_while_countering": "0.6659",
+      "best_composite_advantage_per_round": "0.4053",
+      "closed_materially": true,
+      "elapsed_seconds": 38.2,
+      "gap_at_end": "-21.40",
+      "gap_change": "-23.02",
+      "gap_closed": true,
+      "gap_when_countering_began": "1.62",
+      "identity_failures": [],
+      "scenario": "Consumer Electronics 2026",
+      "series": [
+        {
+          "challenger": {
+            "cash_closing": "23146886.00",
+            "composite": "0.6384",
+            "cumulative_adopters": "20000.00",
+            "index": "57.77",
+            "index_change": "2.77",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0023",
+          "index_gap": "-0.05",
+          "leader": {
+            "cash_closing": "13513336.31",
+            "composite": "0.6361",
+            "cumulative_adopters": "48965.70",
+            "index": "57.72",
+            "index_change": "2.72",
+            "total_revenue": "9793140.00"
+          },
+          "phase": "leader front-loading",
+          "round": 1
+        },
+        {
+          "challenger": {
+            "cash_closing": "-2580010.00",
+            "composite": "0.5787",
+            "cumulative_adopters": "40000.00",
+            "index": "59.34",
+            "index_change": "1.57",
+            "total_revenue": "6787200.00"
+          },
+          "composite_gap": "0.0833",
+          "index_gap": "1.62",
+          "leader": {
+            "cash_closing": "-14700745.69",
+            "composite": "0.6620",
+            "cumulative_adopters": "88965.70",
+            "index": "60.96",
+            "index_change": "3.24",
+            "total_revenue": "13606442.62"
+          },
+          "phase": "leader front-loading",
+          "round": 2
+        },
+        {
+          "challenger": {
+            "cash_closing": "-22716670.00",
+            "composite": "0.6659",
+            "cumulative_adopters": "100000.00",
+            "index": "62.66",
+            "index_change": "3.32",
+            "total_revenue": "20160000.00"
+          },
+          "composite_gap": "-0.1482",
+          "index_gap": "-1.35",
+          "leader": {
+            "cash_closing": "-38451665.69",
+            "composite": "0.5177",
+            "cumulative_adopters": "108965.70",
+            "index": "61.31",
+            "index_change": "0.35",
+            "total_revenue": "6720000.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 3
+        },
+        {
+          "challenger": {
+            "cash_closing": "-41713781.60",
+            "composite": "0.6553",
+            "cumulative_adopters": "160000.00",
+            "index": "65.77",
+            "index_change": "3.11",
+            "total_revenue": "19958400.00"
+          },
+          "composite_gap": "-0.4053",
+          "index_gap": "-9.46",
+          "leader": {
+            "cash_closing": "-68719265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "56.31",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 4
+        },
+        {
+          "challenger": {
+            "cash_closing": "-60575851.60",
+            "composite": "0.6531",
+            "cumulative_adopters": "220000.00",
+            "index": "68.83",
+            "index_change": "3.06",
+            "total_revenue": "20160000.00"
+          },
+          "composite_gap": "-0.4031",
+          "index_gap": "-17.52",
+          "leader": {
+            "cash_closing": "-99829265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "51.31",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 5
+        },
+        {
+          "challenger": {
+            "cash_closing": "-79125038.40",
+            "composite": "0.6417",
+            "cumulative_adopters": "280000.00",
+            "index": "71.66",
+            "index_change": "2.83",
+            "total_revenue": "20563200.00"
+          },
+          "composite_gap": "-0.1942",
+          "index_gap": "-21.40",
+          "leader": {
+            "cash_closing": "-126192817.69",
+            "composite": "0.4475",
+            "cumulative_adopters": "128965.70",
+            "index": "50.26",
+            "index_change": "-1.05",
+            "total_revenue": "6854400.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 6
+        }
+      ],
+      "strategy": "financing_funded_scale",
+      "why": "fund the scale-up rather than pay for it out of operations: the largest legal equity raise under V2-024 plus debt, converted into volume and promotion"
+    },
+    "max_capability": {
+      "best_challenger_composite_while_countering": "0.6450",
+      "best_composite_advantage_per_round": "0.3602",
+      "closed_materially": true,
+      "elapsed_seconds": 41.0,
+      "gap_at_end": "-13.47",
+      "gap_change": "-15.09",
+      "gap_closed": true,
+      "gap_when_countering_began": "1.62",
+      "identity_failures": [],
+      "scenario": "Consumer Electronics 2026",
+      "series": [
+        {
+          "challenger": {
+            "cash_closing": "23146886.00",
+            "composite": "0.6384",
+            "cumulative_adopters": "20000.00",
+            "index": "57.77",
+            "index_change": "2.77",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0023",
+          "index_gap": "-0.05",
+          "leader": {
+            "cash_closing": "13513336.31",
+            "composite": "0.6361",
+            "cumulative_adopters": "48965.70",
+            "index": "57.72",
+            "index_change": "2.72",
+            "total_revenue": "9793140.00"
+          },
+          "phase": "leader front-loading",
+          "round": 1
+        },
+        {
+          "challenger": {
+            "cash_closing": "-2580010.00",
+            "composite": "0.5787",
+            "cumulative_adopters": "40000.00",
+            "index": "59.34",
+            "index_change": "1.57",
+            "total_revenue": "6787200.00"
+          },
+          "composite_gap": "0.0833",
+          "index_gap": "1.62",
+          "leader": {
+            "cash_closing": "-14700745.69",
+            "composite": "0.6620",
+            "cumulative_adopters": "88965.70",
+            "index": "60.96",
+            "index_change": "3.24",
+            "total_revenue": "13606442.62"
+          },
+          "phase": "leader front-loading",
+          "round": 2
+        },
+        {
+          "challenger": {
+            "cash_closing": "-30912790.00",
+            "composite": "0.6450",
+            "cumulative_adopters": "60000.00",
+            "index": "62.24",
+            "index_change": "2.90",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0007",
+          "index_gap": "1.61",
+          "leader": {
+            "cash_closing": "-38451665.69",
+            "composite": "0.6443",
+            "cumulative_adopters": "108965.70",
+            "index": "63.85",
+            "index_change": "2.89",
+            "total_revenue": "6720000.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 3
+        },
+        {
+          "challenger": {
+            "cash_closing": "-58862354.00",
+            "composite": "0.6097",
+            "cumulative_adopters": "80000.00",
+            "index": "64.43",
+            "index_change": "2.19",
+            "total_revenue": "6652800.00"
+          },
+          "composite_gap": "-0.3597",
+          "index_gap": "-5.58",
+          "leader": {
+            "cash_closing": "-68719265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "58.85",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 4
+        },
+        {
+          "challenger": {
+            "cash_closing": "-86682734.00",
+            "composite": "0.6102",
+            "cumulative_adopters": "100000.00",
+            "index": "66.63",
+            "index_change": "2.20",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.3602",
+          "index_gap": "-12.78",
+          "leader": {
+            "cash_closing": "-99829265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "53.85",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 5
+        },
+        {
+          "challenger": {
+            "cash_closing": "-114372746.00",
+            "composite": "0.6057",
+            "cumulative_adopters": "120000.00",
+            "index": "68.74",
+            "index_change": "2.11",
+            "total_revenue": "6854400.00"
+          },
+          "composite_gap": "-0.0346",
+          "index_gap": "-13.47",
+          "leader": {
+            "cash_closing": "-126192817.69",
+            "composite": "0.5711",
+            "cumulative_adopters": "128965.70",
+            "index": "55.27",
+            "index_change": "1.42",
+            "total_revenue": "6854400.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 6
+        }
+      ],
+      "strategy": "max_capability",
+      "why": "maximum viable R&D and capability: spend at the scenario target, staff every pool at its optimum, and take the product and strategy actions the capability component rewards"
+    },
+    "none": {
+      "best_challenger_composite_while_countering": "0.6457",
+      "best_composite_advantage_per_round": "0.3863",
+      "closed_materially": true,
+      "elapsed_seconds": 40.2,
+      "gap_at_end": "-14.32",
+      "gap_change": "-15.94",
+      "gap_closed": true,
+      "gap_when_countering_began": "1.62",
+      "identity_failures": [],
+      "scenario": "Consumer Electronics 2026",
+      "series": [
+        {
+          "challenger": {
+            "cash_closing": "23146886.00",
+            "composite": "0.6384",
+            "cumulative_adopters": "20000.00",
+            "index": "57.77",
+            "index_change": "2.77",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0023",
+          "index_gap": "-0.05",
+          "leader": {
+            "cash_closing": "13513336.31",
+            "composite": "0.6361",
+            "cumulative_adopters": "48965.70",
+            "index": "57.72",
+            "index_change": "2.72",
+            "total_revenue": "9793140.00"
+          },
+          "phase": "leader front-loading",
+          "round": 1
+        },
+        {
+          "challenger": {
+            "cash_closing": "-2580010.00",
+            "composite": "0.5787",
+            "cumulative_adopters": "40000.00",
+            "index": "59.34",
+            "index_change": "1.57",
+            "total_revenue": "6787200.00"
+          },
+          "composite_gap": "0.0833",
+          "index_gap": "1.62",
+          "leader": {
+            "cash_closing": "-14700745.69",
+            "composite": "0.6620",
+            "cumulative_adopters": "88965.70",
+            "index": "60.96",
+            "index_change": "3.24",
+            "total_revenue": "13606442.62"
+          },
+          "phase": "leader front-loading",
+          "round": 2
+        },
+        {
+          "challenger": {
+            "cash_closing": "-27879230.00",
+            "composite": "0.6457",
+            "cumulative_adopters": "60000.00",
+            "index": "62.25",
+            "index_change": "2.91",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0079",
+          "index_gap": "1.47",
+          "leader": {
+            "cash_closing": "-38451665.69",
+            "composite": "0.6378",
+            "cumulative_adopters": "108965.70",
+            "index": "63.72",
+            "index_change": "2.76",
+            "total_revenue": "6720000.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 3
+        },
+        {
+          "challenger": {
+            "cash_closing": "-53561934.00",
+            "composite": "0.6363",
+            "cumulative_adopters": "80000.00",
+            "index": "64.98",
+            "index_change": "2.73",
+            "total_revenue": "6652800.00"
+          },
+          "composite_gap": "-0.3863",
+          "index_gap": "-6.26",
+          "leader": {
+            "cash_closing": "-68719265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "58.72",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 4
+        },
+        {
+          "challenger": {
+            "cash_closing": "-79113454.00",
+            "composite": "0.6141",
+            "cumulative_adopters": "100000.00",
+            "index": "67.26",
+            "index_change": "2.28",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.3641",
+          "index_gap": "-13.54",
+          "leader": {
+            "cash_closing": "-99829265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "53.72",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 5
+        },
+        {
+          "challenger": {
+            "cash_closing": "-104534606.00",
+            "composite": "0.6063",
+            "cumulative_adopters": "120000.00",
+            "index": "69.39",
+            "index_change": "2.13",
+            "total_revenue": "6854400.00"
+          },
+          "composite_gap": "-0.0388",
+          "index_gap": "-14.32",
+          "leader": {
+            "cash_closing": "-126192817.69",
+            "composite": "0.5675",
+            "cumulative_adopters": "128965.70",
+            "index": "55.07",
+            "index_change": "1.35",
+            "total_revenue": "6854400.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 6
+        }
+      ],
+      "strategy": "none",
+      "why": "no counter-strategy: control"
+    },
+    "price_volume_capture": {
+      "best_challenger_composite_while_countering": "0.6465",
+      "best_composite_advantage_per_round": "0.3558",
+      "closed_materially": true,
+      "elapsed_seconds": 44.8,
+      "gap_at_end": "-16.41",
+      "gap_change": "-18.03",
+      "gap_closed": true,
+      "gap_when_countering_began": "1.62",
+      "identity_failures": [],
+      "scenario": "Consumer Electronics 2026",
+      "series": [
+        {
+          "challenger": {
+            "cash_closing": "23146886.00",
+            "composite": "0.6384",
+            "cumulative_adopters": "20000.00",
+            "index": "57.77",
+            "index_change": "2.77",
+            "total_revenue": "6720000.00"
+          },
+          "composite_gap": "-0.0023",
+          "index_gap": "-0.05",
+          "leader": {
+            "cash_closing": "13513336.31",
+            "composite": "0.6361",
+            "cumulative_adopters": "48965.70",
+            "index": "57.72",
+            "index_change": "2.72",
+            "total_revenue": "9793140.00"
+          },
+          "phase": "leader front-loading",
+          "round": 1
+        },
+        {
+          "challenger": {
+            "cash_closing": "-2580010.00",
+            "composite": "0.5787",
+            "cumulative_adopters": "40000.00",
+            "index": "59.34",
+            "index_change": "1.57",
+            "total_revenue": "6787200.00"
+          },
+          "composite_gap": "0.0833",
+          "index_gap": "1.62",
+          "leader": {
+            "cash_closing": "-14700745.69",
+            "composite": "0.6620",
+            "cumulative_adopters": "88965.70",
+            "index": "60.96",
+            "index_change": "3.24",
+            "total_revenue": "13606442.62"
+          },
+          "phase": "leader front-loading",
+          "round": 2
+        },
+        {
+          "challenger": {
+            "cash_closing": "-34883750.00",
+            "composite": "0.6465",
+            "cumulative_adopters": "100000.00",
+            "index": "62.27",
+            "index_change": "2.93",
+            "total_revenue": "12096000.00"
+          },
+          "composite_gap": "-0.0787",
+          "index_gap": "0.05",
+          "leader": {
+            "cash_closing": "-38451665.69",
+            "composite": "0.5678",
+            "cumulative_adopters": "108965.70",
+            "index": "62.32",
+            "index_change": "1.36",
+            "total_revenue": "6720000.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 3
+        },
+        {
+          "challenger": {
+            "cash_closing": "-66015721.20",
+            "composite": "0.6058",
+            "cumulative_adopters": "160000.00",
+            "index": "64.39",
+            "index_change": "2.12",
+            "total_revenue": "11975040.00"
+          },
+          "composite_gap": "-0.3558",
+          "index_gap": "-7.07",
+          "leader": {
+            "cash_closing": "-68719265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "57.32",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 4
+        },
+        {
+          "challenger": {
+            "cash_closing": "-97032361.20",
+            "composite": "0.6058",
+            "cumulative_adopters": "220000.00",
+            "index": "66.51",
+            "index_change": "2.12",
+            "total_revenue": "12096000.00"
+          },
+          "composite_gap": "-0.3558",
+          "index_gap": "-14.19",
+          "leader": {
+            "cash_closing": "-99829265.69",
+            "composite": "0.2500",
+            "cumulative_adopters": "108965.70",
+            "index": "52.32",
+            "index_change": "-5.00",
+            "total_revenue": "0.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 5
+        },
+        {
+          "challenger": {
+            "cash_closing": "-127814338.80",
+            "composite": "0.6059",
+            "cumulative_adopters": "280000.00",
+            "index": "68.63",
+            "index_change": "2.12",
+            "total_revenue": "12337920.00"
+          },
+          "composite_gap": "-0.1108",
+          "index_gap": "-16.41",
+          "leader": {
+            "cash_closing": "-126192817.69",
+            "composite": "0.4951",
+            "cumulative_adopters": "128965.70",
+            "index": "52.22",
+            "index_change": "-0.10",
+            "total_revenue": "6854400.00"
+          },
+          "phase": "leader baseline, challenger countering",
+          "round": 6
+        }
+      ],
+      "strategy": "price_volume_capture",
+      "why": "buy share: price below the tier reference, produce heavily, and promote hard, driving the market and revenue terms"
+    }
+  },
+  "sensitivity": "20",
+  "strategies_closing_materially": [
+    "max_capability",
+    "price_volume_capture",
+    "financing_funded_scale",
+    "combined_best"
+  ]
+}

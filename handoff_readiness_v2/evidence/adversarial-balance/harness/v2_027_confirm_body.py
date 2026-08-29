@@ -113,6 +113,7 @@ def run(strategy='none', verbose=True):
     from core.engine.advance_round import _run_phase_1, advance_to_next_round
     from core.models import DecisionSubmission, Game, Round, Team
     from core.models.results import RoundResultAdoption
+    from core.models.sc_state import ComplianceEnforcementEvent, SCEventInstance
     from core.models.results_financials import (RoundResultFinancials,
                                                 RoundResultPerformanceIndex)
 
@@ -168,7 +169,17 @@ def run(strategy='none', verbose=True):
                 identity_failures.append(
                     f'round {rnd.round_number} {label}: composite '
                     f'{composite} but index_change implies {implied}')
+            # Why a team stopped selling matters more than that it did. A
+            # composite of exactly 0.2500 is the V2-022 inactivity cap, and a
+            # cap with zero revenue behind it is usually enforcement rather
+            # than strategy.
+            freezes = list(ComplianceEnforcementEvent.objects.filter(
+                team=team, round=rnd).values_list(
+                    'regime__regime_id', 'market__code',
+                    'freeze_until_round'))
             row[label] = {
+                'compliance_events': [list(f) for f in freezes],
+                'compliance_event_count': len(freezes),
                 'index': str(idx.index_value) if idx else None,
                 'index_change': str(change),
                 'composite': str(composite),
@@ -176,6 +187,7 @@ def run(strategy='none', verbose=True):
                 'total_revenue': str(fin.total_revenue) if fin else None,
                 'cumulative_adopters': str(adopters),
             }
+        row['sc_events'] = SCEventInstance.objects.filter(round=rnd).count()
         row['index_gap'] = str(D(row['leader']['index'])
                                - D(row['challenger']['index']))
         row['composite_gap'] = str(D(row['leader']['composite'])
