@@ -2,34 +2,35 @@
   "all_mutations_reached_their_row": true,
   "arms": {
     "fx_no_exposure_max_hedge": {
-      "creates_value": true,
+      "control_used": "with_production",
+      "creates_value": false,
       "delta_vs_control": {
         "1": {
-          "cash_closing": "-3707170.00",
-          "cash_plus_inventory": "-1303770.00",
-          "inventory_value": "2403400.00",
-          "net_income": "-1303770.00",
-          "operating_income": "-1303770.00",
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "4560000.00"
+          "total_revenue": "0.00"
         },
         "2": {
-          "cash_closing": "2448254.00",
-          "cash_plus_inventory": "3447454.00",
-          "inventory_value": "999200.00",
-          "net_income": "4751224.00",
-          "operating_income": "4751224.00",
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "6787200.00"
+          "total_revenue": "0.00"
         },
         "3": {
-          "cash_closing": "7749034.00",
-          "cash_plus_inventory": "8485434.00",
-          "inventory_value": "736400.00",
-          "net_income": "5037980.00",
-          "operating_income": "5037980.00",
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "6720000.00"
+          "total_revenue": "0.00"
         }
       },
       "ledger": {
@@ -70,34 +71,35 @@
       "why": "largest legal hedge on a currency the team does not trade in, with sales running so exposure exists elsewhere; the engine must skip it and it must not create cash from nothing"
     },
     "fx_two_pairs_one_exposure": {
-      "creates_value": true,
+      "control_used": "with_production",
+      "creates_value": false,
       "delta_vs_control": {
         "1": {
-          "cash_closing": "-3727170.00",
-          "cash_plus_inventory": "-1323770.00",
-          "inventory_value": "2403400.00",
-          "net_income": "-1323770.00",
-          "operating_income": "-1303770.00",
+          "cash_closing": "-20000.00",
+          "cash_plus_inventory": "-20000.00",
+          "inventory_value": "0.00",
+          "net_income": "-20000.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "4560000.00"
+          "total_revenue": "0.00"
         },
         "2": {
-          "cash_closing": "2428254.00",
-          "cash_plus_inventory": "3427454.00",
-          "inventory_value": "999200.00",
-          "net_income": "4751224.00",
-          "operating_income": "4751224.00",
+          "cash_closing": "-20000.00",
+          "cash_plus_inventory": "-20000.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "6787200.00"
+          "total_revenue": "0.00"
         },
         "3": {
-          "cash_closing": "7729034.00",
-          "cash_plus_inventory": "8465434.00",
-          "inventory_value": "736400.00",
-          "net_income": "5037980.00",
-          "operating_income": "5037980.00",
+          "cash_closing": "-20000.00",
+          "cash_plus_inventory": "-20000.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
           "strategy_expense": "0.00",
-          "total_revenue": "6720000.00"
+          "total_revenue": "0.00"
         }
       },
       "ledger": {
@@ -130,13 +132,13 @@
         }
       },
       "proof": {
-        "double_hedged": false,
-        "mechanism_engaged": false,
+        "double_hedged": true,
+        "mechanism_engaged": true,
         "pairs": [
           "CNY_USD",
           "CNY_XXX"
         ],
-        "positions_opened": 0,
+        "positions_opened": 2,
         "reached_row": true
       },
       "why": "two pairs both naming CNY as the foreign currency. Positions are keyed per currency pair while exposure is looked up per foreign currency, so each opens a full-notional hedge against the same underlying exposure"
@@ -147,37 +149,38 @@
         "-23721021.41",
         "-56423418.89"
       ],
+      "control_used": "with_production",
       "creates_value": false,
       "delta_vs_control": {
         "1": {
-          "cash_closing": "-9608843.88",
-          "cash_plus_inventory": "-4802436.38",
-          "inventory_value": "4806407.50",
-          "net_income": "-4802436.38",
-          "operating_income": "-4802436.38",
+          "cash_closing": "-5901673.88",
+          "cash_plus_inventory": "-3498666.38",
+          "inventory_value": "2403007.50",
+          "net_income": "-3498666.38",
+          "operating_income": "-3498666.38",
           "strategy_expense": "0.00",
-          "total_revenue": "418080.00"
+          "total_revenue": "-4141920.00"
         },
         "2": {
-          "cash_closing": "-10273351.71",
-          "cash_plus_inventory": "-8491021.41",
-          "inventory_value": "1782330.30",
-          "net_income": "-3688585.03",
-          "operating_income": "-3688585.03",
+          "cash_closing": "-12721605.71",
+          "cash_plus_inventory": "-11938475.41",
+          "inventory_value": "783130.30",
+          "net_income": "-8439809.03",
+          "operating_income": "-8439809.03",
           "strategy_expense": "0.00",
-          "total_revenue": "1805564.56"
+          "total_revenue": "-4981635.44"
         },
         "3": {
-          "cash_closing": "-11786970.45",
-          "cash_plus_inventory": "-10343418.89",
-          "inventory_value": "1443551.56",
-          "net_income": "-1852397.48",
-          "operating_income": "-1852397.48",
+          "cash_closing": "-19536004.45",
+          "cash_plus_inventory": "-18828852.89",
+          "inventory_value": "707151.56",
+          "net_income": "-6890377.48",
+          "operating_income": "-6890377.48",
           "strategy_expense": "0.00",
-          "total_revenue": "851885.15"
+          "total_revenue": "-5868114.85"
         }
       },
-      "inconclusive": "revenue was not zero, so this did not test carrying stock without sales",
+      "inconclusive": "sales were not suppressed, so this did not test carrying stock without selling it",
       "ledger": {
         "1": {
           "cash_closing": "7101156.12",
@@ -211,11 +214,23 @@
         "buffer_days": 180,
         "reached_row": true
       },
+      "revenue_by_round": [
+        "418080.00",
+        "1805564.56",
+        "851885.15"
+      ],
+      "revenue_vs_normal_trading": [
+        "4560000.00",
+        "6787200.00",
+        "6720000.00"
+      ],
+      "sales_effectively_suppressed": false,
       "sales_really_are_zero": false,
       "value_conserved": true,
       "why": "build and carry stock across rounds with sales held at zero by pricing out of the market; closing cash plus inventory value must not rise without an external inflow, and the same stock must not be monetised twice"
     },
     "sourcing_commitment_zero_production": {
+      "control_used": "zero_production",
       "creates_value": false,
       "delta_vs_control": {
         "1": {
@@ -283,6 +298,7 @@
       "why": "supplier allocation and volume commitment with production and sales at zero; must not create inventory, revenue or a negative expense"
     },
     "trade_finance_instrument_cycled": {
+      "control_used": "zero_production",
       "creates_value": false,
       "delta_vs_control": {
         "1": {
@@ -349,11 +365,8 @@
       "why": "cycle the legal instrument while the trade is held constant; fees, coverage and settlement must not duplicate proceeds or turn a cost into income"
     }
   },
-  "arms_creating_value": [
-    "fx_no_exposure_max_hedge",
-    "fx_two_pairs_one_exposure"
-  ],
-  "code_revision": "19852df3eb70087799d7c91e55bcd0f04bed9aa8",
+  "arms_creating_value": [],
+  "code_revision": "32e90525bb78401fc9af8a0c6cd0028c576a9799",
   "control": {
     "ledger": {
       "1": {
@@ -386,8 +399,68 @@
     },
     "proof": {}
   },
-  "elapsed_seconds": 110.5,
-  "evaluations": 6,
+  "controls": {
+    "with_production": {
+      "1": {
+        "cash_closing": "13002830.00",
+        "cash_plus_inventory": "15406230.00",
+        "inventory_value": "2403400.00",
+        "net_income": "-16593770.00",
+        "operating_income": "-16293770.00",
+        "strategy_expense": "5150000.00",
+        "total_revenue": "4560000.00"
+      },
+      "2": {
+        "cash_closing": "-12781746.00",
+        "cash_plus_inventory": "-11782546.00",
+        "inventory_value": "999200.00",
+        "net_income": "-10988776.00",
+        "operating_income": "-10688776.00",
+        "strategy_expense": "5100000.00",
+        "total_revenue": "6787200.00"
+      },
+      "3": {
+        "cash_closing": "-38330966.00",
+        "cash_plus_inventory": "-37594566.00",
+        "inventory_value": "736400.00",
+        "net_income": "-11232020.00",
+        "operating_income": "-10932020.00",
+        "strategy_expense": "5350000.00",
+        "total_revenue": "6720000.00"
+      }
+    },
+    "zero_production": {
+      "1": {
+        "cash_closing": "16710000.00",
+        "cash_plus_inventory": "16710000.00",
+        "inventory_value": "0.00",
+        "net_income": "-15290000.00",
+        "operating_income": "-14990000.00",
+        "strategy_expense": "5150000.00",
+        "total_revenue": "0.00"
+      },
+      "2": {
+        "cash_closing": "-15230000.00",
+        "cash_plus_inventory": "-15230000.00",
+        "inventory_value": "0.00",
+        "net_income": "-15740000.00",
+        "operating_income": "-15440000.00",
+        "strategy_expense": "5100000.00",
+        "total_revenue": "0.00"
+      },
+      "3": {
+        "cash_closing": "-46080000.00",
+        "cash_plus_inventory": "-46080000.00",
+        "inventory_value": "0.00",
+        "net_income": "-16270000.00",
+        "operating_income": "-15970000.00",
+        "strategy_expense": "5350000.00",
+        "total_revenue": "0.00"
+      }
+    }
+  },
+  "elapsed_seconds": 139.8,
+  "evaluations": 7,
   "field_inventory": {
     "fx": {
       "engine_effect": "fx_engine.process_fx_hedges opens a short position sized exposure x hedge_ratio/100, charges a premium of fx_hedge_premium_bps on the notional immediately, marks to market each round and books realised P&L at maturity into context.sc_fx_hedge_pnl, which financials adds to pre-tax income. A hedge is skipped entirely when exposure <= 0.",
@@ -455,9 +528,7 @@
   },
   "fixture_contract_holds": true,
   "identity": 985805,
-  "inconclusive_arms": [
-    "fx_two_pairs_one_exposure"
-  ],
+  "inconclusive_arms": [],
   "rounds": 3,
   "scenario": "Consumer Electronics 2026",
   "scenario_id": 2,
@@ -474,6 +545,6 @@
     "trade_finance_instruments": 6
   },
   "seed": "crv2-06-value-conservation",
-  "subject_team": "Apex Devices",
+  "subject_team": "Photon Labs",
   "unexercisable_arms": []
 }

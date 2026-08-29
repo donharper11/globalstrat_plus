@@ -102,8 +102,11 @@ def main():
             print(f"    creates value : {a['creates_value']}")
             if 'sales_really_are_zero' in a:
                 print(f"    sales at zero : {a['sales_really_are_zero']}  "
-                      f"cash+inv by round: "
-                      f"{a['cash_plus_inventory_by_round']}")
+                      f"suppressed: {a['sales_effectively_suppressed']}")
+                print(f"    units sold    : {a['units_sold_by_round']} "
+                      f"vs normal {a['units_sold_normally']}")
+                print(f"    cash+inv      : {a['cash_plus_inventory_by_round']}")
+                print(f"    conserved     : {a['value_conserved']}")
             if a.get('inconclusive'):
                 print(f"    INCONCLUSIVE  : {a['inconclusive']}")
             for rnd_no, d in sorted(a['delta_vs_control'].items()):

@@ -193,6 +193,7 @@ def run(verbose=True):
     }
 
     def ledger_capture(into):
+        from core.models.results import RoundResultProductMarket
         rows = {}
         for rnd_no in range(1, game.current_round + 1):
             fin = RoundResultFinancials.objects.filter(
@@ -203,6 +204,11 @@ def run(verbose=True):
             rows[rnd_no]['inventory_value'] = str(fin.inventory_value)
             rows[rnd_no]['cash_plus_inventory'] = str(
                 D(str(fin.cash_closing)) + D(str(fin.inventory_value)))
+            sold = sum(
+                (D(str(r.units_sold)) for r in
+                 RoundResultProductMarket.objects.filter(
+                     team=subject, round_number=rnd_no)), D('0'))
+            rows[rnd_no]['units_sold'] = str(sold)
         into['ledger'] = rows
 
     def evaluate(label, mutate, prove, production_volume=None):
@@ -431,16 +437,20 @@ def run(verbose=True):
     ledger = result['ledger']
     revenues = [D(row['total_revenue']) for row in ledger.values()]
     totals = [D(ledger[k]['cash_plus_inventory']) for k in sorted(ledger)]
+    # Units, not revenue. Pricing a thousandfold above reference suppresses
+    # volume to a few parts in a hundred thousand, but multiplies what little
+    # sells by that same thousandfold price, so revenue stays material while
+    # almost nothing leaves the warehouse. Revenue was the wrong yardstick for
+    # "sales held at zero"; units are the right one.
+    units = [D(ledger[k]['units_sold']) for k in sorted(ledger)]
+    baseline_units = [D(controls['with_production']['ledger'][k]['units_sold'])
+                      for k in sorted(controls['with_production']['ledger'])]
+    result['units_sold_by_round'] = [str(u) for u in units]
+    result['units_sold_normally'] = [str(u) for u in baseline_units]
     result['revenue_by_round'] = [str(r) for r in revenues]
-    baseline_revenue = [D(controls['with_production']['ledger'][k]
-                          ['total_revenue'])
-                        for k in sorted(controls['with_production']['ledger'])]
-    result['revenue_vs_normal_trading'] = [
-        str(r) for r in baseline_revenue]
-    result['sales_really_are_zero'] = all(r == 0 for r in revenues)
+    result['sales_really_are_zero'] = all(u == 0 for u in units)
     result['sales_effectively_suppressed'] = all(
-        r <= b / D('1000') for r, b in zip(revenues, baseline_revenue)
-        if b > 0)
+        u <= b / D('100') for u, b in zip(units, baseline_units) if b > 0)
     result['cash_plus_inventory_by_round'] = [str(t) for t in totals]
     result['value_conserved'] = all(
         later <= earlier for earlier, later in zip(totals, totals[1:]))
