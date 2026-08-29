@@ -54,31 +54,65 @@ supply-chain and compliance subsystems have little to fire.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-023 | Balance / price response | **P1 pending confirmation** | GSP-CRV2-06 (raised) | In the joint price × volume characterisation, **units sold are identical across a 40× price range**: 2112.32 units at retail prices of 50, 420 and 2000, and 2143.616 units at every price when production rises to 60,000. Revenue is therefore `price x constant`, so raising price from 420 to 2000 multiplies revenue **4.76×** with no volume penalty. The index effect within the round is small (+0.12), because the composite is dominated by non-financial components; the cash effect is not, and cash compounds into later rounds. | `characterisation.json` → `joint["retail price x production volume"]`. Same-team counterfactual from one checkpoint; the baseline resolved twice with zero delta. | Open — mechanism unconfirmed |
+| V2-023 | Balance / price response | **P1 confirmed** | GSP-CRV2-06 (raised), confirmed by the Stage 3 entry gate | A team alone in its positioning group has **no price response at all**. Fixed production, one price swept: price fit is 0.5000 at $50, $420 and $2,000; units sold are 3600.37 at all three; revenue is `price x constant`, 19,874.04 -> 794,961.70 across a 40x price rise, with index 53.17 -> 56.34. At segment granularity every fit, share and new-adopter figure is byte-identical across the three prices. A team sharing its positioning does respond, non-monotonically: units 979.52 / 1316.16 / 967.07 at the same three prices. | `v2-023-gate.json`. Same-game transactional counterfactual; baseline exactly repeatable; every mutation proved to land on the intended product/market row. Reproduced across two independent fixture builds with different team names and identical metrics. | **Open — awaiting rules disposition. Stage 3 search is stopped.** |
 
-**Mechanism hypothesis, not established.** `preference_engine` scores price
-purely relatively: `ratio = team_price / market_avg_price`, where the average is
-taken over *other* teams sharing the product's positioning in that market and
-the team's own price is then appended. Where no rival shares that positioning,
-`prices == [team_price]`, the ratio is 1.0 at any price, and price stops
-affecting demand. A fixture diagnostic confirmed that positioning groups in this
-scenario do vary in size — two teams share `eu/mainstream` and `eu/premium`,
-while `na/mainstream` and `na/premium` hold one team each — but **the diagnostic
-output was truncated before it recorded which group the measured team was in**,
-so the explanation is not confirmed and is offered as a hypothesis only.
+**Mechanism confirmed.** `backend/core/engine/preference_engine.py:288`,
+`_derive_price_competitiveness`, averages over teams sharing the product's
+positioning in that market *excluding self*, then appends the team's own price:
 
-Classified **P1 pending confirmation**. A 4.76x revenue multiple for a decision
-with no measured cost is material on its face, and the provisional label belongs
-to the mechanism rather than to the impact. If relative price scoring is the
-cause, a team can choose a positioning nobody else occupies and then price
-without demand consequence — a strategy choice, not luck.
+```python
+prices = [float(d.retail_price) for d in all_mkt_decisions]  # excludes self
+prices.append(team_price)
+market_avg_price = sum(prices) / len(prices) if prices else team_price
+ratio = team_price / market_avg_price
+value = f_max * (1.5 - ratio)
+```
 
-A mandatory confirmation gate runs before any Stage 3 search: one team known to
-be alone in its positioning group and one known to share it, fixed production,
-prices of $50, $420 and $2,000, recording positioning membership, market average
-price, price-fit score, demand, units sold, revenue, profit, cash and index.
-Optimising against an unconfirmed pricing exploit would produce a strategy
-ranking that describes the exploit rather than the game.
+Where no rival shares that positioning, `prices == [team_price]`, the average is
+the team's own price, `ratio` is exactly 1.0 at every price, and the feature is
+`0.5 * f_max` identically. The gate measures that identity directly: 0.5000 at
+$50 and at $2,000.
+
+Two corrections to the earlier characterisation. The 4.76x revenue multiple was
+an artefact of the range swept, not a bound — the relationship is exactly linear
+in price with no demand penalty, so the multiple is whatever ratio of prices a
+team chooses. And self-inclusion dampens price response for *every* team, not
+only isolated ones: the shared team's own price enters its average, so at $2,000
+its market average is 1,210 rather than the rival's 420. Being alone is the
+degenerate case of a general effect, not a separate mechanism.
+
+The exploit is a strategy choice rather than luck, because positioning is a team
+decision: a team can take an unoccupied positioning and then price without
+demand consequence.
+
+**Severity.** P1 confirmed. The impact is unbounded in price, requires no
+insight beyond reading the scoring rules, and compounds through cash into later
+rounds.
+
+**Stage 3 is stopped pending a rules disposition.** Optimising against a
+confirmed pricing exploit would characterise the exploit, not the balance.
+Three candidate dispositions, in the order they were offered:
+
+1. Absolute price anchoring against a scenario or segment reference price.
+   Largest change; removes the exploit at its root.
+2. Exclude self from the average and fall back to a scenario reference price
+   when no rival shares the positioning. Smallest change addressing the
+   measured cause; also removes the self-inclusion dampening.
+3. Widen the comparison set to the whole market rather than the positioning
+   group. Keeps relative scoring; a positioning can no longer be empty.
+
+Option 2 is the builder's recommendation. Any of the three changes scoring for
+every existing scenario, so the choice is the rules owner's.
+
+**Gate integrity note.** The gate refused five times before producing evidence:
+a stale primary key, outcomes read after the rollback, a decimal string
+comparison, a mis-keyed adoption query, and a non-existent `code` field on
+`SegmentDefinition`. Every defect was in the harness, and none produced a wrong
+number, because each surfaced as a refusal or an exception rather than as a
+plausible result. The adoption defect is the one worth recording: the query
+filtered on team and market and took `.first()` from a table unique per segment,
+printing a fit that did not move when price moved -- in a run whose entire
+subject is what moves when price moves.
 
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
