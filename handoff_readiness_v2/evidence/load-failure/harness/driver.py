@@ -133,8 +133,17 @@ class Session:
             f'round/{self.round_number}/lock/', self.token, {}, request_id)
         self.record('lock', result)
 
-    def run(self, duration, final_minute_writes, ready=None, start=None):
+    def run(self, duration, final_minute_writes, ready=None, start=None,
+            think_time=(3.0, 15.0)):
         """Authenticate, wait for the cohort, then drive the timed window.
+
+        `think_time` is the pause between one session's actions. It defaulted
+        to 0.05-0.35 seconds, which is a load-generator default rather than a
+        person: 96 students pausing a fifth of a second between actions offer
+        several hundred requests a second against a configuration that
+        saturates near 35, so p95 could only fail. A student reading a screen,
+        editing figures and saving acts every several seconds, and the handoff
+        asks for realistic traffic.
 
         Login is deliberately outside the measured window. Ninety-six
         simultaneous PBKDF2 verifications took a p50 of 18 seconds and produced
@@ -162,7 +171,7 @@ class Session:
             else:
                 sequence += 1
                 self.save(sequence)
-            time.sleep(rng.uniform(0.05, 0.35))
+            time.sleep(rng.uniform(*think_time))
         # Final-minute traffic: every session writes hard at the deadline, and
         # one member per team attempts the lock, which is what actually happens
         # in the last sixty seconds of a round.
@@ -267,11 +276,12 @@ def sample_database(database, stop, samples, interval=2.0):
 def _run_shard(args):
     """One process drives a slice of the cohort. Returns raw samples."""
     (base, identities, game_id, round_number, duration, final_minute_writes,
-     ready, start) = args
+     ready, start, think_time) = args
     sessions = [Session(base, identity, game_id, round_number)
                 for identity in identities]
     threads = [threading.Thread(
-        target=s.run, args=(duration, final_minute_writes, ready, start),
+        target=s.run,
+        args=(duration, final_minute_writes, ready, start, think_time),
         daemon=True) for s in sessions]
     for t in threads:
         t.start()
@@ -289,7 +299,7 @@ def _run_shard(args):
 
 def run_profile(base, identities, game_id, round_number, duration,
                 final_minute_writes=3, verbose=True, database=None,
-                deep_activity=False):
+                deep_activity=False, think_time=(3.0, 15.0)):
     """`deep_activity` samples pg_stat_activity twice a minute.
 
     It located the advisory-lock waits and proved the sign-in stall was not
@@ -335,7 +345,7 @@ def run_profile(base, identities, game_id, round_number, duration,
     with multiprocessing.Pool(shard_count) as pool:
         shard_results = pool.map(_run_shard, [
             (base, shard, game_id, round_number, duration, final_minute_writes,
-             ready, start) for shard in shards])
+             ready, start, think_time) for shard in shards])
     stop.set()
     for thread in (sampler, checkpointer, activity_sampler):
         if thread:
@@ -453,6 +463,9 @@ def run_profile(base, identities, game_id, round_number, duration,
         'db_connections_mean': (round(sum(connection_samples)
                                       / len(connection_samples), 1)
                                 if connection_samples else None),
+        'think_time_seconds': list(think_time),
+        'offered_rps_estimate': round(
+            len(identities) / ((think_time[0] + think_time[1]) / 2), 1),
         'driver_processes': shard_count,
         'sessions_requested': len(identities),
         'sessions_authenticated': authenticated,

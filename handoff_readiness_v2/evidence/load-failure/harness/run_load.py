@@ -37,6 +37,11 @@ THRESHOLDS = {
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('profile', choices=sorted(PROFILES))
+    parser.add_argument('--think-time', default='3,15',
+                        help='seconds between one session actions, "min,max". '
+                             'The default models a student reading and '
+                             'editing; "0.05,0.35" reproduces the earlier '
+                             'stress profile')
     parser.add_argument('--deep-activity', action='store_true',
                         help='sample pg_stat_activity during the run; a '
                              'diagnostic that measurably slows the run')
@@ -60,7 +65,8 @@ def main():
         result = driver.run_profile(
             base, identities, seeded['game_id'], seeded['round_number'],
             spec['duration'], database=database,
-            deep_activity=args.deep_activity)
+            deep_activity=args.deep_activity,
+            think_time=tuple(float(x) for x in args.think_time.split(',')))
 
         # Server-side timing straight from gunicorn's access log, so a slow
         # request can be attributed to the server or to the client that
@@ -153,6 +159,8 @@ def main():
     }
 
     print(f"\n=== {args.profile} ===")
+    print(f"think time      : {result.get('think_time_seconds')} s  "
+          f"(offering ~{result.get('offered_rps_estimate')} rps)")
     print(f"sessions        : {result['sessions_authenticated']}/"
           f"{spec['sessions']} authenticated")
     print(f"requests        : {result['requests_total']} in "
