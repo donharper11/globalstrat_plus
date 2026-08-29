@@ -12,6 +12,13 @@ V2-025 rule. A baseline below the optima concedes a 26% capability multiplier
 to any candidate that reaches them, which is not a strategy beating competent
 play -- it is competent play being defined incorrectly.
 
+Pricing note: every product is priced at the scenario reference. The
+positioning schedule `load_demo` seeds -- $250/$420/$700/$1000 -- predates
+V2-023, which scores every price against one scenario reference. A $700 premium
+product is 1.667x that reference: price fit clamps to zero and the high-price
+elasticity takes 53% of its demand. Those are starting prices, not competent
+play.
+
 Not invented for this handoff. These are the numbers the project's own
 `load_demo` command scripts as competent play — budget split, price and volume
 by positioning, channel mix, sales staffing, talent pools — copied here so the
@@ -33,9 +40,16 @@ BUDGET = {
     'research_budget': D('500000'),
 }
 
-# load_demo._add_marketing_decision, keyed by product positioning.
-PRICE_BY_POSITIONING = {'budget': D('250'), 'mainstream': D('420'),
-                        'premium': D('700'), 'ultra_premium': D('1000')}
+# load_demo._add_marketing_decision, keyed by product positioning. These are
+# starting-state prices, not competent play under the adopted rules, and are
+# kept only for reference: `build` prices every product at the scenario
+# reference instead. V2-023 scores every price against one scenario reference,
+# so a premium product at $700 is 1.667x the reference -- price fit clamps to
+# zero and the high-price elasticity removes 53% of its demand. A baseline
+# carrying this schedule concedes both to any candidate that prices at the
+# reference.
+STARTING_PRICE_BY_POSITIONING = {'budget': D('250'), 'mainstream': D('420'),
+                                 'premium': D('700'), 'ultra_premium': D('1000')}
 VOLUME_BY_POSITIONING = {'budget': 25000, 'mainstream': 20000,
                          'premium': 12000, 'ultra_premium': 8000}
 PROMO_BY_POSITIONING = {'budget': D('200000'), 'mainstream': D('300000'),
@@ -98,6 +112,8 @@ def build(submission, team):
     DecisionTalent.objects.create(submission=submission, **talent)
 
     DecisionMarketing.objects.filter(submission=submission).delete()
+    from core.engine.utils import scenario_reference_price
+    reference_price = D(str(scenario_reference_price(team.game.scenario)))
     home = team.home_market
     for product in TeamProduct.objects.filter(
             team=team, status='active').order_by('id'):
@@ -114,7 +130,7 @@ def build(submission, team):
                 submission=submission,
                 team_product=product,
                 market_id=tpm.market_id,
-                retail_price=PRICE_BY_POSITIONING.get(positioning, DEFAULT_PRICE),
+                retail_price=reference_price,
                 promotion_budget=PROMO_BY_POSITIONING.get(positioning, DEFAULT_PROMO),
                 campaign_focus_feature_ids=focus or [],
                 production_volume=volume,
