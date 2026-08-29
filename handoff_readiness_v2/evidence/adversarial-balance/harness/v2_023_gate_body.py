@@ -183,22 +183,38 @@ def evaluate_at_price(target, price):
 
     def mutate():
         write_baseline()
-        row = DecisionMarketing.objects.get(pk=target['row_id'])
+        # The row is found by its domain coordinates, not by the primary key
+        # captured earlier: `BASE.build` deletes and recreates the marketing
+        # rows on every preparation, so that pk no longer exists by the time
+        # this runs. Looking it up by (team, product, market) also makes the
+        # proof below stronger — it shows the price landed on the row for the
+        # intended product in the intended market, rather than on whatever row
+        # happened to keep an id.
+        row = DecisionMarketing.objects.get(
+            submission__round=rnd,
+            submission__team_id=target['team_id'],
+            team_product_id=target['product_id'],
+            market_id=target['market_id'])
         row.retail_price = D(price)
         row.save(update_fields=['retail_price'])
-        # Proof the mutation landed on the intended row, read back from the
-        # database rather than assumed from the assignment.
-        stored = DecisionMarketing.objects.get(pk=target['row_id'])
+
+        stored = DecisionMarketing.objects.get(pk=row.pk)
         proof['row_id'] = stored.pk
         proof['team_id'] = stored.submission.team_id
         proof['product_id'] = stored.team_product_id
         proof['market_id'] = stored.market_id
         proof['stored_price'] = str(stored.retail_price)
+        proof['rows_matching_coordinates'] = DecisionMarketing.objects.filter(
+            submission__round=rnd,
+            submission__team_id=target['team_id'],
+            team_product_id=target['product_id'],
+            market_id=target['market_id']).count()
         proof['reached_intended_row'] = (
-            stored.pk == target['row_id']
+            stored.submission.team_id == target['team_id']
             and stored.team_product_id == target['product_id']
             and stored.market_id == target['market_id']
-            and str(stored.retail_price) == str(D(price)))
+            and str(stored.retail_price) == str(D(price))
+            and proof['rows_matching_coordinates'] == 1)
         avg, rivals = market_average_price(
             target['team_id'], target['product_id'], target['market_id'], price)
         proof['market_average_price'] = avg

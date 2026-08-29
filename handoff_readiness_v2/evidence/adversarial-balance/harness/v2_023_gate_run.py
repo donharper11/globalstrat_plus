@@ -10,7 +10,7 @@ import inventory_run as R  # noqa: E402
 
 REQUIRED_PROOF = ('reached_intended_row', 'market_average_price',
                   'price_fit_score', 'rival_rows_at_this_positioning',
-                  'stored_price')
+                  'stored_price', 'rows_matching_coordinates')
 REQUIRED_OUTCOMES = ('units_sold', 'adoption_pool', 'fit_score',
                      'total_revenue', 'net_income', 'cash_closing',
                      'index_value')
