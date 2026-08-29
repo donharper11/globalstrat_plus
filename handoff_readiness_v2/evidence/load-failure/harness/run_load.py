@@ -158,6 +158,7 @@ def main():
     print(f"per-kind p95    : {result['per_kind_p95']}")
     print(f"per-kind max    : {result['per_kind_max']}")
     print(f"per-phase p95   : {result['per_phase_p95']}")
+    print(f"login           : {result.get('login')}")
     print(f"checkpoints     : {result.get('checkpoints')}")
     print(f"slow db windows : {result.get('slow_activity_window_count')}")
     for window in (result.get('slow_activity_windows') or [])[:4]:

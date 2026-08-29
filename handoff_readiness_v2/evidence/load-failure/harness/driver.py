@@ -157,7 +157,7 @@ class Session:
             self.lock()
 
 
-def sample_activity(database, stop, samples, interval=0.5):
+def sample_activity(database, stop, samples, interval=2.0):
     """What the database connections are actually doing, twice a second.
 
     Four hypotheses for the stall have now been eliminated by measurement --
@@ -306,6 +306,21 @@ def run_profile(base, identities, game_id, round_number, duration,
                             if s['status'] is not None
                             and 400 <= s['status'] < 500)
 
+    # Logins were recorded from the first run and reported in none of them.
+    # Password verification is PBKDF2 at Django's default iteration count, so
+    # 96 simultaneous logins are a large, purely CPU-bound burst -- and every
+    # slow request in every run has been in the window just after it.
+    logins = sorted(s['ms'] for s in samples if s['kind'] == 'login')
+    login_stats = {
+        'count': len(logins),
+        'p50_ms': round(logins[len(logins) // 2], 1) if logins else None,
+        'p95_ms': round(logins[max(0, int(round(0.95 * len(logins))) - 1)], 1)
+        if logins else None,
+        'max_ms': round(logins[-1], 1) if logins else None,
+        'total_cpu_seconds_if_serial': round(sum(logins) / 1000, 1)
+        if logins else None,
+    }
+
     slowest = sorted(interactive, key=lambda x: -x['ms'])[:15]
     origin = min((s['at'] for s in samples), default=0)
 
@@ -338,6 +353,7 @@ def run_profile(base, identities, game_id, round_number, duration,
         }
 
     return {
+        'login': login_stats,
         'slow_activity_windows': [
             {'seconds_into_run': round(sample['at'] - origin, 1),
              'connections': sample['connections'], 'slow': sample['slow']}
