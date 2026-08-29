@@ -1,0 +1,77 @@
+{
+  "all_pass": true,
+  "baseline_metrics": {
+    "cash_closing": "4076094.44",
+    "index_value": "58.43",
+    "net_income": "-19328136.83",
+    "operating_income": "-18848136.83",
+    "satisfaction_score": "0.6714",
+    "strategy_expense": "5100000.00",
+    "total_revenue": "887517.12"
+  },
+  "checks": {
+    "all_payloads_pass_final_validation": {
+      "decision_limit_violations": 0,
+      "funding_violations": 0,
+      "pass": true
+    },
+    "commercial_activity_above_material_floor": {
+      "floor": "8875.1712",
+      "pass": true,
+      "revenue": "887517.12"
+    },
+    "financing_legal_under_v2_024": {
+      "maximum": "40623905.56",
+      "pass": true,
+      "requested": "0.00"
+    },
+    "pricing_uses_each_products_tier_reference": {
+      "pass": true,
+      "references": {
+        "budget": "250.0",
+        "mainstream": "420.0",
+        "premium": "700.0",
+        "ultra_premium": "1000.0"
+      },
+      "rows": [
+        {
+          "matches": true,
+          "positioning": "premium",
+          "price": "700.00",
+          "product": "VoltPack Pro",
+          "tier_reference": "700.0"
+        },
+        {
+          "matches": true,
+          "positioning": "mainstream",
+          "price": "420.00",
+          "product": "VoltPack Standard",
+          "tier_reference": "420.0"
+        }
+      ]
+    },
+    "rd_spend_equals_target": {
+      "pass": true,
+      "spend": "2000000.00",
+      "target": "2000000.0"
+    },
+    "talent_at_authored_optima": {
+      "optima": {
+        "commercial": 40,
+        "operations": 50,
+        "rd": 60
+      },
+      "pass": true,
+      "staffed": {
+        "commercial": 40,
+        "operations": 50,
+        "rd": 60
+      }
+    }
+  },
+  "code_revision": "76301255eed41f98fa54b19f69ea5b4d82766d0e",
+  "elapsed_seconds": 5.6,
+  "failed": [],
+  "seed": "crv2-06-baseline-gate",
+  "subject_team": "Aether Energy Systems"
+}
