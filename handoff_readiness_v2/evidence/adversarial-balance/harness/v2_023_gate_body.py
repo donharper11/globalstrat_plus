@@ -153,9 +153,16 @@ def outcomes(team_id, product_id, market_id):
           .filter(team_id=team_id, round_number=rnd.round_number,
                   team_product_id=product_id, market_id=market_id)
           .order_by('-id').first())
-    ad = (RoundResultAdoption.objects
-          .filter(team_id=team_id, round_number=rnd.round_number,
-                  market_id=market_id).order_by('-id').first())
+    # Adoption is unique per (game, round, team, segment, market). Filtering
+    # on team and market alone and taking .first() returns an arbitrary
+    # segment, which is what the first run of this gate did -- it reported a
+    # fit of 0.3145 and a pool of 0.00 that belonged to no particular segment
+    # and did not move when price moved. Every segment row is recorded now.
+    ad_rows = list(RoundResultAdoption.objects
+                   .filter(team_id=team_id, round_number=rnd.round_number,
+                           market_id=market_id)
+                   .order_by('segment__code', 'id'))
+    ad = next((r for r in ad_rows if r.best_product_id == product_id), None)
     fin = (RoundResultFinancials.objects
            .filter(team_id=team_id, round_number=rnd.round_number)
            .order_by('-id').first())
@@ -167,9 +174,22 @@ def outcomes(team_id, product_id, market_id):
         'units_sold': str(pm.units_sold) if pm else None,
         'units_unsold': str(pm.units_unsold) if pm else None,
         'row_retail_price': str(pm.retail_price) if pm else None,
+        # Scalars describe the segment that actually chose this product; they
+        # are None when no segment did, which is information, not a gap.
         'adoption_pool': str(ad.adoption_pool) if ad else None,
         'fit_score': str(ad.fit_score) if ad else None,
         'adjusted_fit_score': str(ad.adjusted_fit_score) if ad else None,
+        'best_product_segment': ad.segment.code if ad else None,
+        'adoption_by_segment': [
+            {'segment': r.segment.code,
+             'best_product_id': r.best_product_id,
+             'is_this_product': r.best_product_id == product_id,
+             'fit_score': str(r.fit_score),
+             'adjusted_fit_score': str(r.adjusted_fit_score),
+             'adoption_pool': str(r.adoption_pool),
+             'team_share_pct': str(r.team_share_pct),
+             'new_adopters': str(r.new_adopters)}
+            for r in ad_rows],
         'total_revenue': str(fin.total_revenue) if fin else None,
         'net_income': str(fin.net_income) if fin else None,
         'cash_closing': str(fin.cash_closing) if fin else None,

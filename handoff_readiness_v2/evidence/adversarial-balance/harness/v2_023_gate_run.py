@@ -11,9 +11,12 @@ import inventory_run as R  # noqa: E402
 REQUIRED_PROOF = ('reached_intended_row', 'market_average_price',
                   'price_fit_score', 'rival_rows_at_this_positioning',
                   'stored_price', 'rows_matching_coordinates')
-REQUIRED_OUTCOMES = ('units_sold', 'adoption_pool', 'fit_score',
-                     'total_revenue', 'net_income', 'cash_closing',
-                     'index_value')
+# adoption_pool and fit_score are deliberately absent: they are None when no
+# segment picked this product, which is a real outcome rather than a missing
+# diagnostic. The per-segment adoption table is required instead, and is
+# checked for emptiness separately.
+REQUIRED_OUTCOMES = ('units_sold', 'total_revenue', 'net_income',
+                     'cash_closing', 'index_value')
 
 BODY = '''
 import sys
@@ -71,6 +74,10 @@ def main():
                            f'rows={proof.get("rows_matching_coordinates")}: '
                            f'the mutation did not reach the '
                            f'intended product/market row')
+                if not outcomes.get('adoption_by_segment'):
+                    refuse(f'{label} @ {price}: no adoption rows were recorded '
+                           f'for this team and market; the gate cannot show '
+                           f'what demand did')
                 missing = [k for k in REQUIRED_PROOF if proof.get(k) is None]
                 missing += [k for k in REQUIRED_OUTCOMES
                             if outcomes.get(k) is None]
