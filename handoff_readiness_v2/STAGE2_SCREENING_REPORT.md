@@ -1,216 +1,169 @@
-# GSP-CRV2-06 Stage 2 — sensitivity screening result
+# GSP-CRV2-06 Stage 2 — complete result
 
-**Screen revision:** `e3654ece7b4dcb3cf58633b590bbd3529d252b1d`  
-**Seed:** `crv2-06-screen-2-counterfactual`  
-**Method:** same-game transactional counterfactual; team compared only with itself from one frozen checkpoint  
-**Baseline:** load_demo scripted defaults; see harness/baseline.py  
-**Runtime:** 628.9s  
-**Evidence:** `handoff_readiness_v2/evidence/adversarial-balance/` (`screening.json`, `screening-summary.json`, checksums in `SHA256SUMS`)
+**Screen revision:** `e3654ece7b4dcb3cf58633b590bbd3529d252b1d` (retained; see the RNG gate)  
+**Characterisation revision:** `cdc700321c5f74d176b7683d643fd0bfb2c2572e`  
+**Evidence:** `handoff_readiness_v2/evidence/adversarial-balance/`
 
-## Self-tests — evidence is refused unless all three pass
+## What was reused, and why
 
-| Control | Result |
+The 107-probe screen supplies the minimum / baseline / maximum point for
+every dimension and was **not rerun**. Source changed under it when V2-010
+and V2-011 were repaired, so the RNG-impact gate resolved the same baseline
+and six representative probes under the repaired RNG:
+
+| Gate check | Result |
 |---|---|
-| `baseline_vs_identical_baseline_is_zero` | pass |
-| `known_flat_field_does_not_move` | pass |
-| `known_responsive_field_moves` | pass |
+| Recorded screen revision | `e3654ece7b4dcb3cf58633b590bbd3529d252b1d` |
+| Baseline unchanged | True |
+| Probe deltas unchanged | 6/6 |
+| Screen remains applicable | True |
 
-Baseline-against-identical-baseline returning exactly zero is what proves the
-checkpoint restores. Without it, the two earlier versions of this screen looked
-plausible while measuring nothing.
+Narrow claim, stated as such: this shows *this fixture's* outputs did not
+move, not that the RNG repair is inconsequential in general. The fixture is a
+round-1 game where the supply-chain and compliance subsystems have little to
+fire.
 
-## Coverage
+## Categorical dimensions — derived, not rerun
 
-| | |
+| Dimension | Categories evaluated | Verdict from the screen |
+|---|---|---|
+| `market-entry.action` | enter, change_mode, exit | escalate |
+| `market-entry.integration_strategy` | FULL, BRAND_PRESERVE, DUAL_BRAND | flat in screening |
+| `marketing.distribution_strategy` | mass_retail, selective_retail, exclusive_retail, direct_online, hybrid | flat in screening |
+| `partnerships.action` | establish, modify, terminate | flat in screening |
+| `plants.action` | build, expand, contract_mfg | escalate |
+| `platforms.method` | in_house, license, partnership | flat in screening |
+| `product-retires.timing` | immediate, end_of_round | flat in screening |
+| `products.positioning` | budget, mainstream, premium, ultra_premium | flat in screening |
+| `rd.method` | in_house, license | flat in screening |
+| `talent.commercial_salary_level` | 1, 2, 3, 4, 5 | escalate |
+| `talent.operations_salary_level` | 1, 2, 3, 4, 5 | flat in screening |
+| `talent.rd_salary_level` | 1, 2, 3, 4, 5 | escalate |
+
+## Formula families — one representative each
+
+Grouped on code evidence, not resemblance.
+
+**esg investment** — representative `esg.environmental_investment`  
+members: `esg.environmental_investment`, `esg.social_investment`  
+evidence: core/engine/costs.py: `strategy_expense += esg.environmental_investment + esg.social_investment` — one line, both fields, same coefficient.
+
+**talent headcount** — representative `talent.rd_headcount`  
+members: `talent.rd_headcount`, `talent.commercial_headcount`, `talent.operations_headcount`  
+evidence: core/engine/costs.py: `for prefix in ['rd','commercial','operations']` then `hc = getattr(talent_decision, f'{prefix}_headcount')` and `pool_salary = hc * salary_base[sl]` — one expression, three pool names.
+
+**talent salary level** — representative `talent.rd_salary_level`  
+members: `talent.rd_salary_level`, `talent.commercial_salary_level`, `talent.operations_salary_level`  
+evidence: core/engine/costs.py indexes one shared salary_base table with `f'{prefix}_salary_level'`.
+
+**talent training budget** — representative `talent.rd_training_budget`  
+members: `talent.rd_training_budget`, `talent.commercial_training_budget`, `talent.operations_training_budget`  
+evidence: core/engine/costs.py and core/engine/talent.py read `f'{prefix}_training_budget'` inside the same pool loop.
+
+That collapses 11 dimensions to 4 measurements. Sweeping all of them would
+have measured the loop rather than the model.
+
+## Interior points — two per monotonic representative
+
+| Dimension | Value | Net income Δ | Revenue Δ | Index Δ |
+|---|---:|---:|---:|---:|
+| `esg.environmental_investment` | 500000 | -483257.62 | 16813.44 | 0.01 |
+| `esg.environmental_investment` | 1000000 | -980407.00 | 19676.16 | -0.01 |
+| `market-entry.initial_investment` | 250000 | -150000.00 | 0.00 | 0.00 |
+| `market-entry.initial_investment` | 750000 | -650000.00 | 0.00 | -0.02 |
+| `marketing.promotion_budget` | 150000 | 247885.45 | -2123.52 | 0.01 |
+| `marketing.promotion_budget` | 600000 | -197882.11 | 2126.88 | 0.00 |
+| `platforms.committed_cost` | 250000 | -150000.00 | 0.00 | 0.00 |
+| `platforms.committed_cost` | 750000 | -650000.00 | 0.00 | -0.02 |
+| `talent.rd_headcount` | 25 | 250000.00 | 0.00 | 0.01 |
+| `talent.rd_headcount` | 75 | -1000000.00 | 0.00 | -0.03 |
+| `talent.rd_training_budget` | 250000 | -250000.00 | 0.00 | 0.00 |
+| `talent.rd_training_budget` | 750000 | -750000.00 | 0.00 | -0.02 |
+
+Every one is monotonic in cost and flat in revenue, which is what an
+accounting cost should look like. No cliff, no reversal.
+
+## Joint mechanisms
+
+### R&D budget x R&D spend
+
+V2-021 moved the capability denominator from the declared budget to a scenario constant. The grid shows whether the declared budget still interacts with spend at all, which a curve through either field alone cannot answer.
+
+Applied portfolio-wide: False. Revenue degenerate across the grid: True.
+
+| Cell | Revenue | Net income Δ | Index Δ |
+|---|---:|---:|---:|
+| rd_budget=1 x amount=0 | 887174.40 | 100000.00 | -0.09 |
+| rd_budget=1 x amount=1000000 | 887174.40 | -900000.00 | 0.87 |
+| rd_budget=1 x amount=2000000 | 887174.40 | -1900000.00 | 1.84 |
+| rd_budget=2000000 x amount=0 | 887174.40 | 100000.00 | -0.09 |
+| rd_budget=2000000 x amount=1000000 | 887174.40 | -900000.00 | 0.87 |
+| rd_budget=2000000 x amount=2000000 | 887174.40 | -1900000.00 | 1.84 |
+| rd_budget=50000000 x amount=0 | 887174.40 | 100000.00 | -0.09 |
+| rd_budget=50000000 x amount=1000000 | 887174.40 | -900000.00 | 0.87 |
+| rd_budget=50000000 x amount=2000000 | 887174.40 | -1900000.00 | 1.84 |
+
+### retail price x production volume
+
+Revenue is price times units sold, and units sold is bounded by both production and demand. Either field alone traces a curve that depends entirely on where the other one was pinned.
+
+Applied portfolio-wide: True. Revenue degenerate across the grid: False.
+
+| Cell | Revenue | Net income Δ | Index Δ |
+|---|---:|---:|---:|
+| retail_price=2000 x production_volume=0 | 0.00 | 4936094.97 | -6.54 |
+| retail_price=2000 x production_volume=20000 | 4224640.00 | 1782461.63 | 0.07 |
+| retail_price=2000 x production_volume=60000 | 4287232.00 | -12705285.35 | -0.09 |
+| retail_price=420 x production_volume=0 | 0.00 | 4936094.97 | -6.54 |
+| retail_price=420 x production_volume=20000 | 887174.40 | -1454880.00 | -0.05 |
+| retail_price=420 x production_volume=60000 | 900318.72 | -15990591.23 | -0.10 |
+| retail_price=50 x production_volume=0 | 0.00 | 4936094.97 | -6.54 |
+| retail_price=50 x production_volume=20000 | 105616.00 | -2212991.65 | -3.16 |
+| retail_price=50 x production_volume=60000 | 107180.80 | -16759935.01 | -3.20 |
+
+**R&D grid.** The declared budget is inert across three orders of magnitude —
+identical index delta at each spend level — which is exactly what V2-021's
+repair should produce, now measured rather than asserted. Revenue is
+degenerate here legitimately: R&D is not a revenue lever within a round.
+
+**Price/volume grid.** Three results: a cliff at volume 0 (index −6.54 at
+every price, the V2-022 inactivity cap firing); demand-bound sales above
+~2,100 units, so tripling production raises revenue ~1.5%; and units sold
+identical across a 40× price range, registered as **V2-023**.
+
+## Every additional evaluation
+
+| Purpose | Evaluations |
 |---|---:|
-| Dimensions planned | 130 |
-| Probes screened | 107 |
-| Probes that moved | 47 |
-| Probes flat | 60 |
-| Unreachable (with rule) | 0 |
-| Not applied (would abort evidence) | 0 |
-| Not screened by rule | 23 |
+| Baseline, resolved twice to show repeatability | 2 |
+| Interior points (6 representatives × 2) | 12 |
+| R&D joint grid (3 × 3) | 9 |
+| Price/volume joint grid (3 × 3) | 9 |
+| **Total** | **32** in 166.9s |
 
-Not screened by rule: 16 reference dimensions (a foreign key naming which
-product, market or feature a row is about — a Stage 3 strategy choice, not a
-magnitude), 5 JSON and 2 text. Each carries its reason in `screening.json`.
+Baseline repeatable: True.
 
-## Baseline metrics (subject team)
+## Remaining uncertainty
 
-| Metric | Value |
-|---|---:|
-| `cash_closing` | 7198822.31 |
-| `index_value` | 56.54 |
-| `net_income` | -16216094.97 |
-| `operating_income` | -15736094.97 |
-| `satisfaction_score` | 0.5772 |
-| `strategy_expense` | 3900000.00 |
-| `total_revenue` | 887174.40 |
+1. **V2-023's mechanism is unconfirmed.** The measurement is solid; the
+   explanation — that relative price scoring leaves a team alone at its
+   positioning free to price without consequence — is a hypothesis. The
+   diagnostic that would have settled it was truncated before recording
+   which positioning group the measured team occupied.
+2. **Everything here is single-round and single-scenario.** Cash advantages
+   compound and capability trade-offs bite over a full game; neither is
+   visible in one round. That is Stage 3's question.
+3. **Escalation thresholds are judgement**, not derived: 10% of baseline net
+   income, 1% of baseline index. Both are recorded in
+   `screening-summary.json` and can be changed without rerunning anything.
 
-## Escalation thresholds
+## Analysis-contract test
 
-- Material money response: **≥0.10** of the subject's own baseline for net income, revenue or closing cash.
-- Material index response: **≥0.01** of the baseline performance index. Tighter than the money threshold on purpose — the
-  index is a ranking scale where teams finish a few points apart — but not zero,
-  because every cost change nudges it through the financial component. The median
-  nudge in this screen was 0.09 on a baseline of 56.54, which is 0.16%.
-- Known exploit-sensitive mechanism, regardless of measured size.
-
-These thresholds are judgement, not measurement. They are recorded in
-`screening-summary.json` so they can be changed without rerunning the screen.
-
-## Verdicts — 44 dimensions: 20 flat, 24 escalate
-
-| Dimension | Kind | Verdict | Reasons |
-|---|---|---|---|
-| `budget.marketing_budget` | numeric | flat in screening | — |
-| `budget.rd_budget` | numeric | escalate | known exploit-sensitive mechanism |
-| `budget.strategy_budget` | numeric | flat in screening | — |
-| `esg.environmental_investment` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `esg.social_investment` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `financing.debt_repayment` | numeric | escalate | material response against the subject baseline |
-| `financing.dividend_per_share` | numeric | escalate | material response against the subject baseline |
-| `financing.new_debt` | numeric | escalate | material response against the subject baseline |
-| `financing.new_equity` | numeric | escalate | material response against the subject baseline |
-| `market-entry.action` | choice | escalate | performance index moved materially |
-| `market-entry.initial_investment` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `market-entry.integration_strategy` | choice | flat in screening | — |
-| `marketing.channel_digital_pct` | numeric | flat in screening | — |
-| `marketing.channel_trade_pct` | numeric | flat in screening | — |
-| `marketing.channel_traditional_pct` | numeric | flat in screening | — |
-| `marketing.demand_estimate` | numeric | flat in screening | — |
-| `marketing.distribution_investment` | numeric | flat in screening | — |
-| `marketing.distribution_strategy` | choice | flat in screening | — |
-| `marketing.production_volume` | numeric | escalate | known exploit-sensitive mechanism, material response against the subject baseline, performance index moved materially |
-| `marketing.promotion_budget` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `marketing.retail_price` | numeric | escalate | known exploit-sensitive mechanism |
-| `marketing.sales_team_count` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `partnerships.action` | choice | flat in screening | — |
-| `partnerships.annual_investment` | numeric | flat in screening | — |
-| `plants.action` | choice | escalate | material response against the subject baseline |
-| `plants.capacity_units` | numeric | flat in screening | — |
-| `plants.contract_mfg_volume` | numeric | flat in screening | — |
-| `platforms.committed_cost` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `platforms.method` | choice | flat in screening | — |
-| `product-retires.timing` | choice | flat in screening | — |
-| `products.positioning` | choice | flat in screening | — |
-| `rd.amount` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `rd.calculated_cost` | numeric | flat in screening | — |
-| `rd.method` | choice | flat in screening | — |
-| `rd.target_level` | numeric | flat in screening | — |
-| `talent.commercial_headcount` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `talent.commercial_salary_level` | choice | escalate | material response against the subject baseline |
-| `talent.commercial_training_budget` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `talent.operations_headcount` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `talent.operations_salary_level` | choice | flat in screening | — |
-| `talent.operations_training_budget` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `talent.rd_headcount` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-| `talent.rd_salary_level` | choice | escalate | material response against the subject baseline |
-| `talent.rd_training_budget` | numeric | escalate | material response against the subject baseline, performance index moved materially |
-
-## Escalated dimensions, with the numbers
-
-| Dimension | Probe | Net income Δ | Revenue Δ | Index Δ |
-|---|---|---:|---:|---:|
-| `budget.rd_budget` | legal_minimum | 0.00 | 0.00 | -0.10 |
-| `budget.rd_budget` | funded_maximum | 0.00 | 0.00 | -0.09 |
-| `esg.environmental_investment` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `esg.environmental_investment` | funded_maximum | -59652267.68 | 0.00 | -0.58 |
-| `esg.social_investment` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `esg.social_investment` | funded_maximum | -59652267.68 | 0.00 | -0.58 |
-| `financing.debt_repayment` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `financing.debt_repayment` | funded_maximum | 0.00 | 0.00 | 0.07 |
-| `financing.dividend_per_share` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `financing.dividend_per_share` | funded_maximum | 0.00 | 0.00 | -0.53 |
-| `financing.new_debt` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `financing.new_debt` | funded_maximum | 0.00 | 0.00 | -0.50 |
-| `financing.new_equity` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `financing.new_equity` | funded_maximum | 0.00 | 0.00 | 0.04 |
-| `market-entry.action` | category:enter | 0.00 | 0.00 | 0.00 |
-| `market-entry.action` | category:change_mode | 150000.00 | 0.00 | 0.92 |
-| `market-entry.action` | category:exit | 130000.00 | 0.00 | 0.92 |
-| `market-entry.initial_investment` | legal_minimum | 100000.00 | 0.00 | 0.01 |
-| `market-entry.initial_investment` | funded_maximum | -59900000.00 | 0.00 | -0.59 |
-| `marketing.production_volume` | legal_minimum | 2182320.00 | 0.00 | 0.08 |
-| `marketing.production_volume` | funded_maximum | -10909417680.00 | 0.00 | -0.59 |
-| `marketing.promotion_budget` | legal_minimum | 396875.03 | -3138.24 | 0.02 |
-| `marketing.promotion_budget` | funded_maximum | -59606965.96 | -6995.52 | -0.60 |
-| `marketing.retail_price` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `marketing.retail_price` | funded_maximum | 0.00 | 0.00 | 0.00 |
-| `marketing.sales_team_count` | legal_minimum | 1000000.00 | 0.00 | 0.04 |
-| `marketing.sales_team_count` | funded_maximum | -5999999000000.00 | 0.00 | -0.59 |
-| `plants.action` | category:build | 0.00 | 0.00 | 0.00 |
-| `plants.action` | category:expand | 3500000.00 | 0.00 | 0.13 |
-| `plants.action` | category:contract_mfg | 3500000.00 | 0.00 | 0.13 |
-| `platforms.committed_cost` | legal_minimum | 100000.00 | 0.00 | 0.01 |
-| `platforms.committed_cost` | funded_maximum | -59900000.00 | 0.00 | -0.59 |
-| `rd.amount` | legal_minimum | 100000.00 | 0.00 | -0.09 |
-| `rd.amount` | funded_maximum | -59900000.00 | 0.00 | 1.31 |
-| `talent.commercial_headcount` | legal_minimum | 299581.78 | -420.00 | 0.01 |
-| `talent.commercial_headcount` | funded_maximum | -2399998800163.94 | -164.64 | -0.59 |
-| `talent.commercial_salary_level` | category:1 | 448511.12 | -1495.20 | 0.02 |
-| `talent.commercial_salary_level` | category:2 | 224267.27 | -735.84 | 0.01 |
-| `talent.commercial_salary_level` | category:3 | 0.00 | 0.00 | 0.00 |
-| `talent.commercial_salary_level` | category:4 | -299287.34 | 715.68 | -0.01 |
-| `talent.commercial_salary_level` | category:5 | -748601.46 | 1404.48 | -0.02 |
-| `talent.commercial_training_budget` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `talent.commercial_training_budget` | funded_maximum | -59997343.44 | 2667.84 | -0.59 |
-| `talent.operations_headcount` | legal_minimum | 162042.67 | 0.00 | 0.01 |
-| `talent.operations_headcount` | funded_maximum | -2399998562654.38 | 0.00 | -0.60 |
-| `talent.operations_training_budget` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `talent.operations_training_budget` | funded_maximum | -59210490.35 | 0.00 | -0.60 |
-| `talent.rd_headcount` | legal_minimum | 500000.00 | 0.00 | 0.02 |
-| `talent.rd_headcount` | funded_maximum | -2399998000000.00 | 0.00 | -0.59 |
-| `talent.rd_salary_level` | category:1 | 750000.00 | 0.00 | 0.03 |
-| `talent.rd_salary_level` | category:2 | 375000.00 | 0.00 | 0.02 |
-| `talent.rd_salary_level` | category:3 | 0.00 | 0.00 | 0.00 |
-| `talent.rd_salary_level` | category:4 | -500000.00 | 0.00 | -0.01 |
-| `talent.rd_salary_level` | category:5 | -1250000.00 | 0.00 | -0.04 |
-| `talent.rd_training_budget` | legal_minimum | 0.00 | 0.00 | 0.00 |
-| `talent.rd_training_budget` | funded_maximum | -60000000.00 | 0.00 | -0.59 |
-
-## Flat in screening
-
-A table stating "flat in screening" is sufficient for these; no dense sweep or
-plot is produced for them.
-
-- `budget.marketing_budget` (numeric)
-- `budget.strategy_budget` (numeric)
-- `market-entry.integration_strategy` (choice)
-- `marketing.channel_digital_pct` (numeric)
-- `marketing.channel_trade_pct` (numeric)
-- `marketing.channel_traditional_pct` (numeric)
-- `marketing.demand_estimate` (numeric)
-- `marketing.distribution_investment` (numeric)
-- `marketing.distribution_strategy` (choice)
-- `partnerships.action` (choice)
-- `partnerships.annual_investment` (numeric)
-- `plants.capacity_units` (numeric)
-- `plants.contract_mfg_volume` (numeric)
-- `platforms.method` (choice)
-- `product-retires.timing` (choice)
-- `products.positioning` (choice)
-- `rd.calculated_cost` (numeric)
-- `rd.method` (choice)
-- `rd.target_level` (numeric)
-- `talent.operations_salary_level` (choice)
-
-## Two corrections made after the run
-
-**The report read a format that no longer existed.** It looked for `control` and
-`probe` keys from the pre-counterfactual design, so every fraction came out
-`None`. Nothing escalated on measurement and the only three dimensions flagged
-were the ones on the hard-coded exploit-sensitive list. It printed a confident
-"41 flat, 3 escalate" while measuring nothing — the same failure as the earlier
-40/40 and 42/42 screens: a component left behind by a format change.
-
-**The index criterion had no threshold**, so any nudge counted. Adding the 1%
-relative threshold moved four dimensions from escalate to flat.
-
-## Not yet done in Stage 2
-
-- Dense sweeps and labelled plots for the 24 escalated dimensions.
-- The two candidate rule probes (`$1 budget / $1 spend`; one-unit revenue bypass
-  of the zero-revenue guards). Harness written, not yet run.
-
-Stage 3 remains blocked on the V2-010/V2-011 rules disposition.
+`core/tests/test_screening_analysis_contract.py` pins a synthetic report with
+known flat, material and below-threshold rows, and fails if the analysis
+reads absent or obsolete keys. It found the real weakness immediately: given
+the previous key layout, or no baseline, `classify()` had been answering
+"flat" — the one answer certainly wrong. It now raises
+`UnreadableScreeningReport`. The same module carries the audit-runner
+regression, since a `SimpleTestCase`-only suite is what exposed the test
+runner installing guards into databases Django never created.

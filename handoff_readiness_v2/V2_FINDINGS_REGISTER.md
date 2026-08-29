@@ -15,6 +15,65 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## V2-010 and V2-011 — closed at `8ddd983` (option A adopted)
+
+**V2-010.** `sc_engine` and `compliance_engine` now use `_cohort_key(game)` =
+`game.section_id or game.id`, the rule `events.py` already applied. Two sections
+of one class previously met the same events and different supply-chain and
+compliance disruptions.
+
+**V2-011.** Each probabilistic operation draws from its own stream, keyed by
+cohort, round, subsystem and the identity of the thing being decided —
+`sc_event_trigger:{template}` and
+`compliance_enforcement:{regime_id}:{team}:{market_code}`. A single sequential
+RNG previously meant draw *n* belonged to whichever combination reached it
+*n*-th, so one team's presence moved another team's outcome.
+
+Team is keyed on `id` rather than `name`, deliberately: instructors can rename a
+team mid-game, and a rename must not resegment that team's stream — so the
+manifest's `(game_id, name)` natural key is the wrong identity here.
+`regime.regime_id` and `market.code` are scenario codes and are used directly.
+`events.py`'s existing `operation_id` strings are untouched, because changing
+them would resegment a stream that prior rounds were replayed against.
+
+12 focused tests. The six required properties are asserted directly; because the
+repaired engines no longer contain a shared sequential RNG, three further tests
+reproduce that pattern in miniature and demonstrate the order-dependence and
+cross-team coupling the keyed scheme does not have.
+
+**RNG-impact gate.** The Stage 2 screen was recorded at `e3654ec`, before this
+change. Rather than rerun it because source moved, the gate resolved the same
+baseline and six representative probes under the repaired RNG: **baseline
+unchanged, 6/6 probe deltas unchanged**, so the 107-probe screen still describes
+the system it claims to and is retained. Narrow claim, stated as such — this is
+evidence that *this fixture's* outputs did not move, not that the repair is
+inconsequential in general. The fixture is a round-1 game where the
+supply-chain and compliance subsystems have little to fire.
+
+## New observation raised by GSP-CRV2-06 Stage 2 characterisation
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-023 | Balance / price response | **P2 pending confirmation** | GSP-CRV2-06 (raised) | In the joint price × volume characterisation, **units sold are identical across a 40× price range**: 2112.32 units at retail prices of 50, 420 and 2000, and 2143.616 units at every price when production rises to 60,000. Revenue is therefore `price x constant`, so raising price from 420 to 2000 multiplies revenue **4.76×** with no volume penalty. The index effect within the round is small (+0.12), because the composite is dominated by non-financial components; the cash effect is not, and cash compounds into later rounds. | `characterisation.json` → `joint["retail price x production volume"]`. Same-team counterfactual from one checkpoint; the baseline resolved twice with zero delta. | Open — mechanism unconfirmed |
+
+**Mechanism hypothesis, not established.** `preference_engine` scores price
+purely relatively: `ratio = team_price / market_avg_price`, where the average is
+taken over *other* teams sharing the product's positioning in that market and
+the team's own price is then appended. Where no rival shares that positioning,
+`prices == [team_price]`, the ratio is 1.0 at any price, and price stops
+affecting demand. A fixture diagnostic confirmed that positioning groups in this
+scenario do vary in size — two teams share `eu/mainstream` and `eu/premium`,
+while `na/mainstream` and `na/premium` hold one team each — but **the diagnostic
+output was truncated before it recorded which group the measured team was in**,
+so the explanation is not confirmed and is offered as a hypothesis only.
+
+Severity is provisional at P2 for that reason. If the mechanism is confirmed it
+is materially worse than P2: a team can choose a positioning nobody else
+occupies and then price without demand consequence, which is a strategy choice
+rather than luck. Confirming it needs one focused probe — vary price for a team
+known to share its positioning, and for one known to be alone — which belongs
+with the Stage 3 search that is currently out of scope.
+
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
 Both measured by same-game transactional counterfactual at `b43c132`: one team,
@@ -219,8 +278,8 @@ published result is never P2.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-010 | RNG cohort key | **P1** | Competition-rules owner (via GSP-CRV2-09) | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore receive the same event stream but different supply-chain and compliance streams. Escalates to **P0** if parallel sections are ever scored against one another, because the disruption exposure they face would differ by construction. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | Open — rules decision required, see disposition below. |
-| V2-011 | Shared RNG stream | **P1** | Competition-rules owner (via GSP-CRV2-09) | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw — one team's presence changes another team's outcome. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | Open — rules decision required, see disposition below. |
+| V2-010 | RNG cohort key | **P1** | GSP-CRV2-06 | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore receive the same event stream but different supply-chain and compliance streams. Escalates to **P0** if parallel sections are ever scored against one another, because the disruption exposure they face would differ by construction. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | **Closed** at `8ddd983` — option A adopted, see below |
+| V2-011 | Shared RNG stream | **P1** | Competition-rules owner (via GSP-CRV2-09) | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw — one team's presence changes another team's outcome. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | **Closed** at `8ddd983` — option A adopted, see below |
 | V2-012 | Iteration order | **P0** | GSP-CRV2-01 (closed) | The first ordering sweep inspected only inline loop iterators, so `rows = X.objects.filter(...)` followed by `for row in rows` was never checked. `_score_entry_mode_risk` iterated an unordered `TeamMarketPresence` scan; a restored database returned two markets in the opposite order, changing `RoundResultCoherence.breakdown` and the competitive hash. A published round did not reproduce. | Cross-environment replay of game 34 round 1: three same-host replays agreed with each other and disagreed with the original resolution; the section diff named `coherence` and the reordered `entry_mode_risk` list. | **Repaired** — 75 further sites ordered; the AST guard now resolves a loop over a local name back to its assignment. |
 | V2-013 | Manifest envelope | **P1** | GSP-CRV2-01 (closed) | The output snapshot held only the competitive sections, so foreign keys pointing at configuration it did not contain (`Team.firm_starter_profile`, `Game.scenario`, `Team.home_market`) fell back to `core.Scenario#surrogate:7`. The competitive hash carried raw sequence values, defeating the surrogate-independence requirement. Never broke a replay, because a restored database reproduces the ids. | Inspect any pre-repair `output_manifest` for `#surrogate:`. | **Repaired** — both envelopes now pull in whatever identity requires; a test forbids `#surrogate:` in either. |
 | V2-014 | Narrative envelope | **P1** | GSP-CRV2-01 (closed) | A narrative section's prose is separated into `narrative_rows` by the snapshot, and the narrative envelope was built from `rows` alone. `narrative_sha256` hashed briefing ids and round numbers, not a word of text — so a replay against a deliberately different model produced an identical narrative hash and the "prose differs, result does not" claim was unverifiable. | Two runs of game 36 round 1 under different endpoints reported the same `narrative_sha256`. | **Repaired** — the envelope carries `prose` and `prose_digests`; tests require that changing a briefing changes the narrative hash and leaves the competitive hash alone. |
