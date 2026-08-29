@@ -157,6 +157,45 @@ class Session:
             self.lock()
 
 
+def sample_activity(database, stop, samples, interval=0.5):
+    """What the database connections are actually doing, twice a second.
+
+    Four hypotheses for the stall have now been eliminated by measurement --
+    the final-minute burst, per-game lock contention, worker cold start and a
+    WAL checkpoint. Rather than propose a fifth, this records state, wait event
+    and query for every connection whenever any of them has been running longer
+    than two seconds, which is what a stall looks like from inside the server.
+    """
+    import subprocess
+    query = (
+        "SELECT state, coalesce(wait_event_type,''), coalesce(wait_event,''), "
+        "round(extract(epoch from (now() - query_start))::numeric, 2), "
+        "left(regexp_replace(query, '\\s+', ' ', 'g'), 110) "
+        "FROM pg_stat_activity WHERE datname = '" + database + "' "
+        "AND state <> 'idle' ORDER BY query_start")
+    while not stop.is_set():
+        try:
+            out = subprocess.run(
+                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            rows = [r for r in out.stdout.strip().splitlines() if r.strip()]
+            parsed = []
+            for row in rows:
+                parts = row.split('|')
+                if len(parts) >= 5:
+                    parsed.append({'state': parts[0], 'wait_type': parts[1],
+                                   'wait_event': parts[2],
+                                   'seconds': float(parts[3] or 0),
+                                   'query': parts[4]})
+            slow = [p for p in parsed if p['seconds'] > 2.0]
+            if slow:
+                samples.append({'at': time.time(), 'connections': len(parsed),
+                                'slow': slow[:6]})
+        except Exception:
+            pass
+        stop.wait(interval)
+
+
 def sample_checkpoints(stop, samples, interval=2.0):
     """Checkpoint activity while the load runs.
 
@@ -217,8 +256,9 @@ def run_profile(base, identities, game_id, round_number, duration,
                                 daemon=True) for s in sessions]
     connection_samples = []
     checkpoint_samples = []
+    activity_samples = []
     stop = threading.Event()
-    sampler = checkpointer = None
+    sampler = checkpointer = activity_sampler = None
     if database:
         sampler = threading.Thread(target=sample_database,
                                    args=(database, stop, connection_samples),
@@ -228,6 +268,10 @@ def run_profile(base, identities, game_id, round_number, duration,
                                         args=(stop, checkpoint_samples),
                                         daemon=True)
         checkpointer.start()
+        activity_sampler = threading.Thread(
+            target=sample_activity, args=(database, stop, activity_samples),
+            daemon=True)
+        activity_sampler.start()
 
     started = time.time()
     for t in threads:
@@ -236,7 +280,7 @@ def run_profile(base, identities, game_id, round_number, duration,
         t.join(timeout=duration + 600)
     elapsed = time.time() - started
     stop.set()
-    for thread in (sampler, checkpointer):
+    for thread in (sampler, checkpointer, activity_sampler):
         if thread:
             thread.join(timeout=15)
 
@@ -294,6 +338,11 @@ def run_profile(base, identities, game_id, round_number, duration,
         }
 
     return {
+        'slow_activity_windows': [
+            {'seconds_into_run': round(sample['at'] - origin, 1),
+             'connections': sample['connections'], 'slow': sample['slow']}
+            for sample in activity_samples][:12],
+        'slow_activity_window_count': len(activity_samples),
         'checkpoints': checkpoints,
         'timeline_per_second': timeline,
         'slowest_seconds': sorted(timeline, key=lambda b: -b['max_ms'])[:8],

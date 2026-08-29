@@ -159,6 +159,13 @@ def main():
     print(f"per-kind max    : {result['per_kind_max']}")
     print(f"per-phase p95   : {result['per_phase_p95']}")
     print(f"checkpoints     : {result.get('checkpoints')}")
+    print(f"slow db windows : {result.get('slow_activity_window_count')}")
+    for window in (result.get('slow_activity_windows') or [])[:4]:
+        print(f"  at {window['seconds_into_run']:>6.1f}s  "
+              f"{window['connections']} active")
+        for row in window['slow'][:3]:
+            print(f"      {row['seconds']:>6.2f}s {row['state']:<12} "
+                  f"{row['wait_type']}/{row['wait_event']:<16} {row['query'][:80]}")
     ss = result.get('server_side_timing', {})
     print(f"server-side     : {ss}")
     print(f"slowest seconds : "
