@@ -113,6 +113,15 @@ Applied portfolio-wide: False. Revenue degenerate across the grid: True.
 
 ### retail price x production volume
 
+> **Superseded by the V2-023 rules change.** The grid below was measured under
+> the old price rule, where a team alone in its positioning group had no price
+> response at all. It is kept as the record of what Stage 2 actually saw --
+> it is how V2-023 was found -- and it no longer describes the engine. Under
+> the adopted rule the same cells at production 20,000 read 84,980.80 at $50,
+> 887,174.40 at $420 and 3,373,840.00 at $2,000, which is 1699.62 / 2112.32 /
+> 1686.92 units where all three were 2112.32 before. See the V2-023 entry in
+> `V2_FINDINGS_REGISTER.md` for the repair and its evidence.
+
 Revenue is price times units sold, and units sold is bounded by both production and demand. Either field alone traces a curve that depends entirely on where the other one was pinned.
 
 Applied portfolio-wide: True. Revenue degenerate across the grid: False.
@@ -137,7 +146,9 @@ degenerate here legitimately: R&D is not a revenue lever within a round.
 **Price/volume grid.** Three results: a cliff at volume 0 (index −6.54 at
 every price, the V2-022 inactivity cap firing); demand-bound sales above
 ~2,100 units, so tripling production raises revenue ~1.5%; and units sold
-identical across a 40× price range, registered as **V2-023**.
+identical across a 40× price range, registered as **V2-023** and since
+confirmed, repaired and closed. The first two results are unaffected by that
+repair; the third is the finding it closed.
 
 ## Every additional evaluation
 

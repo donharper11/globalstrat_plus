@@ -54,7 +54,7 @@ supply-chain and compliance subsystems have little to fire.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-023 | Balance / price response | **P1 confirmed** | GSP-CRV2-06 (raised), confirmed by the Stage 3 entry gate | A team alone in its positioning group has **no price response at all**. Fixed production, one price swept: price fit is 0.5000 at $50, $420 and $2,000; units sold are 3600.37 at all three; revenue is `price x constant`, 19,874.04 -> 794,961.70 across a 40x price rise, with index 53.17 -> 56.34. At segment granularity every fit, share and new-adopter figure is byte-identical across the three prices. A team sharing its positioning does respond, non-monotonically: units 979.52 / 1316.16 / 967.07 at the same three prices. | `v2-023-gate.json`. Same-game transactional counterfactual; baseline exactly repeatable; every mutation proved to land on the intended product/market row. Reproduced across two independent fixture builds with different team names and identical metrics. | **Open — awaiting rules disposition. Stage 3 search is stopped.** |
+| V2-023 | Balance / price response | **P1 closed by rules change** | GSP-CRV2-06 (raised, confirmed and repaired) | A team alone in its positioning group had no price response at all: price fit 0.5000 and units 3600.37 at \$50, \$420 and \$2,000 alike, with revenue rising fortyfold. Repaired by scoring price against a scenario-authored reference. Post-repair both the isolated and the shared team score 1.0000 / 0.5000 / 0.0000 at those three prices -- identical to each other, strictly decreasing -- and units respond for both. | `v2-023-gate.json` and `characterisation.json`, both re-run at `9bc73b2`. | **Closed.** Rule adopted, implemented, migrated and tested. |
 
 **Mechanism confirmed.** `backend/core/engine/preference_engine.py:288`,
 `_derive_price_competitiveness`, averages over teams sharing the product's
@@ -103,6 +103,66 @@ Three candidate dispositions, in the order they were offered:
 
 Option 2 is the builder's recommendation. Any of the three changes scoring for
 every existing scenario, so the choice is the rules owner's.
+
+**Repair, and the evidence for it.** The adopted disposition scores price
+against a scenario-authored reference:
+
+```
+price_ratio = team_retail_price / scenario_reference_price
+price_competitiveness = clamp(f_max * (1.5 - price_ratio), f_min, f_max)
+```
+
+The reference is seeded at $420 -- the established baseline price, and the
+price at which the old relative rule and the new absolute one agree, so a team
+playing the documented baseline scores as it did before. Migration `0074` writes
+it to existing scenarios and the three scenario YAMLs carry it for fresh loads.
+`ScenarioConfig` is already an input and config manifest section, so the
+reference is inside the deterministic input envelope by construction rather than
+by addition. A missing, zero or negative reference fails the round closed in
+`advance_round`'s precondition block, before the first competitive write; there
+is deliberately no fallback to a team or cohort price, because that fallback is
+the defect.
+
+Re-run gate, both subjects:
+
+| | $50 | $420 | $2,000 |
+|---|---|---|---|
+| price fit, isolated team | 1.0000 | 0.5000 | 0.0000 |
+| price fit, shared team | 1.0000 | 0.5000 | 0.0000 |
+| units, isolated team | 2584.99 | 3600.37 | 2569.01 |
+| units, shared team | 1064.87 | 1434.51 | 1052.33 |
+
+The isolated team's units were constant at 3600.37 across that whole range
+before the change. Both teams now score identically at identical prices, which
+is the independence property the disposition required.
+
+Re-run price x production grid, at production 20,000. The grid records revenue
+rather than units, and sets one price on every row, so units are revenue divided
+by price exactly:
+
+| price | revenue | implied units |
+|---|---|---|
+| $50 | 84,980.80 | 1699.62 |
+| $420 | 887,174.40 | 2112.32 |
+| $2,000 | 3,373,840.00 | 1686.92 |
+
+Units were 2112.32 at all three prices before; they now fall about 20% at both
+extremes. The composite index also stops rewarding price monotonically: it is
+56.49 at the reference and 56.43 at $2,000, where before it rose from 53.17 to
+56.34 with price.
+
+Units fall at the cheap end as well as the dear end because segment preference
+for price competitiveness is a gaussian ideal-point match rather than
+more-is-better. That is pre-existing scenario design, not something this
+disposition introduced.
+
+**What the repair does not do, stated plainly.** Revenue still rises with price
+across the swept range, and net income at $2,000 is about $2.4M better than at
+$420. Demand is inelastic enough over this range that a high price still pays,
+for every team equally. That is a balance property for the Stage 3 search to
+characterise, not the V2-023 defect: the defect was that one class of team faced
+no price response at all, and that is closed. Recording it so the closure is not
+read as covering more than it does.
 
 **Gate integrity note.** The gate refused five times before producing evidence:
 a stale primary key, outcomes read after the rollback, a decimal string
