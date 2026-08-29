@@ -132,9 +132,25 @@ class Session:
             f'round/{self.round_number}/lock/', self.token, {}, request_id)
         self.record('lock', result)
 
-    def run(self, duration, final_minute_writes):
+    def run(self, duration, final_minute_writes, ready=None, start=None):
+        """Authenticate, wait for the cohort, then drive the timed window.
+
+        Login is deliberately outside the measured window. Ninety-six
+        simultaneous PBKDF2 verifications took a p50 of 18 seconds and produced
+        no interactive request before second 22 of the run: every interactive
+        figure reported before this change was measuring the aftermath of a
+        sign-in storm rather than a decision round. The storm is a real and
+        important deployment characteristic and is reported in its own right --
+        it is just not what "p95 for a decision save" is supposed to mean.
+        """
         if not self.login():
+            if ready is not None:
+                ready.wait()
             return
+        if ready is not None:
+            ready.wait()          # every session authenticated
+        if start is not None:
+            start.wait()          # measurement window opens together
         deadline = time.time() + duration
         sequence = 0
         rng = random.Random(self.identity['username'])
@@ -251,9 +267,14 @@ def run_profile(base, identities, game_id, round_number, duration,
                 final_minute_writes=3, verbose=True, database=None):
     sessions = [Session(base, identity, game_id, round_number)
                 for identity in identities]
-    threads = [threading.Thread(target=s.run,
-                                args=(duration, final_minute_writes),
-                                daemon=True) for s in sessions]
+    # A barrier rather than a sleep: the window opens when the cohort is
+    # actually authenticated, however long that takes, so the measurement never
+    # silently overlaps the sign-in burst.
+    ready = threading.Barrier(len(sessions))
+    start = threading.Barrier(len(sessions))
+    threads = [threading.Thread(
+        target=s.run, args=(duration, final_minute_writes, ready, start),
+        daemon=True) for s in sessions]
     connection_samples = []
     checkpoint_samples = []
     activity_samples = []
@@ -273,12 +294,19 @@ def run_profile(base, identities, game_id, round_number, duration,
             daemon=True)
         activity_sampler.start()
 
-    started = time.time()
+    launched = time.time()
     for t in threads:
         t.start()
+    # Elapsed is measured from the first interactive request, not from launch,
+    # so throughput describes the decision round rather than the sign-in.
     for t in threads:
-        t.join(timeout=duration + 600)
-    elapsed = time.time() - started
+        t.join(timeout=duration + 900)
+    interactive_times = [s['at'] for session in sessions
+                         for s in session.samples
+                         if s['kind'] != 'login']
+    started = min(interactive_times) if interactive_times else launched
+    elapsed = (max(interactive_times) - started) if interactive_times else 1.0
+    sign_in_seconds = round(started - launched, 1)
     stop.set()
     for thread in (sampler, checkpointer, activity_sampler):
         if thread:
@@ -354,6 +382,8 @@ def run_profile(base, identities, game_id, round_number, duration,
 
     return {
         'login': login_stats,
+        'sign_in_window_seconds': sign_in_seconds,
+        'measurement_excludes_sign_in': True,
         'slow_activity_windows': [
             {'seconds_into_run': round(sample['at'] - origin, 1),
              'connections': sample['connections'], 'slow': sample['slow']}
