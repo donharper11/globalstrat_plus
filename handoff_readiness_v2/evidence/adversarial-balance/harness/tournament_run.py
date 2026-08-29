@@ -44,6 +44,14 @@ def main():
         report = json.loads(result.stdout.split(marker, 1)[1].strip().splitlines()[0])
         report['code_revision'] = revision
 
+        if not report['neutral_matches_baseline']:
+            raise SystemExit(
+                f"REFUSED: the neutral candidate scores "
+                f"{report['neutral_advantage']} against the competent "
+                f"baseline, not 0. The genome that is supposed to *be* the "
+                f"baseline has drifted from it, so every candidate carries a "
+                f"handicap and the table measures that handicap.")
+
         if report['illegal_payloads']:
             raise SystemExit(
                 f"REFUSED: these payloads are illegal under the final rules "
@@ -80,6 +88,8 @@ def main():
         print(f"incumbent          : {report['incumbent']['name']} "
               f"(legal payload: "
               f"{report['incumbent_contract']['incumbent']['legal']})")
+        print(f"neutral advantage  : {report['neutral_advantage']} "
+              f"(matches baseline: {report['neutral_matches_baseline']})")
         print(f"payload contract   : "
               f"{len(report['payload_contract'])} payloads checked, "
               f"{len(report['illegal_payloads'])} illegal")

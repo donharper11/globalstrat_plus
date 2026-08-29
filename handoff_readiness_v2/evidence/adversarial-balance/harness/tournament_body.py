@@ -110,6 +110,18 @@ def run(verbose=True):
     report['discovery_baseline_repeatable'] = (
         competent_repeat == competent_baseline)
 
+    # The neutral genome must be the baseline. If it is not, every candidate
+    # built from it carries a handicap nobody chose, and the whole table
+    # measures that handicap. This has happened once already -- NEUTRAL kept
+    # load_demo's headcounts after the baseline moved to the authored optima,
+    # and fifteen candidates each paid -2.92 for it.
+    neutral_fitness = S.score(
+        S.evaluate(game, subject, T.NEUTRAL, lambda t: None),
+        subject.id, competent_baseline)
+    report['evaluations']['discovery_candidates'] += 1
+    report['neutral_advantage'] = neutral_fitness['advantage']
+    report['neutral_matches_baseline'] = (neutral_fitness['advantage'] == 0.0)
+
     first_pass = []
     for candidate in T.CANDIDATES:
         fitness = S.score(

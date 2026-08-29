@@ -50,10 +50,16 @@ NEUTRAL = {
     'promotion_multiplier': 1.0, 'rd_budget': 2_000_000.0,
     'marketing_budget': 3_000_000.0, 'strategy_budget': 1_000_000.0,
     'research_budget': 500_000.0, 'distribution_investment': 200_000.0,
-    'sales_team_count': 10, 'rd_headcount': 50, 'commercial_headcount': 30,
-    'operations_headcount': 40, 'environmental_investment': 0.0,
+    'sales_team_count': 10, 'environmental_investment': 0.0,
     'social_investment': 0.0,
 }
+# The headcount genes are deliberately absent. NEUTRAL means "the documented
+# baseline as a genome", and the baseline staffs each pool at the scenario's
+# authored optimum, which is a scenario value rather than a constant. Carrying
+# load_demo's 50/30/40 here handed every candidate built from NEUTRAL a -2.92
+# handicap it never chose, and the tournament measured fifteen strategies all
+# paying it. A gene omitted from a genome now leaves the baseline value, so
+# NEUTRAL tracks the baseline instead of restating it.
 
 
 def _from(base, **overrides):

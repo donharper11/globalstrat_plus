@@ -118,10 +118,14 @@ def write_candidate(submission, team, genome):
         row.distribution_channel_detail = detail
         row.save()
 
+    # A gene the genome does not carry keeps whatever the baseline wrote. That
+    # is what lets NEUTRAL stay equal to the baseline when a scenario-derived
+    # baseline value changes, instead of silently diverging from it.
     talent = DecisionTalent.objects.get(submission=submission)
-    talent.rd_headcount = int(genome['rd_headcount'])
-    talent.commercial_headcount = int(genome['commercial_headcount'])
-    talent.operations_headcount = int(genome['operations_headcount'])
+    for pool in ('rd', 'commercial', 'operations'):
+        key = f'{pool}_headcount'
+        if key in genome:
+            setattr(talent, key, int(genome[key]))
     talent.save()
 
     esg = DecisionESG.objects.get(submission=submission)
