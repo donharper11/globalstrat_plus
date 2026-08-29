@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the V2-025 attribution set against a disposable database."""
+"""Run the early-lead lock-in probe against a disposable database."""
 import datetime, json, pathlib, subprocess, sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -18,9 +18,6 @@ print("---EARLY-LEAD-JSON---")
 print(json.dumps(report, default=str))
 '''
 
-FIELDS = ('strategy_expense', 'total_revenue', 'capability', 'satisfaction',
-          'net_income', 'index_value')
-
 
 def main():
     dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no'],
@@ -30,6 +27,7 @@ def main():
     if dirty:
         raise SystemExit('Refusing to record evidence from a dirty tree:\n  '
                          + '\n  '.join(dirty.splitlines()))
+
     database = f"gsp_lead_{datetime.datetime.now():%Y%m%d%H%M%S}"
     print(f'Creating disposable database {database}')
     if R.psql('postgres', f'CREATE DATABASE {database}').returncode != 0:
@@ -46,40 +44,12 @@ def main():
         report = json.loads(result.stdout.split(marker, 1)[1].strip().splitlines()[0])
         report['code_revision'] = revision
 
-        (EVIDENCE / 'early-lead-probe.json').write_text(
-            json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')
-        listed = checksums.regenerate(EVIDENCE)
-        bad = checksums.verify(EVIDENCE)
-        if bad:
-            raise SystemExit(f'inventory does not verify: {bad}')
-
+        # The probe's own precondition: without a lead there is no lock-in to
+        # test, and a margin series from a strategy that never led says nothing.
         if not report['lead_was_established']:
             raise SystemExit(
                 'REFUSED: the front-loaded strategy never established a lead, '
-                'so there is no lock-in to test. A probe that cannot get '
-                'ahead cannot say whether being ahead is self-sustaining.')
-
-        (EVIDENCE / 'early-lead-probe.json').write_text(
-            json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')
-        listed = checksums.regenerate(EVIDENCE)
-        bad = checksums.verify(EVIDENCE)
-        if bad:
-            raise SystemExit(f'inventory does not verify: {bad}')
-
-        if not report['all_mutations_reached_their_row']:
-            missed = [n for n, a in report['arms'].items()
-                      if 'proof' in a and a['proof']
-                      and not a['proof'].get('reached_row')]
-            raise SystemExit(
-                f"REFUSED: these mutations did not reach their persisted row, "
-                f"so their ledgers mean nothing: {missed}")
-
-        (EVIDENCE / 'early-lead-probe.json').write_text(
-            json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')
-        listed = checksums.regenerate(EVIDENCE)
-        bad = checksums.verify(EVIDENCE)
-        if bad:
-            raise SystemExit(f'inventory does not verify: {bad}')
+                'so there is no lock-in to test.')
 
         (EVIDENCE / 'early-lead-probe.json').write_text(
             json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')
@@ -102,8 +72,8 @@ def main():
               f"{report['peak_margin_while_front_loading']}")
         print(f"final margin after reverting    : "
               f"{report['final_margin_after_reverting']}")
-        print(f"lead was established            : "
-              f"{report['lead_was_established']}")
+        print(f"margin by round after revert    : "
+              f"{report['margin_by_round_after_revert']}")
         print(f"margin erodes after revert      : "
               f"{report['margin_erodes_after_revert']}")
         print(f"margin never decreases after    : "
