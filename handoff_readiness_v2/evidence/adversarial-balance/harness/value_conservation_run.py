@@ -100,6 +100,12 @@ def main():
             print(f"    why           : {a['why']}")
             print(f"    proof         : {a['proof']}")
             print(f"    creates value : {a['creates_value']}")
+            if 'sales_really_are_zero' in a:
+                print(f"    sales at zero : {a['sales_really_are_zero']}  "
+                      f"cash+inv by round: "
+                      f"{a['cash_plus_inventory_by_round']}")
+            if a.get('inconclusive'):
+                print(f"    INCONCLUSIVE  : {a['inconclusive']}")
             for rnd_no, d in sorted(a['delta_vs_control'].items()):
                 print(f"      round {rnd_no} delta: cash "
                       f"{d.get('cash_closing'):>16}  inventory "

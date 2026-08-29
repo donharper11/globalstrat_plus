@@ -8,63 +8,63 @@
       "unexercisable": "the subject sells only in its home currency (USD), so it has no foreign exposure and every hedge is skipped by design. The FX mechanism cannot be exercised for this team in this fixture and is not claimed as passing."
     },
     "inventory_build_carry_no_sales": {
-      "creates_value": false,
+      "creates_value": true,
       "delta_vs_control": {
         "1": {
-          "cash_closing": "-12807545.88",
-          "cash_plus_inventory": "-6351535.09",
-          "inventory_value": "6456010.79",
-          "net_income": "-6351535.09",
-          "operating_income": "-6351535.09",
+          "cash_closing": "62010.00",
+          "cash_plus_inventory": "1313810.00",
+          "inventory_value": "1251800.00",
+          "net_income": "1313810.00",
+          "operating_income": "1313810.00",
           "strategy_expense": "0.00",
-          "total_revenue": "942335.52"
+          "total_revenue": "4000000.00"
         },
         "2": {
-          "cash_closing": "-21838544.14",
-          "cash_plus_inventory": "-15490402.15",
-          "inventory_value": "6348141.99",
-          "net_income": "-9138867.06",
-          "operating_income": "-9138867.06",
+          "cash_closing": "5065834.00",
+          "cash_plus_inventory": "6065034.00",
+          "inventory_value": "999200.00",
+          "net_income": "4751224.00",
+          "operating_income": "4751224.00",
           "strategy_expense": "0.00",
-          "total_revenue": "2617203.16"
+          "total_revenue": "6787200.00"
         },
         "3": {
-          "cash_closing": "-26477946.36",
-          "cash_plus_inventory": "-22105950.58",
-          "inventory_value": "4371995.78",
-          "net_income": "-6615548.43",
-          "operating_income": "-6615548.43",
+          "cash_closing": "10366614.00",
+          "cash_plus_inventory": "11103014.00",
+          "inventory_value": "736400.00",
+          "net_income": "5037980.00",
+          "operating_income": "5037980.00",
           "strategy_expense": "0.00",
-          "total_revenue": "2742064.14"
+          "total_revenue": "6720000.00"
         }
       },
       "ledger": {
         "1": {
-          "cash_closing": "1312454.12",
-          "cash_plus_inventory": "7768464.91",
-          "inventory_value": "6456010.79",
-          "net_income": "-20731535.09",
-          "operating_income": "-20251535.09",
+          "cash_closing": "19322010.00",
+          "cash_plus_inventory": "20573810.00",
+          "inventory_value": "1251800.00",
+          "net_income": "-11426190.00",
+          "operating_income": "-11126190.00",
           "strategy_expense": "5100000.00",
-          "total_revenue": "942335.52"
+          "total_revenue": "4000000.00"
         },
         "2": {
-          "cash_closing": "-53248544.14",
-          "cash_plus_inventory": "-46900402.15",
-          "inventory_value": "6348141.99",
-          "net_income": "-26318867.06",
-          "operating_income": "-25838867.06",
+          "cash_closing": "-6164166.00",
+          "cash_plus_inventory": "-5164966.00",
+          "inventory_value": "999200.00",
+          "net_income": "-9538776.00",
+          "operating_income": "-9238776.00",
           "strategy_expense": "4850000.00",
-          "total_revenue": "2617203.16"
+          "total_revenue": "6787200.00"
         },
         "3": {
-          "cash_closing": "-103667946.36",
-          "cash_plus_inventory": "-99295950.58",
-          "inventory_value": "4371995.78",
-          "net_income": "-26880548.43",
-          "operating_income": "-26400548.43",
+          "cash_closing": "-31463386.00",
+          "cash_plus_inventory": "-30726986.00",
+          "inventory_value": "736400.00",
+          "net_income": "-10982020.00",
+          "operating_income": "-10682020.00",
           "strategy_expense": "5100000.00",
-          "total_revenue": "2742064.14"
+          "total_revenue": "6720000.00"
         }
       },
       "proof": {
@@ -74,48 +74,177 @@
       "why": "build and carry stock across rounds with sales at zero; closing cash plus inventory value must not rise without an external inflow, and the same stock must not be monetised twice"
     },
     "sourcing_commitment_zero_production": {
-      "unexercisable": "the scenario declares no suppliers"
+      "creates_value": false,
+      "delta_vs_control": {
+        "1": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "ledger": {
+        "1": {
+          "cash_closing": "19260000.00",
+          "cash_plus_inventory": "19260000.00",
+          "inventory_value": "0.00",
+          "net_income": "-12740000.00",
+          "operating_income": "-12440000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "-11230000.00",
+          "cash_plus_inventory": "-11230000.00",
+          "inventory_value": "0.00",
+          "net_income": "-14290000.00",
+          "operating_income": "-13990000.00",
+          "strategy_expense": "4850000.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "-41830000.00",
+          "cash_plus_inventory": "-41830000.00",
+          "inventory_value": "0.00",
+          "net_income": "-16020000.00",
+          "operating_income": "-15720000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "proof": {
+        "allocation_pct": 100,
+        "reached_row": true,
+        "volume_commitment_units": 500000
+      },
+      "why": "supplier allocation and volume commitment with production and sales at zero; must not create inventory, revenue or a negative expense"
     },
     "trade_finance_instrument_cycled": {
-      "unexercisable": "the scenario declares no TradeFinanceInstrument rows, so buyer_payment_instrument has no legal value: the write serializer validates against that catalogue. The mechanism cannot be exercised in this scenario and is not claimed as passing."
+      "creates_value": false,
+      "delta_vs_control": {
+        "1": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "ledger": {
+        "1": {
+          "cash_closing": "19260000.00",
+          "cash_plus_inventory": "19260000.00",
+          "inventory_value": "0.00",
+          "net_income": "-12740000.00",
+          "operating_income": "-12440000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "-11230000.00",
+          "cash_plus_inventory": "-11230000.00",
+          "inventory_value": "0.00",
+          "net_income": "-14290000.00",
+          "operating_income": "-13990000.00",
+          "strategy_expense": "4850000.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "-41830000.00",
+          "cash_plus_inventory": "-41830000.00",
+          "inventory_value": "0.00",
+          "net_income": "-16020000.00",
+          "operating_income": "-15720000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "proof": {
+        "instrument": "letter_of_credit",
+        "reached_row": true
+      },
+      "why": "cycle the legal instrument while the trade is held constant; fees, coverage and settlement must not duplicate proceeds or turn a cost into income"
     }
   },
-  "arms_creating_value": [],
-  "code_revision": "e1705bcf3bba1fa84bde392300f50a149d104158",
+  "arms_creating_value": [
+    "inventory_build_carry_no_sales"
+  ],
+  "code_revision": "8cb86e0e27a64829d15cdee455a7c1e3a79654bb",
   "control": {
     "ledger": {
       "1": {
-        "cash_closing": "14120000.00",
-        "cash_plus_inventory": "14120000.00",
+        "cash_closing": "19260000.00",
+        "cash_plus_inventory": "19260000.00",
         "inventory_value": "0.00",
-        "net_income": "-14380000.00",
-        "operating_income": "-13900000.00",
+        "net_income": "-12740000.00",
+        "operating_income": "-12440000.00",
         "strategy_expense": "5100000.00",
         "total_revenue": "0.00"
       },
       "2": {
-        "cash_closing": "-31410000.00",
-        "cash_plus_inventory": "-31410000.00",
+        "cash_closing": "-11230000.00",
+        "cash_plus_inventory": "-11230000.00",
         "inventory_value": "0.00",
-        "net_income": "-17180000.00",
-        "operating_income": "-16700000.00",
+        "net_income": "-14290000.00",
+        "operating_income": "-13990000.00",
         "strategy_expense": "4850000.00",
         "total_revenue": "0.00"
       },
       "3": {
-        "cash_closing": "-77190000.00",
-        "cash_plus_inventory": "-77190000.00",
+        "cash_closing": "-41830000.00",
+        "cash_plus_inventory": "-41830000.00",
         "inventory_value": "0.00",
-        "net_income": "-20265000.00",
-        "operating_income": "-19785000.00",
+        "net_income": "-16020000.00",
+        "operating_income": "-15720000.00",
         "strategy_expense": "5100000.00",
         "total_revenue": "0.00"
       }
     },
     "proof": {}
   },
-  "elapsed_seconds": 35.2,
-  "evaluations": 2,
+  "elapsed_seconds": 71.8,
+  "evaluations": 4,
   "field_inventory": {
     "fx": {
       "engine_effect": "fx_engine.process_fx_hedges opens a short position sized exposure x hedge_ratio/100, charges a premium of fx_hedge_premium_bps on the notional immediately, marks to market each round and books realised P&L at maturity into context.sc_fx_hedge_pnl, which financials adds to pre-tax income. A hedge is skipped entirely when exposure <= 0.",
@@ -155,24 +284,51 @@
       "model": "TradeFinanceDecision / SinosureEnrollment"
     }
   },
+  "fixture_contract": {
+    "compliance": {
+      "model": "core.ComplianceRegime",
+      "reachable": true,
+      "rows": 5,
+      "why": "Compliance enforcement needs at least one regime."
+    },
+    "logistics": {
+      "model": "core.ShippingLane",
+      "reachable": true,
+      "rows": 20,
+      "why": "Logistics decisions name a lane."
+    },
+    "sourcing": {
+      "model": "core.Supplier",
+      "reachable": true,
+      "rows": 25,
+      "why": "SourcingAllocation.supplier is a required FK; with no Supplier rows no allocation can be written at all."
+    },
+    "trade_finance": {
+      "model": "core.TradeFinanceInstrument",
+      "reachable": true,
+      "rows": 6,
+      "why": "buyer_payment_instrument is validated against this catalogue, so an empty catalogue leaves the field with no legal value."
+    }
+  },
+  "fixture_contract_holds": true,
   "identity": 985805,
   "inconclusive_arms": [],
   "rounds": 3,
+  "scenario": "Consumer Electronics 2026",
+  "scenario_id": 2,
   "scenario_supports": {
     "foreign_currencies": [],
     "home_currency": "USD",
     "subject_currencies": [
       "USD"
     ],
-    "suppliers": 0,
-    "trade_finance_instruments": 0
+    "suppliers": 2,
+    "trade_finance_instruments": 6
   },
   "seed": "crv2-06-value-conservation",
-  "subject_team": "Solaris Power",
+  "subject_team": "Cipher Systems",
   "unexercisable_arms": [
     "fx_no_exposure_max_hedge",
-    "fx_two_pairs_one_exposure",
-    "sourcing_commitment_zero_production",
-    "trade_finance_instrument_cycled"
+    "fx_two_pairs_one_exposure"
   ]
 }

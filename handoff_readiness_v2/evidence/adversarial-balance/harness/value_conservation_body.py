@@ -117,6 +117,38 @@ def run(verbose=True):
         id__in=TeamProductMarket.objects.filter(
             team_product__team=subject, is_active=True
         ).values_list('market_id', flat=True)))
+    # If the subject sells only at home there is no foreign exposure and every
+    # hedge is skipped by design -- which measures the skip, not the hedge. The
+    # fixture opens one foreign market for the subject so the FX mechanism can
+    # be exercised at all, using the project's own presence and product-market
+    # rows rather than inventing engine state.
+    home_market = subject.home_market
+    if not any(m.currency_code != home_market.currency_code
+               for m in sold_markets):
+        from core.models.team_state import TeamMarketPresence
+        foreign_market = (MarketDefinition.objects
+                          .filter(scenario=game.scenario)
+                          .exclude(currency_code=home_market.currency_code)
+                          .order_by('id').first())
+        if foreign_market is not None:
+            TeamMarketPresence.objects.get_or_create(
+                team=subject, market=foreign_market,
+                defaults={'status': 'active', 'entry_round': 1})
+            TeamMarketPresence.objects.filter(
+                team=subject, market=foreign_market).update(status='active')
+            for tp in TeamProduct.objects.filter(
+                    team=subject, status='active'):
+                TeamProductMarket.objects.get_or_create(
+                    team_product=tp, market=foreign_market,
+                    defaults={'is_active': True})
+                TeamProductMarket.objects.filter(
+                    team_product=tp, market=foreign_market).update(
+                        is_active=True)
+            sold_markets = list(MarketDefinition.objects.filter(
+                id__in=TeamProductMarket.objects.filter(
+                    team_product__team=subject, is_active=True
+                ).values_list('market_id', flat=True)))
+
     subject_currencies = sorted({m.currency_code for m in sold_markets})
     home_currency = (subject.home_market.currency_code
                      if subject.home_market else None)
@@ -350,11 +382,38 @@ def run(verbose=True):
         return {'reached_row': row is not None,
                 'buffer_days': getattr(row, 'buffer_days', None)}
 
-    arm('inventory_build_carry_no_sales', inventory_build, inventory_prove,
-        production_volume=20000,
-        why='build and carry stock across rounds with sales at zero; closing '
-            'cash plus inventory value must not rise without an external '
-            'inflow, and the same stock must not be monetised twice')
+    # Sales are held at zero by pricing far above every tier reference, where
+    # the V2-023 elasticity leaves demand at effectively nothing. Setting
+    # demand_estimate to zero does not do it: that is a team's forecast, not a
+    # constraint, and the first run of this arm sold its whole production and
+    # reported ordinary trading revenue as value creation.
+    def inventory_build_no_sales(rnd, submission, team):
+        inventory_build(rnd, submission, team)
+        for row in DecisionMarketing.objects.filter(submission=submission):
+            row.retail_price = D(str(row.retail_price)) * D('1000')
+            row.save(update_fields=['retail_price'])
+
+    result = arm('inventory_build_carry_no_sales', inventory_build_no_sales,
+                 inventory_prove, production_volume=20000,
+                 why='build and carry stock across rounds with sales held at '
+                     'zero by pricing out of the market; closing cash plus '
+                     'inventory value must not rise without an external '
+                     'inflow, and the same stock must not be monetised twice')
+
+    # The claim is absolute, not relative to a control that produces nothing:
+    # with no sales and real costs, cash plus inventory can only fall.
+    ledger = result['ledger']
+    revenues = [D(row['total_revenue']) for row in ledger.values()]
+    totals = [D(ledger[k]['cash_plus_inventory']) for k in sorted(ledger)]
+    result['sales_really_are_zero'] = all(r == 0 for r in revenues)
+    result['cash_plus_inventory_by_round'] = [str(t) for t in totals]
+    result['value_conserved'] = all(
+        later <= earlier for earlier, later in zip(totals, totals[1:]))
+    result['creates_value'] = not result['value_conserved']
+    if not result['sales_really_are_zero']:
+        result['inconclusive'] = (
+            'revenue was not zero, so this did not test carrying stock '
+            'without sales')
 
     # ---- Trade finance: unexercisable if the catalogue is empty ----------
     if instruments:
