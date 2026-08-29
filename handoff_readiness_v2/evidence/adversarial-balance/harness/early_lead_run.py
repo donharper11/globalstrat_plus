@@ -13,7 +13,8 @@ BODY = '''
 import sys, json
 sys.path.insert(0, {harness!r})
 import early_lead_body
-report = early_lead_body.run()
+report = {{'subject_only': early_lead_body.run('subject_only'),
+          'challenger': early_lead_body.run('challenger')}}
 print("---EARLY-LEAD-JSON---")
 print(json.dumps(report, default=str))
 '''
@@ -41,7 +42,10 @@ def main():
         if result.returncode != 0 or marker not in result.stdout:
             print(result.stdout[-5000:]); print(result.stderr[-5000:])
             raise SystemExit('the early-lead probe did not run')
-        report = json.loads(result.stdout.split(marker, 1)[1].strip().splitlines()[0])
+        both = json.loads(
+            result.stdout.split(marker, 1)[1].strip().splitlines()[0])
+        report = both['subject_only']
+        report['challenger_run'] = both['challenger']
         report['code_revision'] = revision
 
         # The probe's own precondition: without a lead there is no lock-in to
@@ -79,6 +83,21 @@ def main():
         print(f"margin never decreases after    : "
               f"{report['margin_strictly_non_decreasing_after_revert']}")
         print(f"rank ever lost after revert     : {report['rank_ever_lost']}")
+
+        ch = report['challenger_run']
+        print(f"\n--- challenger run: {ch['challenger_team']} front-loads "
+              f"after the subject stops ---")
+        print(f"{'round':>6} {'subj idx':>10}{'chal idx':>10}{'gap':>10}  "
+              f"challenger investing")
+        for r, gap in zip(ch['series'], ch['subject_minus_challenger_by_round']):
+            print(f"{r['round']:>6} {r['index']:>10.3f}"
+                  f"{(r['challenger_index'] or 0):>10.3f}{(gap or 0):>10.3f}  "
+                  f"{r['challenger_front_loading']}")
+        gaps = [g for g in ch['subject_minus_challenger_by_round']
+                if g is not None]
+        closed = gaps[-1] < gaps[len(gaps) // 2] if len(gaps) > 2 else None
+        print(f"\ngap narrows once the challenger invests: {closed}")
+        print(f"gap by round : {gaps}")
         print(f"\nwrote {EVIDENCE / 'early-lead-probe.json'}")
         print(f"inventory: {len(listed)} artifacts, verified")
         return 0

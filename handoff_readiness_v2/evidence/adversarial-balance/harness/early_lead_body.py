@@ -32,7 +32,7 @@ FRONT_LOAD_ROUNDS = 2
 TOTAL_ROUNDS = 6
 
 
-def run(verbose=True):
+def run(mode='subject_only', verbose=True):
     if not DjangoUser.objects.filter(is_superuser=True).exists():
         DjangoUser.objects.create_superuser('early-lead', 'a@e.com', 'x')
     call_command('load_all_scenarios', verbosity=0)
@@ -54,6 +54,7 @@ def run(verbose=True):
     game.refresh_from_db()
     teams = list(Team.objects.filter(game=game).order_by('id'))
     subject = teams[0]
+    challenger = teams[1] if len(teams) > 1 else None
 
     # The strongest legal front-load available: spend hard on the levers the
     # adopted rules reward, all inside the legal space and all costed.
@@ -77,11 +78,21 @@ def run(verbose=True):
         game.refresh_from_db()
         rnd = Round.objects.get(game=game, round_number=game.current_round)
         front_loading = step < FRONT_LOAD_ROUNDS
+        # In challenger mode one opponent front-loads *after* the subject has
+        # stopped, which is the only way to answer whether a lead can be
+        # closed by later opponent performance rather than merely whether it
+        # decays on its own.
+        challenger_active = (
+            mode == 'challenger'
+            and FRONT_LOAD_ROUNDS <= step < FRONT_LOAD_ROUNDS * 2)
         for team in teams:
             submission, _ = DecisionSubmission.objects.get_or_create(
                 team=team, round=rnd, defaults={'status': 'draft'})
-            genome = (FRONT_LOADED
-                      if (team.id == subject.id and front_loading) else None)
+            genome = None
+            if team.id == subject.id and front_loading:
+                genome = FRONT_LOADED
+            elif challenger_active and team.id == challenger.id:
+                genome = FRONT_LOADED
             S.write_candidate(submission, team, genome)
             submission.status = 'locked'
             submission.locked_at = timezone.now()
@@ -103,6 +114,13 @@ def run(verbose=True):
 
         mine = indices[subject.id]
         rivals = [v for k, v in indices.items() if k != subject.id]
+        challenger_index = (indices.get(challenger.id)
+                            if challenger is not None else None)
+        challenger_adopters = str(sum(
+            (D(str(a.cumulative_adopters)) for a in
+             RoundResultAdoption.objects.filter(
+                 team=challenger, round_number=rnd.round_number)), D('0'))
+        ) if challenger is not None else None
         best_rival = max(rivals) if rivals else 0.0
         row = {
             'round': rnd.round_number,
@@ -114,6 +132,10 @@ def run(verbose=True):
             'field': len(teams),
             'cash_closing': str(fin.cash_closing) if fin else None,
             'cumulative_adopters': str(adopters),
+            'challenger_index': (round(challenger_index, 4)
+                                 if challenger_index is not None else None),
+            'challenger_adopters': challenger_adopters,
+            'challenger_front_loading': challenger_active,
         }
         series.append(row)
         if verbose:
@@ -131,6 +153,7 @@ def run(verbose=True):
     final_margin = after[-1]['margin'] if after else 0.0
 
     report = {
+        'mode': mode,
         'seed': SEED,
         'scenario': chosen.name,
         'identity': F.identity_for(SEED),
@@ -150,6 +173,11 @@ def run(verbose=True):
         'rank_ever_lost': any(r['rank'] > 1 for r in after),
         'adopters_are_persistent_state': [
             r['cumulative_adopters'] for r in series],
+        'challenger_team': challenger.name if challenger else None,
+        'subject_minus_challenger_by_round': [
+            (None if r['challenger_index'] is None
+             else round(r['index'] - r['challenger_index'], 4))
+            for r in series],
         'elapsed_seconds': round(time.time() - started, 1),
     }
     margins_after = report['margin_by_round_after_revert']
