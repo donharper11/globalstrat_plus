@@ -57,7 +57,12 @@ def run():
     instructor = DjangoUser.objects.filter(is_superuser=True).first()
 
     token = create_access_token(student)
-    client = Client(HTTP_AUTHORIZATION=f'Bearer {token}')
+    # SERVER_NAME matters: Django's test client sends Host: testserver, which
+    # is not in ALLOWED_HOSTS, and every request comes back 400 before routing.
+    # The first run of this probe reported "read gate holds" off six such 400s
+    # -- six requests that never reached the application.
+    client = Client(HTTP_AUTHORIZATION=f'Bearer {token}',
+                    SERVER_NAME='localhost')
 
     started = time.time()
     report = {
@@ -79,6 +84,18 @@ def run():
               + ', '.join(f'{k}={v}' for k, v in kw.items() if k != 'body'),
               flush=True)
         return entry
+
+    # Positive control. If a surface the student is unambiguously entitled to
+    # read does not answer 200, nothing else this probe reports means anything,
+    # and it must refuse rather than describe failures as protection.
+    control_url = (f'/api/games/{game.id}/teams/{team.id}/decisions/'
+                   f'round/{game.current_round}/summary/')
+    control = client.get(control_url)
+    report['positive_control'] = {
+        'url': control_url,
+        'status': control.status_code,
+        'reached_the_application': control.status_code == 200,
+    }
 
     rnd = Round.objects.get(game=game, round_number=game.current_round)
     segment = SegmentDefinition.objects.filter(
@@ -185,6 +202,9 @@ def run():
         'utf-8', 'replace')
     advanced.delete()
 
+    report['probe_is_valid'] = bool(
+        report['positive_control']['reached_the_application']
+        and report['steps'][1]['accepted'])
     report['write_gate_holds'] = bool(
         report['steps'][0]['refused'] and report['steps'][1]['accepted'])
     report['read_gate_holds'] = not report['leaking_surfaces']

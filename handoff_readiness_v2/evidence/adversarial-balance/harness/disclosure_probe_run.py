@@ -53,7 +53,18 @@ def main():
         if bad:
             raise SystemExit(f'inventory does not verify: {bad}')
 
+        control = report['positive_control']
+        if not report['probe_is_valid']:
+            raise SystemExit(
+                f"REFUSED: the probe did not reach the application. Positive "
+                f"control {control['url']} returned {control['status']}, and "
+                f"the permitted write returned "
+                f"{report['steps'][1].get('status')}. Absence of a value in a "
+                f"failed request is not evidence of protection.")
+
         print(f"\nfield              : {report['field_path']}")
+        print(f"positive control   : {control['status']} "
+              f"(reached app: {control['reached_the_application']})")
         print(f"authored unlock    : round {report['authored_unlock_round']}, "
               f"probed at round {report['current_round']}")
         print(f"write gate holds   : {report['write_gate_holds']}")

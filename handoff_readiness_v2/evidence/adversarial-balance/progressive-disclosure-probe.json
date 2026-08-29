@@ -1,0 +1,119 @@
+{
+  "authored_unlock_round": 4,
+  "class_isolation_holds": true,
+  "code_revision": "fa0b993bc7f9ae4027da06e9e08509301591e678",
+  "current_round": 1,
+  "elapsed_seconds": 0.2,
+  "field_path": "trade_finance.buyer_payment_instrument",
+  "game": 1,
+  "leaking_surfaces": [],
+  "protected_key": "buyer_payment_instrument",
+  "read_gate_holds": true,
+  "read_surfaces_before_unlock": {
+    "decision_submission": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/games/1/teams/1/decisions/round/1/"
+    },
+    "decision_summary": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/games/1/teams/1/decisions/round/1/summary/"
+    },
+    "hedge_positions": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/games/1/teams/1/sc/hedge-positions/"
+    },
+    "scenario_instrument_catalogue": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/scenarios/1/trade-finance-instruments/"
+    },
+    "team_trade_finance_direct_round_object": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/games/1/teams/1/sc/round/1/trade-finance/"
+    },
+    "team_trade_finance_list": {
+      "protected_key_in_body": false,
+      "sentinel_in_body": false,
+      "status": 400,
+      "url": "/api/games/1/teams/1/sc/round/1/trade-finance/"
+    }
+  },
+  "readable_after_unlock": false,
+  "sentinel": "LOCKED-INSTRUMENT-SENTINEL",
+  "steps": [
+    {
+      "refused": true,
+      "status": 400,
+      "step": "write_before_unlock_is_refused"
+    },
+    {
+      "accepted": false,
+      "status": 400,
+      "step": "write_while_overridden_is_accepted"
+    },
+    {
+      "current_round": 1,
+      "effective_unlock": 4,
+      "step": "override_removed_field_is_locked_again"
+    },
+    {
+      "present": false,
+      "step": "value_is_persisted_in_a_locked_round",
+      "value": null
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:team_trade_finance_list"
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:team_trade_finance_direct_round_object"
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:hedge_positions"
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:scenario_instrument_catalogue"
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:decision_summary"
+    },
+    {
+      "leaks_value": false,
+      "status": 400,
+      "step": "read_before_unlock:decision_submission"
+    },
+    {
+      "effective_unlock": 4,
+      "isolated": true,
+      "other_game": null,
+      "step": "foreign_override_does_not_unlock"
+    },
+    {
+      "status": 400,
+      "step": "read_after_unlock",
+      "value_present": false
+    }
+  ],
+  "student": 2,
+  "team": 1,
+  "unlock_with_foreign_override": 4,
+  "write_gate_holds": false
+}
