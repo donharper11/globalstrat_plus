@@ -104,11 +104,17 @@ def main():
             print(f"{r['round']:>6} {r['index']:>10.3f}"
                   f"{(r['challenger_index'] or 0):>10.3f}{(gap or 0):>10.3f}  "
                   f"{r['challenger_front_loading']}")
-        gaps = [g for g in ch['subject_minus_challenger_by_round']
-                if g is not None]
-        closed = gaps[-1] < gaps[len(gaps) // 2] if len(gaps) > 2 else None
-        print(f"\ngap narrows once the challenger invests: {closed}")
-        print(f"gap by round : {gaps}")
+        print(f"\ngap before the challenger invested : "
+              f"{ch.get('gap_before_challenger_invested')}")
+        print(f"gap at the end                     : {ch.get('gap_at_end')}")
+        print(f"gap closed at all                  : "
+              f"{ch.get('gap_closed_at_all')}")
+        print(f"gap widened while investing        : "
+              f"{ch.get('gap_widened_while_investing')}")
+        print(f"drift per round after investing    : "
+              f"{ch.get('gap_drift_per_round_after')}")
+        print(f"rounds to close at that drift      : "
+              f"{ch.get('rounds_to_close_at_observed_drift')}")
         print(f"\nwrote {EVIDENCE / 'early-lead-probe.json'}")
         print(f"inventory: {len(listed)} artifacts, verified")
         return 0

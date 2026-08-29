@@ -183,4 +183,30 @@ def run(mode='subject_only', verbose=True):
     margins_after = report['margin_by_round_after_revert']
     report['margin_strictly_non_decreasing_after_revert'] = all(
         b >= a for a, b in zip(margins_after, margins_after[1:]))
+
+    # Whether a challenger closes the gap is a question about the gap before
+    # it invests versus after, not about the last two rounds. An earlier
+    # version compared the final gap with the midpoint and announced the gap
+    # had narrowed on a drift of 0.06, while it had in fact widened sevenfold.
+    if mode == 'challenger' and challenger is not None:
+        gaps = report['subject_minus_challenger_by_round']
+        investing = [i for i, r in enumerate(series)
+                     if r['challenger_front_loading']]
+        if investing and all(g is not None for g in gaps):
+            before = gaps[investing[0] - 1] if investing[0] > 0 else gaps[0]
+            report['gap_before_challenger_invested'] = before
+            report['gap_at_end'] = gaps[-1]
+            report['gap_closed_at_all'] = gaps[-1] < before
+            report['gap_widened_while_investing'] = (
+                gaps[investing[-1]] > before)
+            report['gap_change'] = round(gaps[-1] - before, 4)
+            # Erosion rate over the rounds after the challenger stops, used to
+            # say how long closing would take rather than merely that it is
+            # slow.
+            tail = gaps[investing[-1]:]
+            drift = ((tail[-1] - tail[0]) / (len(tail) - 1)
+                     if len(tail) > 1 else 0.0)
+            report['gap_drift_per_round_after'] = round(drift, 4)
+            report['rounds_to_close_at_observed_drift'] = (
+                round(abs(gaps[-1] / drift), 1) if drift < 0 else None)
     return report
