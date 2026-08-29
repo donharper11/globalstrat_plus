@@ -75,7 +75,10 @@ def main():
         print(f"\nread surfaces before unlock:")
         for name, e in report['read_surfaces_before_unlock'].items():
             print(f"  {name:<38} status {e['status']:>3}  "
-                  f"leaks value: {e['sentinel_in_body']}")
+                  f"decision row leaks: {e['decision_row_exposes_value']}  "
+                  f"value anywhere: {e['value_appears_anywhere']}")
+        cat = report['catalogue_lists_gated_mechanic_before_unlock']
+        print(f"\ncatalogue surfaces : status {cat['status']} — {cat['note']}")
         print(f"\nread gate holds    : {report['read_gate_holds']}")
         if report['leaking_surfaces']:
             print(f"LEAKING SURFACES   : {report['leaking_surfaces']}")
