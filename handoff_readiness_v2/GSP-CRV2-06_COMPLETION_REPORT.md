@@ -1,99 +1,147 @@
 # GSP-CRV2-06 — adversarial balance: completion report
 
-**Revision:** `954b931`
-**Evidence:** `handoff_readiness_v2/evidence/adversarial-balance/`, 20 artifacts, `SHA256SUMS` verified.
+## Revisions, labelled
+
+| role | revision | meaning |
+|---|---|---|
+| **Runtime freeze** | `182480effdd40c01dd1be9c60da74214e9edaa26` | the engine, harness and scenario configuration every accepted measurement was produced at |
+| **Evidence** | `182480effdd40c01dd1be9c60da74214e9edaa26` | identical: the accepted tournament, the baseline-competency gate and the V2-024/V2-025 rechecks all ran at this revision |
+| **Report-only** | see `git log -1` for this file | adds this document and the register text; changes no runtime code, no harness and no evidence artifact |
+
+Evidence: `handoff_readiness_v2/evidence/adversarial-balance/`, 21 artifacts,
+`SHA256SUMS` regenerated and verified.
 
 ## Outcome
 
-Six findings raised, six closed. Two of them — V2-024 and V2-025 — were
+Seven findings raised in this handoff, seven closed. Two of them were
 opponent-independent dominant strategies demonstrated by the Stage 3
-tournament, and each stopped the handoff for a rules disposition before any
-weighting or scoring change was made.
+tournament; each stopped the handoff for a rules disposition before any scoring
+change was made.
 
 | ID | Finding | Severity | Status |
 |---|---|---|---|
-| V2-020 | Equity issuance priced off an unbound closing figure | P1 | Closed (opening book value per share) |
-| V2-021 | R&D scored against the team's own declared budget | P1 | Closed (scenario target) |
-| V2-022 | Inactivity classified by intent rather than outcome | P1 | Closed (material-revenue floor) |
-| V2-023 | Isolated positioning removed price response; then the clamped tail | P1 | Closed (reference price + high-price elasticity) |
-| V2-024 | Equity issuance raised the index at no cost | P1 | Closed (funding-need rule) |
-| V2-025 | Stripping headcount beat competent play | P1 | Closed (staffing adequacy) |
+| V2-018 | Thirteen investment and headcount fields accepted negative values; a negative investment was income, and a negative headcount times a salary band was worth $50,002,530,000 | **P0** | Closed — one non-negative policy at 21 fields across both write surfaces, plus a fail-closed engine precondition on persisted rows |
+| V2-020 | Equity issuance priced shares off `total_equity` before it was assigned: `UnboundLocalError` for the first team raising equity, failing the whole round for every team; later teams priced off the previous team's balance sheet | **P0** | Closed — opening book value per share |
+| V2-021 | R&D scored against the team's own declared budget, so $1 against $1 earned full credit | P1 | Closed — scenario target |
+| V2-022 | Inactivity classified by decision intent rather than realised outcome | P1 | Closed — material-revenue floor |
+| V2-023 | Isolated positioning removed price response entirely; then the clamped high-price tail; then a single reference made the positioning tiers incoherent | P1 | Closed — per-tier authored reference prices plus a high-price elasticity |
+| V2-024 | Equity issuance raised the index at no cost; raising and immediately paying it out won 9 of 9 holdout cells | P1 | Closed — funding-need rule |
+| V2-025 | Stripping all headcount beat competent play in 9 of 9 cells | P1 | Closed — capability multiplied by staffing adequacy |
 
-V2-019 was withdrawn as filed in error. V2-017 (admin write routes outside the
-lifecycle boundary) remains open and is not owned by this handoff.
+V2-019 was withdrawn as filed in error. **V2-017** (216 admin write routes
+outside the lifecycle boundary) remains **open** and is not owned by this
+handoff, as does the deployment action to run the stack as a non-owner database
+role.
 
-## Stage 3, as run
+## The accepted tournament
 
-The capped optimizer plan was replaced mid-handoff by a bounded adversarial
-tournament. Preserved from the earlier plan: one completed 50-candidate random
-discovery batch (`stage3-discovery-batch.json`), not rerun.
+Gated before it ran. The baseline-competency gate passed 6 of 6
+(`baseline-competency-gate.json`): R&D spend $2,000,000 equals the scenario
+target; pools staffed 60/40/50 exactly at the authored optima; each product
+priced at its own tier reference ($700 premium, $420 mainstream); financing
+legal with nothing requested against a $40,623,905.56 maximum; no
+decision-limit or funding violations; revenue $887,517.12 against a material
+floor of $8,875.17. The payload contract then checked all 17 baseline,
+opponent and candidate payloads: **0 illegal**. The neutral genome scored
+exactly **0.000** against the competent baseline, proving the candidate set had
+not drifted from it.
 
-- **Fixture identity** varies deterministically by seed through the cohort key,
-  the one input reaching every stochastic subsystem. Pre-freeze checks: three
-  seeds give distinct, stable identities; every probed engine stream differs
-  across every pair; each identity reproduces exactly.
-- **Discovery:** 15 targeted candidates x 3 opponent populations on one
-  identity, 45 candidate evaluations.
-- **Selection:** worst-case advantage across all three populations, median as
-  tie-break, so a win against one population cannot reach the finals.
-- **Holdout:** 3 finalists x 3 populations x 3 unused identities = 27 candidate
-  evaluations, plus 9 matched baselines reported separately.
+**Discovery** — 15 targeted candidates x 3 populations, one identity, advantage
+over competent play:
 
-**Result:** `equity-raise` won 9 of 9 holdout cells, worst case +0.66, with
-near-identical advantage against competent (0.670), diverse (0.680) and
-incumbent (0.660) opponents. `equity-and-dividend` won all nine at +0.57 with
-zero variance. `skeleton-crew` won all nine at +0.22. The handoff stopped.
+| candidate | competent | diverse | incumbent | worst | median |
+|---|---|---|---|---|---|
+| rd-at-target | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| rd-saturated | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| equity-at-legal-max | -0.220 | -0.160 | -0.220 | -0.220 | -0.220 |
+| dividend-payout | -0.230 | -0.220 | -0.230 | -0.230 | -0.230 |
+| discovery-31 | -0.320 | +1.120 | -0.320 | -0.320 | -0.320 |
+| debt-funded-scale | -0.840 | +0.920 | -0.840 | -0.840 | -0.840 |
+| price-at-clamp | -2.000 | -2.070 | -2.000 | -2.070 | -2.000 |
+| price-above-clamp | -2.120 | -1.470 | -2.120 | -2.120 | -2.120 |
+| discovery-15 | -3.630 | -1.780 | -3.630 | -3.630 | -3.630 |
+| rd-starved | -4.790 | -4.820 | -4.790 | -4.820 | -4.790 |
+| price-above-clamp-lean | -5.110 | -4.300 | -5.110 | -5.110 | -5.110 |
+| near-inactive | -7.010 | -5.480 | -7.010 | -7.010 | -7.010 |
+| discovery-44 | -7.080 | -4.970 | -7.080 | -7.080 | -7.080 |
+| skeleton-crew | -14.590 | -14.560 | -14.590 | -14.590 | -14.590 |
+| commercially-inactive | -24.220 | -22.430 | -24.220 | -24.220 | -24.220 |
 
-## What the tournament did not find
+**Holdout** — top three x 3 populations x 3 unused identities, 27 candidate
+evaluations plus 9 matched baselines as separate controls:
 
-No candidate attacking a closed finding paid. V2-023 pricing scored -0.97 at
-the clamp, -1.35 above it and -4.25 above it with costs stripped. V2-022
-inactivity scored -17.99 and near-inactivity -6.22. The three strongest random
-candidates lost against competent opponents (-0.44, -0.52, -0.53) while winning
-against diverse ones (+1.63, +0.90, +1.21) — the population-specific win the
-selection rule exists to reject.
+| candidate | distribution | worst-case | median | cells won |
+|---|---|---|---|---|
+| rd-at-target | nine values of 0.00 | 0.00 | 0.00 | 0/9 |
+| rd-saturated | nine values of 0.00 | 0.00 | 0.00 | 0/9 |
+| equity-at-legal-max | -0.23 x6, -0.16 x2, -0.15 | -0.23 | -0.23 | 0/9 |
 
-## Repairs and their verification
+**No candidate wins across every population and holdout fixture.** The
+strongest legal strategy found is indistinguishable from competent play: its
+margin is exactly 0.000, because the candidates that achieve it *are* the
+baseline in every respect scoring reads.
 
-**V2-024.** `maximum_new_equity = max(0, eligible_uses - available_funding)`,
-dividends excluded, rejected rather than clamped. One calculator:
-`funding_need.decision_outlays` holds every outlay line and
-`costs.calculate_operating_expenses` calls it and asserts its own lines still
-agree. Enforced at the API (partial write, whole-submission write, lock) and as
-a fail-closed engine precondition. 14 focused tests. Re-check: both equity
-candidates are **refused in every population**, and the incumbent population
-cannot be constructed at all because its opponents are refused.
+## Explicit exploit mechanisms — disposition matrix
 
-**V2-025.** `capability = earned_capability x staffing_adequacy`, adequacy the
-mean of `clamp01(headcount / optimal)` across the three pools. Optima are
-scenario-authored and validated positive before competitive mutation; both
-consumers fail closed. 12 focused tests. Re-check across the same nine cells:
-skeleton-crew moves from 9/9 at +0.22 to **0/9 at -7.17 worst case**.
+| Mechanism | Disposition | Evidence |
+|---|---|---|
+| Deadline timing / resubmit | Closed, prior evidence | GSP-CRV2-02 concurrency matrix; not rerun here, cited |
+| Information leakage / timing | Closed, prior evidence | GSP-CRV2-04 sensitive-read logging and read inventory |
+| Negative / oversized numerics | **Closed this handoff** | V2-018. `negative-sweep.json`: 8 fields measured, all 8 paid before repair. `decision_limits` covers 21 fields at both write surfaces plus a persisted-row precondition |
+| Duplicate rows | Closed this handoff | Duplicate-R&D regression is uniform across the API intersection; `dimension-inventory.json` path uniformity |
+| Rounding / currency asymmetry | Screened, nothing found | `screening.json`: every numeric dimension probed with a fractional value (0.005) alongside zero, negative, 2^31 and 10^15 |
+| Progressive disclosure | **Not exercised — open coverage gap** | No probe in this handoff. Owner: CRV2-09 or a follow-on; recorded rather than claimed |
+| FX / trade finance / sourcing / inventory value loops | **Partially covered — open coverage gap** | The non-negative policy covers `SourcingAllocation`; `value-loop.json` measured the ESG loop. Dedicated FX, trade-finance and inventory loops were **not** screened: none appears among the 44 dimensions in `screening-summary.json` |
+| Early unassailable lead | Closed this handoff | Tournament: no candidate exceeds competent play on worst case across nine holdout cells |
+| Collusion / opponent-independent dominance | **Closed this handoff** | V2-024 and V2-025, each demonstrated at 9/9 cells and each repaired; re-measured at 0/9 and -14.59 respectively |
+
+## Rules adopted in this handoff
+
+**V2-024 eligible uses — a rule, not a limitation.** Eligible uses are the
+deterministic, decision-controlled outlays knowable before resolution, plus
+debt repayment. Dividends are **not** an eligible use, and neither are the
+outcome-dependent costs — COGS, tax, interest, tariffs and revenue-scaled
+administrative overhead. Those must be funded from opening capital and
+operating revenue. `maximum_new_equity = max(0, eligible_uses -
+(opening cash + new debt))`, and a request above it is rejected, never clamped.
+
+**V2-023 per-tier references.** `reference_price =
+scenario_reference_prices[product.positioning]`, seeded 250 / 420 / 700 / 1000.
+A single global reference scored a premium product at its own authored price as
+1.667x, clamping competitiveness to zero and removing 53% of its demand.
+
+**V2-025 staffing adequacy.** `capability = earned_capability x mean over pools
+of clamp01(headcount / optimal)`, optima authored at 60/40/50 and validated
+before competitive mutation. Equal pool weighting is a choice, not a
+derivation.
 
 ## Limitations, stated
 
-1. **Holdout across fixture identities is a weak generalisation test here.**
-   Streams differ on every probe, but index was 57.99 on all three identities
-   and cash and revenue took two distinct values across three. The stochastic
-   subsystems have little purchase on this fixture.
-2. **The harness baseline underspends R&D by twenty times.** It declares the
-   documented $2,000,000 `rd_budget` while writing a $100,000
-   `DecisionRDInvestment` placeholder, and only actual spend reaches scoring.
-   Every advantage figure here is relative to that competitor. `rd-actual-target`
-   wins 9 of 9 at about +4.3 for this reason; it costs $1,900,000 and buys
-   capability, which is the game rewarding investment rather than an exploit.
+1. **The incumbent population was degenerate in the accepted run.** No candidate
+   beat competent play, so the incumbent *is* the baseline and the incumbent
+   column equals the competent column for every candidate. Three populations
+   were run; two carried independent information.
+2. **Holdout across fixture identities is a weak generalisation test here.**
+   Streams differ on every probe, but the resolved outcome barely follows:
+   index was identical across all three identities in the pre-freeze check.
 3. **Discovery is 50 random plus 15 targeted candidates**, not an exhaustive
-   search. Absence of a further exploit is absence of evidence at this budget.
-4. **The V2-024 funding rule excludes resolution-dependent outlays** — admin
-   overhead scaled by revenue, COGS, tariffs, tax, interest — because a rule
-   running before the first competitive write cannot know them. This makes the
-   rule stricter, never more permissive.
-5. **Equal pool weighting in staffing adequacy is a choice**, not a derivation.
-   The disposition fixed the four semantics; the thirds are mine.
+   search. Absence of further exploits is absence of evidence at this budget.
+4. **Two exploit mechanisms are not covered**, as the matrix above records:
+   progressive disclosure, and the dedicated FX / trade-finance / inventory
+   value loops.
+5. **The 50-candidate discovery batch is historical.** It ran against the
+   pre-correction baseline; its margins are not comparable with this
+   tournament's and are not combined with them.
 
-## Evidence integrity
+## Evidence integrity and process note
 
 `checksums.py` regenerates and verifies the inventory, and every run that
-writes an artifact calls it. The inventory was previously hand-maintained,
-which is why a rerun could silently invalidate it — the defect that failed an
-earlier audit.
+writes an artifact calls it.
+
+Four tournaments were discarded before this one. Each was invalidated by the
+same defect in a different place: the baseline, or the genome that represents
+it, stopped being competent in the terms a newly adopted rule scores — actual
+R&D spend, staffing against authored optima, per-tier pricing, and finally the
+neutral genome itself. None was a game exploit; each would have been reported
+as one. The baseline-competency gate and the neutral self-check exist so that
+this class of error refuses to publish rather than being caught by review.
