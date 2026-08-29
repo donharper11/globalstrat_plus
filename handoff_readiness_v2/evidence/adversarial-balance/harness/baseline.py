@@ -6,6 +6,12 @@ while declaring a $2,000,000 budget, which V2-021 had already established
 scoring ignores. Anything measured against that baseline was measured against
 an opponent earning five per cent of the available R&D capability.
 
+Staffing note: the baseline staffs each pool at the scenario's authored optimum
+rather than at `load_demo`'s 50/30/40, which is an adequacy of 0.7944 under the
+V2-025 rule. A baseline below the optima concedes a 26% capability multiplier
+to any candidate that reaches them, which is not a strategy beating competent
+play -- it is competent play being defined incorrectly.
+
 Not invented for this handoff. These are the numbers the project's own
 `load_demo` command scripts as competent play — budget split, price and volume
 by positioning, channel mix, sales staffing, talent pools — copied here so the
@@ -49,7 +55,8 @@ MARKETING = {
                                     'mass_retail': 2},
 }
 
-# load_demo._add_default_talent: rd, commercial, operations.
+# load_demo._add_default_talent: rd, commercial, operations. The headcounts are
+# overridden at write time with the scenario's authored optima -- see `build`.
 TALENT = {
     'rd_headcount': 50, 'commercial_headcount': 30, 'operations_headcount': 40,
     'rd_salary_level': 3, 'commercial_salary_level': 3,
@@ -76,7 +83,19 @@ def build(submission, team):
     DecisionESG.objects.create(submission=submission, **ESG)
 
     DecisionTalent.objects.filter(submission=submission).delete()
-    DecisionTalent.objects.create(submission=submission, **TALENT)
+    # V2-025 made strategic capability multiplicative in staffing adequacy,
+    # scored against the scenario's authored optima. `load_demo` staffs
+    # 50/30/40 against optima of 60/40/50, which is an adequacy of 0.7944, so a
+    # baseline carrying the demo headcounts hands every candidate that staffs
+    # to the optimum a 26% capability multiplier it did nothing to earn. That
+    # is the same defect as the R&D placeholder: a baseline that is not
+    # competent in the terms the adopted rules actually score.
+    from core.engine.utils import scenario_optimal_headcounts
+    optima = scenario_optimal_headcounts(team.game.scenario)
+    talent = dict(TALENT)
+    for pool in ('rd', 'commercial', 'operations'):
+        talent[f'{pool}_headcount'] = int(optima[pool])
+    DecisionTalent.objects.create(submission=submission, **talent)
 
     DecisionMarketing.objects.filter(submission=submission).delete()
     home = team.home_market

@@ -233,14 +233,14 @@
       "name": "near-inactive"
     },
     {
-      "attacks": "V2-020: issue equity priced off opening book value per share",
+      "attacks": "V2-024: raise the largest equity the funding rule permits, to show the residual advantage of legal issuance is not free",
       "family": "financing and equity",
       "genome": {
+        "_equity_at_max": true,
         "commercial_headcount": 30,
         "distribution_investment": 200000.0,
-        "environmental_investment": 0.0,
+        "environmental_investment": 2000000.0,
         "marketing_budget": 3000000.0,
-        "new_equity": 20000000.0,
         "operations_headcount": 40,
         "price_multiplier": 1.0,
         "promotion_multiplier": 1.0,
@@ -252,7 +252,7 @@
         "strategy_budget": 1000000.0,
         "volume_multiplier": 1.0
       },
-      "name": "equity-raise"
+      "name": "equity-at-legal-max"
     },
     {
       "attacks": "borrow and convert the cash straight into volume",
@@ -277,7 +277,7 @@
       "name": "debt-funded-scale"
     },
     {
-      "attacks": "V2-020: raise equity and pay it straight back out, the shape a value loop would take if issuance were mispriced",
+      "attacks": "pay a dividend out of opening cash, with no equity raise behind it -- the legal remainder of the V2-024 loop",
       "family": "financing and equity",
       "genome": {
         "commercial_headcount": 30,
@@ -285,7 +285,6 @@
         "dividend_per_share": 5.0,
         "environmental_investment": 0.0,
         "marketing_budget": 3000000.0,
-        "new_equity": 20000000.0,
         "operations_headcount": 40,
         "price_multiplier": 1.0,
         "promotion_multiplier": 1.0,
@@ -297,7 +296,7 @@
         "strategy_budget": 1000000.0,
         "volume_multiplier": 1.0
       },
-      "name": "equity-and-dividend"
+      "name": "dividend-payout"
     },
     {
       "attacks": "strip headcount and ESG to nothing and keep selling, to see whether the composite notices",
@@ -321,166 +320,166 @@
       "name": "skeleton-crew"
     }
   ],
-  "code_revision": "6c134d49280e3db8a6e2bfa0c314789d95fc93a5",
+  "code_revision": "c7edd378eeedaff2b055d50df36ae0137e20e4e5",
   "discovery": {
     "competent": {
       "baseline": {
-        "best_rival_index": 55.41,
-        "cash_closing": "-93858172.02",
+        "best_rival_index": 58.15,
+        "cash_closing": "-99546537.31",
         "field": 4,
-        "field_margin": 2.58,
-        "index": 57.99,
-        "net_income": "-24234805.48",
+        "field_margin": 2.36,
+        "index": 60.51,
+        "net_income": "-26128404.24",
         "rank": 1,
-        "total_revenue": "2661314.47"
+        "total_revenue": "2664790.48"
       },
       "baseline_is_repeatable": true,
       "rows": [
         {
           "fitness": {
-            "advantage": -0.44,
-            "best_rival_index": 53.49,
-            "cash_closing": "-113295284.34",
+            "advantage": -4.11,
+            "best_rival_index": 56.18,
+            "cash_closing": "-118984511.42",
             "field": 4,
-            "field_margin": 4.06,
-            "field_margin_gain": 1.48,
-            "index": 57.55,
-            "net_income": "-29302291.40",
+            "field_margin": 0.22,
+            "field_margin_gain": -2.14,
+            "index": 56.4,
+            "net_income": "-31196364.82",
             "rank": 1,
-            "total_revenue": "3810918.83"
+            "total_revenue": "3814003.57"
           },
           "name": "discovery-44"
         },
         {
           "fitness": {
-            "advantage": -0.52,
-            "best_rival_index": 54.26,
-            "cash_closing": "-132511896.43",
+            "advantage": 2.65,
+            "best_rival_index": 56.95,
+            "cash_closing": "-138200182.91",
             "field": 4,
-            "field_margin": 3.21,
-            "field_margin_gain": 0.63,
-            "index": 57.47,
-            "net_income": "-35569011.73",
+            "field_margin": 6.21,
+            "field_margin_gain": 3.85,
+            "index": 63.16,
+            "net_income": "-37462620.13",
             "rank": 1,
-            "total_revenue": "3578199.78"
+            "total_revenue": "3581237.51"
           },
           "name": "discovery-31"
         },
         {
           "fitness": {
-            "advantage": -0.53,
-            "best_rival_index": 53.36,
-            "cash_closing": "-138124976.68",
+            "advantage": -0.66,
+            "best_rival_index": 56.02,
+            "cash_closing": "-143813169.05",
             "field": 4,
-            "field_margin": 4.1,
-            "field_margin_gain": 1.52,
-            "index": 57.46,
-            "net_income": "-37036139.15",
+            "field_margin": 3.83,
+            "field_margin_gain": 1.47,
+            "index": 59.85,
+            "net_income": "-38929603.48",
             "rank": 1,
-            "total_revenue": "4235059.13"
+            "total_revenue": "4238586.73"
           },
           "name": "discovery-15"
         },
         {
           "fitness": {
-            "advantage": -0.97,
-            "best_rival_index": 56.86,
-            "cash_closing": "-95915184.65",
+            "advantage": -1.06,
+            "best_rival_index": 59.52,
+            "cash_closing": "-101604791.74",
             "field": 4,
-            "field_margin": 0.16,
-            "field_margin_gain": -2.42,
-            "index": 57.02,
-            "net_income": "-25073783.63",
-            "rank": 1,
-            "total_revenue": "2295673.59"
+            "field_margin": -0.07,
+            "field_margin_gain": -2.43,
+            "index": 59.45,
+            "net_income": "-26968499.46",
+            "rank": 2,
+            "total_revenue": "2298781.29"
           },
           "name": "price-at-clamp"
         },
         {
           "fitness": {
-            "advantage": -1.35,
-            "best_rival_index": 56.05,
-            "cash_closing": "-111302054.60",
+            "advantage": -1.26,
+            "best_rival_index": 58.75,
+            "cash_closing": "-117064514.67",
             "field": 4,
-            "field_margin": 0.59,
-            "field_margin_gain": -1.99,
-            "index": 56.64,
-            "net_income": "-29470629.18",
+            "field_margin": 0.5,
+            "field_margin_gain": -1.86,
+            "index": 59.25,
+            "net_income": "-31389379.18",
             "rank": 1,
-            "total_revenue": "3042698.76"
+            "total_revenue": "3056040.11"
           },
           "name": "price-above-clamp"
         },
         {
           "fitness": {
-            "advantage": -4.25,
-            "best_rival_index": 57.22,
-            "cash_closing": "-80119909.91",
+            "advantage": -4.24,
+            "best_rival_index": 59.88,
+            "cash_closing": "-85802149.19",
             "field": 4,
-            "field_margin": -3.48,
-            "field_margin_gain": -6.06,
-            "index": 53.74,
-            "net_income": "-20654683.99",
+            "field_margin": -3.61,
+            "field_margin_gain": -5.97,
+            "index": 56.27,
+            "net_income": "-22542186.02",
             "rank": 3,
-            "total_revenue": "1254276.62"
+            "total_revenue": "1265856.11"
           },
           "name": "price-above-clamp-lean"
         },
         {
           "fitness": {
-            "advantage": 0.11,
-            "best_rival_index": 55.41,
-            "cash_closing": "-90251349.19",
+            "advantage": -4.04,
+            "best_rival_index": 58.15,
+            "cash_closing": "-96046537.31",
             "field": 4,
-            "field_margin": 2.69,
-            "field_margin_gain": 0.11,
-            "index": 58.1,
-            "net_income": "-22729718.68",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "field_margin": -1.68,
+            "field_margin_gain": -4.04,
+            "index": 56.47,
+            "net_income": "-24628404.24",
+            "rank": 2,
+            "total_revenue": "2664790.48"
           },
           "name": "rd-starved"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 55.41,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 58.15,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 2.58,
-            "field_margin_gain": 0.0,
-            "index": 57.99,
-            "net_income": "-24234805.48",
+            "field_margin": 2.36,
+            "field_margin_gain": -0.0,
+            "index": 60.51,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
           "name": "rd-at-target"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 55.41,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 58.15,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 2.58,
-            "field_margin_gain": 0.0,
-            "index": 57.99,
-            "net_income": "-24234805.48",
+            "field_margin": 2.36,
+            "field_margin_gain": -0.0,
+            "index": 60.51,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
           "name": "rd-saturated"
         },
         {
           "fitness": {
-            "advantage": -17.99,
-            "best_rival_index": 57.22,
-            "cash_closing": "-52190000.00",
+            "advantage": -21.27,
+            "best_rival_index": 59.88,
+            "cash_closing": "-57890000.00",
             "field": 4,
-            "field_margin": -17.22,
-            "field_margin_gain": -19.8,
-            "index": 40.0,
-            "net_income": "-11265000.00",
+            "field_margin": -20.64,
+            "field_margin_gain": -23.0,
+            "index": 39.24,
+            "net_income": "-13165000.00",
             "rank": 4,
             "total_revenue": "0.00"
           },
@@ -488,76 +487,76 @@
         },
         {
           "fitness": {
-            "advantage": -6.22,
-            "best_rival_index": 57.22,
-            "cash_closing": "-60654446.80",
+            "advantage": -6.29,
+            "best_rival_index": 59.88,
+            "cash_closing": "-66354446.80",
             "field": 4,
-            "field_margin": -5.45,
-            "field_margin_gain": -8.03,
-            "index": 51.77,
-            "net_income": "-14810110.80",
-            "rank": 4,
+            "field_margin": -5.66,
+            "field_margin_gain": -8.02,
+            "index": 54.22,
+            "net_income": "-16710110.80",
+            "rank": 3,
             "total_revenue": "339360.00"
           },
           "name": "near-inactive"
         },
         {
           "fitness": {
-            "advantage": 0.67,
-            "best_rival_index": 55.41,
-            "cash_closing": "-53712172.02",
+            "advantage": -0.26,
+            "best_rival_index": 58.08,
+            "cash_closing": "-105164455.37",
             "field": 4,
-            "field_margin": 3.25,
-            "field_margin_gain": 0.67,
-            "index": 58.66,
-            "net_income": "-24234805.48",
+            "field_margin": 2.17,
+            "field_margin_gain": -0.19,
+            "index": 60.25,
+            "net_income": "-28008017.65",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2674374.39"
           },
-          "name": "equity-raise"
+          "name": "equity-at-legal-max"
         },
         {
           "fitness": {
-            "advantage": -1.0,
-            "best_rival_index": 52.61,
-            "cash_closing": "-85046545.81",
+            "advantage": -0.93,
+            "best_rival_index": 55.27,
+            "cash_closing": "-90734784.22",
             "field": 4,
-            "field_margin": 4.38,
-            "field_margin_gain": 1.8,
-            "index": 56.99,
-            "net_income": "-40687965.82",
+            "field_margin": 4.31,
+            "field_margin_gain": 1.95,
+            "index": 59.58,
+            "net_income": "-42581474.16",
             "rank": 1,
-            "total_revenue": "5267779.53"
+            "total_revenue": "5271237.78"
           },
           "name": "debt-funded-scale"
         },
         {
           "fitness": {
-            "advantage": 0.57,
-            "best_rival_index": 55.41,
-            "cash_closing": "-66147312.02",
+            "advantage": -0.33,
+            "best_rival_index": 58.15,
+            "cash_closing": "-104845359.62",
             "field": 4,
-            "field_margin": 3.15,
-            "field_margin_gain": 0.57,
-            "index": 58.56,
-            "net_income": "-24234805.48",
+            "field_margin": 2.03,
+            "field_margin_gain": -0.33,
+            "index": 60.18,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
-          "name": "equity-and-dividend"
+          "name": "dividend-payout"
         },
         {
           "fitness": {
-            "advantage": 0.22,
-            "best_rival_index": 55.25,
-            "cash_closing": "-86582372.69",
+            "advantage": -11.68,
+            "best_rival_index": 57.98,
+            "cash_closing": "-92270666.72",
             "field": 4,
-            "field_margin": 2.96,
-            "field_margin_gain": 0.38,
-            "index": 58.21,
-            "net_income": "-20943466.88",
-            "rank": 1,
-            "total_revenue": "2717884.29"
+            "field_margin": -9.15,
+            "field_margin_gain": -11.51,
+            "index": 48.83,
+            "net_income": "-22837022.96",
+            "rank": 4,
+            "total_revenue": "2721299.74"
           },
           "name": "skeleton-crew"
         }
@@ -565,162 +564,162 @@
     },
     "diverse": {
       "baseline": {
-        "best_rival_index": 54.62,
-        "cash_closing": "-93858172.02",
+        "best_rival_index": 57.04,
+        "cash_closing": "-99546537.31",
         "field": 4,
-        "field_margin": 1.84,
-        "index": 56.46,
-        "net_income": "-24234805.48",
+        "field_margin": 1.89,
+        "index": 58.93,
+        "net_income": "-26128404.24",
         "rank": 1,
-        "total_revenue": "2661314.47"
+        "total_revenue": "2664790.48"
       },
       "baseline_is_repeatable": true,
       "rows": [
         {
           "fitness": {
-            "advantage": 1.63,
-            "best_rival_index": 54.53,
-            "cash_closing": "-113295284.34",
+            "advantage": -2.04,
+            "best_rival_index": 56.97,
+            "cash_closing": "-118984511.42",
             "field": 4,
-            "field_margin": 3.56,
-            "field_margin_gain": 1.72,
-            "index": 58.09,
-            "net_income": "-29302291.40",
-            "rank": 1,
-            "total_revenue": "3810918.83"
+            "field_margin": -0.08,
+            "field_margin_gain": -1.97,
+            "index": 56.89,
+            "net_income": "-31196364.82",
+            "rank": 2,
+            "total_revenue": "3814003.57"
           },
           "name": "discovery-44"
         },
         {
           "fitness": {
-            "advantage": 0.9,
-            "best_rival_index": 54.7,
-            "cash_closing": "-132511896.43",
+            "advantage": 4.07,
+            "best_rival_index": 57.11,
+            "cash_closing": "-138200182.91",
             "field": 4,
-            "field_margin": 2.66,
-            "field_margin_gain": 0.82,
-            "index": 57.36,
-            "net_income": "-35569011.73",
+            "field_margin": 5.89,
+            "field_margin_gain": 4.0,
+            "index": 63.0,
+            "net_income": "-37462620.13",
             "rank": 1,
-            "total_revenue": "3578199.78"
+            "total_revenue": "3581237.51"
           },
           "name": "discovery-31"
         },
         {
           "fitness": {
-            "advantage": 1.21,
-            "best_rival_index": 53.8,
-            "cash_closing": "-138124976.68",
+            "advantage": 1.13,
+            "best_rival_index": 56.25,
+            "cash_closing": "-143813169.05",
             "field": 4,
-            "field_margin": 3.87,
-            "field_margin_gain": 2.03,
-            "index": 57.67,
-            "net_income": "-37036139.15",
+            "field_margin": 3.81,
+            "field_margin_gain": 1.92,
+            "index": 60.06,
+            "net_income": "-38929603.48",
             "rank": 1,
-            "total_revenue": "4235059.13"
+            "total_revenue": "4238586.73"
           },
           "name": "discovery-15"
         },
         {
           "fitness": {
-            "advantage": -0.98,
-            "best_rival_index": 55.27,
-            "cash_closing": "-95915184.65",
+            "advantage": -1.0,
+            "best_rival_index": 57.68,
+            "cash_closing": "-101604791.74",
             "field": 4,
-            "field_margin": 0.21,
-            "field_margin_gain": -1.63,
-            "index": 55.48,
-            "net_income": "-25073783.63",
+            "field_margin": 0.25,
+            "field_margin_gain": -1.64,
+            "index": 57.93,
+            "net_income": "-26968499.46",
             "rank": 1,
-            "total_revenue": "2295673.59"
+            "total_revenue": "2298781.29"
           },
           "name": "price-at-clamp"
         },
         {
           "fitness": {
-            "advantage": -0.09,
-            "best_rival_index": 55.75,
-            "cash_closing": "-111302054.60",
+            "advantage": 0.0,
+            "best_rival_index": 58.17,
+            "cash_closing": "-117064514.67",
             "field": 4,
-            "field_margin": 0.62,
-            "field_margin_gain": -1.22,
-            "index": 56.37,
-            "net_income": "-29470629.18",
+            "field_margin": 0.76,
+            "field_margin_gain": -1.13,
+            "index": 58.93,
+            "net_income": "-31389379.18",
             "rank": 1,
-            "total_revenue": "3042698.76"
+            "total_revenue": "3056040.11"
           },
           "name": "price-above-clamp"
         },
         {
           "fitness": {
-            "advantage": -2.75,
-            "best_rival_index": 55.94,
-            "cash_closing": "-80119909.91",
+            "advantage": -2.68,
+            "best_rival_index": 58.36,
+            "cash_closing": "-85802149.19",
             "field": 4,
-            "field_margin": -2.23,
-            "field_margin_gain": -4.07,
-            "index": 53.71,
-            "net_income": "-20654683.99",
+            "field_margin": -2.11,
+            "field_margin_gain": -4.0,
+            "index": 56.25,
+            "net_income": "-22542186.02",
             "rank": 2,
-            "total_revenue": "1254276.62"
+            "total_revenue": "1265856.11"
           },
           "name": "price-above-clamp-lean"
         },
         {
           "fitness": {
-            "advantage": 0.08,
-            "best_rival_index": 54.62,
-            "cash_closing": "-90358172.02",
+            "advantage": -4.07,
+            "best_rival_index": 57.04,
+            "cash_closing": "-96046537.31",
             "field": 4,
-            "field_margin": 1.92,
-            "field_margin_gain": 0.08,
-            "index": 56.54,
-            "net_income": "-22734805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "field_margin": -2.18,
+            "field_margin_gain": -4.07,
+            "index": 54.86,
+            "net_income": "-24628404.24",
+            "rank": 3,
+            "total_revenue": "2664790.48"
           },
           "name": "rd-starved"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 54.62,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 57.04,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 1.84,
+            "field_margin": 1.89,
             "field_margin_gain": 0.0,
-            "index": 56.46,
-            "net_income": "-24234805.48",
+            "index": 58.93,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
           "name": "rd-at-target"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 54.62,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 57.04,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 1.84,
+            "field_margin": 1.89,
             "field_margin_gain": 0.0,
-            "index": 56.46,
-            "net_income": "-24234805.48",
+            "index": 58.93,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
           "name": "rd-saturated"
         },
         {
           "fitness": {
-            "advantage": -16.46,
-            "best_rival_index": 57.02,
-            "cash_closing": "-52190000.00",
+            "advantage": -19.52,
+            "best_rival_index": 59.43,
+            "cash_closing": "-57890000.00",
             "field": 4,
-            "field_margin": -17.02,
-            "field_margin_gain": -18.86,
-            "index": 40.0,
-            "net_income": "-11265000.00",
+            "field_margin": -20.02,
+            "field_margin_gain": -21.91,
+            "index": 39.41,
+            "net_income": "-13165000.00",
             "rank": 4,
             "total_revenue": "0.00"
           },
@@ -728,76 +727,76 @@
         },
         {
           "fitness": {
-            "advantage": -3.41,
-            "best_rival_index": 56.6,
-            "cash_closing": "-60654446.80",
+            "advantage": -3.39,
+            "best_rival_index": 59.02,
+            "cash_closing": "-66354446.80",
             "field": 4,
-            "field_margin": -3.55,
-            "field_margin_gain": -5.39,
-            "index": 53.05,
-            "net_income": "-14810110.80",
-            "rank": 3,
+            "field_margin": -3.48,
+            "field_margin_gain": -5.37,
+            "index": 55.54,
+            "net_income": "-16710110.80",
+            "rank": 4,
             "total_revenue": "339360.00"
           },
           "name": "near-inactive"
         },
         {
           "fitness": {
-            "advantage": 0.68,
-            "best_rival_index": 54.62,
-            "cash_closing": "-53712172.02",
+            "advantage": -0.19,
+            "best_rival_index": 57.02,
+            "cash_closing": "-105164455.37",
             "field": 4,
-            "field_margin": 2.52,
-            "field_margin_gain": 0.68,
-            "index": 57.14,
-            "net_income": "-24234805.48",
+            "field_margin": 1.72,
+            "field_margin_gain": -0.17,
+            "index": 58.74,
+            "net_income": "-28008017.65",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2674374.39"
           },
-          "name": "equity-raise"
+          "name": "equity-at-legal-max"
         },
         {
           "fitness": {
-            "advantage": 0.71,
-            "best_rival_index": 52.58,
-            "cash_closing": "-85046545.81",
+            "advantage": 0.81,
+            "best_rival_index": 55.05,
+            "cash_closing": "-90734784.22",
             "field": 4,
-            "field_margin": 4.59,
-            "field_margin_gain": 2.75,
-            "index": 57.17,
-            "net_income": "-40687965.82",
+            "field_margin": 4.69,
+            "field_margin_gain": 2.8,
+            "index": 59.74,
+            "net_income": "-42581474.16",
             "rank": 1,
-            "total_revenue": "5267779.53"
+            "total_revenue": "5271237.78"
           },
           "name": "debt-funded-scale"
         },
         {
           "fitness": {
-            "advantage": 0.57,
-            "best_rival_index": 54.62,
-            "cash_closing": "-66147312.02",
+            "advantage": -0.33,
+            "best_rival_index": 57.04,
+            "cash_closing": "-104845359.62",
             "field": 4,
-            "field_margin": 2.41,
-            "field_margin_gain": 0.57,
-            "index": 57.03,
-            "net_income": "-24234805.48",
+            "field_margin": 1.56,
+            "field_margin_gain": -0.33,
+            "index": 58.6,
+            "net_income": "-26128404.24",
             "rank": 1,
-            "total_revenue": "2661314.47"
+            "total_revenue": "2664790.48"
           },
-          "name": "equity-and-dividend"
+          "name": "dividend-payout"
         },
         {
           "fitness": {
-            "advantage": 0.27,
-            "best_rival_index": 54.62,
-            "cash_closing": "-86582372.69",
+            "advantage": -11.61,
+            "best_rival_index": 57.04,
+            "cash_closing": "-92270666.72",
             "field": 4,
-            "field_margin": 2.11,
-            "field_margin_gain": 0.27,
-            "index": 56.73,
-            "net_income": "-20943466.88",
-            "rank": 1,
-            "total_revenue": "2717884.29"
+            "field_margin": -9.72,
+            "field_margin_gain": -11.61,
+            "index": 47.32,
+            "net_income": "-22837022.96",
+            "rank": 4,
+            "total_revenue": "2721299.74"
           },
           "name": "skeleton-crew"
         }
@@ -805,162 +804,162 @@
     },
     "incumbent": {
       "baseline": {
-        "best_rival_index": 56.36,
-        "cash_closing": "-93858172.02",
+        "best_rival_index": 61.47,
+        "cash_closing": "-99546537.31",
         "field": 4,
-        "field_margin": 1.63,
-        "index": 57.99,
-        "net_income": "-24234805.48",
-        "rank": 1,
-        "total_revenue": "2661314.47"
+        "field_margin": -2.44,
+        "index": 59.03,
+        "net_income": "-26128404.24",
+        "rank": 3,
+        "total_revenue": "2664790.48"
       },
       "baseline_is_repeatable": true,
       "rows": [
         {
           "fitness": {
-            "advantage": -0.44,
-            "best_rival_index": 54.45,
-            "cash_closing": "-113295284.34",
+            "advantage": -2.16,
+            "best_rival_index": 61.21,
+            "cash_closing": "-118984511.42",
             "field": 4,
-            "field_margin": 3.1,
-            "field_margin_gain": 1.47,
-            "index": 57.55,
-            "net_income": "-29302291.40",
-            "rank": 1,
-            "total_revenue": "3810918.83"
+            "field_margin": -4.34,
+            "field_margin_gain": -1.9,
+            "index": 56.87,
+            "net_income": "-31196364.82",
+            "rank": 3,
+            "total_revenue": "3814003.57"
           },
           "name": "discovery-44"
         },
         {
           "fitness": {
-            "advantage": -0.52,
-            "best_rival_index": 55.22,
-            "cash_closing": "-132511896.43",
+            "advantage": 4.11,
+            "best_rival_index": 61.6,
+            "cash_closing": "-138200182.91",
             "field": 4,
-            "field_margin": 2.25,
-            "field_margin_gain": 0.62,
-            "index": 57.47,
-            "net_income": "-35569011.73",
+            "field_margin": 1.54,
+            "field_margin_gain": 3.98,
+            "index": 63.14,
+            "net_income": "-37462620.13",
             "rank": 1,
-            "total_revenue": "3578199.78"
+            "total_revenue": "3581237.51"
           },
           "name": "discovery-31"
         },
         {
           "fitness": {
-            "advantage": -0.53,
-            "best_rival_index": 54.31,
-            "cash_closing": "-138124976.68",
+            "advantage": 0.92,
+            "best_rival_index": 60.46,
+            "cash_closing": "-143813169.05",
             "field": 4,
-            "field_margin": 3.15,
-            "field_margin_gain": 1.52,
-            "index": 57.46,
-            "net_income": "-37036139.15",
-            "rank": 1,
-            "total_revenue": "4235059.13"
+            "field_margin": -0.51,
+            "field_margin_gain": 1.93,
+            "index": 59.95,
+            "net_income": "-38929603.48",
+            "rank": 2,
+            "total_revenue": "4238586.73"
           },
           "name": "discovery-15"
         },
         {
           "fitness": {
-            "advantage": -0.96,
-            "best_rival_index": 57.82,
-            "cash_closing": "-95915184.65",
+            "advantage": -1.02,
+            "best_rival_index": 62.57,
+            "cash_closing": "-101604791.74",
             "field": 4,
-            "field_margin": -0.79,
-            "field_margin_gain": -2.42,
-            "index": 57.03,
-            "net_income": "-25073783.63",
-            "rank": 2,
-            "total_revenue": "2295673.59"
+            "field_margin": -4.56,
+            "field_margin_gain": -2.12,
+            "index": 58.01,
+            "net_income": "-26968499.46",
+            "rank": 3,
+            "total_revenue": "2298781.29"
           },
           "name": "price-at-clamp"
         },
         {
           "fitness": {
-            "advantage": -1.35,
-            "best_rival_index": 57.0,
-            "cash_closing": "-111302054.60",
+            "advantage": -0.32,
+            "best_rival_index": 63.01,
+            "cash_closing": "-117064514.67",
             "field": 4,
-            "field_margin": -0.36,
-            "field_margin_gain": -1.99,
-            "index": 56.64,
-            "net_income": "-29470629.18",
-            "rank": 2,
-            "total_revenue": "3042698.76"
+            "field_margin": -4.3,
+            "field_margin_gain": -1.86,
+            "index": 58.71,
+            "net_income": "-31389379.18",
+            "rank": 3,
+            "total_revenue": "3056040.11"
           },
           "name": "price-above-clamp"
         },
         {
           "fitness": {
-            "advantage": -4.24,
-            "best_rival_index": 58.18,
-            "cash_closing": "-80119909.91",
+            "advantage": -3.35,
+            "best_rival_index": 63.01,
+            "cash_closing": "-85802149.19",
             "field": 4,
-            "field_margin": -4.43,
-            "field_margin_gain": -6.06,
-            "index": 53.75,
-            "net_income": "-20654683.99",
-            "rank": 3,
-            "total_revenue": "1254276.62"
+            "field_margin": -7.33,
+            "field_margin_gain": -4.89,
+            "index": 55.68,
+            "net_income": "-22542186.02",
+            "rank": 4,
+            "total_revenue": "1265856.11"
           },
           "name": "price-above-clamp-lean"
         },
         {
           "fitness": {
-            "advantage": 0.11,
-            "best_rival_index": 56.36,
-            "cash_closing": "-90358172.02",
+            "advantage": -4.05,
+            "best_rival_index": 61.47,
+            "cash_closing": "-96046537.31",
             "field": 4,
-            "field_margin": 1.74,
-            "field_margin_gain": 0.11,
-            "index": 58.1,
-            "net_income": "-22734805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "field_margin": -6.49,
+            "field_margin_gain": -4.05,
+            "index": 54.98,
+            "net_income": "-24628404.24",
+            "rank": 4,
+            "total_revenue": "2664790.48"
           },
           "name": "rd-starved"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 56.36,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 61.47,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 1.63,
+            "field_margin": -2.44,
             "field_margin_gain": 0.0,
-            "index": 57.99,
-            "net_income": "-24234805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "index": 59.03,
+            "net_income": "-26128404.24",
+            "rank": 3,
+            "total_revenue": "2664790.48"
           },
           "name": "rd-at-target"
         },
         {
           "fitness": {
             "advantage": 0.0,
-            "best_rival_index": 56.36,
-            "cash_closing": "-93858172.02",
+            "best_rival_index": 61.47,
+            "cash_closing": "-99546537.31",
             "field": 4,
-            "field_margin": 1.63,
+            "field_margin": -2.44,
             "field_margin_gain": 0.0,
-            "index": 57.99,
-            "net_income": "-24234805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "index": 59.03,
+            "net_income": "-26128404.24",
+            "rank": 3,
+            "total_revenue": "2664790.48"
           },
           "name": "rd-saturated"
         },
         {
           "fitness": {
-            "advantage": -17.99,
-            "best_rival_index": 58.18,
-            "cash_closing": "-52190000.00",
+            "advantage": -19.64,
+            "best_rival_index": 63.01,
+            "cash_closing": "-57890000.00",
             "field": 4,
-            "field_margin": -18.18,
-            "field_margin_gain": -19.81,
-            "index": 40.0,
-            "net_income": "-11265000.00",
+            "field_margin": -23.62,
+            "field_margin_gain": -21.18,
+            "index": 39.39,
+            "net_income": "-13165000.00",
             "rank": 4,
             "total_revenue": "0.00"
           },
@@ -968,14 +967,14 @@
         },
         {
           "fitness": {
-            "advantage": -6.22,
-            "best_rival_index": 58.18,
-            "cash_closing": "-60654446.80",
+            "advantage": -4.74,
+            "best_rival_index": 63.01,
+            "cash_closing": "-66354446.80",
             "field": 4,
-            "field_margin": -6.41,
-            "field_margin_gain": -8.04,
-            "index": 51.77,
-            "net_income": "-14810110.80",
+            "field_margin": -8.72,
+            "field_margin_gain": -6.28,
+            "index": 54.29,
+            "net_income": "-16710110.80",
             "rank": 4,
             "total_revenue": "339360.00"
           },
@@ -983,61 +982,61 @@
         },
         {
           "fitness": {
-            "advantage": 0.66,
-            "best_rival_index": 56.36,
-            "cash_closing": "-53712172.02",
+            "advantage": -0.19,
+            "best_rival_index": 61.43,
+            "cash_closing": "-105164455.37",
             "field": 4,
-            "field_margin": 2.29,
-            "field_margin_gain": 0.66,
-            "index": 58.65,
-            "net_income": "-24234805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "field_margin": -2.59,
+            "field_margin_gain": -0.15,
+            "index": 58.84,
+            "net_income": "-28008017.65",
+            "rank": 3,
+            "total_revenue": "2674374.39"
           },
-          "name": "equity-raise"
+          "name": "equity-at-legal-max"
         },
         {
           "fitness": {
-            "advantage": -1.0,
-            "best_rival_index": 53.57,
-            "cash_closing": "-85046545.81",
+            "advantage": 0.65,
+            "best_rival_index": 59.35,
+            "cash_closing": "-90734784.22",
             "field": 4,
-            "field_margin": 3.42,
-            "field_margin_gain": 1.79,
-            "index": 56.99,
-            "net_income": "-40687965.82",
+            "field_margin": 0.33,
+            "field_margin_gain": 2.77,
+            "index": 59.68,
+            "net_income": "-42581474.16",
             "rank": 1,
-            "total_revenue": "5267779.53"
+            "total_revenue": "5271237.78"
           },
           "name": "debt-funded-scale"
         },
         {
           "fitness": {
-            "advantage": 0.57,
-            "best_rival_index": 56.36,
-            "cash_closing": "-66147312.02",
+            "advantage": -0.32,
+            "best_rival_index": 61.47,
+            "cash_closing": "-104845359.62",
             "field": 4,
-            "field_margin": 2.2,
-            "field_margin_gain": 0.57,
-            "index": 58.56,
-            "net_income": "-24234805.48",
-            "rank": 1,
-            "total_revenue": "2661314.47"
+            "field_margin": -2.76,
+            "field_margin_gain": -0.32,
+            "index": 58.71,
+            "net_income": "-26128404.24",
+            "rank": 3,
+            "total_revenue": "2664790.48"
           },
-          "name": "equity-and-dividend"
+          "name": "dividend-payout"
         },
         {
           "fitness": {
-            "advantage": 0.22,
-            "best_rival_index": 56.2,
-            "cash_closing": "-86582372.69",
+            "advantage": -11.59,
+            "best_rival_index": 61.47,
+            "cash_closing": "-92270666.72",
             "field": 4,
-            "field_margin": 2.01,
-            "field_margin_gain": 0.38,
-            "index": 58.21,
-            "net_income": "-20943466.88",
-            "rank": 1,
-            "total_revenue": "2717884.29"
+            "field_margin": -14.03,
+            "field_margin_gain": -11.59,
+            "index": 47.44,
+            "net_income": "-22837022.96",
+            "rank": 4,
+            "total_revenue": "2721299.74"
           },
           "name": "skeleton-crew"
         }
@@ -1050,51 +1049,15 @@
   "discovery_summary": [
     {
       "advantage_by_population": {
-        "competent": 0.67,
-        "diverse": 0.68,
-        "incumbent": 0.66
+        "competent": 2.65,
+        "diverse": 4.07,
+        "incumbent": 4.11
       },
-      "mean": 0.67,
-      "median": 0.67,
-      "name": "equity-raise",
+      "mean": 3.61,
+      "median": 4.07,
+      "name": "discovery-31",
       "wins_every_population": true,
-      "worst_case": 0.66
-    },
-    {
-      "advantage_by_population": {
-        "competent": 0.57,
-        "diverse": 0.57,
-        "incumbent": 0.57
-      },
-      "mean": 0.57,
-      "median": 0.57,
-      "name": "equity-and-dividend",
-      "wins_every_population": true,
-      "worst_case": 0.57
-    },
-    {
-      "advantage_by_population": {
-        "competent": 0.22,
-        "diverse": 0.27,
-        "incumbent": 0.22
-      },
-      "mean": 0.2367,
-      "median": 0.22,
-      "name": "skeleton-crew",
-      "wins_every_population": true,
-      "worst_case": 0.22
-    },
-    {
-      "advantage_by_population": {
-        "competent": 0.11,
-        "diverse": 0.08,
-        "incumbent": 0.11
-      },
-      "mean": 0.1,
-      "median": 0.11,
-      "name": "rd-starved",
-      "wins_every_population": true,
-      "worst_case": 0.08
+      "worst_case": 2.65
     },
     {
       "advantage_by_population": {
@@ -1122,115 +1085,151 @@
     },
     {
       "advantage_by_population": {
-        "competent": -0.44,
-        "diverse": 1.63,
-        "incumbent": -0.44
+        "competent": -0.26,
+        "diverse": -0.19,
+        "incumbent": -0.19
       },
-      "mean": 0.25,
-      "median": -0.44,
-      "name": "discovery-44",
+      "mean": -0.2133,
+      "median": -0.19,
+      "name": "equity-at-legal-max",
       "wins_every_population": false,
-      "worst_case": -0.44
+      "worst_case": -0.26
     },
     {
       "advantage_by_population": {
-        "competent": -0.52,
-        "diverse": 0.9,
-        "incumbent": -0.52
+        "competent": -0.33,
+        "diverse": -0.33,
+        "incumbent": -0.32
       },
-      "mean": -0.0467,
-      "median": -0.52,
-      "name": "discovery-31",
+      "mean": -0.3267,
+      "median": -0.33,
+      "name": "dividend-payout",
       "wins_every_population": false,
-      "worst_case": -0.52
+      "worst_case": -0.33
     },
     {
       "advantage_by_population": {
-        "competent": -0.53,
-        "diverse": 1.21,
-        "incumbent": -0.53
+        "competent": -0.66,
+        "diverse": 1.13,
+        "incumbent": 0.92
       },
-      "mean": 0.05,
-      "median": -0.53,
+      "mean": 0.4633,
+      "median": 0.92,
       "name": "discovery-15",
       "wins_every_population": false,
-      "worst_case": -0.53
+      "worst_case": -0.66
     },
     {
       "advantage_by_population": {
-        "competent": -0.97,
-        "diverse": -0.98,
-        "incumbent": -0.96
+        "competent": -0.93,
+        "diverse": 0.81,
+        "incumbent": 0.65
       },
-      "mean": -0.97,
-      "median": -0.97,
-      "name": "price-at-clamp",
-      "wins_every_population": false,
-      "worst_case": -0.98
-    },
-    {
-      "advantage_by_population": {
-        "competent": -1.0,
-        "diverse": 0.71,
-        "incumbent": -1.0
-      },
-      "mean": -0.43,
-      "median": -1.0,
+      "mean": 0.1767,
+      "median": 0.65,
       "name": "debt-funded-scale",
       "wins_every_population": false,
-      "worst_case": -1.0
+      "worst_case": -0.93
     },
     {
       "advantage_by_population": {
-        "competent": -1.35,
-        "diverse": -0.09,
-        "incumbent": -1.35
+        "competent": -1.06,
+        "diverse": -1.0,
+        "incumbent": -1.02
       },
-      "mean": -0.93,
-      "median": -1.35,
+      "mean": -1.0267,
+      "median": -1.02,
+      "name": "price-at-clamp",
+      "wins_every_population": false,
+      "worst_case": -1.06
+    },
+    {
+      "advantage_by_population": {
+        "competent": -1.26,
+        "diverse": 0.0,
+        "incumbent": -0.32
+      },
+      "mean": -0.5267,
+      "median": -0.32,
       "name": "price-above-clamp",
       "wins_every_population": false,
-      "worst_case": -1.35
+      "worst_case": -1.26
     },
     {
       "advantage_by_population": {
-        "competent": -4.25,
-        "diverse": -2.75,
-        "incumbent": -4.24
+        "competent": -4.04,
+        "diverse": -4.07,
+        "incumbent": -4.05
       },
-      "mean": -3.7467,
-      "median": -4.24,
+      "mean": -4.0533,
+      "median": -4.05,
+      "name": "rd-starved",
+      "wins_every_population": false,
+      "worst_case": -4.07
+    },
+    {
+      "advantage_by_population": {
+        "competent": -4.11,
+        "diverse": -2.04,
+        "incumbent": -2.16
+      },
+      "mean": -2.77,
+      "median": -2.16,
+      "name": "discovery-44",
+      "wins_every_population": false,
+      "worst_case": -4.11
+    },
+    {
+      "advantage_by_population": {
+        "competent": -4.24,
+        "diverse": -2.68,
+        "incumbent": -3.35
+      },
+      "mean": -3.4233,
+      "median": -3.35,
       "name": "price-above-clamp-lean",
       "wins_every_population": false,
-      "worst_case": -4.25
+      "worst_case": -4.24
     },
     {
       "advantage_by_population": {
-        "competent": -6.22,
-        "diverse": -3.41,
-        "incumbent": -6.22
+        "competent": -6.29,
+        "diverse": -3.39,
+        "incumbent": -4.74
       },
-      "mean": -5.2833,
-      "median": -6.22,
+      "mean": -4.8067,
+      "median": -4.74,
       "name": "near-inactive",
       "wins_every_population": false,
-      "worst_case": -6.22
+      "worst_case": -6.29
     },
     {
       "advantage_by_population": {
-        "competent": -17.99,
-        "diverse": -16.46,
-        "incumbent": -17.99
+        "competent": -11.68,
+        "diverse": -11.61,
+        "incumbent": -11.59
       },
-      "mean": -17.48,
-      "median": -17.99,
+      "mean": -11.6267,
+      "median": -11.61,
+      "name": "skeleton-crew",
+      "wins_every_population": false,
+      "worst_case": -11.68
+    },
+    {
+      "advantage_by_population": {
+        "competent": -21.27,
+        "diverse": -19.52,
+        "incumbent": -19.64
+      },
+      "mean": -20.1433,
+      "median": -19.64,
       "name": "commercially-inactive",
       "wins_every_population": false,
-      "worst_case": -17.99
+      "worst_case": -21.27
     }
   ],
   "diverse_seed": "crv2-06-tournament-diverse",
-  "elapsed_seconds": 1659.7,
+  "elapsed_seconds": 1574.6,
   "evaluations": {
     "discovery_baselines": 6,
     "discovery_candidates": 45,
@@ -1239,9 +1238,9 @@
   },
   "field_size": 4,
   "finalists": [
-    "equity-raise",
-    "equity-and-dividend",
-    "skeleton-crew"
+    "discovery-31",
+    "rd-at-target",
+    "rd-saturated"
   ],
   "holdout": {
     "crv2-06-holdout-1": {
@@ -1249,178 +1248,178 @@
       "populations": {
         "competent": {
           "baseline": {
-            "best_rival_index": 55.44,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 58.17,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 2.55,
-            "index": 57.99,
-            "net_income": "-24251419.64",
+            "field_margin": 2.34,
+            "index": 60.51,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 55.44,
-                "cash_closing": "-53733997.11",
+                "advantage": 2.65,
+                "best_rival_index": 56.96,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 3.21,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 6.2,
+                "field_margin_gain": 3.86,
+                "index": 63.16,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 55.44,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 58.17,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 3.12,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
+                "field_margin": 2.34,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 55.27,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 58.17,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.94,
-                "field_margin_gain": 0.39,
-                "index": 58.21,
-                "net_income": "-20960084.44",
+                "field_margin": 2.34,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "diverse": {
           "baseline": {
-            "best_rival_index": 54.62,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 57.04,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.82,
-            "index": 56.44,
-            "net_income": "-24251419.64",
+            "field_margin": 1.88,
+            "index": 58.92,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.68,
-                "best_rival_index": 54.62,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.06,
+                "best_rival_index": 57.11,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.5,
-                "field_margin_gain": 0.68,
-                "index": 57.12,
-                "net_income": "-24251419.64",
+                "field_margin": 5.87,
+                "field_margin_gain": 3.99,
+                "index": 62.98,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 54.62,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.39,
-                "field_margin_gain": 0.57,
-                "index": 57.01,
-                "net_income": "-24251419.64",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.27,
-                "best_rival_index": 54.62,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.09,
-                "field_margin_gain": 0.27,
-                "index": 56.71,
-                "net_income": "-20960084.44",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "incumbent": {
           "baseline": {
-            "best_rival_index": 56.39,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 61.47,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.6,
-            "index": 57.99,
-            "net_income": "-24251419.64",
-            "rank": 1,
-            "total_revenue": "2644455.07"
+            "field_margin": -2.46,
+            "index": 59.01,
+            "net_income": "-26144864.57",
+            "rank": 3,
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 56.39,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.11,
+                "best_rival_index": 61.6,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.26,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 1.52,
+                "field_margin_gain": 3.98,
+                "index": 63.12,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 56.39,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.17,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
-                "rank": 1,
-                "total_revenue": "2644455.07"
+                "field_margin": -2.46,
+                "field_margin_gain": -0.0,
+                "index": 59.01,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 56.22,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 1.99,
-                "field_margin_gain": 0.39,
-                "index": 58.21,
-                "net_income": "-20960084.44",
-                "rank": 1,
-                "total_revenue": "2701031.67"
+                "field_margin": -2.46,
+                "field_margin_gain": -0.0,
+                "index": 59.01,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         }
@@ -1431,178 +1430,178 @@
       "populations": {
         "competent": {
           "baseline": {
-            "best_rival_index": 55.44,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 58.17,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 2.55,
-            "index": 57.99,
-            "net_income": "-24251419.64",
+            "field_margin": 2.34,
+            "index": 60.51,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 55.44,
-                "cash_closing": "-53733997.11",
+                "advantage": 2.65,
+                "best_rival_index": 56.96,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 3.21,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 6.2,
+                "field_margin_gain": 3.86,
+                "index": 63.16,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 55.44,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 58.17,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 3.12,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
+                "field_margin": 2.34,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 55.27,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 58.17,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.94,
-                "field_margin_gain": 0.39,
-                "index": 58.21,
-                "net_income": "-20960084.44",
+                "field_margin": 2.34,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "diverse": {
           "baseline": {
-            "best_rival_index": 54.62,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 57.04,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.82,
-            "index": 56.44,
-            "net_income": "-24251419.64",
+            "field_margin": 1.88,
+            "index": 58.92,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.68,
-                "best_rival_index": 54.62,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.06,
+                "best_rival_index": 57.11,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.5,
-                "field_margin_gain": 0.68,
-                "index": 57.12,
-                "net_income": "-24251419.64",
+                "field_margin": 5.87,
+                "field_margin_gain": 3.99,
+                "index": 62.98,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 54.62,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.39,
-                "field_margin_gain": 0.57,
-                "index": 57.01,
-                "net_income": "-24251419.64",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.27,
-                "best_rival_index": 54.62,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.09,
-                "field_margin_gain": 0.27,
-                "index": 56.71,
-                "net_income": "-20960084.44",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "incumbent": {
           "baseline": {
-            "best_rival_index": 56.39,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 61.47,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.6,
-            "index": 57.99,
-            "net_income": "-24251419.64",
-            "rank": 1,
-            "total_revenue": "2644455.07"
+            "field_margin": -2.46,
+            "index": 59.01,
+            "net_income": "-26144864.57",
+            "rank": 3,
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 56.39,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.11,
+                "best_rival_index": 61.6,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.26,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 1.52,
+                "field_margin_gain": 3.98,
+                "index": 63.12,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 56.39,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.17,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
-                "rank": 1,
-                "total_revenue": "2644455.07"
+                "field_margin": -2.46,
+                "field_margin_gain": -0.0,
+                "index": 59.01,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 56.22,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 1.99,
-                "field_margin_gain": 0.39,
-                "index": 58.21,
-                "net_income": "-20960084.44",
-                "rank": 1,
-                "total_revenue": "2701031.67"
+                "field_margin": -2.46,
+                "field_margin_gain": -0.0,
+                "index": 59.01,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         }
@@ -1613,178 +1612,178 @@
       "populations": {
         "competent": {
           "baseline": {
-            "best_rival_index": 55.42,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 58.14,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 2.57,
-            "index": 57.99,
-            "net_income": "-24251419.64",
+            "field_margin": 2.37,
+            "index": 60.51,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 55.42,
-                "cash_closing": "-53733997.11",
+                "advantage": 2.65,
+                "best_rival_index": 56.95,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 3.23,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 6.21,
+                "field_margin_gain": 3.84,
+                "index": 63.16,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 55.42,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 58.14,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 3.14,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
+                "field_margin": 2.37,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 55.25,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 58.14,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.96,
-                "field_margin_gain": 0.39,
-                "index": 58.21,
-                "net_income": "-20960084.44",
+                "field_margin": 2.37,
+                "field_margin_gain": -0.0,
+                "index": 60.51,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "diverse": {
           "baseline": {
-            "best_rival_index": 54.62,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 57.04,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.83,
-            "index": 56.45,
-            "net_income": "-24251419.64",
+            "field_margin": 1.88,
+            "index": 58.92,
+            "net_income": "-26144864.57",
             "rank": 1,
-            "total_revenue": "2644455.07"
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.67,
-                "best_rival_index": 54.62,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.07,
+                "best_rival_index": 57.11,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.5,
-                "field_margin_gain": 0.67,
-                "index": 57.12,
-                "net_income": "-24251419.64",
+                "field_margin": 5.88,
+                "field_margin_gain": 4.0,
+                "index": 62.99,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 54.62,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.4,
-                "field_margin_gain": 0.57,
-                "index": 57.02,
-                "net_income": "-24251419.64",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.27,
-                "best_rival_index": 54.62,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 57.04,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.1,
-                "field_margin_gain": 0.27,
-                "index": 56.72,
-                "net_income": "-20960084.44",
+                "field_margin": 1.88,
+                "field_margin_gain": 0.0,
+                "index": 58.92,
+                "net_income": "-26144864.57",
                 "rank": 1,
-                "total_revenue": "2701031.67"
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         },
         "incumbent": {
           "baseline": {
-            "best_rival_index": 56.36,
-            "cash_closing": "-93879997.11",
+            "best_rival_index": 61.47,
+            "cash_closing": "-99568160.32",
             "field": 4,
-            "field_margin": 1.63,
-            "index": 57.99,
-            "net_income": "-24251419.64",
-            "rank": 1,
-            "total_revenue": "2644455.07"
+            "field_margin": -2.44,
+            "index": 59.03,
+            "net_income": "-26144864.57",
+            "rank": 3,
+            "total_revenue": "2648087.18"
           },
           "rows": [
             {
               "fitness": {
-                "advantage": 0.66,
-                "best_rival_index": 56.36,
-                "cash_closing": "-53733997.11",
+                "advantage": 4.11,
+                "best_rival_index": 61.6,
+                "cash_closing": "-138223396.95",
                 "field": 4,
-                "field_margin": 2.29,
-                "field_margin_gain": 0.66,
-                "index": 58.65,
-                "net_income": "-24251419.64",
+                "field_margin": 1.54,
+                "field_margin_gain": 3.98,
+                "index": 63.14,
+                "net_income": "-37480000.16",
                 "rank": 1,
-                "total_revenue": "2644455.07"
+                "total_revenue": "3563620.67"
               },
-              "name": "equity-raise"
+              "name": "discovery-31"
             },
             {
               "fitness": {
-                "advantage": 0.57,
-                "best_rival_index": 56.36,
-                "cash_closing": "-66169137.11",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.2,
-                "field_margin_gain": 0.57,
-                "index": 58.56,
-                "net_income": "-24251419.64",
-                "rank": 1,
-                "total_revenue": "2644455.07"
+                "field_margin": -2.44,
+                "field_margin_gain": 0.0,
+                "index": 59.03,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "equity-and-dividend"
+              "name": "rd-at-target"
             },
             {
               "fitness": {
-                "advantage": 0.22,
-                "best_rival_index": 56.2,
-                "cash_closing": "-86604400.70",
+                "advantage": 0.0,
+                "best_rival_index": 61.47,
+                "cash_closing": "-99568160.32",
                 "field": 4,
-                "field_margin": 2.01,
-                "field_margin_gain": 0.38,
-                "index": 58.21,
-                "net_income": "-20960084.44",
-                "rank": 1,
-                "total_revenue": "2701031.67"
+                "field_margin": -2.44,
+                "field_margin_gain": 0.0,
+                "index": 59.03,
+                "net_income": "-26144864.57",
+                "rank": 3,
+                "total_revenue": "2648087.18"
               },
-              "name": "skeleton-crew"
+              "name": "rd-saturated"
             }
           ]
         }
@@ -1803,76 +1802,76 @@
   ],
   "holdout_summary": [
     {
-      "best_case": 0.68,
+      "best_case": 4.11,
       "cells": [
         {
-          "advantage": 0.66,
-          "field_margin": 3.21,
-          "index": 58.65,
+          "advantage": 2.65,
+          "field_margin": 6.2,
+          "index": 63.16,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.68,
-          "field_margin": 2.5,
-          "index": 57.12,
+          "advantage": 4.06,
+          "field_margin": 5.87,
+          "index": 62.98,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.66,
-          "field_margin": 2.26,
-          "index": 58.65,
+          "advantage": 4.11,
+          "field_margin": 1.52,
+          "index": 63.12,
           "population": "incumbent",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.66,
-          "field_margin": 3.21,
-          "index": 58.65,
+          "advantage": 2.65,
+          "field_margin": 6.2,
+          "index": 63.16,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.68,
-          "field_margin": 2.5,
-          "index": 57.12,
+          "advantage": 4.06,
+          "field_margin": 5.87,
+          "index": 62.98,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.66,
-          "field_margin": 2.26,
-          "index": 58.65,
+          "advantage": 4.11,
+          "field_margin": 1.52,
+          "index": 63.12,
           "population": "incumbent",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.66,
-          "field_margin": 3.23,
-          "index": 58.65,
+          "advantage": 2.65,
+          "field_margin": 6.21,
+          "index": 63.16,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.67,
-          "field_margin": 2.5,
-          "index": 57.12,
+          "advantage": 4.07,
+          "field_margin": 5.88,
+          "index": 62.99,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.66,
-          "field_margin": 2.29,
-          "index": 58.65,
+          "advantage": 4.11,
+          "field_margin": 1.54,
+          "index": 63.14,
           "population": "incumbent",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
@@ -1881,217 +1880,294 @@
       "cells_total": 9,
       "cells_won": 9,
       "distribution": [
-        0.66,
-        0.66,
-        0.66,
-        0.66,
-        0.66,
-        0.66,
-        0.67,
-        0.68,
-        0.68
+        2.65,
+        2.65,
+        2.65,
+        4.06,
+        4.06,
+        4.07,
+        4.11,
+        4.11,
+        4.11
       ],
-      "mean_margin": 0.6656,
-      "median_margin": 0.66,
-      "name": "equity-raise",
+      "mean_margin": 3.6078,
+      "median_margin": 4.06,
+      "name": "discovery-31",
       "wins_every_cell": true,
-      "worst_case_population_margin": 0.66
+      "worst_case_population_margin": 2.65
     },
     {
-      "best_case": 0.57,
+      "best_case": 0.0,
       "cells": [
         {
-          "advantage": 0.57,
-          "field_margin": 3.12,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": 2.34,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.39,
-          "index": 57.01,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.17,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": -2.46,
+          "index": 59.01,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 3.12,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": 2.34,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.39,
-          "index": 57.01,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.17,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": -2.46,
+          "index": 59.01,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 3.14,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": 2.37,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.4,
-          "index": 57.02,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.57,
-          "field_margin": 2.2,
-          "index": 58.56,
+          "advantage": 0.0,
+          "field_margin": -2.44,
+          "index": 59.03,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-3"
         }
       ],
       "cells_total": 9,
-      "cells_won": 9,
+      "cells_won": 0,
       "distribution": [
-        0.57,
-        0.57,
-        0.57,
-        0.57,
-        0.57,
-        0.57,
-        0.57,
-        0.57,
-        0.57
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
       ],
-      "mean_margin": 0.57,
-      "median_margin": 0.57,
-      "name": "equity-and-dividend",
-      "wins_every_cell": true,
-      "worst_case_population_margin": 0.57
+      "mean_margin": 0.0,
+      "median_margin": 0.0,
+      "name": "rd-at-target",
+      "wins_every_cell": false,
+      "worst_case_population_margin": 0.0
     },
     {
-      "best_case": 0.27,
+      "best_case": 0.0,
       "cells": [
         {
-          "advantage": 0.22,
-          "field_margin": 2.94,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": 2.34,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.27,
-          "field_margin": 2.09,
-          "index": 56.71,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.22,
-          "field_margin": 1.99,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": -2.46,
+          "index": 59.01,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-1"
         },
         {
-          "advantage": 0.22,
-          "field_margin": 2.94,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": 2.34,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.27,
-          "field_margin": 2.09,
-          "index": 56.71,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.22,
-          "field_margin": 1.99,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": -2.46,
+          "index": 59.01,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-2"
         },
         {
-          "advantage": 0.22,
-          "field_margin": 2.96,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": 2.37,
+          "index": 60.51,
           "population": "competent",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.27,
-          "field_margin": 2.1,
-          "index": 56.72,
+          "advantage": 0.0,
+          "field_margin": 1.88,
+          "index": 58.92,
           "population": "diverse",
           "rank": 1,
           "seed": "crv2-06-holdout-3"
         },
         {
-          "advantage": 0.22,
-          "field_margin": 2.01,
-          "index": 58.21,
+          "advantage": 0.0,
+          "field_margin": -2.44,
+          "index": 59.03,
           "population": "incumbent",
-          "rank": 1,
+          "rank": 3,
           "seed": "crv2-06-holdout-3"
         }
       ],
       "cells_total": 9,
-      "cells_won": 9,
+      "cells_won": 0,
       "distribution": [
-        0.22,
-        0.22,
-        0.22,
-        0.22,
-        0.22,
-        0.22,
-        0.27,
-        0.27,
-        0.27
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
       ],
-      "mean_margin": 0.2367,
-      "median_margin": 0.22,
-      "name": "skeleton-crew",
-      "wins_every_cell": true,
-      "worst_case_population_margin": 0.22
+      "mean_margin": 0.0,
+      "median_margin": 0.0,
+      "name": "rd-saturated",
+      "wins_every_cell": false,
+      "worst_case_population_margin": 0.0
     }
   ],
+  "illegal_payloads": [],
   "incumbent": {
-    "advantage_vs_competent": 0.67,
-    "name": "equity-raise"
+    "advantage_vs_competent": 2.65,
+    "name": "discovery-31"
+  },
+  "incumbent_contract": {
+    "incumbent": {
+      "legal": true,
+      "problems": []
+    }
+  },
+  "payload_contract": {
+    "baseline": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:commercially-inactive": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:debt-funded-scale": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:discovery-15": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:discovery-31": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:discovery-44": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:dividend-payout": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:equity-at-legal-max": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:near-inactive": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:price-above-clamp": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:price-above-clamp-lean": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:price-at-clamp": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:rd-at-target": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:rd-saturated": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:rd-starved": {
+      "legal": true,
+      "problems": []
+    },
+    "candidate:skeleton-crew": {
+      "legal": true,
+      "problems": []
+    },
+    "diverse": {
+      "legal": true,
+      "problems": []
+    }
   },
   "rounds_per_candidate": 3,
-  "subject_team": "Aether Energy Systems"
+  "subject_team": "Helix Storage"
 }
