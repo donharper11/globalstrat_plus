@@ -13,7 +13,7 @@ from decimal import Decimal
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework import permissions, status
+from rest_framework import permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -307,6 +307,19 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
 
         serializer.is_valid(raise_exception=True)
         saved = serializer.save()
+
+        # V2-024: the whole-submission path writes financing and outlays
+        # together, so the assessment runs on the saved rows. Raising here
+        # unwinds the enclosing atomic block, which is what makes this a
+        # rejection rather than a partial write followed by an error.
+        from core.services import funding_need
+        assessment = funding_need.assess_submission(saved)
+        if not assessment['within_limit']:
+            raise serializers.ValidationError({
+                'financing': [funding_need.describe(assessment, team.name)],
+                'funding_assessment': assessment,
+            })
+
         from core.services.competition_audit import record_decision_event
         record_decision_event(request, team.game, team, rnd, 'save', request.data)
         resp_status = status.HTTP_200_OK if submission else status.HTTP_201_CREATED
@@ -381,6 +394,20 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             ser = serializer_cls(data=nested_data)
             ser.is_valid(raise_exception=True)
             validated = ser.validated_data
+            if decision_type == 'financing':
+                # V2-024, at the supported API boundary. Judged against the
+                # outlays already persisted for this submission, with the same
+                # call the engine precondition makes.
+                from core.services import funding_need
+                assessment = funding_need.assess_submission(
+                    submission, financing_override=validated)
+                if not assessment['within_limit']:
+                    return Response(
+                        {'detail': funding_need.describe(
+                            assessment, submission.team.name),
+                         'funding_assessment': assessment},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             model_cls = serializer_cls.Meta.model
             model_cls.objects.filter(submission=submission).delete()
             model_cls.objects.create(submission=submission, **validated)
@@ -991,6 +1018,16 @@ class DecisionSummaryView(APIView):
                     )
             except DecisionBudgetAllocation.DoesNotExist:
                 pass
+            # V2-024: a raise larger than the round's funding shortfall blocks
+            # the lock. The partial-write check cannot be the only one: outlays
+            # can be cut after a raise was accepted, and this is the last point
+            # before the decisions are frozen.
+            from core.services import funding_need
+            assessment = funding_need.assess_submission(submission)
+            if not assessment['within_limit']:
+                fin_errors.append(
+                    funding_need.describe(assessment, team.name))
+
             if fin_errors:
                 categories['financing'] = {'status': 'error', 'errors': fin_errors}
                 lock_blockers.extend(fin_errors)

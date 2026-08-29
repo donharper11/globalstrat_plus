@@ -26,7 +26,8 @@ from django.test import TestCase
 from django.utils import timezone
 
 from core.models import (DecisionSubmission, Game, Round, Scenario, Team)
-from core.models.decisions import DecisionBudgetAllocation, DecisionFinancing
+from core.models.decisions import (DecisionBudgetAllocation, DecisionESG,
+                                   DecisionFinancing)
 from core.models.scenario import (FirmStarterProfile, MarketDefinition,
                                   ScenarioConfig)
 
@@ -91,6 +92,16 @@ class EquityIssuanceTests(TestCase):
         DecisionFinancing.objects.create(
             submission=sub, new_debt=D('0'), debt_repayment=D('0'),
             new_equity=new_equity, dividend_per_share=D('0'))
+        # V2-024: equity may only finance a genuine shortfall, so a team
+        # raising it needs outlays that exceed its opening cash. These tests
+        # are about how issued shares are priced, not about eligibility, so
+        # the fixture gives the raise something real to fund.
+        DecisionESG.objects.filter(submission=sub).delete()
+        if new_equity > 0:
+            DecisionESG.objects.create(
+                submission=sub,
+                environmental_investment=team.cash_on_hand + new_equity,
+                social_investment=D('0'))
         sub.status = 'locked'
         sub.locked_at = timezone.now()
         sub.save(update_fields=['status', 'locked_at'])

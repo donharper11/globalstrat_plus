@@ -32,6 +32,17 @@ class RoundNotReadyError(ValueError):
     report it as an actionable 400 rather than a 500."""
 
 
+class EquityExceedsFundingNeedError(RoundNotReadyError):
+    """A stored financing row raises more equity than the round needs.
+
+    V2-024. Equity may finance a genuine current-round funding shortfall; it
+    may not create surplus cash or fund a dividend. Refused rather than
+    clamped, and refused before the first competitive write, because a
+    persisted row can arrive from admin, a shell or a restore without ever
+    passing the serializer.
+    """
+
+
 class InvalidScenarioConfigurationError(RoundNotReadyError):
     """The scenario is missing a value scoring cannot proceed without.
 
@@ -398,6 +409,22 @@ def _run_phase_1(game_id):
             f'decision rules require zero or more. Correct the row(s) and '
             f'retry. {describe_violations(violations)}'
         )
+
+    # V2-024: equity raises are checked against the round's funding shortfall
+    # before any competitive write, for the same reason the decision-limit
+    # check above runs here -- a persisted row that never passed the
+    # serializer is exactly the bypass the rule has to survive.
+    from core.services import funding_need
+    equity_violations = funding_need.violations(game, current_round_obj)
+    if equity_violations:
+        detail = '; '.join(
+            funding_need.describe(v['assessment'], v['team'])
+            for v in equity_violations)
+        raise EquityExceedsFundingNeedError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(equity_violations)} equity raise(s) exceed the funding '
+            f'shortfall they claim to finance. Correct the row(s) and retry. '
+            f'{detail}')
 
     # Scenario configuration is validated here, before the first competitive
     # write, so a missing or unusable value cannot be discovered halfway

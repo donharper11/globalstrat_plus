@@ -397,6 +397,15 @@ def calculate_operating_expenses(context):
         platform_capex = D('0')
 
         if submission:
+            # V2-024: the decision-driven outlay lines come from
+            # `funding_need.decision_outlays`, which is also what the equity
+            # funding rule totals. One calculator, so a raise cannot be
+            # accepted against costs the engine never charges.
+            from core.services.funding_need import decision_outlays
+            _outlays = decision_outlays(
+                context.scenario, team, submission, current_round,
+                capitalize_platform)
+
             # R&D expense
             for inv in submission.rd_investments.all().order_by(
                     'team_platform__name', 'feature__code', 'method'):
@@ -529,6 +538,22 @@ def calculate_operating_expenses(context):
                 if team.id not in context.talent_savings:
                     context.talent_savings[team.id] = {}
                 context.talent_savings[team.id]['talent_cost'] = talent_cost
+
+        # The shared calculator must agree with the lines this function just
+        # built. It is the same arithmetic by construction; asserting it means
+        # a future edit to either side that breaks the equality stops the round
+        # instead of silently letting the funding rule price a different set of
+        # costs than the engine charges.
+        if submission:
+            _shared = (_outlays['rd'] + _outlays['platform_capex']
+                       + _outlays['marketing'])
+            _engine = rd_expense + platform_capex + marketing_expense
+            if _shared != _engine:
+                raise AssertionError(
+                    f'funding_need.decision_outlays disagrees with the cost '
+                    f'engine for team {team.id}: shared {_shared} vs engine '
+                    f'{_engine}. The equity funding rule and the engine must '
+                    f'charge the same outlays (V2-024).')
 
         # Total revenue for this team
         total_team_revenue = D('0')
