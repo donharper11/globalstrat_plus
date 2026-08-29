@@ -233,6 +233,54 @@ filtered on team and market and took `.first()` from a table unique per segment,
 printing a fit that did not move when price moved -- in a run whose entire
 subject is what moves when price moves.
 
+## New findings raised by the GSP-CRV2-06 Stage 3 tournament
+
+Measured by the bounded adversarial tournament at `stage3-tournament.json`:
+15 targeted candidates against three opponent populations on one discovery
+fixture identity, then the strongest three against all three populations on
+three unused identities. Advantage is the subject's index minus what the same
+team scores playing the documented baseline against the same opponents on the
+same identity, so the fixture's own team advantage divides out.
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-024 | Balance / opponent-independent dominance | **P1** | GSP-CRV2-06 Stage 3 | Issuing equity raises the performance index at no cost in the index. `equity-raise` -- the documented baseline plus `new_equity = $20,000,000` and nothing else -- beat competent play in **9 of 9 holdout cells**, worst-case **+0.66**, median +0.66. Its advantage is near-identical against competent (0.670), diverse (0.680) and incumbent (0.660) opponents, which is what opponent independence looks like in the data: the strategy does not compete for anything, it improves its own balance sheet. | `stage3-tournament.json`. Same-game counterfactual, three rounds per candidate, every candidate checked against the `decision_limits` policy before resolution. | **Open — stops the handoff.** |
+| V2-025 | Balance / cost-minimisation dominance | **P2** | GSP-CRV2-06 Stage 3 | Stripping the firm to nothing beats competent play. `skeleton-crew` -- zero R&D, commercial and operations headcount, zero ESG, zero strategy budget, everything else at baseline -- won **9 of 9 holdout cells**, worst-case **+0.22**. `rd-starved` won every discovery population on the same mechanism (worst +0.08). The saved cost raises net income, and the capability and satisfaction components do not charge enough for the loss to offset it. | `stage3-tournament.json`, discovery and holdout tables. | **Open.** |
+
+**V2-024 mechanism, confirmed in code.** `performance.py:110`
+`_financial_component` scores `debt_score = 1 - clamp01(debt_to_equity / 2)` at
+20% of the financial component. Issuing equity increases `total_equity`, which
+lowers debt-to-equity, which raises the index. The issuance path at
+`financials.py:207` correctly increments `shares_outstanding` under the V2-020
+disposition -- and **the performance index never reads `shares_outstanding`**.
+Dilution, ownership and the cost of equity appear nowhere in scoring, so the
+gain has no offsetting term. It is repeatable every round and compounds.
+
+`equity-and-dividend` (+0.57 in all nine cells, zero variance) shows the money
+does not even have to be kept: raising equity and paying it straight back out
+still beats competent play. That is the shape of a risk-free loop, and it is
+why this is P1 rather than a balance preference.
+
+**What the tournament did not find.** No candidate that attacks a closed
+finding paid. Pricing at the V2-023 clamp scored -0.97, above the clamp -1.35,
+and above the clamp with costs stripped -4.25. Commercial inactivity scored
+-17.99 and near-inactivity -6.22, so the V2-022 cap holds. The three strongest
+random-discovery candidates all lost to competent play against competent
+opponents (-0.44, -0.52, -0.53) while winning against diverse opponents (+1.63,
++0.90, +1.21) -- exactly the population-specific win the worst-case-first
+selection rule exists to reject.
+
+**A family that was not validly exercised, stated rather than glossed.** The
+"low-cost versus meaningful R&D" candidates varied
+`DecisionBudgetAllocation.rd_budget`, the *declared* budget, which V2-021
+deliberately made inert. Actual R&D spend lives in `DecisionRDInvestment.amount`,
+which the genome never touches and which `build_optional` pins at $100,000.
+`rd-at-target` and `rd-saturated` therefore scored exactly 0.000 against every
+population -- identical to the baseline, because they *were* the baseline in
+every respect that scoring reads. `rd-starved`'s +0.11 comes from zeroing
+headcount and research budget, not from R&D. That family tested cost, not R&D
+intensity, and the R&D dimension remains unexercised by this tournament.
+
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
 Both measured by same-game transactional counterfactual at `b43c132`: one team,
