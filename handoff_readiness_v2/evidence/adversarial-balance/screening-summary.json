@@ -1,0 +1,2104 @@
+{
+  "baseline": "load_demo scripted defaults; see harness/baseline.py",
+  "baseline_metrics": {
+    "cash_closing": "7198822.31",
+    "index_value": "56.54",
+    "net_income": "-16216094.97",
+    "operating_income": "-15736094.97",
+    "satisfaction_score": "0.5772",
+    "strategy_expense": "3900000.00",
+    "total_revenue": "887174.40"
+  },
+  "code_revision": "e3654ece7b4dcb3cf58633b590bbd3529d252b1d",
+  "dimensions": [
+    {
+      "decision_type": "budget",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "marketing_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "budget",
+      "escalate": true,
+      "escalation_reasons": [
+        "known exploit-sensitive mechanism"
+      ],
+      "field": "rd_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.10",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.09",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "budget",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "strategy_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "esg",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "environmental_investment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.2440",
+            "net_income": "3.6786",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.58",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59652267.68",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "esg",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "social_investment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.2440",
+            "net_income": "3.6786",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.58",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59652267.68",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "financing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "debt_repayment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "1.1113",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.07",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "financing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "dividend_per_share",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3347",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.53",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "999999.9999"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "financing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "new_debt",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3347",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.50",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "financing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "new_equity",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "6.6678",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.04",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "market-entry",
+      "escalate": true,
+      "escalation_reasons": [
+        "performance index moved materially"
+      ],
+      "field": "action",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:enter",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "enter"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0208",
+            "net_income": "0.0093",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.92",
+          "label": "category:change_mode",
+          "moved": true,
+          "net_income_delta": "150000.00",
+          "revenue_delta": "0.00",
+          "value": "change_mode"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0181",
+            "net_income": "0.0080",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.92",
+          "label": "category:exit",
+          "moved": true,
+          "net_income_delta": "130000.00",
+          "revenue_delta": "0.00",
+          "value": "exit"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "market-entry",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "initial_investment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0139",
+            "net_income": "0.0062",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.01",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "100000.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3208",
+            "net_income": "3.6939",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59900000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "market-entry",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "integration_strategy",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:FULL",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "FULL"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:BRAND_PRESERVE",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "BRAND_PRESERVE"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:DUAL_BRAND",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "DUAL_BRAND"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "channel_digital_pct",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "9.9999"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "channel_trade_pct",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "9.9999"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "channel_traditional_pct",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "9.9999"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "demand_estimate",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "distribution_investment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:mass_retail",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "mass_retail"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:selective_retail",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "selective_retail"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:exclusive_retail",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "exclusive_retail"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:direct_online",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "direct_online"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:hybrid",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "hybrid"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": true,
+      "escalation_reasons": [
+        "known exploit-sensitive mechanism",
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "production_volume",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.5919",
+            "net_income": "0.1346",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.08",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "2182320.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "2958.7255",
+            "net_income": "672.7525",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-10909417680.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "promotion_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0549",
+            "net_income": "0.0245",
+            "total_revenue": "0.0035"
+          },
+          "index_delta": "0.02",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "396875.03",
+          "revenue_delta": "-3138.24",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.2806",
+            "net_income": "3.6758",
+            "total_revenue": "0.0079"
+          },
+          "index_delta": "-0.60",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59606965.96",
+          "revenue_delta": "-6995.52",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": true,
+      "escalation_reasons": [
+        "known exploit-sensitive mechanism"
+      ],
+      "field": "retail_price",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "marketing",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "sales_team_count",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.1389",
+            "net_income": "0.0617",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.04",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "1000000.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "833469.5234",
+            "net_income": "370002.7048",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-5999999000000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "partnerships",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "action",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0076",
+            "net_income": "0.0043",
+            "total_revenue": "0.0336"
+          },
+          "index_delta": "0.03",
+          "label": "category:establish",
+          "moved": true,
+          "net_income_delta": "-70342.82",
+          "revenue_delta": "29783.04",
+          "value": "establish"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:modify",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "modify"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:terminate",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "terminate"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "partnerships",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "annual_investment",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "plants",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "action",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:build",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "build"
+        },
+        {
+          "fractions": {
+            "cash_closing": "4.8619",
+            "net_income": "0.2158",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.13",
+          "label": "category:expand",
+          "moved": true,
+          "net_income_delta": "3500000.00",
+          "revenue_delta": "0.00",
+          "value": "expand"
+        },
+        {
+          "fractions": {
+            "cash_closing": "4.8619",
+            "net_income": "0.2158",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.13",
+          "label": "category:contract_mfg",
+          "moved": true,
+          "net_income_delta": "3500000.00",
+          "revenue_delta": "0.00",
+          "value": "contract_mfg"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "plants",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "capacity_units",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "plants",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "contract_mfg_volume",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "platforms",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "committed_cost",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0139",
+            "net_income": "0.0062",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.01",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "100000.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3208",
+            "net_income": "3.6939",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59900000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "platforms",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "method",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:in_house",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "in_house"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:license",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "license"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:partnership",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "partnership"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "product-retires",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "timing",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:immediate",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "immediate"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:end_of_round",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "end_of_round"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "products",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "positioning",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:budget",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "budget"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:mainstream",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "mainstream"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:premium",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "premium"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:ultra_premium",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "ultra_premium"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "rd",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "amount",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0139",
+            "net_income": "0.0062",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.09",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "100000.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3208",
+            "net_income": "3.6939",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "1.31",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59900000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "rd",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "calculated_cost",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "rd",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "method",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:in_house",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "in_house"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0001",
+            "net_income": "0.0000",
+            "total_revenue": "0.0005"
+          },
+          "index_delta": "0.00",
+          "label": "category:license",
+          "moved": true,
+          "net_income_delta": "398.15",
+          "revenue_delta": "399.84",
+          "value": "license"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "rd",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "target_level",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "funded_maximum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "commercial_headcount",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0416",
+            "net_income": "0.0185",
+            "total_revenue": "0.0005"
+          },
+          "index_delta": "0.01",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "299581.78",
+          "revenue_delta": "-420.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "333387.6983",
+            "net_income": "148001.0326",
+            "total_revenue": "0.0002"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-2399998800163.94",
+          "revenue_delta": "-164.64",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0622",
+            "net_income": "0.0277",
+            "total_revenue": "0.0017"
+          },
+          "index_delta": "0.02",
+          "label": "category:1",
+          "moved": true,
+          "net_income_delta": "448511.12",
+          "revenue_delta": "-1495.20",
+          "value": 1
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0311",
+            "net_income": "0.0138",
+            "total_revenue": "0.0008"
+          },
+          "index_delta": "0.01",
+          "label": "category:2",
+          "moved": true,
+          "net_income_delta": "224267.27",
+          "revenue_delta": "-735.84",
+          "value": 2
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:3",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": 3
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0415",
+            "net_income": "0.0185",
+            "total_revenue": "0.0008"
+          },
+          "index_delta": "-0.01",
+          "label": "category:4",
+          "moved": true,
+          "net_income_delta": "-299287.34",
+          "revenue_delta": "715.68",
+          "value": 4
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.1039",
+            "net_income": "0.0462",
+            "total_revenue": "0.0016"
+          },
+          "index_delta": "-0.02",
+          "label": "category:5",
+          "moved": true,
+          "net_income_delta": "-748601.46",
+          "revenue_delta": "1404.48",
+          "value": 5
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "commercial_training_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3341",
+            "net_income": "3.6999",
+            "total_revenue": "0.0030"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59997343.44",
+          "revenue_delta": "2667.84",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "operations_headcount",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0065",
+            "net_income": "0.0100",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.01",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "162042.67",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "333387.6851",
+            "net_income": "148001.0179",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.60",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-2399998562654.38",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": false,
+      "escalation_reasons": [],
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0323",
+            "net_income": "0.0097",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:1",
+          "moved": true,
+          "net_income_delta": "156549.27",
+          "revenue_delta": "0.00",
+          "value": 1
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0151",
+            "net_income": "0.0051",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:2",
+          "moved": true,
+          "net_income_delta": "82123.45",
+          "revenue_delta": "0.00",
+          "value": 2
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:3",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": 3
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0007",
+            "net_income": "0.0117",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:4",
+          "moved": true,
+          "net_income_delta": "-189486.40",
+          "revenue_delta": "0.00",
+          "value": 4
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0304",
+            "net_income": "0.0360",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.01",
+          "label": "category:5",
+          "moved": true,
+          "net_income_delta": "-583993.00",
+          "revenue_delta": "0.00",
+          "value": 5
+        }
+      ],
+      "verdict": "flat in screening"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "operations_training_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.1288",
+            "net_income": "3.6513",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.60",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-59210490.35",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "rd_headcount",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0695",
+            "net_income": "0.0308",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.02",
+          "label": "legal_minimum",
+          "moved": true,
+          "net_income_delta": "500000.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "333387.5871",
+            "net_income": "148000.9832",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-2399998000000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline"
+      ],
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.1042",
+            "net_income": "0.0463",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.03",
+          "label": "category:1",
+          "moved": true,
+          "net_income_delta": "750000.00",
+          "revenue_delta": "0.00",
+          "value": 1
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0521",
+            "net_income": "0.0231",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.02",
+          "label": "category:2",
+          "moved": true,
+          "net_income_delta": "375000.00",
+          "revenue_delta": "0.00",
+          "value": 2
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "category:3",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": 3
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.0695",
+            "net_income": "0.0308",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.01",
+          "label": "category:4",
+          "moved": true,
+          "net_income_delta": "-500000.00",
+          "revenue_delta": "0.00",
+          "value": 4
+        },
+        {
+          "fractions": {
+            "cash_closing": "0.1736",
+            "net_income": "0.0771",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.04",
+          "label": "category:5",
+          "moved": true,
+          "net_income_delta": "-1250000.00",
+          "revenue_delta": "0.00",
+          "value": 5
+        }
+      ],
+      "verdict": "escalate"
+    },
+    {
+      "decision_type": "talent",
+      "escalate": true,
+      "escalation_reasons": [
+        "material response against the subject baseline",
+        "performance index moved materially"
+      ],
+      "field": "rd_training_budget",
+      "kind": "numeric",
+      "probes": [
+        {
+          "fractions": {
+            "cash_closing": "0.0000",
+            "net_income": "0.0000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "0.00",
+          "label": "legal_minimum",
+          "moved": false,
+          "net_income_delta": "0.00",
+          "revenue_delta": "0.00",
+          "value": "0"
+        },
+        {
+          "fractions": {
+            "cash_closing": "8.3347",
+            "net_income": "3.7000",
+            "total_revenue": "0.0000"
+          },
+          "index_delta": "-0.59",
+          "label": "funded_maximum",
+          "moved": true,
+          "net_income_delta": "-60000000.00",
+          "revenue_delta": "0.00",
+          "value": "60000000"
+        }
+      ],
+      "verdict": "escalate"
+    }
+  ],
+  "dimensions_escalated": 24,
+  "dimensions_flat": 20,
+  "dimensions_screened": 44,
+  "elapsed_seconds": 628.9,
+  "material_fraction_threshold": "0.10",
+  "material_index_fraction_threshold": "0.01",
+  "not_screened": [
+    {
+      "decision_type": "acquisitions",
+      "field": "acquisition_target",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "esg",
+      "field": "governance_commitments",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "event-responses",
+      "field": "event_instance",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "event-responses",
+      "field": "response",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "market-entry",
+      "field": "entry_mode",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "market-entry",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "campaign_focus_feature_ids",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "distribution_channel_detail",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "production_source_market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "team_product",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "partnerships",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "partnerships",
+      "field": "strategy_option",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "plants",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "feature_levels",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "platform_generation",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "platform_name",
+      "kind": "text",
+      "label": "not_screened",
+      "reason": "a name or note. No effect on scoring.",
+      "value": null
+    },
+    {
+      "decision_type": "product-retires",
+      "field": "team_product",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "product_name",
+      "kind": "text",
+      "label": "not_screened",
+      "reason": "a name or note. No effect on scoring.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "target_market_ids",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "team_platform",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "rd",
+      "field": "feature",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "rd",
+      "field": "team_platform",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    }
+  ],
+  "planned": 130,
+  "screened": 107,
+  "seed": "crv2-06-screen-2-counterfactual"
+}

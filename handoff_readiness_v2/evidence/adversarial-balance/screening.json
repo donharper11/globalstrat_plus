@@ -1,0 +1,3310 @@
+{
+  "baseline": "load_demo scripted defaults; see harness/baseline.py",
+  "baseline_metrics": {
+    "cash_closing": "7198822.31",
+    "index_value": "56.54",
+    "net_income": "-16216094.97",
+    "operating_income": "-15736094.97",
+    "satisfaction_score": "0.5772",
+    "strategy_expense": "3900000.00",
+    "total_revenue": "887174.40"
+  },
+  "code_revision": "e3654ece7b4dcb3cf58633b590bbd3529d252b1d",
+  "context": {
+    "game_id": 1,
+    "roster": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "round_number": 1,
+    "scenario_id": 1,
+    "section_id": null,
+    "starter_profiles": {
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4
+    },
+    "starting_cash": {
+      "1": "60000000.00",
+      "2": "60000000.00",
+      "3": "60000000.00",
+      "4": "60000000.00"
+    }
+  },
+  "coverage_complete": true,
+  "decision_type_availability": {
+    "financing": {
+      "built": true,
+      "rule": null
+    },
+    "market-entry": {
+      "built": true,
+      "rule": null
+    },
+    "partnerships": {
+      "built": true,
+      "rule": null
+    },
+    "plants": {
+      "built": true,
+      "rule": null
+    },
+    "platforms": {
+      "built": true,
+      "rule": null
+    },
+    "product-retires": {
+      "built": true,
+      "rule": null
+    },
+    "products": {
+      "built": true,
+      "rule": null
+    },
+    "rd": {
+      "built": true,
+      "rule": null
+    }
+  },
+  "discriminating": true,
+  "elapsed_seconds": 628.9,
+  "errors": 0,
+  "flat": 60,
+  "method": "same-game transactional counterfactual; team compared only with itself from one frozen checkpoint",
+  "moved": 47,
+  "not_applied": 0,
+  "not_screened": [
+    {
+      "decision_type": "acquisitions",
+      "field": "acquisition_target",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "esg",
+      "field": "governance_commitments",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "event-responses",
+      "field": "event_instance",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "event-responses",
+      "field": "response",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "market-entry",
+      "field": "entry_mode",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "market-entry",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "campaign_focus_feature_ids",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "distribution_channel_detail",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "production_source_market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "marketing",
+      "field": "team_product",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "partnerships",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "partnerships",
+      "field": "strategy_option",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "plants",
+      "field": "market",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "feature_levels",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "platform_generation",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "platforms",
+      "field": "platform_name",
+      "kind": "text",
+      "label": "not_screened",
+      "reason": "a name or note. No effect on scoring.",
+      "value": null
+    },
+    {
+      "decision_type": "product-retires",
+      "field": "team_product",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "product_name",
+      "kind": "text",
+      "label": "not_screened",
+      "reason": "a name or note. No effect on scoring.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "target_market_ids",
+      "kind": "json",
+      "label": "not_screened",
+      "reason": "free-form structure. `campaign_focus_feature_ids` is bounded by its 1-3 length rule and covered as a cross-row control; the rest carry channel detail rather than a scalar.",
+      "value": null
+    },
+    {
+      "decision_type": "products",
+      "field": "team_platform",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "rd",
+      "field": "feature",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    },
+    {
+      "decision_type": "rd",
+      "field": "team_platform",
+      "kind": "reference",
+      "label": "not_screened",
+      "reason": "a foreign key naming which product, market, platform or feature the row is about. Which entity a decision targets is a strategy choice for Stage 3 search, not a magnitude with a response curve.",
+      "value": null
+    }
+  ],
+  "planned": 130,
+  "results": [
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "marketing_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "marketing_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "-0.10",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "-0.0050",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.44",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5722",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "-0.09",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "-0.0048",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.45",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5724",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "strategy_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "budget",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "strategy_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "esg",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "environmental_investment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "esg",
+      "delta": {
+        "cash_closing": "-59347221.44",
+        "index_value": "-0.58",
+        "net_income": "-59652267.68",
+        "operating_income": "-59652267.68",
+        "satisfaction_score": "-0.0293",
+        "strategy_expense": "60000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "environmental_investment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52148399.13",
+        "index_value": "55.96",
+        "net_income": "-75868362.65",
+        "operating_income": "-75388362.65",
+        "satisfaction_score": "0.5479",
+        "strategy_expense": "63900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "esg",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "social_investment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "esg",
+      "delta": {
+        "cash_closing": "-59347221.44",
+        "index_value": "-0.58",
+        "net_income": "-59652267.68",
+        "operating_income": "-59652267.68",
+        "satisfaction_score": "-0.0293",
+        "strategy_expense": "60000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "social_investment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52148399.13",
+        "index_value": "55.96",
+        "net_income": "-75868362.65",
+        "operating_income": "-75388362.65",
+        "satisfaction_score": "0.5479",
+        "strategy_expense": "63900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "debt_repayment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "-8000000.00",
+        "index_value": "0.07",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0034",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "debt_repayment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-801177.69",
+        "index_value": "56.61",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5806",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "dividend_per_share",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "-60000000.00",
+        "index_value": "-0.53",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "-0.0266",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "dividend_per_share",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52801177.69",
+        "index_value": "56.01",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5506",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "999999.9999"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "new_debt",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "60000000.00",
+        "index_value": "-0.50",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "-0.0251",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "new_debt",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "67198822.31",
+        "index_value": "56.04",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5521",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "new_equity",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "financing",
+      "delta": {
+        "cash_closing": "48000000.00",
+        "index_value": "0.04",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0019",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "new_equity",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "55198822.31",
+        "index_value": "56.58",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5791",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:enter",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "enter"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "150000.00",
+        "index_value": "0.92",
+        "net_income": "150000.00",
+        "operating_income": "150000.00",
+        "satisfaction_score": "0.0457",
+        "strategy_expense": "-150000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:change_mode",
+      "metrics": {
+        "cash_closing": "7348822.31",
+        "index_value": "57.46",
+        "net_income": "-16066094.97",
+        "operating_income": "-15586094.97",
+        "satisfaction_score": "0.6229",
+        "strategy_expense": "3750000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "change_mode"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "130000.00",
+        "index_value": "0.92",
+        "net_income": "130000.00",
+        "operating_income": "130000.00",
+        "satisfaction_score": "0.0456",
+        "strategy_expense": "-130000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:exit",
+      "metrics": {
+        "cash_closing": "7328822.31",
+        "index_value": "57.46",
+        "net_income": "-16086094.97",
+        "operating_income": "-15606094.97",
+        "satisfaction_score": "0.6228",
+        "strategy_expense": "3770000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "exit"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "100000.00",
+        "index_value": "0.01",
+        "net_income": "100000.00",
+        "operating_income": "100000.00",
+        "satisfaction_score": "0.0002",
+        "strategy_expense": "-100000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "initial_investment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7298822.31",
+        "index_value": "56.55",
+        "net_income": "-16116094.97",
+        "operating_income": "-15636094.97",
+        "satisfaction_score": "0.5774",
+        "strategy_expense": "3800000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "-59900000.00",
+        "index_value": "-0.59",
+        "net_income": "-59900000.00",
+        "operating_income": "-59900000.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "59900000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "initial_investment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52701177.69",
+        "index_value": "55.95",
+        "net_income": "-76116094.97",
+        "operating_income": "-75636094.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "63800000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "integration_strategy",
+      "kind": "choice",
+      "label": "category:FULL",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "FULL"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "integration_strategy",
+      "kind": "choice",
+      "label": "category:BRAND_PRESERVE",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "BRAND_PRESERVE"
+    },
+    {
+      "applied": true,
+      "decision_type": "market-entry",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "integration_strategy",
+      "kind": "choice",
+      "label": "category:DUAL_BRAND",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "DUAL_BRAND"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_digital_pct",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_digital_pct",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "9.9999"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_trade_pct",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_trade_pct",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "9.9999"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_traditional_pct",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "channel_traditional_pct",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "9.9999"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "demand_estimate",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "demand_estimate",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_investment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_investment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "label": "category:mass_retail",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "mass_retail"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "label": "category:selective_retail",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "selective_retail"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "label": "category:exclusive_retail",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "exclusive_retail"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "label": "category:direct_online",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "direct_online"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "distribution_strategy",
+      "kind": "choice",
+      "label": "category:hybrid",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "hybrid"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "4260720.00",
+        "index_value": "0.08",
+        "net_income": "2182320.00",
+        "operating_income": "2182320.00",
+        "satisfaction_score": "0.0038",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "production_volume",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "11459542.31",
+        "index_value": "56.62",
+        "net_income": "-14033774.97",
+        "operating_income": "-13553774.97",
+        "satisfaction_score": "0.5810",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "-21299339280.00",
+        "index_value": "-0.59",
+        "net_income": "-10909417680.00",
+        "operating_income": "-10909417680.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "production_volume",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-21292140457.69",
+        "index_value": "55.95",
+        "net_income": "-10925633774.97",
+        "operating_income": "-10925153774.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "395257.34",
+        "index_value": "0.02",
+        "net_income": "396875.03",
+        "operating_income": "396875.03",
+        "satisfaction_score": "0.0006",
+        "strategy_expense": "0.00",
+        "total_revenue": "-3138.24"
+      },
+      "field": "promotion_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7594079.65",
+        "index_value": "56.56",
+        "net_income": "-15819219.94",
+        "operating_income": "-15339219.94",
+        "satisfaction_score": "0.5778",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "884036.16"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "-59610571.98",
+        "index_value": "-0.60",
+        "net_income": "-59606965.96",
+        "operating_income": "-59606965.96",
+        "satisfaction_score": "-0.0302",
+        "strategy_expense": "0.00",
+        "total_revenue": "-6995.52"
+      },
+      "field": "promotion_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52411749.67",
+        "index_value": "55.94",
+        "net_income": "-75823060.93",
+        "operating_income": "-75343060.93",
+        "satisfaction_score": "0.5470",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "880178.88"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "retail_price",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "retail_price",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "1000000.00",
+        "index_value": "0.04",
+        "net_income": "1000000.00",
+        "operating_income": "1000000.00",
+        "satisfaction_score": "0.0018",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "sales_team_count",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "8198822.31",
+        "index_value": "56.58",
+        "net_income": "-15216094.97",
+        "operating_income": "-14736094.97",
+        "satisfaction_score": "0.5790",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "marketing",
+      "delta": {
+        "cash_closing": "-5999999000000.00",
+        "index_value": "-0.59",
+        "net_income": "-5999999000000.00",
+        "operating_income": "-5999999000000.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "sales_team_count",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-5999991801177.69",
+        "index_value": "55.95",
+        "net_income": "-6000015216094.97",
+        "operating_income": "-6000014736094.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "partnerships",
+      "delta": {
+        "cash_closing": "-54990.37",
+        "index_value": "0.03",
+        "net_income": "-70342.82",
+        "operating_income": "-70342.82",
+        "satisfaction_score": "0.0012",
+        "strategy_expense": "100000.00",
+        "total_revenue": "29783.04"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:establish",
+      "metrics": {
+        "cash_closing": "7143831.94",
+        "index_value": "56.57",
+        "net_income": "-16286437.79",
+        "operating_income": "-15806437.79",
+        "satisfaction_score": "0.5784",
+        "strategy_expense": "4000000.00",
+        "total_revenue": "916957.44"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "establish"
+    },
+    {
+      "applied": true,
+      "decision_type": "partnerships",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:modify",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "modify"
+    },
+    {
+      "applied": true,
+      "decision_type": "partnerships",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:terminate",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "terminate"
+    },
+    {
+      "applied": true,
+      "decision_type": "partnerships",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "annual_investment",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "partnerships",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "annual_investment",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:build",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "build"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "35000000.00",
+        "index_value": "0.13",
+        "net_income": "3500000.00",
+        "operating_income": "3500000.00",
+        "satisfaction_score": "0.0061",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:expand",
+      "metrics": {
+        "cash_closing": "42198822.31",
+        "index_value": "56.67",
+        "net_income": "-12716094.97",
+        "operating_income": "-12236094.97",
+        "satisfaction_score": "0.5833",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "expand"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "35000000.00",
+        "index_value": "0.13",
+        "net_income": "3500000.00",
+        "operating_income": "3500000.00",
+        "satisfaction_score": "0.0061",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "action",
+      "kind": "choice",
+      "label": "category:contract_mfg",
+      "metrics": {
+        "cash_closing": "42198822.31",
+        "index_value": "56.67",
+        "net_income": "-12716094.97",
+        "operating_income": "-12236094.97",
+        "satisfaction_score": "0.5833",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "contract_mfg"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "capacity_units",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "capacity_units",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "contract_mfg_volume",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "plants",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "contract_mfg_volume",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "platforms",
+      "delta": {
+        "cash_closing": "100000.00",
+        "index_value": "0.01",
+        "net_income": "100000.00",
+        "operating_income": "100000.00",
+        "satisfaction_score": "0.0002",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "committed_cost",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7298822.31",
+        "index_value": "56.55",
+        "net_income": "-16116094.97",
+        "operating_income": "-15636094.97",
+        "satisfaction_score": "0.5774",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "platforms",
+      "delta": {
+        "cash_closing": "-59900000.00",
+        "index_value": "-0.59",
+        "net_income": "-59900000.00",
+        "operating_income": "-59900000.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "committed_cost",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52701177.69",
+        "index_value": "55.95",
+        "net_income": "-76116094.97",
+        "operating_income": "-75636094.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "platforms",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "method",
+      "kind": "choice",
+      "label": "category:in_house",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "in_house"
+    },
+    {
+      "applied": true,
+      "decision_type": "platforms",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "method",
+      "kind": "choice",
+      "label": "category:license",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "license"
+    },
+    {
+      "applied": true,
+      "decision_type": "platforms",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "method",
+      "kind": "choice",
+      "label": "category:partnership",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "partnership"
+    },
+    {
+      "applied": true,
+      "decision_type": "product-retires",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "timing",
+      "kind": "choice",
+      "label": "category:immediate",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "immediate"
+    },
+    {
+      "applied": true,
+      "decision_type": "product-retires",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "timing",
+      "kind": "choice",
+      "label": "category:end_of_round",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "end_of_round"
+    },
+    {
+      "applied": true,
+      "decision_type": "products",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "positioning",
+      "kind": "choice",
+      "label": "category:budget",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "budget"
+    },
+    {
+      "applied": true,
+      "decision_type": "products",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "positioning",
+      "kind": "choice",
+      "label": "category:mainstream",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "mainstream"
+    },
+    {
+      "applied": true,
+      "decision_type": "products",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "positioning",
+      "kind": "choice",
+      "label": "category:premium",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "premium"
+    },
+    {
+      "applied": true,
+      "decision_type": "products",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "positioning",
+      "kind": "choice",
+      "label": "category:ultra_premium",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "ultra_premium"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "100000.00",
+        "index_value": "-0.09",
+        "net_income": "100000.00",
+        "operating_income": "100000.00",
+        "satisfaction_score": "-0.0048",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "amount",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7298822.31",
+        "index_value": "56.45",
+        "net_income": "-16116094.97",
+        "operating_income": "-15636094.97",
+        "satisfaction_score": "0.5724",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "-59900000.00",
+        "index_value": "1.31",
+        "net_income": "-59900000.00",
+        "operating_income": "-59900000.00",
+        "satisfaction_score": "0.0651",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "amount",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52701177.69",
+        "index_value": "57.85",
+        "net_income": "-76116094.97",
+        "operating_income": "-75636094.97",
+        "satisfaction_score": "0.6423",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "calculated_cost",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "calculated_cost",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "method",
+      "kind": "choice",
+      "label": "category:in_house",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "in_house"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "604.26",
+        "index_value": "0.00",
+        "net_income": "398.15",
+        "operating_income": "398.15",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "399.84"
+      },
+      "field": "method",
+      "kind": "choice",
+      "label": "category:license",
+      "metrics": {
+        "cash_closing": "7199426.57",
+        "index_value": "56.54",
+        "net_income": "-16215696.82",
+        "operating_income": "-15735696.82",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887574.24"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "license"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "target_level",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "rd",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "target_level",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "299365.28",
+        "index_value": "0.01",
+        "net_income": "299581.78",
+        "operating_income": "299581.78",
+        "satisfaction_score": "0.0005",
+        "strategy_expense": "-300000.00",
+        "total_revenue": "-420.00"
+      },
+      "field": "commercial_headcount",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7498187.59",
+        "index_value": "56.55",
+        "net_income": "-15916513.19",
+        "operating_income": "-15436513.19",
+        "satisfaction_score": "0.5777",
+        "strategy_expense": "3600000.00",
+        "total_revenue": "886754.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-2399998800248.81",
+        "index_value": "-0.59",
+        "net_income": "-2399998800163.94",
+        "operating_income": "-2399998800163.94",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "2399998800000.00",
+        "total_revenue": "-164.64"
+      },
+      "field": "commercial_headcount",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-2399991601426.50",
+        "index_value": "55.95",
+        "net_income": "-2400015016258.91",
+        "operating_income": "-2400014536258.91",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "2400002700000.00",
+        "total_revenue": "887009.76"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "447740.38",
+        "index_value": "0.02",
+        "net_income": "448511.12",
+        "operating_income": "448511.12",
+        "satisfaction_score": "0.0007",
+        "strategy_expense": "-450000.00",
+        "total_revenue": "-1495.20"
+      },
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "label": "category:1",
+      "metrics": {
+        "cash_closing": "7646562.69",
+        "index_value": "56.56",
+        "net_income": "-15767583.85",
+        "operating_income": "-15287583.85",
+        "satisfaction_score": "0.5779",
+        "strategy_expense": "3450000.00",
+        "total_revenue": "885679.20"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 1
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "223887.96",
+        "index_value": "0.01",
+        "net_income": "224267.27",
+        "operating_income": "224267.27",
+        "satisfaction_score": "0.0004",
+        "strategy_expense": "-225000.00",
+        "total_revenue": "-735.84"
+      },
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "label": "category:2",
+      "metrics": {
+        "cash_closing": "7422710.27",
+        "index_value": "56.55",
+        "net_income": "-15991827.70",
+        "operating_income": "-15511827.70",
+        "satisfaction_score": "0.5776",
+        "strategy_expense": "3675000.00",
+        "total_revenue": "886438.56"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 2
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "label": "category:3",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": 3
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-298918.42",
+        "index_value": "-0.01",
+        "net_income": "-299287.34",
+        "operating_income": "-299287.34",
+        "satisfaction_score": "-0.0005",
+        "strategy_expense": "300000.00",
+        "total_revenue": "715.68"
+      },
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "label": "category:4",
+      "metrics": {
+        "cash_closing": "6899903.89",
+        "index_value": "56.53",
+        "net_income": "-16515382.31",
+        "operating_income": "-16035382.31",
+        "satisfaction_score": "0.5767",
+        "strategy_expense": "4200000.00",
+        "total_revenue": "887890.08"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 4
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-747877.48",
+        "index_value": "-0.02",
+        "net_income": "-748601.46",
+        "operating_income": "-748601.46",
+        "satisfaction_score": "-0.0012",
+        "strategy_expense": "750000.00",
+        "total_revenue": "1404.48"
+      },
+      "field": "commercial_salary_level",
+      "kind": "choice",
+      "label": "category:5",
+      "metrics": {
+        "cash_closing": "6450944.83",
+        "index_value": "56.52",
+        "net_income": "-16964696.43",
+        "operating_income": "-16484696.43",
+        "satisfaction_score": "0.5760",
+        "strategy_expense": "4650000.00",
+        "total_revenue": "888578.88"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 5
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "commercial_training_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-59995968.23",
+        "index_value": "-0.59",
+        "net_income": "-59997343.44",
+        "operating_income": "-59997343.44",
+        "satisfaction_score": "-0.0298",
+        "strategy_expense": "60000000.00",
+        "total_revenue": "2667.84"
+      },
+      "field": "commercial_training_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52797145.92",
+        "index_value": "55.95",
+        "net_income": "-76213438.41",
+        "operating_income": "-75733438.41",
+        "satisfaction_score": "0.5474",
+        "strategy_expense": "63900000.00",
+        "total_revenue": "889842.24"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-46704.09",
+        "index_value": "0.01",
+        "net_income": "162042.67",
+        "operating_income": "162042.67",
+        "satisfaction_score": "0.0001",
+        "strategy_expense": "-400000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_headcount",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7152118.22",
+        "index_value": "56.55",
+        "net_income": "-16054052.30",
+        "operating_income": "-15574052.30",
+        "satisfaction_score": "0.5773",
+        "strategy_expense": "3500000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-2399998705342.04",
+        "index_value": "-0.60",
+        "net_income": "-2399998562654.38",
+        "operating_income": "-2399998562654.38",
+        "satisfaction_score": "-0.0300",
+        "strategy_expense": "2399998400000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_headcount",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-2399991506519.73",
+        "index_value": "55.94",
+        "net_income": "-2400014778749.35",
+        "operating_income": "-2400014298749.35",
+        "satisfaction_score": "0.5472",
+        "strategy_expense": "2400002300000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-232465.43",
+        "index_value": "0.00",
+        "net_income": "156549.27",
+        "operating_income": "156549.27",
+        "satisfaction_score": "-0.0001",
+        "strategy_expense": "-600000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "label": "category:1",
+      "metrics": {
+        "cash_closing": "6966356.88",
+        "index_value": "56.54",
+        "net_income": "-16059545.70",
+        "operating_income": "-15579545.70",
+        "satisfaction_score": "0.5771",
+        "strategy_expense": "3300000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 1
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-109007.55",
+        "index_value": "0.00",
+        "net_income": "82123.45",
+        "operating_income": "82123.45",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "-300000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "label": "category:2",
+      "metrics": {
+        "cash_closing": "7089814.76",
+        "index_value": "56.54",
+        "net_income": "-16133971.52",
+        "operating_income": "-15653971.52",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3600000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 2
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "label": "category:3",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": 3
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-4814.52",
+        "index_value": "0.00",
+        "net_income": "-189486.40",
+        "operating_income": "-189486.40",
+        "satisfaction_score": "-0.0002",
+        "strategy_expense": "400000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "label": "category:4",
+      "metrics": {
+        "cash_closing": "7194007.79",
+        "index_value": "56.54",
+        "net_income": "-16405581.37",
+        "operating_income": "-15925581.37",
+        "satisfaction_score": "0.5770",
+        "strategy_expense": "4300000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 4
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-219053.17",
+        "index_value": "-0.01",
+        "net_income": "-583993.00",
+        "operating_income": "-583993.00",
+        "satisfaction_score": "-0.0009",
+        "strategy_expense": "1000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_salary_level",
+      "kind": "choice",
+      "label": "category:5",
+      "metrics": {
+        "cash_closing": "6979769.14",
+        "index_value": "56.53",
+        "net_income": "-16800087.97",
+        "operating_income": "-16320087.97",
+        "satisfaction_score": "0.5763",
+        "strategy_expense": "4900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 5
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_training_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-58517897.39",
+        "index_value": "-0.60",
+        "net_income": "-59210490.35",
+        "operating_income": "-59210490.35",
+        "satisfaction_score": "-0.0301",
+        "strategy_expense": "60000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "operations_training_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-51319075.08",
+        "index_value": "55.94",
+        "net_income": "-75426585.32",
+        "operating_income": "-74946585.32",
+        "satisfaction_score": "0.5471",
+        "strategy_expense": "63900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "500000.00",
+        "index_value": "0.02",
+        "net_income": "500000.00",
+        "operating_income": "500000.00",
+        "satisfaction_score": "0.0009",
+        "strategy_expense": "-500000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_headcount",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7698822.31",
+        "index_value": "56.56",
+        "net_income": "-15716094.97",
+        "operating_income": "-15236094.97",
+        "satisfaction_score": "0.5781",
+        "strategy_expense": "3400000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-2399998000000.00",
+        "index_value": "-0.59",
+        "net_income": "-2399998000000.00",
+        "operating_income": "-2399998000000.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "2399998000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_headcount",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-2399990801177.69",
+        "index_value": "55.95",
+        "net_income": "-2400014216094.97",
+        "operating_income": "-2400013736094.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "2400001900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "750000.00",
+        "index_value": "0.03",
+        "net_income": "750000.00",
+        "operating_income": "750000.00",
+        "satisfaction_score": "0.0013",
+        "strategy_expense": "-750000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "label": "category:1",
+      "metrics": {
+        "cash_closing": "7948822.31",
+        "index_value": "56.57",
+        "net_income": "-15466094.97",
+        "operating_income": "-14986094.97",
+        "satisfaction_score": "0.5785",
+        "strategy_expense": "3150000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 1
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "375000.00",
+        "index_value": "0.02",
+        "net_income": "375000.00",
+        "operating_income": "375000.00",
+        "satisfaction_score": "0.0007",
+        "strategy_expense": "-375000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "label": "category:2",
+      "metrics": {
+        "cash_closing": "7573822.31",
+        "index_value": "56.56",
+        "net_income": "-15841094.97",
+        "operating_income": "-15361094.97",
+        "satisfaction_score": "0.5779",
+        "strategy_expense": "3525000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 2
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "label": "category:3",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": 3
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-500000.00",
+        "index_value": "-0.01",
+        "net_income": "-500000.00",
+        "operating_income": "-500000.00",
+        "satisfaction_score": "-0.0008",
+        "strategy_expense": "500000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "label": "category:4",
+      "metrics": {
+        "cash_closing": "6698822.31",
+        "index_value": "56.53",
+        "net_income": "-16716094.97",
+        "operating_income": "-16236094.97",
+        "satisfaction_score": "0.5764",
+        "strategy_expense": "4400000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 4
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-1250000.00",
+        "index_value": "-0.04",
+        "net_income": "-1250000.00",
+        "operating_income": "-1250000.00",
+        "satisfaction_score": "-0.0022",
+        "strategy_expense": "1250000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_salary_level",
+      "kind": "choice",
+      "label": "category:5",
+      "metrics": {
+        "cash_closing": "5948822.31",
+        "index_value": "56.50",
+        "net_income": "-17466094.97",
+        "operating_income": "-16986094.97",
+        "satisfaction_score": "0.5750",
+        "strategy_expense": "5150000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": 5
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_training_budget",
+      "kind": "numeric",
+      "label": "legal_minimum",
+      "metrics": {
+        "cash_closing": "7198822.31",
+        "index_value": "56.54",
+        "net_income": "-16216094.97",
+        "operating_income": "-15736094.97",
+        "satisfaction_score": "0.5772",
+        "strategy_expense": "3900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": false,
+      "status": "flat",
+      "value": "0"
+    },
+    {
+      "applied": true,
+      "decision_type": "talent",
+      "delta": {
+        "cash_closing": "-60000000.00",
+        "index_value": "-0.59",
+        "net_income": "-60000000.00",
+        "operating_income": "-60000000.00",
+        "satisfaction_score": "-0.0299",
+        "strategy_expense": "60000000.00",
+        "total_revenue": "0.00"
+      },
+      "field": "rd_training_budget",
+      "kind": "numeric",
+      "label": "funded_maximum",
+      "metrics": {
+        "cash_closing": "-52801177.69",
+        "index_value": "55.95",
+        "net_income": "-76216094.97",
+        "operating_income": "-75736094.97",
+        "satisfaction_score": "0.5473",
+        "strategy_expense": "63900000.00",
+        "total_revenue": "887174.40"
+      },
+      "moved": true,
+      "status": "moved",
+      "value": "60000000"
+    }
+  ],
+  "screened": 107,
+  "seed": "crv2-06-screen-2-counterfactual",
+  "self_tests": {
+    "all_passed": true,
+    "baseline_vs_identical_baseline_is_zero": {
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "passed": true
+    },
+    "known_flat_field_does_not_move": {
+      "delta": {
+        "cash_closing": "0.00",
+        "index_value": "0.00",
+        "net_income": "0.00",
+        "operating_income": "0.00",
+        "satisfaction_score": "0.0000",
+        "strategy_expense": "0.00",
+        "total_revenue": "0.00"
+      },
+      "field": "DecisionSubmission.team_notes",
+      "passed": true
+    },
+    "known_responsive_field_moves": {
+      "delta": {
+        "cash_closing": "10021177.69",
+        "index_value": "-3.43",
+        "net_income": "4936094.97",
+        "operating_income": "4936094.97",
+        "satisfaction_score": "-0.1718",
+        "strategy_expense": "0.00",
+        "total_revenue": "-887174.40"
+      },
+      "field": "marketing.production_volume -> 0",
+      "passed": true
+    }
+  },
+  "subject_team": 1,
+  "unreachable": 0,
+  "working_tree_clean": true
+}
