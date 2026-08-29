@@ -80,8 +80,16 @@ have measured the loop rather than the model.
 | `talent.rd_training_budget` | 250000 | -250000.00 | 0.00 | 0.00 |
 | `talent.rd_training_budget` | 750000 | -750000.00 | 0.00 | -0.02 |
 
-Every one is monotonic in cost and flat in revenue, which is what an
-accounting cost should look like. No cliff, no reversal.
+Every one is monotonic in cost, with **no material discontinuity or reversal**
+against the recorded thresholds — which is what an ordinary accounting cost
+should look like.
+
+Not "flat in revenue", which an earlier draft of this report said and which the
+table above contradicts: ESG investment moved revenue by +16,813.44 and
++19,676.16, and promotion budget by −2,123.52 and +2,126.88. Those are real
+responses, small relative to a baseline revenue of 887,174.40 — under 2.3% — and
+below the material threshold, but they are not zero and the report should not
+have said they were.
 
 ## Joint mechanisms
 

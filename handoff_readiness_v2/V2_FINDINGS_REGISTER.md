@@ -54,7 +54,7 @@ supply-chain and compliance subsystems have little to fire.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-023 | Balance / price response | **P2 pending confirmation** | GSP-CRV2-06 (raised) | In the joint price × volume characterisation, **units sold are identical across a 40× price range**: 2112.32 units at retail prices of 50, 420 and 2000, and 2143.616 units at every price when production rises to 60,000. Revenue is therefore `price x constant`, so raising price from 420 to 2000 multiplies revenue **4.76×** with no volume penalty. The index effect within the round is small (+0.12), because the composite is dominated by non-financial components; the cash effect is not, and cash compounds into later rounds. | `characterisation.json` → `joint["retail price x production volume"]`. Same-team counterfactual from one checkpoint; the baseline resolved twice with zero delta. | Open — mechanism unconfirmed |
+| V2-023 | Balance / price response | **P1 pending confirmation** | GSP-CRV2-06 (raised) | In the joint price × volume characterisation, **units sold are identical across a 40× price range**: 2112.32 units at retail prices of 50, 420 and 2000, and 2143.616 units at every price when production rises to 60,000. Revenue is therefore `price x constant`, so raising price from 420 to 2000 multiplies revenue **4.76×** with no volume penalty. The index effect within the round is small (+0.12), because the composite is dominated by non-financial components; the cash effect is not, and cash compounds into later rounds. | `characterisation.json` → `joint["retail price x production volume"]`. Same-team counterfactual from one checkpoint; the baseline resolved twice with zero delta. | Open — mechanism unconfirmed |
 
 **Mechanism hypothesis, not established.** `preference_engine` scores price
 purely relatively: `ratio = team_price / market_avg_price`, where the average is
@@ -67,12 +67,18 @@ while `na/mainstream` and `na/premium` hold one team each — but **the diagnost
 output was truncated before it recorded which group the measured team was in**,
 so the explanation is not confirmed and is offered as a hypothesis only.
 
-Severity is provisional at P2 for that reason. If the mechanism is confirmed it
-is materially worse than P2: a team can choose a positioning nobody else
-occupies and then price without demand consequence, which is a strategy choice
-rather than luck. Confirming it needs one focused probe — vary price for a team
-known to share its positioning, and for one known to be alone — which belongs
-with the Stage 3 search that is currently out of scope.
+Classified **P1 pending confirmation**. A 4.76x revenue multiple for a decision
+with no measured cost is material on its face, and the provisional label belongs
+to the mechanism rather than to the impact. If relative price scoring is the
+cause, a team can choose a positioning nobody else occupies and then price
+without demand consequence — a strategy choice, not luck.
+
+A mandatory confirmation gate runs before any Stage 3 search: one team known to
+be alone in its positioning group and one known to share it, fixed production,
+prices of $50, $420 and $2,000, recording positioning membership, market average
+price, price-fit score, demand, units sold, revenue, profit, cash and index.
+Optimising against an unconfirmed pricing exploit would produce a strategy
+ranking that describes the exploit rather than the game.
 
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
