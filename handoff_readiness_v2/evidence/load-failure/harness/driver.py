@@ -161,6 +161,13 @@ class Session:
             ready.wait()          # every session authenticated
         if start is not None:
             start.wait()          # measurement window opens together
+        # Spread the first action across one think-time interval. The barrier
+        # releases every session in the same instant, which put 35 requests
+        # into a single second and a 4607 ms p95 spike that decayed as soon as
+        # the random pauses desynchronised them. A cohort does not act in
+        # lockstep; that spike was the barrier, not the product.
+        rng_start = random.Random(f"{self.identity['username']}-start")
+        time.sleep(rng_start.uniform(0, think_time[1]))
         deadline = time.time() + duration
         sequence = 0
         rng = random.Random(self.identity['username'])
