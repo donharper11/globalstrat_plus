@@ -17,6 +17,7 @@ locked submission, is the product working; those are counted and reported
 separately from transport failures and 5xx.
 """
 import json
+import multiprocessing
 import random
 import statistics
 import threading
@@ -263,6 +264,29 @@ def sample_database(database, stop, samples, interval=2.0):
         stop.wait(interval)
 
 
+def _run_shard(args):
+    """One process drives a slice of the cohort. Returns raw samples."""
+    (base, identities, game_id, round_number, duration, final_minute_writes,
+     ready, start) = args
+    sessions = [Session(base, identity, game_id, round_number)
+                for identity in identities]
+    threads = [threading.Thread(
+        target=s.run, args=(duration, final_minute_writes, ready, start),
+        daemon=True) for s in sessions]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join(timeout=duration + 900)
+    return {
+        'samples': [s for session in sessions for s in session.samples],
+        'acknowledged': [w for session in sessions
+                         for w in session.acknowledged_writes],
+        'refused': [w for session in sessions for w in session.refused_writes],
+        'authenticated': sum(1 for s in sessions if s.token),
+        'login_failures': [s.login_failed for s in sessions if s.login_failed],
+    }
+
+
 def run_profile(base, identities, game_id, round_number, duration,
                 final_minute_writes=3, verbose=True, database=None,
                 deep_activity=False):
@@ -275,16 +299,18 @@ def run_profile(base, identities, game_id, round_number, duration,
     13778, and client-observed p95 ran at three times the server's own figure.
     An instrument that changes the reading is a diagnostic, not a gauge.
     """
-    sessions = [Session(base, identity, game_id, round_number)
-                for identity in identities]
-    # A barrier rather than a sleep: the window opens when the cohort is
-    # actually authenticated, however long that takes, so the measurement never
-    # silently overlaps the sign-in burst.
-    ready = threading.Barrier(len(sessions))
-    start = threading.Barrier(len(sessions))
-    threads = [threading.Thread(
-        target=s.run, args=(duration, final_minute_writes, ready, start),
-        daemon=True) for s in sessions]
+    # The cohort is driven from several processes, not one. Ninety-six threads
+    # in a single CPython process contend on the GIL and queue against each
+    # other: client-observed p95 read 5363 ms while the server's own
+    # measurement of the same requests was 1675 ms. A real cohort is 96
+    # separate clients, each issuing one request at a time, so the driver has
+    # to stop being the thing that is measured.
+    shard_count = min(multiprocessing.cpu_count(), max(1, len(identities) // 8))
+    shards = [identities[i::shard_count] for i in range(shard_count)]
+    manager = multiprocessing.Manager()
+    ready = manager.Barrier(len(identities))
+    start = manager.Barrier(len(identities))
+
     connection_samples = []
     checkpoint_samples = []
     activity_samples = []
@@ -306,24 +332,27 @@ def run_profile(base, identities, game_id, round_number, duration,
             activity_sampler.start()
 
     launched = time.time()
-    for t in threads:
-        t.start()
-    # Elapsed is measured from the first interactive request, not from launch,
-    # so throughput describes the decision round rather than the sign-in.
-    for t in threads:
-        t.join(timeout=duration + 900)
-    interactive_times = [s['at'] for session in sessions
-                         for s in session.samples
-                         if s['kind'] != 'login']
-    started = min(interactive_times) if interactive_times else launched
-    elapsed = (max(interactive_times) - started) if interactive_times else 1.0
-    sign_in_seconds = round(started - launched, 1)
+    with multiprocessing.Pool(shard_count) as pool:
+        shard_results = pool.map(_run_shard, [
+            (base, shard, game_id, round_number, duration, final_minute_writes,
+             ready, start) for shard in shards])
     stop.set()
     for thread in (sampler, checkpointer, activity_sampler):
         if thread:
             thread.join(timeout=15)
 
-    samples = [s for session in sessions for s in session.samples]
+    samples_all = [s for r in shard_results for s in r['samples']]
+    acknowledged_all = [w for r in shard_results for w in r['acknowledged']]
+    refused_all = [w for r in shard_results for w in r['refused']]
+    authenticated = sum(r['authenticated'] for r in shard_results)
+    login_failures = [f for r in shard_results for f in r['login_failures']]
+
+    interactive_times = [s['at'] for s in samples_all if s['kind'] != 'login']
+    started = min(interactive_times) if interactive_times else launched
+    elapsed = (max(interactive_times) - started) if interactive_times else 1.0
+    sign_in_seconds = round(started - launched, 1)
+
+    samples = samples_all
     interactive = [s for s in samples if s['kind'] in ('refresh', 'save', 'lock')]
     latencies = sorted(s['ms'] for s in interactive)
 
@@ -424,9 +453,10 @@ def run_profile(base, identities, game_id, round_number, duration,
         'db_connections_mean': (round(sum(connection_samples)
                                       / len(connection_samples), 1)
                                 if connection_samples else None),
+        'driver_processes': shard_count,
         'sessions_requested': len(identities),
-        'sessions_authenticated': sum(1 for s in sessions if s.token),
-        'login_failures': [s.login_failed for s in sessions if s.login_failed][:5],
+        'sessions_authenticated': authenticated,
+        'login_failures': login_failures[:5],
         'elapsed_seconds': round(elapsed, 1),
         'requests_total': len(samples),
         'interactive_requests': len(interactive),
@@ -440,9 +470,8 @@ def run_profile(base, identities, game_id, round_number, duration,
         'error_rate_pct': round(
             100 * (transport + server_errors) / len(interactive), 4)
         if interactive else None,
-        'acknowledged_writes': [w for s in sessions
-                                for w in s.acknowledged_writes],
-        'refused_writes': [w for s in sessions for w in s.refused_writes],
+        'acknowledged_writes': acknowledged_all,
+        'refused_writes': refused_all,
         'per_kind_p95': {
             kind: round(sorted(x['ms'] for x in interactive
                                if x['kind'] == kind)[
