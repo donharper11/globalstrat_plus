@@ -52,6 +52,10 @@ def run():
         defaults={'is_active': True})
     Enrollment.objects.filter(user_id=student.user_id,
                               team_id=team.id).update(is_active=True)
+    # The override table records who set it, and the column is not nullable:
+    # an override is an instructor action and the model insists on saying so.
+    instructor = DjangoUser.objects.filter(is_superuser=True).first()
+
     token = create_access_token(student)
     client = Client(HTTP_AUTHORIZATION=f'Bearer {token}')
 
@@ -102,7 +106,7 @@ def run():
     # the field legally, and the instructor restores the schedule.
     override = ClassProgressiveDisclosureOverride.objects.create(
         game=game, field_path=FIELD_PATH, override_unlock_round=1,
-        created_by=None)
+        created_by=instructor)
     allowed_write = client.post(
         tf_url,
         data=json.dumps({'trade_finance': [{
@@ -157,7 +161,7 @@ def run():
     if other_game is not None:
         foreign = ClassProgressiveDisclosureOverride.objects.create(
             game=other_game, field_path=FIELD_PATH, override_unlock_round=1,
-            created_by=None)
+            created_by=instructor)
     report['unlock_with_foreign_override'] = get_effective_unlock_round(
         game, FIELD_PATH)
     record('foreign_override_does_not_unlock',
@@ -171,7 +175,7 @@ def run():
     unlock_round = report['authored_unlock_round']
     advanced = ClassProgressiveDisclosureOverride.objects.create(
         game=game, field_path=FIELD_PATH,
-        override_unlock_round=game.current_round, created_by=None)
+        override_unlock_round=game.current_round, created_by=instructor)
     after = client.get(tf_url)
     record('read_after_unlock',
            status=after.status_code,
