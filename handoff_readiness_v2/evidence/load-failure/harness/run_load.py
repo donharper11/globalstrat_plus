@@ -158,6 +158,7 @@ def main():
     print(f"per-kind p95    : {result['per_kind_p95']}")
     print(f"per-kind max    : {result['per_kind_max']}")
     print(f"per-phase p95   : {result['per_phase_p95']}")
+    print(f"checkpoints     : {result.get('checkpoints')}")
     ss = result.get('server_side_timing', {})
     print(f"server-side     : {ss}")
     print(f"slowest seconds : "

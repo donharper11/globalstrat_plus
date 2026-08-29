@@ -157,6 +157,34 @@ class Session:
             self.lock()
 
 
+def sample_checkpoints(stop, samples, interval=2.0):
+    """Checkpoint activity while the load runs.
+
+    A WAL-triggered checkpoint flushes dirty buffers and can stall writes for
+    seconds. The server-side stall at field load was about ten seconds with
+    throughput collapsing during it, which is the shape a checkpoint makes, and
+    the hypothesis is worth testing rather than asserting.
+    """
+    import subprocess
+    query = ("SELECT checkpoints_timed, checkpoints_req, "
+             "checkpoint_write_time, checkpoint_sync_time "
+             "FROM pg_stat_bgwriter")
+    while not stop.is_set():
+        try:
+            out = subprocess.run(
+                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            parts = out.stdout.strip().split('|')
+            if len(parts) == 4:
+                samples.append({'at': time.time(),
+                                'timed': int(parts[0]), 'requested': int(parts[1]),
+                                'write_ms': float(parts[2]),
+                                'sync_ms': float(parts[3])})
+        except Exception:
+            pass
+        stop.wait(interval)
+
+
 def sample_database(database, stop, samples, interval=2.0):
     """Peak database use has to be sampled while the load runs.
 
@@ -188,13 +216,18 @@ def run_profile(base, identities, game_id, round_number, duration,
                                 args=(duration, final_minute_writes),
                                 daemon=True) for s in sessions]
     connection_samples = []
+    checkpoint_samples = []
     stop = threading.Event()
-    sampler = None
+    sampler = checkpointer = None
     if database:
         sampler = threading.Thread(target=sample_database,
                                    args=(database, stop, connection_samples),
                                    daemon=True)
         sampler.start()
+        checkpointer = threading.Thread(target=sample_checkpoints,
+                                        args=(stop, checkpoint_samples),
+                                        daemon=True)
+        checkpointer.start()
 
     started = time.time()
     for t in threads:
@@ -203,8 +236,9 @@ def run_profile(base, identities, game_id, round_number, duration,
         t.join(timeout=duration + 600)
     elapsed = time.time() - started
     stop.set()
-    if sampler:
-        sampler.join(timeout=15)
+    for thread in (sampler, checkpointer):
+        if thread:
+            thread.join(timeout=15)
 
     samples = [s for session in sessions for s in session.samples]
     interactive = [s for s in samples if s['kind'] in ('refresh', 'save', 'lock')]
@@ -245,7 +279,22 @@ def run_profile(base, identities, game_id, round_number, duration,
          'max_ms': round(max(values), 1),
          'p95_ms': round(sorted(values)[max(0, int(round(0.95 * len(values))) - 1)], 1)}
         for second, values in sorted(buckets.items())]
+    checkpoints = {}
+    if checkpoint_samples:
+        first, last = checkpoint_samples[0], checkpoint_samples[-1]
+        checkpoints = {
+            'timed_during_run': last['timed'] - first['timed'],
+            'requested_during_run': last['requested'] - first['requested'],
+            'write_ms_during_run': round(last['write_ms'] - first['write_ms'], 1),
+            'sync_ms_during_run': round(last['sync_ms'] - first['sync_ms'], 1),
+            'seconds_when_checkpoint_started': [
+                round(b['at'] - origin, 1)
+                for a, b in zip(checkpoint_samples, checkpoint_samples[1:])
+                if (b['timed'] + b['requested']) > (a['timed'] + a['requested'])],
+        }
+
     return {
+        'checkpoints': checkpoints,
         'timeline_per_second': timeline,
         'slowest_seconds': sorted(timeline, key=lambda b: -b['max_ms'])[:8],
         'slowest_requests': [
