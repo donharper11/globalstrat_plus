@@ -219,7 +219,7 @@ def run():
             'url': url,
             'status': response.status_code,
             'decision_row_exposes_value': bool(rows),
-            'value_appears_anywhere': protected_value in text,
+            'value_appears_anywhere': str(protected_value) in text,
             'is_catalogue_surface': name == 'scenario_supplier_catalogue',
         }
         record(f'read_before_unlock:{name}',
