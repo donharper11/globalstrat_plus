@@ -294,15 +294,53 @@ instrument catalogue, and this scenario declares no instruments, so the field
 has no legal value. The probe refused rather than reporting a vacuous pass, and
 the field was replaced with `inventory.buffer_days`.
 
-| V2-027 | Balance / early-lead lock-in | **P1** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Open — stops the handoff.** |
+| V2-027 | Balance / early-lead lock-in | **Not confirmed — withdrawn as filed** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Withdrawn as filed.** The confirmation contradicted it and identified the cause: compliance enforcement, not the front-load. |
 
-**The mechanism, from both directions.** Investment costs index in the round it
-is made, while the adopter base it buys persists and compounds. The subject's
-margin *rises* when it stops spending, because it keeps the asset and drops the
-cost. The challenger's index *falls* when it starts spending, for the same
-reason, and the base it buys is smaller because the subject already holds the
-adopters. Early investment is rewarded and identical later investment is
-punished, which is what makes the lead unreachable rather than merely large.
+**Withdrawn on the confirmation evidence.** The confirmation run reproduced the
+same front-load against the same baseline opponents and the leader finished
+**14.32 behind**, where the original probe had it 10.33 ahead. The control --
+challenger doing nothing at all -- closed the gap as thoroughly as any of the
+four counter-strategies, which is the tell that the strategies were not what
+moved it.
+
+The cause is recorded rather than inferred. The leader drew
+`customs_documentation` enforcement in **NA, its revenue-bearing market**, in
+rounds 4 and 5; revenue went to 0.00 in both, the V2-022 inactivity cap set its
+composite to exactly 0.2500, and its index fell 63.72 → 58.72 → 53.72. The
+challenger's freezes landed in LATAM and APAC, where it earns nothing, and cost
+it nothing. That chain is the adopted V2-022 rule working as dispositioned: a
+compliance-frozen team below the material-revenue floor receives the cap, and
+production intent does not exempt it.
+
+**What this says about the original finding.** Which market a freeze lands in
+swings a six-round playthrough by roughly 25 index points -- larger than the
+17.72 gap the original probe measured and reported as a structural property of
+the scoring rule. That gap is consistent with a first-mover advantage and
+equally consistent with the challenger having been frozen in a market that
+mattered. One playthrough cannot distinguish them, and the original finding was
+filed on one playthrough.
+
+**Neither the bounds nor the four strategies can be read from this run.** The
+attainable bound was computed against a leader capped at 0.2500 for a third of
+the game, so 0.36 to 0.41 composite advantage per round measures the freeze
+rather than the strategy. The absolute formula bound stands as arithmetic --
+composite 1.0 gives +10.0 index change per round, +8.65 against a leader at
+0.5675 -- and remains what it always was, a ceiling that assumes market and
+financial maxima which are scored relative to the highest revenue in the field
+and therefore require already out-earning the leader.
+
+**What the index rule does say, independent of all this.** `index_change =
+(composite - 0.5) x sensitivity` and `new_index = max(0, previous +
+index_change)`: the index integrates with no decay term, so any gap persists
+unless the trailing team scores a strictly higher composite. That is a property
+of the formula and is not in question. Whether it produces an unassailable lead
+in play is exactly what remains unmeasured.
+
+**To measure it would need** repeated playthroughs across fixture identities
+with enforcement recorded per round, so the first-mover effect can be separated
+from freeze incidence -- or a fixture in which enforcement is held constant
+between the two teams. Neither is in this handoff's budget, and no
+performance-index change should rest on the evidence that exists.
 
 **Bounds, so this is not read as more than it is.** One counter-strategy was
 tested. Front-loading later fails to close the gap; that is not a proof that no
