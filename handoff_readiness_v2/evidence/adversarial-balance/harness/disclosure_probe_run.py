@@ -53,6 +53,8 @@ def main():
         if bad:
             raise SystemExit(f'inventory does not verify: {bad}')
 
+        if report.get('refused'):
+            raise SystemExit(f"REFUSED: {report['refused']}")
         control = report['positive_control']
         if not report['probe_is_valid']:
             raise SystemExit(

@@ -20,9 +20,18 @@ from django.contrib.auth.models import User as DjangoUser
 from django.core.management import call_command
 from django.test import Client
 
-FIELD_PATH = 'trade_finance.buyer_payment_instrument'
-COMPANION_PATH = 'trade_finance.lc_doc_prep_investment'
-PROTECTED_KEY = 'buyer_payment_instrument'
+# inventory.buffer_days, authored to unlock at round 3. Chosen after
+# trade_finance.buyer_payment_instrument proved unusable here: its write
+# serializer validates the value against a scenario instrument catalogue, and
+# this scenario declares no instruments, so the field has no legal value and
+# the probe refused rather than reporting a vacuous pass. buffer_days is a
+# plain integer with no catalogue, so a distinctive value is unambiguous
+# evidence of the team's own decision rather than of a listing.
+FIELD_PATH = 'inventory.buffer_days'
+COMPANION_PATH = 'inventory.safety_stock_trigger_pct'
+PROTECTED_KEY = 'buffer_days'
+PROTECTED_VALUE = 4242
+COMPANION_VALUE = 77
 # The value must be a real instrument id: the write serializer validates it
 # against the scenario catalogue, so an invented sentinel is rejected before
 # the disclosure question is ever reached. That has a consequence the probe
@@ -41,7 +50,7 @@ def run():
     from core.authentication import create_access_token
     from core.models import Enrollment, Game, Round, Team, User
     from core.models.overrides import ClassProgressiveDisclosureOverride
-    from core.models.sc_decisions import TradeFinanceDecision
+    from core.models.sc_decisions import InventoryDecision
     from core.models.scenario import MarketDefinition, SegmentDefinition
     from core.utils.disclosure import get_effective_unlock_round
 
@@ -104,15 +113,15 @@ def run():
         'reached_the_application': control.status_code == 200,
     }
 
-    from core.models import TradeFinanceInstrument
-    instrument = (TradeFinanceInstrument.objects
-                  .filter(scenario=game.scenario).order_by('id').first())
-    if instrument is None:
-        report['refused'] = ('the scenario declares no trade finance '
-                             'instruments, so the gated field has no legal '
-                             'value and the probe cannot run')
+    from core.models.team_state import TeamProduct
+    product = TeamProduct.objects.filter(
+        team=team, status='active').order_by('id').first()
+    if product is None:
+        report['refused'] = 'the team has no active product to carry an '\
+                            'inventory decision; the probe cannot run'
+        report['probe_is_valid'] = False
         return report
-    protected_value = instrument.instrument_id
+    protected_value = PROTECTED_VALUE
     report['sentinel'] = protected_value
 
     rnd = Round.objects.get(game=game, round_number=game.current_round)
@@ -122,15 +131,15 @@ def run():
         scenario=game.scenario).order_by('id').first()
 
     base = f'/api/games/{game.id}/teams/{team.id}'
-    tf_url = f'{base}/sc/round/{rnd.round_number}/trade-finance/'
+    tf_url = f'{base}/sc/round/{rnd.round_number}/inventory/'
 
     # --- 1. the write gate, confirmed rather than assumed -----------------
     locked_write = client.post(
         tf_url,
-        data=json.dumps({'trade_finance': [{
-            'segment': segment.id, 'market': market.id,
-            'buyer_payment_instrument': protected_value,
-            'lc_doc_prep_investment': 'standard'}]}),
+        data=json.dumps({'inventory': [{
+            'product': product.id, 'market': market.id,
+            'buffer_days': protected_value,
+            'safety_stock_trigger_pct': COMPANION_VALUE}]}),
         content_type='application/json')
     record('write_before_unlock_is_refused',
            status=locked_write.status_code,
@@ -148,10 +157,10 @@ def run():
         for path in (FIELD_PATH, COMPANION_PATH)]
     allowed_write = client.post(
         tf_url,
-        data=json.dumps({'trade_finance': [{
-            'segment': segment.id, 'market': market.id,
-            'buyer_payment_instrument': protected_value,
-            'lc_doc_prep_investment': 'standard'}]}),
+        data=json.dumps({'inventory': [{
+            'product': product.id, 'market': market.id,
+            'buffer_days': protected_value,
+            'safety_stock_trigger_pct': COMPANION_VALUE}]}),
         content_type='application/json')
     record('write_while_overridden_is_accepted',
            status=allowed_write.status_code,
@@ -162,7 +171,7 @@ def run():
            effective_unlock=get_effective_unlock_round(game, FIELD_PATH),
            current_round=game.current_round)
 
-    persisted = TradeFinanceDecision.objects.filter(
+    persisted = InventoryDecision.objects.filter(
         team=team, round=rnd).first()
     record('value_is_persisted_in_a_locked_round',
            present=persisted is not None,
@@ -170,12 +179,14 @@ def run():
 
     # --- 3. every student read surface that could expose it ---------------
     surfaces = {
-        'team_trade_finance_list': tf_url,
-        'team_trade_finance_direct_round_object':
-            f'{base}/sc/round/{rnd.round_number}/trade-finance/',
+        'team_inventory_list': tf_url,
+        'team_inventory_direct_round_object':
+            f'{base}/sc/round/{rnd.round_number}/inventory/',
+        'team_trade_finance': f'{base}/sc/round/{rnd.round_number}/trade-finance/',
+        'team_sourcing': f'{base}/sc/round/{rnd.round_number}/sourcing/',
         'hedge_positions': f'{base}/sc/hedge-positions/',
-        'scenario_instrument_catalogue':
-            f'/api/scenarios/{game.scenario_id}/trade-finance-instruments/',
+        'scenario_supplier_catalogue':
+            f'/api/scenarios/{game.scenario_id}/suppliers/',
         'decision_summary': f'{base}/decisions/round/{rnd.round_number}/summary/',
         'decision_submission': f'{base}/decisions/round/{rnd.round_number}/',
     }
@@ -209,7 +220,7 @@ def run():
             'status': response.status_code,
             'decision_row_exposes_value': bool(rows),
             'value_appears_anywhere': protected_value in text,
-            'is_catalogue_surface': name == 'scenario_instrument_catalogue',
+            'is_catalogue_surface': name == 'scenario_supplier_catalogue',
         }
         record(f'read_before_unlock:{name}',
                status=response.status_code,
@@ -218,15 +229,15 @@ def run():
     report['leaking_surfaces'] = [
         name for name, e in exposures.items()
         if e['decision_row_exposes_value']]
-    catalogue = exposures.get('scenario_instrument_catalogue', {})
+    catalogue = exposures.get('scenario_supplier_catalogue', {})
     report['catalogue_lists_gated_mechanic_before_unlock'] = {
         'status': catalogue.get('status'),
-        'lists_instruments': catalogue.get('value_appears_anywhere'),
-        'note': ('the catalogue endpoint carries no permission class beyond '
-                 'authentication and no round gate; it lists every instrument '
-                 'id at round 1 for a mechanic authored to unlock at round 4. '
-                 'Reported as its own question rather than as the team '
-                 'decision leaking.'),
+        'note': ('the scenario supplier, lane, instrument and compliance '
+                 'catalogue endpoints carry no permission class beyond '
+                 'authentication and no round gate. Whether a catalogue for a '
+                 'later-unlocking mechanic should itself be gated is a rules '
+                 'question, reported separately from whether a team decision '
+                 'leaks.'),
     }
 
     # --- 4. another class's disclosure state must not unlock this one -----
