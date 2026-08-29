@@ -55,7 +55,20 @@ MODEL_FOR = {
     'partnerships': ('core.models.decisions', 'DecisionPartnership'),
     'market-entry': ('core.models.decisions', 'DecisionMarketEntry'),
     'platforms': ('core.models.decisions', 'DecisionPlatformDevelopment'),
+    'products': ('core.models.decisions', 'DecisionProductCreate'),
+    'product-retires': ('core.models.decisions', 'DecisionProductRetire'),
 }
+
+# Every decision type the plan can screen must resolve to a model here, or its
+# probes land nowhere and the coverage gate refuses the run. Checked at import
+# rather than discovered ten minutes into a screen.
+def _assert_model_map_covers_plan():
+    from core.views.decisions import _TYPE_MAP
+    missing = sorted(set(_TYPE_MAP) - set(MODEL_FOR) - REFERENCE_ONLY_TYPES)
+    if missing:
+        raise AssertionError(
+            f'MODEL_FOR has no entry for {missing}; their probes cannot be '
+            f'applied and the screen would refuse to write evidence')
 
 
 def probe_plan(inventory):
@@ -196,6 +209,7 @@ def run(inventory, max_probes=None, verbose=True):
 
     if not DjangoUser.objects.filter(is_superuser=True).exists():
         DjangoUser.objects.create_superuser('screen-owner', 'a@e.com', 'x')
+    _assert_model_map_covers_plan()
     call_command('load_all_scenarios', verbosity=0)
     call_command('setup_test_game', verbosity=0)
 
