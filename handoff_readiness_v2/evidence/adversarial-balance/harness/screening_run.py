@@ -71,11 +71,34 @@ def main():
         report['code_revision'] = revision
         report['working_tree_clean'] = dirty == ''
 
-        moved = [r for r in report['results'] if r.get('moved')]
+        if report.get('aborted'):
+            print(f"\nABORTED: {report['aborted']}")
+            for name, check in report['self_tests'].items():
+                if isinstance(check, dict):
+                    print(f"  {'ok ' if check['passed'] else 'BAD'} {name}: "
+                          f"{check.get('delta')}")
+            raise SystemExit(1)
+
         print(f"\nplanned {report['planned']} | screened {report['screened']} "
-              f"| numerically moved {len(moved)} | {report['elapsed_seconds']}s")
-        print('("moved" is not "material" — escalation is decided by '
-              'screening_report.py)')
+              f"| moved {report['moved']} | flat {report['flat']} "
+              f"| unreachable {report['unreachable']} "
+              f"| {report['elapsed_seconds']}s")
+        for decision_type, state in sorted(
+                report.get('decision_type_availability', {}).items()):
+            if not state['built']:
+                print(f"  unreachable: {decision_type} — {state['rule']}")
+
+        if not report['coverage_complete']:
+            print(f"REFUSED: {report['not_applied']} dimension(s) were neither "
+                  f"screened nor unreachable-with-a-rule, and {report['errors']} "
+                  f"errored. A dimension nobody looked at is not a screening "
+                  f"result. No evidence written.")
+            raise SystemExit(1)
+        if not report['discriminating']:
+            print('REFUSED: the screen is entirely flat or entirely responsive. '
+                  'Either shape means the instrument is not discriminating, so '
+                  'no evidence is written.')
+            raise SystemExit(1)
 
         if options.smoke is None:
             (EVIDENCE / 'screening.json').write_text(

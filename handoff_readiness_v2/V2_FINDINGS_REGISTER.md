@@ -15,6 +15,18 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## New finding raised by GSP-CRV2-06 Stage 2
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-020 | Engine / equity issuance | **P0** | GSP-CRV2-06 (raised) | `generate_financial_statements` prices newly issued shares with `share_price_est = total_equity / shares_outstanding` at `financials.py:212`, but `total_equity` is not assigned until line 262 — fifty lines later, inside the same per-team loop. For the **first** team in the loop that raises equity this is `UnboundLocalError`, and because the call sits inside `_run_phase_1`, **the whole round fails to resolve for every team**. For any **later** team it silently holds the *previous team's* closing equity, so one company's shares are priced off another company's balance sheet and the dilution written to the leaderboard is wrong. Raising equity is an ordinary legal decision exposed by `DecisionFinancing.new_equity`. | Found by Stage 2 screening: setting `financing.new_equity` to its funded maximum crashed resolution. Nothing in the repository exercises `new_equity > 0` — every test and seed command sets it to `0`, which is why it survived. Inherited from the baseline snapshot `2509518`, so it predates globalstrat+. | Open — logged before repair |
+
+The pricing basis is a rules-visible choice, not just a missing assignment:
+closing equity depends on the equity being raised, so it cannot price the raise.
+The repair uses the equity the team held when the round opened, which is the
+only non-circular figure available at that point. Flagged for the rules owner
+rather than decided silently.
+
 ## New findings raised by GSP-CRV2-06
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |

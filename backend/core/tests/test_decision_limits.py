@@ -21,8 +21,9 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 
 from core.authentication import create_access_token
-from core.models import (DecisionSubmission, Game, Round, Scenario, Team,
-                         TeamMember, User)
+from core.models import (DecisionSubmission, Enrollment, Game, Round, Scenario,
+                         Team, User)
+from core.models.course import Course, Section
 from core.models.scenario import FirmStarterProfile, MarketDefinition
 from core.serializers import decision_limits
 
@@ -52,10 +53,23 @@ class DecisionApiBase(TestCase):
         self.team = Team.objects.create(
             game=self.game, name='T', firm_starter_profile=profile,
             performance_index=100, cash_on_hand=1000, total_equity=1000)
-        # Membership is read by user id through `Enrollment` or `TeamMember`;
-        # `TeamMember.user` points at Django's auth user, so the id is what
-        # matters rather than the model the row was built from.
-        TeamMember.objects.create(team_id=self.team.id, user_id=self.user.user_id)
+        # Membership through `Enrollment`, not `TeamMember`. Both are checked
+        # by user id, but `TeamMember.user` carries a foreign key to Django's
+        # `auth_user`, and this student is a `core.User`. Using it passed only
+        # while the two id sequences happened to line up — running this module
+        # beside another that creates auth users broke it with a foreign key
+        # violation. `Enrollment.user_id` is a plain integer, which is what the
+        # permission actually compares.
+        section = Section.objects.create(
+            course_id=Course.objects.create(
+                course_code=f'DL{id(self) % 100000}', course_name='Limits',
+                instructor_id=None, is_active=True).course_id,
+            section_code='S1', section_name='S1', max_teams=4,
+            team_size_min=1, team_size_max=4, is_active=True)
+        Enrollment.objects.create(
+            user_id=self.user.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True,
+            enrolled_at=timezone.now())
 
         self.client = APIClient()
         self.client.credentials(
@@ -349,7 +363,6 @@ class PersistedRowEngineGuardTests(TestCase):
     """
 
     def setUp(self):
-        from core.models.core import TeamMember  # noqa: F401
         owner = DjangoUser.objects.create(username=f'owner-eng-{id(self)}')
         self.scenario = Scenario.objects.create(
             name=f'Engine {id(self)}', industry_label='T', description='d',

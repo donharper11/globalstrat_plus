@@ -113,42 +113,77 @@ def build(submission, team):
 OPTIONAL_AMOUNT = D('100000')
 
 
+class ScenarioLimit(Exception):
+    """A decision type this scenario cannot express, with the rule that says so.
+
+    Distinct from a harness failure. "No baseline row" is not an answer to
+    "is this dimension flat?" — it is an admission that nobody looked. A
+    genuine configuration limit names the rule; anything else is a bug in this
+    harness and must stop the run rather than quietly shrink the screen.
+    """
+
+    def __init__(self, rule):
+        super().__init__(rule)
+        self.rule = rule
+
+
 def build_optional(submission, team):
-    """Add one row of each remaining decision type. Returns {type: status}."""
-    from core.models.decisions import (DecisionMarketEntry, DecisionPartnership,
-                                       DecisionPlant,
+    """Add one row of every remaining decision type this scenario supports.
+
+    Returns `{decision_type: {'built': bool, 'rule': str | None}}`. A False
+    with a rule is a scenario limit; a False without one cannot happen — the
+    exception propagates instead.
+    """
+    from core.models.decisions import (DecisionFinancing, DecisionMarketEntry,
+                                       DecisionPartnership, DecisionPlant,
                                        DecisionPlatformDevelopment,
+                                       DecisionProductCreate,
+                                       DecisionProductRetire,
                                        DecisionRDInvestment)
-    from core.models.scenario import (EntryModeDefinition, FeatureDefinition,
+    from core.models.scenario import (EntryModeDefinition, MarketDefinition,
                                       PlatformFeatureCeiling,
                                       PlatformGenerationDefinition,
                                       StrategyOptionDefinition)
-    from core.models.team_state import TeamMarketPresence, TeamPlatform
+    from core.models.team_state import (TeamMarketPresence, TeamPlatform,
+                                        TeamProduct)
 
-    status = {}
+    scenario = team.game.scenario
     home = team.home_market
     platform = TeamPlatform.objects.filter(team=team).order_by('id').first()
     present = list(TeamMarketPresence.objects
                    .filter(team=team, status='active')
                    .values_list('market_id', flat=True))
 
+    status = {}
+
     def attempt(name, fn):
         try:
             fn()
-            status[name] = 'built'
-        except Exception as error:
-            status[name] = f'not built: {type(error).__name__}: {error}'
+            status[name] = {'built': True, 'rule': None}
+        except ScenarioLimit as limit:
+            status[name] = {'built': False, 'rule': limit.rule}
+
+    def financing():
+        DecisionFinancing.objects.filter(submission=submission).delete()
+        DecisionFinancing.objects.create(
+            submission=submission, new_debt=D('0'), debt_repayment=D('0'),
+            new_equity=D('0'), dividend_per_share=D('0'))
 
     def rd():
         DecisionRDInvestment.objects.filter(submission=submission).delete()
         if platform is None:
-            raise ValueError('team has no platform')
+            raise ScenarioLimit(
+                'the starter profile grants this team no platform, so no R&D '
+                'row can name a team_platform')
         ceiling = (PlatformFeatureCeiling.objects
                    .filter(platform_generation=platform.platform_generation,
                            ceiling_value__gt=0)
                    .order_by('feature_id').first())
         if ceiling is None:
-            raise ValueError('no feature is reachable on this platform')
+            raise ScenarioLimit(
+                f'no PlatformFeatureCeiling with ceiling_value > 0 exists for '
+                f'platform generation {platform.platform_generation_id}, so no '
+                f'feature is reachable for R&D on this platform')
         DecisionRDInvestment.objects.create(
             submission=submission, team_platform=platform,
             feature_id=ceiling.feature_id, method='in_house',
@@ -162,22 +197,34 @@ def build_optional(submission, team):
 
     def partnerships():
         DecisionPartnership.objects.filter(submission=submission).delete()
-        option = StrategyOptionDefinition.objects.order_by('id').first()
+        option = (StrategyOptionDefinition.objects
+                  .filter(scenario=scenario).order_by('id').first()
+                  or StrategyOptionDefinition.objects.order_by('id').first())
         if option is None:
-            raise ValueError('scenario defines no strategy option')
+            raise ScenarioLimit(
+                'the scenario defines no StrategyOptionDefinition rows, so a '
+                'partnership cannot name a strategy_option')
         DecisionPartnership.objects.create(
             submission=submission, market=home, strategy_option=option,
             annual_investment=OPTIONAL_AMOUNT, action='form')
 
     def market_entry():
         DecisionMarketEntry.objects.filter(submission=submission).delete()
-        mode = EntryModeDefinition.objects.order_by('id').first()
-        from core.models.scenario import MarketDefinition
-        candidate = (MarketDefinition.objects
-                     .filter(scenario=team.game.scenario)
+        mode = (EntryModeDefinition.objects.filter(scenario=scenario)
+                .order_by('id').first()
+                or EntryModeDefinition.objects.order_by('id').first())
+        if mode is None:
+            raise ScenarioLimit(
+                'the scenario defines no EntryModeDefinition rows, so a market '
+                'entry cannot name an entry_mode')
+        candidate = (MarketDefinition.objects.filter(scenario=scenario)
                      .exclude(id__in=present).order_by('id').first())
-        if mode is None or candidate is None:
-            raise ValueError('no entry mode or no market left to enter')
+        if candidate is None:
+            raise ScenarioLimit(
+                f'the team is already present in every market this scenario '
+                f'defines ({len(present)} of '
+                f'{MarketDefinition.objects.filter(scenario=scenario).count()}), '
+                f'so there is no market left to enter')
         DecisionMarketEntry.objects.create(
             submission=submission, market=candidate, entry_mode=mode,
             initial_investment=OPTIONAL_AMOUNT, action='enter')
@@ -185,17 +232,44 @@ def build_optional(submission, team):
     def platforms():
         DecisionPlatformDevelopment.objects.filter(submission=submission).delete()
         generation = (PlatformGenerationDefinition.objects
-                      .filter(scenario=team.game.scenario)
+                      .filter(scenario=scenario)
                       .order_by('generation_order').first())
         if generation is None:
-            raise ValueError('scenario defines no platform generation')
+            raise ScenarioLimit(
+                'the scenario defines no PlatformGenerationDefinition rows, so '
+                'a platform development cannot name a generation')
         DecisionPlatformDevelopment.objects.create(
             submission=submission, platform_generation=generation,
             method='in_house', committed_cost=OPTIONAL_AMOUNT)
 
+    def products():
+        DecisionProductCreate.objects.filter(submission=submission).delete()
+        if platform is None:
+            raise ScenarioLimit(
+                'the starter profile grants this team no platform, so a new '
+                'product cannot name a team_platform')
+        DecisionProductCreate.objects.create(
+            submission=submission, team_platform=platform,
+            product_name='Screening Baseline Product',
+            positioning='mainstream',
+            target_market_ids=[home.id])
+
+    def product_retires():
+        DecisionProductRetire.objects.filter(submission=submission).delete()
+        product = (TeamProduct.objects.filter(team=team, status='active')
+                   .order_by('id').first())
+        if product is None:
+            raise ScenarioLimit(
+                'the team has no active product, so nothing can be retired')
+        DecisionProductRetire.objects.create(
+            submission=submission, team_product=product, timing='end_of_round')
+
+    attempt('financing', financing)
     attempt('rd', rd)
     attempt('plants', plants)
     attempt('partnerships', partnerships)
     attempt('market-entry', market_entry)
     attempt('platforms', platforms)
+    attempt('products', products)
+    attempt('product-retires', product_retires)
     return status

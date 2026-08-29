@@ -209,7 +209,24 @@ def generate_financial_statements(context):
             actual_equity_raised = (new_equity * D(str(subscription_rate))).quantize(
                 D('0.01'), rounding=ROUND_HALF_UP,
             )
-            share_price_est = total_equity / max(D(str(team.shares_outstanding)), D('1')) if team.shares_outstanding > 0 else D('1')
+            # `total_equity` here is the *closing* figure, and it is not
+            # assigned until fifty lines further down this same loop. On the
+            # first team to raise equity that was an UnboundLocalError, and
+            # because this runs inside Phase 1 the whole round failed to
+            # resolve for every team; on later teams it silently held the
+            # previous team's balance sheet and priced one company's shares
+            # off another's. Nothing in the repository set new_equity above
+            # zero, so neither happened until GSP-CRV2-06 screened the field.
+            #
+            # Closing equity cannot price the raise that determines it, so the
+            # basis is the equity the team held when the round opened. That is
+            # a rules-visible choice and is recorded as V2-020 rather than
+            # settled here.
+            opening_equity = team.total_equity
+            share_price_est = (
+                opening_equity / max(D(str(team.shares_outstanding)), D('1'))
+                if team.shares_outstanding > 0 else D('1')
+            )
             new_shares = int(actual_equity_raised / max(share_price_est, D('1')))
             team.shares_outstanding += new_shares
             new_equity = actual_equity_raised
