@@ -209,12 +209,21 @@ def evaluate_at_price(target, price):
             submission__team_id=target['team_id'],
             team_product_id=target['product_id'],
             market_id=target['market_id']).count()
-        proof['reached_intended_row'] = (
-            stored.submission.team_id == target['team_id']
-            and stored.team_product_id == target['product_id']
-            and stored.market_id == target['market_id']
-            and str(stored.retail_price) == str(D(price))
-            and proof['rows_matching_coordinates'] == 1)
+        # Each conjunct is recorded separately. The first version returned a
+        # bare boolean, and when it came back false the refusal could say only
+        # that the mutation had missed -- not which of five things was wrong.
+        # The price is compared numerically: the column stores two decimal
+        # places, so a stored 50.00 is the requested 50 even though the two
+        # strings differ, and comparing the strings failed a mutation that had
+        # in fact landed exactly where it was aimed.
+        proof['checks'] = {
+            'team_matches': stored.submission.team_id == target['team_id'],
+            'product_matches': stored.team_product_id == target['product_id'],
+            'market_matches': stored.market_id == target['market_id'],
+            'price_stored_exactly': D(stored.retail_price) == D(price),
+            'exactly_one_row': proof['rows_matching_coordinates'] == 1,
+        }
+        proof['reached_intended_row'] = all(proof['checks'].values())
         avg, rivals = market_average_price(
             target['team_id'], target['product_id'], target['market_id'], price)
         proof['market_average_price'] = avg

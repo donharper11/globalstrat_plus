@@ -63,14 +63,19 @@ def main():
         for label, subject in report['subjects'].items():
             for price, cell in subject['by_price'].items():
                 proof, outcomes = cell['proof'], cell['outcomes']
+                if not proof['reached_intended_row']:
+                    failed = [k for k, v in proof.get('checks', {}).items()
+                              if not v]
+                    refuse(f'{label} @ {price}: failed {failed}; '
+                           f'stored={proof.get("stored_price")} '
+                           f'rows={proof.get("rows_matching_coordinates")}: '
+                           f'the mutation did not reach the '
+                           f'intended product/market row')
                 missing = [k for k in REQUIRED_PROOF if proof.get(k) is None]
                 missing += [k for k in REQUIRED_OUTCOMES
                             if outcomes.get(k) is None]
                 if missing:
                     refuse(f'{label} @ {price}: missing diagnostics {missing}')
-                if not proof['reached_intended_row']:
-                    refuse(f'{label} @ {price}: the mutation did not reach the '
-                           f'intended product/market row')
 
         (EVIDENCE / 'v2-023-gate.json').write_text(
             json.dumps(report, indent=2, sort_keys=True), encoding='utf-8')
