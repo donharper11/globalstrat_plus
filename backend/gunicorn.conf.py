@@ -35,6 +35,11 @@ preload_app = True
 accesslog = '-'
 errorlog = '-'
 loglevel = 'info'
+# %(D)s is the request duration in microseconds, measured by gunicorn itself.
+# Without it the access log cannot say whether a slow request was slow in the
+# server or slow in the client observing it, and CRV2-07 needed exactly that
+# distinction to explain a latency tail.
+access_log_format = '%(h)s %(t)s "%(r)s" %(s)s %(b)s %(D)s'
 
 # Process naming
 proc_name = 'globalstrat'

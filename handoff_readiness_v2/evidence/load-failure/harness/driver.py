@@ -230,7 +230,24 @@ def run_profile(base, identities, game_id, round_number, duration,
 
     slowest = sorted(interactive, key=lambda x: -x['ms'])[:15]
     origin = min((s['at'] for s in samples), default=0)
+
+    # Per-second buckets: one stall and a periodic stutter look identical in a
+    # max, and the top-N list only shows the worst window. This shows whether
+    # throughput collapses during the slow period, which separates a server
+    # stall from a client that stopped issuing requests.
+    buckets = {}
+    for sample in interactive:
+        second = int(sample['at'] - origin)
+        bucket = buckets.setdefault(second, [])
+        bucket.append(sample['ms'])
+    timeline = [
+        {'second': second, 'requests': len(values),
+         'max_ms': round(max(values), 1),
+         'p95_ms': round(sorted(values)[max(0, int(round(0.95 * len(values))) - 1)], 1)}
+        for second, values in sorted(buckets.items())]
     return {
+        'timeline_per_second': timeline,
+        'slowest_seconds': sorted(timeline, key=lambda b: -b['max_ms'])[:8],
         'slowest_requests': [
             {'kind': s['kind'], 'ms': round(s['ms'], 1),
              'status': s['status'], 'phase': s['phase'],

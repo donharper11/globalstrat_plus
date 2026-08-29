@@ -1,7 +1,7 @@
 {
-  "code_revision": "96ca27f33bb65b2c1d37bb6fbf49523938beb0e8",
+  "code_revision": "f080a6fb5f43309f6438e0906eafb7ef1585018c",
   "database": {
-    "commits": 343836,
+    "commits": 332652,
     "connections_now": 1,
     "deadlocks": 0,
     "max_connections": 100,
@@ -11,8 +11,8 @@
   "passed": false,
   "profile": "field",
   "reconciliation": {
-    "acknowledged_writes": 6447,
-    "audit_rows_with_request_id": 6447,
+    "acknowledged_writes": 6246,
+    "audit_rows_with_request_id": 6246,
     "duplicated_write_count": 0,
     "duplicated_writes": {},
     "lost_write_count": 0,
@@ -29,146 +29,146 @@
     "db_connection_samples": 98,
     "db_connections_mean": 14.7,
     "db_connections_peak": 17,
-    "elapsed_seconds": 204.4,
+    "elapsed_seconds": 206.1,
     "error_rate_pct": 0.0,
-    "interactive_requests": 13816,
+    "interactive_requests": 13373,
     "latency_ms": {
-      "max": 18283.0,
-      "p50": 1012.0,
-      "p95": 1429.2,
-      "p99": 1719.7
+      "max": 19725.9,
+      "p50": 1037.1,
+      "p95": 1529.7,
+      "p99": 2586.2
     },
     "login_failures": [],
     "per_kind_max": {
-      "lock": 1039.4,
-      "refresh": 18283.0,
-      "save": 16063.7
+      "lock": 1320.4,
+      "refresh": 19725.9,
+      "save": 16523.2
     },
     "per_kind_p95": {
-      "lock": 1039.4,
-      "refresh": 1288.8,
-      "save": 1509.9
+      "lock": 1320.4,
+      "refresh": 1350.3,
+      "save": 1636.5
     },
     "per_phase_p95": {
-      "final-minute": 1447.4,
-      "steady": 1428.6
+      "final-minute": 1732.6,
+      "steady": 1520.1
     },
-    "requests_total": 13912,
+    "requests_total": 13469,
     "server_errors": 0,
     "sessions_authenticated": 96,
     "sessions_requested": 96,
     "slowest_requests": [
       {
         "kind": "refresh",
-        "ms": 18283.0,
+        "ms": 19725.9,
         "phase": "steady",
-        "seconds_into_run": 18.3,
+        "seconds_into_run": 19.7,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 16063.7,
+        "ms": 16523.2,
         "phase": "steady",
-        "seconds_into_run": 18.3,
-        "status": 200
-      },
-      {
-        "kind": "refresh",
-        "ms": 14854.8,
-        "phase": "steady",
-        "seconds_into_run": 18.4,
+        "seconds_into_run": 19.8,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 14485.8,
+        "ms": 16224.2,
         "phase": "steady",
-        "seconds_into_run": 18.6,
-        "status": 200
-      },
-      {
-        "kind": "refresh",
-        "ms": 13698.6,
-        "phase": "steady",
-        "seconds_into_run": 18.4,
+        "seconds_into_run": 19.9,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 13606.4,
+        "ms": 16095.6,
         "phase": "steady",
-        "seconds_into_run": 18.7,
+        "seconds_into_run": 20.0,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 13303.4,
+        "ms": 15005.0,
         "phase": "steady",
-        "seconds_into_run": 18.7,
+        "seconds_into_run": 20.1,
         "status": 200
       },
       {
         "kind": "refresh",
-        "ms": 13142.1,
+        "ms": 14237.0,
         "phase": "steady",
-        "seconds_into_run": 18.5,
-        "status": 200
-      },
-      {
-        "kind": "refresh",
-        "ms": 12566.4,
-        "phase": "steady",
-        "seconds_into_run": 18.9,
+        "seconds_into_run": 19.8,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 12524.7,
+        "ms": 14153.5,
         "phase": "steady",
-        "seconds_into_run": 18.8,
-        "status": 200
-      },
-      {
-        "kind": "refresh",
-        "ms": 12414.9,
-        "phase": "steady",
-        "seconds_into_run": 18.7,
+        "seconds_into_run": 20.2,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 12378.6,
+        "ms": 13999.1,
         "phase": "steady",
-        "seconds_into_run": 19.4,
+        "seconds_into_run": 20.2,
+        "status": 200
+      },
+      {
+        "kind": "refresh",
+        "ms": 13891.3,
+        "phase": "steady",
+        "seconds_into_run": 20.1,
+        "status": 200
+      },
+      {
+        "kind": "refresh",
+        "ms": 13826.0,
+        "phase": "steady",
+        "seconds_into_run": 19.9,
         "status": 200
       },
       {
         "kind": "save",
-        "ms": 12300.7,
+        "ms": 13703.7,
         "phase": "steady",
-        "seconds_into_run": 19.0,
+        "seconds_into_run": 20.3,
+        "status": 200
+      },
+      {
+        "kind": "save",
+        "ms": 13580.6,
+        "phase": "steady",
+        "seconds_into_run": 20.2,
+        "status": 200
+      },
+      {
+        "kind": "save",
+        "ms": 13576.4,
+        "phase": "steady",
+        "seconds_into_run": 20.3,
+        "status": 200
+      },
+      {
+        "kind": "save",
+        "ms": 13425.7,
+        "phase": "steady",
+        "seconds_into_run": 20.4,
         "status": 200
       },
       {
         "kind": "refresh",
-        "ms": 12243.9,
+        "ms": 13263.6,
         "phase": "steady",
-        "seconds_into_run": 18.8,
-        "status": 200
-      },
-      {
-        "kind": "refresh",
-        "ms": 12241.1,
-        "phase": "steady",
-        "seconds_into_run": 18.9,
+        "seconds_into_run": 20.2,
         "status": 200
       }
     ],
     "status_distribution": {
-      "200": 13904,
+      "200": 13461,
       "400": 8
     },
-    "throughput_rps": 68.0,
+    "throughput_rps": 65.4,
     "transport_failures": 0
   },
   "scenario": "Consumer Electronics 2026",
@@ -179,7 +179,7 @@
   },
   "teams": 24,
   "threshold_breaches": [
-    "max 18283.0 ms exceeds 10000 ms"
+    "max 19725.9 ms exceeds 10000 ms"
   ],
   "thresholds": {
     "db_connections": 80,

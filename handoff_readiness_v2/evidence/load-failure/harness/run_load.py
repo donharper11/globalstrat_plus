@@ -58,6 +58,28 @@ def main():
             base, identities, seeded['game_id'], seeded['round_number'],
             spec['duration'], database=database)
 
+        # Server-side timing straight from gunicorn's access log, so a slow
+        # request can be attributed to the server or to the client that
+        # observed it.
+        access = EVIDENCE / f'gunicorn-{args.profile}.log'
+        server_side = {'parsed': 0}
+        if access.exists():
+            durations = []
+            for line in access.read_text(errors='replace').splitlines():
+                parts = line.rsplit(' ', 1)
+                if len(parts) == 2 and parts[1].isdigit():
+                    durations.append(int(parts[1]) / 1000.0)
+            if durations:
+                durations.sort()
+                server_side = {
+                    'parsed': len(durations),
+                    'p50_ms': round(durations[len(durations) // 2], 1),
+                    'p95_ms': round(durations[max(0, int(round(0.95 * len(durations))) - 1)], 1),
+                    'max_ms': round(durations[-1], 1),
+                    'over_10s': sum(1 for d in durations if d > 10000),
+                }
+        result['server_side_timing'] = server_side
+
         # Database state, read from the server while the stack is still up.
         body = (
             'import sys, json\n'
@@ -136,6 +158,10 @@ def main():
     print(f"per-kind p95    : {result['per_kind_p95']}")
     print(f"per-kind max    : {result['per_kind_max']}")
     print(f"per-phase p95   : {result['per_phase_p95']}")
+    ss = result.get('server_side_timing', {})
+    print(f"server-side     : {ss}")
+    print(f"slowest seconds : "
+          f"{[(b['second'], b['requests'], b['max_ms']) for b in result['slowest_seconds'][:5]]}")
     print(f"slowest 8       :")
     for row in result['slowest_requests'][:8]:
         print(f"    {row['ms']:>9.1f} ms  {row['kind']:<8} {row['phase']:<13} "
