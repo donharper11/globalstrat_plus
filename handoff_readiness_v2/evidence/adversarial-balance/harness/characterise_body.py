@@ -79,6 +79,7 @@ MONOTONIC_REPRESENTATIVES = [
 # Joint mechanisms. A single-field curve through either is misleading.
 JOINT_RD = {
     'name': 'R&D budget x R&D spend',
+    'all_rows': False,
     'why': 'V2-021 moved the capability denominator from the declared budget '
            'to a scenario constant. The grid shows whether the declared budget '
            'still interacts with spend at all, which a curve through either '
@@ -89,6 +90,7 @@ JOINT_RD = {
 }
 JOINT_PRICE = {
     'name': 'retail price x production volume',
+    'all_rows': True,
     'why': 'Revenue is price times units sold, and units sold is bounded by '
            'both production and demand. Either field alone traces a curve that '
            'depends entirely on where the other one was pinned.',
@@ -115,22 +117,33 @@ def model_for(decision_type):
     return getattr(importlib.import_module(module), name)
 
 
-def set_field(submission, decision_type, field, value):
+def set_field(submission, decision_type, field, value, all_rows=False):
+    """Set one field. `all_rows` applies it across the team's portfolio.
+
+    The first version of the price/volume grid wrote to `rows[0]` only, and
+    every one of its nine cells came back with revenue identical to the cent —
+    including production_volume=0. The team carries two marketing rows and the
+    one being edited sells nothing at baseline, so the grid was varying a
+    product with no sales and reporting that as "price and volume do nothing".
+    A team-wide price or volume decision is the joint mechanism worth
+    characterising, so the grid sets every row.
+    """
     model = model_for(decision_type)
     rows = list(model.objects.filter(submission=submission).order_by('pk'))
     if not rows:
         return False
-    row = rows[0]
-    django_field = row._meta.get_field(field)
-    kind = django_field.get_internal_type()
-    if kind == 'DecimalField':
-        coerced = D(str(value))
-    elif 'Integer' in kind:
-        coerced = int(D(str(value)))
-    else:
-        coerced = value
-    setattr(row, field, coerced)
-    row.save(update_fields=[field])
+    targets = rows if all_rows else rows[:1]
+    for row in targets:
+        django_field = row._meta.get_field(field)
+        kind = django_field.get_internal_type()
+        if kind == 'DecimalField':
+            coerced = D(str(value))
+        elif 'Integer' in kind:
+            coerced = int(D(str(value)))
+        else:
+            coerced = value
+        setattr(row, field, coerced)
+        row.save(update_fields=[field])
     return True
 
 
@@ -155,8 +168,10 @@ def run(verbose=True):
                 BASE.build(sub, team)
                 BASE.build_optional(sub, team)
                 if team.id == subject.id:
-                    for decision_type, field, value in changes:
-                        set_field(sub, decision_type, field, value)
+                    for change in changes:
+                        decision_type, field, value = change[:3]
+                        all_rows = change[3] if len(change) > 3 else False
+                        set_field(sub, decision_type, field, value, all_rows)
                 sub.status = 'locked'
                 sub.locked_at = timezone.now()
                 sub.save(update_fields=['status', 'locked_at'])
@@ -180,6 +195,12 @@ def run(verbose=True):
         metrics = CF.evaluate(game, rnd, subject, prepare(changes))
         return {'metrics': metrics, 'delta': CF.delta(baseline, metrics)}
 
+    # A grid whose cells are all identical measured nothing; recorded so the
+    # reader can tell a flat mechanism from a probe that never landed.
+    def grid_is_degenerate(cells):
+        revenues = {c['metrics']['total_revenue'] for c in cells.values()}
+        return len(revenues) == 1
+
     for decision_type, field, points in MONOTONIC_REPRESENTATIVES:
         key = f'{decision_type}.{field}'
         report['interior_points'][key] = {}
@@ -193,12 +214,15 @@ def run(verbose=True):
         cells = {}
         for a_type, a_field, a_value, b_type, b_field, b_value in spec['grid']:
             label = f'{a_field}={a_value} x {b_field}={b_value}'
-            cells[label] = measure([(a_type, a_field, a_value),
-                                    (b_type, b_field, b_value)])
+            wide = spec.get('all_rows', False)
+            cells[label] = measure([(a_type, a_field, a_value, wide),
+                                    (b_type, b_field, b_value, wide)])
             if verbose:
                 print(f'  joint {label}', flush=True)
         report['joint'][spec['name']] = {
-            'why': spec['why'], 'cells': cells}
+            'why': spec['why'], 'cells': cells,
+            'all_rows': spec.get('all_rows', False),
+            'degenerate_revenue': grid_is_degenerate(cells)}
 
     report['elapsed_seconds'] = round(time.time() - started, 1)
     return report
