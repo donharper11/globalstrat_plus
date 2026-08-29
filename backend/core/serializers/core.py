@@ -44,27 +44,49 @@ class SimulationParametersSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+def _team_name_for(user):
+    """The team's name, looked up by id.
+
+    `User.team_id` is a plain IntegerField, not a ForeignKey -- the table is
+    unmanaged and the column was never declared as a relation -- so there is no
+    `user.team` to traverse and no join to follow.
+    """
+    from core.models import Team
+    if not getattr(user, 'team_id', None):
+        return None
+    team = Team.objects.filter(pk=user.team_id).first()
+    return team.name if team else None
+
+
 class UserSerializer(serializers.ModelSerializer):
-    team_name = serializers.CharField(source='team.team_name', read_only=True,
-                                      default=None)
+    # `team` was declared here and on the write serializer, and `team_name`
+    # sourced from `team.team_name`. Neither exists: DRF raised
+    # ImproperlyConfigured on instantiation, so every read through
+    # /api/users/ failed. Both now use the integer column the model declares.
+    team_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'role', 'team', 'team_name']
+        fields = ['user_id', 'username', 'role', 'team_id', 'team_name']
         read_only_fields = ['user_id']
+
+    def get_team_name(self, obj):
+        return _team_name_for(obj)
 
 
 class UserWriteSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False,
                                      allow_blank=True)
-    team_name = serializers.CharField(source='team.team_name', read_only=True,
-                                      default=None)
+    team_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'password', 'role', 'team',
+        fields = ['user_id', 'username', 'password', 'role', 'team_id',
                   'team_name']
         read_only_fields = ['user_id']
+
+    def get_team_name(self, obj):
+        return _team_name_for(obj)
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)

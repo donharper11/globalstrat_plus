@@ -267,11 +267,18 @@ original P3 rested on the exposure needing an instructor override-then-restore
 and on the value being the team's own; the controlling fact is that a
 disclosure schedule enforced on one side only is not a schedule.
 
-**A defect found while writing the contract, unrelated to disclosure.**
-`core.serializers.core.UserSerializer` declares `team`, which is not a field on
-`User`, and raises `ImproperlyConfigured` on instantiation. It cannot render, so
-it exposes nothing, but any endpoint using it would fail. Recorded, not
-repaired: this rework's budget is focused authorization work.
+| V2-028 | API / user endpoint | **P1** | GSP-CRV2-06 coverage rework | `/api/users/` is a registered route (`router.register(r'users', UserViewSet)`) and could not answer. `User.team_id` is a plain `IntegerField` -- the table is unmanaged and the column was never declared as a relation -- but `UserSerializer` and `UserWriteSerializer` both declared a `team` field and sourced `team_name` from `team.team_name`, and the viewset called `select_related('team')`. DRF raised `ImproperlyConfigured` before rendering anything, so every list and retrieve through the endpoint failed, as did the `assign-team` action's response. `assign-team` also set `user.team`, an attribute the model does not persist, so team assignment silently did nothing. | `test_user_endpoint.py`, five focused tests. Reachability established by search: the serializer is referenced only from `core/views/core.py` (`get_serializer_class` and the `assign-team` action) and re-exported from `core/serializers/__init__.py`; the viewset is routed at `core/urls.py:139`. | **Closed by repair.** |
+
+**V2-028 repair.** Both serializers now expose `team_id`, the column the model
+declares, with `team_name` resolved through a lookup rather than a join. The
+viewset drops `select_related`, and `assign-team` writes `user.team_id`, which
+persists. A dangling `team_id` renders a null name rather than failing, since
+nothing enforces the target of a column that is not a foreign key.
+
+Found while writing the V2-026 package-wide contract, which walks every
+serializer and could not instantiate this one. It is recorded as its own
+finding rather than folded into V2-026: a routed endpoint that always raises is
+not a disclosure defect.
 
 **A separate question, not registered as a finding.** The scenario supplier,
 lane, instrument and compliance catalogue endpoints carry no permission class

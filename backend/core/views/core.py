@@ -27,7 +27,8 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.select_related('team').all()
+    # No select_related: `team_id` is an integer column, not a relation.
+    queryset = User.objects.all()
     permission_classes = [IsInstructor]
 
     def get_serializer_class(self):
@@ -103,12 +104,12 @@ class UserViewSet(viewsets.ModelViewSet):
         if team_id is not None:
             try:
                 team = Team.objects.get(pk=int(team_id))
-                user.team = team
+                user.team_id = team.pk
             except (Team.DoesNotExist, ValueError, TypeError):
                 return Response({'error': 'Team not found.'},
                                 status=status.HTTP_404_NOT_FOUND)
         else:
-            user.team = None
+            user.team_id = None
 
         user.save()
         serializer = UserSerializer(user)
