@@ -55,18 +55,24 @@ class GlobalStratTestRunner(DiscoverRunner):
         # database is the one place those guards do not exist — which is
         # exactly where they need to be provable. Installed from the same
         # module the migration uses, so the two cannot drift.
-        from django.db import connections
         from core.services.audit_guards import TRUNCATE_SETTING, install
-        for alias in connections:
-            install(connections[alias])
+        # Only the connections Django actually built. `setup_databases` returns
+        # them, and for a suite of nothing but SimpleTestCase it returns none —
+        # iterating every configured alias instead tried to install the guards
+        # into a test database that was never created, and the run died on
+        # "relation competition_sensitive_read_event does not exist" before a
+        # single test ran.
+        created = [entry[0] for entry in config]
         # `TransactionTestCase` resets between tests by truncating every table,
         # which the audit guards refuse. Announcing "this is a test database"
         # per connection keeps the reset working while leaving the guard itself
         # installed, so a test can still turn it off for one transaction and
         # watch the truncate fail. Production sets this nowhere.
+        for connection in created:
+            install(connection)
         _allow_truncate_in_tests(TRUNCATE_SETTING)
-        for alias in connections:
-            _announce_test_database(connections[alias], TRUNCATE_SETTING)
+        for connection in created:
+            _announce_test_database(connection, TRUNCATE_SETTING)
         return config
 
     def teardown_databases(self, old_config, **kwargs):

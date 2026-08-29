@@ -35,6 +35,16 @@ def load():
     return json.loads((EVIDENCE / 'screening.json').read_text(encoding='utf-8'))
 
 
+class UnreadableScreeningReport(Exception):
+    """The analysis cannot read the report it was given.
+
+    Raised rather than returning verdicts. Every previous version of this
+    function answered "flat" when it could not read a row, which is the one
+    answer guaranteed to be wrong: an unmeasured dimension is not a dimension
+    that did not respond.
+    """
+
+
 def classify(report):
     """Decide which dimensions earn a dense sweep.
 
@@ -47,6 +57,18 @@ def classify(report):
     the hard-coded list. It looked like a decisive result and measured nothing.
     """
     baseline = report.get('baseline_metrics') or {}
+    if not baseline:
+        raise UnreadableScreeningReport(
+            'the report carries no baseline_metrics, so no response can be '
+            'judged against anything')
+    applied = [r for r in report.get('results', []) if r.get('applied')]
+    without_delta = [f"{r.get('decision_type')}.{r.get('field')}"
+                     for r in applied if not r.get('delta')]
+    if without_delta:
+        raise UnreadableScreeningReport(
+            f'{len(without_delta)} applied result(s) carry no delta — the '
+            f'report is in a shape this analysis does not understand: '
+            f'{without_delta[:5]}')
 
     def scale(metric):
         value = baseline.get(metric)

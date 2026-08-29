@@ -25,8 +25,72 @@ these differences are the rule and not noise. Evidence:
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-021 | Scoring / strategic capability | **P1** | Rules owner (raised by GSP-CRV2-06) | `_strategic_capability_component` scores R&D as `rd_spend / rd_budget`, clamped to 1, and capability carries 0.25 of the performance index. The denominator is the team's *own declared budget*, so the ratio measures self-consistency rather than investment. Declaring **$1** and spending **$1** scores 1.00 where a $100,000 programme against a $2,000,000 budget scores 0.05. Measured: index **56.54 → 58.45 (+1.91)**, composite **0.5772 → 0.6724 (+0.0952)**, while spending **$99,999 less** — cheaper *and* higher-scoring, and independent of what any opponent does. | `rule-probes.json` → `capability_ratio`. Single round; the multi-round trade-off is unmeasured — see the uncertainty note below. | Open — disposition requested |
-| V2-022 | Scoring / anti-exploit guard | **P1** | Rules owner (raised by GSP-CRV2-06) | `_is_voluntarily_commercially_inactive` caps the composite at 0.25 only when *every* marketing row has production, promotion, distribution and sales staffing at or below zero. It tests the **decisions**, not the outcome. Setting `production_volume = 1` on one row defeats it: composite **0.2500 → 0.4123 (+0.1623)**, index **50.00 → 53.25 (+3.25)** — for **$181.86**. Critically, **`total_revenue` is `0.00` in both cases**: the team sold nothing. The guard is escaped by declaring an intention to produce, not by competing. | `rule-probes.json` → `one_unit_bypass`. The hypothesis was "sell one unit"; the measurement shows no sale is needed. | Open — disposition requested |
+| V2-021 | Scoring / strategic capability | **P1** | Rules owner (raised by GSP-CRV2-06) | `_strategic_capability_component` scores R&D as `rd_spend / rd_budget`, clamped to 1, and capability carries 0.25 of the performance index. The denominator is the team's *own declared budget*, so the ratio measures self-consistency rather than investment. Declaring **$1** and spending **$1** scores 1.00 where a $100,000 programme against a $2,000,000 budget scores 0.05. Measured: index **56.54 → 58.45 (+1.91)**, composite **0.5772 → 0.6724 (+0.0952)**, while spending **$99,999 less** — cheaper *and* higher-scoring, and independent of what any opponent does. | `rule-probes.json` → `capability_ratio`. Single round; the multi-round trade-off is unmeasured — see the uncertainty note below. | **Closed** at `827a2e1` under an adopted disposition — see below |
+| V2-022 | Scoring / anti-exploit guard | **P1** | Rules owner (raised by GSP-CRV2-06) | `_is_voluntarily_commercially_inactive` caps the composite at 0.25 only when *every* marketing row has production, promotion, distribution and sales staffing at or below zero. It tests the **decisions**, not the outcome. Setting `production_volume = 1` on one row defeats it: composite **0.2500 → 0.4123 (+0.1623)**, index **50.00 → 53.25 (+3.25)** — for **$181.86**. Critically, **`total_revenue` is `0.00` in both cases**: the team sold nothing. The guard is escaped by declaring an intention to produce, not by competing. | `rule-probes.json` → `one_unit_bypass`. The hypothesis was "sell one unit"; the measurement shows no sale is needed. | **Closed** at `827a2e1` under an adopted disposition — see below |
+
+### Adopted dispositions and closure — V2-021 and V2-022
+
+**V2-021 adopted rule**
+
+```
+rd_score = clamp01(rd_spend / scenario_rd_spend_target)
+```
+
+`rd_spend_target` is a scenario configuration value the team cannot choose,
+initialised at **$2,000,000** — the figure `load_demo` scripts as competent
+R&D, so a team playing the documented baseline scores what it always did. A
+missing, zero or negative target raises `InvalidScenarioConfiguration` and the
+round is not scored; a silent default would change what the competition rewards
+without anyone deciding to, which is the failure V2-021 was. Cohort-maximum
+normalisation was explicitly **not** adopted: it would hand $1 full credit
+whenever $1 was the largest spend in the room.
+
+Seeded in scenario YAML for fresh loads and by migration `0073` for scenarios
+already in a database. `scenario_config` is already a manifest input section,
+so the value is in the deterministic digest.
+
+**V2-022 adopted rule**
+
+```
+material_revenue_floor = max($1, 0.01 x highest positive team revenue this round)
+```
+
+A team whose realised revenue is below that floor is commercially inactive.
+The composite cap and the ranking guard now consume this one classification, so
+the two controls cannot disagree about who competed. Declarations of
+production, promotion, staffing or distribution do not exempt a team.
+
+**The original exploit probes, re-run against the repaired rules at `827a2e1`:**
+
+| Probe | Before | After |
+|---|---|---|
+| `$1` budget / `$1` spend | index **+1.91**, composite **+0.0952** | index **−0.09**, composite **−0.0048** |
+| One unit of production | composite **0.2500 → 0.4123** (+0.1623) | composite **0.2500 → 0.2500** (0.0000) |
+
+Both exploits fail. The `$1/$1` strategy is now marginally *worse* than the
+baseline rather than better: it still keeps the $99,999 it declined to spend,
+which is ordinary thrift, but it no longer buys a higher capability score.
+The token-production team is capped exactly as the silent team is.
+
+Controls: 13 focused tests for the two rules, 108 passing across the affected
+set (`test_scoring_dispositions`, `test_cc18_compliance`, `test_equity_issuance`,
+`test_decision_limits`, `test_engine`).
+
+### Open question raised by the V2-022 repair
+
+Two compliance tests asserted the opposite rule and were reversed rather than
+deleted: a team with real production and promotion but zero revenue used to be
+explicitly *not* inactive, on the grounds that a compliance freeze can prevent
+sales despite genuine commercial intent.
+
+Under the adopted rule that team **is** inactive, so **a team frozen out of its
+market by compliance enforcement now takes the 0.25 composite cap on top of the
+freeze.** The disposition is explicit that declarations do not exempt a team,
+and that is implemented as written — but a compliance freeze is a penalty the
+engine imposed, not a choice the team made, and the double penalty may not be
+intended. Flagged for the rules owner; not decided here.
+
+### Superseded — the disposition request as originally filed
 
 ### Disposition requested — V2-021
 
