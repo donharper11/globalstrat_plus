@@ -31,7 +31,8 @@ from core.engine.bass_engine import run_bass_adoption
 from core.engine.performance import calculate_performance_index
 from core.engine.performance import (
     COMMERCIAL_INACTIVITY_COMPOSITE_CAP,
-    _is_voluntarily_commercially_inactive,
+    is_commercially_inactive,
+    material_revenue_floor,
 )
 
 
@@ -465,12 +466,18 @@ class CC18ComplianceTest(TestCase):
         )
         ctx = _Ctx(self.game, 7, [self.team], self.scenario)
         ctx.financials = {self.team.id: {'total_revenue': D('0')}}
-        self.assertFalse(_is_voluntarily_commercially_inactive(
-            ctx, self.team, 7,
-        ))
+        # V2-022 reversed this. The classification now judges realised revenue,
+        # so a team that produced and promoted but sold nothing *is*
+        # commercially inactive. The adopted disposition is explicit that
+        # production, promotion, staffing and distribution declarations do not
+        # exempt a team; that is the whole point, since declaring one unit of
+        # production used to escape the cap while selling nothing.
+        floor = material_revenue_floor([D('0')])
+        self.assertTrue(is_commercially_inactive(D('0'), floor))
 
-    def test_compliance_blocked_seller_is_not_commercially_inactive(self):
-        """A frozen seller with real production/marketing is not 'do nothing'."""
+    def test_compliance_blocked_seller_is_now_commercially_inactive(self):
+        """V2-022: the classification judges revenue, so a frozen seller counts
+        as inactive. See the note in the body — this is a behaviour reversal."""
         rnd = self._round(8)
         sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
         DecisionMarketing.objects.create(
@@ -485,6 +492,11 @@ class CC18ComplianceTest(TestCase):
         ctx = _Ctx(self.game, 8, [self.team], self.scenario)
         ctx.financials = {self.team.id: {'total_revenue': D('0')}}
         ctx.compliance_freezes = {(self.team.id, self.na.id)}
-        self.assertFalse(_is_voluntarily_commercially_inactive(
-            ctx, self.team, 8,
-        ))
+        # Also reversed by V2-022, and worth stating plainly: a team frozen out
+        # of its market by compliance enforcement now classifies as
+        # commercially inactive, because it realised no revenue. The freeze is
+        # the engine's own penalty rather than the team's choice, so this is a
+        # second penalty on top of it. Raised as an open question against
+        # V2-022 rather than resolved here.
+        floor = material_revenue_floor([D('0')])
+        self.assertTrue(is_commercially_inactive(D('0'), floor))

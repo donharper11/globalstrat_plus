@@ -27,7 +27,8 @@ from django.utils import timezone
 
 from core.models import (DecisionSubmission, Game, Round, Scenario, Team)
 from core.models.decisions import DecisionBudgetAllocation, DecisionFinancing
-from core.models.scenario import FirmStarterProfile, MarketDefinition
+from core.models.scenario import (FirmStarterProfile, MarketDefinition,
+                                  ScenarioConfig)
 
 
 class EquityIssuanceTests(TestCase):
@@ -41,6 +42,11 @@ class EquityIssuanceTests(TestCase):
             currency_code='USD', exchange_rate_base=1, base_growth_rate=0,
             entry_cost_base=0, tax_rate=0, regulatory_difficulty=1,
             infrastructure_quality=1)
+        # V2-021: scoring refuses to run without a positive R&D spend target,
+        # by design, so a scenario built in a fixture has to declare one.
+        ScenarioConfig.objects.create(
+            scenario=self.scenario, config_key='rd_spend_target',
+            config_value='2000000', description='V2-021 target')
         profile = FirmStarterProfile.objects.create(
             scenario=self.scenario, profile_name='S', description='d',
             home_market=market, starting_cash=1000, starting_debt=0)

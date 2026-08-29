@@ -23,6 +23,43 @@ PI_WEIGHTS = {
 
 COMMERCIAL_INACTIVITY_COMPOSITE_CAP = D('0.25')
 
+# V2-021. Strategic capability used to score R&D as `rd_spend / rd_budget`,
+# where the denominator was the team's *own declared budget*. That measured
+# self-consistency rather than investment: declaring $1 and spending $1 scored
+# a perfect 1.00 while a $100,000 programme against a $2,000,000 budget scored
+# 0.05 — cheaper and higher-scoring, whatever opponents did.
+#
+# The denominator is now a scenario constant the team cannot choose. It is not
+# normalised against the cohort maximum, because that would hand $1 full credit
+# whenever $1 happened to be the largest spend in the room.
+RD_SPEND_TARGET_CONFIG_KEY = 'rd_spend_target'
+
+
+class InvalidScenarioConfiguration(ValueError):
+    """A scenario value scoring depends on is missing or unusable.
+
+    Raised rather than defaulted. A silent fallback would change what the
+    competition rewards without anyone deciding to, which is the failure mode
+    V2-021 was.
+    """
+
+
+def scenario_rd_spend_target(scenario):
+    """The R&D spend that earns full capability credit, or refuse to score."""
+    raw = get_config(scenario, RD_SPEND_TARGET_CONFIG_KEY, default=None)
+    if raw is None:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} has no '
+            f'{RD_SPEND_TARGET_CONFIG_KEY!r} configured; strategic capability '
+            f'cannot be scored without it')
+    target = D(str(raw))
+    if target <= 0:
+        raise InvalidScenarioConfiguration(
+            f'scenario {getattr(scenario, "id", scenario)} sets '
+            f'{RD_SPEND_TARGET_CONFIG_KEY}={target}; it must be greater than '
+            f'zero, because it is the denominator of the R&D capability score')
+    return target
+
 
 def _clamp01(value):
     return max(D('0'), min(D('1'), D(str(value))))
@@ -90,7 +127,7 @@ def _financial_component(context, team, max_revenue, max_abs_net_income):
     return _clamp01(revenue_score * D('0.40') + profit_score * D('0.40') + debt_score * D('0.20'))
 
 
-def _strategic_capability_component(team, current_round):
+def _strategic_capability_component(team, current_round, rd_spend_target):
     submission = (
         DecisionSubmission.objects
         .filter(team=team, round__round_number=current_round)
@@ -99,13 +136,12 @@ def _strategic_capability_component(team, current_round):
     if submission is None:
         return D('0.35')
 
-    rd_score = D('0')
-    if hasattr(submission, 'budget_allocation'):
-        rd_budget = D(str(submission.budget_allocation.rd_budget or 0))
-        rd_spend = sum(D(str(row.amount or 0))
-                       for row in submission.rd_investments.all().order_by(
-                           'team_platform__name', 'feature__code', 'method'))
-        rd_score = _ratio(rd_spend, rd_budget) if rd_budget > 0 else D('0')
+    # Scored against the scenario's target spend, not the team's own declared
+    # budget. Zero spend scores zero; spend at or above the target scores 1.
+    rd_spend = sum(D(str(row.amount or 0))
+                   for row in submission.rd_investments.all().order_by(
+                       'team_platform__name', 'feature__code', 'method'))
+    rd_score = _ratio(rd_spend, rd_spend_target)
 
     has_product_action = (
         submission.product_creates.exists()
@@ -157,58 +193,52 @@ def _execution_resilience_component(context, team, max_revenue, active_market_id
     return _clamp01(capacity_score - incident_penalty - cost_penalty)
 
 
-def _is_voluntarily_commercially_inactive(context, team, current_round):
-    """Return True when a team made no current-round commercial commitment.
+def material_revenue_floor(revenues):
+    """The revenue below which a team is not competing, for this round.
 
-    Zero revenue alone is not enough: a pre-revenue launch, compliance freeze,
-    or disruption can prevent sales despite real commercial decisions. The cap
-    applies only when revenue, production, promotion, distribution, and sales
-    staffing are all zero (or no marketing decision exists at all).
+    V2-022. The old test asked whether a team had *declared* production,
+    promotion, distribution or staffing. It tested intent, so setting
+    `production_volume = 1` escaped the composite cap for $181.86 — with
+    revenue of exactly zero, because nothing was sold. Declaring an intention
+    to produce is not competing.
+
+    The floor is one percent of the largest positive revenue in the round, and
+    never less than a dollar, so a cohort where nobody sells anything still
+    classifies everybody as inactive rather than dividing by zero.
     """
-    revenue = D(str(_team_financials(context, team).get('total_revenue', 0) or 0))
-    if revenue > 0:
-        return False
-
-    submission = (
-        DecisionSubmission.objects
-        .filter(team=team, round__round_number=current_round,
-                round__game=context.game)
-        .first()
-    )
-    if submission is None:
-        return True
-
-    marketing = list((submission.marketing_decisions.all()).order_by('team_product__name', 'market__code'))
-    if not marketing:
-        return True
-
-    return all(
-        D(str(row.production_volume or 0)) <= 0
-        and D(str(row.promotion_budget or 0)) <= 0
-        and D(str(row.distribution_investment or 0)) <= 0
-        and D(str(row.sales_team_count or 0)) <= 0
-        for row in marketing
-    )
+    positive = [D(str(value)) for value in revenues if D(str(value)) > 0]
+    highest = max(positive) if positive else D('0')
+    return max(D('1'), (highest * D('0.01')))
 
 
-def _enforce_zero_revenue_invariant(candidates):
-    """Keep a zero-revenue firm from outranking a firm that generated revenue.
+def is_commercially_inactive(revenue, floor):
+    """One classification, shared by the composite cap and the ranking guard.
 
-    The composite remains the explanatory score, but a strong non-financial
-    signal cannot recreate the Game 17 outcome where a firm with no sales
-    ranked first. Apply the guard to the accumulated index before persistence.
-    At the nonnegative PI floor, both values may be zero; the leaderboard's
-    revenue-aware tie-break then places the selling firm first.
+    Both controls express the same idea — a firm that did not compete must not
+    outrank one that did — and they used to test it differently: one on
+    declared decisions, the other on revenue being exactly zero. Two tests for
+    one idea is one test too many.
     """
-    positive_indexes = [
-        item['new_index'] for item in candidates if item['revenue'] > 0
+    return D(str(revenue or 0)) < floor
+
+
+def _enforce_inactive_revenue_invariant(candidates):
+    """Keep a commercially inactive firm from outranking one that competed.
+
+    Written against zero revenue until V2-022; it now uses the same
+    `commercially_inactive` classification the composite cap uses, so the two
+    controls cannot disagree about who was competing.
+    """
+    active_indexes = [
+        item['new_index'] for item in candidates
+        if not item['commercially_inactive']
     ]
-    if not positive_indexes:
+    if not active_indexes:
         return
 
-    ceiling = max(D('0'), min(positive_indexes) - D('0.01'))
+    ceiling = max(D('0'), min(active_indexes) - D('0.01'))
     for item in candidates:
-        if item['revenue'] <= 0 and item['new_index'] >= min(positive_indexes):
+        if item['commercially_inactive'] and item['new_index'] >= min(active_indexes):
             item['new_index'] = ceiling
             item['guard_applied'] = True
 
@@ -223,12 +253,15 @@ def calculate_performance_index(context):
     scenario = context.scenario
     current_round = context.round_number
     sensitivity = D(str(get_config(scenario, 'performance_index_sensitivity', default=20.0)))
+    # Fails closed: a scenario without a usable target is not scored at all.
+    rd_spend_target = scenario_rd_spend_target(scenario)
 
     all_segments = list((SegmentDefinition.objects.filter(scenario=scenario).select_related('market')).order_by('pk'))
     financials_by_team = getattr(context, 'financials', {}) or {}
     revenues = [D(str(values.get('total_revenue', 0) or 0)) for values in financials_by_team.values()]
     net_incomes = [abs(D(str(values.get('net_income', 0) or 0))) for values in financials_by_team.values()]
     max_revenue = max(revenues) if revenues else D('0')
+    revenue_floor = material_revenue_floor(revenues)
     max_abs_net_income = max(net_incomes) if net_incomes else D('0')
 
     candidates = []
@@ -245,7 +278,8 @@ def calculate_performance_index(context):
             {'investor', 'regulator', 'channel_partner', 'community'},
         )
         market_score = _market_component(context, team, customer_score, max_revenue)
-        capability_score = _strategic_capability_component(team, current_round)
+        capability_score = _strategic_capability_component(
+            team, current_round, rd_spend_target)
         financial_score = _financial_component(context, team, max_revenue, max_abs_net_income)
         stakeholder_score = _stakeholder_component(context, team, stakeholder_fit, active_market_ids)
         resilience_score = _execution_resilience_component(context, team, max_revenue, active_market_ids)
@@ -258,8 +292,8 @@ def calculate_performance_index(context):
             + resilience_score * PI_WEIGHTS['resilience']
         ).quantize(D('0.0001'), rounding=ROUND_HALF_UP)
 
-        commercially_inactive = _is_voluntarily_commercially_inactive(
-            context, team, current_round,
+        commercially_inactive = is_commercially_inactive(
+            _team_financials(context, team).get('total_revenue', 0), revenue_floor,
         )
         if commercially_inactive:
             composite_score = min(
@@ -288,7 +322,7 @@ def calculate_performance_index(context):
             'commercially_inactive': commercially_inactive,
         })
 
-    _enforce_zero_revenue_invariant(candidates)
+    _enforce_inactive_revenue_invariant(candidates)
 
     for item in candidates:
         team = item['team']
