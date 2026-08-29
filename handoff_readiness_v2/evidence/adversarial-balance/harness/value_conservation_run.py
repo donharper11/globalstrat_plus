@@ -68,6 +68,20 @@ def main():
         if bad:
             raise SystemExit(f'inventory does not verify: {bad}')
 
+        contract = report['fixture_contract']
+        if not report['fixture_contract_holds']:
+            missing = [f for f, v in contract.items() if not v['reachable']]
+            raise SystemExit(
+                f"REFUSED: the fixture scenario '{report['scenario']}' cannot "
+                f"express these decision families, so a probe against it "
+                f"would measure the fixture rather than the product: "
+                f"{missing}")
+
+        print(f"\nscenario    : {report['scenario']} (id {report['scenario_id']})")
+        print("fixture contract:")
+        for family, v in contract.items():
+            print(f"  {family:<16} {v['model']:<28} rows {v['rows']:>3}  "
+                  f"reachable {v['reachable']}")
         print(f"\nsubject     : {report['subject_team']}")
         print(f"scenario    : {report['scenario_supports']}")
         print(f"evaluations : {report['evaluations']} in "

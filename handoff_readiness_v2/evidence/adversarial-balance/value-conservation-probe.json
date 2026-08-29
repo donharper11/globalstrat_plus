@@ -2,139 +2,10 @@
   "all_mutations_reached_their_row": true,
   "arms": {
     "fx_no_exposure_max_hedge": {
-      "creates_value": false,
-      "delta_vs_control": {
-        "1": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        },
-        "2": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        },
-        "3": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        }
-      },
-      "ledger": {
-        "1": {
-          "cash_closing": "14120000.00",
-          "cash_plus_inventory": "14120000.00",
-          "inventory_value": "0.00",
-          "net_income": "-14380000.00",
-          "operating_income": "-13900000.00",
-          "strategy_expense": "5100000.00",
-          "total_revenue": "0.00"
-        },
-        "2": {
-          "cash_closing": "-31410000.00",
-          "cash_plus_inventory": "-31410000.00",
-          "inventory_value": "0.00",
-          "net_income": "-17180000.00",
-          "operating_income": "-16700000.00",
-          "strategy_expense": "4850000.00",
-          "total_revenue": "0.00"
-        },
-        "3": {
-          "cash_closing": "-77190000.00",
-          "cash_plus_inventory": "-77190000.00",
-          "inventory_value": "0.00",
-          "net_income": "-20265000.00",
-          "operating_income": "-19785000.00",
-          "strategy_expense": "5100000.00",
-          "total_revenue": "0.00"
-        }
-      },
-      "proof": {
-        "hedge_ratio": 100,
-        "reached_row": true
-      },
-      "why": "largest legal hedge on a pair with no underlying exposure; must not create cash or income from nothing"
+      "unexercisable": "the subject sells only in its home currency (USD), so it has no foreign exposure and every hedge is skipped by design. The FX mechanism cannot be exercised for this team in this fixture and is not claimed as passing."
     },
     "fx_two_pairs_one_exposure": {
-      "creates_value": false,
-      "delta_vs_control": {
-        "1": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        },
-        "2": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        },
-        "3": {
-          "cash_closing": "0.00",
-          "cash_plus_inventory": "0.00",
-          "inventory_value": "0.00",
-          "net_income": "0.00",
-          "operating_income": "0.00",
-          "strategy_expense": "0.00",
-          "total_revenue": "0.00"
-        }
-      },
-      "ledger": {
-        "1": {
-          "cash_closing": "14120000.00",
-          "cash_plus_inventory": "14120000.00",
-          "inventory_value": "0.00",
-          "net_income": "-14380000.00",
-          "operating_income": "-13900000.00",
-          "strategy_expense": "5100000.00",
-          "total_revenue": "0.00"
-        },
-        "2": {
-          "cash_closing": "-31410000.00",
-          "cash_plus_inventory": "-31410000.00",
-          "inventory_value": "0.00",
-          "net_income": "-17180000.00",
-          "operating_income": "-16700000.00",
-          "strategy_expense": "4850000.00",
-          "total_revenue": "0.00"
-        },
-        "3": {
-          "cash_closing": "-77190000.00",
-          "cash_plus_inventory": "-77190000.00",
-          "inventory_value": "0.00",
-          "net_income": "-20265000.00",
-          "operating_income": "-19785000.00",
-          "strategy_expense": "5100000.00",
-          "total_revenue": "0.00"
-        }
-      },
-      "proof": {
-        "pairs": [
-          "EUR_GBP",
-          "EUR_USD"
-        ],
-        "reached_row": true
-      },
-      "why": "positions are keyed per currency pair while exposure is looked up per foreign currency, so two pairs sharing a currency each open a full-notional hedge against the same exposure"
+      "unexercisable": "the subject sells only in its home currency (USD), so it has no foreign exposure and every hedge is skipped by design. The FX mechanism cannot be exercised for this team in this fixture and is not claimed as passing."
     },
     "inventory_build_carry_no_sales": {
       "creates_value": false,
@@ -210,7 +81,7 @@
     }
   },
   "arms_creating_value": [],
-  "code_revision": "66f4eb0e0b31603d3c53c12bb346892a7660a22e",
+  "code_revision": "e1705bcf3bba1fa84bde392300f50a149d104158",
   "control": {
     "ledger": {
       "1": {
@@ -243,8 +114,8 @@
     },
     "proof": {}
   },
-  "elapsed_seconds": 68.8,
-  "evaluations": 4,
+  "elapsed_seconds": 35.2,
+  "evaluations": 2,
   "field_inventory": {
     "fx": {
       "engine_effect": "fx_engine.process_fx_hedges opens a short position sized exposure x hedge_ratio/100, charges a premium of fx_hedge_premium_bps on the notional immediately, marks to market each round and books realised P&L at maturity into context.sc_fx_hedge_pnl, which financials adds to pre-tax income. A hedge is skipped entirely when exposure <= 0.",
@@ -285,14 +156,22 @@
     }
   },
   "identity": 985805,
+  "inconclusive_arms": [],
   "rounds": 3,
   "scenario_supports": {
+    "foreign_currencies": [],
+    "home_currency": "USD",
+    "subject_currencies": [
+      "USD"
+    ],
     "suppliers": 0,
     "trade_finance_instruments": 0
   },
   "seed": "crv2-06-value-conservation",
-  "subject_team": "Cobalt Energy Solutions",
+  "subject_team": "Solaris Power",
   "unexercisable_arms": [
+    "fx_no_exposure_max_hedge",
+    "fx_two_pairs_one_exposure",
     "sourcing_commitment_zero_production",
     "trade_finance_instrument_cycled"
   ]

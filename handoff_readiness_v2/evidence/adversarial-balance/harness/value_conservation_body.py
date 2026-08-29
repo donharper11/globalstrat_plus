@@ -19,6 +19,7 @@ from django.utils import timezone
 
 import counterfactual as CF
 import fixture as F
+import fixture_contract as FC
 import search_body as S
 
 SEED = 'crv2-06-value-conservation'
@@ -32,7 +33,19 @@ def run(verbose=True):
     if not DjangoUser.objects.filter(is_superuser=True).exists():
         DjangoUser.objects.create_superuser('value-cons', 'a@e.com', 'x')
     call_command('load_all_scenarios', verbosity=0)
-    call_command('setup_test_game', verbosity=0)
+
+    # Choose a scenario that can actually express the families under test,
+    # through the loader and the project's own fixture builder rather than by
+    # copying YAML values here. Selecting the first available scenario is what
+    # made trade finance and sourcing look unexercisable when the authoritative
+    # consumer-electronics scenario declares both.
+    from core.models import Scenario
+    wanted = ('sourcing', 'trade_finance', 'compliance', 'logistics')
+    chosen, contract_status = FC.scenario_supporting(wanted)
+    if chosen is None:
+        chosen = Scenario.objects.order_by('id').first()
+    call_command('setup_test_game', '--scenario', str(chosen.id),
+                 verbosity=0)
 
     from core.models import (DecisionSubmission, Game, Round, Team,
                              TradeFinanceInstrument)
@@ -119,6 +132,11 @@ def run(verbose=True):
 
     report = {
         'seed': SEED,
+        'scenario': chosen.name,
+        'scenario_id': chosen.id,
+        'fixture_contract': FC.check(chosen),
+        'fixture_contract_holds': all(
+            v['reachable'] for v in FC.check(chosen).values()),
         'identity': F.identity_for(SEED),
         'subject_team': subject.name,
         'rounds': ROUNDS,
