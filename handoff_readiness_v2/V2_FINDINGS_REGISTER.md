@@ -280,19 +280,40 @@ serializer and could not instantiate this one. It is recorded as its own
 finding rather than folded into V2-026: a routed endpoint that always raises is
 not a disclosure defect.
 
-**A separate question, not registered as a finding.** The scenario supplier,
-lane, instrument and compliance catalogue endpoints carry no permission class
-beyond authentication and no round gate, so they list at round 1. Whether a
-catalogue for a later-unlocking mechanic should itself be gated is a rules
-question about teaching sequence rather than a competitive exploit, and it is
-recorded rather than filed.
+**Catalogue visibility — adopted rule, not an open question.** Scenario
+supplier, lane, trade-finance-instrument and compliance catalogues are
+authenticated scenario reference data, available from round 1. Progressive
+disclosure governs team decision *fields* and stored team decision *values*, not
+the existence or contents of shared scenario catalogues. Catalogue visibility is
+symmetric across competitors and carries no team-specific decision value, so it
+is not a disclosure surface. This is the adopted rule; it is not a limitation
+and not an unresolved question.
 
-**One mechanism could not be exercised in this scenario.**
-`trade_finance.buyer_payment_instrument` was the first choice of probe field.
-Its write serializer validates the value against the scenario's trade-finance
-instrument catalogue, and this scenario declares no instruments, so the field
-has no legal value. The probe refused rather than reporting a vacuous pass, and
-the field was replaced with `inventory.buffer_days`.
+**Probe field selection, and a fixture correction.**
+`trade_finance.buyer_payment_instrument` was the first choice of disclosure
+probe field. Its write serializer validates against the scenario's
+trade-finance instrument catalogue, and the fixture then in use declared no
+instruments, so the probe refused rather than reporting a vacuous pass and the
+field was replaced with `inventory.buffer_days`.
+
+That empty catalogue was a **fixture-selection defect, not a property of the
+authoritative scenario**, and an earlier version of this register said otherwise.
+`setup_test_game` takes the first available scenario when none is named —
+`clean_energy_tech_2026`, which declares neither instruments nor suppliers —
+while `consumer_electronics_2026` declares both and `load_scenario` creates
+them. Loaded through the authoritative definition, the capable fixture reports
+**6 trade-finance instruments, 25 suppliers, 20 shipping lanes and 5 compliance
+regimes** (`value-conservation-probe.json`, fixture contract). Every claim that
+the authoritative scenario lacks trade-finance instruments is withdrawn.
+
+**Trade finance was exercised, and conserves value.** On that capable fixture
+the instrument was cycled with the trade held constant, `letter_of_credit`
+proved persisted on the intended row: cash and cash-plus-inventory move **0.00
+in every round** against a matched control. Fees, coverage and settlement
+duplicate no proceeds and turn no cost into income. `fixture_contract.py` now
+asserts before any measurement that every decision family a probe claims has at
+least one legal value, so a fixture that cannot express a mechanism says so
+before it measures rather than after.
 
 | V2-027 | Balance / early-lead lock-in | **Withdrawn permanently — measured, no lock-in** | GSP-CRV2-06 coverage rework | Two rounds of front-loaded legal investment produce a lead that does not erode and that a later identical investment cannot close. The subject front-loads rounds 1-2, then plays the documented baseline: its margin over the field goes 0.91, 2.59 while investing, then **10.36, 10.35, 10.33** after it stops. In a second playthrough an opponent front-loads in rounds 3-4 instead; its own index **falls** 59.26 → 53.80 → 48.80 while investing, and the gap widens from 2.59 to **17.78**, settling at 17.72. The gap never closes: measured drift after the challenger stops is **-0.03 per round**, which is **590.7 rounds** to close in a game of ten. | `early-lead-probe.json`. Two forward playthroughs, one disposable database each, six rounds, four teams, `Consumer Electronics 2026`. | **Withdrawn permanently.** Measured under controlled conditions: the lead erodes unaided and the strongest legal counter reverses it. |
 
