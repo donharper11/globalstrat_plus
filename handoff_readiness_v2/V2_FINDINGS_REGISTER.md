@@ -233,6 +233,36 @@ filtered on team and market and took `.first()` from a table unique per segment,
 printing a fit that did not move when price moved -- in a run whose entire
 subject is what moves when price moves.
 
+## New findings raised by the GSP-CRV2-06 coverage probes
+
+| ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
+|---|---|---:|---|---|---|---|
+| V2-026 | Progressive disclosure / read surfaces | **P3** | GSP-CRV2-06 coverage rework | Write serializers consult `get_effective_unlock_round`; the SC read serializers use `fields = '__all__'` and never do. A value legally written while an instructor override was in force remains readable after the override is removed, in a round where the field is locked: `inventory.buffer_days` (unlock round 3) was returned at round 1 by `sc/round/1/inventory/` in both its list and direct round-object forms. | `progressive-disclosure-probe.json`. Real student walkthrough with a signed JWT; positive control 200; write refused at 400 before unlock and accepted at 201 under override; value 4242 persisted and read back. | **Open — rules/product decision.** |
+
+**Bounds, stated so the severity is not read as larger than it is.** The value
+is the team's *own* decision, not another team's: no cross-team leakage was
+demonstrated and none is claimed. The write gate holds, so without an
+instructor lowering and then restoring the unlock round there is no value in a
+locked round to leak at all -- the exposure needs a deliberate instructor
+action, or another path that persists rows (import, admin, restore). Six of the
+eight probed surfaces returned nothing. Class isolation holds: another game's
+override does not unlock this one. After unlock the same student reads it, as
+intended. That is why this is P3 and not higher.
+
+**A separate question, not registered as a finding.** The scenario supplier,
+lane, instrument and compliance catalogue endpoints carry no permission class
+beyond authentication and no round gate, so they list at round 1. Whether a
+catalogue for a later-unlocking mechanic should itself be gated is a rules
+question about teaching sequence rather than a competitive exploit, and it is
+recorded rather than filed.
+
+**One mechanism could not be exercised in this scenario.**
+`trade_finance.buyer_payment_instrument` was the first choice of probe field.
+Its write serializer validates the value against the scenario's trade-finance
+instrument catalogue, and this scenario declares no instruments, so the field
+has no legal value. The probe refused rather than reporting a vacuous pass, and
+the field was replaced with `inventory.buffer_days`.
+
 ## New findings raised by the GSP-CRV2-06 Stage 3 tournament
 
 Measured by the bounded adversarial tournament at `stage3-tournament.json`:
