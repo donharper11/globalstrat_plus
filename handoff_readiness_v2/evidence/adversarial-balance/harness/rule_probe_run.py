@@ -61,21 +61,26 @@ def main():
 
         cap = report['capability_ratio']
         one = report['one_unit_bypass']
-        print('\n--- A. $1 R&D budget ---')
-        print(f"  control index {cap['control']['index_value']} "
-              f"score {cap['control']['satisfaction_score']}")
-        print(f"  probe   index {cap['probe']['index_value']} "
-              f"score {cap['probe']['satisfaction_score']}")
+        print(f"\nbaseline repeatable: {report['baseline_is_repeatable']}")
+        print('\n--- A. $1 R&D budget / $1 R&D spend ---')
+        print(f"  {cap['question']}")
+        print(f"  baseline index {cap['baseline']['index_value']} "
+              f"score {cap['baseline']['satisfaction_score']} "
+              f"net {cap['baseline']['net_income']}")
+        print(f"  probe    index {cap['probe']['index_value']} "
+              f"score {cap['probe']['satisfaction_score']} "
+              f"net {cap['probe']['net_income']}")
+        print(f"  delta    index {cap['delta']['index_value']} "
+              f"score {cap['delta']['satisfaction_score']} "
+              f"net {cap['delta']['net_income']}")
         print('\n--- B. one unit of revenue ---')
-        print(f"  silent      revenue {one['silent']['total_revenue']} "
-              f"index {one['silent']['index_value']} "
-              f"score {one['silent']['satisfaction_score']}")
-        print(f"  one-unit    revenue {one['one_unit_seller']['total_revenue']} "
-              f"index {one['one_unit_seller']['index_value']} "
-              f"score {one['one_unit_seller']['satisfaction_score']}")
-        for name, row in one['other_teams'].items():
-            print(f"  {name[:20]:22} revenue {row['total_revenue']} "
+        print(f"  {one['question']}")
+        for label in ('silent', 'one_unit'):
+            row = one[label]
+            print(f"  {label:9} revenue {row['total_revenue']} "
                   f"index {row['index_value']} score {row['satisfaction_score']}")
+        print(f"  delta     index {one['delta_one_unit_vs_silent']['index_value']} "
+              f"score {one['delta_one_unit_vs_silent']['satisfaction_score']}")
         print(f"\nwrote {EVIDENCE / 'rule-probes.json'}")
         return 0
     finally:
