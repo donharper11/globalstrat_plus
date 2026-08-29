@@ -93,6 +93,22 @@ def run(verbose=True):
         },
     }
 
+    # Which currencies does the subject actually earn in? A hedge is skipped
+    # entirely when exposure <= 0, so hedging a currency the team never sells
+    # in measures the skip, not the hedge. The first run of this probe did
+    # exactly that -- production was pinned at zero, so there was no exposure
+    # in any currency and both FX arms reported a flat zero that proved
+    # nothing about double-hedging.
+    from core.models.team_state import TeamProductMarket
+    sold_markets = list(MarketDefinition.objects.filter(
+        id__in=TeamProductMarket.objects.filter(
+            team_product__team=subject, is_active=True
+        ).values_list('market_id', flat=True)))
+    subject_currencies = sorted({m.currency_code for m in sold_markets})
+    home_currency = (subject.home_market.currency_code
+                     if subject.home_market else None)
+    foreign_currencies = [c for c in subject_currencies if c != home_currency]
+
     instruments = list(TradeFinanceInstrument.objects.filter(
         scenario=game.scenario).values_list('instrument_id', flat=True))
     suppliers = list(Supplier.objects.filter(scenario=game.scenario)[:2])
@@ -110,6 +126,9 @@ def run(verbose=True):
         'scenario_supports': {
             'trade_finance_instruments': len(instruments),
             'suppliers': len(suppliers),
+            'subject_currencies': subject_currencies,
+            'home_currency': home_currency,
+            'foreign_currencies': foreign_currencies,
         },
         'arms': {},
         'evaluations': 0,
@@ -207,40 +226,73 @@ def run(verbose=True):
                   flush=True)
         return result
 
-    # ---- FX: hedge with no underlying exposure --------------------------
-    def fx_no_exposure(rnd, submission, team):
-        FXHedgeDecision.objects.update_or_create(
-            team=team, round=rnd, currency_pair='ZZZ_USD',
-            defaults={'hedge_ratio': 100, 'tenor_days': 90})
+    # ---- FX arms, only where the subject has real exposure --------------
+    from core.models.sc_state import HedgePosition
 
-    def fx_prove(rnd):
-        row = FXHedgeDecision.objects.filter(
-            team=subject, round=rnd, currency_pair='ZZZ_USD').first()
-        return {'reached_row': row is not None,
-                'hedge_ratio': getattr(row, 'hedge_ratio', None)}
+    def hedge_engagement(rnd):
+        return HedgePosition.objects.filter(
+            team=subject, opened_round=rnd).count()
 
-    arm('fx_no_exposure_max_hedge', fx_no_exposure, fx_prove,
-        why='largest legal hedge on a pair with no underlying exposure; must '
-            'not create cash or income from nothing')
+    if foreign_currencies:
+        hedged = foreign_currencies[0]
+        pair_a = f'{hedged}_{home_currency}'
+        second_market = next(
+            (m for m in sold_markets
+             if m.currency_code == hedged), None)
 
-    # ---- FX: two pairs against one exposure -----------------------------
-    def fx_double(rnd, submission, team):
-        for pair in ('EUR_USD', 'EUR_GBP'):
+        def fx_no_exposure(rnd, submission, team):
+            # A currency the team demonstrably does not trade in.
             FXHedgeDecision.objects.update_or_create(
-                team=team, round=rnd, currency_pair=pair,
+                team=team, round=rnd, currency_pair='ZZZ_USD',
                 defaults={'hedge_ratio': 100, 'tenor_days': 90})
 
-    def fx_double_prove(rnd):
-        rows = FXHedgeDecision.objects.filter(
-            team=subject, round=rnd,
-            currency_pair__in=('EUR_USD', 'EUR_GBP'))
-        return {'reached_row': rows.count() == 2,
-                'pairs': sorted(r.currency_pair for r in rows)}
+        def fx_prove(rnd):
+            row = FXHedgeDecision.objects.filter(
+                team=subject, round=rnd, currency_pair='ZZZ_USD').first()
+            return {'reached_row': row is not None,
+                    'hedge_ratio': getattr(row, 'hedge_ratio', None),
+                    'positions_opened': hedge_engagement(rnd),
+                    'mechanism_engaged': False}
 
-    arm('fx_two_pairs_one_exposure', fx_double, fx_double_prove,
-        why='positions are keyed per currency pair while exposure is looked '
-            'up per foreign currency, so two pairs sharing a currency each '
-            'open a full-notional hedge against the same exposure')
+        arm('fx_no_exposure_max_hedge', fx_no_exposure, fx_prove,
+            production_volume=20000,
+            why='largest legal hedge on a currency the team does not trade '
+                'in, with sales running so exposure exists elsewhere; the '
+                'engine must skip it and it must not create cash from nothing')
+
+        def fx_double(rnd, submission, team):
+            for pair in (pair_a, f'{hedged}_XXX'):
+                FXHedgeDecision.objects.update_or_create(
+                    team=team, round=rnd, currency_pair=pair,
+                    defaults={'hedge_ratio': 100, 'tenor_days': 90})
+
+        def fx_double_prove(rnd):
+            rows = list(FXHedgeDecision.objects.filter(
+                team=subject, round=rnd,
+                currency_pair__in=(pair_a, f'{hedged}_XXX')))
+            opened = hedge_engagement(rnd)
+            return {'reached_row': len(rows) == 2,
+                    'pairs': sorted(r.currency_pair for r in rows),
+                    'positions_opened': opened,
+                    'mechanism_engaged': opened > 0,
+                    'double_hedged': opened >= 2}
+
+        arm('fx_two_pairs_one_exposure', fx_double, fx_double_prove,
+            production_volume=20000,
+            why=f'two pairs both naming {hedged} as the foreign currency. '
+                f'Positions are keyed per currency pair while exposure is '
+                f'looked up per foreign currency, so each opens a '
+                f'full-notional hedge against the same underlying exposure')
+    else:
+        for name in ('fx_no_exposure_max_hedge', 'fx_two_pairs_one_exposure'):
+            report['arms'][name] = {
+                'unexercisable': (
+                    'the subject sells only in its home currency '
+                    f'({home_currency}), so it has no foreign exposure and '
+                    'every hedge is skipped by design. The FX mechanism '
+                    'cannot be exercised for this team in this fixture and is '
+                    'not claimed as passing.'),
+            }
 
     # ---- Sourcing: allocation varied with production and sales at zero ---
     if suppliers:
@@ -319,6 +371,12 @@ def run(verbose=True):
                 'passing.'),
         }
 
+    # An arm whose mechanism never engaged has not tested it. Recorded so a
+    # skipped hedge cannot be read as a hedge that behaved.
+    report['inconclusive_arms'] = [
+        name for name, a in report['arms'].items()
+        if 'proof' in a and a['proof'].get('mechanism_engaged') is False
+        and name != 'fx_no_exposure_max_hedge']
     report['arms_creating_value'] = [
         name for name, arm_result in report['arms'].items()
         if arm_result.get('creates_value')]

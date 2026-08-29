@@ -92,6 +92,7 @@ def main():
                       f"{d.get('inventory_value'):>14}  cash+inv "
                       f"{d.get('cash_plus_inventory'):>16}")
         print(f"\narms creating value : {report['arms_creating_value']}")
+        print(f"inconclusive arms   : {report['inconclusive_arms']}")
         print(f"unexercisable arms  : {report['unexercisable_arms']}")
         print(f"\nwrote {EVIDENCE / 'value-conservation-probe.json'}")
         print(f"inventory: {len(listed)} artifacts, verified")

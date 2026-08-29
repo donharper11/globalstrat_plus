@@ -1,0 +1,299 @@
+{
+  "all_mutations_reached_their_row": true,
+  "arms": {
+    "fx_no_exposure_max_hedge": {
+      "creates_value": false,
+      "delta_vs_control": {
+        "1": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "ledger": {
+        "1": {
+          "cash_closing": "14120000.00",
+          "cash_plus_inventory": "14120000.00",
+          "inventory_value": "0.00",
+          "net_income": "-14380000.00",
+          "operating_income": "-13900000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "-31410000.00",
+          "cash_plus_inventory": "-31410000.00",
+          "inventory_value": "0.00",
+          "net_income": "-17180000.00",
+          "operating_income": "-16700000.00",
+          "strategy_expense": "4850000.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "-77190000.00",
+          "cash_plus_inventory": "-77190000.00",
+          "inventory_value": "0.00",
+          "net_income": "-20265000.00",
+          "operating_income": "-19785000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "proof": {
+        "hedge_ratio": 100,
+        "reached_row": true
+      },
+      "why": "largest legal hedge on a pair with no underlying exposure; must not create cash or income from nothing"
+    },
+    "fx_two_pairs_one_exposure": {
+      "creates_value": false,
+      "delta_vs_control": {
+        "1": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "0.00",
+          "cash_plus_inventory": "0.00",
+          "inventory_value": "0.00",
+          "net_income": "0.00",
+          "operating_income": "0.00",
+          "strategy_expense": "0.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "ledger": {
+        "1": {
+          "cash_closing": "14120000.00",
+          "cash_plus_inventory": "14120000.00",
+          "inventory_value": "0.00",
+          "net_income": "-14380000.00",
+          "operating_income": "-13900000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        },
+        "2": {
+          "cash_closing": "-31410000.00",
+          "cash_plus_inventory": "-31410000.00",
+          "inventory_value": "0.00",
+          "net_income": "-17180000.00",
+          "operating_income": "-16700000.00",
+          "strategy_expense": "4850000.00",
+          "total_revenue": "0.00"
+        },
+        "3": {
+          "cash_closing": "-77190000.00",
+          "cash_plus_inventory": "-77190000.00",
+          "inventory_value": "0.00",
+          "net_income": "-20265000.00",
+          "operating_income": "-19785000.00",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "0.00"
+        }
+      },
+      "proof": {
+        "pairs": [
+          "EUR_GBP",
+          "EUR_USD"
+        ],
+        "reached_row": true
+      },
+      "why": "positions are keyed per currency pair while exposure is looked up per foreign currency, so two pairs sharing a currency each open a full-notional hedge against the same exposure"
+    },
+    "inventory_build_carry_no_sales": {
+      "creates_value": false,
+      "delta_vs_control": {
+        "1": {
+          "cash_closing": "-12807545.88",
+          "cash_plus_inventory": "-6351535.09",
+          "inventory_value": "6456010.79",
+          "net_income": "-6351535.09",
+          "operating_income": "-6351535.09",
+          "strategy_expense": "0.00",
+          "total_revenue": "942335.52"
+        },
+        "2": {
+          "cash_closing": "-21838544.14",
+          "cash_plus_inventory": "-15490402.15",
+          "inventory_value": "6348141.99",
+          "net_income": "-9138867.06",
+          "operating_income": "-9138867.06",
+          "strategy_expense": "0.00",
+          "total_revenue": "2617203.16"
+        },
+        "3": {
+          "cash_closing": "-26477946.36",
+          "cash_plus_inventory": "-22105950.58",
+          "inventory_value": "4371995.78",
+          "net_income": "-6615548.43",
+          "operating_income": "-6615548.43",
+          "strategy_expense": "0.00",
+          "total_revenue": "2742064.14"
+        }
+      },
+      "ledger": {
+        "1": {
+          "cash_closing": "1312454.12",
+          "cash_plus_inventory": "7768464.91",
+          "inventory_value": "6456010.79",
+          "net_income": "-20731535.09",
+          "operating_income": "-20251535.09",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "942335.52"
+        },
+        "2": {
+          "cash_closing": "-53248544.14",
+          "cash_plus_inventory": "-46900402.15",
+          "inventory_value": "6348141.99",
+          "net_income": "-26318867.06",
+          "operating_income": "-25838867.06",
+          "strategy_expense": "4850000.00",
+          "total_revenue": "2617203.16"
+        },
+        "3": {
+          "cash_closing": "-103667946.36",
+          "cash_plus_inventory": "-99295950.58",
+          "inventory_value": "4371995.78",
+          "net_income": "-26880548.43",
+          "operating_income": "-26400548.43",
+          "strategy_expense": "5100000.00",
+          "total_revenue": "2742064.14"
+        }
+      },
+      "proof": {
+        "buffer_days": 180,
+        "reached_row": true
+      },
+      "why": "build and carry stock across rounds with sales at zero; closing cash plus inventory value must not rise without an external inflow, and the same stock must not be monetised twice"
+    },
+    "sourcing_commitment_zero_production": {
+      "unexercisable": "the scenario declares no suppliers"
+    },
+    "trade_finance_instrument_cycled": {
+      "unexercisable": "the scenario declares no TradeFinanceInstrument rows, so buyer_payment_instrument has no legal value: the write serializer validates against that catalogue. The mechanism cannot be exercised in this scenario and is not claimed as passing."
+    }
+  },
+  "arms_creating_value": [],
+  "code_revision": "66f4eb0e0b31603d3c53c12bb346892a7660a22e",
+  "control": {
+    "ledger": {
+      "1": {
+        "cash_closing": "14120000.00",
+        "cash_plus_inventory": "14120000.00",
+        "inventory_value": "0.00",
+        "net_income": "-14380000.00",
+        "operating_income": "-13900000.00",
+        "strategy_expense": "5100000.00",
+        "total_revenue": "0.00"
+      },
+      "2": {
+        "cash_closing": "-31410000.00",
+        "cash_plus_inventory": "-31410000.00",
+        "inventory_value": "0.00",
+        "net_income": "-17180000.00",
+        "operating_income": "-16700000.00",
+        "strategy_expense": "4850000.00",
+        "total_revenue": "0.00"
+      },
+      "3": {
+        "cash_closing": "-77190000.00",
+        "cash_plus_inventory": "-77190000.00",
+        "inventory_value": "0.00",
+        "net_income": "-20265000.00",
+        "operating_income": "-19785000.00",
+        "strategy_expense": "5100000.00",
+        "total_revenue": "0.00"
+      }
+    },
+    "proof": {}
+  },
+  "elapsed_seconds": 68.8,
+  "evaluations": 4,
+  "field_inventory": {
+    "fx": {
+      "engine_effect": "fx_engine.process_fx_hedges opens a short position sized exposure x hedge_ratio/100, charges a premium of fx_hedge_premium_bps on the notional immediately, marks to market each round and books realised P&L at maturity into context.sc_fx_hedge_pnl, which financials adds to pre-tax income. A hedge is skipped entirely when exposure <= 0.",
+      "fields": [
+        "currency_pair",
+        "hedge_ratio",
+        "tenor_days"
+      ],
+      "model": "FXHedgeDecision"
+    },
+    "inventory": {
+      "engine_effect": "costs.calculate_inventory_costs values unsold units at unit_cost and charges holding cost at inventory_holding_cost_pct; financials carries inventory_value on the balance sheet and treats the change as a working-capital movement in operating cash flow.",
+      "fields": [
+        "buffer_days",
+        "safety_stock_trigger_pct"
+      ],
+      "model": "InventoryDecision"
+    },
+    "sourcing": {
+      "engine_effect": "sc_engine consumes allocations for disruption exposure and books disruption/mitigation cost into context.sc_disruption_costs, an operating expense.",
+      "fields": [
+        "critical_input_category",
+        "supplier",
+        "allocation_pct",
+        "volume_commitment_units",
+        "payment_terms"
+      ],
+      "model": "SourcingAllocation"
+    },
+    "trade_finance": {
+      "engine_effect": "buyer_payment_instrument is validated against the scenario TradeFinanceInstrument catalogue.",
+      "fields": [
+        "buyer_payment_instrument",
+        "lc_doc_prep_investment",
+        "coverage_pct"
+      ],
+      "model": "TradeFinanceDecision / SinosureEnrollment"
+    }
+  },
+  "identity": 985805,
+  "rounds": 3,
+  "scenario_supports": {
+    "suppliers": 0,
+    "trade_finance_instruments": 0
+  },
+  "seed": "crv2-06-value-conservation",
+  "subject_team": "Cobalt Energy Solutions",
+  "unexercisable_arms": [
+    "sourcing_commitment_zero_production",
+    "trade_finance_instrument_cycled"
+  ]
+}
