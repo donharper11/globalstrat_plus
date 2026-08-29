@@ -109,7 +109,14 @@ def disposable_stack(label, seed=True):
             preexec_fn=os.setsid)
         base = f'http://127.0.0.1:{port}'
         wait_for(f'{base}/api/auth/login/')
-        print(f'Stack up on {base} (pid {process.pid}, 3 sync workers)',
+        # Read the worker count from the config rather than asserting it: the
+        # message said "3 sync workers" for a run that had 17, which is the
+        # kind of caption that quietly misdescribes evidence.
+        conf = (BACKEND / 'gunicorn.conf.py').read_text()
+        workers = next((line.split('=')[1].strip()
+                        for line in conf.splitlines()
+                        if line.startswith('workers')), '?')
+        print(f'Stack up on {base} (pid {process.pid}, {workers} sync workers)',
               flush=True)
         yield base, database, seeded
     finally:

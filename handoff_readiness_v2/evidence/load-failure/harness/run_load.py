@@ -134,6 +134,12 @@ def main():
     print(f"latency ms      : p50 {lat['p50']}  p95 {lat['p95']}  "
           f"p99 {lat['p99']}  max {lat['max']}")
     print(f"per-kind p95    : {result['per_kind_p95']}")
+    print(f"per-kind max    : {result['per_kind_max']}")
+    print(f"per-phase p95   : {result['per_phase_p95']}")
+    print(f"slowest 8       :")
+    for row in result['slowest_requests'][:8]:
+        print(f"    {row['ms']:>9.1f} ms  {row['kind']:<8} {row['phase']:<13} "
+              f"at {row['seconds_into_run']:>6.1f}s  status {row['status']}")
     print(f"status          : {result['status_distribution']}")
     print(f"errors          : {result['transport_failures']} transport, "
           f"{result['server_errors']} 5xx  -> {result['error_rate_pct']}%")

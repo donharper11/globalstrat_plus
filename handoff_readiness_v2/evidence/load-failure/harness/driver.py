@@ -63,14 +63,19 @@ class Session:
         self.game_id = game_id
         self.round_number = round_number
         self.token = None
+        self.phase = 'steady'
         self.samples = []
         self.acknowledged_writes = []
         self.refused_writes = []
         self.login_failed = None
 
     def record(self, kind, result):
+        # `at` is seconds since the profile began, so a slow request can be
+        # placed against what else was happening -- the final-minute burst in
+        # particular. A max with no timestamp cannot be diagnosed.
         self.samples.append({'kind': kind, 'status': result['status'],
-                             'ms': result['ms'],
+                             'ms': result['ms'], 'at': time.time(),
+                             'phase': self.phase,
                              'error': result.get('error')})
 
     def login(self):
@@ -144,6 +149,7 @@ class Session:
         # Final-minute traffic: every session writes hard at the deadline, and
         # one member per team attempts the lock, which is what actually happens
         # in the last sixty seconds of a round.
+        self.phase = 'final-minute'
         for _ in range(final_minute_writes):
             sequence += 1
             self.save(sequence)
@@ -222,7 +228,25 @@ def run_profile(base, identities, game_id, round_number, duration,
                             if s['status'] is not None
                             and 400 <= s['status'] < 500)
 
+    slowest = sorted(interactive, key=lambda x: -x['ms'])[:15]
+    origin = min((s['at'] for s in samples), default=0)
     return {
+        'slowest_requests': [
+            {'kind': s['kind'], 'ms': round(s['ms'], 1),
+             'status': s['status'], 'phase': s['phase'],
+             'seconds_into_run': round(s['at'] - origin, 1)}
+            for s in slowest],
+        'per_kind_max': {
+            kind: round(max((x['ms'] for x in interactive
+                             if x['kind'] == kind), default=0), 1)
+            for kind in ('refresh', 'save', 'lock')},
+        'per_phase_p95': {
+            phase: round(sorted(x['ms'] for x in interactive
+                                if x['phase'] == phase)[
+                max(0, int(round(0.95 * len([x for x in interactive
+                                             if x['phase'] == phase]))) - 1)], 1)
+            for phase in ('steady', 'final-minute')
+            if any(x['phase'] == phase for x in interactive)},
         'db_connection_samples': len(connection_samples),
         'db_connections_peak': max(connection_samples) if connection_samples else None,
         'db_connections_mean': (round(sum(connection_samples)

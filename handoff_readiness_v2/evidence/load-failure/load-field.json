@@ -1,7 +1,7 @@
 {
-  "code_revision": "b07835d5b05f58503e47aa7680542b8a1f6e2920",
+  "code_revision": "d3347ef373d965f9f48bcf30fe935a18d2b8a2bc",
   "database": {
-    "commits": 120846,
+    "commits": 322804,
     "connections_now": 1,
     "deadlocks": 0,
     "max_connections": 100,
@@ -11,8 +11,8 @@
   "passed": false,
   "profile": "field",
   "reconciliation": {
-    "acknowledged_writes": 2427,
-    "audit_rows_with_request_id": 2427,
+    "acknowledged_writes": 6066,
+    "audit_rows_with_request_id": 6066,
     "duplicated_write_count": 0,
     "duplicated_writes": {},
     "lost_write_count": 0,
@@ -26,30 +26,33 @@
   },
   "result": {
     "business_refusals_4xx": 8,
-    "elapsed_seconds": 211.0,
+    "db_connection_samples": 98,
+    "db_connections_mean": 15.0,
+    "db_connections_peak": 17,
+    "elapsed_seconds": 205.2,
     "error_rate_pct": 0.0,
-    "interactive_requests": 4944,
+    "interactive_requests": 12982,
     "latency_ms": {
-      "max": 24321.4,
-      "p50": 3287.3,
-      "p95": 4099.7,
-      "p99": 13880.7
+      "max": 18494.3,
+      "p50": 1058.0,
+      "p95": 1559.9,
+      "p99": 1953.4
     },
     "login_failures": [],
     "per_kind_p95": {
-      "lock": 4170.6,
-      "refresh": 4091.6,
-      "save": 4102.4
+      "lock": 1337.4,
+      "refresh": 1415.3,
+      "save": 1674.4
     },
-    "requests_total": 5040,
+    "requests_total": 13078,
     "server_errors": 0,
     "sessions_authenticated": 96,
     "sessions_requested": 96,
     "status_distribution": {
-      "200": 5032,
+      "200": 13070,
       "400": 8
     },
-    "throughput_rps": 23.9,
+    "throughput_rps": 63.7,
     "transport_failures": 0
   },
   "scenario": "Consumer Electronics 2026",
@@ -60,8 +63,7 @@
   },
   "teams": 24,
   "threshold_breaches": [
-    "p95 4099.7 ms exceeds 2000 ms",
-    "max 24321.4 ms exceeds 10000 ms"
+    "max 18494.3 ms exceeds 10000 ms"
   ],
   "thresholds": {
     "db_connections": 80,
