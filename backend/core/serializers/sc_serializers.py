@@ -22,7 +22,8 @@ from core.models.sc_state import (
     SupplierState, LaneState, SCEventInstance,
     HedgePosition, ResilienceScoreHistory, ComplianceEnforcementEvent,
 )
-from core.utils.disclosure import get_effective_unlock_round
+from core.utils.disclosure import (DEFAULT_UNLOCK_ROUNDS,
+                                   get_effective_unlock_round)
 
 
 def _reject_locked_fields(data, game, round_number, field_specs):
@@ -119,13 +120,67 @@ class FreightMarketSerializer(serializers.ModelSerializer):
 # Decision read serializers (return all stored fields)
 # ---------------------------------------------------------------------------
 
-class SourcingAllocationReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+
+class DisclosureGatedReadMixin:
+    """Hide unlock-controlled fields on read, the way writes already refuse them.
+
+    V2-026. `_reject_locked_fields` gates every write against
+    `get_effective_unlock_round`; the read serializers declared
+    `fields = '__all__'` and consulted nothing, so a value written while an
+    instructor override was in force stayed readable after the override was
+    removed, in a round where the field was locked.
+
+    **Default-deny.** Without a game and round in the serializer context there
+    is no way to know whether a field is unlocked, and the safe answer to "I
+    cannot tell" is to withhold it. A serializer used somewhere that forgets to
+    pass context therefore hides gated fields rather than exposing them, which
+    is the failure direction that costs nothing.
+
+    `disclosure_family` is the registry prefix -- `sourcing`, `inventory`,
+    `trade_finance`, `logistics`, `esg`, `plants` -- and every registry key
+    under it is gated for this serializer.
+    """
+
+    disclosure_family = None
+
+    def _gated_field_names(self):
+        if not self.disclosure_family:
+            return set()
+        prefix = f'{self.disclosure_family}.'
+        return {path[len(prefix):] for path in DEFAULT_UNLOCK_ROUNDS
+                if path.startswith(prefix)}
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        gated = self._gated_field_names()
+        if not gated:
+            return data
+
+        game = self.context.get('game')
+        round_number = self.context.get('round_number')
+        if game is None or round_number is None:
+            for name in gated:
+                data.pop(name, None)
+            return data
+
+        for name in gated:
+            path = f'{self.disclosure_family}.{name}'
+            if round_number < get_effective_unlock_round(game, path):
+                data.pop(name, None)
+        return data
+
+
+class SourcingAllocationReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                       serializers.ModelSerializer):
+    disclosure_family = 'sourcing'
     class Meta:
         model = SourcingAllocation
         fields = '__all__'
 
 
-class SourcingDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class SourcingDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                     serializers.ModelSerializer):
+    disclosure_family = 'sourcing'
     allocations = SourcingAllocationReadSerializer(
         source='team.sourcing_allocations', many=True, read_only=True,
     )
@@ -135,49 +190,65 @@ class SourcingDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializ
         fields = '__all__'
 
 
-class LogisticsDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class LogisticsDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                      serializers.ModelSerializer):
+    disclosure_family = 'logistics'
     class Meta:
         model = LogisticsDecision
         fields = '__all__'
 
 
-class IncotermsDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class IncotermsDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                      serializers.ModelSerializer):
+    disclosure_family = 'logistics'
     class Meta:
         model = IncotermsDecision
         fields = '__all__'
 
 
-class CustomsClassificationDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class CustomsClassificationDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                                  serializers.ModelSerializer):
+    disclosure_family = 'logistics'
     class Meta:
         model = CustomsClassificationDecision
         fields = '__all__'
 
 
-class TradeFinanceDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class TradeFinanceDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                         serializers.ModelSerializer):
+    disclosure_family = 'trade_finance'
     class Meta:
         model = TradeFinanceDecision
         fields = '__all__'
 
 
-class SinosureEnrollmentReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class SinosureEnrollmentReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                       serializers.ModelSerializer):
+    disclosure_family = 'trade_finance'
     class Meta:
         model = SinosureEnrollment
         fields = '__all__'
 
 
-class FXHedgeDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class FXHedgeDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                    serializers.ModelSerializer):
+    disclosure_family = 'trade_finance'
     class Meta:
         model = FXHedgeDecision
         fields = '__all__'
 
 
-class InventoryDecisionReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class InventoryDecisionReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                      serializers.ModelSerializer):
+    disclosure_family = 'inventory'
     class Meta:
         model = InventoryDecision
         fields = '__all__'
 
 
-class ContingencyPlanReadSerializer(RoundNumberMixin, serializers.ModelSerializer):
+class ContingencyPlanReadSerializer(DisclosureGatedReadMixin, RoundNumberMixin,
+                                    serializers.ModelSerializer):
+    disclosure_family = 'inventory'
     class Meta:
         model = ContingencyPlan
         fields = '__all__'

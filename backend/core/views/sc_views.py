@@ -78,8 +78,8 @@ class SourcingView(CompetitionDecisionWriteMixin, APIView):
         decision = SourcingDecision.objects.filter(team=team, round=rnd).first()
         allocations = SourcingAllocation.objects.filter(team=team, round=rnd)
         return {
-            'decision': SourcingDecisionReadSerializer(decision).data if decision else None,
-            'allocations': SourcingAllocationReadSerializer(allocations, many=True).data,
+            'decision': SourcingDecisionReadSerializer(decision, context={'game': team.game, 'round_number': rnd.round_number}).data if decision else None,
+            'allocations': SourcingAllocationReadSerializer(allocations, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
         }
 
     def get(self, request, game_id, team_id, round_number):
@@ -140,9 +140,9 @@ class LogisticsView(CompetitionDecisionWriteMixin, APIView):
         incoterms = IncotermsDecision.objects.filter(team=team, round=rnd)
         customs = CustomsClassificationDecision.objects.filter(team=team, round=rnd)
         return {
-            'logistics': LogisticsDecisionReadSerializer(logistics, many=True).data,
-            'incoterms': IncotermsDecisionReadSerializer(incoterms, many=True).data,
-            'customs': CustomsClassificationDecisionReadSerializer(customs, many=True).data,
+            'logistics': LogisticsDecisionReadSerializer(logistics, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
+            'incoterms': IncotermsDecisionReadSerializer(incoterms, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
+            'customs': CustomsClassificationDecisionReadSerializer(customs, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
         }
 
     def get(self, request, game_id, team_id, round_number):
@@ -213,9 +213,9 @@ class TradeFinanceView(CompetitionDecisionWriteMixin, APIView):
         sinosure = SinosureEnrollment.objects.filter(team=team, round=rnd)
         fx = FXHedgeDecision.objects.filter(team=team, round=rnd)
         return {
-            'trade_finance': TradeFinanceDecisionReadSerializer(tf, many=True).data,
-            'sinosure': SinosureEnrollmentReadSerializer(sinosure, many=True).data,
-            'fx_hedges': FXHedgeDecisionReadSerializer(fx, many=True).data,
+            'trade_finance': TradeFinanceDecisionReadSerializer(tf, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
+            'sinosure': SinosureEnrollmentReadSerializer(sinosure, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
+            'fx_hedges': FXHedgeDecisionReadSerializer(fx, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
         }
 
     def get(self, request, game_id, team_id, round_number):
@@ -277,8 +277,8 @@ class InventoryView(CompetitionDecisionWriteMixin, APIView):
         inventory = InventoryDecision.objects.filter(team=team, round=rnd)
         contingency = ContingencyPlan.objects.filter(team=team, round=rnd).first()
         return {
-            'inventory': InventoryDecisionReadSerializer(inventory, many=True).data,
-            'contingency': ContingencyPlanReadSerializer(contingency).data if contingency else None,
+            'inventory': InventoryDecisionReadSerializer(inventory, many=True, context={'game': team.game, 'round_number': rnd.round_number}).data,
+            'contingency': ContingencyPlanReadSerializer(contingency, context={'game': team.game, 'round_number': rnd.round_number}).data if contingency else None,
         }
 
     def get(self, request, game_id, team_id, round_number):

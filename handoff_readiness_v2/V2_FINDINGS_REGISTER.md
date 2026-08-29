@@ -237,17 +237,41 @@ subject is what moves when price moves.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-026 | Progressive disclosure / read surfaces | **P3** | GSP-CRV2-06 coverage rework | Write serializers consult `get_effective_unlock_round`; the SC read serializers use `fields = '__all__'` and never do. A value legally written while an instructor override was in force remains readable after the override is removed, in a round where the field is locked: `inventory.buffer_days` (unlock round 3) was returned at round 1 by `sc/round/1/inventory/` in both its list and direct round-object forms. | `progressive-disclosure-probe.json`. Real student walkthrough with a signed JWT; positive control 200; write refused at 400 before unlock and accepted at 201 under override; value 4242 persisted and read back. | **Open — rules/product decision.** |
+| V2-026 | Progressive disclosure / read surfaces | **P1** | GSP-CRV2-06 coverage rework | Write serializers consult `get_effective_unlock_round`; the SC read serializers use `fields = '__all__'` and never do. A value legally written while an instructor override was in force remains readable after the override is removed, in a round where the field is locked: `inventory.buffer_days` (unlock round 3) was returned at round 1 by `sc/round/1/inventory/` in both its list and direct round-object forms. | `progressive-disclosure-probe.json`. Real student walkthrough with a signed JWT; positive control 200; write refused at 400 before unlock and accepted at 201 under override; value 4242 persisted and read back. | **Closed by repair.** The registry now governs reads. |
 
-**Bounds, stated so the severity is not read as larger than it is.** The value
-is the team's *own* decision, not another team's: no cross-team leakage was
-demonstrated and none is claimed. The write gate holds, so without an
-instructor lowering and then restoring the unlock round there is no value in a
-locked round to leak at all -- the exposure needs a deliberate instructor
-action, or another path that persists rows (import, admin, restore). Six of the
-eight probed surfaces returned nothing. Class isolation holds: another game's
-override does not unlock this one. After unlock the same student reads it, as
-intended. That is why this is P3 and not higher.
+**Repair.** `DisclosureGatedReadMixin` applies the same registry to reads that
+`_reject_locked_fields` applies to writes, across all ten SC read serializers.
+It **default-denies**: without a game and a round in the serializer context
+there is no way to know whether a field is unlocked, and the safe answer to "I
+cannot tell" is to withhold it, so a caller that forgets to pass context hides
+gated fields rather than exposing them. The SC views now pass game and round on
+every read.
+
+Thirteen focused authorization tests cover each required proof: the field is
+hidden before its unlock round and so is its companion; ungated fields are
+untouched; the value appears after its legitimate unlock; missing and partial
+context both deny; an override unlocks it for that class only; restoring the
+schedule re-hides it -- the exact sequence that produced the leak; another
+class's override cannot expose it; direct-object access renders exactly what
+list rendering does; and another team's row is gated by the same round.
+
+One test is a package-wide contract rather than a case: it walks every
+serializer in `core.serializers`, takes the field names DRF actually renders,
+and fails if any renders a registry-gated field without the gate. `esg` and
+`plants` fields are gated on write and appear in no serializer's field list
+today, which is incidental rather than enforced -- adding one name to one list
+would have reopened the hole silently. The contract closes that.
+
+**Severity.** Reclassified from P3 to P1 on the rules owner's instruction. The
+original P3 rested on the exposure needing an instructor override-then-restore
+and on the value being the team's own; the controlling fact is that a
+disclosure schedule enforced on one side only is not a schedule.
+
+**A defect found while writing the contract, unrelated to disclosure.**
+`core.serializers.core.UserSerializer` declares `team`, which is not a field on
+`User`, and raises `ImproperlyConfigured` on instantiation. It cannot render, so
+it exposes nothing, but any endpoint using it would fail. Recorded, not
+repaired: this rework's budget is focused authorization work.
 
 **A separate question, not registered as a finding.** The scenario supplier,
 lane, instrument and compliance catalogue endpoints carry no permission class
