@@ -54,7 +54,7 @@ supply-chain and compliance subsystems have little to fire.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-023 | Balance / price response | **P1 closed by rules change** | GSP-CRV2-06 (raised, confirmed and repaired) | A team alone in its positioning group had no price response at all: price fit 0.5000 and units 3600.37 at \$50, \$420 and \$2,000 alike, with revenue rising fortyfold. Repaired by scoring price against a scenario-authored reference. Post-repair both the isolated and the shared team score 1.0000 / 0.5000 / 0.0000 at those three prices -- identical to each other, strictly decreasing -- and units respond for both. | `v2-023-gate.json` and `characterisation.json`, both re-run at `9bc73b2`. | **Closed.** Rule adopted, implemented, migrated and tested. |
+| V2-023 | Balance / price response | **P1 closed by rules change** | GSP-CRV2-06 (raised, confirmed, repaired, reworked) | Two mechanisms, one finding. A team alone in its positioning group had no price response at all. Repairing that with an absolute reference price left a second: `price_competitiveness` is a bounded feature that reaches zero at 1.5x the reference -- \$630 -- and clamps, so above that point demand stopped responding while revenue kept multiplying by an unbounded `retail_price`. Both are closed: an absolute reference price, plus a scenario elasticity of 1.5 applied to adoption above the reference. Revenue and net income now peak at the reference and fall monotonically above it. | `v2-023-gate.json` and `characterisation.json`, both re-run at `9c909ae` across \$50 to \$200,000. | **Closed.** Both mechanisms measured above and below the clamp. |
 
 **Mechanism confirmed.** `backend/core/engine/preference_engine.py:288`,
 `_derive_price_competitiveness`, averages over teams sharing the product's
@@ -156,13 +156,72 @@ for price competitiveness is a gaussian ideal-point match rather than
 more-is-better. That is pre-existing scenario design, not something this
 disposition introduced.
 
-**What the repair does not do, stated plainly.** Revenue still rises with price
-across the swept range, and net income at $2,000 is about $2.4M better than at
-$420. Demand is inelastic enough over this range that a high price still pays,
-for every team equally. That is a balance property for the Stage 3 search to
-characterise, not the V2-023 defect: the defect was that one class of team faced
-no price response at all, and that is closed. Recording it so the closure is not
-read as covering more than it does.
+**The rework, and why the first repair was not enough.** The paragraph that
+stood here said revenue still rose with price, that net income at $2,000 was
+about $2.4M better than at $420, and that this was a balance question for Stage
+3 rather than the V2-023 defect. That was wrong, and the number contradicting it
+was in the evidence beside it. `price_competitiveness` is a bounded preference
+feature: with `f_max` 1.0 it reaches zero at a ratio of 1.5 -- $630 against a
+$420 reference -- and clamps. `retail_price` has no upper bound beyond its
+column precision and an API positivity check. Above $630, price stopped reducing
+demand through fit entirely while revenue went on multiplying by price. The
+original unbounded mechanism survived above the clamp, and the acceptance prices
+of $50, $420 and $2,000 could not see it, because two of the three sat at or
+above the clamp point.
+
+Adoption now carries an absolute demand response, applied above the reference:
+
+```
+high_price_multiplier = (retail_price / reference_price) ** -elasticity
+```
+
+seeded at 1.5. Strictly greater than 1 is the property that bounds the tail: at
+exactly 1 revenue would be flat above the reference rather than falling, and
+below 1 it would still grow. Missing, non-finite and `<= 1` values fail the
+round closed beside the reference check, before the first competitive write.
+
+Two design choices worth recording. The multiplier scales the team's own
+adopters rather than its competitive share, because a share penalty cancels out
+when every team raises price together, which would leave collective inflation
+free. And it applies before the production cap, because a team cannot sell what
+nobody will buy at that price; production is a separate ceiling.
+
+Re-run gate, five prices spanning two orders of magnitude above the clamp:
+
+| price | fit | units (isolated) | revenue (isolated) | units (shared) | revenue (shared) |
+|---|---|---|---|---|---|
+| $50 | 1.0000 | 2584.99 | 14,269.14 | 1064.87 | 46,002.38 |
+| $420 | 0.5000 | 3600.37 | **166,941.96** | 1434.51 | **520,554.99** |
+| $2,000 | 0.0000 | 247.23 | 54,588.38 | 101.28 | 175,011.84 |
+| $20,000 | 0.0000 | 7.83 | 17,288.64 | 3.20 | 55,296.00 |
+| $200,000 | 0.0000 | 0.25 | 5,520.00 | 0.10 | 17,280.00 |
+
+Price fit is a constant zero from $2,000 upward for both subjects -- the
+premise of the defect, measured rather than assumed -- while units and revenue
+fall strictly across that whole range. Revenue is maximised at the reference for
+both, not at the top.
+
+Re-run price x production grid, at production 20,000:
+
+| price | revenue | implied units | net income | index |
+|---|---|---|---|---|
+| $50 | 84,980.80 | 1699.62 | -18,453,570.28 | 53.32 |
+| $420 | 887,174.40 | 2112.32 | **-17,670,974.97** | **56.49** |
+| $2,000 | 324,688.00 | 162.34 | -18,237,695.27 | 54.98 |
+| $20,000 | 102,560.00 | 5.13 | -18,454,861.29 | 53.44 |
+| $200,000 | 32,000.00 | 0.16 | -18,523,358.27 | 52.95 |
+
+Revenue, net income and the index all peak at the reference and fall
+monotonically above it. The $50 and $420 cells are byte-identical to the
+pre-rework run, which is the evidence that ordinary below-reference behaviour is
+untouched: the elasticity acts only above the reference.
+
+**On how this was missed.** The first closure reported a 20% unit fall for a
+4.76x revenue rise and called it a residual balance property. It was the defect,
+still running, one clamp point higher. The lesson is the one this handoff keeps
+producing: a response measured inside a range is not a response, and the
+acceptance prices have to straddle the point where the mechanism changes rather
+than sit inside one regime.
 
 **Gate integrity note.** The gate refused five times before producing evidence:
 a stale primary key, outcomes read after the rollback, a decimal string

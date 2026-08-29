@@ -117,10 +117,12 @@ Applied portfolio-wide: False. Revenue degenerate across the grid: True.
 > the old price rule, where a team alone in its positioning group had no price
 > response at all. It is kept as the record of what Stage 2 actually saw --
 > it is how V2-023 was found -- and it no longer describes the engine. Under
-> the adopted rule the same cells at production 20,000 read 84,980.80 at $50,
-> 887,174.40 at $420 and 3,373,840.00 at $2,000, which is 1699.62 / 2112.32 /
-> 1686.92 units where all three were 2112.32 before. See the V2-023 entry in
-> `V2_FINDINGS_REGISTER.md` for the repair and its evidence.
+> the adopted rule, as reworked, the same cells at production 20,000 read
+> 84,980.80 at $50, 887,174.40 at $420, 324,688.00 at $2,000, 102,560.00 at
+> $20,000 and 32,000.00 at $200,000: revenue peaks at the reference price and
+> falls above it, where in this grid it rose with price without bound. See the
+> V2-023 entry in `V2_FINDINGS_REGISTER.md` for both repairs and their
+> evidence.
 
 Revenue is price times units sold, and units sold is bounded by both production and demand. Either field alone traces a curve that depends entirely on where the other one was pinned.
 
