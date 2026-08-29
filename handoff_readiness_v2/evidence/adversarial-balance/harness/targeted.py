@@ -123,19 +123,26 @@ CANDIDATES = [
                      marketing_budget=0.0, distribution_investment=0.0,
                      sales_team_count=0)},
 
-    # --- financing and equity (V2-020) ----------------------------------
-    {'name': 'equity-raise', 'family': 'financing and equity',
-     'attacks': 'V2-020: issue equity priced off opening book value per share',
-     'genome': _from(NEUTRAL, new_equity=20_000_000.0)},
+    # --- financing and equity (V2-020, V2-024) --------------------------
+    # The first tournament ran `equity-raise` ($20,000,000 unfunded) and
+    # `equity-and-dividend`. Both are now rejected outright by the V2-024
+    # funding-need rule, so neither is a legal payload and neither can form an
+    # opponent population. Their refusal is already evidence
+    # (`v2-024-recheck.json`); what needs testing under the final rules is
+    # whether financing still pays when it is used legally.
+    {'name': 'equity-at-legal-max', 'family': 'financing and equity',
+     'attacks': 'V2-024: raise the largest equity the funding rule permits, to '
+                'show the residual advantage of legal issuance is not free',
+     'genome': _from(NEUTRAL, _equity_at_max=True,
+                     environmental_investment=2_000_000.0)},
     {'name': 'debt-funded-scale', 'family': 'financing and equity',
      'attacks': 'borrow and convert the cash straight into volume',
      'genome': _from(NEUTRAL, new_debt=30_000_000.0, volume_multiplier=2.5,
                      promotion_multiplier=2.0)},
-    {'name': 'equity-and-dividend', 'family': 'financing and equity',
-     'attacks': 'V2-020: raise equity and pay it straight back out, the shape '
-                'a value loop would take if issuance were mispriced',
-     'genome': _from(NEUTRAL, new_equity=20_000_000.0,
-                     dividend_per_share=5.0)},
+    {'name': 'dividend-payout', 'family': 'financing and equity',
+     'attacks': 'pay a dividend out of opening cash, with no equity raise '
+                'behind it -- the legal remainder of the V2-024 loop',
+     'genome': _from(NEUTRAL, dividend_per_share=5.0)},
 
     # --- cost-minimising talent and ESG ---------------------------------
     {'name': 'skeleton-crew', 'family': 'cost-minimising talent and ESG',

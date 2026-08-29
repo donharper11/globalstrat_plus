@@ -1,5 +1,11 @@
 """The documented baseline every screening probe deviates from.
 
+R&D note: the baseline invests the scenario's `rd_spend_target` in actual
+`DecisionRDInvestment.amount`. It previously carried a $100,000 placeholder
+while declaring a $2,000,000 budget, which V2-021 had already established
+scoring ignores. Anything measured against that baseline was measured against
+an opponent earning five per cent of the available R&D capability.
+
 Not invented for this handoff. These are the numbers the project's own
 `load_demo` command scripts as competent play — budget split, price and volume
 by positioning, channel mix, sales staffing, talent pools — copied here so the
@@ -184,10 +190,18 @@ def build_optional(submission, team):
                 f'no PlatformFeatureCeiling with ceiling_value > 0 exists for '
                 f'platform generation {platform.platform_generation_id}, so no '
                 f'feature is reachable for R&D on this platform')
+        # The baseline spends the scenario's R&D target, not the $100,000
+        # placeholder this row used to carry. V2-021 made the declared
+        # `rd_budget` inert and scores actual `DecisionRDInvestment.amount`
+        # against the target, so a baseline declaring $2,000,000 while
+        # investing $100,000 earned five per cent of the available capability
+        # credit and was not competent play in the only sense scoring reads.
+        # Every margin measured against it was a margin over a weak opponent.
+        from core.engine.performance import scenario_rd_spend_target
         DecisionRDInvestment.objects.create(
             submission=submission, team_platform=platform,
             feature_id=ceiling.feature_id, method='in_house',
-            amount=OPTIONAL_AMOUNT, target_level=1)
+            amount=scenario_rd_spend_target(scenario), target_level=1)
 
     def plants():
         DecisionPlant.objects.filter(submission=submission).delete()

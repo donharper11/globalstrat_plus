@@ -128,6 +128,25 @@ def write_candidate(submission, team, genome):
     # genome would make that evidence describe a space it never sampled.
     # Targeted candidates set these explicitly; everything else leaves the
     # zeros the baseline writes.
+    # `_equity_at_max` raises exactly the largest equity the V2-024 funding
+    # rule permits for this submission. A fixed figure cannot do that -- the
+    # shortfall depends on the team's cash and its own outlays -- and a fixed
+    # figure is also how the tournament ended up with two opponent populations
+    # whose payloads the final rules reject.
+    if genome.get('_equity_at_max'):
+        from core.services import funding_need
+        from core.models.decisions import DecisionFinancing
+        financing = DecisionFinancing.objects.filter(
+            submission=submission).first()
+        if financing is not None:
+            assessment = funding_need.assess_submission(
+                submission, financing_override={
+                    'new_debt': financing.new_debt,
+                    'debt_repayment': financing.debt_repayment,
+                    'new_equity': 0})
+            financing.new_equity = D(assessment['maximum_new_equity'])
+            financing.save(update_fields=['new_equity'])
+
     financing_keys = ('new_debt', 'new_equity', 'dividend_per_share')
     if any(key in genome for key in financing_keys):
         from core.models.decisions import DecisionFinancing
@@ -249,3 +268,60 @@ def score(result, subject_id, baseline=None):
         fitness['field_margin_gain'] = round(
             margin - baseline['field_margin'], 4)
     return fitness
+
+
+class IllegalPayload(Exception):
+    """A baseline, opponent or candidate payload the final rules reject.
+
+    Distinct from `IllegalCandidate`, which guards the non-negative decision
+    limits. This one covers every rule a payload must satisfy to be a legal
+    entrant -- V2-024 funding need included -- and exists because the first
+    tournament ran an opponent population, `equity-raise`, that the adopted
+    rules reject outright. A tournament in which one of three populations is
+    illegal has measured something the game cannot contain.
+    """
+
+
+def check_payload_contract(game, rnd, teams, payloads):
+    """Construct every payload and validate it against the final rules.
+
+    `payloads` maps a label to the genome each team would play. Everything is
+    written inside a transaction and rolled back, so this costs one write pass
+    and no resolution.
+    """
+    from django.db import transaction
+    from core.models import DecisionSubmission
+    from core.serializers.decision_limits import (describe_violations,
+                                                  persisted_violations)
+    from core.services import funding_need
+
+    report = {}
+    for label, genome_for in payloads.items():
+        result = {'legal': True, 'problems': []}
+        try:
+            with transaction.atomic():
+                for team in teams:
+                    submission, _ = DecisionSubmission.objects.get_or_create(
+                        team=team, round=rnd, defaults={'status': 'draft'})
+                    write_candidate(submission, team, genome_for(team))
+                    submission.status = 'locked'
+                    submission.save(update_fields=['status'])
+                limit_violations = persisted_violations(game, rnd)
+                if limit_violations:
+                    result['problems'].append(
+                        f'decision limits: {describe_violations(limit_violations)}')
+                equity_violations = funding_need.violations(game, rnd)
+                if equity_violations:
+                    result['problems'].append(
+                        'V2-024 funding need: ' + '; '.join(
+                            v['team'] for v in equity_violations))
+                raise _ContractRollback()
+        except _ContractRollback:
+            pass
+        result['legal'] = not result['problems']
+        report[label] = result
+    return report
+
+
+class _ContractRollback(Exception):
+    """Unwinds a contract check. Never escapes `check_payload_contract`."""

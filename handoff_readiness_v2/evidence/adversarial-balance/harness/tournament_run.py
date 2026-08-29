@@ -44,6 +44,11 @@ def main():
         report = json.loads(result.stdout.split(marker, 1)[1].strip().splitlines()[0])
         report['code_revision'] = revision
 
+        if report['illegal_payloads']:
+            raise SystemExit(
+                f"REFUSED: these payloads are illegal under the final rules "
+                f"and cannot enter a tournament: {report['illegal_payloads']}")
+
         for label, data in report['discovery'].items():
             if not data['baseline_is_repeatable']:
                 raise SystemExit(f'REFUSED: the {label} discovery baseline is '
@@ -72,7 +77,12 @@ def main():
               f"{ev['holdout_candidates']} holdout candidates + "
               f"{ev['holdout_baselines']} baselines, in "
               f"{report['elapsed_seconds']}s")
-        print(f"incumbent          : {report['incumbent']['name']}")
+        print(f"incumbent          : {report['incumbent']['name']} "
+              f"(legal payload: "
+              f"{report['incumbent_contract']['incumbent']['legal']})")
+        print(f"payload contract   : "
+              f"{len(report['payload_contract'])} payloads checked, "
+              f"{len(report['illegal_payloads'])} illegal")
 
         print('\n--- discovery: advantage over competent play, by population ---')
         print(f"  {'candidate':<24}{'competent':>11}{'diverse':>10}"

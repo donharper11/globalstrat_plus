@@ -48,8 +48,30 @@ def run(verbose=True):
     diverse_rng = random.Random(DIVERSE_SEED)
     diverse = {t.id: S.random_candidate(diverse_rng) for t in opponents}
 
+    # Every payload must be legal under the final rules before anything is
+    # measured. The first tournament's incumbent population played
+    # `equity-raise`, which the adopted V2-024 rule rejects, so one of its
+    # three populations could not legally exist.
+    F.apply(game, DISCOVERY_SEED)
+    game.refresh_from_db()
+    from core.models import Round as _Round
+    rnd_for_contract = _Round.objects.get(
+        game=game, round_number=game.current_round)
+    contract_payloads = {
+        'baseline': lambda team: None,
+        'diverse': lambda team: diverse.get(team.id),
+    }
+    for candidate in T.CANDIDATES:
+        contract_payloads[f"candidate:{candidate['name']}"] = (
+            lambda team, _g=candidate['genome']: _g)
+    contract = S.check_payload_contract(
+        game, rnd_for_contract, teams, contract_payloads)
+    illegal = [label for label, r in contract.items() if not r['legal']]
+
     started = time.time()
     report = {
+        'payload_contract': contract,
+        'illegal_payloads': illegal,
         'discovery_seed': DISCOVERY_SEED,
         'diverse_seed': DIVERSE_SEED,
         'holdout_seeds': list(HOLDOUT_SEEDS),
@@ -102,6 +124,16 @@ def run(verbose=True):
     leader = max(first_pass, key=lambda r: r['fitness']['advantage'])
     incumbent = next(c['genome'] for c in T.CANDIDATES
                      if c['name'] == leader['name'])
+    # The incumbent becomes an opponent population, so it must be a legal
+    # payload for every team, not only for the subject that played it.
+    incumbent_contract = S.check_payload_contract(
+        game, rnd_for_contract, teams,
+        {'incumbent': lambda team, _g=incumbent: _g})
+    report['incumbent_contract'] = incumbent_contract
+    if not incumbent_contract['incumbent']['legal']:
+        raise S.IllegalPayload(
+            f"the leading candidate {leader['name']} is not a legal opponent "
+            f"population: {incumbent_contract['incumbent']['problems']}")
     report['incumbent'] = {'name': leader['name'],
                            'advantage_vs_competent': leader['fitness']['advantage']}
 
