@@ -130,10 +130,18 @@ def run(verbose=True):
                           .filter(scenario=game.scenario)
                           .exclude(currency_code=home_market.currency_code)
                           .order_by('id').first())
-        if foreign_market is not None:
+        from core.models.scenario import EntryModeDefinition
+        entry_mode = EntryModeDefinition.objects.filter(
+            scenario=game.scenario).order_by('id').first()
+        if foreign_market is not None and entry_mode is not None:
+            # Mirror an established presence: the model requires an entry mode,
+            # the round it was established and the investment made, because a
+            # presence is something a team bought rather than a flag.
             TeamMarketPresence.objects.get_or_create(
                 team=subject, market=foreign_market,
-                defaults={'status': 'active', 'entry_round': 1})
+                defaults={'entry_mode': entry_mode, 'established_round': 1,
+                          'initial_investment': D('0'), 'status': 'active',
+                          'setup_rounds_remaining': 0})
             TeamMarketPresence.objects.filter(
                 team=subject, market=foreign_market).update(status='active')
             for tp in TeamProduct.objects.filter(
