@@ -1,6 +1,6 @@
 {
   "backup_dir": "/tmp/crv207-drill-backups",
-  "code_revision": "5d1945df27afca045a6850ac49aeec135d9ca003",
+  "code_revision": "62f0ec7c511c7c657aa080d8144334df5432f69f",
   "failed_stages": [
     "6_database_loss"
   ],
@@ -8,11 +8,11 @@
   "stages": {
     "1_backup_and_resolve": {
       "acknowledged_writes_lost_or_duplicated": 0,
-      "backup_path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
+      "backup_path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
       "backup_verified": {
-        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
-        "sha256": "f90b920d6fad795419af70eede362210a4323e171ba26160f5bfb005b9db40ab",
-        "size": 865966
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
+        "sha256": "d3c05eed1a2129e7573f92be29effb9f35bb39fa3eabfa14cb635eb1a5b55c6a",
+        "size": 865991
       },
       "backup_verify_error": null,
       "committed_state": {
@@ -54,11 +54,11 @@
       "outcomes": [
         {
           "error": "ValueError: Round 2 has already been processed.",
-          "operator": "operator-1",
+          "operator": "operator-2",
           "outcome": "refused"
         },
         {
-          "operator": "operator-2",
+          "operator": "operator-1",
           "outcome": "committed"
         }
       ],
@@ -117,7 +117,7 @@
         },
         "round_status": "open"
       },
-      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-3-20260830T111253520920Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
+      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-3-20260830T111530521235Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
       "mechanism": "the backup directory was made unwritable. A true ENOSPC needs a mounted small filesystem and this host has no privilege to mount one; the code path is the same -- pg_dump fails, the exception propagates out of process_round before _run_phase_1, and no partial dump is left behind",
       "operator_action": "free space or fix the backup target, then retry",
       "passed": true,
@@ -143,6 +143,7 @@
         "round_status": "processed"
       },
       "error": null,
+      "kill_trigger_query": null,
       "operator_action": "restore the pre-resolution backup and replay",
       "partial_results_committed": 4,
       "passed": false,
@@ -163,9 +164,9 @@
       "symptom": "n/a; this is the recovery",
       "tampered_dump_refused": "ValueError: Backup checksum does not match.",
       "verified": {
-        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
-        "sha256": "f90b920d6fad795419af70eede362210a4323e171ba26160f5bfb005b9db40ab",
-        "size": 865966
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
+        "sha256": "d3c05eed1a2129e7573f92be29effb9f35bb39fa3eabfa14cb635eb1a5b55c6a",
+        "size": 865991
       }
     }
   }
