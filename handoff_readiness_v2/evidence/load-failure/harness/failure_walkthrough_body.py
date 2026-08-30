@@ -55,6 +55,9 @@ def _lock_all(game, rnd):
             team=team, round=rnd, defaults={'status': 'draft'})
         BASE.build(submission, team)
         BASE.build_optional(submission, team)
+        from core.models.decisions import DecisionProductCreate
+        DecisionProductCreate.objects.filter(submission=submission).update(
+            product_name=f'Walkthrough Product R{rnd.round_number}')
         submission.status = 'locked'
         submission.locked_at = timezone.now()
         submission.save(update_fields=['status', 'locked_at'])
@@ -74,13 +77,14 @@ def stage_1_backup_and_resolve(game):
     game.refresh_from_db()
     rnd.refresh_from_db()
 
-    from core.models import ResolutionManifest
-    manifest = ResolutionManifest.objects.filter(
-        game=game, round_number=rnd.round_number).order_by('-id').first()
-    backup_path = getattr(manifest, 'backup_path', None)
+    backup_path = None
     verified = None
     error = None
     try:
+        from core.models import ResolutionManifest
+        manifest = (ResolutionManifest.objects
+                    .filter(game=game, round=rnd).order_by('-id').first())
+        backup_path = getattr(manifest, 'backup_path', None)
         verified = verify_backup(backup_path) if backup_path else None
     except Exception as exc:
         error = f'{type(exc).__name__}: {exc}'
@@ -257,6 +261,24 @@ def stage_5_backup_failure(game):
     }
 
 
+DB_LOSS_MARKERS = (
+    'OperationalError', 'InterfaceError', 'terminating connection',
+    'server closed the connection', 'connection already closed',
+    'connection not open', 'consuming input failed', 'EOF detected',
+)
+
+
+def _is_connection_loss(error):
+    """Did resolution fail because the database went away, or for some other reason?
+
+    A stage that accepts any exception proves only that something broke. The
+    first run of this walkthrough passed stage 6 on a SnapshotError raised
+    before the termination could matter, which is exactly the kind of false
+    pass this check exists to stop.
+    """
+    return bool(error) and any(m in error for m in DB_LOSS_MARKERS)
+
+
 def stage_6_database_loss(game):
     """The database goes away mid-resolution."""
     from django.db import connection
@@ -309,11 +331,18 @@ def stage_6_database_loss(game):
         'acknowledged_writes_lost_or_duplicated': 0,
         'partial_results_committed':
             after['financial_rows'] - before['financial_rows'],
-        'passed': error is not None and rnd.status != 'processed',
+        'attributed_to_database_loss': _is_connection_loss(error),
+        'passed': (_is_connection_loss(error) and rnd.status != 'processed'
+                   and killer_result.get('terminated', 0) >= 1),
     }
 
 
 def stage_7_restore(game, backup_path):
+    if not backup_path:
+        return {'passed': False,
+                'error': 'stage 1 recorded no backup path, so there is '
+                         'nothing to restore; stage 7 did not run'}
+
     """Restore the verified pre-resolution backup, and refuse a bad dump."""
     from core.services.competition_backup import restore_database, verify_backup
 

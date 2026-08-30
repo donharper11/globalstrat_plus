@@ -1,40 +1,68 @@
 {
   "backup_dir": "/tmp/crv207-drill-backups",
-  "code_revision": "c6e7f0e1418dc0ff222e7a77db67f18c81bd7121",
+  "code_revision": "c88e5010309a2dfc1dc12a6d7636faa71d6593d3",
   "failed_stages": [
     "1_backup_and_resolve",
     "2_concurrent_operators",
-    "5_backup_failure",
-    "6_database_loss",
     "7_restore_and_refusals"
   ],
   "passed": false,
   "stages": {
     "1_backup_and_resolve": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\nrgs, **kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1868, in _insert\n    return query.get_compiler(using=using).execute_sql(returning_fields)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/compiler.py\", line 1882, in execute_sql\n    cursor.execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 122, in execute\n    return super().execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 79, in execute\n    return self._execute_with_wrappers(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 92, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 100, in _execute\n    with self.db.wrap_database_errors:\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/utils.py\", line 91, in __exit__\n    raise dj_exc_value.with_traceback(traceback) from exc_value\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\ndjango.db.utils.IntegrityError: null value in column \"market_id\" of relation \"decision_plant\" violates not-null constraint\nDETAIL:  Failing row contains (5, build, 1000, 0, null, 5, f, 0.000, 0.000, owned_manufacturing, []).\n\n",
+      "error": "181 objects imported automatically (use -v 2 for details).\n\nace(negate, args, kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1518, in _filter_or_exclude_inplace\n    self._query.add_q(Q(*args, **kwargs))\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1646, in add_q\n    clause, _ = self._add_q(q_object, can_reuse)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1678, in _add_q\n    child_clause, needed_inner = self.build_filter(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1526, in build_filter\n    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1333, in solve_lookup_type\n    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1805, in names_to_path\n    raise FieldError(\ndjango.core.exceptions.FieldError: Cannot resolve keyword 'round_number' into field. Choices are: backup_path, code_revision, completed_at, created_at, decision_event_count, environment, game, game_id, id, input_body_path, input_manifest, input_section_digests, input_sha256, narrative_manifest, narrative_sha256, output_body_path, output_manifest, output_section_digests, output_sha256, round, round_id, schema_version, seed, source_tree_sha256\n",
       "passed": false
     },
     "2_concurrent_operators": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\ngs, **kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1868, in _insert\n    return query.get_compiler(using=using).execute_sql(returning_fields)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/compiler.py\", line 1882, in execute_sql\n    cursor.execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 122, in execute\n    return super().execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 79, in execute\n    return self._execute_with_wrappers(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 92, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 100, in _execute\n    with self.db.wrap_database_errors:\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/utils.py\", line 91, in __exit__\n    raise dj_exc_value.with_traceback(traceback) from exc_value\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\ndjango.db.utils.IntegrityError: null value in column \"market_id\" of relation \"decision_plant\" violates not-null constraint\nDETAIL:  Failing row contains (10, build, 1000, 0, null, 5, f, 0.000, 0.000, owned_manufacturing, []).\n\n",
-      "passed": false
+      "acknowledged_writes_lost_or_duplicated": 0,
+      "committed_state": {
+        "after": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "before": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "financial_rows_added": 0,
+        "round_status": "processed"
+      },
+      "operator_action": "two operators resolve simultaneously",
+      "operator_audit": [],
+      "outcomes": [
+        {
+          "error": "ValueError: Round 1 has already been processed.",
+          "operator": "operator-1",
+          "outcome": "refused"
+        },
+        {
+          "error": "ValueError: Round 1 has already been processed.",
+          "operator": "operator-2",
+          "outcome": "refused"
+        }
+      ],
+      "passed": false,
+      "recovery_result": "no operator action needed; one attempt refused",
+      "symptom": "the losing operator sees an error; the round resolves once"
     },
     "3_backend_restart": {
       "acknowledged_writes_lost_or_duplicated": 0,
       "committed_state": {
         "after_kill": {
           "decision_audit_rows": 0,
-          "financial_rows": 4,
-          "rounds_processed": 1
+          "financial_rows": 8,
+          "rounds_processed": 2
         },
         "after_restart": {
           "decision_audit_rows": 0,
-          "financial_rows": 4,
-          "rounds_processed": 1
+          "financial_rows": 8,
+          "rounds_processed": 2
         },
         "before_kill": {
           "decision_audit_rows": 0,
-          "financial_rows": 4,
-          "rounds_processed": 1
+          "financial_rows": 8,
+          "rounds_processed": 2
         }
       },
       "operator_action": "restart the service",
@@ -45,8 +73,8 @@
     "4_deadline_partition": {
       "acknowledged_writes_lost_or_duplicated": 0,
       "committed_state": {
-        "rows_after": 5,
-        "rows_before": 5
+        "rows_after": 1,
+        "rows_before": 1
       },
       "http_status": 403,
       "operator_action": "none; the deadline control refused it",
@@ -55,15 +83,53 @@
       "symptom": "the save is refused with HTTP 403"
     },
     "5_backup_failure": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\ngs, **kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1868, in _insert\n    return query.get_compiler(using=using).execute_sql(returning_fields)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/compiler.py\", line 1882, in execute_sql\n    cursor.execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 122, in execute\n    return super().execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 79, in execute\n    return self._execute_with_wrappers(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 92, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 100, in _execute\n    with self.db.wrap_database_errors:\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/utils.py\", line 91, in __exit__\n    raise dj_exc_value.with_traceback(traceback) from exc_value\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\ndjango.db.utils.IntegrityError: null value in column \"market_id\" of relation \"decision_plant\" violates not-null constraint\nDETAIL:  Failing row contains (15, build, 1000, 0, null, 5, f, 0.000, 0.000, owned_manufacturing, []).\n\n",
-      "passed": false
+      "acknowledged_writes_lost_or_duplicated": 0,
+      "committed_state": {
+        "after": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "before": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "round_status": "open"
+      },
+      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-2-20260830T110907889310Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
+      "mechanism": "the backup directory was made unwritable. A true ENOSPC needs a mounted small filesystem and this host has no privilege to mount one; the code path is the same -- pg_dump fails, the exception propagates out of process_round before _run_phase_1, and no partial dump is left behind",
+      "operator_action": "free space or fix the backup target, then retry",
+      "passed": true,
+      "recovery_result": "round unchanged; retry after the target is writable",
+      "stray_artifacts": [],
+      "symptom": "resolution stops with an error naming the backup failure"
     },
     "6_database_loss": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\ngs, **kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1868, in _insert\n    return query.get_compiler(using=using).execute_sql(returning_fields)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/compiler.py\", line 1882, in execute_sql\n    cursor.execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 122, in execute\n    return super().execute(sql, params)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 79, in execute\n    return self._execute_with_wrappers(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 92, in _execute_with_wrappers\n    return executor(sql, params, many, context)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 100, in _execute\n    with self.db.wrap_database_errors:\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/utils.py\", line 91, in __exit__\n    raise dj_exc_value.with_traceback(traceback) from exc_value\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/backends/utils.py\", line 105, in _execute\n    return self.cursor.execute(sql, params)\ndjango.db.utils.IntegrityError: null value in column \"market_id\" of relation \"decision_plant\" violates not-null constraint\nDETAIL:  Failing row contains (20, build, 1000, 0, null, 5, f, 0.000, 0.000, owned_manufacturing, []).\n\n",
-      "passed": false
+      "acknowledged_writes_lost_or_duplicated": 0,
+      "backends_terminated": 0,
+      "committed_state": {
+        "after": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "before": {
+          "decision_audit_rows": 0,
+          "financial_rows": 8,
+          "rounds_processed": 2
+        },
+        "round_status": "open"
+      },
+      "error": "SnapshotError: Natural key ('team_id', 'name') is not unique in section \"team_product\": team_product(team(game(\"GlobalStrat Test Game\")|\"Titan Micro\")|\"Screening Baseline Product\") appears twice. Declare a key that ",
+      "operator_action": "restore the pre-resolution backup and replay",
+      "partial_results_committed": 0,
+      "passed": true,
+      "recovery_result": "see stage 7",
+      "symptom": "resolution fails; the operator sees a database error"
     },
     "7_restore_and_refusals": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\nrom_command_line(sys.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 442, in execute_from_command_line\n    utility.execute()\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 436, in execute\n    self.fetch_command(subcommand).run_from_argv(self.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 416, in run_from_argv\n    self.execute(*args, **cmd_options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 460, in execute\n    output = self.handle(*args, **options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/commands/shell.py\", line 247, in handle\n    exec(options[\"command\"], {**globals(), **self.get_namespace(**options)})\n  File \"<string>\", line 8, in <module>\n  File \"/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/load-failure/harness/failure_walkthrough_body.py\", line 324, in stage_7_restore\n    tampered.write_bytes(pathlib.Path(backup_path).read_bytes() + b'\\x00trailing')\n  File \"/usr/lib/python3.10/pathlib.py\", line 960, in __new__\n    self = cls._from_parts(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 594, in _from_parts\n    drv, root, parts = self._parse_args(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 578, in _parse_args\n    a = os.fspath(a)\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n",
+      "error": "181 objects imported automatically (use -v 2 for details).\n\nrom_command_line(sys.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 442, in execute_from_command_line\n    utility.execute()\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 436, in execute\n    self.fetch_command(subcommand).run_from_argv(self.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 416, in run_from_argv\n    self.execute(*args, **cmd_options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 460, in execute\n    output = self.handle(*args, **options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/commands/shell.py\", line 247, in handle\n    exec(options[\"command\"], {**globals(), **self.get_namespace(**options)})\n  File \"<string>\", line 8, in <module>\n  File \"/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/load-failure/harness/failure_walkthrough_body.py\", line 336, in stage_7_restore\n    tampered.write_bytes(pathlib.Path(backup_path).read_bytes() + b'\\x00trailing')\n  File \"/usr/lib/python3.10/pathlib.py\", line 960, in __new__\n    self = cls._from_parts(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 594, in _from_parts\n    drv, root, parts = self._parse_args(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 578, in _parse_args\n    a = os.fspath(a)\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n",
       "passed": false
     }
   }
