@@ -74,14 +74,31 @@ def main():
         access = EVIDENCE / f'gunicorn-{args.profile}.log'
         server_side = {'parsed': 0}
         if access.exists():
+            # Exclude sign-in. The client's interactive metrics exclude it, so
+            # including it here compared two different populations and made the
+            # server look slower than the client for the same requests: server
+            # p95 3237 ms against client 90 ms, with all 31 requests over ten
+            # seconds being logins at roughly 21 seconds each.
             durations = []
+            login_durations = []
             for line in access.read_text(errors='replace').splitlines():
                 parts = line.rsplit(' ', 1)
-                if len(parts) == 2 and parts[1].isdigit():
-                    durations.append(int(parts[1]) / 1000.0)
+                if len(parts) != 2 or not parts[1].isdigit():
+                    continue
+                ms = int(parts[1]) / 1000.0
+                if '/api/auth/login/' in parts[0]:
+                    login_durations.append(ms)
+                else:
+                    durations.append(ms)
             if durations:
                 durations.sort()
+                login_durations.sort()
                 server_side = {
+                    'scope': 'interactive only; sign-in reported separately',
+                    'sign_in_requests': len(login_durations),
+                    'sign_in_p50_ms': round(
+                        login_durations[len(login_durations) // 2], 1)
+                    if login_durations else None,
                     'parsed': len(durations),
                     'p50_ms': round(durations[len(durations) // 2], 1),
                     'p95_ms': round(durations[max(0, int(round(0.95 * len(durations))) - 1)], 1),
