@@ -16,7 +16,17 @@ bind = '0.0.0.0:8002'
 # Memory is not a constraint here (35 GB) and neither is PostgreSQL: Django
 # opens a connection per request with CONN_MAX_AGE unset, so workers bound
 # concurrent connections at 17 against a limit of 100.
-workers = 17
+# Raised again after the deadline burst. At realistic think time the host is
+# not compute-bound -- CPU averaged 27% and reached 63% during the burst -- so
+# the workers were blocked on remote-database I/O, not on the CPU, while 288
+# saves and 24 locks arrived at once and queued about eighteen deep per worker
+# at roughly 500 ms each. Blocked workers are cheap: 32 of them still hold
+# concurrent PostgreSQL connections well inside the limit of 100, and preload
+# keeps their memory modest against 36 GB.
+#
+# This does not help the sign-in storm, which is genuinely CPU-bound on PBKDF2
+# and is recorded as its own finding.
+workers = 32
 worker_class = 'sync'
 timeout = 120
 keepalive = 5
