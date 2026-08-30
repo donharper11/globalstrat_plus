@@ -2,12 +2,13 @@
 
 Second half of the load-and-failure handoff. The load half was delivered
 separately (`GSP-CRV2-07_LOAD_REPORT.md`) and the authentication checkpoint in
-`GSP-CRV2-07_AUTH_ADDENDUM.md`. Nothing in this half changed request handling,
-worker count, database behaviour or authentication, so no load profile was
-rerun.
+`GSP-CRV2-07_AUTH_ADDENDUM.md`. This half carries one repair, V2-029, which
+adds validation to both supported decision-write surfaces. No load profile was
+rerun; the rationale is stated under *Not rerun* below.
 
 Evidence: `evidence/load-failure/failure-walkthrough.json`,
-`evidence/load-failure/duplicate-product-name.json`. Harness:
+`evidence/load-failure/duplicate-product-name.json` and
+`evidence/load-failure/duplicate-product-name-repaired.json`. Harness:
 `evidence/load-failure/harness/failure_walkthrough_{run,body}.py`,
 `duplicate_product_{probe,body}.py`.
 
@@ -145,5 +146,15 @@ to exactly the stage 1 state.
 
 Field and margin load profiles, the 96-user authentication drive, CRV2-01
 determinism, CRV2-02 concurrency and race matrix, CRV2-03 provider and SIGKILL
-drills, and the full backend suite. No repair in this half touched request
-handling, worker count, database behaviour or authentication.
+drills, and the full backend suite.
+
+V2-029 does touch request handling: it adds validation to both supported
+decision-write surfaces, and the earlier claim that no repair in this half did
+so was wrong. The decision not to rerun the load profiles is proportionate for
+a narrower reason. The change is a bounded deterministic validation and refusal
+path. It does not alter how an accepted request executes, the worker
+configuration, authentication, database concurrency, or the traffic model the
+existing profiles measured — a refused payload is a 400 raised before the
+endpoint's replacement delete, which is strictly less work than the accepted
+path already measured. The load, authentication and readiness evidence
+therefore carries forward by revision.
