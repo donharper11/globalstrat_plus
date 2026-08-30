@@ -1,18 +1,16 @@
 {
   "backup_dir": "/tmp/crv207-drill-backups",
-  "code_revision": "62f0ec7c511c7c657aa080d8144334df5432f69f",
-  "failed_stages": [
-    "6_database_loss"
-  ],
-  "passed": false,
+  "code_revision": "e2ea801e2dd7dc965667d8706fc23510990a2a5e",
+  "failed_stages": [],
+  "passed": true,
   "stages": {
     "1_backup_and_resolve": {
       "acknowledged_writes_lost_or_duplicated": 0,
-      "backup_path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
+      "backup_path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111854501602Z.dump",
       "backup_verified": {
-        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
-        "sha256": "d3c05eed1a2129e7573f92be29effb9f35bb39fa3eabfa14cb635eb1a5b55c6a",
-        "size": 865991
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111854501602Z.dump",
+        "sha256": "de1655b8a6281a79d606575260c590559539eee9f159e0002e77a5965f0c308c",
+        "size": 865989
       },
       "backup_verify_error": null,
       "committed_state": {
@@ -54,11 +52,11 @@
       "outcomes": [
         {
           "error": "ValueError: Round 2 has already been processed.",
-          "operator": "operator-2",
+          "operator": "operator-1",
           "outcome": "refused"
         },
         {
-          "operator": "operator-1",
+          "operator": "operator-2",
           "outcome": "committed"
         }
       ],
@@ -117,7 +115,7 @@
         },
         "round_status": "open"
       },
-      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-3-20260830T111530521235Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
+      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-3-20260830T111928659450Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
       "mechanism": "the backup directory was made unwritable. A true ENOSPC needs a mounted small filesystem and this host has no privilege to mount one; the code path is the same -- pg_dump fails, the exception propagates out of process_round before _run_phase_1, and no partial dump is left behind",
       "operator_action": "free space or fix the backup target, then retry",
       "passed": true,
@@ -127,26 +125,26 @@
     },
     "6_database_loss": {
       "acknowledged_writes_lost_or_duplicated": 0,
-      "attributed_to_database_loss": false,
-      "backends_terminated": 0,
+      "attributed_to_database_loss": true,
+      "backends_terminated": 1,
       "committed_state": {
         "after": {
           "decision_audit_rows": 0,
-          "financial_rows": 16,
-          "rounds_processed": 4
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
         "before": {
           "decision_audit_rows": 0,
           "financial_rows": 12,
           "rounds_processed": 3
         },
-        "round_status": "processed"
+        "round_status": "open"
       },
-      "error": null,
-      "kill_trigger_query": null,
+      "error": "OperationalError: SSL connection has been closed unexpectedly\n",
+      "kill_trigger": "first RoundResultFinancials row written (team 1)",
       "operator_action": "restore the pre-resolution backup and replay",
-      "partial_results_committed": 4,
-      "passed": false,
+      "partial_results_committed": 0,
+      "passed": true,
       "recovery_result": "see stage 7",
       "symptom": "resolution fails; the operator sees a database error"
     },
@@ -164,9 +162,9 @@
       "symptom": "n/a; this is the recovery",
       "tampered_dump_refused": "ValueError: Backup checksum does not match.",
       "verified": {
-        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111455852154Z.dump",
-        "sha256": "d3c05eed1a2129e7573f92be29effb9f35bb39fa3eabfa14cb635eb1a5b55c6a",
-        "size": 865991
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111854501602Z.dump",
+        "sha256": "de1655b8a6281a79d606575260c590559539eee9f159e0002e77a5965f0c308c",
+        "size": 865989
       }
     }
   }
