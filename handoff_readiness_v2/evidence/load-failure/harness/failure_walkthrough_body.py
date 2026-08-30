@@ -38,7 +38,19 @@ def _lock_all(game, rnd):
     """Every team submits and locks: the precondition for resolution."""
     import baseline as BASE
     from core.models import DecisionSubmission, Team
-    for team in Team.objects.filter(game=game, participation_status='active'):
+    from core.models.team_state import TeamProduct
+    teams = list(Team.objects.filter(game=game, participation_status='active'))
+    hollow = [t.name for t in teams
+              if not TeamProduct.objects.filter(team=t, status='active').exists()]
+    if hollow:
+        # A team with no active product cannot price, produce, or resolve. If
+        # one is in the cohort the fixture is wrong, and a round resolved over
+        # it would be measuring a game nobody could play. Stop rather than
+        # quietly resolve a smaller game than the evidence claims.
+        raise RuntimeError(
+            f'{len(hollow)} of {len(teams)} teams carry no active product, so '
+            f'the cohort is not a playable game: {hollow[:5]}')
+    for team in teams:
         submission, _ = DecisionSubmission.objects.get_or_create(
             team=team, round=rnd, defaults={'status': 'draft'})
         BASE.build(submission, team)

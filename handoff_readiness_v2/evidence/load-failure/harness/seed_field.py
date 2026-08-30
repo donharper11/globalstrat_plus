@@ -14,7 +14,16 @@ MEMBERS_PER_TEAM = 12
 PASSWORD = 'loadtest-pass'
 
 
-def run():
+def run(teams=TEAMS, members_per_team=MEMBERS_PER_TEAM):
+    """Seed the cohort.
+
+    `teams=None` means "use exactly the teams `setup_test_game` instantiated"
+    rather than extending the roster. The extension path creates bare Team rows
+    with no home market and no starter state applied, which is adequate for
+    driving HTTP write paths under load but is not a firm: it has no products,
+    so it cannot price, produce, or resolve. Anything that resolves a round
+    must seed with `teams=None`.
+    """
     from django.contrib.auth.models import User as DjangoUser
     from django.core.management import call_command
     from django.utils import timezone
@@ -49,18 +58,19 @@ def run():
     # setup_test_game seeds a handful of teams; extend to the field size using
     # the same starter profile so every team begins from identical state.
     existing = list(Team.objects.filter(game=game).order_by('id'))
-    for n in range(len(existing), TEAMS):
+    target = len(existing) if teams is None else teams
+    for n in range(len(existing), target):
         Team.objects.create(
             game=game, name=f'Load Team {n + 1:02d}',
             firm_starter_profile=profile, performance_index=100,
             cash_on_hand=60_000_000, total_equity=60_000_000,
             participation_status='active')
-    teams = list(Team.objects.filter(game=game).order_by('id')[:TEAMS])
+    roster = list(Team.objects.filter(game=game).order_by('id')[:target])
 
     hashed = hash_password(PASSWORD)
     identities = []
-    for team_index, team in enumerate(teams):
-        for member in range(MEMBERS_PER_TEAM):
+    for team_index, team in enumerate(roster):
+        for member in range(members_per_team):
             username = f'load_t{team_index + 1:02d}_m{member + 1:02d}'
             user, _ = User.objects.get_or_create(
                 username=username,
@@ -90,7 +100,7 @@ def run():
         'section_id': section.section_id,
         'scenario': chosen.name,
         'round_number': rnd.round_number if rnd else None,
-        'teams': len(teams),
+        'teams': len(roster),
         'identities': identities,
         'instructor': {'username': 'load_instructor', 'password': PASSWORD},
         'password': PASSWORD,

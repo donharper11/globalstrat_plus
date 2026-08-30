@@ -98,7 +98,7 @@ def main():
         R.manage(database, 'shell', '-c', R.LEGACY_TABLES)
         seed = shell(database,
                      'import json\nimport seed_field\n'
-                     'seeded = seed_field.run()\n'
+                     'seeded = seed_field.run(teams=None, members_per_team=4)\n'
                      'print("---SEED---")\n'
                      'print(json.dumps(seeded, default=str))\n', timeout=1800)
         if '---SEED---' not in seed.stdout:
