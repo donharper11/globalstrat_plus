@@ -69,6 +69,10 @@ def main():
                               capture_output=True, text=True).stdout.strip()
     BACKUPS.mkdir(parents=True, exist_ok=True)
     os.environ['COMPETITION_BACKUP_DIR'] = str(BACKUPS)
+    # The stack runs GLOBALSTRAT_ENV=production, which refuses to resolve a
+    # round without an auditable build revision. That refusal is correct; the
+    # seeder just has to say which revision it is running.
+    os.environ['GIT_REVISION'] = revision
 
     print(f'Rebuilding {DATABASE}', flush=True)
     R.psql('postgres', f'DROP DATABASE IF EXISTS {DATABASE} WITH (FORCE)')
@@ -103,14 +107,15 @@ def main():
 
             def note(what, status, detail=''):
                 events['actions'].append(
-                    {'what': what, 'status': status, 'detail': detail})
-                print(f'  r{round_number} {what}: {status} {detail}', flush=True)
+                    {'what': what, 'status': status, 'detail': str(detail)[:400]})
+                print(f'  r{round_number} {what}: {status} '
+                      f'{str(detail)[:300] if status >= 300 else ""}', flush=True)
 
             # An operator sets the deadline through the supported control, so
             # an OperatorAuditEvent exists for dispute 5 to be asked about.
-            code, _ = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/deadline/',
-                          instructor, {'minutes_from_now': 90})
-            note('operator set_deadline', code)
+            code, body = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/deadline/',
+                             instructor, {'minutes_from_now': 90})
+            note('operator set_deadline', code, body)
 
             budget = {'rd_budget': '1000000', 'marketing_budget': '500000',
                       'strategy_budget': '250000'}
@@ -140,9 +145,9 @@ def main():
                 note(f"{team_c['name']} normal save", code)
 
             for team in (team_a, team_b) if round_number == 2 else seeded['teams']:
-                code, _ = api(port, 'POST', base.format(team=team['id']) + 'lock/',
+                code, body = api(port, 'POST', base.format(team=team['id']) + 'lock/',
                               students[team['id']])
-                note(f"{team['name']} lock", code)
+                note(f"{team['name']} lock", code, body)
 
             # Round 2 carries the deadline event: the deadline is moved into
             # the past and a student saves anyway.
@@ -156,17 +161,17 @@ def main():
                                  students[team_c['id']], budget)
                 note('late save after deadline', code, str(body)[:120])
 
-            code, _ = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/close/',
-                          instructor, {'reason': 'Seeding the CRV2-08 walkthrough game'})
-            note('operator close', code)
+            code, body = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/close/',
+                             instructor, {'reason': 'Seeding the CRV2-08 walkthrough game'})
+            note('operator close', code, body)
             code, body = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/process/',
                              instructor, {})
             note('operator process', code, str(body)[:120])
             if round_number < 3:
-                code, _ = api(port, 'POST',
-                              f'/api/games/{seeded["game_id"]}/round-control/advance/',
-                              instructor, {})
-                note('operator advance', code)
+                code, body = api(port, 'POST',
+                                 f'/api/games/{seeded["game_id"]}/round-control/advance/',
+                                 instructor, {})
+                note('operator advance', code, body)
             record['rounds'].append(events)
     finally:
         W.stop_gunicorn(process)
