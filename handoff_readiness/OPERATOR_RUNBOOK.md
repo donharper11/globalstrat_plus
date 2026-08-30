@@ -256,6 +256,53 @@ maintenance enablement, an instructor/admin identity, a substantive reason and
 an exact confirmation token. Do not substitute manual SQL or an unrecorded
 process retry.
 
+### A round refuses to resolve: duplicate product name
+
+This is the one resolution failure with no operator-facing control, so it is
+the one exception to the "do not substitute manual SQL" rule above. Apply it
+only for this symptom, and record it exactly as any other recovery.
+
+**Symptom.** Resolving the round fails immediately and repeatedly with
+`SnapshotError: Natural key ... is not unique`, naming either
+`decision_product_create` or `team_product`. The round stays `open`, no
+results are written, and retrying produces the identical error. A student
+caused this with a decision the API accepted normally: two new products given
+the same name, or one new product reusing the name of a product the team
+already owns. Nothing warned them and nothing warned you.
+
+**What is and is not at risk.** Nothing is corrupted. When the collision is on
+`team_product` the failure comes from `complete_manifest`, which runs inside
+the same transaction as Phase 1, so the whole resolution rolls back and no
+duplicate is ever stored. The round is stalled, not damaged, and no team's
+decisions are lost.
+
+**Find it.** Substitute the round's `id` (not its round number):
+
+```sql
+-- Two creates sharing a name inside one submission
+SELECT d.id, s.team_id, d.product_name, count(*) OVER (PARTITION BY d.submission_id, d.product_name) AS copies
+  FROM decision_product_create d
+  JOIN decision_submission s ON s.id = d.submission_id
+ WHERE s.round_id = :round_id
+ ORDER BY copies DESC, d.id;
+
+-- A create reusing the name of a product the team already owns
+SELECT d.id, s.team_id, d.product_name
+  FROM decision_product_create d
+  JOIN decision_submission s ON s.id = d.submission_id
+  JOIN team_product p ON p.team_id = s.team_id AND p.name = d.product_name
+ WHERE s.round_id = :round_id;
+```
+
+**Clear it.** Delete the surplus decision row by `id` — the second of the two
+copies, or the create that collides with an existing product. Tell the team
+what was removed and why, before results are published. Then resolve the round
+again; it proceeds normally.
+
+**Do not** rename rows in `team_product` to work around it. The team's own
+product names are their record of what they built, and renaming one changes a
+result the team can see.
+
 ## Platform unreachable at deadline
 
 Record monitoring timestamps and outage scope. Announce a competition-wide
