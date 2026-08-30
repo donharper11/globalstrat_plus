@@ -1,0 +1,86 @@
+{
+  "code_revision": "357e3e44509117d31e6a1b8f977a4ea50480cb53",
+  "corrected_a": {
+    "error": null,
+    "next_round_number": 2,
+    "products_owned": [
+      "Nexus Lite",
+      "Nexus One",
+      "Vanguard One",
+      "Vanguard Two"
+    ],
+    "resolved": true,
+    "student_write": {
+      "accepted": true,
+      "body": "accepted",
+      "product_names": [
+        "Vanguard One",
+        "Vanguard Two"
+      ],
+      "status": 200
+    }
+  },
+  "corrected_b": {
+    "error": null,
+    "next_round_number": 3,
+    "products_owned": [
+      "Nexus Lite",
+      "Nexus One",
+      "Vanguard One",
+      "Vanguard Three",
+      "Vanguard Two"
+    ],
+    "resolved": true,
+    "student_write": {
+      "accepted": true,
+      "body": "accepted",
+      "product_names": [
+        "Vanguard Three"
+      ],
+      "status": 200
+    }
+  },
+  "finding": {
+    "a_refused_with_400_naming_product_name": true,
+    "b_refused_with_400_naming_product_name": true,
+    "corrected_payload_accepted": true,
+    "no_database_intervention_required": true,
+    "products_owned_at_end": [
+      "Nexus Lite",
+      "Nexus One",
+      "Vanguard One",
+      "Vanguard Three",
+      "Vanguard Two"
+    ],
+    "reference": "V2-029",
+    "refusal_wrote_no_decision_rows": true,
+    "round_resolves_after_correction": true
+  },
+  "passed": true,
+  "variant_a": {
+    "decisions_after_refusal": [],
+    "description": "a student names two new products the same thing",
+    "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
+    "student_write": {
+      "accepted": false,
+      "body": "{\"product_name\":[\"Each new product needs its own name. \\\"Vanguard One\\\" appears more than once in this submission.\"]}",
+      "product_names": [
+        "Vanguard One",
+        "Vanguard One"
+      ],
+      "status": 400
+    }
+  },
+  "variant_b": {
+    "description": "a student reuses the name of an existing product",
+    "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
+    "student_write": {
+      "accepted": false,
+      "body": "{\"product_name\":[\"Your team already has a product named \\\"Vanguard One\\\". Choose a different name.\"]}",
+      "product_names": [
+        "Vanguard One"
+      ],
+      "status": 400
+    }
+  }
+}

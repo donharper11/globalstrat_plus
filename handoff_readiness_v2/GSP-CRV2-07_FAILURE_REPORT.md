@@ -71,43 +71,69 @@ requires at least one backend to have actually died. An earlier revision
 accepted any exception and passed on an unrelated `SnapshotError` while proving
 nothing.
 
-## Finding: an accepted student write can stall a round
+## Finding V2-029: an accepted student write could stall a round — repaired
 
-Severity: high. Found while diagnosing that false pass. Reproduced end to end
-through the student HTTP endpoint, both variants, at `duplicate-product-name.json`.
+Severity P0. Found while diagnosing stage 6's false pass, audited as blocking at
+`16d49fc`, repaired at `357e3e4`.
 
-`PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/` returns **200**
-for either of these:
+**The defect.** `PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/`
+returned 200 for either of these, and the round could then never be resolved:
 
 - **A** — two product creates sharing one name. Refused at `prepare_manifest`
   on `decision_product_create`'s key `(submission_id, product_name)`, before
   Phase 1 runs.
 - **B** — one product create reusing the name of a product the team already
-  owns. The decision rows are unique, so Phase 1 runs and creates the second
-  `TeamProduct`; `complete_manifest` then snapshots the output state, trips
-  `team_product`'s key `(team_id, name)`, and the whole resolution rolls back
-  because it shares Phase 1's transaction (`advance_round.py:230`).
+  owns. The decision rows are unique, so Phase 1 ran and created the second
+  `TeamProduct`; `complete_manifest` then tripped `team_product`'s key
+  `(team_id, name)`, and the whole resolution rolled back because it shares
+  Phase 1's transaction (`advance_round.py:230`).
 
-In both cases the round stays `open`, the error is identical on retry, and the
-instructor cannot close the round. `product_name` is free text with no
-uniqueness validation on the write path, so nothing warns the student and
-nothing warns the operator.
+In both cases the round stayed `open`, the error was identical on retry, and
+the instructor could not close the round. Nothing was corrupted — no duplicate
+was ever persisted and no decisions were lost — but the round was stalled for
+the whole cohort, and the only recovery was editing decision rows directly in
+PostgreSQL. Rollback integrity is not a substitute for validating an ordinary
+student decision, and manual SQL is not an acceptable launch disposition.
 
-Nothing is corrupted, and this is worth being clear about: no duplicate is ever
-persisted, Phase 1's work is rolled back with the rest, and no team's decisions
-are lost. The round is stalled, not damaged.
+Reproduction at `16d49fc`, both variants through the student endpoint:
+`evidence/load-failure/duplicate-product-name.json`. That file is historical
+evidence for the unrepaired revision.
 
-The only recovery is deleting the surplus decision row directly in the database.
-There is no endpoint, no management command, and — until this handoff — nothing
-in the runbook. `OPERATOR_RUNBOOK.md` now carries the diagnosis queries and the
-procedure, marked as the one deliberate exception to its own "do not substitute
-manual SQL" rule.
+**The repair.** One shared validator, `validate_product_names(creates, team)`
+in `core/serializers/decisions.py`, enforcing both rules and raising an
+actionable 400 naming `product_name`. It is called from the per-type endpoint
+before the replacement delete, so a refused payload leaves the team's persisted
+decisions untouched, and from `DecisionSubmissionSerializer.validate`, so the
+whole-submission endpoint enforces the identical rule rather than a copy of it.
 
-**Not repaired here.** The obvious fix is uniqueness validation on the write
-path, returning 400 instead of 200. That changes request handling, which under
-this handoff's own terms would require rerunning the load profiles — the loop
-the handoff exists to avoid. Recommended as a separate scheduled item; the
-runbook procedure covers the competition in the meantime.
+Names are compared exactly, after the serializer's own string handling. No case
+folding or fuzzy matching was introduced; that would be a new competition rule
+rather than a repair. A retired product does not release its name, because the
+manifest key spans the whole table and accepting a reused name would stall the
+round exactly as before.
+
+The manifest natural-key refusals are unchanged, and remain the backstop for
+rows introduced outside the supported APIs.
+
+**Acceptance.** `core/tests/test_product_name_uniqueness.py`, 10 tests, all
+passing: both endpoints refuse both variants; neither writes a replacement row;
+two distinct names are accepted; another team may use the same name; a retired
+name stays taken; a rejected payload leaves the previous set intact; a
+corrected payload is accepted and the round then resolves; and ORM-inserted
+duplicates are still refused at the manifest boundary with zero partial
+results. Directly affected contract suites — `test_decision_limits`,
+`test_permissions`, `test_auth_rounds`, 91 tests — pass unchanged.
+
+The same probe that reproduced the defect now asserts the repair at the running
+HTTP surface (`evidence/load-failure/duplicate-product-name-repaired.json`):
+both payloads refused with a 400 naming `product_name`, no decision rows
+written by the refusal, corrected payloads accepted, and both rounds resolved
+with no database intervention.
+
+`OPERATOR_RUNBOOK.md`'s manual-SQL procedure is withdrawn as a supported
+action. If that `SnapshotError` appears now it means rows arrived outside the
+supported APIs, so the runbook routes it to the defect procedure instead of an
+operator workaround.
 
 ## Reconciliation
 
