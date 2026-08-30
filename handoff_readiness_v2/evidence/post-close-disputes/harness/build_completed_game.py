@@ -197,9 +197,9 @@ def main():
     problems = []
     if record.get('game_status') != 'completed':
         problems.append(f"game status is {record.get('game_status')}, not completed")
-    if not contains.get('a_team_with_no_submission_in_round_2'):
-        problems.append('no team is missing a round 2 submission, so the '
-                        'default and defaulted_missing states are not present')
+    if not contains.get('defaulted_missing_team_rounds'):
+        problems.append('no team-round is classified defaulted_missing, so the '
+                        'default and empty states are not present')
     if not contains.get('submissions_saved_more_than_once_with_differing_hashes'):
         problems.append('no submission was saved twice with differing payload '
                         'hashes, so dispute 2 has nothing to compare')

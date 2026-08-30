@@ -86,11 +86,20 @@ def describe(game):
                           'processed_at', 'close_reason'))
     # A fixture that does not contain what it claims is worse than no fixture:
     # every later check reads it and reports on something else.
+    # Closing a round auto-creates an empty submission for every team that
+    # did not submit, so "has no submission row" is the wrong question. The
+    # product records the distinction as submission_origin, derived from the
+    # audit log, and that is what an instructor actually reads.
+    from core.views.results_api import classify_submission_origin
     from core.models.decisions import DecisionSubmission as DS
-    round_2 = Round.objects.filter(game=game, round_number=2).first()
-    missing_in_round_2 = sorted(
-        t.name for t in Team.objects.filter(game=game, participation_status='active')
-        if not DS.objects.filter(team=t, round=round_2).exists())
+    origins = {}
+    for rnd_obj in Round.objects.filter(game=game, status='processed'):
+        for team in Team.objects.filter(game=game, participation_status='active'):
+            submission = DS.objects.filter(team=team, round=rnd_obj).first()
+            origin = classify_submission_origin(game, team, rnd_obj, submission)
+            origins.setdefault(origin, []).append(
+                f'{team.name} r{rnd_obj.round_number}')
+    defaulted = sorted(origins.get('defaulted_missing', []))
     edit_hashes = list(DecisionAuditEvent.objects
                        .filter(game=game, action='save')
                        .values('team__name', 'round__round_number',
@@ -106,7 +115,8 @@ def describe(game):
         'game_id': game.id,
         'game_status': game.status,
         'contains': {
-            'a_team_with_no_submission_in_round_2': missing_in_round_2,
+            'submission_origins': {k: sorted(v) for k, v in origins.items()},
+            'defaulted_missing_team_rounds': defaulted,
             'submissions_saved_more_than_once_with_differing_hashes': edited,
         },
         'current_round': game.current_round,
