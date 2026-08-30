@@ -83,52 +83,66 @@ def main():
 
         # A team's own platform is needed to name a product create.
         platform = W.stage_via_shell(
-            database,
-            f'W2.platform_for(game, {team_id})', marker='---PLAT---')
+            database, f'W2.platform_for(game, {team_id})', marker='---PLAT---')
 
-        # Two creates, one name. Nothing on this path objects.
-        payload = [{'team_platform': platform['team_platform_id'],
-                    'product_name': 'Vanguard One',
-                    'positioning': platform['positioning'],
-                    'target_market_ids': platform['market_ids']},
-                   {'team_platform': platform['team_platform_id'],
-                    'product_name': 'Vanguard One',
-                    'positioning': platform['positioning'],
-                    'target_market_ids': platform['market_ids']}]
-        write_status, write_body = api(
-            port, 'PATCH',
-            f'/api/games/{game_id}/teams/{team_id}/decisions/round/{rnd}/products/',
-            token, payload)
-        result['student_write'] = {
-            'endpoint': f'PATCH /api/games/{{id}}/teams/{{id}}/decisions/'
-                        f'round/{{n}}/products/',
-            'identical_product_names': 'Vanguard One',
-            'status': write_status,
-            'accepted': write_status in (200, 201),
-            'body': write_body if write_status not in (200, 201) else 'accepted',
+        def write_products(round_number, names):
+            payload = [{'team_platform': platform['team_platform_id'],
+                        'product_name': name,
+                        'positioning': platform['positioning'],
+                        'target_market_ids': platform['market_ids']}
+                       for name in names]
+            code, body = api(
+                port, 'PATCH',
+                f'/api/games/{game_id}/teams/{team_id}/decisions/round/'
+                f'{round_number}/products/', token, payload)
+            return {'product_names': names, 'status': code,
+                    'accepted': code in (200, 201),
+                    'body': 'accepted' if code in (200, 201) else body}
+
+        endpoint = ('PATCH /api/games/{id}/teams/{id}/decisions/round/'
+                    '{n}/products/')
+
+        # Variant A: the same name twice in one submission.
+        result['variant_a'] = {
+            'description': 'a student names two new products the same thing',
+            'endpoint': endpoint,
+            'student_write': write_products(rnd, ['Vanguard One', 'Vanguard One']),
         }
+        result['variant_a'].update(W.stage_via_shell(
+            database, f'W2.variant_a_same_name_twice(game, {team_id})',
+            marker='---VA---'))
+
+        # Variant B: one create carrying the name of a product the team owns.
+        # Only reachable once variant A's round has resolved and left one.
+        nxt = result['variant_a'].get('next_round_number')
+        if nxt:
+            result['variant_b'] = {
+                'description': 'a student reuses the name of an existing product',
+                'endpoint': endpoint,
+                'student_write': write_products(nxt, ['Vanguard One']),
+            }
+            result['variant_b'].update(W.stage_via_shell(
+                database, f'W2.variant_b_name_of_existing_product(game, {team_id})',
+                marker='---VB---'))
         W.stop_gunicorn(process); process = None
-
-        result['resolution'] = W.stage_via_shell(
-            database, 'W2.resolve_twice(game)', marker='---RESOLVE---')
-    finally:
-        if process is not None:
-            W.stop_gunicorn(process)
-        R.psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
-
-    res = result.get('resolution', {})
+    a = result.get('variant_a', {})
+    b = result.get('variant_b', {})
     result['finding'] = {
-        'reachable_by_a_student': result['student_write']['accepted'],
-        'round_creating_the_duplicate_resolves': res.get('first_round_processed'),
-        'next_round_refuses': res.get('second_round_blocked'),
-        'refusal_is_permanent': res.get('retry_also_blocked'),
+        'both_variants_accepted_by_the_api': (
+            a.get('student_write', {}).get('accepted')
+            and b.get('student_write', {}).get('accepted')),
+        'a_blocks_the_submitted_round': a.get('blocked'),
+        'b_blocks_the_following_round': b.get('next_round_blocked'),
+        'blocks_persist_on_retry': (a.get('still_blocked_on_retry')
+                                    and b.get('still_blocked_on_retry')),
+        'blocks_the_whole_cohort_not_just_the_team': b.get('affects_whole_cohort'),
+        'recovery_is_a_direct_database_edit': True,
         'documented_operator_recovery': False,
     }
     result['passed'] = all([
-        result['finding']['reachable_by_a_student'],
-        result['finding']['round_creating_the_duplicate_resolves'],
-        result['finding']['next_round_refuses'],
-        result['finding']['refusal_is_permanent'],
+        result['finding']['both_variants_accepted_by_the_api'],
+        a.get('blocked'), a.get('resolves_after_recovery'),
+        b.get('next_round_blocked'), b.get('resolves_after_recovery'),
     ])
     (EVIDENCE / 'duplicate-product-name.json').write_text(
         json.dumps(result, indent=2, sort_keys=True, default=str) + '\n')
@@ -137,8 +151,9 @@ def main():
         raise SystemExit('inventory does not verify')
 
     print('\n=== duplicate product name: resolution blocked ===')
-    print(json.dumps(result.get('student_write'), indent=2)[:600])
-    print(json.dumps(res, indent=2, default=str)[:1400])
+    print(json.dumps(result.get('variant_a'), indent=2, default=str)[:1300])
+    print(json.dumps(result.get('variant_b'), indent=2, default=str)[:1500])
+    print(json.dumps(result.get('finding'), indent=2, default=str))
     print(f"\nreproduced end to end: {result['passed']}")
     return 0
 

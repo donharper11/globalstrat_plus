@@ -1,0 +1,28 @@
+{
+  "code_revision": "e0195b86781b5d1c5a2f56b4bdf88d7449b7c17b",
+  "finding": {
+    "documented_operator_recovery": false,
+    "next_round_refuses": false,
+    "reachable_by_a_student": true,
+    "refusal_is_permanent": false,
+    "round_creating_the_duplicate_resolves": false
+  },
+  "passed": false,
+  "resolution": {
+    "duplicate_products_created": [],
+    "first_round_error": "SnapshotError: Natural key ('submission_id', 'product_name') is not unique in section \"decision_product_create\": decision_product_create(decision_submission(team(game(\"GlobalStrat Test Game\")|\"Vertex Electronics\")|round(game(\"GlobalStr",
+    "first_round_processed": false,
+    "retry_also_blocked": false,
+    "second_round_blocked": false,
+    "second_round_error": null,
+    "second_round_retry_error": null,
+    "second_round_status": null
+  },
+  "student_write": {
+    "accepted": true,
+    "body": "accepted",
+    "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
+    "identical_product_names": "Vanguard One",
+    "status": 200
+  }
+}
