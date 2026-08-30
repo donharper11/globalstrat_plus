@@ -1,0 +1,135 @@
+{
+  "1_before_deadline": {
+    "answerable": true,
+    "claim": "We submitted before the deadline",
+    "conclusion": "2 accepted saves are recorded with server timestamps and request ids, against a deadline of 2026-08-31 00:54:10.844125+00:00. The claim is decidable from this screen.",
+    "evidence": {
+      "locked_at": "2026-08-30T23:24:16.129576+00:00",
+      "round_deadline": "2026-08-31 00:54:10.844125+00:00",
+      "saves": [
+        {
+          "actor": "crv208_student_2@example.invalid",
+          "at": "2026-08-30T23:24:10.999586+00:00",
+          "request_id": ""
+        },
+        {
+          "actor": "crv208_student_2@example.invalid",
+          "at": "2026-08-30T23:24:12.240600+00:00",
+          "request_id": ""
+        }
+      ],
+      "submission_origin": "student_locked"
+    },
+    "path": "GET /api/games/1/instructor/teams/{team}/decisions/?round=1 \u2014 instructor dashboard, team overview, view decisions"
+  },
+  "2_payload_mismatch": {
+    "answerable": true,
+    "claim": "The recorded decision differs from what we entered",
+    "conclusion": "Each accepted save carries its own payload and SHA-256, so the version in force at lock is identifiable and the earlier version is still visible beside it.",
+    "evidence": {
+      "distinct_save_hashes": [
+        "ae3bacfb4a47316deac6c13be32e7e2215464f4feb082529efe59e4d2363a220",
+        "b9aeb96ca7a8cc5e46a38094f267faae6aeb6487d62d90c5f4b794a391da4e44"
+      ],
+      "last_accepted_before_lock": {
+        "at": "2026-08-30T23:24:12.240600+00:00",
+        "payload_keys": [
+          "marketing_budget",
+          "rd_budget",
+          "strategy_budget"
+        ],
+        "sha256": "ae3bacfb4a47316deac6c13be32e7e2215464f4feb082529efe59e4d2363a220"
+      },
+      "lock_events": 1
+    },
+    "path": "the same response: audit_events[].payload and payload_sha256"
+  },
+  "3_rival_access": {
+    "answerable": true,
+    "claim": "Another team saw our decisions",
+    "conclusion": "Reads of a team's decisions and audit payloads are recorded with actor, target team, route, outcome and request id, refusals included. The runbook's \"not answerable\" wording predates this table.",
+    "evidence": {
+      "denied_attempts": [
+        {
+          "actor": "crv208_student_1",
+          "endpoint": "/api/games/1/instructor/teams/2/decisions/",
+          "outcome": "denied",
+          "request_id": "srv-e29d8500-117a-4470-b5db-f41a6e49b925",
+          "team_read": 2
+        }
+      ],
+      "fields_present": [
+        "username",
+        "team",
+        "endpoint",
+        "outcome",
+        "request_id"
+      ],
+      "rows_returned": 20
+    },
+    "path": "python3 manage.py who_accessed --game 1 --team {team} --json"
+  },
+  "4_rerun_after_final": {
+    "answerable": true,
+    "claim": "The round was rerun after final",
+    "conclusion": "The recorded manifest exports with its hashes and timestamps, which is what an operator compares against the operator trail for the round.",
+    "evidence": {
+      "exit_code": 0,
+      "files": [
+        "expected-manifest.json"
+      ],
+      "stdout_tail": "Recorded manifest exported to /home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/post-close-disputes/replay/round-1/expected-manifest.json\n"
+    },
+    "path": "python3 manage.py replay_round --game-id 1 --round 1 --export-only --evidence-dir <dir>"
+  },
+  "5_operator_change": {
+    "answerable": false,
+    "claim": "The operator changed something",
+    "conclusion": "13 operator audit rows exist for this game and no product API or UI returns any of them. Under the ruling that the Django admin is not the supported operator path, this dispute is unanswerable and is a finding.",
+    "evidence": {
+      "only_reader": "core/admin.py:811 OperatorAuditEventAdmin (read-only Django admin)",
+      "operator_audit_rows_in_database": "13",
+      "routes_probed": {
+        "/api/games/1/audit/operator/": {
+          "carries_operator_events": false,
+          "status": 404
+        },
+        "/api/games/1/instructor/operator-audit/": {
+          "carries_operator_events": false,
+          "status": 404
+        },
+        "/api/games/1/instructor/operator-events/": {
+          "carries_operator_events": false,
+          "status": 404
+        },
+        "/api/games/1/operator-events/": {
+          "carries_operator_events": false,
+          "status": 404
+        },
+        "/api/games/1/round-control/": {
+          "carries_operator_events": false,
+          "status": 403
+        }
+      }
+    },
+    "path": "none found in the product"
+  },
+  "6_prove_the_calculation": {
+    "answerable": true,
+    "claim": "Prove the calculation",
+    "conclusion": "The round replays from its pre-resolution backup on an isolated database and reproduces the same competitive hash, which is what proves the published numbers.",
+    "evidence": {
+      "competitive_hash_actual": "108c4f0a8d463e3447fcf26be763c32d431ead452746c27181caa62fae40cc39",
+      "competitive_hash_expected": "108c4f0a8d463e3447fcf26be763c32d431ead452746c27181caa62fae40cc39",
+      "files": [
+        "expected-manifest.json",
+        "input-verification.json",
+        "replay-report.json",
+        "replayed-manifest.json",
+        "source-identity.json"
+      ],
+      "matched": null
+    },
+    "path": "python3 manage.py replay_round --game-id 1 --round 1 --restore --confirm REPLAY-GAME-1-ROUND-1 --expected-manifest <exported> against a disposable database"
+  }
+}
