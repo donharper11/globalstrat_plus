@@ -47,7 +47,9 @@ def main():
         report['code_revision'] = revision
 
         # Instructor readiness: are all 96 sessions visible to the instructor?
-        from core.authentication import create_access_token  # noqa
+        # The token is minted inside the stack's own process; this runner is
+        # not a Django process and importing core here crashed the run after
+        # the full nine-minute drive had already completed.
         inst_body = (
             'import json\n'
             'from core.authentication import create_access_token\n'
