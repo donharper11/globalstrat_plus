@@ -11,6 +11,7 @@ from .views.decisions import (
 from .views.results_api import (
     RoundResultsView, LeaderboardView, LeaderboardHistoryView,
     CompetitorIntelView, InstructorDashboardView,
+    InstructorSessionReadinessView,
     InstructorAdvanceRoundView, InstructorInjectEventView,
     InstructorExtendDeadlineView, InstructorResearchQueriesView,
     InstructorEventTemplatesView, InstructorTeamBriefingsView,
@@ -316,6 +317,9 @@ urlpatterns = [
     path('games/<int:game_id>/leaderboard/history/',
          LeaderboardHistoryView.as_view(), name='leaderboard-history'),
     # ---- Instructor (CC-10) ----
+    path('games/<int:game_id>/instructor/session-readiness/',
+         InstructorSessionReadinessView.as_view(),
+         name='instructor-session-readiness'),
     path('games/<int:game_id>/instructor/dashboard/',
          InstructorDashboardView.as_view(), name='instructor-dashboard'),
     path('games/<int:game_id>/instructor/advance-round/',

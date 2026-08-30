@@ -534,6 +534,25 @@ class CompetitorIntelView(APIView):
 # 1e. Instructor Endpoints
 # ---------------------------------------------------------------------------
 
+class InstructorSessionReadinessView(APIView):
+    """GET /api/games/{game_id}/instructor/session-readiness/
+
+    Who is signed in, as distinct from who is on the roster. The dashboard
+    answers roster membership; opening a round needs authenticated sessions,
+    and CRV2-07 recorded a readiness claim built from an enrollment count,
+    which is why the two are separately named here.
+    """
+    permission_classes = [IsInstructor]
+
+    def get(self, request, game_id):
+        from core.services.session_readiness import readiness
+        game = get_object_or_404(Game, id=game_id)
+        teams = request.query_params.get('teams')
+        cohort = ([int(t) for t in teams.split(',') if t.strip().isdigit()]
+                  if teams else None)
+        return Response(readiness(game, cohort))
+
+
 class InstructorDashboardView(APIView):
     """GET /api/games/{game_id}/instructor/dashboard/"""
     permission_classes = [IsInstructor]
