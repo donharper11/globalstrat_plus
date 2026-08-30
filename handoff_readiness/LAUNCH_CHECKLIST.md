@@ -48,15 +48,23 @@ checklist tracks the remaining operational path to launch.
 
 ## Required before live competition approval
 
-- [ ] **Admission window announced and staged.** Sign-in opens five minutes
+- [ ] **Admission window announced and staged.** Sign-in opens **ten minutes**
       before round 1, announced as a window rather than a start time, with no
-      countdown or shared "go" that makes the cohort click together. See
-      *Admission window* in `OPERATOR_RUNBOOK.md`.
+      countdown or shared "go" that makes the cohort click together. Ten
+      minutes is required on the reference 8-core host; five was the measured
+      lower bound and is not the procedure. See *Admission window* in
+      `OPERATOR_RUNBOOK.md`.
+- [ ] **Admission window validated on the deployment host.** If the production
+      host is slower than the 8-core reference, a longer window has been
+      established during preflight rather than assumed.
 - [ ] **Access-token lifetime spans the competition.** Confirm
       `JWT_ACCESS_TOKEN_LIFETIME_HOURS` (8) exceeds the planned competition
       duration; if it does not, schedule a staged re-admission window.
-- [ ] **Cohort confirmed present before round 1 opens.** The instructor
-      dashboard shows every team with the expected members.
+- [ ] **Cohort confirmed present before round 1 opens, by session readiness.**
+      `/api/games/{game_id}/instructor/session-readiness/` reports `ready`
+      true, with `missing`, `stale` and `duplicate_sessions` all zero. The
+      dashboard's member list is roster membership and is **not** evidence
+      that anyone has signed in.
 - [ ] **Concurrent sections staggered.** If more than one section starts in the
       same period, their admission windows are offset. Simultaneous
       cohort-wide sign-in is an unsupported arrival shape.

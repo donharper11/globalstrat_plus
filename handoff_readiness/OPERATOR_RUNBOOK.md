@@ -28,9 +28,17 @@ of 63.
 
 **The work factor is not to be lowered.** Admission is staged instead.
 
-1. **Open sign-in five minutes before the first round opens.** Announce the
-   admission window explicitly ("sign in any time in the next five minutes"),
+1. **Open sign-in ten minutes before the first round opens.** Announce the
+   admission window explicitly ("sign in any time in the next ten minutes"),
    not a single start time. Spread arrival is the control.
+
+   Ten minutes is the **required** window on the reference 8-core host. Five
+   minutes was measured and passed, but by 0.8 ms of p95 margin against a
+   2000 ms bar — a lower bound, not a procedure. A slower host, a larger
+   cohort or an unlucky arrival cluster consumes that margin entirely.
+   **Slower hosts must establish a longer window during preflight**, by
+   running the admission profile on the deployment host rather than assuming
+   this one's numbers.
 2. **Do not gate sign-in behind a countdown, a shared link opened on cue, or
    an instructor "go" message.** Anything that makes 96 people click at the
    same second recreates the burst the window exists to avoid.
@@ -39,9 +47,32 @@ of 63.
    competition. There is no refresh endpoint and none is needed within that
    span. A competition intended to run longer than 8 hours must plan a
    re-admission window in the same staged way.
-4. **Confirm the cohort is in before opening round 1.** The instructor
-   dashboard lists every team with its members; check the expected number of
-   students appears before opening decisions.
+4. **Confirm the cohort is in before opening round 1 — using session
+   readiness, not the roster.** Open
+   `/api/games/{game_id}/instructor/session-readiness/` (or the console view
+   that consumes it). It reports two different things and they must not be
+   confused:
+
+   - **Roster** — `expected_participants`: who is enrolled. This is
+     unchanged by anyone signing in and answers "who is in this class".
+   - **Sessions** — `authenticated`, `missing`, `stale`, `duplicate_sessions`:
+     who is actually signed in and working now.
+
+   **Open the round when `ready` is true.** It is true only when every
+   expected participant holds exactly one usable session. `blocking_reasons`
+   names what is outstanding.
+
+   - `missing` — never signed in, or signed in on another cohort. Chase them.
+   - `stale` — signed in and then idled out or logged out. They must sign in
+     again; their earlier session does not count.
+   - `duplicate_sessions` — one person with two browsers or devices. Have them
+     close one. Duplicates deliberately block `ready` rather than being
+     absorbed, because two sessions for one person could otherwise make a
+     cohort look complete while someone is still locked out.
+
+   Do **not** read the dashboard's member list as a sign-in count. It
+   enumerates enrolled members and will show the full class whether or not
+   anybody has authenticated.
 5. **Several sections starting at once.** 288 simultaneous password checks is
    an unsupported arrival shape, not supported capacity. Stagger the sections'
    admission windows — for example three sections at five-minute offsets —
