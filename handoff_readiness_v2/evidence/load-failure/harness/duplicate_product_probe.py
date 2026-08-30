@@ -125,6 +125,11 @@ def main():
                 database, f'W2.variant_b_name_of_existing_product(game, {team_id})',
                 marker='---VB---'))
         W.stop_gunicorn(process); process = None
+    finally:
+        if process is not None:
+            W.stop_gunicorn(process)
+        R.psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
+
     a = result.get('variant_a', {})
     b = result.get('variant_b', {})
     result['finding'] = {
