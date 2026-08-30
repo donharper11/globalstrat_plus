@@ -108,57 +108,48 @@ def variant_a_same_name_twice(game, team_id):
 def variant_b_name_of_existing_product(game, team_id):
     """One create whose name matches a product the team already owns.
 
-    The decision rows are unique, so this round resolves. Phase 1 then creates
-    a second TeamProduct sharing (team_id, name) with the first, and the
-    team_product section keys on exactly that pair -- so the *next* round is
-    the one that cannot be resolved, for every team in the game.
+    This does not block where I first predicted. The decision rows are
+    unique, so prepare_manifest passes and Phase 1 runs and creates the second
+    TeamProduct. complete_manifest then snapshots the *output* state, trips the
+    team_product key (team_id, name), and the whole resolution rolls back --
+    complete_manifest is inside the same transaction as Phase 1
+    (advance_round.py:230).
+
+    That is a better outcome than a game left permanently unresolvable: no
+    duplicate is ever persisted, and Phase 1's work is discarded with it. It
+    is still a round an instructor cannot close, from a student write the API
+    accepted with a 200.
     """
-    from core.engine.advance_round import advance_to_next_round
+    from core.models.decisions import DecisionProductCreate
     from core.models.team_state import TeamProduct
 
     rnd = _round(game)
+    products_before = TeamProduct.objects.filter(team_id=team_id).count()
     _lock_core_only(game, rnd)
-    creating_error = _attempt(game)
-    rnd.refresh_from_db()
-    created_ok = rnd.status == 'processed'
-    duplicates = _duplicate_names(game)
-
-    result = {
-        'round_creating_the_duplicate_error': creating_error,
-        'round_creating_the_duplicate_resolves': created_ok,
-        'duplicate_products_created': duplicates,
-    }
-    if not created_ok:
-        result['next_round_blocked'] = None
-        return result
-
-    advance_to_next_round(game.id)
-    nxt = _round(game)
-    _lock_core_only(game, nxt)
     blocked = _attempt(game)
     retry = _attempt(game)
-    nxt.refresh_from_db()
+    rnd.refresh_from_db()
 
-    # Recovery needs a rename on a table the product exposes no writable name
-    # field for. Confirm the rename is what unblocks it.
-    dupe = duplicates[0] if duplicates else None
-    fixed_error = None
-    if dupe:
-        rows = list(TeamProduct.objects
-                    .filter(team_id=dupe['team_id'], name=dupe['name'])
-                    .order_by('id').values_list('id', flat=True))
-        TeamProduct.objects.filter(id=rows[-1]).update(name=dupe['name'] + ' (2)')
-        fixed_error = _attempt(game)
-        nxt.refresh_from_db()
-
-    result.update({
-        'next_round_error': blocked,
-        'next_round_retry_error': retry,
-        'next_round_blocked': bool(blocked),
+    result = {
+        'blocked_error': blocked,
+        'retry_error': retry,
+        'blocked_round_status': rnd.status,
+        'blocked': bool(blocked) and rnd.status != 'processed',
         'still_blocked_on_retry': bool(retry),
-        'affects_whole_cohort': True,
-        'recovery': 'rename one TeamProduct row directly in the database',
-        'recovery_error': fixed_error,
-        'resolves_after_recovery': nxt.status == 'processed',
-    })
+        'fails_at': 'complete_manifest, after Phase 1, inside the same '
+                    'transaction (advance_round.py:230)',
+        'duplicate_products_persisted': _duplicate_names(game),
+        'phase_1_work_rolled_back':
+            TeamProduct.objects.filter(team_id=team_id).count() == products_before,
+    }
+
+    # Recovery: remove the offending decision row. Same shape as variant A,
+    # and same absence of any operator-facing way to do it.
+    DecisionProductCreate.objects.filter(
+        submission__team_id=team_id, submission__round=rnd,
+        product_name='Vanguard One').delete()
+    result['recovery'] = 'delete the offending decision row directly in the database'
+    result['recovery_error'] = _attempt(game)
+    rnd.refresh_from_db()
+    result['resolves_after_recovery'] = rnd.status == 'processed'
     return result

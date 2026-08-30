@@ -145,17 +145,19 @@ def main():
             a.get('student_write', {}).get('accepted')
             and b.get('student_write', {}).get('accepted')),
         'a_blocks_the_submitted_round': a.get('blocked'),
-        'b_blocks_the_following_round': b.get('next_round_blocked'),
+        'b_blocks_the_submitted_round': b.get('blocked'),
+        'b_fails_at': b.get('fails_at'),
+        'b_phase_1_work_rolled_back': b.get('phase_1_work_rolled_back'),
+        'no_duplicate_is_ever_persisted': not b.get('duplicate_products_persisted'),
         'blocks_persist_on_retry': (a.get('still_blocked_on_retry')
                                     and b.get('still_blocked_on_retry')),
-        'blocks_the_whole_cohort_not_just_the_team': b.get('affects_whole_cohort'),
         'recovery_is_a_direct_database_edit': True,
         'documented_operator_recovery': False,
     }
     result['passed'] = all([
         result['finding']['both_variants_accepted_by_the_api'],
         a.get('blocked'), a.get('resolves_after_recovery'),
-        b.get('next_round_blocked'), b.get('resolves_after_recovery'),
+        b.get('blocked'), b.get('resolves_after_recovery'),
     ])
     (EVIDENCE / 'duplicate-product-name.json').write_text(
         json.dumps(result, indent=2, sort_keys=True, default=str) + '\n')

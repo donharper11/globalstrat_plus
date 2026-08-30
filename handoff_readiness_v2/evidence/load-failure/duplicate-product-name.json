@@ -1,11 +1,11 @@
 {
-  "code_revision": "ba88c8a3b57bde35a831a051d84dd4c207b34ae9",
+  "code_revision": "e583c7a9914117a61718006b028719bbe3220b0e",
   "finding": {
     "a_blocks_the_submitted_round": true,
-    "b_blocks_the_following_round": false,
-    "blocks_persist_on_retry": true,
-    "blocks_the_whole_cohort_not_just_the_team": true,
-    "both_variants_accepted_by_the_api": false,
+    "b_blocks_the_following_round": null,
+    "blocks_persist_on_retry": null,
+    "blocks_the_whole_cohort_not_just_the_team": null,
+    "both_variants_accepted_by_the_api": true,
     "documented_operator_recovery": false,
     "recovery_is_a_direct_database_edit": true
   },
@@ -16,7 +16,7 @@
     "blocked_round_status": "open",
     "description": "a student names two new products the same thing",
     "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
-    "next_round_number": 1,
+    "next_round_number": 2,
     "recovery": "delete one duplicate decision row directly in the database",
     "recovery_error": null,
     "resolves_after_recovery": true,
@@ -33,26 +33,19 @@
     }
   },
   "variant_b": {
-    "affects_whole_cohort": true,
     "description": "a student reuses the name of an existing product",
     "duplicate_products_created": [],
     "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
-    "next_round_blocked": false,
-    "next_round_error": null,
-    "next_round_retry_error": "ValueError: Round 3 has already been processed.",
-    "recovery": "rename one TeamProduct row directly in the database",
-    "recovery_error": null,
-    "resolves_after_recovery": true,
-    "round_creating_the_duplicate_error": null,
-    "round_creating_the_duplicate_resolves": true,
-    "still_blocked_on_retry": true,
+    "next_round_blocked": null,
+    "round_creating_the_duplicate_error": "SnapshotError: Natural key ('team_id', 'name') is not unique in section \"team_product\": team_product(team(game(\"GlobalStrat Test Game\")|\"Helix Digital\")|\"Vanguard One\") appears twice. Declare a key that identifies a row, or set key=Non",
+    "round_creating_the_duplicate_resolves": false,
     "student_write": {
-      "accepted": false,
-      "body": "{\"detail\":\"Round 1 is processed \u2014 it is no longer accepting decisions.\"}",
+      "accepted": true,
+      "body": "accepted",
       "product_names": [
         "Vanguard One"
       ],
-      "status": 403
+      "status": 200
     }
   }
 }
