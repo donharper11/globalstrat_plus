@@ -48,6 +48,11 @@ class ReadinessFixture(TestCase):
         self.section = Section.objects.create(
             course=course, section_code=f'S{id(self) % 9999}',
             section_name='S', is_active=True, created_at=timezone.now())
+        # The game must name its section, or `instructor_can_access_game`
+        # reads it as having no cohort recorded and treats it as unowned --
+        # which made an ownership test pass a stranger with 200.
+        self.game.section_id = self.section.section_id
+        self.game.save(update_fields=['section_id'])
 
         # Three expected students, as the acceptance walkthrough requires.
         self.students = []
@@ -155,30 +160,108 @@ class TheContract(ReadinessFixture):
 
 
 class TheEndpoint(ReadinessFixture):
-    def test_the_endpoint_requires_an_instructor(self):
+    """Authorization, not merely the role.
+
+    The first version of this class asserted that an instructor with no
+    relationship to the game received 200, which pinned a bypass as intended
+    behaviour: readiness carries participant names, team membership and who is
+    signed in, missing, stale or duplicated, so any instructor could enumerate
+    another cohort by changing the game id.
+
+    Ownership is `instructor_can_access_game`, the rule already used by round
+    control: the instructor who owns the course behind the game's section, with
+    an unowned course visible to any instructor because `Course.instructor_id`
+    is genuinely NULL for the live pilot. That helper is used, not reimplemented.
+    """
+
+    def client_for(self, user):
         from django.test import Client
         from core.authentication import create_access_token
-        student_token = create_access_token(self.students[0])
-        client = Client(HTTP_AUTHORIZATION=f'Bearer {student_token}',
-                        SERVER_NAME='localhost')
-        response = client.get(
-            f'/api/games/{self.game.id}/instructor/session-readiness/')
+        return Client(HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}',
+                      SERVER_NAME='localhost')
+
+    def instructor(self, label):
+        return User.objects.create(
+            username=f'sr-{label}-{id(self)}', role='instructor',
+            email=f'{label}{id(self)}@example.invalid')
+
+    def own_the_course(self, instructor_user):
+        """Give this game's course an owner, making it no longer a pilot."""
+        from core.models.course import Course
+        course = Course.objects.get(course_id=self.section.course_id)
+        course.instructor_id = instructor_user.user_id
+        course.save(update_fields=['instructor_id'])
+
+    def url(self, game=None):
+        return (f'/api/games/{(game or self.game).id}'
+                f'/instructor/session-readiness/')
+
+    def test_a_student_is_refused(self):
+        response = self.client_for(self.students[0]).get(self.url())
         self.assertEqual(response.status_code, 403)
 
-    def test_the_endpoint_returns_the_same_contract(self):
-        from django.test import Client
-        from core.authentication import create_access_token
-        instructor = User.objects.create(
-            username=f'sr-inst-{id(self)}', role='instructor',
-            email=f'i{id(self)}@example.invalid')
+    def test_the_owning_instructor_receives_the_contract(self):
+        owner = self.instructor('owner')
+        self.own_the_course(owner)
         self.sign_in(self.students[0])
-        client = Client(HTTP_AUTHORIZATION=f'Bearer {create_access_token(instructor)}',
-                        SERVER_NAME='localhost')
-        response = client.get(
-            f'/api/games/{self.game.id}/instructor/session-readiness/')
+        response = self.client_for(owner).get(self.url())
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertEqual(body['roster']['expected_participants'], 3)
         self.assertEqual(body['sessions']['authenticated'], 1)
         self.assertEqual(body['sessions']['missing'], 2)
         self.assertFalse(body['ready'])
+
+    def test_an_instructor_of_another_course_is_refused(self):
+        owner = self.instructor('owner')
+        self.own_the_course(owner)
+        stranger = self.instructor('stranger')
+        response = self.client_for(stranger).get(self.url())
+        self.assertEqual(response.status_code, 403)
+
+    def test_a_refused_request_discloses_no_readiness_body(self):
+        """403 must not leak the thing it refused."""
+        owner = self.instructor('owner')
+        self.own_the_course(owner)
+        for student in self.students:
+            self.sign_in(student)
+        stranger = self.instructor('stranger')
+        response = self.client_for(stranger).get(self.url())
+        self.assertEqual(response.status_code, 403)
+        text = response.content.decode('utf-8', 'replace')
+        for leaked in ('roster', 'sessions', 'authenticated', 'missing',
+                       'ready', 'expected_participants'):
+            self.assertNotIn(leaked, text)
+        for student in self.students:
+            self.assertNotIn(student.username, text)
+
+    def test_an_unowned_pilot_course_stays_visible_to_any_instructor(self):
+        """Pinned deliberately: Course.instructor_id is NULL for the pilot.
+
+        Scoping strictly to owned courses would hide the live cohort from every
+        instructor, so the shared helper permits it. That is the established
+        behaviour and this test exists so a future change to it is a decision
+        rather than an accident.
+        """
+        from core.models.course import Course
+        course = Course.objects.get(course_id=self.section.course_id)
+        self.assertIsNone(course.instructor_id)
+        any_instructor = self.instructor('unrelated')
+        response = self.client_for(any_instructor).get(self.url())
+        self.assertEqual(response.status_code, 200)
+
+    def test_ownership_of_one_game_does_not_grant_another(self):
+        owner = self.instructor('owner')
+        self.own_the_course(owner)
+        # A second course and game the same instructor does not own.
+        from core.models.course import Course, Section
+        other_course = Course.objects.create(
+            course_code=f'X{id(self) % 9999}', course_name='X',
+            is_active=True, instructor_id=self.instructor('other').user_id)
+        other_section = Section.objects.create(
+            course=other_course, section_code=f'XS{id(self) % 9999}',
+            section_name='XS', is_active=True, created_at=timezone.now())
+        self.other_game.section_id = other_section.section_id
+        self.other_game.save(update_fields=['section_id'])
+        response = self.client_for(owner).get(self.url(self.other_game))
+        self.assertEqual(response.status_code, 403)

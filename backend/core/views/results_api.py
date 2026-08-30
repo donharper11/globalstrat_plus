@@ -545,8 +545,20 @@ class InstructorSessionReadinessView(APIView):
     permission_classes = [IsInstructor]
 
     def get(self, request, game_id):
+        from core.permissions import instructor_can_access_game
         from core.services.session_readiness import readiness
         game = get_object_or_404(Game, id=game_id)
+        # IsInstructor checks the role and nothing else, so without this an
+        # instructor could read another cohort's participant names, team
+        # membership and who is signed in, missing, stale or duplicated, just
+        # by changing the game id in the URL. The ownership rule is the one
+        # already used elsewhere -- owner of the course behind the game's
+        # section, with unowned courses visible to any instructor for the live
+        # pilot -- and is deliberately not restated here.
+        if not instructor_can_access_game(request, game):
+            return Response(
+                {'error': 'This game belongs to another instructor.'},
+                status=status.HTTP_403_FORBIDDEN)
         teams = request.query_params.get('teams')
         cohort = ([int(t) for t in teams.split(',') if t.strip().isdigit()]
                   if teams else None)

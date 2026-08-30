@@ -136,6 +136,43 @@ Ten focused tests cover the same contract at service and endpoint level,
 including that a student receives 403 from the endpoint. The CRV2-04 read
 inventory was regenerated for the new route.
 
+### Authorization on the readiness endpoint
+
+The endpoint first shipped with `permission_classes = [IsInstructor]` and
+nothing else. `IsInstructor` checks the role and not the game, so any
+instructor could read another cohort's participant names, team membership and
+who was signed in, missing, stale or duplicated, simply by changing the game id
+in the URL. The focused test made it worse by asserting that an unrelated
+instructor received 200, pinning the bypass as intended behaviour.
+
+The view now calls `instructor_can_access_game(request, game)` after resolving
+the game and refuses with 403 otherwise — the same helper and the same refusal
+shape used by round control. The ownership rule is not restated: the instructor
+who owns the course behind the game's section, with an unowned course visible
+to any instructor because `Course.instructor_id` is genuinely NULL for the live
+pilot cohort.
+
+Six authorization cases are pinned:
+
+| case | expected |
+|---|---|
+| owning instructor | 200 with the readiness contract |
+| instructor of another course | 403 |
+| owning one game does not grant another | 403 |
+| student | 403 |
+| unowned pilot course | 200 for any instructor, deliberately |
+| refused request | body carries no roster, sessions, participant names or `ready` |
+
+The last is checked by asserting the 403 body contains none of `roster`,
+`sessions`, `authenticated`, `missing`, `ready`, `expected_participants`, or any
+participant username — a refusal must not disclose what it refused.
+
+A fixture defect surfaced during this repair and is worth recording: the test
+game did not name its section, so `instructor_can_access_game` read it as
+having no cohort recorded and treated it as unowned, and the ownership test
+passed a stranger with 200. The fixture now links the game to its section. The
+helper was behaving correctly throughout.
+
 ### Round-opening gate
 
 `OPERATOR_RUNBOOK.md` now directs operators to open a round on `ready`, with
