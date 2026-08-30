@@ -156,6 +156,13 @@ def main():
                 code, body = api(port, 'POST', base.format(team=team['id']) + 'lock/',
                                  students[team['id']])
                 note(f"{team['name']} lock", code, body)
+                if code != 200:
+                    # A fixture whose submissions never locked is not a
+                    # completed game, and every later stage would be measuring
+                    # defaults. Stop here rather than produce one.
+                    raise SystemExit(
+                        f'lock refused for {team["name"]} in round '
+                        f'{round_number}: {body}')
 
             # Round 2 carries the deadline event: the deadline is moved into
             # the past and a student saves anyway.

@@ -103,27 +103,61 @@ def describe(game):
 
 
 def complete_submission(game, team_id, round_number):
-    """Fill everything the lock validator requires beyond the budget.
+    """Fill exactly what the lock validator requires, and nothing else.
 
     The budget saves are driven through the API because they are the evidence
     the disputes are answered from -- the audit rows, their payload hashes and
-    their server timestamps. The rest of a valid submission is fixture bulk:
-    a product portfolio, a marketing mix for every active product-market pair,
-    a strategy mix, and any mandatory communication the round triggered. Those
-    are written here so the lock endpoint has a complete submission to accept
-    or refuse on its own terms.
+    their server timestamps. The rest of a valid submission is fixture bulk,
+    written here so the lock endpoint has something complete to judge.
+
+    The adversarial-balance harness's `build_optional` was tried first and is
+    wrong for this game. It develops a platform the team already owns, enters a
+    market below the entry-mode minimum, and reuses one product name every
+    round -- which the lock validator refused twice and which then stalled
+    round 2 on the team_product natural key. That last one is V2-029's second
+    variant arriving through the ORM, so it is also a live demonstration that
+    the manifest backstop still holds where the new write-path check cannot
+    reach. Here the fixture simply stops doing it.
+
+    What the validator actually needs: a budget, a product portfolio entry, a
+    marketing row per active product-market pair, and one strategy decision.
     """
     import baseline as BASE
+    from decimal import Decimal as D
     from django.utils import timezone
     from core.models import DecisionSubmission, Round, Team
     from core.models.cc32_models import CommunicationAssignment, TeamCommunication
+    from core.models.decisions import DecisionESG, DecisionProductCreate
+    from core.models.team_state import TeamMarketPresence, TeamPlatform
 
     team = Team.objects.get(id=team_id)
     rnd = Round.objects.get(game=game, round_number=round_number)
     submission, _ = DecisionSubmission.objects.get_or_create(
         team=team, round=rnd, defaults={'status': 'draft'})
+
+    # Budget, talent and a marketing row for every active product-market pair.
     BASE.build(submission, team)
-    optional = BASE.build_optional(submission, team)
+
+    # Product portfolio: one create, named per team and round so no two rows
+    # ever share (team_id, name).
+    platform = TeamPlatform.objects.filter(team=team).order_by('id').first()
+    markets = list(TeamMarketPresence.objects
+                   .filter(team=team, status='active')
+                   .values_list('market_id', flat=True))
+    DecisionProductCreate.objects.filter(submission=submission).delete()
+    if platform and markets:
+        DecisionProductCreate.objects.create(
+            submission=submission, team_platform=platform,
+            product_name=f'{team.name} R{round_number} Line',
+            positioning='mainstream', target_market_ids=markets[:1])
+
+    # Strategy: ESG is the one strategy decision with no capital minimum and no
+    # scenario prerequisites, so it cannot fail for reasons unrelated to this
+    # fixture.
+    DecisionESG.objects.update_or_create(
+        submission=submission,
+        defaults={'environmental_investment': D('50000'),
+                  'social_investment': D('25000')})
 
     for assignment in CommunicationAssignment.objects.filter(scenario=game.scenario):
         TeamCommunication.objects.update_or_create(
@@ -132,5 +166,4 @@ def complete_submission(game, team_id, round_number):
                       'word_count': 6, 'is_draft': False,
                       'submitted_at': timezone.now()})
     return {'team': team.name, 'round': round_number,
-            'optional_built': sorted(k for k, v in optional.items()
-                                     if v.get('built'))}
+            'product': f'{team.name} R{round_number} Line'}
