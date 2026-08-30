@@ -31,6 +31,13 @@ def seed_identities(game_placeholder, password):
 
     game = Game.objects.order_by('-id').first()
     section = Section.objects.order_by('section_id').first()
+
+    # A game only reaches status 'completed' by advancing past its scenario's
+    # final round (advance_round.py:310). The handoff wants a completed game of
+    # at least three rounds, not a ten-round playthrough, so this fixture's
+    # scenario is three rounds long and the real completion path fires.
+    from core.models import Scenario
+    Scenario.objects.filter(pk=chosen.pk).update(num_rounds=3)
     hashed = hash_password(password)
 
     # Three teams exactly. Any extra team setup_test_game created is withdrawn
@@ -77,9 +84,31 @@ def describe(game):
     rounds = list(Round.objects.filter(game=game).order_by('round_number')
                   .values('round_number', 'status', 'deadline', 'closed_at',
                           'processed_at', 'close_reason'))
+    # A fixture that does not contain what it claims is worse than no fixture:
+    # every later check reads it and reports on something else.
+    from core.models.decisions import DecisionSubmission as DS
+    round_2 = Round.objects.filter(game=game, round_number=2).first()
+    missing_in_round_2 = sorted(
+        t.name for t in Team.objects.filter(game=game, participation_status='active')
+        if not DS.objects.filter(team=t, round=round_2).exists())
+    edit_hashes = list(DecisionAuditEvent.objects
+                       .filter(game=game, action='save')
+                       .values('team__name', 'round__round_number',
+                               'payload_sha256'))
+    by_team_round = {}
+    for row in edit_hashes:
+        key = (row['team__name'], row['round__round_number'])
+        by_team_round.setdefault(key, set()).add(row['payload_sha256'])
+    edited = sorted(f'{name} r{rnd}' for (name, rnd), hashes
+                    in by_team_round.items() if len(hashes) > 1)
+
     return {
         'game_id': game.id,
         'game_status': game.status,
+        'contains': {
+            'a_team_with_no_submission_in_round_2': missing_in_round_2,
+            'submissions_saved_more_than_once_with_differing_hashes': edited,
+        },
         'current_round': game.current_round,
         'rounds': rounds,
         'summary': {

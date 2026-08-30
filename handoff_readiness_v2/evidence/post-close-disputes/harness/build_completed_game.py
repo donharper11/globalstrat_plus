@@ -182,16 +182,30 @@ def main():
             code, body = api(port, 'POST', f'/api/games/{seeded["game_id"]}/round-control/process/',
                              instructor, {})
             note('operator process', code, str(body)[:120])
-            if round_number < 3:
-                code, body = api(port, 'POST',
-                                 f'/api/games/{seeded["game_id"]}/round-control/advance/',
-                                 instructor, {})
-                note('operator advance', code, body)
+            # Advance after every round, round 3 included: advancing past the
+            # scenario's final round is what marks the game completed.
+            code, body = api(port, 'POST',
+                             f'/api/games/{seeded["game_id"]}/round-control/advance/',
+                             instructor, {})
+            note('operator advance', code, body)
             record['rounds'].append(events)
     finally:
         W.stop_gunicorn(process)
 
     record.update(shell('B.describe(game)', '---DESC---'))
+    contains = record.get('contains', {})
+    problems = []
+    if record.get('game_status') != 'completed':
+        problems.append(f"game status is {record.get('game_status')}, not completed")
+    if not contains.get('a_team_with_no_submission_in_round_2'):
+        problems.append('no team is missing a round 2 submission, so the '
+                        'default and defaulted_missing states are not present')
+    if not contains.get('submissions_saved_more_than_once_with_differing_hashes'):
+        problems.append('no submission was saved twice with differing payload '
+                        'hashes, so dispute 2 has nothing to compare')
+    if problems:
+        raise SystemExit('The fixture is not what it claims:\n  '
+                         + '\n  '.join(problems))
     record['identities'] = seeded
     FIXTURE.write_text(json.dumps(record, indent=2, sort_keys=True,
                                   default=str) + '\n')
