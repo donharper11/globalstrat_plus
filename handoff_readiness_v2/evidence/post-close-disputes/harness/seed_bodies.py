@@ -38,6 +38,15 @@ def seed_identities(game_placeholder, password):
     # scenario is three rounds long and the real completion path fires.
     from core.models import Scenario
     Scenario.objects.filter(pk=chosen.pk).update(num_rounds=3)
+
+    # setup_test_game leaves Game.section_id NULL. The instructor portal
+    # reaches a game from a section through SimulationInstance.game_id or
+    # Game.section_id (course.py:461), so with neither set the section selects
+    # but no game loads and the team overview tab -- the whole dispute
+    # evidence path -- never appears. A game created through the instructor UI
+    # carries its section; this fixture must too, or the walkthrough would be
+    # reporting a UI gap that only its own seeding created.
+    Game.objects.filter(pk=game.pk).update(section_id=section.section_id)
     hashed = hash_password(password)
 
     # Three teams exactly. Any extra team setup_test_game created is withdrawn

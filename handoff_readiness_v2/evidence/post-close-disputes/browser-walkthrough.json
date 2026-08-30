@@ -1,0 +1,243 @@
+{
+  "base": "http://127.0.0.1:36249",
+  "game": 1,
+  "steps": [
+    {
+      "name": "student login crv208_student_1 (Apex Devices)",
+      "outcome": "pass"
+    },
+    {
+      "name": "student Apex Devices reached its reports page",
+      "outcome": "pass"
+    },
+    {
+      "name": "student Apex Devices retrieves round 1 result",
+      "outcome": "pass",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "student Apex Devices retrieves round 3 result",
+      "outcome": "pass",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "rival raw result URL refused for Apex Devices -> Prism Tech",
+      "outcome": "pass",
+      "detail": "HTTP 403 {\"detail\": \"You do not have access to this team.\"}"
+    },
+    {
+      "name": "rival raw decision URL refused for Apex Devices",
+      "outcome": "pass",
+      "detail": "HTTP 403 {\"detail\": \"You do not have access to this team.\"}"
+    },
+    {
+      "name": "student login crv208_student_2 (Prism Tech)",
+      "outcome": "pass"
+    },
+    {
+      "name": "student Prism Tech reached its reports page",
+      "outcome": "pass"
+    },
+    {
+      "name": "student Prism Tech retrieves round 1 result",
+      "outcome": "pass",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "student Prism Tech retrieves round 3 result",
+      "outcome": "pass",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "rival raw result URL refused for Prism Tech -> Apex Devices",
+      "outcome": "pass",
+      "detail": "HTTP 403 {\"detail\": \"You do not have access to this team.\"}"
+    },
+    {
+      "name": "rival raw decision URL refused for Prism Tech",
+      "outcome": "pass",
+      "detail": "HTTP 403 {\"detail\": \"You do not have access to this team.\"}"
+    },
+    {
+      "name": "instructor login",
+      "outcome": "pass"
+    },
+    {
+      "name": "instructor reaches the game from course and section",
+      "outcome": "pass",
+      "detail": "course STRAT-TEST, section TEST-01, tabs: Courses & Sections | Game Control | Students & Logins | Grading & Export | Team Overview | Supply Chain | Event Manager | Briefings | Research Monitor | AI Coach \n32"
+    },
+    {
+      "name": "team overview tab opens",
+      "outcome": "pass"
+    },
+    {
+      "name": "instructor decisions endpoint answers",
+      "outcome": "pass",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "audit evidence carries every required field",
+      "outcome": "pass",
+      "detail": "3 events, missing: none"
+    },
+    {
+      "name": "audit evidence table renders in the browser",
+      "outcome": "pass",
+      "detail": "6 rows, columns: TIME (SERVER) | ACTOR | ACTION | ENDPOINT | REQUEST ID | PAYLOAD SHA-256 | PAYLOAD | PRODUCT | MARKET | PRICE | VOLUME | PROMO | REPS"
+    },
+    {
+      "name": "table exposes copy controls for hash and payload",
+      "outcome": "pass",
+      "detail": "4 copy controls"
+    },
+    {
+      "name": "pagination boundary",
+      "outcome": "not-reachable",
+      "detail": "single page: 6 rows against a page size of 8"
+    },
+    {
+      "name": "copy control accepts a click",
+      "outcome": "pass"
+    },
+    {
+      "name": "default/empty case reports why it is empty",
+      "outcome": "pass",
+      "detail": "Titan Micro r2: defaulted_missing (Never submitted — defaulted at close)"
+    },
+    {
+      "name": "instructor portal offers a language control",
+      "outcome": "observed-absent",
+      "detail": "no language control in the instructor portal"
+    },
+    {
+      "name": "bilingual switch changes the rendered language",
+      "outcome": "pass",
+      "detail": "Chinese text rendered"
+    },
+    {
+      "name": "language preference reaches the server",
+      "outcome": "fail",
+      "detail": "LanguageSwitcher URL -> HTTP 404; same call under /api -> HTTP 200"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:36249/api/games/1/teams/2/results/round/2/",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:36249/api/games/1/instructor/teams/2/decisions/?round=2",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:36249/api/games/1/teams/1/results/round/2/",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:36249/api/games/1/instructor/teams/1/decisions/?round=2",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:36249/user/preferences/",
+      "status": 404
+    }
+  ],
+  "instructorTabs": [
+    "Courses & Sections",
+    "Game Control",
+    "Students & Logins",
+    "Grading & Export",
+    "Team Overview",
+    "Supply Chain",
+    "Event Manager",
+    "Briefings",
+    "Research Monitor",
+    "AI Coach \n32"
+  ],
+  "auditShape": {
+    "origin": "student_locked",
+    "count": 3,
+    "missing": [],
+    "distinctHashes": 2
+  },
+  "evidenceTable": {
+    "modal": true,
+    "headers": [
+      "TIME (SERVER)",
+      "ACTOR",
+      "ACTION",
+      "ENDPOINT",
+      "REQUEST ID",
+      "PAYLOAD SHA-256",
+      "PAYLOAD",
+      "PRODUCT",
+      "MARKET",
+      "PRICE",
+      "VOLUME",
+      "PROMO",
+      "REPS"
+    ],
+    "rows": 6,
+    "pagerPages": 1,
+    "copyables": 4,
+    "tags": [
+      "locked",
+      "Locked by team"
+    ]
+  },
+  "defaultedCase": {
+    "teamRound": "Titan Micro r2",
+    "origin": "defaulted_missing",
+    "label": "Never submitted — defaulted at close",
+    "events": 1
+  },
+  "instructorLanguageSwitcher": false,
+  "languagePersistence": {
+    "observed": [
+      {
+        "url": "http://127.0.0.1:36249/user/preferences/",
+        "status": 404
+      },
+      {
+        "url": "http://127.0.0.1:36249/api/user/preferences/",
+        "status": 200
+      }
+    ],
+    "probe": {
+      "asShipped": 404,
+      "withApiPrefix": 200
+    }
+  },
+  "expectedRefusals": 4,
+  "summary": {
+    "passed": 22,
+    "failed": 1,
+    "consoleErrors": 5,
+    "networkFailures": 5,
+    "networkFailuresUnexpected": 1,
+    "note": "console errors and 403s are the disclosure-boundary probes this walkthrough issues on purpose"
+  }
+}
