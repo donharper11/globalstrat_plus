@@ -15,6 +15,7 @@ from .views.results_api import (
     InstructorAdvanceRoundView, InstructorInjectEventView,
     InstructorExtendDeadlineView, InstructorResearchQueriesView,
     InstructorEventTemplatesView, InstructorTeamBriefingsView,
+    InstructorOperatorEventsView,
     InstructorTeamDecisionsView,
 )
 from .views.scorecard import BalancedScorecardView
@@ -334,6 +335,8 @@ urlpatterns = [
          InstructorEventTemplatesView.as_view(), name='instructor-event-templates'),
     path('games/<int:game_id>/instructor/briefings/',
          InstructorTeamBriefingsView.as_view(), name='instructor-briefings'),
+    path('games/<int:game_id>/instructor/operator-events/',
+         InstructorOperatorEventsView.as_view(), name='instructor-operator-events'),
     path('games/<int:game_id>/instructor/teams/<int:team_id>/decisions/',
          InstructorTeamDecisionsView.as_view(), name='instructor-team-decisions'),
     # ---- CC-15: New Feature Pages ----

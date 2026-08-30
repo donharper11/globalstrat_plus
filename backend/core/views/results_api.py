@@ -979,6 +979,81 @@ class InstructorTeamBriefingsView(APIView):
         return Response({'briefings': data})
 
 
+class InstructorOperatorEventsView(APIView):
+    """GET /api/games/{game_id}/instructor/operator-events/
+
+    What the operators did to this game, in timestamp order.
+
+    Every lifecycle action already wrote one of these rows -- close, reopen,
+    deadline change, process, advance, event injection, correction unlock,
+    team withdrawal -- and refusals wrote one too. Nothing read them. CRV2-08
+    found the runbook telling an operator to "review operator events in
+    timestamp order" to answer a dispute, with no screen or endpoint that
+    returns any, so the only way to see them was the Django admin: a separate
+    maintenance login that competition instructors do not have.
+
+    Read-only, by design. These rows are evidence; the database triggers
+    enforce that regardless of what this view does, and the view offers no
+    write of any kind.
+    """
+    permission_classes = [IsInstructor]
+
+    def get(self, request, game_id):
+        from core.models import OperatorAuditEvent
+        from core.permissions import instructor_can_access_game
+        game = get_object_or_404(Game, id=game_id)
+        # Same ownership rule as every other instructor read: without it an
+        # instructor could read another cohort's operator trail -- who acted,
+        # when, and the written reason for every override -- by changing the
+        # game id in the URL.
+        if not instructor_can_access_game(request, game):
+            return Response(
+                {'error': 'This game belongs to another instructor.'},
+                status=status.HTTP_403_FORBIDDEN)
+
+        events = (OperatorAuditEvent.objects
+                  .filter(game=game).select_related('user', 'round'))
+        round_number = request.query_params.get('round')
+        if round_number and str(round_number).isdigit():
+            events = events.filter(round__round_number=int(round_number))
+        action = request.query_params.get('action')
+        if action:
+            events = events.filter(action=action)
+        outcome = request.query_params.get('outcome')
+        if outcome in ('committed', 'rejected'):
+            events = events.filter(outcome=outcome)
+
+        try:
+            limit = min(int(request.query_params.get('limit', 200)), 500)
+        except (TypeError, ValueError):
+            limit = 200
+
+        rows = list(events.order_by('-created_at', '-id')[:limit])
+        return Response({
+            'game_id': game.id,
+            'count': len(rows),
+            'events': [{
+                'id': event.id,
+                'server_timestamp': event.created_at.isoformat(),
+                'actor': ((event.user.display_name or event.user.email or
+                           event.user.username) if event.user else 'system'),
+                'actor_user_id': event.user_id,
+                'action': event.action,
+                'outcome': event.outcome,
+                'round_number': (event.round.round_number
+                                 if event.round_id else None),
+                # A refusal carries an empty `after` and the conflict that
+                # caused it; that is the shape the runbook tells an operator
+                # to look for when reading a race after the fact.
+                'before': event.before,
+                'after': event.after,
+                'conflict': event.conflict,
+                'reason': event.reason,
+                'request_id': event.request_id,
+            } for event in rows],
+        })
+
+
 class InstructorTeamDecisionsView(APIView):
     """GET /api/games/{game_id}/instructor/teams/{team_id}/decisions/ — view a team's decisions."""
     permission_classes = [IsInstructor]

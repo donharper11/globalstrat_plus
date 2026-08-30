@@ -12,7 +12,12 @@ const LanguageSwitcher = ({ style }) => {
     // Persist to backend (best effort)
     const token = localStorage.getItem('access_token');
     if (token) {
-      const apiUrl = process.env.REACT_APP_API_URL || '';
+      // Same default as api/client.js. This read `|| ''`, so a build without
+      // REACT_APP_API_URL set -- which is the default build -- sent the PUT to
+      // /user/preferences/ instead of /api/user/preferences/ and got a 404
+      // into a silent catch. The language changed on screen and was never
+      // stored, so it reverted on the next sign-in or a second device.
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
       fetch(`${apiUrl}/user/preferences/`, {
         method: 'PUT',
         headers: {

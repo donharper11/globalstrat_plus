@@ -3,6 +3,11 @@ import client from './client';
 export const getInstructorDashboard = (gameId) =>
   client.get(`/games/${gameId}/instructor/dashboard/`);
 
+// Read-only. Every lifecycle action and every refusal already wrote one of
+// these rows; until CRV2-08 nothing in the product read them back.
+export const getOperatorEvents = (gameId, params = {}) =>
+  client.get(`/games/${gameId}/instructor/operator-events/`, { params });
+
 export const advanceRound = (gameId, force = false) =>
   client.post(`/games/${gameId}/instructor/advance-round/`, { force });
 

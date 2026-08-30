@@ -4,7 +4,7 @@
     "OperatorAuditEvent",
     "ResolutionManifest"
   ],
-  "audit_routes": 2,
+  "audit_routes": 3,
   "decision_models": [
     "CustomsClassificationDecision",
     "Decision",
@@ -34,7 +34,7 @@
   ],
   "decision_routes": 29,
   "exempt": 1,
-  "logged": 30,
+  "logged": 31,
   "routes": [
     {
       "category": "decisions",
@@ -102,6 +102,19 @@
       ],
       "route": "api/games/<int:game_id>/instructor/dashboard/",
       "view": "results_api.InstructorDashboardView"
+    },
+    {
+      "category": "audit",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "OperatorAuditEvent"
+      ],
+      "route": "api/games/<int:game_id>/instructor/operator-events/",
+      "view": "results_api.InstructorOperatorEventsView"
     },
     {
       "category": "decisions",
@@ -478,6 +491,6 @@
       "view": "cc31h_views.TickerView"
     }
   ],
-  "total_sensitive_routes": 31,
-  "url_conf_route_count": 779
+  "total_sensitive_routes": 32,
+  "url_conf_route_count": 780
 }

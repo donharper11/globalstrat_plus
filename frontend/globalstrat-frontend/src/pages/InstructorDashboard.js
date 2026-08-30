@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
+import OperatorEventsPanel from '../components/instructor/OperatorEventsPanel';
 import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
   getInstructorDashboard, advanceRound, injectEvent,
@@ -2051,6 +2052,7 @@ const InstructorDashboard = () => {
     // --- Game-specific (only when game is active/paused with dashboard data) ---
     ...(hasGame ? [
       { key: 'teams', label: t('instructor.team_overview'), children: teamOverviewTab },
+      { key: 'operator_log', label: t('instructor.operator_log', 'Operator Log'), children: <OperatorEventsPanel gameId={gameId} /> },
       { key: 'supply_chain', label: t('instructor.supply_chain', 'Supply Chain'), children: <InstructorSCPanel gameId={gameId} /> },
       { key: 'events', label: t('instructor.event_manager'), children: eventManagerTab },
       { key: 'briefings', label: t('instructor.briefings'), children: briefingsTab },
