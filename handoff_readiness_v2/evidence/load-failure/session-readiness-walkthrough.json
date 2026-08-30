@@ -1,0 +1,161 @@
+{
+  "checks": {
+    "duplicates_surfaced_not_double_counted": true,
+    "foreign_cohort_session_does_not_satisfy": true,
+    "idle_not_counted_active": true,
+    "logged_out_not_counted_active": true,
+    "three_authenticated_none_missing_ready": true,
+    "three_expected": true,
+    "two_authenticated_one_missing_not_ready": true
+  },
+  "code_revision": "8cf047b0aa46d85f0d91ae21ab8d3a82bdc069ad",
+  "failed_checks": [],
+  "passed": true,
+  "stages": [
+    {
+      "blocking_reasons": [
+        "3 participant(s) not authenticated"
+      ],
+      "note": "three expected, nobody authenticated",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 0,
+        "authenticated": 0,
+        "duplicate_sessions": 0,
+        "missing": 3,
+        "stale": 0,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "1_none_signed_in",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [
+        "1 participant(s) not authenticated"
+      ],
+      "note": "two authenticated, one missing",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 2,
+        "authenticated": 2,
+        "duplicate_sessions": 0,
+        "missing": 1,
+        "stale": 0,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "2_two_signed_in",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [],
+      "note": "third signs in, cohort complete",
+      "ready": true,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 3,
+        "authenticated": 3,
+        "duplicate_sessions": 0,
+        "missing": 0,
+        "stale": 0,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "3_all_signed_in",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [
+        "1 participant(s) not authenticated"
+      ],
+      "note": "a session idle past the timeout",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 2,
+        "authenticated": 2,
+        "duplicate_sessions": 0,
+        "missing": 1,
+        "stale": 1,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "4_one_idled_out",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [
+        "1 participant(s) not authenticated"
+      ],
+      "note": "a session explicitly logged out",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 2,
+        "authenticated": 2,
+        "duplicate_sessions": 0,
+        "missing": 1,
+        "stale": 1,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "5_one_logged_out",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [
+        "1 participant(s) not authenticated"
+      ],
+      "note": "another cohort's session cannot satisfy this one",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 2,
+        "authenticated": 2,
+        "duplicate_sessions": 0,
+        "missing": 1,
+        "stale": 0,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "6_session_belongs_to_another_cohort",
+      "status": 200
+    },
+    {
+      "blocking_reasons": [
+        "1 participant(s) with more than one active session"
+      ],
+      "note": "one participant with two live sessions",
+      "ready": false,
+      "roster": {
+        "expected_participants": 3,
+        "teams": 1
+      },
+      "sessions": {
+        "active_sessions_total": 4,
+        "authenticated": 3,
+        "duplicate_sessions": 1,
+        "missing": 0,
+        "stale": 0,
+        "unexpected_active_sessions": 0
+      },
+      "stage": "7_duplicate_session",
+      "status": 200
+    }
+  ]
+}

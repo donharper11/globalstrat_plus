@@ -9,6 +9,11 @@ Evidence: `evidence/load-failure/auth-acceptance.json`,
 `auth-acceptance-drive.json`, `instructor-readiness.json`,
 `preload-comparison.json`. Checksums verify.
 
+> **Revision note.** The instructor-readiness section of this addendum was
+> withdrawn and rewritten after audit: it had presented an enrollment count as
+> session visibility. The authentication traffic profile below is unchanged and
+> was not re-run. See *Instructor readiness* for the correction.
+
 ## Adopted position
 
 The PBKDF2 work factor is **unchanged**. 288 simultaneous password checks is
@@ -27,7 +32,7 @@ beginning afterwards on the tokens already held.
 | interactive traffic begins afterwards | — | 1976 requests, p50 62.7 ms, p95 119.9 ms |
 | login p95 | < 2000 ms | **1999.2 ms** |
 | no 5xx / transport failures | 0 | **0** at sign-in and afterwards |
-| all 96 sessions visible in instructor readiness | 96 | **24 teams, 293 members** |
+| all 96 sessions visible in instructor readiness | 96 | **withdrawn — see below** |
 | no reauthentication during the window | 0 | **0 events**, every token unchanged |
 
 Write reconciliation over the interactive phase: **864 acknowledged writes, none
@@ -50,29 +55,94 @@ second is enough to triple the wait.
 
 Consequences for the procedure now in the runbook:
 
-- **Five minutes is close to the minimum that works, not a comfortable
-  choice.** A shorter window, a larger cohort, or a slower production host
-  would push this over the bar.
+- **The required operational window is now ten minutes** on the reference
+  8-core host. Five minutes is the measured lower bound, not the launch
+  procedure: it passed by 0.8 ms and a larger cohort or an unlucky arrival
+  cluster consumes that entirely. The runbook and checklist carry ten.
 - The reference host is 8 cores. **If the deployment host is slower, the
-  admission window must be longer**, and that should be established before a
-  live competition rather than discovered during one.
+  window must be longer**, established during preflight by running the
+  admission profile on that host rather than assuming these numbers.
 - This is a concrete argument for the longer-term alternatives — pre-issued
   high-entropy competition access tokens, or authentication scaled separately —
   since neither depends on arrival luck. Neither is a reason to weaken PBKDF2.
 
-## Instructor readiness
+## Instructor readiness — the original claim was withdrawn and repaired
 
-Instructor authenticates through the real login endpoint (200) and the
-dashboard returns 200 listing **24 teams and 293 distinct members** against a
-field cohort of 96. The dashboard enumerates enrolled members rather than live
-sessions, which is what "visible in readiness" means for this product: it
-answers "is the cohort present" before round 1 opens.
+**The claim in the first version of this addendum was wrong.** It reported "all
+96 sessions visible in instructor readiness" as passed, citing a dashboard
+response listing 24 teams and 293 enrolled members. Two things were wrong with
+that:
 
-An earlier attempt returned 403 "Invalid token". That was a harness fault, not
-a product one: the token had been minted in a `manage shell` that never
-receives the `DJANGO_SECRET_KEY` the stack runs with, so it was signed with one
-key and validated against another. Using the login endpoint is both correct and
-what an instructor actually does.
+- The primary artifact, `auth-acceptance.json`, records that readiness request
+  returning **403 with zero visible members**. The pass was assembled from a
+  second, later artifact.
+- That second artifact proves only that an instructor can retrieve the
+  **roster**. `Enrollment` membership answers "who is in this class". It does
+  not change when anybody signs in, and it cannot distinguish an authenticated
+  participant from a missing or stale one.
+
+An enrollment count was relabelled as session visibility. Both artifacts are
+preserved unaltered; neither is now described as a session-readiness pass.
+
+### The repair
+
+`core/services/session_readiness.py`, exposed at
+`GET /api/games/{game_id}/instructor/session-readiness/` behind `IsInstructor`,
+reports roster and sessions under separate names:
+
+| field | meaning |
+|---|---|
+| `roster.expected_participants` | enrolled, active participants for the cohort |
+| `sessions.authenticated` | expected participants holding a live session |
+| `sessions.missing` | expected participants with no live session |
+| `sessions.stale` | had a session, then idled out or logged out |
+| `sessions.duplicate_sessions` | one participant holding more than one live session |
+| `sessions.unexpected_active_sessions` | live sessions not on this cohort's roster |
+| `ready` | true only when every expected participant holds exactly one usable session |
+| `blocking_reasons` | what is outstanding, in words |
+
+"Active" is the model's existing definition — `UserSession.active_qs`: no
+`logout_at`, `last_seen_at` within `IDLE_TIMEOUT_MINUTES` (15). It was not
+redefined for this. Sessions are filtered by `game_id`, so another cohort's
+session cannot satisfy this one.
+
+**Duplicates block `ready` rather than being absorbed.** Two browsers is one
+participant; counting it as two would let a cohort look complete while somebody
+is still locked out — the same class of error as counting enrolments as
+sessions.
+
+### Proof — three-user real-login walkthrough
+
+`session-readiness-walkthrough.json`. Real logins through `/api/auth/login/`,
+an authenticated request after each so the heartbeat sets `last_seen_at`, and
+the instructor reading the readiness endpoint between stages. The 96-user drive
+was not repeated.
+
+| stage | authenticated | missing | stale | duplicate | ready |
+|---|---|---|---|---|---|
+| none signed in | 0 | 3 | 0 | 0 | false |
+| two signed in | **2** | **1** | 0 | 0 | **false** |
+| third signs in | **3** | **0** | 0 | 0 | **true** |
+| one idled past the timeout | 2 | 1 | **1** | 0 | false |
+| one logged out | 2 | 1 | **1** | 0 | false |
+| session moved to another cohort | 2 | 1 | 0 | 0 | false |
+| one participant, two live sessions | **3** | 0 | 0 | **1** | **false** |
+
+All seven acceptance checks pass. The last row is the substantive one: four
+active sessions, three participants, counted as three — not four — with the
+duplicate surfaced and blocking `ready`.
+
+Ten focused tests cover the same contract at service and endpoint level,
+including that a student receives 403 from the endpoint. The CRV2-04 read
+inventory was regenerated for the new route.
+
+### Round-opening gate
+
+`OPERATOR_RUNBOOK.md` now directs operators to open a round on `ready`, with
+what to do about each blocking category, and states explicitly that the
+dashboard's member list is roster membership and is not evidence that anyone
+has signed in. `LAUNCH_CHECKLIST.md` gates on `ready` true with `missing`,
+`stale` and `duplicate_sessions` all zero.
 
 ## preload_app — reverted
 
