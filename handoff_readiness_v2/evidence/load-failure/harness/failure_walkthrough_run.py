@@ -81,9 +81,15 @@ def main():
         raise SystemExit('Refusing to record evidence from a dirty tree:\n  '
                          + '\n  '.join(dirty.splitlines()))
 
+    # Start from an empty backup root. Stage 5 makes it unwritable on purpose
+    # and a crashed run can leave it that way, so restore the mode first, and
+    # remove the tree rather than globbing files -- prepare_manifest writes a
+    # manifests/ subdirectory under this root.
+    import shutil
+    if BACKUP_DIR.exists():
+        os.chmod(BACKUP_DIR, 0o700)
+        shutil.rmtree(BACKUP_DIR)
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
-    for old in BACKUP_DIR.glob('*'):
-        old.unlink()
     os.environ['COMPETITION_BACKUP_DIR'] = str(BACKUP_DIR)
 
     database = f'gsp_drill_{time.strftime("%H%M%S")}'
