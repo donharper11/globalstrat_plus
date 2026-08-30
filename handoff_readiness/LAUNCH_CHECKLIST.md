@@ -48,6 +48,19 @@ checklist tracks the remaining operational path to launch.
 
 ## Required before live competition approval
 
+- [ ] **Admission window announced and staged.** Sign-in opens five minutes
+      before round 1, announced as a window rather than a start time, with no
+      countdown or shared "go" that makes the cohort click together. See
+      *Admission window* in `OPERATOR_RUNBOOK.md`.
+- [ ] **Access-token lifetime spans the competition.** Confirm
+      `JWT_ACCESS_TOKEN_LIFETIME_HOURS` (8) exceeds the planned competition
+      duration; if it does not, schedule a staged re-admission window.
+- [ ] **Cohort confirmed present before round 1 opens.** The instructor
+      dashboard shows every team with the expected members.
+- [ ] **Concurrent sections staggered.** If more than one section starts in the
+      same period, their admission windows are offset. Simultaneous
+      cohort-wide sign-in is an unsupported arrival shape.
+
 - [x] Execute the guarded `recover_competition_round` workflow end to end in an
   isolated environment (not only `--dry-run`): validated, restored, re-ran, and
   reproduced a byte-identical result; both operator audit records and the durable

@@ -16,6 +16,45 @@ dispositions and verification are recorded in `FIX_LOG.md`.
 - Complete the launch gates in `LAUNCH_CHECKLIST.md`. Do not treat the automated
   rehearsal as a substitute for the volunteer dry run.
 
+### Admission window — how the cohort signs in
+
+Password verification is deliberately expensive (PBKDF2 at the framework's
+default work factor). That cost is per sign-in and is CPU-bound, so a whole
+cohort signing in at the same instant is a compute burst that no amount of
+extra web workers relieves. Measured on the reference host, 8 cores: 96
+simultaneous sign-ins took 26 seconds for the cohort with a median wait of 21
+seconds; 288 took 64 seconds with a median wait of 40 seconds and a worst case
+of 63.
+
+**The work factor is not to be lowered.** Admission is staged instead.
+
+1. **Open sign-in five minutes before the first round opens.** Announce the
+   admission window explicitly ("sign in any time in the next five minutes"),
+   not a single start time. Spread arrival is the control.
+2. **Do not gate sign-in behind a countdown, a shared link opened on cue, or
+   an instructor "go" message.** Anything that makes 96 people click at the
+   same second recreates the burst the window exists to avoid.
+3. **A session's token lasts 8 hours** (`JWT_ACCESS_TOKEN_LIFETIME_HOURS`).
+   Once admitted, a student does not sign in again for the rest of the
+   competition. There is no refresh endpoint and none is needed within that
+   span. A competition intended to run longer than 8 hours must plan a
+   re-admission window in the same staged way.
+4. **Confirm the cohort is in before opening round 1.** The instructor
+   dashboard lists every team with its members; check the expected number of
+   students appears before opening decisions.
+5. **Several sections starting at once.** 288 simultaneous password checks is
+   an unsupported arrival shape, not supported capacity. Stagger the sections'
+   admission windows — for example three sections at five-minute offsets —
+   rather than admitting them together.
+6. **If sign-in is slow anyway**, it is a queue and it drains. Tell students to
+   wait rather than to reload: a reload abandons a password check that is
+   already running and starts another, which lengthens the queue for everyone.
+
+Longer-term alternatives, if simultaneous admission ever becomes a hard
+requirement: random high-entropy competition access tokens issued in advance,
+or authentication scaled separately from the application. Neither is a reason
+to weaken PBKDF2.
+
 ### Hard deploy-freeze rule
 
 Do not deploy any code inside the competition window. Recovery rejects a dump
