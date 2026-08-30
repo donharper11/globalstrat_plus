@@ -89,7 +89,7 @@ def main():
     W.BACKUP_DIR = BACKUPS
     process = W.start_gunicorn(DATABASE, port, 'crv208')
     record = {'code_revision': revision, 'database': DATABASE, 'port': port,
-              'password': PASSWORD, 'rounds': []}
+              'password': PASSWORD, 'seeding_actions': []}
     try:
         _, tok = api(port, 'POST', '/api/auth/login/',
                      body={'username': seeded['instructor'],
@@ -188,7 +188,7 @@ def main():
                              f'/api/games/{seeded["game_id"]}/round-control/advance/',
                              instructor, {})
             note('operator advance', code, body)
-            record['rounds'].append(events)
+            record['seeding_actions'].append(events)
     finally:
         W.stop_gunicorn(process)
 

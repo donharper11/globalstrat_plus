@@ -1,9 +1,39 @@
 {
-  "code_revision": "15c5f2eea0ea57437819a9f5274c01fc45debfaf",
+  "code_revision": "0fad7e1de68df09c752b5580c52446bc5b7841ef",
+  "contains": {
+    "defaulted_missing_team_rounds": [
+      "Apex Devices r2"
+    ],
+    "submission_origins": {
+      "defaulted_missing": [
+        "Apex Devices r2"
+      ],
+      "no_submission": [
+        "Apex Devices r0",
+        "Solaris Consumer r0",
+        "Stratos Electronics r0"
+      ],
+      "student_locked": [
+        "Apex Devices r1",
+        "Apex Devices r3",
+        "Solaris Consumer r1",
+        "Solaris Consumer r2",
+        "Solaris Consumer r3",
+        "Stratos Electronics r1",
+        "Stratos Electronics r2",
+        "Stratos Electronics r3"
+      ]
+    },
+    "submissions_saved_more_than_once_with_differing_hashes": [
+      "Stratos Electronics r1",
+      "Stratos Electronics r2",
+      "Stratos Electronics r3"
+    ]
+  },
   "current_round": 3,
   "database": "gsp_crv208_disputes",
   "game_id": 1,
-  "game_status": "active",
+  "game_status": "completed",
   "identities": {
     "game_id": 1,
     "instructor": "crv208_instructor",
@@ -12,29 +42,29 @@
     "teams": [
       {
         "id": 1,
-        "name": "Eclipse Gadgets",
+        "name": "Solaris Consumer",
         "student": "crv208_student_1",
         "user_id": 7
       },
       {
         "id": 2,
-        "name": "Helix Digital",
+        "name": "Stratos Electronics",
         "student": "crv208_student_2",
         "user_id": 8
       },
       {
         "id": 3,
-        "name": "Titan Micro",
+        "name": "Apex Devices",
         "student": "crv208_student_3",
         "user_id": 9
       }
     ],
     "withdrawn_teams": [
-      "Meridian Tech"
+      "Photon Labs"
     ]
   },
   "password": "crv208-pass",
-  "port": 58375,
+  "port": 33371,
   "rounds": [
     {
       "close_reason": "",
@@ -46,25 +76,25 @@
     },
     {
       "close_reason": "manual",
-      "closed_at": "2026-08-30 22:21:00.509984+00:00",
-      "deadline": "2026-08-30 23:50:55.343062+00:00",
-      "processed_at": "2026-08-30 22:21:05.619338+00:00",
+      "closed_at": "2026-08-30 22:56:01.268266+00:00",
+      "deadline": "2026-08-31 00:25:53.219027+00:00",
+      "processed_at": "2026-08-30 22:56:06.620710+00:00",
       "round_number": 1,
       "status": "processed"
     },
     {
       "close_reason": "manual",
-      "closed_at": "2026-08-30 22:21:11.612172+00:00",
-      "deadline": "2026-08-30 22:20:10.398744+00:00",
-      "processed_at": "2026-08-30 22:21:16.760841+00:00",
+      "closed_at": "2026-08-30 22:56:13.005410+00:00",
+      "deadline": "2026-08-30 22:55:11.722698+00:00",
+      "processed_at": "2026-08-30 22:56:19.711458+00:00",
       "round_number": 2,
       "status": "processed"
     },
     {
       "close_reason": "manual",
-      "closed_at": "2026-08-30 22:21:25.039530+00:00",
-      "deadline": "2026-08-30 23:51:18.462607+00:00",
-      "processed_at": "2026-08-30 22:21:31.408407+00:00",
+      "closed_at": "2026-08-30 22:56:27.516173+00:00",
+      "deadline": "2026-08-31 00:26:20.321628+00:00",
+      "processed_at": "2026-08-30 22:56:34.561482+00:00",
       "round_number": 3,
       "status": "processed"
     },
@@ -125,10 +155,192 @@
       "status": "pending"
     }
   ],
+  "seeding_actions": [
+    {
+      "actions": [
+        {
+          "detail": "{'message': 'Deadline updated.', 'warning': None, 'request_id': 'srv-8bddc09e-8005-4d4c-aed5-d1395f0234f2', 'round': {'round_id': 2, 'round_number': 1, 'status': 'open', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:55:42.188396+00:00', 'deadline': '2026-08-31T00:25:53.219027+00:00', 'closed_at': None, 'close_reason': '', 'processe",
+          "status": 200,
+          "what": "operator set_deadline"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Solaris Consumer normal save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics first save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics edited save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Apex Devices normal save"
+        },
+        {
+          "detail": "{'id': 1, 'team': 1, 'round': 2, 'status': 'locked', 'locked_at': '2026-08-30T22:55:58.476968Z', 'locked_by': 7, 'team_notes': None, 'budget_allocation': {'id': 5, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 1, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_comm",
+          "status": 200,
+          "what": "Solaris Consumer lock"
+        },
+        {
+          "detail": "{'id': 2, 'team': 2, 'round': 2, 'status': 'locked', 'locked_at': '2026-08-30T22:55:59.880844Z', 'locked_by': 8, 'team_notes': None, 'budget_allocation': {'id': 6, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 2, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_comm",
+          "status": 200,
+          "what": "Stratos Electronics lock"
+        },
+        {
+          "detail": "{'id': 3, 'team': 3, 'round': 2, 'status': 'locked', 'locked_at': '2026-08-30T22:56:01.160891Z', 'locked_by': 9, 'team_notes': None, 'budget_allocation': {'id': 7, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 3, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_comm",
+          "status": 200,
+          "what": "Apex Devices lock"
+        },
+        {
+          "detail": "{'message': 'Round 1 closed. 0 submission(s) locked.', 'request_id': 'srv-1bef86ca-276c-47e9-8b49-daf0c67d12ed', 'round': {'round_id': 2, 'round_number': 1, 'status': 'closed', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:55:42.188396+00:00', 'deadline': '2026-08-31T00:25:53.219027+00:00', 'closed_at': '2026-08-30T22:56:01.268266+",
+          "status": 200,
+          "what": "operator close"
+        },
+        {
+          "detail": "{'message': 'Round 1 processed in 4.4s. Results are available; narratives are generating in the background.', 'phase_1_t",
+          "status": 200,
+          "what": "operator process"
+        },
+        {
+          "detail": "{'message': 'Advanced to round 2.', 'completed_round': 1, 'next_round': 2, 'game_status': 'active', 'request_id': 'srv-a5d05c57-71da-4dbd-8373-2091adee03a9', 'round': {'round_id': 3, 'round_number': 2, 'status': 'open', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:07.107889+00:00', 'deadline': None, 'closed_at': None, 'close_re",
+          "status": 200,
+          "what": "operator advance"
+        }
+      ],
+      "round": 1
+    },
+    {
+      "actions": [
+        {
+          "detail": "{'message': 'Deadline updated.', 'warning': None, 'request_id': 'srv-b01fb175-290b-4b98-bc96-2834aefd5adf', 'round': {'round_id': 3, 'round_number': 2, 'status': 'open', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:07.107889+00:00', 'deadline': '2026-08-31T00:26:07.162770+00:00', 'closed_at': None, 'close_reason': '', 'processe",
+          "status": 200,
+          "what": "operator set_deadline"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Solaris Consumer normal save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics first save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics edited save"
+        },
+        {
+          "detail": "{'id': 4, 'team': 1, 'round': 3, 'status': 'locked', 'locked_at': '2026-08-30T22:56:11.492707Z', 'locked_by': 7, 'team_notes': None, 'budget_allocation': {'id': 11, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 4, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_com",
+          "status": 200,
+          "what": "Solaris Consumer lock"
+        },
+        {
+          "detail": "{'id': 5, 'team': 2, 'round': 3, 'status': 'locked', 'locked_at': '2026-08-30T22:56:11.629169Z', 'locked_by': 8, 'team_notes': None, 'budget_allocation': {'id': 12, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 5, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_com",
+          "status": 200,
+          "what": "Stratos Electronics lock"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "operator moved deadline into the past"
+        },
+        {
+          "detail": "{\"detail\":\"The deadline for this round has passed. Your decisions are locked.\"}",
+          "status": 403,
+          "what": "late save after deadline"
+        },
+        {
+          "detail": "{'message': 'Round 2 closed. 1 submission(s) locked.', 'request_id': 'srv-0cbe2d14-7156-4825-9725-ba13fcd5042b', 'round': {'round_id': 3, 'round_number': 2, 'status': 'closed', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:07.107889+00:00', 'deadline': '2026-08-30T22:55:11.722698+00:00', 'closed_at': '2026-08-30T22:56:13.005410+",
+          "status": 200,
+          "what": "operator close"
+        },
+        {
+          "detail": "{'message': 'Round 2 processed in 4.4s. Results are available; narratives are generating in the background.', 'phase_1_t",
+          "status": 200,
+          "what": "operator process"
+        },
+        {
+          "detail": "{'message': 'Advanced to round 3.', 'completed_round': 2, 'next_round': 3, 'game_status': 'active', 'request_id': 'srv-df8caefb-562b-4075-892d-16de27b4e3b8', 'round': {'round_id': 4, 'round_number': 3, 'status': 'open', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:20.260643+00:00', 'deadline': None, 'closed_at': None, 'close_re",
+          "status": 200,
+          "what": "operator advance"
+        }
+      ],
+      "round": 2
+    },
+    {
+      "actions": [
+        {
+          "detail": "{'message': 'Deadline updated.', 'warning': None, 'request_id': 'srv-0182ecfb-61a0-4ecc-ba6e-5b77f43ba273', 'round': {'round_id': 4, 'round_number': 3, 'status': 'open', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:20.260643+00:00', 'deadline': '2026-08-31T00:26:20.321628+00:00', 'closed_at': None, 'close_reason': '', 'processe",
+          "status": 200,
+          "what": "operator set_deadline"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Solaris Consumer normal save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics first save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Stratos Electronics edited save"
+        },
+        {
+          "detail": "",
+          "status": 200,
+          "what": "Apex Devices normal save"
+        },
+        {
+          "detail": "{'id': 7, 'team': 1, 'round': 4, 'status': 'locked', 'locked_at': '2026-08-30T22:56:27.138088Z', 'locked_by': 7, 'team_notes': None, 'budget_allocation': {'id': 17, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 6, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_com",
+          "status": 200,
+          "what": "Solaris Consumer lock"
+        },
+        {
+          "detail": "{'id': 8, 'team': 2, 'round': 4, 'status': 'locked', 'locked_at': '2026-08-30T22:56:27.285671Z', 'locked_by': 8, 'team_notes': None, 'budget_allocation': {'id': 18, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 7, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_com",
+          "status": 200,
+          "what": "Stratos Electronics lock"
+        },
+        {
+          "detail": "{'id': 9, 'team': 3, 'round': 4, 'status': 'locked', 'locked_at': '2026-08-30T22:56:27.422394Z', 'locked_by': 9, 'team_notes': None, 'budget_allocation': {'id': 19, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 8, 'environmental_investment': '50000.00', 'social_investment': '25000.00', 'governance_com",
+          "status": 200,
+          "what": "Apex Devices lock"
+        },
+        {
+          "detail": "{'message': 'Round 3 closed. 0 submission(s) locked.', 'request_id': 'srv-b597829c-07b1-43d7-982f-71e398398e08', 'round': {'round_id': 4, 'round_number': 3, 'status': 'closed', 'processing_status': 'PENDING', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:20.260643+00:00', 'deadline': '2026-08-31T00:26:20.321628+00:00', 'closed_at': '2026-08-30T22:56:27.516173+",
+          "status": 200,
+          "what": "operator close"
+        },
+        {
+          "detail": "{'message': 'Round 3 processed in 5.9s. Results are available; narratives are generating in the background.', 'phase_1_t",
+          "status": 200,
+          "what": "operator process"
+        },
+        {
+          "detail": "{'message': 'Round 3 was the last round. Game complete.', 'completed_round': 3, 'next_round': None, 'game_status': 'completed', 'request_id': 'srv-e790e38e-e47c-41c9-a88e-7c1eef577ffe', 'round': {'round_id': 4, 'round_number': 3, 'status': 'processed', 'processing_status': 'RESULTS_AVAILABLE', 'narrative_generated': False, 'narrative_error': '', 'opened_at': '2026-08-30T22:56:20.260643+00:00', 'de",
+          "status": 200,
+          "what": "operator advance"
+        }
+      ],
+      "round": 3
+    }
+  ],
   "summary": {
     "decision_audit_events": 20,
     "financial_rows": 13,
-    "operator_audit_events": 12,
+    "operator_audit_events": 13,
     "resolution_manifests": 3,
     "rounds_processed": 4,
     "sensitive_read_events": 0,
