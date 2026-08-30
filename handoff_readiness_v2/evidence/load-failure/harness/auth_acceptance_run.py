@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run the authentication acceptance profile against a disposable stack."""
 import json, pathlib, subprocess, sys, time
+import urllib.error
 import urllib.request
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -46,33 +47,54 @@ def main():
             result.stdout.split(marker, 1)[1].strip().splitlines()[0])
         report['code_revision'] = revision
 
+        # Save the drive before anything else touches it. Two nine-minute
+        # runs were lost to auxiliary steps failing after the measurement was
+        # complete -- a stray import, then a 403 -- with the stack already torn
+        # down. An expensive measurement is written first; secondary checks
+        # record their outcome and never raise.
+        (EVIDENCE / 'auth-acceptance-drive.json').write_text(
+            json.dumps({k: v for k, v in report.items()
+                        if k not in ('acknowledged_writes', 'refused_writes')},
+                       indent=2, sort_keys=True, default=str) + '\n')
+
         # Instructor readiness: are all 96 sessions visible to the instructor?
         # The token is minted inside the stack's own process; this runner is
-        # not a Django process and importing core here crashed the run after
-        # the full nine-minute drive had already completed.
+        # not a Django process.
         inst_body = (
             'import json\n'
             'from core.authentication import create_access_token\n'
             'from core.models import User\n'
             'u = User.objects.get(username="load_instructor")\n'
             'print("---TOK---")\n'
-            'print(create_access_token(u))\n')
+            'print(json.dumps({"token": create_access_token(u), '
+            '"role": u.role, "user_id": u.user_id}))\n')
         tok_out = R.manage(database, 'shell', '-c', inst_body, timeout=300)
-        token = tok_out.stdout.split('---TOK---', 1)[1].strip().splitlines()[0]
-        req = urllib.request.Request(
-            f"{base}/api/games/{seeded['game_id']}/instructor/dashboard/")
-        req.add_header('Authorization', f'Bearer {token}')
-        with urllib.request.urlopen(req, timeout=60) as response:
-            dashboard = json.loads(response.read())
-        members = []
-        for team in (dashboard.get('teams') or []):
-            members.extend(team.get('members') or [])
-        report['readiness'] = {
-            'status': 200,
-            'teams_listed': len(dashboard.get('teams') or []),
-            'members_visible': len(members),
-            'expected_members': THRESHOLDS['sessions_visible_in_readiness'],
-        }
+        readiness = {'status': None, 'error': None, 'members_visible': 0,
+                     'teams_listed': 0,
+                     'expected_members': THRESHOLDS['sessions_visible_in_readiness']}
+        try:
+            minted = json.loads(
+                tok_out.stdout.split('---TOK---', 1)[1].strip().splitlines()[0])
+            readiness['instructor_role'] = minted['role']
+            req = urllib.request.Request(
+                f"{base}/api/games/{seeded['game_id']}/instructor/dashboard/")
+            req.add_header('Authorization', f"Bearer {minted['token']}")
+            try:
+                with urllib.request.urlopen(req, timeout=60) as response:
+                    dashboard = json.loads(response.read())
+                    readiness['status'] = response.status
+            except urllib.error.HTTPError as exc:
+                readiness['status'] = exc.code
+                readiness['error'] = exc.read()[:300].decode('utf-8', 'replace')
+                dashboard = {}
+            members = []
+            for team in (dashboard.get('teams') or []):
+                members.extend(team.get('members') or [])
+            readiness['teams_listed'] = len(dashboard.get('teams') or [])
+            readiness['members_visible'] = len(members)
+        except Exception as exc:
+            readiness['error'] = f'{type(exc).__name__}: {exc}'[:300]
+        report['readiness'] = readiness
 
         recon_body = (
             'import sys, json\n'
