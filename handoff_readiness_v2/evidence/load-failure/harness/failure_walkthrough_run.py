@@ -37,6 +37,7 @@ def shell(database, code, timeout=1200):
 def stage_via_shell(database, expr, marker='---STAGE---'):
     code = ('import json\n'
             'import failure_walkthrough_body as W\n'
+            'import duplicate_product_body as W2\n'
             'from core.models import Game\n'
             'game = Game.objects.order_by("-id").first()\n'
             f'result = {expr}\n'
