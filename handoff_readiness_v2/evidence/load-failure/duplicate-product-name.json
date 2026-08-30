@@ -1,28 +1,58 @@
 {
-  "code_revision": "e0195b86781b5d1c5a2f56b4bdf88d7449b7c17b",
+  "code_revision": "ba88c8a3b57bde35a831a051d84dd4c207b34ae9",
   "finding": {
+    "a_blocks_the_submitted_round": true,
+    "b_blocks_the_following_round": false,
+    "blocks_persist_on_retry": true,
+    "blocks_the_whole_cohort_not_just_the_team": true,
+    "both_variants_accepted_by_the_api": false,
     "documented_operator_recovery": false,
-    "next_round_refuses": false,
-    "reachable_by_a_student": true,
-    "refusal_is_permanent": false,
-    "round_creating_the_duplicate_resolves": false
+    "recovery_is_a_direct_database_edit": true
   },
   "passed": false,
-  "resolution": {
-    "duplicate_products_created": [],
-    "first_round_error": "SnapshotError: Natural key ('submission_id', 'product_name') is not unique in section \"decision_product_create\": decision_product_create(decision_submission(team(game(\"GlobalStrat Test Game\")|\"Vertex Electronics\")|round(game(\"GlobalStr",
-    "first_round_processed": false,
-    "retry_also_blocked": false,
-    "second_round_blocked": false,
-    "second_round_error": null,
-    "second_round_retry_error": null,
-    "second_round_status": null
-  },
-  "student_write": {
-    "accepted": true,
-    "body": "accepted",
+  "variant_a": {
+    "blocked": true,
+    "blocked_error": "SnapshotError: Natural key ('submission_id', 'product_name') is not unique in section \"decision_product_create\": decision_product_create(decision_submission(team(game(\"GlobalStrat Test Game\")|\"Helix Digital\")|round(game(\"GlobalStrat Te",
+    "blocked_round_status": "open",
+    "description": "a student names two new products the same thing",
     "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
-    "identical_product_names": "Vanguard One",
-    "status": 200
+    "next_round_number": 1,
+    "recovery": "delete one duplicate decision row directly in the database",
+    "recovery_error": null,
+    "resolves_after_recovery": true,
+    "retry_error": "SnapshotError: Natural key ('submission_id', 'product_name') is not unique in section \"decision_product_create\": decision_product_create(decision_submission(team(game(\"GlobalStrat Test Game\")|\"Helix Digital\")|round(game(\"GlobalStrat Te",
+    "still_blocked_on_retry": true,
+    "student_write": {
+      "accepted": true,
+      "body": "accepted",
+      "product_names": [
+        "Vanguard One",
+        "Vanguard One"
+      ],
+      "status": 200
+    }
+  },
+  "variant_b": {
+    "affects_whole_cohort": true,
+    "description": "a student reuses the name of an existing product",
+    "duplicate_products_created": [],
+    "endpoint": "PATCH /api/games/{id}/teams/{id}/decisions/round/{n}/products/",
+    "next_round_blocked": false,
+    "next_round_error": null,
+    "next_round_retry_error": "ValueError: Round 3 has already been processed.",
+    "recovery": "rename one TeamProduct row directly in the database",
+    "recovery_error": null,
+    "resolves_after_recovery": true,
+    "round_creating_the_duplicate_error": null,
+    "round_creating_the_duplicate_resolves": true,
+    "still_blocked_on_retry": true,
+    "student_write": {
+      "accepted": false,
+      "body": "{\"detail\":\"Round 1 is processed \u2014 it is no longer accepting decisions.\"}",
+      "product_names": [
+        "Vanguard One"
+      ],
+      "status": 403
+    }
   }
 }

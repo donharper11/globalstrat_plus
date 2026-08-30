@@ -91,6 +91,7 @@ def variant_a_same_name_twice(game, team_id):
     resolved = rnd.status == 'processed'
     if resolved:
         advance_to_next_round(game.id)
+        game.refresh_from_db()   # advance bumps the row, not this instance
     return {
         'blocked_error': first,
         'retry_error': retry,

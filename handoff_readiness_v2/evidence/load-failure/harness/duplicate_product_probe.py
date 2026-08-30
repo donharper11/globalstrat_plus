@@ -121,9 +121,17 @@ def main():
                 'endpoint': endpoint,
                 'student_write': write_products(nxt, ['Vanguard One']),
             }
-            result['variant_b'].update(W.stage_via_shell(
-                database, f'W2.variant_b_name_of_existing_product(game, {team_id})',
-                marker='---VB---'))
+            if result['variant_b']['student_write']['accepted']:
+                result['variant_b'].update(W.stage_via_shell(
+                    database,
+                    f'W2.variant_b_name_of_existing_product(game, {team_id})',
+                    marker='---VB---'))
+            else:
+                # Resolving anyway would report on a round carrying no
+                # duplicate at all, which is what the previous run did.
+                result['variant_b']['inconclusive'] = (
+                    'the student write was refused, so no duplicate was '
+                    'created and nothing downstream was tested')
         W.stop_gunicorn(process); process = None
     finally:
         if process is not None:
