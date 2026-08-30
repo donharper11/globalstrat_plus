@@ -9,6 +9,8 @@ from decimal import Decimal
 
 from django.db import transaction
 from django.db.models import Sum
+from collections import Counter
+
 from rest_framework import serializers
 from core.serializers.decision_limits import NonNegativeFieldsMixin
 
@@ -42,6 +44,50 @@ def validate_rd_investment_targets(investments):
     if len(targets) != len(set(targets)):
         raise serializers.ValidationError(
             'Only one R&D investment per platform feature is allowed in a round.')
+
+
+def _quoted(names):
+    return ', '.join(f'"{name}"' for name in names)
+
+
+def validate_product_names(creates, team):
+    """A product name identifies a product, so it must be unique for the team.
+
+    The resolution manifest keys `decision_product_create` on
+    (submission_id, product_name) and `team_product` on (team_id, name).
+    Without this check a duplicate is accepted with a 200 and only refused
+    later, inside the resolution transaction -- which stalls the round for the
+    whole cohort and tells nobody which student wrote it. Refusing it on the
+    write puts the error in front of the person who can fix it.
+
+    Names are compared exactly, after the serializer's own string handling.
+    "vanguard" and "Vanguard" are different products here, as they are
+    everywhere else in the game.
+    """
+    names = [item.get('product_name') for item in creates
+             if item.get('product_name') is not None]
+    if not names:
+        return
+
+    counts = Counter(names)
+    repeated = sorted(name for name, count in counts.items() if count > 1)
+    if repeated:
+        raise serializers.ValidationError({'product_name': [
+            f'Each new product needs its own name. {_quoted(repeated)} '
+            f'appears more than once in this submission.']})
+
+    if team is None:
+        return
+    from core.models.team_state import TeamProduct
+    # Every row counts, retired ones included: the manifest key spans the whole
+    # table, so a name freed by retiring a product is not free.
+    taken = sorted(TeamProduct.objects
+                   .filter(team=team, name__in=names)
+                   .values_list('name', flat=True))
+    if taken:
+        raise serializers.ValidationError({'product_name': [
+            f'Your team already has a product named {_quoted(taken)}. '
+            f'Choose a different name.']})
 
 
 # ---------------------------------------------------------------------------
@@ -592,13 +638,22 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
     read_only_fields = ['id', 'status', 'locked_at', 'locked_by']
 
     def validate(self, attrs):
-        """Reject ambiguous R&D payloads whose result could depend on row order."""
+        """Reject payloads the resolution manifest would later refuse."""
         investments = attrs.get('rd_investments')
         if investments is not None:
             try:
                 validate_rd_investment_targets(investments)
             except serializers.ValidationError as error:
                 raise serializers.ValidationError({'rd_investments': error.detail})
+        creates = attrs.get('product_creates')
+        if creates is not None:
+            # A partial update need not carry the team, so fall back to the
+            # submission being edited.
+            team = attrs.get('team') or getattr(self.instance, 'team', None)
+            try:
+                validate_product_names(creates, team)
+            except serializers.ValidationError as error:
+                raise serializers.ValidationError({'product_creates': error.detail})
         return attrs
 
     # ------------------------------------------------------------------

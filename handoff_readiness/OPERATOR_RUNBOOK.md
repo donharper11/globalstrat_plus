@@ -258,50 +258,25 @@ process retry.
 
 ### A round refuses to resolve: duplicate product name
 
-This is the one resolution failure with no operator-facing control, so it is
-the one exception to the "do not substitute manual SQL" rule above. Apply it
-only for this symptom, and record it exactly as any other recovery.
+**Repaired in V2-029; no operator action should ever be needed.** The API now
+refuses a duplicate product name with a 400 naming `product_name`, on both the
+whole-submission and per-type decision endpoints. A student who names two new
+products the same thing, or reuses the name of a product the team already owns,
+is told at the point of saving and can correct it themselves.
 
-**Symptom.** Resolving the round fails immediately and repeatedly with
-`SnapshotError: Natural key ... is not unique`, naming either
-`decision_product_create` or `team_product`. The round stays `open`, no
-results are written, and retrying produces the identical error. A student
-caused this with a decision the API accepted normally: two new products given
-the same name, or one new product reusing the name of a product the team
-already owns. Nothing warned them and nothing warned you.
+If a round nevertheless fails to resolve with
+`SnapshotError: Natural key ... is not unique`, naming `decision_product_create`
+or `team_product`, then rows reached the database by some route other than the
+supported APIs. That is not a student mistake and not a routine recovery: treat
+it as a defect, stop, preserve state, and follow *Resolution fails or a scoring
+defect is confirmed* above. Nothing is corrupted in the meantime — the
+duplicate check that refuses the round runs inside the resolution transaction,
+so the whole resolution rolls back and no partial results are written.
 
-**What is and is not at risk.** Nothing is corrupted. When the collision is on
-`team_product` the failure comes from `complete_manifest`, which runs inside
-the same transaction as Phase 1, so the whole resolution rolls back and no
-duplicate is ever stored. The round is stalled, not damaged, and no team's
-decisions are lost.
-
-**Find it.** Substitute the round's `id` (not its round number):
-
-```sql
--- Two creates sharing a name inside one submission
-SELECT d.id, s.team_id, d.product_name, count(*) OVER (PARTITION BY d.submission_id, d.product_name) AS copies
-  FROM decision_product_create d
-  JOIN decision_submission s ON s.id = d.submission_id
- WHERE s.round_id = :round_id
- ORDER BY copies DESC, d.id;
-
--- A create reusing the name of a product the team already owns
-SELECT d.id, s.team_id, d.product_name
-  FROM decision_product_create d
-  JOIN decision_submission s ON s.id = d.submission_id
-  JOIN team_product p ON p.team_id = s.team_id AND p.name = d.product_name
- WHERE s.round_id = :round_id;
-```
-
-**Clear it.** Delete the surplus decision row by `id` — the second of the two
-copies, or the create that collides with an existing product. Tell the team
-what was removed and why, before results are published. Then resolve the round
-again; it proceeds normally.
-
-**Do not** rename rows in `team_product` to work around it. The team's own
-product names are their record of what they built, and renaming one changes a
-result the team can see.
+The manual SQL procedure previously recorded here was the recovery for the
+unrepaired defect at revision `16d49fc`. It is retained only as historical
+evidence in that revision's `GSP-CRV2-07_FAILURE_REPORT.md`, and is no longer a
+supported operator action.
 
 ## Platform unreachable at deadline
 

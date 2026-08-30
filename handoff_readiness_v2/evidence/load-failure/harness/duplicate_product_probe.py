@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Two products with the same name permanently block a game's resolution.
+"""Two products with the same name are refused at the write (V2-029).
+
+Written first to reproduce the defect at `16d49fc`, where both payloads were
+accepted with a 200 and the round could not then be resolved. That
+reproduction is kept in `duplicate-product-name.json` at that revision. This
+version asserts the repair: both payloads refused with an actionable 400, no
+decision rows written by the refusal, and a corrected payload accepted and
+resolved with no database intervention.
 
 Found while diagnosing stage 6 of the failure walkthrough, which failed on a
 SnapshotError rather than on the database loss it was injecting. The
@@ -102,73 +109,78 @@ def main():
         endpoint = ('PATCH /api/games/{id}/teams/{id}/decisions/round/'
                     '{n}/products/')
 
-        # Variant A: the same name twice in one submission.
+        # V2-029 repair. The same two payloads that stalled the round at
+        # 16d49fc must now be refused at the write, and a student must be able
+        # to correct them and resolve the round with no database intervention.
         result['variant_a'] = {
             'description': 'a student names two new products the same thing',
             'endpoint': endpoint,
             'student_write': write_products(rnd, ['Vanguard One', 'Vanguard One']),
         }
-        result['variant_a'].update(W.stage_via_shell(
-            database, f'W2.variant_a_same_name_twice(game, {team_id})',
-            marker='---VA---'))
+        result['variant_a']['decisions_after_refusal'] = W.stage_via_shell(
+            database, f'W2.decision_names(game, {team_id})', marker='---AN---')
 
-        # Variant B: one create carrying the name of a product the team owns.
-        # Only reachable once variant A's round has resolved and left one.
-        nxt = result['variant_a'].get('next_round_number')
+        result['corrected_a'] = {
+            'student_write': write_products(rnd, ['Vanguard One', 'Vanguard Two']),
+        }
+        result['corrected_a'].update(W.stage_via_shell(
+            database, f'W2.lock_and_resolve(game, {team_id})', marker='---RA---'))
+
+        nxt = result['corrected_a'].get('next_round_number')
         if nxt:
             result['variant_b'] = {
                 'description': 'a student reuses the name of an existing product',
                 'endpoint': endpoint,
                 'student_write': write_products(nxt, ['Vanguard One']),
             }
-            if result['variant_b']['student_write']['accepted']:
-                result['variant_b'].update(W.stage_via_shell(
-                    database,
-                    f'W2.variant_b_name_of_existing_product(game, {team_id})',
-                    marker='---VB---'))
-            else:
-                # Resolving anyway would report on a round carrying no
-                # duplicate at all, which is what the previous run did.
-                result['variant_b']['inconclusive'] = (
-                    'the student write was refused, so no duplicate was '
-                    'created and nothing downstream was tested')
+            result['corrected_b'] = {
+                'student_write': write_products(nxt, ['Vanguard Three']),
+            }
+            result['corrected_b'].update(W.stage_via_shell(
+                database, f'W2.lock_and_resolve(game, {team_id})',
+                marker='---RB---'))
         W.stop_gunicorn(process); process = None
     finally:
         if process is not None:
             W.stop_gunicorn(process)
         R.psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
 
-    a = result.get('variant_a', {})
-    b = result.get('variant_b', {})
+    a, b = result.get('variant_a', {}), result.get('variant_b', {})
+    ca, cb = result.get('corrected_a', {}), result.get('corrected_b', {})
+
+    def refused(stage):
+        write = stage.get('student_write', {})
+        return write.get('status') == 400 and 'product_name' in str(write.get('body'))
+
     result['finding'] = {
-        'both_variants_accepted_by_the_api': (
-            a.get('student_write', {}).get('accepted')
-            and b.get('student_write', {}).get('accepted')),
-        'a_blocks_the_submitted_round': a.get('blocked'),
-        'b_blocks_the_submitted_round': b.get('blocked'),
-        'b_fails_at': b.get('fails_at'),
-        'b_phase_1_work_rolled_back': b.get('phase_1_work_rolled_back'),
-        'no_duplicate_is_ever_persisted': not b.get('duplicate_products_persisted'),
-        'blocks_persist_on_retry': (a.get('still_blocked_on_retry')
-                                    and b.get('still_blocked_on_retry')),
-        'recovery_is_a_direct_database_edit': True,
-        'documented_operator_recovery': False,
+        'reference': 'V2-029',
+        'a_refused_with_400_naming_product_name': refused(a),
+        'b_refused_with_400_naming_product_name': refused(b),
+        'refusal_wrote_no_decision_rows': a.get('decisions_after_refusal') == [],
+        'corrected_payload_accepted': (ca.get('student_write', {}).get('accepted')
+                                       and cb.get('student_write', {}).get('accepted')),
+        'round_resolves_after_correction': (ca.get('resolved') and cb.get('resolved')),
+        'no_database_intervention_required': True,
+        'products_owned_at_end': cb.get('products_owned'),
     }
+    f = result['finding']
     result['passed'] = all([
-        result['finding']['both_variants_accepted_by_the_api'],
-        a.get('blocked'), a.get('resolves_after_recovery'),
-        b.get('blocked'), b.get('resolves_after_recovery'),
+        f['a_refused_with_400_naming_product_name'],
+        f['b_refused_with_400_naming_product_name'],
+        f['refusal_wrote_no_decision_rows'],
+        f['corrected_payload_accepted'],
+        f['round_resolves_after_correction'],
     ])
-    (EVIDENCE / 'duplicate-product-name.json').write_text(
+    (EVIDENCE / 'duplicate-product-name-repaired.json').write_text(
         json.dumps(result, indent=2, sort_keys=True, default=str) + '\n')
     checksums.regenerate(EVIDENCE)
     if checksums.verify(EVIDENCE):
         raise SystemExit('inventory does not verify')
 
-    print('\n=== duplicate product name: resolution blocked ===')
-    print(json.dumps(result.get('variant_a'), indent=2, default=str)[:1300])
-    print(json.dumps(result.get('variant_b'), indent=2, default=str)[:1500])
-    print(json.dumps(result.get('finding'), indent=2, default=str))
+    print('\n=== V2-029: duplicate product names refused at the write ===')
+    for key in ('variant_a', 'corrected_a', 'variant_b', 'corrected_b'):
+        print(f'\n{key}: ' + json.dumps(result.get(key), default=str)[:600])
+    print('\n' + json.dumps(result.get('finding'), indent=2, default=str))
     print(f"\nreproduced end to end: {result['passed']}")
     return 0
 

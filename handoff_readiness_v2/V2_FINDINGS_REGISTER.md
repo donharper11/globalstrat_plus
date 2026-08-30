@@ -15,6 +15,57 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## V2-029 — an accepted student write stalls the round (P0) — raised and closed by GSP-CRV2-07
+
+**Raised** during the CRV2-07 failure walkthrough, while diagnosing a stage that
+had passed on an unrelated `SnapshotError`. **Audited as blocking** at `16d49fc`
+and closed by the repair described here.
+
+**Defect.** `DecisionProductCreate.product_name` was free text with no
+uniqueness validation on either supported write surface. Two reachable payloads
+returned HTTP 200 and then made the round impossible to resolve:
+
+1. two product creates in one payload sharing a name — refused by the input
+   manifest's `decision_product_create` key `(submission_id, product_name)`,
+   before Phase 1;
+2. one create reusing the name of a product the team already owned — the
+   decision rows are unique, so Phase 1 ran and created the second
+   `TeamProduct`, and `complete_manifest` then tripped `team_product`'s key
+   `(team_id, name)`.
+
+In both cases the round stayed `open`, every retry failed identically, and the
+instructor could not close the round. Because `complete_manifest` shares Phase
+1's transaction (`advance_round.py:230`), the resolution rolled back whole: no
+duplicate was ever persisted and no decisions were lost. Nothing was corrupted;
+the round was stalled. Rollback integrity is not a substitute for validating an
+ordinary student decision, and manual SQL was not an acceptable recovery.
+
+**Reproduction at `16d49fc`** (historical):
+`evidence/load-failure/duplicate-product-name.json`, driven through the student
+HTTP endpoint for both variants.
+
+**Repair.** One shared validator, `validate_product_names(creates, team)` in
+`core/serializers/decisions.py`, enforcing both rules and raising an actionable
+400 naming `product_name`. It is called from the per-type `.../products/`
+endpoint before the replacement delete, so a refused payload leaves the team's
+persisted decisions untouched, and from `DecisionSubmissionSerializer.validate`
+so the whole-submission endpoint enforces the identical rule. Names are compared
+exactly, after the serializer's own string handling — no case folding or fuzzy
+matching was introduced. A retired product does not release its name, because
+the manifest key spans the whole table.
+
+The manifest natural-key refusals are unchanged and remain the backstop for
+rows introduced outside the supported APIs.
+
+**Verification.** `core/tests/test_product_name_uniqueness.py`, 10 tests: both
+endpoints refuse both variants; neither writes a replacement row; two distinct
+names accepted; another team may reuse the name; a retired name stays taken; a
+rejected payload leaves the previous set intact; a corrected payload is accepted
+and the round then resolves; and ORM-inserted duplicates are still refused at
+the manifest boundary with zero partial results. Directly affected contract
+suites (`test_decision_limits`, `test_permissions`, `test_auth_rounds`, 91
+tests) pass unchanged.
+
 ## V2-010 and V2-011 — closed at `8ddd983` (option A adopted)
 
 **V2-010.** `sc_engine` and `compliance_engine` now use `_cohort_key(game)` =

@@ -54,6 +54,7 @@ from core.serializers.decisions import (
     DecisionPartnershipSerializer,
     DecisionAcquisitionSerializer,
     DecisionESGSerializer,
+    validate_product_names,
     validate_rd_investment_targets,
     DecisionEventResponseSerializer,
     DecisionResearchAllocationSerializer,
@@ -421,6 +422,10 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                 validated_items.append(ser.validated_data)
             if decision_type == 'rd':
                 validate_rd_investment_targets(validated_items)
+            if decision_type == 'products':
+                # Before the delete below, so a refused payload leaves the
+                # team's existing decisions exactly as they were.
+                validate_product_names(validated_items, team)
             model_cls = serializer_cls.Meta.model
             model_cls.objects.filter(submission=submission).delete()
             if validated_items:
