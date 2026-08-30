@@ -63,9 +63,12 @@ def main():
         R.manage(database, 'shell', '-c', R.LEGACY_TABLES)
         seed = W.shell(database,
                        'import json, seed_field\n'
+                       'seeded = seed_field.run(teams=None, members_per_team=2)\n'
                        'print("---SEED---")\n'
-                       'print(json.dumps(seed_field.run(teams=None, '
-                       'members_per_team=2), default=str))\n', timeout=1800)
+                       'print(json.dumps(seeded, default=str))\n', timeout=1800)
+        if '---SEED---' not in seed.stdout:
+            raise SystemExit('seeding failed:\n' + seed.stdout[-2500:]
+                             + '\n' + seed.stderr[-2000:])
         seeded = json.loads(seed.stdout.split('---SEED---', 1)[1].strip().splitlines()[0])
         W.BACKUP_DIR = backups
         process = W.start_gunicorn(database, port, 'dupname')
