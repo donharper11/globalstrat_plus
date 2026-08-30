@@ -1,19 +1,20 @@
 {
   "backup_dir": "/tmp/crv207-drill-backups",
-  "code_revision": "c88e5010309a2dfc1dc12a6d7636faa71d6593d3",
+  "code_revision": "5d1945df27afca045a6850ac49aeec135d9ca003",
   "failed_stages": [
-    "1_backup_and_resolve",
-    "2_concurrent_operators",
-    "7_restore_and_refusals"
+    "6_database_loss"
   ],
   "passed": false,
   "stages": {
     "1_backup_and_resolve": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\nace(negate, args, kwargs)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py\", line 1518, in _filter_or_exclude_inplace\n    self._query.add_q(Q(*args, **kwargs))\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1646, in add_q\n    clause, _ = self._add_q(q_object, can_reuse)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1678, in _add_q\n    child_clause, needed_inner = self.build_filter(\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1526, in build_filter\n    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1333, in solve_lookup_type\n    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/sql/query.py\", line 1805, in names_to_path\n    raise FieldError(\ndjango.core.exceptions.FieldError: Cannot resolve keyword 'round_number' into field. Choices are: backup_path, code_revision, completed_at, created_at, decision_event_count, environment, game, game_id, id, input_body_path, input_manifest, input_section_digests, input_sha256, narrative_manifest, narrative_sha256, output_body_path, output_manifest, output_section_digests, output_sha256, round, round_id, schema_version, seed, source_tree_sha256\n",
-      "passed": false
-    },
-    "2_concurrent_operators": {
       "acknowledged_writes_lost_or_duplicated": 0,
+      "backup_path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
+      "backup_verified": {
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
+        "sha256": "f90b920d6fad795419af70eede362210a4323e171ba26160f5bfb005b9db40ab",
+        "size": 865966
+      },
+      "backup_verify_error": null,
       "committed_state": {
         "after": {
           "decision_audit_rows": 0,
@@ -22,27 +23,46 @@
         },
         "before": {
           "decision_audit_rows": 0,
+          "financial_rows": 4,
+          "rounds_processed": 1
+        },
+        "round_status": "processed"
+      },
+      "operator_action": "resolve the round",
+      "passed": true,
+      "recovery_result": "n/a",
+      "symptom": "none; normal resolution"
+    },
+    "2_concurrent_operators": {
+      "acknowledged_writes_lost_or_duplicated": 0,
+      "committed_state": {
+        "after": {
+          "decision_audit_rows": 0,
+          "financial_rows": 12,
+          "rounds_processed": 3
+        },
+        "before": {
+          "decision_audit_rows": 0,
           "financial_rows": 8,
           "rounds_processed": 2
         },
-        "financial_rows_added": 0,
+        "financial_rows_added": 4,
         "round_status": "processed"
       },
       "operator_action": "two operators resolve simultaneously",
       "operator_audit": [],
       "outcomes": [
         {
-          "error": "ValueError: Round 1 has already been processed.",
+          "error": "ValueError: Round 2 has already been processed.",
           "operator": "operator-1",
           "outcome": "refused"
         },
         {
-          "error": "ValueError: Round 1 has already been processed.",
           "operator": "operator-2",
-          "outcome": "refused"
+          "outcome": "committed"
         }
       ],
-      "passed": false,
+      "passed": true,
       "recovery_result": "no operator action needed; one attempt refused",
       "symptom": "the losing operator sees an error; the round resolves once"
     },
@@ -51,18 +71,18 @@
       "committed_state": {
         "after_kill": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
         "after_restart": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
         "before_kill": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         }
       },
       "operator_action": "restart the service",
@@ -87,17 +107,17 @@
       "committed_state": {
         "after": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
         "before": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
         "round_status": "open"
       },
-      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-2-20260830T110907889310Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
+      "error": "CalledProcessError: Command '['pg_dump', '--format=custom', '--no-owner', '--file', '/tmp/crv207-drill-backups/game-1-round-3-20260830T111253520920Z.dump', '--host', '192.168.50.38', '--port', '5432', '--username', 'donw",
       "mechanism": "the backup directory was made unwritable. A true ENOSPC needs a mounted small filesystem and this host has no privilege to mount one; the code path is the same -- pg_dump fails, the exception propagates out of process_round before _run_phase_1, and no partial dump is left behind",
       "operator_action": "free space or fix the backup target, then retry",
       "passed": true,
@@ -107,30 +127,46 @@
     },
     "6_database_loss": {
       "acknowledged_writes_lost_or_duplicated": 0,
+      "attributed_to_database_loss": false,
       "backends_terminated": 0,
       "committed_state": {
         "after": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 16,
+          "rounds_processed": 4
         },
         "before": {
           "decision_audit_rows": 0,
-          "financial_rows": 8,
-          "rounds_processed": 2
+          "financial_rows": 12,
+          "rounds_processed": 3
         },
-        "round_status": "open"
+        "round_status": "processed"
       },
-      "error": "SnapshotError: Natural key ('team_id', 'name') is not unique in section \"team_product\": team_product(team(game(\"GlobalStrat Test Game\")|\"Titan Micro\")|\"Screening Baseline Product\") appears twice. Declare a key that ",
+      "error": null,
       "operator_action": "restore the pre-resolution backup and replay",
-      "partial_results_committed": 0,
-      "passed": true,
+      "partial_results_committed": 4,
+      "passed": false,
       "recovery_result": "see stage 7",
       "symptom": "resolution fails; the operator sees a database error"
     },
     "7_restore_and_refusals": {
-      "error": "181 objects imported automatically (use -v 2 for details).\n\nrom_command_line(sys.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 442, in execute_from_command_line\n    utility.execute()\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/__init__.py\", line 436, in execute\n    self.fetch_command(subcommand).run_from_argv(self.argv)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 416, in run_from_argv\n    self.execute(*args, **cmd_options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/base.py\", line 460, in execute\n    output = self.handle(*args, **options)\n  File \"/home/ubuntu/.local/lib/python3.10/site-packages/django/core/management/commands/shell.py\", line 247, in handle\n    exec(options[\"command\"], {**globals(), **self.get_namespace(**options)})\n  File \"<string>\", line 8, in <module>\n  File \"/home/ubuntu/projects/globalstrat+/handoff_readiness_v2/evidence/load-failure/harness/failure_walkthrough_body.py\", line 336, in stage_7_restore\n    tampered.write_bytes(pathlib.Path(backup_path).read_bytes() + b'\\x00trailing')\n  File \"/usr/lib/python3.10/pathlib.py\", line 960, in __new__\n    self = cls._from_parts(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 594, in _from_parts\n    drv, root, parts = self._parse_args(args)\n  File \"/usr/lib/python3.10/pathlib.py\", line 578, in _parse_args\n    a = os.fspath(a)\nTypeError: expected str, bytes or os.PathLike object, not NoneType\n",
-      "passed": false
+      "acknowledged_writes_lost_or_duplicated": 0,
+      "committed_state": {
+        "decision_audit_rows": 0,
+        "financial_rows": 4,
+        "rounds_processed": 1
+      },
+      "dump_outside_backup_root_refused": "ValueError: Backup path is outside COMPETITION_BACKUP_DIR.",
+      "operator_action": "verify then restore the pre-resolution dump",
+      "passed": true,
+      "recovery_result": "restored",
+      "symptom": "n/a; this is the recovery",
+      "tampered_dump_refused": "ValueError: Backup checksum does not match.",
+      "verified": {
+        "path": "/tmp/crv207-drill-backups/game-1-round-1-20260830T111220739182Z.dump",
+        "sha256": "f90b920d6fad795419af70eede362210a4323e171ba26160f5bfb005b9db40ab",
+        "size": 865966
+      }
     }
   }
 }

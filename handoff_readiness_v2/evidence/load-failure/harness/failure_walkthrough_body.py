@@ -295,18 +295,45 @@ def stage_6_database_loss(game):
     killer_result = {}
 
     def kill_soon():
-        # Terminate this database's backends while Phase 1 is running.
+        """Terminate the database's backends once resolution is writing results.
+
+        The first attempt slept a fixed two seconds and terminated nothing: a
+        four-team round resolves faster than that, so the round committed and
+        the injection never landed. Waiting for a fixed interval is guessing
+        about a duration that varies with cohort size.
+
+        Instead, watch for the resolution actually writing a results row and
+        terminate the moment one appears. The trigger query is recorded, so
+        the evidence shows what the kill interrupted rather than asserting it.
+        Backups run against this database too, and terminating pg_dump would
+        be stage 5 over again, so the trigger names a results table.
+        """
         import subprocess
-        time.sleep(2.0)
-        out = subprocess.run(
-            ['psql',
-             'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
-             '-tAc',
-             "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
-             f"WHERE datname = '{db_name}' AND state = 'active' "
-             "AND query NOT ILIKE '%pg_terminate_backend%'"],
-            capture_output=True, text=True, timeout=60)
-        killer_result['terminated'] = out.stdout.strip().count('t')
+        deadline = time.time() + 120
+        dsn = 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres'
+        while time.time() < deadline:
+            look = subprocess.run(
+                ['psql', dsn, '-tAc',
+                 "SELECT left(query, 120) FROM pg_stat_activity "
+                 f"WHERE datname = '{db_name}' AND state = 'active' "
+                 "AND query ILIKE '%round_result%' "
+                 "AND query NOT ILIKE '%pg_stat_activity%' LIMIT 1"],
+                capture_output=True, text=True, timeout=30)
+            trigger = look.stdout.strip()
+            if trigger:
+                killer_result['trigger_query'] = trigger[:120]
+                out = subprocess.run(
+                    ['psql', dsn, '-tAc',
+                     "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
+                     f"WHERE datname = '{db_name}' "
+                     "AND query NOT ILIKE '%pg_stat_activity%' "
+                     "AND pid <> pg_backend_pid()"],
+                    capture_output=True, text=True, timeout=60)
+                killer_result['terminated'] = out.stdout.strip().count('t')
+                return
+            time.sleep(0.02)
+        killer_result['terminated'] = 0
+        killer_result['trigger_query'] = None
 
     killer = threading.Thread(target=kill_soon, daemon=True)
     killer.start()
@@ -314,7 +341,7 @@ def stage_6_database_loss(game):
         process_round(game.id)
     except Exception as exc:
         error = f'{type(exc).__name__}: {str(exc)[:200]}'
-    killer.join(timeout=60)
+    killer.join(timeout=150)
 
     from django.db import connection as fresh
     fresh.close()
@@ -328,6 +355,7 @@ def stage_6_database_loss(game):
         'recovery_result': 'see stage 7',
         'error': error,
         'backends_terminated': killer_result.get('terminated'),
+        'kill_trigger_query': killer_result.get('trigger_query'),
         'acknowledged_writes_lost_or_duplicated': 0,
         'partial_results_committed':
             after['financial_rows'] - before['financial_rows'],
