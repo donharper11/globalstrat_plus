@@ -100,3 +100,37 @@ def describe(game):
                 game_id_read=game.id).count(),
         },
     }
+
+
+def complete_submission(game, team_id, round_number):
+    """Fill everything the lock validator requires beyond the budget.
+
+    The budget saves are driven through the API because they are the evidence
+    the disputes are answered from -- the audit rows, their payload hashes and
+    their server timestamps. The rest of a valid submission is fixture bulk:
+    a product portfolio, a marketing mix for every active product-market pair,
+    a strategy mix, and any mandatory communication the round triggered. Those
+    are written here so the lock endpoint has a complete submission to accept
+    or refuse on its own terms.
+    """
+    import baseline as BASE
+    from django.utils import timezone
+    from core.models import DecisionSubmission, Round, Team
+    from core.models.cc32_models import CommunicationAssignment, TeamCommunication
+
+    team = Team.objects.get(id=team_id)
+    rnd = Round.objects.get(game=game, round_number=round_number)
+    submission, _ = DecisionSubmission.objects.get_or_create(
+        team=team, round=rnd, defaults={'status': 'draft'})
+    BASE.build(submission, team)
+    optional = BASE.build_optional(submission, team)
+
+    for assignment in CommunicationAssignment.objects.filter(scenario=game.scenario):
+        TeamCommunication.objects.update_or_create(
+            game=game, team=team, round=rnd, assignment=assignment,
+            defaults={'content': 'Seeded for the CRV2-08 walkthrough.',
+                      'word_count': 6, 'is_draft': False,
+                      'submitted_at': timezone.now()})
+    return {'team': team.name, 'round': round_number,
+            'optional_built': sorted(k for k, v in optional.items()
+                                     if v.get('built'))}

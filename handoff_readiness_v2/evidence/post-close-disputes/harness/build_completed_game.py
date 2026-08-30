@@ -144,9 +144,17 @@ def main():
                               students[team_c['id']], budget)
                 note(f"{team_c['name']} normal save", code)
 
-            for team in (team_a, team_b) if round_number == 2 else seeded['teams']:
+            # The lock validator requires a complete submission: portfolio,
+            # marketing mix, strategy mix and any mandatory communication. Fill
+            # that in, then lock through the endpoint so the lock itself, and
+            # its refusal or acceptance, are the product's own.
+            locking = (team_a, team_b) if round_number == 2 else seeded['teams']
+            for team in locking:
+                shell(f"B.complete_submission(game, {team['id']}, {round_number})",
+                      f'---FILL{team["id"]}R{round_number}---')
+            for team in locking:
                 code, body = api(port, 'POST', base.format(team=team['id']) + 'lock/',
-                              students[team['id']])
+                                 students[team['id']])
                 note(f"{team['name']} lock", code, body)
 
             # Round 2 carries the deadline event: the deadline is moved into
