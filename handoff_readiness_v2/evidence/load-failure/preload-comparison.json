@@ -1,0 +1,31 @@
+{
+  "preload_false": {
+    "backend_pids_during_probe": 1,
+    "distinct_backend_pids": 1,
+    "first_answer_at_s": 1.19,
+    "probe_seconds": 40,
+    "requests": 103,
+    "settled_at_s": 31.64,
+    "slow_requests_over_1s": 31,
+    "slowest_ms": 1243.6
+  },
+  "preload_true": {
+    "backend_pids_during_probe": 1,
+    "distinct_backend_pids": 1,
+    "first_answer_at_s": 0.0,
+    "probe_seconds": 40,
+    "requests": 106,
+    "settled_at_s": 38.65,
+    "slow_requests_over_1s": 29,
+    "slowest_ms": 1328.0
+  },
+  "safe_database_behaviour": {
+    "distinct_pids_preload_false": 1,
+    "distinct_pids_preload_true": 1,
+    "note": "each worker opens its own connection at first use; Django does not open one at import, so nothing is inherited across the fork. Distinct backend pids equal to the number of workers that served during the probe is the expected shape.",
+    "shared_backend_pids_observed": false
+  },
+  "seconds_saved_by_preload": -7.01,
+  "settle_threshold_ms": 1000,
+  "verdict": "revert"
+}

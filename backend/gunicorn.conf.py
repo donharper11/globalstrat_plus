@@ -31,15 +31,6 @@ worker_class = 'sync'
 timeout = 120
 keepalive = 5
 
-# CRV2-07. Without preloading, each of the 17 workers imports Django and warms
-# its own caches on the first request it happens to receive. At field load the
-# eight slowest requests of the whole run all landed in a single second, 18.3
-# to 18.7 seconds in, at up to 18283 ms, while p99 for the run was 1720 ms:
-# workers reaching their first request late, with traffic queued behind them.
-# Preloading imports the application once in the arbiter before forking, so no
-# request pays that cost. This matters most at the moment a class starts and
-# every student signs in at once.
-preload_app = True
 
 # Logging
 accesslog = '-'
@@ -58,3 +49,11 @@ proc_name = 'globalstrat'
 graceful_timeout = 30
 max_requests = 1000
 max_requests_jitter = 50
+
+# preload_app was tried and reverted (CRV2-07). It was adopted to remove a
+# worker cold start that later proved to be sign-in contamination, and a
+# direct comparison found no benefit: time to settle was 38.65 s with it and
+# 31.64 s without, with slow-request counts of 29 against 31 and maxima of
+# 1328 ms against 1244 ms. Measured under the rule set before the run -- keep
+# only if it saves more than a second -- it saves nothing, so it is not
+# shipped.
