@@ -96,20 +96,41 @@ on the segment preferences with the largest populations and heaviest weights.
 1. Make population growth compound per round, or state and implement whatever
    trajectory the course wants (linear, S-curved, shocked by events). Growth
    must accumulate across ten rounds.
-2. **Ruling 3, landed 2026-08-31: AI competitors keep taking share; their
-   consumption gets recorded.** Taking share is a deliberate feature and the
-   thing that makes competing here distinctive — *do not make AI competitors
-   easier as a side effect of this accounting fix.* What changes is only that
-   the demand they take stops evaporating: record it so it enters `N`, so that
-   industry units sold equals market adoption, word-of-mouth counts their
-   buyers, and any AI share the product displays reconciles against team shares.
+2. **Ruling 3, landed 2026-08-31.** AI competitors already consume share today
+   — they enter `total_attractiveness` (`bass_engine.py:151-153`), so every
+   human team's slice is smaller for their presence. That is a deliberate
+   feature and it stays. **Nothing in this stage may make AI competitors easier
+   as a side effect of an accounting fix.** What they do not do is get recorded:
+   the demand they take is allocated to nobody and never enters `N`.
 
-   **This does not ship alone.** Recording their consumption drains the pool
-   faster, and with growth non-compounding today that would collapse the late
-   game. Land it in the same pass as item 1 above, and report the joint effect,
-   not each in isolation. If beating an AI competitor then proves too hard, tune
-   AI attractiveness — the dial that actually governs difficulty — rather than
-   leaving demand unrecorded.
+   The repair splits in two. **They are separate decisions and must not be
+   bundled.**
+
+   **Fix A — record the take. Do this, unconditionally.** Make the pool
+   reconcile: `human adoption + AI take + unserved = adoption pool`, asserted
+   per segment per market per round. The AI keeps taking exactly what it takes
+   and no dynamics change. What this buys is that industry share figures
+   reconcile and a share dispute is answerable from stored data — in a
+   competition with a prize, "how was our market share calculated" must have an
+   answer, and today a slice of every round vanishes unexplained.
+
+   **Fix B — let AI adoption enter `N`. Measure it; do not assume it.** This
+   changes the diffusion curve and the change is **not monotonic**: `q·N/M`
+   rises faster so *early* rounds gain adoption, while `M − N` depletes faster
+   so *later* rounds lose it. The curve steepens and peaks earlier. Whether that
+   is the better game is a design judgement, so produce the measurement — both
+   curves, same seeds, side by side, across all ten rounds — and put it to the
+   owner as a decision rather than shipping it.
+
+   **If Fix B is adopted it lands in the same pass as item 1 (compounding market
+   growth), never alone.** Draining the pool faster against a market that does
+   not grow would collapse the late game. Report the joint effect, not each in
+   isolation.
+
+   If beating an AI competitor then proves too hard, tune AI attractiveness —
+   the dial that actually governs difficulty, authored per round as
+   `growth_per_round`, `fit_min`/`fit_max`, `market_affinity` and
+   `segment_affinity` — rather than leaving demand unrecorded.
 3. Re-derive segment populations, `bass_p` and `bass_q` against the intended
    industry revenue per round. Remember the homogeneity result: changing price
    without changing `M` changes the company by exactly that factor and nothing

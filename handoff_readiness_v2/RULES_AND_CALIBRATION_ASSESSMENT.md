@@ -405,12 +405,19 @@ Three defects follow, none of them about difficulty:
 3. Any AI market share the product displays derives from attractiveness rather
    than adopters and cannot be reconciled against team shares.
 
-**Disposition.** Keep AI consuming share; record what they consume, so
-consumption enters `N`. This does not weaken them — it tightens later rounds,
-because the pool drains faster. **Therefore it must land together with the
-market-growth repair (B2) in the same calibration pass**: with growth
-non-compounding today, draining the pool faster would collapse the late game.
-CRV2-11 Stage 3 owns both, and neither ships alone.
+**Disposition, refined 2026-08-31 into two separable changes.** CRV2-11 Stage 3
+owns both.
+
+- **Fix A — record the take. Unconditional.** The pool reconciles
+  (`human adoption + AI take + unserved = pool`). No dynamics change; the AI
+  takes exactly what it takes today. This is the bookkeeping fix that makes
+  share figures reconcile and a share dispute answerable.
+- **Fix B — AI adoption enters `N`. A design change; measure and decide.** Not
+  monotonic: early rounds gain adoption as `q·N/M` rises faster, later rounds
+  lose it as `M − N` depletes. Produce both curves on the same seeds and put it
+  to the owner. **If adopted, it ships with the market-growth repair (B2) and
+  never alone** — draining the pool faster against a market that does not grow
+  would collapse the late game.
 
 If teams beating AI competitors proves too hard, that is tuned through AI
 attractiveness — the dial that actually governs it — and not by leaving demand

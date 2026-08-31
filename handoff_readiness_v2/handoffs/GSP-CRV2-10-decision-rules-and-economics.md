@@ -244,6 +244,53 @@ that nothing in enrolment, team assignment or the instructor surfaces assumes a
 single active game per instructor or per deployment. CRV2-11 Stage 7 may narrow
 6–8 to a single number; this stage makes whichever number binds.
 
+### Concurrent games — one deployment, one game per heat
+
+A competition is several heats on **one** deployment, not one deployment per
+heat. Separate deployments lose the central leaderboard and cross-heat
+comparison, and multiply the riskiest operational rule in the programme: RD-03
+forbids deploys inside the competition window, and four deployments is four
+times the chance one is needed.
+
+The instructor surface is already the right shape for this — the dashboard shows
+one game at a time with an explicit "Switch game" control
+(`InstructorDashboard.js:277`) — and ownership already runs game → section →
+course → `Course.instructor_id`, so "this judge owns these heats" is a data fact
+rather than a feature to build. Three additions:
+
+**1. Competition games require an owned course. This handoff owns V2-033.**
+
+`instructor_can_access_game` returns `True` when a game's course has
+`instructor_id IS NULL` — deliberate, for the pilot cohort, and correctly
+preserved by CRV2-08's rework. But after CRV2-08's V2-032 repair that helper is
+the shared boundary for *every* game-scoped instructor route, so a single
+null-owner course grants cross-cohort read across all of them. In a competition
+that is several institutions on one deployment with any unowned course readable
+by every judge.
+
+CRV2-08 registers this as **V2-033** and does not repair it. **The repair is
+here:** refuse to open a competition game whose course has no `instructor_id`,
+enforced as a precondition on the game rather than as a runbook step. Preserve
+the pilot behaviour for non-competition games — the exemption is not the defect,
+its reach into a competition is.
+
+**2. Do not build a cross-heat or tournament aggregate view.**
+
+Final standings across heats come from exports. A judges' overview screen is a
+separate spec if it is wanted; it must not be added here on the argument that
+concurrent games imply it. Oversight across all heats is a role assignment that
+already works — `instructor_can_access_game` returns `True` for `admin`, so a
+head judge is an admin account, not an instructor with widened access.
+
+**3. The game identity is visible on every instructor screen.**
+
+Today it lives mainly in the dashboard header. A judge who closes or processes a
+round on the wrong heat has caused an unrecoverable competition incident, and
+with several heats open at once the current affordance is not enough. Put the
+game name on every instructor screen that can act on a round, and name the game
+in the confirmation for every lifecycle action. Cheap, and the failure it
+prevents cannot be undone.
+
 ## Stage 7 — events and challenges
 
 Bounded. Do not build a challenge engine here.
