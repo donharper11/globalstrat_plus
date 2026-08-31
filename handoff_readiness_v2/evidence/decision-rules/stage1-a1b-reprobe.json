@@ -1,0 +1,229 @@
+{
+  "baseline_revision": "e5cb8f4b60ad00032b640fb3192c1cca123e5a08",
+  "before": {
+    "levels": [
+      {
+        "current_level": "11.00",
+        "feature_id": 36
+      },
+      {
+        "current_level": "4.00",
+        "feature_id": 37
+      },
+      {
+        "current_level": "3.00",
+        "feature_id": 38
+      },
+      {
+        "current_level": "8.00",
+        "feature_id": 39
+      },
+      {
+        "current_level": "4.00",
+        "feature_id": 41
+      }
+    ],
+    "pending": [],
+    "rd_expense": [
+      {
+        "rd_expense": "0.00",
+        "round_number": 0
+      }
+    ]
+  },
+  "database": "gsp_crv210_probe",
+  "finished_at": "2026-08-31T04:52:14+0000",
+  "handoff": "GSP-CRV2-10 Stage 1 \u2014 A1b re-probe",
+  "port": 39153,
+  "stack_pid": 4121834,
+  "started_at": "2026-08-31T04:51:43+0000",
+  "steps": [
+    {
+      "advance": {
+        "advance": 200,
+        "close": 200,
+        "process": 200
+      },
+      "round_now": 2,
+      "state": {
+        "levels": [
+          {
+            "current_level": "11.00",
+            "feature_id": 36
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 37
+          },
+          {
+            "current_level": "3.00",
+            "feature_id": 38
+          },
+          {
+            "current_level": "8.00",
+            "feature_id": 39
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 41
+          }
+        ],
+        "pending": [
+          {
+            "applied": false,
+            "applies_round": 2,
+            "feature_id": 36,
+            "gain_amount": "3.00"
+          }
+        ],
+        "rd_expense": [
+          {
+            "rd_expense": "0.00",
+            "round_number": 0
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 1
+          }
+        ]
+      }
+    },
+    {
+      "advance": {
+        "advance": 200,
+        "close": 200,
+        "process": 200
+      },
+      "round_now": 3,
+      "state": {
+        "levels": [
+          {
+            "current_level": "14.00",
+            "feature_id": 36
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 37
+          },
+          {
+            "current_level": "3.00",
+            "feature_id": 38
+          },
+          {
+            "current_level": "8.00",
+            "feature_id": 39
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 41
+          }
+        ],
+        "pending": [
+          {
+            "applied": true,
+            "applies_round": 2,
+            "feature_id": 36,
+            "gain_amount": "3.00"
+          }
+        ],
+        "rd_expense": [
+          {
+            "rd_expense": "0.00",
+            "round_number": 0
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 1
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 2
+          }
+        ]
+      }
+    },
+    {
+      "advance": {
+        "advance": 200,
+        "close": 200,
+        "process": 200
+      },
+      "round_now": 4,
+      "state": {
+        "levels": [
+          {
+            "current_level": "14.00",
+            "feature_id": 36
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 37
+          },
+          {
+            "current_level": "3.00",
+            "feature_id": 38
+          },
+          {
+            "current_level": "8.00",
+            "feature_id": 39
+          },
+          {
+            "current_level": "4.00",
+            "feature_id": 41
+          }
+        ],
+        "pending": [
+          {
+            "applied": true,
+            "applies_round": 2,
+            "feature_id": 36,
+            "gain_amount": "3.00"
+          }
+        ],
+        "rd_expense": [
+          {
+            "rd_expense": "0.00",
+            "round_number": 0
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 1
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 2
+          },
+          {
+            "rd_expense": "0.00",
+            "round_number": 3
+          }
+        ]
+      }
+    }
+  ],
+  "submission": {
+    "body": "{'id': 1, 'team': 1, 'round': 2, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [{'id': 1, 'team_platform': 1, 'feature': 36, 'method': 'in_house', 'amount': '0.00', 'target_level': 14, 'calcul",
+    "payload": [
+      {
+        "amount": "0",
+        "calculated_cost": "0",
+        "feature": 36,
+        "method": "in_house",
+        "target_level": "14.00",
+        "team_platform": 1
+      }
+    ],
+    "round": 1,
+    "round_precondition": "round open",
+    "status": 200
+  },
+  "target": {
+    "ceiling": {
+      "ceiling_value": "14.00",
+      "feature_id": 36
+    },
+    "platform": 1,
+    "team": 1
+  },
+  "why": "the first attempt read the level one round after submitting; PendingFeatureGain lags the grant, so one advance could not tell \"never happened\" from \"not yet\""
+}

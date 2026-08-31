@@ -24,6 +24,91 @@ checkpoint 2 caught the omission. Registration did not precede implementation
 and this entry does not imply it did. V2-032 onwards were registered before
 repair, as the rule requires.
 
+## V2-037 through V2-044 — raised by GSP-CRV2-10 Stage 1
+
+All eight registered **before any repair**, from executed probes rather than
+source reading. Part A's items were read-only suspicions; each was submitted
+through both supported APIs against an isolated stack and read back from the
+rows. Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
+`stage1-probe-record.json`, `stage1-a1b-reprobe.json`. Nothing was withdrawn.
+
+### V2-037 — the price of R&D is set by the client (P0) — open, Stage 2 owns
+
+A platform authored at $15,000,000 (in-house) or $35,000,000 (licensed) is
+obtained for `committed_cost: 0` on both write surfaces, becomes `active`, and
+is charged **$0.00**. The same shape on the feature path: `target_level` at the
+generation ceiling with `amount: 0` and `calculated_cost: 0` raises the feature
+from 11.00 to its 14.00 ceiling and charges nothing in any round. The authored
+prices exist in `PlatformGenerationDefinition` and in the level-cost table the
+view already reads for display; nothing compares them to what was submitted.
+
+Confirms A1 and A1b. The feature grant is lagged through `PendingFeatureGain`,
+so it lands one round after the round it was submitted for — which is why the
+first probe read it as unchanged, and why it was re-probed rather than withdrawn.
+
+### V2-038 — platform cost escapes the cash and budget checks (P1) — open
+
+`committed_cost: 999,999,999` accepted against $47,980,000 of cash and an
+`rd_budget` of $1,000, and charged in full to `rd_expense`. The lock refusal
+names the unlock round and three missing decision sections, and never the cost
+or the cash. Confirms A2.
+
+### V2-039 — the generation unlock gate is enforced at lock only (P1) — open
+
+Found inside the A2 probe. A Gen 3 platform, unlocking at round 5, was
+submitted in round 3 and built by the engine with `status: 'active'`. The
+unlock check lives in the lock validator; the team never locked, close
+defaulted the submission, and the engine created the platform anyway. Not in
+Part A.
+
+### V2-040 — authored development_rounds is off by one (P1) — open
+
+A generation authored `development_rounds: 2` is `active` with
+`development_rounds_remaining: 0` after a single close/process/advance.
+Confirms A3's second half.
+
+**A3's first half is unresolved, not confirmed.** The `development_rounds: 0`
+case cannot be reached through the supported path: Gen 1 is the starting
+platform, every team already owns one, and creation is skipped when a
+non-retired platform of that generation exists — defect D3 obstructing its own
+diagnosis. Stage 3 needs a fixture where a team owns no Gen 1 platform.
+
+### V2-041 — no price band (gap, not a defect) — Stage 5 owns
+
+Confirmed absent as Part A stated. In one open round the same product was
+priced at 99999 (accepted) and then at 1 (accepted), and 1.00 is what was
+stored. No anchor, alert, refusal or adjustment exists. Registered so the
+absence is on the record; the rule itself is Stage 5's to build.
+
+### V2-042 — cohort caps are not enforced (P1) — open, Stage 6 owns
+
+Eight students enrolled through the roster surface (all 201) and assigned to one
+team through team management (200, `{'updated': 8, 'errors': []}`), leaving
+**11 active members on a team whose `team_size_max` is 5**. Neither surface
+consults `max_teams`, `team_size_min` or `team_size_max`. Confirms A6.
+
+### V2-043 — end_of_round retirement leaves the product on sale (P2) — open
+
+`{timing: 'end_of_round'}` sets `TeamProduct.status` to `retired` and leaves
+`TeamProductMarket.is_active` true; the `immediate` branch deactivates those
+rows. Confirms D1 exactly.
+
+### V2-044 — R&D accepted against another team's platform (P1) — open
+
+Not in Part A. A team submitted an R&D investment naming another team's
+`team_platform` and the write returned 200. In the first probe run this reached
+the engine, wrote duplicate `PendingFeatureGain` rows against the other team's
+platform, and made the round unprocessable with a natural-key collision — the
+same failure class as V2-029.
+
+Found by accident: the first run reused one team's platform id for both teams.
+It is registered because the API accepted it, not because the harness did it.
+
+`_full_validate` contains an ownership check, but the observed lock refusal
+named only the missing budget allocation — the validator returns early, so the
+ownership check never ran. **Whether a complete locked submission is refused is
+not established**, and this entry does not claim it is.
+
 ### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
 
 **Found** during the CRV2-08 dispute walkthrough. The runbook's dispute-5
