@@ -1,0 +1,103 @@
+{
+  "actor": "crv208_outsider, owner of an unrelated course",
+  "code_revision": "ebf40fcddd29ce3828744369a976fda9d5ab0a48",
+  "disclosing": [
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/alerts/",
+      "sample": "{\"alerts\":[{\"id\":32,\"team_id\":3,\"team_name\":\"Titan Micro\",\"round_number\":1,\"alert_type\":\"coherence_rag\",\"severity\":\"info\",\"title\":\"Round 1 coherence commentary\"",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/alerts/summary/",
+      "sample": "{\"total\":32,\"unacknowledged\":32,\"by_severity\":{\"concern\":10,\"info\":15,\"watch\":7}}",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/briefings/",
+      "sample": "{\"briefings\":[{\"id\":1,\"team_id\":1,\"team_name\":\"Apex Devices\",\"round_number\":1,\"executive_summary\":\"**Strategic Briefing: Q1 2023**\\n\\n**Financial Performance:**",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/dashboard/",
+      "sample": "{\"game_name\":\"GlobalStrat Test Game\",\"scenario\":\"Consumer Electronics 2026\",\"current_round\":3,\"status\":\"completed\",\"teams\":[{\"team_id\":1,\"team_name\":\"Apex Devic",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/event-templates/",
+      "sample": "{\"event_templates\":[{\"id\":35,\"name\":\"Major Competitor Product Launch\",\"category\":\"Competitive\",\"severity\":\"medium\",\"description\":\"An AI competitor has launched ",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/research-queries/",
+      "sample": "{\"queries\":[]}",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/sc-event-catalog/",
+      "sample": "{\"events\":[{\"id\":11,\"name\":\"Taiwan Earthquake \u2014 Semiconductor Capacity Shock\",\"severity\":\"critical\",\"effect_summary\":\"\u221240% capacity; suppliers: tsmc_taiwan, umc",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/sc-panel/",
+      "sample": "{\"game_id\":1,\"scenario_id\":2,\"round_number\":10,\"effective_resilience_weights\":{\"multi_sourcing\":0.25,\"modal_flexibility\":0.15,\"tier_2_visibility\":0.15,\"geograph",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/team-config/",
+      "sample": "{\"teams\":[{\"team_id\":1,\"team_name\":\"Apex Devices\",\"home_market_id\":6,\"home_market_code\":\"NA\",\"home_market_name\":\"North America\",\"starter_profile_name\":\"The Inno",
+      "status": 200
+    },
+    {
+      "discloses": true,
+      "route": "/api/games/1/instructor/teams/1/decisions/",
+      "sample": "{\"status\":\"locked\",\"round\":3,\"locked_at\":\"2026-08-30T23:24:39.884791+00:00\",\"locked_by\":\"crv208_student_1@example.invalid\",\"submission_origin\":\"student_locked\",",
+      "status": 200
+    }
+  ],
+  "endpoints_disclosing_to_a_non_owner": 10,
+  "endpoints_tested": 24,
+  "method": "GET only, as a fully unrelated instructor who owns a different course and has no connection to game 1. Write endpoints answer 405 to GET and were not exercised, so they are untested rather than proven safe.",
+  "not_exercised_write_endpoints": [
+    "/api/games/1/instructor/advance-round/",
+    "/api/games/1/instructor/extend-deadline/",
+    "/api/games/1/instructor/inject-event/",
+    "/api/games/1/instructor/inject-sc-event/",
+    "/api/games/1/instructor/randomize-home-markets/",
+    "/api/games/1/instructor/teams/1/participation/",
+    "/api/games/1/round-control/advance/",
+    "/api/games/1/round-control/close/",
+    "/api/games/1/round-control/deadline/",
+    "/api/games/1/round-control/process/",
+    "/api/games/1/round-control/reopen/"
+  ],
+  "refusing": [
+    {
+      "discloses": false,
+      "route": "/api/games/1/instructor/operator-events/",
+      "sample": "{\"error\":\"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "route": "/api/games/1/instructor/session-readiness/",
+      "sample": "{\"error\":\"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "route": "/api/games/1/round-control/",
+      "sample": "{\"error\":\"This game belongs to another instructor.\"}",
+      "status": 403
+    }
+  ],
+  "target_game": 1
+}
