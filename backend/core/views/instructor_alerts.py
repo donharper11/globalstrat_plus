@@ -4,6 +4,8 @@ CC-21: Instructor Alerts API views.
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from core.permissions import IsInstructor
 from django.shortcuts import get_object_or_404
 
 from core.models.core import Game
@@ -13,6 +15,12 @@ from core.models.cc21_models import InstructorAlert
 class InstructorAlertsView(APIView):
     """GET /api/games/{game_id}/instructor/alerts/
     Returns alerts with optional filtering."""
+    # V2-035: these declared no permission classes and inherited the
+    # project default of IsAuthenticated, so any signed-in student could
+    # read instructor alerts about teams. Role and ownership are separate
+    # checks: this is the role half, the guard middleware is the other.
+    permission_classes = [IsInstructor]
+
 
     def get(self, request, game_id):
         game = get_object_or_404(Game, id=game_id)
@@ -59,6 +67,12 @@ class InstructorAlertsView(APIView):
 
 class InstructorAlertAcknowledgeView(APIView):
     """POST /api/games/{game_id}/instructor/alerts/{alert_id}/acknowledge/"""
+    # V2-035: these declared no permission classes and inherited the
+    # project default of IsAuthenticated, so any signed-in student could
+    # read instructor alerts about teams. Role and ownership are separate
+    # checks: this is the role half, the guard middleware is the other.
+    permission_classes = [IsInstructor]
+
 
     def post(self, request, game_id, alert_id):
         alert = get_object_or_404(InstructorAlert, id=alert_id, game_id=game_id)
@@ -70,6 +84,12 @@ class InstructorAlertAcknowledgeView(APIView):
 class InstructorAlertSummaryView(APIView):
     """GET /api/games/{game_id}/instructor/alerts/summary/
     Returns counts by severity."""
+    # V2-035: these declared no permission classes and inherited the
+    # project default of IsAuthenticated, so any signed-in student could
+    # read instructor alerts about teams. Role and ownership are separate
+    # checks: this is the role half, the guard middleware is the other.
+    permission_classes = [IsInstructor]
+
 
     def get(self, request, game_id):
         game = get_object_or_404(Game, id=game_id)
@@ -96,6 +116,12 @@ class InstructorAlertSummaryView(APIView):
 class TeamChangesView(APIView):
     """GET /api/games/{game_id}/teams/{team_id}/changes/
     Returns recent decision changes for team notification."""
+    # V2-035: these declared no permission classes and inherited the
+    # project default of IsAuthenticated, so any signed-in student could
+    # read instructor alerts about teams. Role and ownership are separate
+    # checks: this is the role half, the guard middleware is the other.
+    permission_classes = [IsInstructor]
+
 
     def get(self, request, game_id, team_id):
         from core.models.cc21_models import DecisionChangeLog

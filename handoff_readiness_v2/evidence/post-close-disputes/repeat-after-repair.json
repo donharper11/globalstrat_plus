@@ -1,5 +1,5 @@
 {
-  "base": "http://127.0.0.1:59705",
+  "base": "http://127.0.0.1:34771",
   "steps": [
     {
       "name": "operator log tab is present",
@@ -14,12 +14,27 @@
     {
       "name": "committed and refused actions are both visible",
       "outcome": "pass",
-      "detail": "outcomes shown: committed"
+      "detail": "outcomes shown: rejected, committed"
     },
     {
       "name": "endpoint returns every field the dispute needs",
       "outcome": "pass",
-      "detail": "13 events; fields: action,actor,actor_user_id,after,before,conflict,id,outcome,reason,request_id,round_number,server_timestamp"
+      "detail": "14 events; fields: action,actor,actor_user_id,after,before,conflict,id,outcome,reason,request_id,round_number,server_timestamp"
+    },
+    {
+      "name": "api returns at least one committed and one refused action",
+      "outcome": "pass",
+      "detail": "committed 13, rejected 1"
+    },
+    {
+      "name": "the rejected filter returns a row",
+      "outcome": "pass",
+      "detail": "1 rows"
+    },
+    {
+      "name": "the refusal carries actor, action, reason, conflict and request id",
+      "outcome": "pass",
+      "detail": "{\"actor\":\"inst@example.invalid\",\"action\":\"close_round\",\"outcome\":\"rejected\",\"round\":3,\"reason\":\"Deliberate refusal so the Operator Log has a rejected row to show\",\"conflict\":{\"code\":\"round_already_closed\",\"detail\":\"Round"
     },
     {
       "name": "endpoint refuses writes",
@@ -41,7 +56,7 @@
   ],
   "network": [
     {
-      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
+      "url": "http://127.0.0.1:34771/api/games/1/instructor/operator-events/",
       "status": 405
     }
   ],
@@ -58,7 +73,7 @@
     ],
     "rows": 10,
     "outcomes": [
-      "committed",
+      "rejected",
       "committed",
       "committed",
       "committed",
@@ -69,10 +84,10 @@
       "committed",
       "committed"
     ],
-    "text": "Operator actions\nAll outcomes\nTIME (SERVER)\tACTOR\tACTION\tOUTCOME\tROUND\tREASON\tBEFORE → AFTER\tREQUEST ID\n\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\n8/30/2026, 11:24:49 PM\tinst@example.invalid\tadvance_round\tcommitted\t3\tOperator requested advance_round\t{\"status\":\"processed\",\"deadline\":\"2026-08-31T00:54:34.703900+00:00\",\"round_id\":4,\"closed_at\":\"2026-08-30T23:24:41.450623+00:00\",\"opened_at\":\"2026-08-30T23:24:33.454576+00:00\",\"is_overdue\":false,\"next_action\":\"advance\",\"teams_total\":4,\"close_reason\":\"manual\",\"processed_at\":\"2026-08-30T23:24:48.432863+00:00\",\"round_number\":3,\"teams_locked\":3,\"teams_pending\":1,\""
+    "text": "Operator actions\nAll outcomes\nTIME (SERVER)\tACTOR\tACTION\tOUTCOME\tROUND\tREASON\tBEFORE → AFTER\tREQUEST ID\n\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\n8/31/2026, 1:09:14 AM\tinst@example.invalid\tclose_round\trejected\t3\tDeliberate refusal so the Operator Log has a rejected row to show\t{\"status\":\"processed\",\"deadline\":\"2026-08-31T00:54:34.703900+00:00\",\"round_id\":4,\"closed_at\":\"2026-08-30T23:24:41.450623+00:00\",\"opened_at\":\"2026-08-30T23:24:33.454576+00:00\",\"is_overdue\":true,\"next_action\":\"advance\",\"teams_total\":4,\"close_reason\":\"manual\",\"processed_at\":\"2026-08-30T23:24:48.432863+00:00\",\"round_number\":3,\"teams_l"
   },
   "operatorApi": {
-    "count": 13,
+    "count": 14,
     "fields": [
       "action",
       "actor",
@@ -87,14 +102,30 @@
       "round_number",
       "server_timestamp"
     ],
-    "rejectedCount": 0,
-    "postStatus": 405
+    "rejectedCount": 1,
+    "committedCount": 13,
+    "postStatus": 405,
+    "refusalFields": {
+      "actor": "inst@example.invalid",
+      "action": "close_round",
+      "outcome": "rejected",
+      "round": 3,
+      "reason": "Deliberate refusal so the Operator Log has a rejected row to show",
+      "conflict": {
+        "code": "round_already_closed",
+        "detail": "Round 3 is already processed.",
+        "status": 409
+      },
+      "after": {},
+      "request_id": "srv-9d62c681-c0e0-46c6-887f-b4a20c157e37",
+      "server_timestamp": "2026-08-31T01:09:14.271372+00:00"
+    }
   },
   "languagePersistence": {
     "status": 200
   },
   "summary": {
-    "passed": 7,
+    "passed": 10,
     "failed": 0,
     "consoleErrors": 1,
     "networkFailures": 0

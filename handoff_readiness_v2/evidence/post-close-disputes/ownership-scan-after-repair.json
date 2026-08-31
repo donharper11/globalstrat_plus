@@ -1,0 +1,950 @@
+{
+  "clone": "gsp_crv208_authscan",
+  "code_revision": "2fc470e027e69f5d413da7d3d8c4d107ae7065b2",
+  "owner_still_works": {
+    "lifecycle_body": "{\"error\":\"Round 3 is already processed.\",\"code\":\"round_already_closed\",\"guidance\":\"Refresh the console \u2014 the deadline scheduler or another operator closed it fi",
+    "lifecycle_close": 409,
+    "read_operator_events": 200
+  },
+  "reads": [
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/disclosure-overrides/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/alerts/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/alerts/summary/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/briefings/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/communications/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/dashboard/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/event-templates/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/operator-events/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/research-queries/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/sc-event-catalog/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/sc-panel/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/session-readiness/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/team-config/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/instructor/teams/1/decisions/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/leaderboard/history/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/leaderboard/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/resilience-weight-overrides/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/round-control/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/round-schedule/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/round-status/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/alliances/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/briefing/latest/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/briefing/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/changes/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/communications/assignments/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/communications/history/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/competitors/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/compliance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/finance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/governance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/marketing/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/org-structure/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/products/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/rd/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/strategy/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/talent-allocation/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/talent/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/context/tax-structure/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/dashboard/scorecard/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/decisions/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/decisions/round/1/summary/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/events/active/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/events/history/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/financial-reports/history/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/financial-reports/strategic-impact/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/forecast/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/forecast/scenarios/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/government-relations/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/investor-relations/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/news/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/research/queries/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/results/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/compliance-events/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/hedge-positions/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/inventory/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/logistics/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/resilience-score/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/sc-events/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/sourcing/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/sc/round/1/trade-finance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/ticker/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/tools/analysis/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/tools/analysis/history/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "GET",
+      "route": "/api/games/1/teams/1/tools/entry-matrix-data/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "status": 403
+    }
+  ],
+  "routes_in_inventory": 94,
+  "summary": {
+    "passed": true,
+    "reads_disclosing_to_a_non_owner": 0,
+    "reads_tested": 65,
+    "refused_writes_not_recorded_anywhere": 37,
+    "writes_not_refused_with_403": 0,
+    "writes_tested": 37,
+    "writes_that_mutated_state": 0
+  },
+  "writes": [
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/activate/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/archive/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "DELETE",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/delete/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/disclosure-overrides/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "DELETE",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/disclosure-overrides/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/advance-round/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/extend-deadline/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/inject-event/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/inject-sc-event/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/randomize-home-markets/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "PUT",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/team-config/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/instructor/teams/1/participation/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/pause/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/reset/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/resilience-weight-overrides/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "DELETE",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/resilience-weight-overrides/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/resume/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-control/advance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-control/close/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-control/deadline/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-control/process/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-control/reopen/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/round-schedule/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/context/org-structure/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/context/tax-structure/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/decisions/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "PUT",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/decisions/round/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "PATCH",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/decisions/round/1/1/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/decisions/round/1/lock/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/decisions/round/1/unlock/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/forecast/scenarios/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/research/query/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/sc/round/1/inventory/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/sc/round/1/logistics/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/sc/round/1/sourcing/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/sc/round/1/trade-finance/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    },
+    {
+      "discloses": false,
+      "exempt": false,
+      "method": "POST",
+      "operator_events_delta": 0,
+      "refusal_recorded": "not recorded",
+      "route": "/api/games/1/teams/1/tools/analysis/",
+      "sample": "{\"error\": \"This game belongs to another instructor.\"}",
+      "state_unchanged": true,
+      "status": 403
+    }
+  ]
+}

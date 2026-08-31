@@ -149,14 +149,28 @@ written ruling.
    accepted payload before lock and compare its SHA-256 and fields with the
    stored snapshot. Do not rely on a browser screenshot alone.
 3. **“Another team saw our decisions.”** Preserve the request ID and gateway
-   access log. The decision ledger proves writes, not reads; search team-scoped
-   reads by actor. If logs do not retain actor/team, classify this as not
-   answerable and escalate—absence of a write is not proof of absence of a read.
+   access log, then query the read ledger:
+
+   ```bash
+   python3 manage.py who_accessed --game <id> --team <team-id> --json
+   ```
+
+   Every read of a team's raw decisions or of an audit payload is recorded with
+   the actor, the team read, the route, the outcome (`allowed` / `denied` /
+   `error`) and the request ID — refusals included. This is answerable; the
+   earlier instruction to classify it as not answerable predates the
+   `SensitiveReadEvent` table. Escalate only if the ledger itself is missing
+   rows for the window in dispute.
 4. **“The round was rerun after final.”** Compare manifest timestamps/hash with
    operator events and recovery-audit JSONL. Require one original process or an
    explicitly approved recovery trail.
-5. **“The operator changed something.”** Review operator events in timestamp
-   order; compare before/after, actor, reason and request ID.
+5. **“The operator changed something.”** Open Instructor → **Operator Log**,
+   or `GET /api/games/{game_id}/instructor/operator-events/`. Events are newest
+   first and carry actor, server timestamp, action, outcome, round, before and
+   after, the conflict on a refusal, the written reason and the request ID.
+   Filter by `round`, `action` or `outcome`. Refused attempts appear beside the
+   ones that committed: a race is exactly one `committed` row and one
+   `rejected` row, and the rejected one carries an empty `after`.
 6. **“Prove the calculation.”** Use `manage.py replay_round` — see *Prove a
    round by replaying it* below. A matching competitive hash proves the
    published outputs and the state carried into the next round; it does not

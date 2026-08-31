@@ -76,9 +76,13 @@ function step(name, outcome, detail) {
     out.operatorLog = table;
     step('operator actions render in the browser', table.rows > 0 ? 'pass' : 'fail',
          `${table.rows} rows, columns: ${table.headers.join(' | ')}`);
+    // The first version of this asserted only `includes('committed')` while
+    // claiming both outcomes were visible, and passed on an artifact holding
+    // no refusals at all. Both must be present or the step fails.
+    const shown = [...new Set(table.outcomes)];
     step('committed and refused actions are both visible',
-         table.outcomes.includes('committed') ? 'pass' : 'fail',
-         `outcomes shown: ${[...new Set(table.outcomes)].join(', ') || 'none'}`);
+         (shown.includes('committed') && shown.includes('rejected')) ? 'pass' : 'fail',
+         `outcomes shown: ${shown.join(', ') || 'none'}`);
 
     // ---- The endpoint's own answers, including isolation ---------------
     const api = await page.evaluate(async (game) => {
@@ -86,13 +90,25 @@ function step(name, outcome, detail) {
       const h = { Authorization: `Bearer ${token}` };
       const all = await (await fetch(`/api/games/${game}/instructor/operator-events/`, { headers: h })).json();
       const rejected = await (await fetch(`/api/games/${game}/instructor/operator-events/?outcome=rejected`, { headers: h })).json();
+      const committed = await (await fetch(`/api/games/${game}/instructor/operator-events/?outcome=committed`, { headers: h })).json();
       const readOnly = await fetch(`/api/games/${game}/instructor/operator-events/`, { method: 'POST', headers: h });
       const first = (all.events || [])[0] || {};
+      const refusal = (rejected.events || [])[0] || null;
       return {
         count: all.count,
         fields: Object.keys(first).sort(),
         rejectedCount: rejected.count,
+        committedCount: committed.count,
         postStatus: readOnly.status,
+        // The fields the dispute procedure asks for, read off an actual
+        // refusal rather than assumed to be present because the column exists.
+        refusalFields: refusal ? {
+          actor: refusal.actor, action: refusal.action,
+          outcome: refusal.outcome, round: refusal.round_number,
+          reason: refusal.reason, conflict: refusal.conflict,
+          after: refusal.after, request_id: refusal.request_id,
+          server_timestamp: refusal.server_timestamp,
+        } : null,
       };
     }, fixture.game_id);
     out.operatorApi = api;
@@ -100,6 +116,17 @@ function step(name, outcome, detail) {
     step('endpoint returns every field the dispute needs',
          need.every(f => api.fields.includes(f)) ? 'pass' : 'fail',
          `${api.count} events; fields: ${api.fields.join(',')}`);
+    step('api returns at least one committed and one refused action',
+         (api.committedCount > 0 && api.rejectedCount > 0) ? 'pass' : 'fail',
+         `committed ${api.committedCount}, rejected ${api.rejectedCount}`);
+    step('the rejected filter returns a row',
+         api.rejectedCount > 0 ? 'pass' : 'fail', `${api.rejectedCount} rows`);
+    const r = api.refusalFields;
+    const refusalComplete = r && r.actor && r.action && r.outcome === 'rejected'
+      && r.reason && r.request_id && r.server_timestamp
+      && (Object.keys(r.conflict || {}).length > 0 || r.after !== undefined);
+    step('the refusal carries actor, action, reason, conflict and request id',
+         refusalComplete ? 'pass' : 'fail', JSON.stringify(r || {}).slice(0, 220));
     step('endpoint refuses writes', api.postStatus === 405 ? 'pass' : 'fail', `POST -> ${api.postStatus}`);
 
     // ---- Language persistence -------------------------------------------

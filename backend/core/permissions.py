@@ -71,8 +71,14 @@ def instructor_can_access_game(request, game):
     course = Course.objects.filter(course_id=section.course_id).first()
     if course is None or course.instructor_id is None:
         return True                     # unowned course: any instructor
-    user = getattr(request, 'user', None)
-    return getattr(user, 'user_id', None) == course.instructor_id
+    # Identity comes from the same helper the role check uses, which reads the
+    # verified JWT and falls back to it when `request.user` is not populated.
+    # This previously read `request.user.user_id` directly, which is only set
+    # once DRF authentication has run inside the view -- so the rule returned
+    # False for the rightful owner when called from the middleware boundary
+    # that now enforces it for every game-scoped instructor route.
+    from core.utils.auth_context import get_request_user_id
+    return get_request_user_id(request) == course.instructor_id
 
 
 class GameIsNotPaused(BasePermission):

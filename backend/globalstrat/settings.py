@@ -97,6 +97,7 @@ MIDDLEWARE = [
     'core.middleware.SessionHeartbeatMiddleware',
     'core.middleware.GamePauseGuardMiddleware',
     'core.middleware.TeamScopeGuardMiddleware',
+    'core.middleware.GameScopeGuardMiddleware',
     'core.middleware.SensitiveReadLogMiddleware',
 ]
 

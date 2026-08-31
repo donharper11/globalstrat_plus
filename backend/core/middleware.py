@@ -277,6 +277,65 @@ def _is_team_member(user_id, team_id):
     ).exists()
 
 
+class GameScopeGuardMiddleware:
+    """Refuse an instructor a game that is not theirs, by default.
+
+    The student equivalent of this is `TeamScopeGuardMiddleware`, which has
+    stood since a student could read a rival team by editing the URL. The
+    instructor side had no equivalent: each view was expected to call
+    `instructor_can_access_game` itself, three handoffs found views that did
+    not, and the last scan found ten still open -- including the endpoint that
+    returns another cohort's submitted decisions, their payload hashes, the
+    actor and the request id.
+
+    Default-deny: a game-scoped instructor route is guarded unless it is listed
+    in `game_scope.EXEMPTIONS` with a reason, and a contract test fails when a
+    new one is neither. The ownership rule itself is unchanged and is not
+    restated here -- `instructor_can_access_game` remains the single
+    definition, including its documented unowned-pilot behaviour.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        from core.services.game_scope import (game_id_from,
+                                              route_requires_ownership)
+        path = request.path or ''
+        if not path.startswith('/api/'):
+            return None
+        match = getattr(request, 'resolver_match', None)
+        route = getattr(match, 'route', None)
+        if route is None or not route_requires_ownership(route):
+            return None
+
+        from core.utils.auth_context import get_request_role
+        role = (get_request_role(request) or '').lower()
+        if role == 'admin':
+            return None
+        if role != 'instructor':
+            # Not an instructor: the view's own permission classes answer,
+            # so an anonymous caller still gets 401 rather than this 403.
+            return None
+
+        game_id = game_id_from(match, path)
+        if game_id is None:
+            return None
+
+        from core.models import Game
+        from core.permissions import instructor_can_access_game
+        game = Game.objects.filter(pk=game_id).first()
+        if game is None:
+            return None                       # the view answers 404 itself
+        if instructor_can_access_game(request, game):
+            return None
+        return JsonResponse(
+            {'error': 'This game belongs to another instructor.'}, status=403)
+
+
 class SensitiveReadLogMiddleware:
     """Record every read of a team's raw decisions or of an audit payload.
 

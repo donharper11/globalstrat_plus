@@ -50,27 +50,32 @@ is stored.
 | 2 | "The recorded decision differs" | Same response | last accepted `payload` before lock and its `payload_sha256`, against the stored snapshot in the same response |
 | 3 | "Another team saw our decisions" | Prevention: the 403 above. Evidence: `python3 manage.py who_accessed` over `SensitiveReadEvent`; Django admin read-only view | actor, team read, route, outcome, request id |
 | 4 | "The round was rerun after final" | `python3 manage.py replay_round --game-id {id} --round {n} --export-only`; operator events; recovery-audit JSONL from `recover_competition_round` | manifest timestamps and hashes against the operator trail |
-| 5 | "The operator changed something" | **Suspected gap** — `OperatorAuditEvent` has no product API or UI. Only `core/admin.py:811` (read-only Django admin) reads it | before/after, actor, reason, request id — reachable only through Django admin |
+| 5 | "The operator changed something" | Instructor dashboard → **Operator Log** tab, or `GET /api/games/{game_id}/instructor/operator-events/` (read-only, ownership-scoped) | actor, server timestamp, action, outcome, round, before/after, conflict, reason, request id — refusals shown beside successes |
 | 6 | "Prove the calculation" | `python3 manage.py replay_round` against an isolated database | matching competitive hash; narrative hashed and reported separately |
 
 ## Two things to test rather than assume
 
-**Suspected gap A — dispute 5 has no operator-facing path.** No route in
-`core/urls.py` returns `OperatorAuditEvent`, and `round_control.py` does not
-read it despite what a quick grep of `read_inventory.py`'s comment suggests
-(that comment describes the write side, through the `operator_action` context
-manager). The only reader is the Django admin, registered `AppendOnlyAdmin`.
-Whether that counts as a supported path depends on whether an instructor can
-log into Django admin at all — instructors are `core.User` rows with a role,
-not `auth_user` staff accounts. The walkthrough will attempt it as an
-instructor and record what happens.
+**Gap A — confirmed, registered as V2-030, repaired.** No route returned
+`OperatorAuditEvent`; the only reader was the Django admin
+(`core/admin.py:811`, `AppendOnlyAdmin`), behind a separate maintenance login
+that competition instructors do not hold. The auditor ruled the Django admin is
+**not** the supported operator path — it is recorded here as the rejected
+alternative, not as an answer.
 
-**Suspected gap B — the runbook understates dispute 3.** Procedure 3 says to
-classify a rival-read claim as "not answerable" if logs do not retain
-actor/team. `SensitiveReadEvent` does retain both, and `who_accessed` queries
-it. If the walkthrough confirms the command answers the claim, the runbook text
-is out of date rather than the product being incapable, and the correction
-belongs in the runbook.
+Repaired at `45eb83c` with a read-only, ownership-scoped endpoint
+`GET /api/games/{game_id}/instructor/operator-events/` and an **Operator Log**
+tab on the instructor dashboard. Verified by
+`core/tests/test_operator_events_view.py` (7 tests) and the repeat artifact
+`repeat-after-repair.json`, which requires a genuine refused action to be
+returned by the API, rendered in the browser beside a committed one, and
+returned by the `outcome=rejected` filter.
+
+**Gap B — confirmed stale runbook text, not a product gap.** `who_accessed`
+returns actor, target team, route, outcome and request id, and captured both
+students' refused attempts on a rival's decisions
+(`dispute-answers.json`). Dispute 3 is **answerable**; the runbook's "not
+answerable" wording predates the `SensitiveReadEvent` table and is corrected
+there rather than registered as a finding.
 
 ## Not in scope for this handoff
 

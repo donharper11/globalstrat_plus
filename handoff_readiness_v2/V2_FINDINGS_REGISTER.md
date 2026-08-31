@@ -15,6 +15,148 @@ Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 | V2-008 | Dry-run failure path | P2 | The `process_round(dry_run=True)` exception handler referenced undefined `sid`, masking the original failure. | Removed invalid rollback; outer atomic block owns rollback. | Repaired |
 | V2-009 | Frontend verification environment | P1 | Lockfile selects `react-router-dom` 7.1.1 (Node >=20), but the VM runs Node 18.20.8. Production build completes, while Jest cannot resolve the router and one suite cannot start. | `npm install` reports EBADENGINE; `CI=true npm test -- --watchAll=false` has 1 pass / 1 load failure. | **Closed** in GSP-CRV2-05 — see closure entry below. The stated cause was wrong; the repair is described there. |
 
+## V2-030 through V2-035 — raised by GSP-CRV2-08
+
+**Chronology, stated plainly.** V2-030 and V2-031 were found during the CRV2-08
+browser walkthrough and **repaired before they were registered here**, contrary
+to the standing rule that a finding is recorded before repair. The audit of
+checkpoint 2 caught the omission. Registration did not precede implementation
+and this entry does not imply it did. V2-032 onwards were registered before
+repair, as the rule requires.
+
+### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
+
+**Found** during the CRV2-08 dispute walkthrough. The runbook's dispute-5
+procedure tells an operator to "review operator events in timestamp order;
+compare before/after, actor, reason and request ID". Every lifecycle action and
+every refusal had been writing `OperatorAuditEvent` rows since CRV2-02, and no
+product API or UI returned any of them. The only reader was
+`core/admin.py:811`, a read-only Django admin registration behind a separate
+maintenance login that competition instructors do not hold.
+
+**Original failing evidence.** `evidence/post-close-disputes/dispute-answers.json`
+at `8554db3`: 13 operator audit rows for the game, `answerable: false`, no route
+returning any of them. The auditor ruled that the Django admin does not count as
+the supported operator path.
+
+**Repair** at `45eb83c`: read-only, ownership-scoped
+`GET /api/games/{id}/instructor/operator-events/` and an Operator Log tab.
+Returns actor, server timestamp, action, outcome, round, before, after,
+conflict, reason and request id; filters by round, action and outcome; newest
+first; refusals returned beside successes, because a race is one committed row
+and one rejected row and returning only successes hides the half being asked
+about. Registered in the sensitive-read inventory as an audit-category read.
+
+**Verification.** `core/tests/test_operator_events_view.py`, 7 tests.
+Repeat evidence `evidence/post-close-disputes/repeat-after-repair.json`: the
+browser renders both a committed and a genuine rejected action, the rejected
+filter returns a row, and the refusal carries actor, action, reason, conflict
+and request id. An earlier repeat asserted only that `committed` was present
+while claiming both outcomes were visible; that false positive was caught in
+audit and the assertion now fails when either outcome is absent.
+
+**Disposition: closed.**
+
+### V2-031 — language preference never persisted (P2) — closed at `45eb83c`
+
+**Found** in the CRV2-08 usability smoke. `LanguageSwitcher` built its URL as
+`process.env.REACT_APP_API_URL || ''` while `api/client.js` uses `|| '/api'`.
+In a default build the PUT went to `/user/preferences/` instead of
+`/api/user/preferences/` and 404ed inside a silent `.catch(() => {})`: the
+interface changed language and the choice was never stored, so it reverted at
+the next sign-in or on another device.
+
+**Original failing evidence.** `evidence/post-close-disputes/browser-walkthrough.json`
+at `8554db3`: the shipped URL returned HTTP 404 and the identical call under
+`/api` returned HTTP 200, in the same browser session.
+
+**Repair** at `45eb83c`: the same default as the API client. **Verification:**
+re-proven at HTTP 200 in `repeat-after-repair.json`. **Disposition: closed.**
+
+### V2-032 — game ownership not enforced for instructor routes (P0) — registered before repair
+
+**Severity P0.** An instructor with no connection to a cohort could read that
+cohort's raw submitted decisions, their payload hashes, the actor and the
+request id — the evidence CRV2-08 certifies as the answer to disputes 1 and 2.
+That is a competitive-confidentiality failure and is launch-blocking.
+
+**Reproduction** at `ebf40fc`,
+`evidence/post-close-disputes/instructor-ownership-scan.json`: as
+`crv208_outsider`, an instructor owning an unrelated course, ten instructor GET
+routes answered 200 for another instructor's game, including
+`instructor/teams/{id}/decisions/`. Only the three routes carrying an explicit
+`instructor_can_access_game` call refused.
+
+**Third instance of one pattern.** V2-007's rework and CRV2-07's authorization
+FAIL were both `IsInstructor` without an ownership check. `IsInstructor`
+answers "is this an instructor"; it is not authorization for *this* game.
+
+**Repair.** `GameScopeGuardMiddleware` enforces ownership by default for every
+registered route naming a `game_id`, with `core/services/game_scope.py` building
+the inventory from the URL patterns rather than from a list anyone maintains.
+Exemptions must be explicit and carry a reason, and a contract test fails on an
+exemption without one. The ownership rule itself is unchanged:
+`instructor_can_access_game` remains the single definition.
+
+Two defects were found while building it, both recorded rather than smoothed
+over. The first inventory filtered on views already declaring an instructor
+permission and so missed `/instructor/alerts/`, which declares none — an
+inventory that asks views whether they are protected finds only the protected
+ones. And `instructor_can_access_game` read `request.user.user_id`, which DRF
+only populates inside the view, so at the middleware boundary it refused the
+rightful owner; it now uses the same JWT-derived identity as the role check.
+
+**Verification.** `core/tests/test_game_scope_boundary.py`, 9 tests.
+Post-repair scan `evidence/post-close-disputes/ownership-scan-after-repair.json`:
+94 routes inventoried, 65 reads and 37 writes exercised as an unrelated
+instructor against a disposable clone, **0 disclosing, 0 not refused, 0 state
+mutations**, owner reads 200 and reaches a normal `409` on a lifecycle control.
+
+**Disposition: closed pending audit.**
+
+### V2-033 — an unowned course grants cross-cohort read (severity open) — not repaired
+
+`instructor_can_access_game` treats a course whose `instructor_id` is NULL as
+unowned and readable by **any** instructor. This is deliberate and documented:
+the live pilot cohort's course row genuinely has NULL there, and scoping
+strictly would hide those games from everyone. It nonetheless means an
+instructor can read a cohort that is not theirs whenever the course is unowned.
+
+Pinned, not repaired, on two routes behind the shared boundary
+(`test_an_unowned_course_is_readable_by_any_instructor_on_two_routes`) so that
+narrowing it later is a deliberate act that fails both assertions together.
+
+**Severity, owner and disposition: open for the auditor.** No repair attempted.
+
+### V2-034 — refused non-owner writes are not recorded anywhere (severity open) — not repaired
+
+Every one of the 37 mutation routes exercised as an unrelated instructor was
+refused with 403 and changed nothing, which is the required outcome. None of
+those refusals was recorded: no operator audit row, no sensitive-read row.
+`refused_writes_not_recorded_anywhere: 37` in
+`ownership-scan-after-repair.json`, recorded per write as `refusal_recorded`.
+
+The boundary refuses before the view runs, so the lifecycle audit that records
+operator refusals is never reached. An attempt by one instructor to act on
+another cohort's competition therefore leaves no trace to investigate.
+
+**Severity, owner and disposition: open for the auditor.** No repair attempted,
+and no new logging path was added to produce this observation.
+
+### V2-035 — instructor alerts readable by any signed-in student (P1) — closed at this revision
+
+Found while widening the V2-032 inventory. `InstructorAlertsView`,
+`InstructorAlertSummaryView`, `InstructorAlertAcknowledgeView` and
+`TeamChangesView` declared no `permission_classes` and inherited the project
+default of `IsAuthenticated`. A signed-in student read `/instructor/alerts/`
+and `/instructor/alerts/summary/` with HTTP 200 — instructor-facing analysis of
+teams, including other teams.
+
+This is a role failure, not an ownership failure, and the two are repaired
+separately: `permission_classes = [IsInstructor]` on the four views, with the
+ownership boundary covering the other half. Verified: student and unrelated
+instructor now receive 403 on both routes, the owning instructor 200.
+
 ## V2-029 — an accepted student write stalls the round (P0) — raised and closed by GSP-CRV2-07
 
 **Raised** during the CRV2-07 failure walkthrough, while diagnosing a stage that

@@ -120,14 +120,18 @@ class OperatorEventsViewTests(TestCase):
 
         response = self._client(self.stranger).get(self._url())
         self.assertEqual(response.status_code, 403)
-        self.assertNotIn('events', response.data)
-        self.assertNotIn('srv-committed-1', str(response.data))
+        # The refusal now comes from GameScopeGuardMiddleware, before the view
+        # runs, so it is a plain JsonResponse with no DRF `.data`. What matters
+        # is unchanged: no event body is disclosed.
+        body = response.content.decode()
+        self.assertNotIn('"events"', body)
+        self.assertNotIn('srv-committed-1', body)
         self.assertTrue(section.section_id)
 
     def test_a_student_is_refused(self):
         response = self._client(self.student).get(self._url())
         self.assertIn(response.status_code, (401, 403))
-        self.assertNotIn('srv-committed-1', str(response.data))
+        self.assertNotIn('srv-committed-1', response.content.decode())
 
     def test_the_view_is_read_only(self):
         client = self._client(self.owner)
