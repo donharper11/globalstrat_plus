@@ -1,0 +1,100 @@
+{
+  "base": "http://127.0.0.1:59819",
+  "pageSize": 10,
+  "steps": [
+    {
+      "name": "page 1 fills the page size",
+      "outcome": "pass",
+      "detail": "10 rows, page 1, pages: 1,2"
+    },
+    {
+      "name": "a pagination control is rendered",
+      "outcome": "pass",
+      "detail": "pages: 1,2"
+    },
+    {
+      "name": "the control moves to page 2",
+      "outcome": "pass",
+      "detail": "active page 2"
+    },
+    {
+      "name": "page 2 holds the remainder",
+      "outcome": "pass",
+      "detail": "4 rows of 14 total"
+    },
+    {
+      "name": "page 2 shows different rows from page 1",
+      "outcome": "pass",
+      "detail": "no overlap"
+    },
+    {
+      "name": "returning to page 1 restores the original rows",
+      "outcome": "pass",
+      "detail": "10 rows, page 1"
+    }
+  ],
+  "console": [],
+  "network": [],
+  "firstPage": {
+    "rows": 10,
+    "identities": [
+      "srv-9d62c681-c0e0-46c6-887f-b4a20c157e37",
+      "srv-34797d4a-ff07-4a1d-8215-f9a79894ae9e",
+      "srv-b825ee9b-74d2-4ecf-8fe0-e82a19183519",
+      "srv-9de99402-0478-4e3e-aef8-abfffdaeb98e",
+      "srv-336c8a4c-9d8e-4b46-8d32-2caa3ef6f201",
+      "srv-57e6eeb5-f736-450f-bcf4-00f9d9d38bf2",
+      "srv-0fa4c152-9e20-42e4-abb9-6d44f2a30f72",
+      "srv-0ac93f7a-1e15-41cb-a1af-0ee7c3e47a96",
+      "srv-12942a9d-75ed-4384-995e-7779c1f1ecef",
+      "srv-248ffb80-4c37-4717-bc5f-3a6a4e5d2d71"
+    ],
+    "activePage": "1",
+    "pages": [
+      "1",
+      "2"
+    ]
+  },
+  "secondPage": {
+    "rows": 4,
+    "identities": [
+      "srv-bc6209c1-010a-4d3e-a83c-3061a535adaa",
+      "srv-378ca261-40fb-4825-9400-8a95eb9358dc",
+      "srv-568a77cd-1d87-4811-9485-abbd390b38c6",
+      "srv-0b39a9b2-e546-4738-904e-125af3727f85"
+    ],
+    "activePage": "2",
+    "pages": [
+      "1",
+      "2"
+    ]
+  },
+  "total": 14,
+  "returnedPage": {
+    "rows": 10,
+    "identities": [
+      "srv-9d62c681-c0e0-46c6-887f-b4a20c157e37",
+      "srv-34797d4a-ff07-4a1d-8215-f9a79894ae9e",
+      "srv-b825ee9b-74d2-4ecf-8fe0-e82a19183519",
+      "srv-9de99402-0478-4e3e-aef8-abfffdaeb98e",
+      "srv-336c8a4c-9d8e-4b46-8d32-2caa3ef6f201",
+      "srv-57e6eeb5-f736-450f-bcf4-00f9d9d38bf2",
+      "srv-0fa4c152-9e20-42e4-abb9-6d44f2a30f72",
+      "srv-0ac93f7a-1e15-41cb-a1af-0ee7c3e47a96",
+      "srv-12942a9d-75ed-4384-995e-7779c1f1ecef",
+      "srv-248ffb80-4c37-4717-bc5f-3a6a4e5d2d71"
+    ],
+    "activePage": "1",
+    "pages": [
+      "1",
+      "2"
+    ]
+  },
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "consoleErrors": 0,
+    "unexpectedNetworkFailures": 0
+  },
+  "passed": true
+}

@@ -122,6 +122,7 @@ installed to a scratch directory; the project's `package.json` is untouched.
 | `instructor-ownership-scan.json` | the ten original disclosures |
 | `ownership-scan-after-repair.json` | 94 routes, 65 reads, 37 writes |
 | `who-attempted-walkthrough.txt` | a real 403 and its retrieval by request id |
+| `pagination-boundary.json` | the Operator Log paged through its own control |
 | `replay/` | manifest export, input verification, replay report |
 | `screenshots/` | eight screens across both roles |
 | `DATA_DICTIONARY.md`, `DISPUTE_PATH_INVENTORY.md` | end-run sources; dispute paths |
@@ -135,10 +136,31 @@ installed to a scratch directory; the project's `package.json` is untouched.
 | Ownership scans | 3 | 94 routes, 65 reads and 37 writes against a clone, ~6 min each |
 | Round replay | 1 | full Phase 1 on a restored database, 4.4 s engine time |
 | Migration-from-empty | 3 | ~1 min each |
+| Pagination browser path | 1 | ~40 s, one table, three page transitions |
 
 No load profile, concurrency matrix, determinism replay, provider drill or
 failure walkthrough was run. The full backend and frontend suites were not run:
 CRV2-09 owns the one integrated regression suite.
+
+## Pagination boundary
+
+Exercised on the Operator Log, which paginates at 10 against 14 operator
+events. Driven through the rendered control, not by slicing the API: page 1
+shows 10 rows, page 2 shows the remaining 4 with no row identity in common,
+and returning to page 1 restores the original set exactly. No console errors
+and no unexpected network failures.
+
+The audit's instructions anticipated 3 rows on page 2 from 13 events; there are
+14, because producing a genuine refusal for the dispute-5 repeat added one. The
+harness asserts the remainder against the total the table itself reports rather
+than a fixed number.
+
+Evidence: `evidence/post-close-disputes/pagination-boundary.json` and
+`screenshots/operator-log-page-2.png`.
+
+The audit evidence table in the decision drill-down still paginates at 8 with 6
+rows in this fixture, so that particular table's boundary remains unreachable;
+the handoff asks for one pagination boundary and this is it.
 
 ## Rollback
 
@@ -160,9 +182,6 @@ CRV2-09 owns the one integrated regression suite.
 - **No browser view of refused cross-cohort attempts.** Retrievable by command
   (V2-036); an instructor holding a 403 needs an operator to run it. Recorded
   in the data dictionary as a stated limit, not a defect.
-- **Pagination boundary not exercised.** The audit evidence table paginates at
-  eight rows and the fixture produced six, so the boundary was recorded as
-  not reachable rather than claimed as tested.
 - **Write endpoints were exercised only as an unrelated instructor.** They are
   proven to refuse and to mutate nothing in that role; no other role was
   driven against them here.

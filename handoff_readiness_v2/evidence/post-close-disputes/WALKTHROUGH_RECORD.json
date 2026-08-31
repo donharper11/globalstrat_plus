@@ -6,6 +6,7 @@
     "dispute-answers.json": "pre-repair, revision 8554db3; dispute 5 answerable=false there",
     "instructor-ownership-scan.json": "pre-repair, revision ebf40fc; the ten disclosures",
     "ownership-scan-after-repair.json": "post-repair; full 94-route inventory, reads and writes",
+    "pagination-boundary.json": "post-repair; the Operator Log paged through its own control",
     "repeat-after-repair.json": "post-repair; dispute 5 and language persistence only",
     "who-attempted-walkthrough.txt": "post-repair; one real 403 and its retrieval by request id"
   },
@@ -19,6 +20,7 @@
     "dispute-answers.json",
     "instructor-ownership-scan.json",
     "ownership-scan-after-repair.json",
+    "pagination-boundary.json",
     "repeat-after-repair.json",
     "who-attempted-walkthrough.txt"
   ],
@@ -238,6 +240,16 @@
       "method": "GET only, as a fully unrelated instructor who owns a different course and has no connection to game 1. Write endpoints answer 405 to GET and were not exercised, so they are untested rather than proven safe."
     }
   },
+  "pagination_boundary": {
+    "artifact": "pagination-boundary.json",
+    "driven_through": "the rendered pagination control, not an API slice",
+    "note": "browser-walkthrough.json records this as not-reachable at 8554db3, when it was measured against the audit evidence table (page size 8, 6 rows). That artifact is unchanged.",
+    "page_1_rows": 10,
+    "page_2_rows": 4,
+    "status": "pass",
+    "surface": "Operator Log table, page size 10",
+    "total_rows": 14
+  },
   "repeat_after_repair": {
     "operator_log_outcomes_rendered": [
       "committed",
@@ -265,6 +277,7 @@
     "instructor-operator-log.png",
     "instructor-team-overview.png",
     "login-zh.png",
+    "operator-log-page-2.png",
     "student-1-financial-reports.png",
     "student-2-financial-reports.png"
   ]
