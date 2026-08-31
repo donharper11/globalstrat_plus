@@ -96,9 +96,20 @@ on the segment preferences with the largest populations and heaviest weights.
 1. Make population growth compound per round, or state and implement whatever
    trajectory the course wants (linear, S-curved, shocked by events). Growth
    must accumulate across ten rounds.
-2. Settle B3 per Ruling 3: AI competitors either consume the pool and saturate
-   it, or act as a benchmark that does not consume. Implement one; the current
-   hybrid — consume without saturating — is what must not remain.
+2. **Ruling 3, landed 2026-08-31: AI competitors keep taking share; their
+   consumption gets recorded.** Taking share is a deliberate feature and the
+   thing that makes competing here distinctive — *do not make AI competitors
+   easier as a side effect of this accounting fix.* What changes is only that
+   the demand they take stops evaporating: record it so it enters `N`, so that
+   industry units sold equals market adoption, word-of-mouth counts their
+   buyers, and any AI share the product displays reconciles against team shares.
+
+   **This does not ship alone.** Recording their consumption drains the pool
+   faster, and with growth non-compounding today that would collapse the late
+   game. Land it in the same pass as item 1 above, and report the joint effect,
+   not each in isolation. If beating an AI competitor then proves too hard, tune
+   AI attractiveness — the dial that actually governs difficulty — rather than
+   leaving demand unrecorded.
 3. Re-derive segment populations, `bass_p` and `bass_q` against the intended
    industry revenue per round. Remember the homogeneity result: changing price
    without changing `M` changes the company by exactly that factor and nothing
@@ -169,9 +180,23 @@ nothing.
 
 ## Stage 7 — field size and saturation
 
-Answers Ruling 4 with a measurement rather than an opinion.
+**Ruling 4 landed 2026-08-31: 6–8 firms per game.** 24 over-saturates the market
+and defeats the purpose. This stage no longer explores a range to pick a number
+— it confirms 6–8 is right, and may narrow it to one number.
 
-Run the calibrated economy at 4, 8, 16, 24 and (if the cap allows) 32 teams,
+**The market is sized for 6–8 firms.** Do not carry a 24-team assumption into
+the population figures. The owner's target, verbatim, and Stage 3 is written
+against it too: *room for growth, but constrained, so that it is competitive —
+strong teams emerge and weak teams flail.* Both halves are acceptance criteria.
+A market so large that every team prospers fails it as surely as one so tight
+that nobody can move.
+
+A competition runs as **several concurrent games of 6–8 firms**, not one large
+game. CRV2-07's 24 teams × 4 = 96 sessions was a load profile and stands as
+measured — 3–4 concurrent games is ~24 teams and ~96 sessions. Restate it as
+concurrent games; do not re-run it.
+
+Run the calibrated economy at 4, 6, 8, 10 and 12 teams,
 holding decisions competent and constant. Report per-team share, revenue and
 the spread between best and worst play at each size. Saturation is the point
 where an individual team's decisions stop moving its outcome because the field

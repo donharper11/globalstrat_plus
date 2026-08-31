@@ -348,7 +348,106 @@ for; a real sweep will find more.
 
 ---
 
-# Rulings requested
+# Rulings — REQUESTED AND ANSWERED
+
+**Issued 2026-08-31 by the product owner.** All four are dispositioned. The
+original text of each request is kept below the ruling, because the spec stages
+are written against the question and a reader needs both.
+
+## Ruling 1 — a ready platform IS frozen. CONFIRMED.
+
+Building a new platform is the only route to a better product. No features
+added, no levels changed, after a platform is ready.
+
+Consequences accepted with the ruling: `_process_feature_investments` on active
+platforms is retired, and with it per-generation ceilings as a live upgrade
+path, licensing as a mid-life mechanic, feature time lags and
+`PendingFeatureGain`. The R&D page is rebuilt around building rather than
+upgrading. Re-basing (CRV2-10 Stage 4) becomes the load-bearing mechanic rather
+than a convenience, and the inventory write-off becomes the main cost of
+changing your mind.
+
+Note for CRV2-11: this materially changes the strategy space GSP-CRV2-06's
+tournament searched. Its strongest-strategy result is evidence for the game as
+it was, not as it will be.
+
+## Ruling 2 — price auto-adjust as specified, WITH the audit. CONFIRMED.
+
+Alert while the round is open; substitute at the deadline; blank becomes
+previous round −30%. The substitution is written as an audited system adjustment
+and is visible to the team. Both halves are confirmed — the audit event is part
+of the ruling, not a rider on it.
+
+## Ruling 3 — AI competitors keep taking share. Their consumption gets recorded.
+
+The product owner's ruling: **AI competitors taking share every round is a
+deliberate feature and stays.** Competing against them is a challenge in itself
+and part of what makes the simulation distinctive. Nothing in CRV2-11 may make
+them easier as a side effect of an accounting fix.
+
+**But "never saturate" is a different mechanism from "takes share", and the two
+were being read as one.** Separating them is the substance of this ruling:
+
+- *Taking share* — AI enters `total_attractiveness`, so every human team's
+  share falls. This is the challenge. **Unchanged.**
+- *Never saturating* — the share they take is allocated to nobody. It is not
+  recorded as sales and never enters cumulative `N`
+  (`bass_engine.py:151-153` and `:331`). Those customers exist nowhere.
+
+Three defects follow, none of them about difficulty:
+
+1. Industry units sold does not equal market adoption, so the intended
+   "market value of the economy, rounds 1–10" is unmeasurable while a slice of
+   every pool evaporates unrecorded.
+2. Word-of-mouth is understated. The `q·N/M` imitation term counts only human
+   adopters, so a market where the AI leader has sold millions diffuses as
+   though those buyers never existed.
+3. Any AI market share the product displays derives from attractiveness rather
+   than adopters and cannot be reconciled against team shares.
+
+**Disposition.** Keep AI consuming share; record what they consume, so
+consumption enters `N`. This does not weaken them — it tightens later rounds,
+because the pool drains faster. **Therefore it must land together with the
+market-growth repair (B2) in the same calibration pass**: with growth
+non-compounding today, draining the pool faster would collapse the late game.
+CRV2-11 Stage 3 owns both, and neither ships alone.
+
+If teams beating AI competitors proves too hard, that is tuned through AI
+attractiveness — the dial that actually governs it — and not by leaving demand
+unrecorded.
+
+## Ruling 4 — the competitive field is 6–8 firms per game.
+
+24 is too many: it over-saturates the market and defeats the purpose.
+
+**This reframes CRV2-07 rather than contradicting it.** Its 24 teams × 4 members
+= 96 sessions was a *load* profile, and the natural shape for an
+inter-university event is several parallel heats — 3–4 concurrent games of 6–8
+firms is ~24 teams and ~96 sessions. CRV2-07's evidence stands as measured;
+what changes is its description. State it as concurrent games, not one
+24-firm market.
+
+Three consequences:
+
+- `CourseSection.max_teams` already defaults to **8**, and `num_teams` accepts
+  2–16. The number was right; it is enforcement that is missing (A6). This is a
+  smaller change than it looked.
+- Differentiation improves sharply. With four starter archetypes and 6–8 teams
+  each archetype repeats at most twice rather than six times, which is much
+  closer to every team having a distinct position to read.
+- **It raises V2-032's stakes.** Several universities' cohorts live on one
+  deployment simultaneously, so a cross-game instructor read is a
+  cross-institution disclosure during a competition.
+
+**Market scoping, in the owner's words, as the calibration target:** *room for
+growth, but constrained, so that it is competitive — strong teams emerge and
+weak teams flail.* CRV2-11 Stage 3 and Stage 7 are written against that
+sentence. Size the market for 6–8 firms; do not carry the 24-team assumption
+into the population figures.
+
+---
+
+## The requests, as originally submitted
 
 These change what the specs say. GSP-CRV2-10 Stage 1 can run without them;
 nothing after Stage 1 can.

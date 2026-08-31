@@ -150,14 +150,27 @@ draft it may fund in a later round; the round the funding lands is the round the
 clock starts. Draft state is student-visible, and so is "approved / in
 development / ready" and the round it becomes available.
 
-**Immutability after ready — SEE RULING 1 BEFORE IMPLEMENTING.** As stated, a
-ready platform is frozen: no features added, no levels changed. That retires
-`_process_feature_investments` on active platforms, and with it per-generation
-ceilings, licensing, time lags and `PendingFeatureGain`. Do not begin this
-sub-stage until the ruling lands. If the narrower reading is chosen (no *new*
-features after ready, existing levels may still rise), the change is small and
-local; if the full reading is chosen, it is the largest item in this handoff and
-it invalidates the strategy space GSP-CRV2-06's tournament searched.
+**Immutability after ready — RULING 1 CONFIRMED 2026-08-31, full reading.** A
+ready platform is frozen: no features added, no levels changed. **Building a new
+platform is the only route to a better product.**
+
+This retires `_process_feature_investments` on active platforms, and with it
+per-generation ceilings as a live upgrade path, licensing as a mid-life
+mechanic, feature time lags and `PendingFeatureGain`. It is the largest item in
+this handoff, and two things follow that the owner accepted with the ruling:
+
+- **Re-basing (Stage 4) becomes load-bearing, not a convenience.** It is now the
+  only way a team improves its product, so its write-off is the main cost of
+  changing your mind, and its correctness matters more than this spec first
+  assumed. Do not treat Stage 4 as optional scope if time runs short — without
+  it the ruling leaves teams with no upgrade path at all.
+- **It invalidates the strategy space GSP-CRV2-06's tournament searched.** That
+  tournament's strongest-strategy result is evidence for the game as it was.
+  Say so in the completion report so CRV2-09 does not accept it as current.
+
+Sequencing within this handoff: land Stage 4 before removing the upgrade path,
+so the product is never in a state where neither route to a better product
+exists.
 
 **Feature count.** Confirm the per-platform cap (currently
 `max_platform_features`, default 5) is enforced on both write surfaces and at
@@ -188,7 +201,10 @@ deactivated, or reactivated and re-used later.
 
 ## Stage 5 — the price band
 
-Per Ruling 2. The band is ±30% of the price the product was selling at last
+**Ruling 2 confirmed 2026-08-31, including the audit requirement** — the audit
+event and the visible adjustment are part of the ruling, not a rider on it.
+
+The band is ±30% of the price the product was selling at last
 round (a scenario parameter, not a constant). Round 1 anchors to the authored
 starting price from the firm starter profile, so round 1 is not a special case.
 
@@ -211,12 +227,22 @@ the audit event and the visible adjustment are what answer that objection here.
 
 ## Stage 6 — cohort caps
 
+**Ruling 4 landed 2026-08-31: the competitive field is 6–8 firms per game.**
+`CourseSection.max_teams` already defaults to 8 and `num_teams` accepts 2–16, so
+the value was right and only enforcement is missing. This is a smaller change
+than it first looked.
+
 Enforce `CourseSection.max_teams`, `team_size_min` and `team_size_max` at
-enrolment and team assignment, with a refusal that names the cap. Reconcile
-them with the unrelated `num_teams must be between 2 and 16` at
+enrolment and team assignment, with a refusal that names the cap. Reconcile them
+with the unrelated `num_teams must be between 2 and 16` at
 `views/scenario_views.py:237` — two caps that disagree is one cap that does not
-exist. The *value* of the cap is CRV2-11's to determine (Ruling 4); this stage
-makes whatever value it lands on actually bind.
+exist.
+
+A competition runs as several concurrent games of 6–8 firms rather than one
+large one, so **the caps bind per game and several games run at once.** Check
+that nothing in enrolment, team assignment or the instructor surfaces assumes a
+single active game per instructor or per deployment. CRV2-11 Stage 7 may narrow
+6–8 to a single number; this stage makes whichever number binds.
 
 ## Stage 7 — events and challenges
 
