@@ -77,6 +77,15 @@ def seed_identities(game_placeholder, password):
     User.objects.filter(pk=instructor.pk).update(
         password_hash=hashed, role='instructor')
 
+    # The fixture instructor owns the course behind the game's section, which
+    # is what a real instructor running their own cohort looks like. Without
+    # this the course belongs to setup_test_game's own instructor row and
+    # every ownership-scoped endpoint correctly refuses the fixture's
+    # instructor -- which is how the missing checks elsewhere were found.
+    from core.models.course import Course
+    Course.objects.filter(course_id=section.course_id).update(
+        instructor_id=instructor.user_id)
+
     return {'game_id': game.id, 'section_id': section.section_id,
             'scenario': chosen.name, 'teams': teams,
             'instructor': 'crv208_instructor',

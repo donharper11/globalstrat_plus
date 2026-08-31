@@ -8,18 +8,18 @@
     },
     {
       "name": "operator actions render in the browser",
-      "outcome": "fail",
-      "detail": "0 rows, columns: "
+      "outcome": "pass",
+      "detail": "10 rows, columns: TIME (SERVER) | ACTOR | ACTION | OUTCOME | ROUND | REASON | BEFORE → AFTER | REQUEST ID"
     },
     {
       "name": "committed and refused actions are both visible",
-      "outcome": "fail",
-      "detail": "outcomes shown: none"
+      "outcome": "pass",
+      "detail": "outcomes shown: committed"
     },
     {
       "name": "endpoint returns every field the dispute needs",
-      "outcome": "fail",
-      "detail": "undefined events; fields: "
+      "outcome": "pass",
+      "detail": "13 events; fields: action,actor,actor_user_id,after,before,conflict,id,outcome,reason,request_id,round_number,server_timestamp"
     },
     {
       "name": "endpoint refuses writes",
@@ -37,46 +37,66 @@
     }
   ],
   "console": [
-    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
-    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
-    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
     "Failed to load resource: the server responded with a status of 405 (Method Not Allowed)"
   ],
   "network": [
-    {
-      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
-      "status": 403
-    },
-    {
-      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
-      "status": 403
-    },
-    {
-      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/?outcome=rejected",
-      "status": 403
-    },
     {
       "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
       "status": 405
     }
   ],
   "operatorLog": {
-    "headers": [],
-    "rows": 0,
-    "outcomes": [],
-    "text": "Unassigned Students (0)All students have been assigned to teams!"
+    "headers": [
+      "TIME (SERVER)",
+      "ACTOR",
+      "ACTION",
+      "OUTCOME",
+      "ROUND",
+      "REASON",
+      "BEFORE → AFTER",
+      "REQUEST ID"
+    ],
+    "rows": 10,
+    "outcomes": [
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed",
+      "committed"
+    ],
+    "text": "Operator actions\nAll outcomes\nTIME (SERVER)\tACTOR\tACTION\tOUTCOME\tROUND\tREASON\tBEFORE → AFTER\tREQUEST ID\n\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\n8/30/2026, 11:24:49 PM\tinst@example.invalid\tadvance_round\tcommitted\t3\tOperator requested advance_round\t{\"status\":\"processed\",\"deadline\":\"2026-08-31T00:54:34.703900+00:00\",\"round_id\":4,\"closed_at\":\"2026-08-30T23:24:41.450623+00:00\",\"opened_at\":\"2026-08-30T23:24:33.454576+00:00\",\"is_overdue\":false,\"next_action\":\"advance\",\"teams_total\":4,\"close_reason\":\"manual\",\"processed_at\":\"2026-08-30T23:24:48.432863+00:00\",\"round_number\":3,\"teams_locked\":3,\"teams_pending\":1,\""
   },
   "operatorApi": {
-    "fields": [],
+    "count": 13,
+    "fields": [
+      "action",
+      "actor",
+      "actor_user_id",
+      "after",
+      "before",
+      "conflict",
+      "id",
+      "outcome",
+      "reason",
+      "request_id",
+      "round_number",
+      "server_timestamp"
+    ],
+    "rejectedCount": 0,
     "postStatus": 405
   },
   "languagePersistence": {
     "status": 200
   },
   "summary": {
-    "passed": 4,
-    "failed": 3,
-    "consoleErrors": 4,
-    "networkFailures": 3
+    "passed": 7,
+    "failed": 0,
+    "consoleErrors": 1,
+    "networkFailures": 0
   }
 }
