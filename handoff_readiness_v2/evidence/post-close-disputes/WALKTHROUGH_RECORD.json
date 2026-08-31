@@ -6,17 +6,21 @@
     "dispute-answers.json": "pre-repair, revision 8554db3; dispute 5 answerable=false there",
     "instructor-ownership-scan.json": "pre-repair, revision ebf40fc; the ten disclosures",
     "ownership-scan-after-repair.json": "post-repair; full 94-route inventory, reads and writes",
-    "repeat-after-repair.json": "post-repair; dispute 5 and language persistence only"
+    "repeat-after-repair.json": "post-repair; dispute 5 and language persistence only",
+    "who-attempted-walkthrough.txt": "post-repair; one real 403 and its retrieval by request id"
   },
   "artifacts": [
+    "ARCHIVE_MANIFEST.json",
     "DATA_DICTIONARY.md",
     "DISPUTE_PATH_INVENTORY.md",
+    "WALKTHROUGH_RECORD.json",
     "browser-walkthrough.json",
     "completed-game.json",
     "dispute-answers.json",
     "instructor-ownership-scan.json",
     "ownership-scan-after-repair.json",
-    "repeat-after-repair.json"
+    "repeat-after-repair.json",
+    "who-attempted-walkthrough.txt"
   ],
   "browser_walkthrough": {
     "console_and_network_failures": "all 403s, provoked by the disclosure-boundary probes",
@@ -155,7 +159,7 @@
     "5_operator_change": {
       "answerable_at_8554db3": false,
       "answerable_now": true,
-      "note": "Recorded unanswerable at 8554db3 and registered as V2-030. Repaired at 45eb83c; proven by repeat-after-repair.json, which requires a genuine refused action returned by the API, rendered in the browser beside a committed one, and returned by the outcome=rejected filter.",
+      "note": "Recorded unanswerable at 8554db3 and registered as V2-030. Repaired at 45eb83c; proven by repeat-after-repair.json, which requires a genuine refused action returned by the API, rendered in the browser beside a committed one, and returned by the outcome=rejected filter. The refusal ledger behind the boundary is read with manage.py who_attempted (V2-036).",
       "path_at_8554db3": "none found in the product",
       "path_now": "Instructor dashboard -> Operator Log, or GET /api/games/{id}/instructor/operator-events/"
     },
@@ -171,7 +175,8 @@
     "V2-032": "game ownership not enforced for instructor routes (P0) \u2014 closed",
     "V2-033": "unowned course readable by any instructor \u2014 withdrawn, adopted rule",
     "V2-034": "refused non-owner writes not recorded (P1) \u2014 closed",
-    "V2-035": "instructor alerts readable by any student (P1) \u2014 closed"
+    "V2-035": "instructor alerts readable by any student (P1) \u2014 closed",
+    "V2-036": "refusal evidence had no supported reader \u2014 closed; manage.py who_attempted"
   },
   "fixture": {
     "contains": {
