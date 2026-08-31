@@ -6,6 +6,12 @@
 **Sequence:** after GSP-CRV2-10 and 11 have landed their user-visible strings.
 Sweeping before they land means sweeping twice.
 
+**Also waits on GSP-CRV2-08**, which is working in this handoff's territory
+right now: `45eb83c` changed `LanguageSwitcher.js` and added an instructor
+operator-events panel, and its step 4 is titled in part "language preference
+persisted". Take CRV2-08's completion report as an input and inventory the
+strings it added, rather than discovering them in the sweep.
+
 ## Objective
 
 Every message the platform shows a participant during play reads as business

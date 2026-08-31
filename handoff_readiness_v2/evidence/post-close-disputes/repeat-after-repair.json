@@ -1,0 +1,82 @@
+{
+  "base": "http://127.0.0.1:59705",
+  "steps": [
+    {
+      "name": "operator log tab is present",
+      "outcome": "pass",
+      "detail": "Courses & Sections | Game Control | Students & Logins | Grading & Export | Team Overview | Operator Log | Supply Chain | Event Manager | Briefings | Research Monitor | AI Coach \n32"
+    },
+    {
+      "name": "operator actions render in the browser",
+      "outcome": "fail",
+      "detail": "0 rows, columns: "
+    },
+    {
+      "name": "committed and refused actions are both visible",
+      "outcome": "fail",
+      "detail": "outcomes shown: none"
+    },
+    {
+      "name": "endpoint returns every field the dispute needs",
+      "outcome": "fail",
+      "detail": "undefined events; fields: "
+    },
+    {
+      "name": "endpoint refuses writes",
+      "outcome": "pass",
+      "detail": "POST -> 405"
+    },
+    {
+      "name": "language preference reaches the server",
+      "outcome": "pass",
+      "detail": "PUT /api/user/preferences/ -> HTTP 200"
+    },
+    {
+      "name": "language control still switches the interface",
+      "outcome": "pass"
+    }
+  ],
+  "console": [
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 405 (Method Not Allowed)"
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/?outcome=rejected",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:59705/api/games/1/instructor/operator-events/",
+      "status": 405
+    }
+  ],
+  "operatorLog": {
+    "headers": [],
+    "rows": 0,
+    "outcomes": [],
+    "text": "Unassigned Students (0)All students have been assigned to teams!"
+  },
+  "operatorApi": {
+    "fields": [],
+    "postStatus": 405
+  },
+  "languagePersistence": {
+    "status": 200
+  },
+  "summary": {
+    "passed": 4,
+    "failed": 3,
+    "consoleErrors": 4,
+    "networkFailures": 3
+  }
+}

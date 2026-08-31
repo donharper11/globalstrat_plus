@@ -4,6 +4,63 @@
 **Source:** `handoff_readiness_v2/RULES_AND_CALIBRATION_ASSESSMENT.md` Part A
 **Owner:** backend rules/economics engineer
 **Blocks:** GSP-CRV2-11 (do not calibrate rules known to be broken), GSP-CRV2-09
+**Entry condition:** GSP-CRV2-08 through its audit gate. See below — this is a
+hard gate on Stage 2 onward, not a preference.
+
+## Entry condition — why this waits for CRV2-08
+
+Stage 1 may run concurrently with CRV2-08. **Stage 2 onward may not**, for three
+reasons, in descending order of how expensive it is to get wrong.
+
+1. **The protocol's own invalidation rule decides it.** EXECUTION_PROTOCOL:
+   *"Any runtime code change after evidence starts invalidates that evidence."*
+   CRV2-08 is generating browser-walkthrough evidence against the integrated
+   candidate and, as of `45eb83c`, repairing product code inside it — a new
+   operator-events endpoint, `results_api.py`, `urls.py`, an instructor panel and
+   `LanguageSwitcher.js`. Stage 2 mutates that same candidate. Run concurrently,
+   CRV2-08's walkthrough is evidence for a build that no longer exists.
+
+2. **This programme reworks after audit as a matter of course.** Fifteen rework
+   documents across handoffs 01, 02, 03, 04, 06 and 07 — 02 twice, 03 twice, 06
+   five times, 07 four times. Not one certified handoff cleared its audit on the
+   first pass. Planning on CRV2-08 being the first is not supported by anything
+   in this directory, and CRV2-08 rework colliding with Stage 2 repairs in the
+   same files is the expensive version of this mistake.
+
+3. **Stage 5 hands CRV2-08 a case it cannot have covered.** The price band
+   introduces a *system-initiated adjustment*: at the deadline the stored price
+   legitimately differs from the number the team typed. That is a new instance
+   of **dispute 2 — "our decision was recorded differently from what we
+   entered"** — arriving after CRV2-08 has frozen its dispute inventory and
+   proved the six cases. It does not invalidate CRV2-08's evidence; it adds a
+   case that evidence says nothing about, which is worse, because nothing flags
+   it.
+
+   **Obligation on this handoff:** Stage 5 delivers a written delta to the
+   CRV2-08 owner naming the new dispute-2 case, and that case is re-verified
+   through the supported operator path before this handoff certifies. Do not
+   rebuild CRV2-08's completed game and do not replay its five passing disputes.
+
+If Stage 1's probes confirm the suspected P0 at a severity that will not keep,
+raise it as a finding and let the programme owner decide whether to interrupt
+CRV2-08 — that is an explicit decision with a stated cost, not a scheduling
+convenience taken quietly.
+
+## Running Stage 1 alongside CRV2-08
+
+Stage 1 writes no runtime code and commits nothing to the candidate. It is
+therefore safe to run in parallel, under EXECUTION_PROTOCOL Phase 0 and one
+addition CRV2-08 paid for the hard way:
+
+- Separately named database and isolated stack. Record database name, PID,
+  branch and revision at start.
+- **Claim ports at run time; never bind a fixed one.** CRV2-08's stack was
+  configured on 8002, which already carries a gunicorn serving the live
+  `globalstrat_plus` database. Its backend failed to bind, died, and its requests
+  fell through to production — exposed only by a login failure. Had a fixture
+  username collided with a live one, it would have read production while
+  reporting on the fixture.
+- Refuse to start unless a fixture identity authenticates through the app origin.
 
 ## Objective
 

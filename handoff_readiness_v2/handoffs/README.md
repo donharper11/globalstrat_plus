@@ -90,6 +90,15 @@ price of R&D is set by the client — would either be found by 09, or, worse, no
 be found by 09 and be found instead by a team playing for a prize. A GO issued
 against rules that are about to change is a GO that has to be withdrawn.
 
+**Entry condition: GSP-CRV2-08 through its audit gate.** CRV2-08 is generating
+walkthrough evidence and repairing product code inside the same candidate these
+handoffs would mutate, and the protocol is explicit that a runtime change after
+evidence starts invalidates that evidence. Fifteen rework documents across
+handoffs 01–07 say audit sends work back as a matter of course, so "CRV2-08 is
+nearly done" is not an entry condition. GSP-CRV2-10 Stage 1 — probe-only,
+commits no runtime code — may run in parallel under EXECUTION_PROTOCOL Phase 0
+with a separately named database and run-time port claiming.
+
 They are sequential among themselves and the order is load-bearing:
 
 - **10 before 11** — do not calibrate rules known to be broken. A dominant line
