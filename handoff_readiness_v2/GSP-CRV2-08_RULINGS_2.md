@@ -1,5 +1,38 @@
 # GSP-CRV2-08 — disposition on V2-030 and V2-031
 
+> ## CORRECTION 2026-08-31 — section 2 of this document is WRONG
+>
+> **The audit at `8644ad4` returned FAIL / REWORK and found that the dispute-5
+> repeat contains a false-positive assertion. It is right. Section 2 below told
+> the builder not to rerun dispute 5. Ignore that instruction.**
+>
+> Verified independently against the artifact: `operatorLog.outcomes` holds ten
+> entries, all `committed`; `operatorApi.rejectedCount` is `0`; and the harness
+> marks "committed and refused actions are both visible" as passed when
+> `committed` is merely present. The step's own detail line reads
+> `outcomes shown: committed`. **It passed vacuously — the fixture never produced
+> a refusal for the log to display, so the assertion was never tested.**
+>
+> That is worse than a failing test, because it wrote passing evidence. The
+> harness assertion must fail when either outcome is absent, per the rework
+> document.
+>
+> **Why this document got it wrong:** it accepted the checkpoint's summary of the
+> artifact instead of reading the artifact. The one claim in the repeat that
+> could not be true — a log of refusals, from a fixture that had produced none —
+> is exactly the one a reader should have checked.
+>
+> Also corrected: `summary.consoleErrors` is `1`, not 0 — a `405 Method Not
+> Allowed`, which is the *expected* result of the write-refusal probe and is
+> benign. Describing the run as having "no console failure" was still imprecise;
+> the rework document's "no *unexpected* console/network failure" is the right
+> wording.
+>
+> Section 1 (register V2-030 and V2-031, preserving the true chronology) and
+> section 3 (V2-032 blocks completion) stand unchanged, and the audit reached the
+> same conclusion on both. The authoritative instruction is now
+> `rework/GSP-CRV2-08_CHECKPOINT_2_REWORK.md`, not this file.
+
 **Issued 2026-08-31 by the product owner.** Supersedes the two "outstanding"
 items in `GSP-CRV2-08_RULINGS.md`. One of those two was wrong; see the
 correction below before acting on anything here.
@@ -88,3 +121,68 @@ under a live builder. Reconciled afterwards.
 The practical consequence for this handoff's completion report: state the
 revisions by hash (`8554db3`, `45eb83c`, `ebf40fc`, `8644ad4`), not by branch
 name, since the branch name does not presently describe what it holds.
+
+
+---
+
+# Addendum 2026-08-31 — one fact for the V2-032 register entry
+
+Verified against `backend/core/services/read_inventory.json` (32 routes) at the
+audited revision. It bears on how V2-032 is written up, not on the repair the
+rework document specifies, which stands as written.
+
+**Only four of the ten leaking routes are logged as sensitive reads.**
+
+| Leaking route | In the sensitive-read inventory? |
+|---|---|
+| `instructor/teams/{id}/decisions/` | **yes** — category `audit` |
+| `instructor/dashboard/` | **yes** — category `audit` |
+| `instructor/team-config/` | **yes** — category `decisions` |
+| `instructor/sc-panel/` | **yes** — category `decisions` |
+| `instructor/briefings/` | **no** |
+| `instructor/alerts/` and `/summary/` | **no** |
+| `instructor/research-queries/` | **no** |
+| `instructor/event-templates/` | **no** |
+| `instructor/sc-event-catalog/` | **no** |
+
+Two consequences, and they point in opposite directions:
+
+1. **Mitigating, for the worst route.** The endpoint carrying raw decision
+   payloads, hashes, actors and request ids *is* logged. A cross-cohort read of
+   it is attributable through `who_accessed` — so the historical question "did
+   anyone actually read our decisions before this was fixed?" is answerable from
+   stored data. Worth stating in the register entry: the exposure was open, but
+   it was not silent.
+
+2. **Aggravating, and it outlives the repair.** Six routes are neither
+   ownership-checked nor logged. `briefings` returns per-team executive
+   summaries and `alerts` returns per-team coaching alerts by name — competitive
+   analysis, not reference data. Once the ownership boundary closes, cross-cohort
+   reads stop; but **within** a cohort those reads remain unattributable, so
+   "who accessed our briefings?" has no answer. That is a CRV2-04 gap sitting
+   next to V2-032, not part of it.
+
+**Suggested, not required:** when the route inventory the rework mandates is
+built, give it a second column — *ownership-enforced* and *read-logged* — since
+it is the same enumeration of the same routes, and building it once is cheaper
+than discovering the second gap later. Whether the six unlogged routes are
+worth logging is a separate disposition.
+
+## Two notes for the programme, not for this handoff
+
+- **V2-026 did not cover this and should not be read as covering it.** It closed
+  progressive disclosure over *fields* — read serializers that consulted nothing.
+  V2-032 is *game ownership*. They are complementary, and a reader who assumes
+  the first covered the second will conclude this class is closed when it is not.
+  V2-032 is the third instance of `IsInstructor` without ownership, after
+  V2-007's rework and CRV2-07's authorization FAIL.
+- **A shared permission boundary is a CRV2-09 Phase 1 item.** It changes an
+  interface every certified handoff's evidence sits on. Under 09's own rule that
+  is "the boundary changed", so it requires a focused regression rather than
+  accepting the prior evidence intact. Name it in the resubmission so 09 does not
+  have to rediscover it.
+- **GSP-CRV2-13 should cite this rather than repeat it.** Its bug-sweep spec
+  carries a line to "confirm the CRV2-04 scope guard covers the surfaces added
+  since it was certified." V2-032 is that check, run early and failed. The
+  route-coverage contract the rework mandates also does part of CRV2-13's Stage-1
+  reachability inventory; reuse it, do not rebuild it.
