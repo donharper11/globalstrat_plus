@@ -1,0 +1,266 @@
+{
+  "all_six_disputes_answerable_now": true,
+  "artifact_provenance": {
+    "browser-walkthrough.json": "pre-repair, revision 8554db3",
+    "completed-game.json": "the reusable fixture, rebuilt last at 8554db3",
+    "dispute-answers.json": "pre-repair, revision 8554db3; dispute 5 answerable=false there",
+    "instructor-ownership-scan.json": "pre-repair, revision ebf40fc; the ten disclosures",
+    "ownership-scan-after-repair.json": "post-repair; full 94-route inventory, reads and writes",
+    "repeat-after-repair.json": "post-repair; dispute 5 and language persistence only"
+  },
+  "artifacts": [
+    "DATA_DICTIONARY.md",
+    "DISPUTE_PATH_INVENTORY.md",
+    "browser-walkthrough.json",
+    "completed-game.json",
+    "dispute-answers.json",
+    "instructor-ownership-scan.json",
+    "ownership-scan-after-repair.json",
+    "repeat-after-repair.json"
+  ],
+  "browser_walkthrough": {
+    "console_and_network_failures": "all 403s, provoked by the disclosure-boundary probes",
+    "steps": [
+      {
+        "name": "student login crv208_student_1 (Apex Devices)",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Apex Devices reached its reports page",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Apex Devices retrieves round 1 result",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Apex Devices retrieves round 3 result",
+        "outcome": "pass"
+      },
+      {
+        "name": "rival raw result URL refused for Apex Devices -> Prism Tech",
+        "outcome": "pass"
+      },
+      {
+        "name": "rival raw decision URL refused for Apex Devices",
+        "outcome": "pass"
+      },
+      {
+        "name": "student login crv208_student_2 (Prism Tech)",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Prism Tech reached its reports page",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Prism Tech retrieves round 1 result",
+        "outcome": "pass"
+      },
+      {
+        "name": "student Prism Tech retrieves round 3 result",
+        "outcome": "pass"
+      },
+      {
+        "name": "rival raw result URL refused for Prism Tech -> Apex Devices",
+        "outcome": "pass"
+      },
+      {
+        "name": "rival raw decision URL refused for Prism Tech",
+        "outcome": "pass"
+      },
+      {
+        "name": "instructor login",
+        "outcome": "pass"
+      },
+      {
+        "name": "instructor reaches the game from course and section",
+        "outcome": "pass"
+      },
+      {
+        "name": "team overview tab opens",
+        "outcome": "pass"
+      },
+      {
+        "name": "instructor decisions endpoint answers",
+        "outcome": "pass"
+      },
+      {
+        "name": "audit evidence carries every required field",
+        "outcome": "pass"
+      },
+      {
+        "name": "audit evidence table renders in the browser",
+        "outcome": "pass"
+      },
+      {
+        "name": "table exposes copy controls for hash and payload",
+        "outcome": "pass"
+      },
+      {
+        "name": "pagination boundary",
+        "outcome": "not-reachable"
+      },
+      {
+        "name": "copy control accepts a click",
+        "outcome": "pass"
+      },
+      {
+        "name": "default/empty case reports why it is empty",
+        "outcome": "pass"
+      },
+      {
+        "name": "instructor portal offers a language control",
+        "outcome": "observed-absent"
+      },
+      {
+        "name": "bilingual switch changes the rendered language",
+        "outcome": "pass"
+      },
+      {
+        "name": "language preference reaches the server",
+        "outcome": "fail"
+      }
+    ],
+    "summary": {
+      "consoleErrors": 5,
+      "failed": 1,
+      "networkFailures": 5,
+      "networkFailuresUnexpected": 1,
+      "note": "console errors and 403s are the disclosure-boundary probes this walkthrough issues on purpose",
+      "passed": 22
+    }
+  },
+  "disputes": {
+    "1_before_deadline": {
+      "answerable_at_8554db3": true,
+      "answerable_now": true,
+      "path_at_8554db3": "GET /api/games/1/instructor/teams/{team}/decisions/?round=1 \u2014 instructor dashboard, team overview, view decisions"
+    },
+    "2_payload_mismatch": {
+      "answerable_at_8554db3": true,
+      "answerable_now": true,
+      "path_at_8554db3": "the same response: audit_events[].payload and payload_sha256"
+    },
+    "3_rival_access": {
+      "answerable_at_8554db3": true,
+      "answerable_now": true,
+      "path_at_8554db3": "python3 manage.py who_accessed --game 1 --team {team} --json"
+    },
+    "4_rerun_after_final": {
+      "answerable_at_8554db3": true,
+      "answerable_now": true,
+      "path_at_8554db3": "python3 manage.py replay_round --game-id 1 --round 1 --export-only --evidence-dir <dir>"
+    },
+    "5_operator_change": {
+      "answerable_at_8554db3": false,
+      "answerable_now": true,
+      "note": "Recorded unanswerable at 8554db3 and registered as V2-030. Repaired at 45eb83c; proven by repeat-after-repair.json, which requires a genuine refused action returned by the API, rendered in the browser beside a committed one, and returned by the outcome=rejected filter.",
+      "path_at_8554db3": "none found in the product",
+      "path_now": "Instructor dashboard -> Operator Log, or GET /api/games/{id}/instructor/operator-events/"
+    },
+    "6_prove_the_calculation": {
+      "answerable_at_8554db3": true,
+      "answerable_now": true,
+      "path_at_8554db3": "python3 manage.py replay_round --game-id 1 --round 1 --restore --confirm REPLAY-GAME-1-ROUND-1 --expected-manifest <exported> against a disposable database"
+    }
+  },
+  "findings": {
+    "V2-030": "operator actions unreadable outside the Django admin \u2014 closed",
+    "V2-031": "language preference never persisted \u2014 closed",
+    "V2-032": "game ownership not enforced for instructor routes (P0) \u2014 closed",
+    "V2-033": "unowned course readable by any instructor \u2014 withdrawn, adopted rule",
+    "V2-034": "refused non-owner writes not recorded (P1) \u2014 closed",
+    "V2-035": "instructor alerts readable by any student (P1) \u2014 closed"
+  },
+  "fixture": {
+    "contains": {
+      "defaulted_missing_team_rounds": [
+        "Titan Micro r2"
+      ],
+      "submission_origins": {
+        "defaulted_missing": [
+          "Titan Micro r2"
+        ],
+        "no_submission": [
+          "Apex Devices r0",
+          "Prism Tech r0",
+          "Titan Micro r0"
+        ],
+        "student_locked": [
+          "Apex Devices r1",
+          "Apex Devices r2",
+          "Apex Devices r3",
+          "Prism Tech r1",
+          "Prism Tech r2",
+          "Prism Tech r3",
+          "Titan Micro r1",
+          "Titan Micro r3"
+        ]
+      },
+      "submissions_saved_more_than_once_with_differing_hashes": [
+        "Prism Tech r1",
+        "Prism Tech r2",
+        "Prism Tech r3"
+      ]
+    },
+    "decision_audit_events": 20,
+    "game_status": "completed",
+    "note": "round 0 is setup_test_game starter state, not a played round",
+    "operator_audit_events": 13,
+    "rounds_processed": 4,
+    "teams": [
+      "Apex Devices",
+      "Prism Tech",
+      "Titan Micro"
+    ]
+  },
+  "handoff": "GSP-CRV2-08 post-close retrieval and dispute walkthrough",
+  "ownership": {
+    "after": {
+      "passed": true,
+      "reads_disclosing_to_a_non_owner": 0,
+      "reads_tested": 65,
+      "refused_writes_not_recorded_anywhere": 0,
+      "refused_writes_recorded_as_authorization_refusals": 37,
+      "routes_in_inventory": 94,
+      "writes_not_refused_with_403": 0,
+      "writes_tested": 37,
+      "writes_that_mutated_state": 0
+    },
+    "before": {
+      "endpoints_disclosing_to_a_non_owner": 10,
+      "method": "GET only, as a fully unrelated instructor who owns a different course and has no connection to game 1. Write endpoints answer 405 to GET and were not exercised, so they are untested rather than proven safe."
+    }
+  },
+  "repeat_after_repair": {
+    "operator_log_outcomes_rendered": [
+      "committed",
+      "rejected"
+    ],
+    "summary": {
+      "consoleErrors": 1,
+      "failed": 0,
+      "networkFailures": 0,
+      "passed": 10
+    }
+  },
+  "replay_evidence": [
+    "replay/round-1-replay/expected-manifest.json",
+    "replay/round-1-replay/input-verification.json",
+    "replay/round-1-replay/replay-report.json",
+    "replay/round-1-replay/replayed-manifest.json",
+    "replay/round-1-replay/source-identity.json",
+    "replay/round-1/expected-manifest.json"
+  ],
+  "screenshots": [
+    "instructor-audit-evidence-table.png",
+    "instructor-dashboard-zh.png",
+    "instructor-dashboard.png",
+    "instructor-operator-log.png",
+    "instructor-team-overview.png",
+    "login-zh.png",
+    "student-1-financial-reports.png",
+    "student-2-financial-reports.png"
+  ]
+}
