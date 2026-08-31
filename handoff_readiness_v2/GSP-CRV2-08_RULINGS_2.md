@@ -186,3 +186,93 @@ worth logging is a separate disposition.
   since it was certified." V2-032 is that check, run early and failed. The
   route-coverage contract the rework mandates also does part of CRV2-13's Stage-1
   reachability inventory; reuse it, do not rebuild it.
+
+
+---
+
+# Addendum 2 — two additions to the rework scope
+
+For the CRV2-08 builder, alongside `rework/GSP-CRV2-08_CHECKPOINT_2_REWORK.md`,
+which is otherwise adopted as written. Both verified at the audited revision.
+
+## A. The unowned-course exemption grows with the repair
+
+The rework says to keep `instructor_can_access_game` semantics "including its
+explicitly supported unowned-pilot behavior", and to pin that behaviour once.
+**That instruction is right and should stand.** What is missing is its
+consequence, which the repair itself changes:
+
+```
+instructor_can_access_game → True when the game's course has instructor_id IS NULL
+```
+
+Today the helper is called from **three** places — `results_api.py:558`,
+`results_api.py:1009`, `round_control.py:147` — which is exactly the three routes
+the ownership scan found refusing. So the unowned-course pass-through currently
+affects three routes.
+
+**After the repair it is the shared boundary for every game-scoped instructor
+route.** The exemption's blast radius therefore grows from three routes to all of
+them. A single course row with `instructor_id IS NULL` re-opens the whole of
+V2-032 — through a supported, tested, deliberately preserved path.
+
+This is not an argument for changing the helper. It is an argument for saying so:
+
+1. **The pinning test states the blast radius.** Not "unowned courses are
+   readable", but "an unowned course is readable **by any instructor, across
+   every route behind the boundary**", asserted over more than one route so the
+   scope is visible in the test name and not only in the helper's docstring.
+2. **Register the residual risk as its own finding** rather than leaving it
+   inside V2-032's closure. V2-032 closes when the boundary is enforced; the
+   configuration risk survives it and needs an owner. For a competition it is
+   concrete: several institutions' cohorts on one deployment, and any unowned
+   course is readable by every judge.
+3. **Suggested disposition, for the owner and not for this builder:** competition
+   games require an owned course, enforced as a precondition on opening a
+   competition game rather than as a runbook step. That is a launch-checklist
+   item, not part of this repair — flagged here only so it is not lost between
+   the two.
+
+## B. A refused non-owner *write* leaves no trace at all
+
+The rework's acceptance requires, for each write probed as a non-owner, "403
+before mutation" and that "operator audit counts remain unchanged". The first is
+right. **The second conflates two different things — no mutation, and no
+record — and only the first is desirable.**
+
+Verified:
+
+- The sensitive-read middleware records refusals correctly, including
+  `outcome='denied'` for 401/403/404, because it runs after `get_response` and
+  reads the status. **But it returns early unless the method is `GET`**
+  (`middleware.py:318`).
+- Operator audit rows are written inside the lifecycle views. A permission denial
+  refuses before the view body, so no row is written.
+
+So a non-owner's attempted `close`, `process`, `advance`, `reopen`, deadline
+change or event injection against another cohort's game will be correctly
+refused and **recorded nowhere**. Nothing in stored data can answer *"did a
+rival judge try to close our round?"* — which, in a competition, is a sharper
+question than whether they succeeded.
+
+That also sits against CRV2-02's established principle, which the register states
+as: rejected attempts are observable without pretending they changed state. The
+same principle applies at the authorization layer, not only at the conflict
+layer.
+
+**Requested addition to the acceptance criteria:** a refused non-owner write
+leaves game, round and team state **and** the resolution path unchanged, *and*
+is recorded as an attributable refusal — actor, target game, route, method,
+outcome, request id. Whether that is the read-event model extended past `GET`, an
+operator event with `outcome='rejected'`, or a third store is the builder's call;
+the requirement is that the attempt is answerable, not where it lives.
+
+## What does not need adding
+
+Checked and already sound, recorded so it is not re-litigated:
+
+- **Refused reads are logged.** The middleware runs after the response and
+  classifies 401/403/404 as `denied`, so cross-cohort read *attempts* on
+  inventoried routes are already attributable. No change needed there — but note
+  it covers only the four inventoried routes of the ten, so on the other six a
+  refusal is as invisible as the disclosure was (Addendum 1).
