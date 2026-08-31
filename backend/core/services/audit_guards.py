@@ -131,21 +131,33 @@ $$ LANGUAGE plpgsql;
 ALL_TABLES = PROTECTED_TABLES + (MANIFEST_TABLE,)
 
 
-def install_sql():
-    """Every statement that installs the guards, in order."""
+def install_sql(protected=None, manifest=True, all_tables=None):
+    """Every statement that installs the guards, in order.
+
+    `protected` and `all_tables` exist so a historical migration can pin the
+    tables that existed when it was written. Migration 0070 called this with no
+    arguments, which read whatever `PROTECTED_TABLES` holds today, so adding a
+    table to that tuple made 0070 try to install a trigger on a table three
+    migrations before it is created -- breaking every fresh install while
+    leaving already-migrated databases untouched and therefore silent.
+    """
+    protected = PROTECTED_TABLES if protected is None else tuple(protected)
+    all_tables = ((protected + ((MANIFEST_TABLE,) if manifest else ()))
+                  if all_tables is None else tuple(all_tables))
     statements = [FUNCTIONS_SQL]
-    for table in PROTECTED_TABLES:
+    for table in protected:
         name = _trigger_name(table)
         statements.append(f'DROP TRIGGER IF EXISTS {name} ON {table};')
         statements.append(
             f'CREATE TRIGGER {name} BEFORE UPDATE OR DELETE ON {table} '
             f'FOR EACH ROW EXECUTE FUNCTION {REJECT_FUNCTION}();')
-    name = _trigger_name(MANIFEST_TABLE)
-    statements.append(f'DROP TRIGGER IF EXISTS {name} ON {MANIFEST_TABLE};')
-    statements.append(
-        f'CREATE TRIGGER {name} BEFORE UPDATE OR DELETE ON {MANIFEST_TABLE} '
-        f'FOR EACH ROW EXECUTE FUNCTION {MANIFEST_FUNCTION}();')
-    for table in ALL_TABLES:
+    if manifest:
+        name = _trigger_name(MANIFEST_TABLE)
+        statements.append(f'DROP TRIGGER IF EXISTS {name} ON {MANIFEST_TABLE};')
+        statements.append(
+            f'CREATE TRIGGER {name} BEFORE UPDATE OR DELETE ON {MANIFEST_TABLE} '
+            f'FOR EACH ROW EXECUTE FUNCTION {MANIFEST_FUNCTION}();')
+    for table in all_tables:
         name = _truncate_trigger_name(table)
         statements.append(f'DROP TRIGGER IF EXISTS {name} ON {table};')
         statements.append(
@@ -154,9 +166,48 @@ def install_sql():
     return statements
 
 
-def uninstall_sql():
+def install_table_sql(table):
+    """Guards for one table, for the migration that creates it.
+
+    A table added by a later migration is not protected by having been added to
+    `PROTECTED_TABLES`: that list drives `install_audit_guards` and the test
+    runner, neither of which runs against a competition database that has
+    already been migrated. The migration has to install the triggers itself.
+    """
+    if table not in ALL_TABLES:
+        raise ValueError(f'{table} is not a guarded audit table')
+    reject = REJECT_FUNCTION if table in PROTECTED_TABLES else MANIFEST_FUNCTION
+    name = _trigger_name(table)
+    truncate = _truncate_trigger_name(table)
+    return [
+        # CREATE OR REPLACE throughout, so installing one table's guards on a
+        # database that already has the others is a no-op for them.
+        FUNCTIONS_SQL,
+        f'DROP TRIGGER IF EXISTS {name} ON {table};',
+        f'CREATE TRIGGER {name} BEFORE UPDATE OR DELETE ON {table} '
+        f'FOR EACH ROW EXECUTE FUNCTION {reject}();',
+        f'DROP TRIGGER IF EXISTS {truncate} ON {table};',
+        f'CREATE TRIGGER {truncate} BEFORE TRUNCATE ON {table} '
+        f'FOR EACH STATEMENT EXECUTE FUNCTION {TRUNCATE_FUNCTION}();',
+    ]
+
+
+def uninstall_table_sql(table):
+    """Remove one table's triggers, and nothing else.
+
+    Deliberately leaves the shared functions in place: they are used by every
+    other guarded table, and a reverse migration that dropped them would
+    unprotect the audit tables it never touched.
+    """
+    return [
+        f'DROP TRIGGER IF EXISTS {_trigger_name(table)} ON {table};',
+        f'DROP TRIGGER IF EXISTS {_truncate_trigger_name(table)} ON {table};',
+    ]
+
+
+def uninstall_sql(all_tables=None):
     statements = []
-    for table in ALL_TABLES:
+    for table in (ALL_TABLES if all_tables is None else tuple(all_tables)):
         statements.append(
             f'DROP TRIGGER IF EXISTS {_trigger_name(table)} ON {table};')
         statements.append(

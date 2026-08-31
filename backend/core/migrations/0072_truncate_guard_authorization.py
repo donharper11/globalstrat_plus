@@ -21,11 +21,27 @@ from django.db import migrations
 
 from core.services.audit_guards import install_sql, uninstall_sql
 
+# Frozen: the audit tables that existed when this migration was written. See
+# 0070 for why a historical migration must not read the live table list.
+TABLES_THEN = (
+    'competition_decision_audit_event',
+    'competition_operator_audit_event',
+    'competition_sensitive_read_event',
+    'competition_audit_chain',
+)
+MANIFEST_THEN = 'competition_resolution_manifest'
+
+
 
 class Migration(migrations.Migration):
 
     dependencies = [('core', '0071_audit_truncate_guards')]
 
     operations = [
-        migrations.RunSQL(sql=install_sql(), reverse_sql=uninstall_sql()),
+        migrations.RunSQL(
+            sql=install_sql(protected=TABLES_THEN,
+                            all_tables=TABLES_THEN + (MANIFEST_THEN,)),
+            reverse_sql=uninstall_sql(
+                all_tables=TABLES_THEN + (MANIFEST_THEN,)),
+        ),
     ]

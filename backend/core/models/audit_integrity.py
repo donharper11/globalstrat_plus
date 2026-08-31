@@ -165,7 +165,16 @@ class AuthorizationRefusalEvent(models.Model):
     def save(self, *args, **kwargs):
         if self.pk:
             raise ValueError('AuthorizationRefusalEvent records are immutable.')
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        # Chain the row once its transaction commits, the same route every
+        # other audit row takes. Listing the table in `audit_chain.SEAL_ORDER`
+        # only makes it eligible for a pass that something else triggers: a
+        # final refusal could otherwise sit unsealed indefinitely, which is not
+        # what "chained and tamper-evident" means. After commit, never inside
+        # the write -- the seal takes a global advisory lock.
+        from core.models.competition_audit import _schedule_seal
+        _schedule_seal()
+        return result
 
     def __str__(self):
         who = self.username or 'anonymous'

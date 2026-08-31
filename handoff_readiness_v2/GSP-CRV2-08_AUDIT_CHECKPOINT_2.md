@@ -56,6 +56,15 @@ investigate, regressing what CRV2-02 established. Refusals are recorded again,
 in a narrow append-only model that claims only what happened: not an operator
 action that never occurred, not a read.
 
+**And claiming protection is not installing it.** The first V2-034 repair said
+the new table was trigger-protected and chained because it had been added to
+two registries. On a migrated competition database it was neither: registries
+drive a command and the test runner, not an upgrade. Migration `0079` installs
+the triggers, and the model schedules its own seal on commit. Chasing that
+exposed migrations `0070`–`0072` reading the live table list, so adding any
+audit table would have broken every fresh install while every existing database
+stayed silent.
+
 ## Evidence
 
 - `evidence/post-close-disputes/dispute-answers.json` — the six disputes

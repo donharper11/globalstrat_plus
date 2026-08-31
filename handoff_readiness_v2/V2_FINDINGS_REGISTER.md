@@ -170,11 +170,48 @@ The write happens in its own transaction, so a record cannot vanish with a
 rollback of the refused request, and a logging failure cannot turn a refusal
 into a 500 — the 403 is returned either way.
 
-The table joins `audit_guards.PROTECTED_TABLES`, so UPDATE, DELETE and TRUNCATE
-are refused by database trigger, and `audit_chain` PROJECTIONS and SEAL_ORDER,
-so the rows are chained and tamper-evident like every other audit table.
+**Protection and chaining, corrected.** The first repair claimed the table was
+trigger-protected and chained because it had been added to
+`audit_guards.PROTECTED_TABLES` and `audit_chain.SEAL_ORDER`. Neither claim held
+on a deployed upgrade, and the audit caught both.
 
-**Verification.** `core/tests/test_refusal_audit.py`, 8 tests: recorded exactly
+*Listing a table in a registry installs nothing.* `PROTECTED_TABLES` drives the
+`install_audit_guards` command and the custom test runner, neither of which
+touches a competition database that has already been migrated. Migration `0078`
+created the table with no UPDATE, DELETE or TRUNCATE protection at all.
+Migration `0079_authorization_refusal_guards` now installs both triggers on an
+ordinary upgrade, using `audit_guards.install_table_sql`; its reverse calls
+`uninstall_table_sql` and removes only this table's two triggers, leaving the
+shared functions and every other audit table's guards in place. The focused
+audit tests could not have caught this: the test runner installs the current
+guard list after building its database, which is precisely what masked it.
+
+*Being eligible for sealing is not being sealed.* Membership of `SEAL_ORDER`
+only lets a pass triggered by something else include the row, so a final
+refusal could sit unsealed indefinitely.
+`AuthorizationRefusalEvent.save()` now calls the same `_schedule_seal()` every
+other audit row uses: on commit, never inside the write, since the seal takes a
+global advisory lock and taking it under the lifecycle locks would invert an
+order CRV2-02 certified. One callback per transaction, not one per row.
+
+Fixing this exposed a third defect that predates it. Migrations `0070`, `0071`
+and `0072` called `install_sql()` with no arguments, which reads the *live*
+`PROTECTED_TABLES`, so adding the refusal table made those historical
+migrations try to install a trigger on a table created eight migrations later.
+Every already-migrated database was unaffected and silent; every fresh install
+failed. Each now pins the table list it was written against.
+
+**Verification.** `core/tests/test_refusal_audit_integrity.py`, 11 tests, plus
+a disposable-database walkthrough: migrating an empty database from scratch
+installs both triggers with no manual step, `install_audit_guards --check`
+passes immediately afterwards, direct SQL and ORM UPDATE and DELETE are refused,
+TRUNCATE is refused under the non-test policy, reversing `0079` removes only
+this table's triggers while the other five audit tables keep theirs, a
+committed refusal produces exactly one `AuditChainEntry`, one seal callback is
+scheduled per transaction rather than per row, the chain reports no unsealed
+refusal, and a rolled-back refusal is neither stored nor chained.
+
+`core/tests/test_refusal_audit.py`, 8 tests: recorded exactly
 once; response and record share one request id; no state change and no operator
 event; no payload or credential stored, asserted against the model's complete
 field list; PATCH recorded; a refused read is *not* recorded here but is
