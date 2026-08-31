@@ -221,6 +221,29 @@ disclosing reads, 0 unrefused writes, 0 state mutations.
 
 **Disposition: closed.**
 
+### V2-036 — refusal evidence has no supported reader (P1) — registered before repair
+
+**Registered before implementation**, as the rule requires and as V2-030 and
+V2-031 were not.
+
+V2-034 made cross-cohort mutation attempts captured, append-only, trigger-
+protected and chained. Nothing returns them: no endpoint, no management
+command, no screen. Investigating "did another instructor try to act on our
+competition?" requires ad hoc database access.
+
+This is the same sufficiency class as V2-030. An append-only row the operator
+cannot retrieve through supported tooling does not answer the incident it was
+created to investigate, and the CRV2-08 ruling already rejected Django admin or
+direct database access as a supported operator path. I recorded this in the
+data dictionary as a "deliberate boundary of that repair", which was wrong:
+naming a gap is not a disposition, and the audit was right to reject it.
+
+**Reproduction.** `AuthorizationRefusalEvent` appears in no URL pattern, no
+management command and no serializer at `ef9aca6`; the 37 rows produced by the
+ownership scan are reachable only with a database client.
+
+**Repair below, and closed only after its proof.**
+
 ### V2-035 — instructor alerts readable by any signed-in student (P1) — closed at this revision
 
 Found while widening the V2-032 inventory. `InstructorAlertsView`,
