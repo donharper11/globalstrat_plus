@@ -26,20 +26,26 @@ repair, as the rule requires.
 
 ## V2-037 through V2-044 — raised by GSP-CRV2-10 Stage 1
 
-Eight findings, all registered **before any repair**, from executed probes
-rather than source reading. One further mechanism was raised and then withdrawn
-on measurement; the withdrawal is recorded below rather than deleted.
+**Eight confirmed findings, one withdrawn theory.** All registered before any
+repair, from executed probes rather than source reading: each item was
+submitted against an isolated stack and read back from the rows.
 
-Stage 1 was reworked once after audit of `c20ebbb`. The rework measured the
-`development_rounds: 0` case that the first pass had only appeared to test,
-added the second write surface for A1c, A3 and D1, narrowed V2-044 to what its
-evidence proves, gave V2-041 a severity, and withdrew the free-initialisation
-claim. The surface-coverage matrix in the Stage 1 record names the endpoint and
-result for every probe, because the first pass claimed both submission APIs
-throughout while its artifacts carried one write each for three of them. Part A's items were read-only suspicions; each was submitted
-through both supported APIs against an isolated stack and read back from the
-rows. Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
-`stage1-probe-record.json`, `stage1-a1b-reprobe.json`. Nothing was withdrawn.
+Surfaces: A1, A1b, A1c, A2, A3, A4 and D1 were each measured through **both**
+supported decision-write surfaces — the per-type `PATCH` and the
+whole-submission `POST`. A6 has no decision surface and was measured through
+the two operator surfaces it does have, `POST /api/roster/` and
+`PUT /api/team-management/`. The per-probe matrix is in the Stage 1 record.
+
+Stage 1 ran in two passes. The first, at `c20ebbb`, claimed both surfaces
+throughout while its artifacts carried a single write for A1c, A3 and D1;
+recorded `development_rounds: 0` as untestable when what it had measured was
+creation being skipped; and raised a free ceiling-level initialisation that
+measurement then disproved. All three are corrected in the entries below, and
+the withdrawal is recorded rather than deleted.
+
+Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
+`stage1-probe-record.json`, `stage1-a1b-reprobe.json`,
+`stage1-rework-probes.json`.
 
 ### V2-037 — the price of R&D is set by the client (P0) — open, Stage 2 owns
 
