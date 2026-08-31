@@ -190,69 +190,62 @@ worth logging is a separate disposition.
 
 ---
 
-# Addendum 2 — additions to the rework acceptance list
+# Addendum 2 — four additions to the rework
 
-`rework/GSP-CRV2-08_CHECKPOINT_2_REWORK.md` is adopted as written. This adds
-four items to its **Focused acceptance** list — two edits to existing bullets,
-two new ones. Nothing here changes the repair the rework specifies.
+`rework/GSP-CRV2-08_CHECKPOINT_2_REWORK.md` is adopted as written. Do these four
+things in addition. None adds new capability; all four fit the rework's existing
+verification budget.
 
-| # | Where | Action |
-|---|---|---|
-| 1 | **Edit** the bullet "unowned-pilot behavior is pinned once according to the existing helper" | Pin it across **at least two routes** behind the new shared boundary, not one. Same helper, same behaviour — the test only has to show the scope is boundary-wide. |
-| 2 | **Add** | **Register a new finding** for the residual risk: an unowned course grants cross-cohort read across every route behind the boundary. Registered only — **not repaired in CRV2-08**. Severity set, owner assigned, disposition deferred. |
-| 3 | **Edit** the mutation-probe bullet "operator audit counts remain unchanged by each refused request" | Split into the two things it conflates: **state** unchanged (game, round, team — as written), **and** the refused attempt **is recorded** as an attributable refusal (actor, target game, route, method, outcome, request id). |
-| 4 | **Add** | A refused non-owner write is answerable from stored data: "did another judge try to close our round?" has an answer. |
+**1. Pin the unowned-course exemption across two routes, not one.**
+The rework's bullet "unowned-pilot behavior is pinned once according to the
+existing helper" stands. Assert it on **two** routes behind the new shared
+boundary instead of one. Same helper, same behaviour, no code change — the test
+demonstrates the exemption is boundary-wide.
 
-**Items 3 and 4 are a scope decision for the owner, not for the builder.** They
-add capability CRV2-08 does not have. If handed forward, CRV2-08 *proves* the
-gap and registers it; the dedicated authorization handoff repairs it. Items 1
-and 2 are cheap and belong here either way.
+**2. Register V2-033 — unowned course grants cross-cohort read. Do not repair it.**
+An unowned course (`Course.instructor_id IS NULL`) passes the ownership check on
+every route behind the new boundary. Register it: reproduction, severity, owner,
+and the disposition left open. **CRV2-08 does not repair it.** V2-032 closes when
+the boundary is enforced; this survives that closure and needs its own owner.
+
+**3. In the mutation probe, record whether each refused write was logged anywhere.**
+Keep the existing assertions — 403, and game/round/team state unchanged. Add one
+observation to the probe output per refused write: whether any audit row exists
+for the attempt. This is a field in the artifact, not a new logging path.
+
+**4. Register V2-034 — refused non-owner writes are not recorded. Do not repair it.**
+Record what probe 3 finds. Expected result, from reading the code: no row
+anywhere. The sensitive-read middleware returns early unless the method is `GET`
+(`middleware.py:318`), and operator rows are written inside the lifecycle views,
+which a permission denial never reaches. **CRV2-08 does not repair it.**
+
+Resubmission adds: the two-route pinning test, the V2-033 and V2-034 register
+entries, and the per-write logging observation in the ownership-scan artifact.
 
 ---
 
-## Why 1 and 2
+## Reasoning, if wanted
 
-`instructor_can_access_game` returns `True` when the game's course has
-`instructor_id IS NULL` — deliberate, for the pilot cohort, and the rework is
-right to preserve it.
+**On 1 and 2.** `instructor_can_access_game` is called from three places today —
+`results_api.py:558`, `results_api.py:1009`, `round_control.py:147` — exactly the
+three routes the scan found refusing. After the repair it is the shared boundary
+for every game-scoped instructor route, so the unowned-course exemption goes from
+covering three routes to covering all of them. One course row with a null owner
+re-opens the whole of V2-032 through a supported, tested path. For a competition:
+several institutions on one deployment, any unowned course readable by every
+judge. Likely disposition, for whoever owns V2-033 — competition games require an
+owned course, enforced when the game is opened rather than as a runbook step.
 
-It is called from **three** places today (`results_api.py:558`,
-`results_api.py:1009`, `round_control.py:147`) — exactly the three routes the
-scan found refusing. **After the repair it is the shared boundary for every
-game-scoped instructor route**, so the exemption goes from covering three routes
-to covering all of them. One course row with a null owner re-opens the whole of
-V2-032 through a supported, tested path.
+**On 3 and 4.** The rework asks that "operator audit counts remain unchanged by
+each refused request." That conflates two things: no mutation (correct) and no
+record (not correct). A non-owner's attempted `close`, `process`, `advance`,
+`reopen`, deadline change or event injection against another cohort is refused
+and recorded nowhere, so nothing in stored data answers "did another judge try to
+close our round?" As worded, the rework would certify that invisibility as
+correct. It also sits against CRV2-02's principle, which the register states as:
+rejected attempts are observable without pretending they changed state.
 
-For a competition that is concrete: several institutions' cohorts on one
-deployment, and any unowned course is readable by every judge.
-
-Suggested disposition for the finding in item 2, for the owner rather than this
-builder: competition games require an owned course, enforced as a precondition
-on opening the game rather than as a runbook step.
-
-## Why 3 and 4
-
-Verified at the audited revision:
-
-- The sensitive-read middleware records refusals correctly, including
-  `outcome='denied'` for 401/403/404 — **but returns early unless the method is
-  `GET`** (`middleware.py:318`).
-- Operator audit rows are written inside the lifecycle views, and a permission
-  denial refuses before the view body runs.
-
-So a non-owner's attempted `close`, `process`, `advance`, `reopen`, deadline
-change or event injection against another cohort is correctly refused and
-**recorded nowhere**. As currently worded, "operator audit counts remain
-unchanged" would certify that invisibility as correct.
-
-It also sits against CRV2-02's established principle, which the register states
-as: rejected attempts are observable without pretending they changed state. That
-applies at the authorization layer too.
-
-## Checked and sound — do not re-litigate
-
-**Refused reads are already logged.** The middleware runs after the response and
-classifies 401/403/404 as `denied`, so cross-cohort read *attempts* are
-attributable. No change needed — though it covers only four of the ten routes
-(Addendum 1), so on the other six a refusal is as invisible as the disclosure
-was.
+**Checked and sound — do not re-litigate.** Refused *reads* are already logged:
+the middleware runs after the response and classifies 401/403/404 as `denied`.
+Covers four of the ten routes (Addendum 1); on the other six a refusal is as
+invisible as the disclosure was.
