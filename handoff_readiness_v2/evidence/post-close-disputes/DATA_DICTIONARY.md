@@ -33,9 +33,9 @@ database, because nothing deletes it.
 |---|---|---|---|---|
 | Operator lifecycle actions and refusals | `OperatorAuditEvent` → `GET /api/games/{id}/instructor/operator-events/`, Operator Log tab | indefinite, append-only, chained | owning instructor | before/after, conflict, written reason, request id; a race is one committed and one rejected row |
 | Reads of decisions or audit payloads | `SensitiveReadEvent` → `manage.py who_accessed` | indefinite, append-only, chained | operator via CLI | actor, team read, route, outcome including `denied`, request id |
-| Refused cross-cohort attempts | `AuthorizationRefusalEvent` → no read API | indefinite, append-only, chained | database or CLI only | actor, game attempted, method, route, request id; **no read surface** — see gaps |
+| Refused cross-cohort attempts | `AuthorizationRefusalEvent` → `manage.py who_attempted` | indefinite, append-only, chained | operator via CLI | actor, game attempted, method, route, endpoint, timestamp, outcome, reason, request id; filter by game, request id, actor, method, route or time range; `--json` for an incident file |
 | Resolution manifests | `ResolutionManifest` → `manage.py replay_round --export-only` | indefinite | operator via CLI | input/output hashes, seed, code revision, source tree digest |
-| Chain seals | `AuditChainEntry` → `manage.py verify_audit_chain` | indefinite | operator via CLI | makes the four audit tables tamper-evident |
+| Chain seals | `AuditChainEntry` → `manage.py verify_audit_chain` | indefinite | operator via CLI | covers the decision, operator, sensitive-read and authorization-refusal ledgers, plus completed resolution manifests, and its own entries |
 | Pre-resolution dumps | filesystem under `COMPETITION_BACKUP_DIR` | **30 days** (`COMPETITION_BACKUP_RETENTION_DAYS`), pruned only when someone runs `manage_competition_backups --delete-expired` | operator with filesystem access | the only competition evidence with an expiry |
 
 ## Participation
@@ -57,11 +57,14 @@ nothing to read.
    individual contribution *is* recoverable per save — but nothing records who
    read a briefing, who was present, or who agreed. Team-internal attribution
    beyond the save actor does not exist.
-3. **Refused cross-cohort attempts have no read surface.** The rows exist and
-   are chained (V2-034), and nothing returns them: no endpoint, no management
-   command, no screen. Investigating one means database access. This is a
-   deliberate boundary of that repair, not an oversight, and it is the one gap
-   here that concerns competition integrity rather than analytics.
+3. **No browser view of refused cross-cohort attempts.** The rows are
+   retrievable — `manage.py who_attempted`, by game, request id, actor, method,
+   route or time range (V2-036) — but only from the command line. An instructor
+   holding a 403's request id needs an operator to run the query. This entry
+   previously called the absence of any reader a "deliberate boundary of that
+   repair"; that was wrong, and the audit rejected it: naming a gap is not a
+   disposition, and V2-030 had already settled that an audit row the operator
+   cannot retrieve does not answer its incident.
 4. **Session history.** `UserSession` answers who is signed in now. There is no
    retained connect/disconnect timeline, so "was this team offline during round
    3" cannot be answered after the fact.

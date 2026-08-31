@@ -221,7 +221,7 @@ disclosing reads, 0 unrefused writes, 0 state mutations.
 
 **Disposition: closed.**
 
-### V2-036 — refusal evidence has no supported reader (P1) — registered before repair
+### V2-036 — refusal evidence has no supported reader (P1) — closed at this revision
 
 **Registered before implementation**, as the rule requires and as V2-030 and
 V2-031 were not.
@@ -242,7 +242,34 @@ naming a gap is not a disposition, and the audit was right to reject it.
 management command and no serializer at `ef9aca6`; the 37 rows produced by the
 ownership scan are reachable only with a database client.
 
-**Repair below, and closed only after its proof.**
+**Repair.** `python3 manage.py who_attempted`, read-only, the companion to
+`who_accessed`: that command answers who *read* a team's decisions, this one
+answers who tried to *change* a game they do not own and was refused. Filters
+by `--game`, `--request-id`, `--user`/`--username`, `--method`,
+`--route-contains` and `--since`/`--until`, with `--json` for an incident file.
+Each row returns actor, game attempted, method, route and endpoint, server
+timestamp, rejected outcome, ownership reason and request id.
+
+No payload, header or credential can appear because none is stored on the row;
+the command runs one SELECT and writes nothing.
+
+A management command rather than an endpoint, on the ruling that one surface is
+enough and the command is the bounded repair. Documented in
+`OPERATOR_RUNBOOK.md` beside the read-ledger query it complements, and in the
+data dictionary.
+
+**Verification.** `core/tests/test_who_attempted.py`, 10 tests: found by game
+and by request id; every incident field present; text and JSON describe the same
+row; nonmatching game, actor, username, request id, method, route and time
+range each exclude it; an unparseable timestamp is refused with a clear
+message; no payload, token or credential string appears in either output; and
+the command leaves the rows and the audit chain unchanged.
+
+Demonstrated end to end in `who-attempted-walkthrough.txt`: an unrelated
+instructor's attempt to close another cohort's round was refused with a 403
+carrying a request id, and that id retrieves exactly that row.
+
+**Disposition: closed.**
 
 ### V2-035 — instructor alerts readable by any signed-in student (P1) — closed at this revision
 

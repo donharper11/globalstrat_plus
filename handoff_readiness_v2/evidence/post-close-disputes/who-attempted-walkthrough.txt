@@ -1,0 +1,36 @@
+$ python3 manage.py who_attempted --game 1
+1 refused attempt(s); showing 1.
+
+2026-08-31T03:23:39.254681+00:00  crv208_outsider
+    POST /api/games/1/round-control/close/  -> rejected
+    reason      Game belongs to another instructor
+    game        1
+    request id  srv-e31340c8-518b-4133-b66a-6f238c9b3b4f
+
+
+$ python3 manage.py who_attempted --request-id srv-e31340c8-518b-4133-b66a-6f238c9b3b4f --json
+{
+  "refusals": [
+    {
+      "actor_user_id": 11,
+      "at": "2026-08-31T03:23:39.254681+00:00",
+      "endpoint": "/api/games/1/round-control/close/",
+      "game": 1,
+      "id": 1,
+      "method": "POST",
+      "outcome": "rejected",
+      "reason": "Game belongs to another instructor",
+      "request_id": "srv-e31340c8-518b-4133-b66a-6f238c9b3b4f",
+      "route": "api/games/<int:game_id>/round-control/close/",
+      "username": "crv208_outsider"
+    }
+  ],
+  "shown": 1,
+  "total": 1
+}
+
+$ python3 manage.py who_attempted --game 999   # a game with no refusals
+No refused attempts match those filters.
+
+$ python3 manage.py who_attempted --request-id srv-does-not-exist
+No refused attempts match those filters.

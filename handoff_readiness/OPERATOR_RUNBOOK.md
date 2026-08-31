@@ -164,6 +164,24 @@ written ruling.
 4. **“The round was rerun after final.”** Compare manifest timestamps/hash with
    operator events and recovery-audit JSONL. Require one original process or an
    explicitly approved recovery trail.
+4b. **“Did another instructor try to change our game?”** Query the refusal
+   ledger. Every attempt to act on a game the caller does not own is refused
+   before it reaches the view and recorded:
+
+   ```bash
+   python3 manage.py who_attempted --game <id>
+   python3 manage.py who_attempted --request-id <id from the 403> --json
+   ```
+
+   Filter by `--game`, `--request-id`, `--user`/`--username`, `--method`,
+   `--route-contains`, `--since`/`--until`. Each row carries the actor, the
+   game attempted, the method and endpoint, the server timestamp, the rejected
+   outcome, the ownership reason and the request id. Read-only, and no request
+   payload or credential is stored on these rows to print.
+
+   A refused attempt changed nothing — the boundary refuses before any
+   competitive write — so this answers "was it tried", not "what was altered".
+
 5. **“The operator changed something.”** Open Instructor → **Operator Log**,
    or `GET /api/games/{game_id}/instructor/operator-events/`. Events are newest
    first and carry actor, server timestamp, action, outcome, round, before and
