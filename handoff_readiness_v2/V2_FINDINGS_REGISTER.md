@@ -26,8 +26,17 @@ repair, as the rule requires.
 
 ## V2-037 through V2-044 — raised by GSP-CRV2-10 Stage 1
 
-All eight registered **before any repair**, from executed probes rather than
-source reading. Part A's items were read-only suspicions; each was submitted
+Eight findings, all registered **before any repair**, from executed probes
+rather than source reading. One further mechanism was raised and then withdrawn
+on measurement; the withdrawal is recorded below rather than deleted.
+
+Stage 1 was reworked once after audit of `c20ebbb`. The rework measured the
+`development_rounds: 0` case that the first pass had only appeared to test,
+added the second write surface for A1c, A3 and D1, narrowed V2-044 to what its
+evidence proves, gave V2-041 a severity, and withdrew the free-initialisation
+claim. The surface-coverage matrix in the Stage 1 record names the endpoint and
+result for every probe, because the first pass claimed both submission APIs
+throughout while its artifacts carried one write each for three of them. Part A's items were read-only suspicions; each was submitted
 through both supported APIs against an isolated stack and read back from the
 rows. Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-probe-record.json`, `stage1-a1b-reprobe.json`. Nothing was withdrawn.
@@ -67,18 +76,47 @@ A generation authored `development_rounds: 2` is `active` with
 `development_rounds_remaining: 0` after a single close/process/advance.
 Confirms A3's second half.
 
-**A3's first half is unresolved, not confirmed.** The `development_rounds: 0`
-case cannot be reached through the supported path: Gen 1 is the starting
-platform, every team already owns one, and creation is skipped when a
-non-retired platform of that generation exists — defect D3 obstructing its own
-diagnosis. Stage 3 needs a fixture where a team owns no Gen 1 platform.
+**A3's first half is now measured too.** The Stage 1 rework retired both
+subject teams' starting platforms so creation was not skipped, then submitted a
+`development_rounds: 0` generation on both surfaces in round 1. After the first
+advance — the processing of its own creation round — the platform is `active`
+with `development_rounds_remaining: **-1**`. The negative value is the
+create-then-decrement in a single call. It is ready in the round it was
+created, exactly as Part A read it.
 
-### V2-041 — no price band (gap, not a defect) — Stage 5 owns
+### V2-041 — no price band (P1) — open, Stage 5 owns the rule
 
 Confirmed absent as Part A stated. In one open round the same product was
-priced at 99999 (accepted) and then at 1 (accepted), and 1.00 is what was
-stored. No anchor, alert, refusal or adjustment exists. Registered so the
-absence is on the record; the rule itself is Stage 5's to build.
+priced at 99999 (accepted, both surfaces) and then at 1 (accepted, both
+surfaces), and 1.00 is what was stored. No anchor, alert, refusal or
+adjustment exists.
+
+**Severity P1, and the justification matters because this is an absent rule
+rather than a broken one.** It is registered as a finding rather than as
+scheduled Stage 5 work because the exposure is live now: a competition run
+today has no band, so a team can price at 1 or at 99999 with nothing to stop
+it, and the competitive consequence lands on every other team. Calling it
+planned work would describe the schedule accurately and the risk not at all.
+The rule itself is Stage 5's to build; the exposure until then is this
+finding.
+
+### Withdrawn — "free ceiling-level feature initialisation"
+
+Raised in the first Stage 1 pass as a distinct mechanism inside V2-037: a newly
+created platform appearing to receive ceiling-level features without a decision
+naming them.
+
+**Withdrawn. The reading was wrong, twice.** Measured against the authored
+ceilings for the generation in question, a platform created with
+`feature_levels: {}` initialises to 10.00, 10.00, 10.00, 8.00, 8.00 against
+ceilings of 17, 16, 16, 17, 16 — every level below its ceiling. I had compared
+one generation's observed levels against a different generation's ceilings, and
+had not read the authored ceilings for that generation at all.
+
+Initialising a new platform to its generation's baseline capability is ordinary
+behaviour. The mechanism is recorded in the Stage 1 record so Stage 3 can
+confirm the baseline levels are the intended ones; it is not evidence that
+anything was obtained for free, and it is not a finding.
 
 ### V2-042 — cohort caps are not enforced (P1) — open, Stage 6 owns
 
@@ -93,21 +131,29 @@ consults `max_teams`, `team_size_min` or `team_size_max`. Confirms A6.
 `TeamProductMarket.is_active` true; the `immediate` branch deactivates those
 rows. Confirms D1 exactly.
 
-### V2-044 — R&D accepted against another team's platform (P1) — open
+### V2-044 — the write path accepts another team's platform; only the lock refuses it (P1) — open
 
-Not in Part A. A team submitted an R&D investment naming another team's
-`team_platform` and the write returned 200. In the first probe run this reached
-the engine, wrote duplicate `PendingFeatureGain` rows against the other team's
-platform, and made the round unprocessable with a natural-key collision — the
-same failure class as V2-029.
+Not in Part A. Narrowed after the Stage 1 rework measured what the first pass
+left open.
 
-Found by accident: the first run reused one team's platform id for both teams.
-It is registered because the API accepted it, not because the harness did it.
+**Proven.** Both write surfaces accept an R&D investment naming another team's
+`team_platform`: per-type **200**, whole-submission **201**. With every other
+required section filled so the validator is reached, the complete lock attempt
+is refused **400** with `R&D investment references a platform not owned by this
+team.`
 
-`_full_validate` contains an ownership check, but the observed lock refusal
-named only the missing budget allocation — the validator returns early, so the
-ownership check never ran. **Whether a complete locked submission is refused is
-not established**, and this entry does not claim it is.
+**So the ownership check is correct and it runs at lock.** The finding is the
+gap before it: the write surfaces persist the foreign row, and a team that
+never locks is defaulted at close, so the row reaches the engine anyway. In the
+first probe run exactly that happened — duplicate `PendingFeatureGain` rows
+against the other team's platform, and a round left unprocessable by a
+natural-key collision, the same failure class as V2-029.
+
+Same shape as V2-039: a gate that exists only at lock time does not bind a team
+that never locks.
+
+Found by accident — the first probe run reused one team's platform id for both
+teams. Registered because the API accepted it, not because the harness sent it.
 
 ### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
 

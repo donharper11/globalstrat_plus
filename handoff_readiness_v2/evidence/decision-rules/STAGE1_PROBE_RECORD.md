@@ -147,3 +147,84 @@ is `retired` and its `TeamProductMarket` row is still `is_active: true`. The
   reference. Only the write and one masked lock refusal were observed.
 - The `development_rounds: 0` timing case, for the reason above.
 - Anything about severity ordering between P1s; that is the owner's call.
+
+---
+
+# Stage 1 rework — the probes the first pass did not measure
+
+Audit of `c20ebbb` found five gaps. Raw record: `stage1-rework-probes.json`.
+No runtime code changed.
+
+## Surface coverage matrix
+
+Replaces the blanket claim that every item used both submission APIs. It did
+not, and the artifacts did not support saying so.
+
+| Item | Per-type `PATCH .../<type>/` | Whole submission `POST .../round/{n}/` | Disposition |
+|---|---|---|---|
+| A1 platform cost | 200, platform active, `rd_expense` 0.00 | 201, platform active | reproduced, both |
+| A1b feature grant | 200, level 11→14, charged 0.00 | 200 | reproduced, both |
+| A1c foreign platform | 200 (team 2) | 201 (team 3) | reproduced, both — **narrowed, see below** |
+| A2 cost vs cash/budget | 200 | 201 | reproduced, both |
+| A3 `development_rounds: 0` | 200, active at `-1` | 201, active at `-1` | reproduced, both |
+| A3 `development_rounds: 2` | 200, active at `0` after one advance | 201, same | reproduced, both |
+| A4 price band | 200 (99999), 200 (1) | 201 (99999), 200 (1) | reproduced, both |
+| A6 cohort caps | **not applicable** — no decision surface. Exercised through `POST /api/roster/ {action: add}` (8×201) and `PUT /api/team-management/ {action: assign}` (200) | | reproduced |
+| D1 retirement | 200, product retired, market row still active | 200, same | reproduced, both |
+
+## A3 `development_rounds: 0` — now measured. Reproduced
+
+The first pass could not measure this: every team owns the starting generation
+and creation is skipped when a non-retired platform of it exists, so a `200`
+and unchanged rows recorded the skip. Both subject teams' Gen 1 platforms were
+retired in the fixture first.
+
+Submitted in round 1 on both surfaces. After the **first** advance — the
+processing of the round it was created in — the platform is `status: 'active'`
+with `development_rounds_remaining: **-1**`. The negative value is the
+create-then-decrement in one call, exactly as Part A read it. It is ready in
+its creation round.
+
+Control, authored `development_rounds: 2`: submitted round 4, `active` with
+`development_rounds_remaining: 0` after one advance. An authored two-round
+build is ready after one.
+
+## A1c / V2-044 — narrowed to what is proven
+
+Both write surfaces accept an R&D investment naming another team's platform:
+per-type **200**, whole-submission **201**.
+
+With every other required section filled so the validator is actually reached,
+the complete lock attempt is refused **400**:
+
+> `R&D investment references a platform not owned by this team.`
+
+**So the ownership check works when it runs.** The finding is therefore
+narrower than first written: the *write* accepts a foreign platform and only
+the *lock* refuses it. That still matters, because a team that never locks is
+defaulted at close and the row reaches the engine anyway — which is what
+happened in the first probe run, writing duplicate `PendingFeatureGain` rows
+against the other team's platform and making the round unprocessable. It is the
+same shape as V2-039: a gate that exists only at lock.
+
+## Free ceiling-level initialisation — withdrawn. My reading was wrong
+
+I recorded that a new platform's features are initialised "to ceiling levels",
+from seeing 14.00/14.00/14.00/12.00/12.00 appear on a newly created platform.
+
+Measured directly against the authored ceilings for that generation, they are
+not. A platform created with `feature_levels: {}` initialises to
+**10.00, 10.00, 10.00, 8.00, 8.00** against authored ceilings of
+**17, 16, 16, 17, 16** — every level below its ceiling, and
+`levels_at_or_above_ceiling` is empty.
+
+The error was mine twice over: I compared one generation's observed levels
+against a different generation's ceilings, and I never read the authored
+ceilings for the generation in question at all. Initialising a new platform to
+its generation's baseline capability is ordinary behaviour, not a free
+capability grant.
+
+**Withdrawn as a finding.** The mechanism — features initialised without a
+decision naming them — is real and is recorded here so Stage 3 can decide
+whether the baseline levels are the intended ones. It is not evidence of
+anything being obtained for free.

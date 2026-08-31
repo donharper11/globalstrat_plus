@@ -1,0 +1,1531 @@
+{
+  "baseline_revision": "c20ebbb18ec992cf096e277a2fcd651541cc7019",
+  "database": "gsp_crv210_probe",
+  "finished_at": "2026-08-31T05:05:46+0000",
+  "handoff": "GSP-CRV2-10 Stage 1 rework",
+  "port": 41113,
+  "probes": {
+    "A1c_foreign_platform_both_surfaces": {
+      "claim": "the write path accepts an R&D investment naming another team's platform, and whether a complete lock refuses it",
+      "complete_lock_attempt": {
+        "body": "{'detail': 'Validation failed.', 'errors': ['R&D investment references a platform not owned by this team.', 'R&D investment on inactive platform \"Prism Tech \u2014 Gen 1 \u2014 Standard Electronics (retired)\".']}",
+        "status": 400
+      },
+      "fixture_filled_for_lock": {
+        "filled": true,
+        "submission": 19
+      },
+      "platform_named": 1,
+      "re_added_after_fill": {
+        "body": "{'id': 19, 'team': 2, 'round': 8, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': {'id': 1, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00",
+        "status": 200
+      },
+      "round_precondition": "round open",
+      "submission": {
+        "per_type": {
+          "body": "{'id': 19, 'team': 2, 'round': 8, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [{'id': 1, 'team_platform': 1, 'feature': 36, 'method': 'in_house', 'amount': '0.00', 'target_level': 14, 'calcu",
+          "payload": [
+            {
+              "amount": "0",
+              "calculated_cost": "0",
+              "feature": 36,
+              "method": "in_house",
+              "target_level": "14.00",
+              "team_platform": 1
+            }
+          ],
+          "status": 200,
+          "team": 2
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/7/rd/",
+        "whole_submission": {
+          "body": "{'id': 20, 'team': 3, 'round': 8, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [{'id': 2, 'team_platform': 1, 'feature': 36, 'method': 'in_house', 'amount': '0.00', 'target_level': 14, 'calcu",
+          "payload": [
+            {
+              "amount": "0",
+              "calculated_cost": "0",
+              "feature": 36,
+              "method": "in_house",
+              "target_level": "14.00",
+              "team_platform": 1
+            }
+          ],
+          "status": 201,
+          "team": 3
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/7/"
+      },
+      "submitted_in_round": 7,
+      "submitting_teams": {
+        "per_type": 2,
+        "whole_submission": 3
+      }
+    },
+    "A3_development_rounds_0": {
+      "claim": "a generation authored development_rounds 0 is active in the round it was created",
+      "fixture": {
+        "starting_platforms_retired": {
+          "Photon Labs": {
+            "remaining_non_retired": [],
+            "retired": [
+              {
+                "id": 2,
+                "status": "active"
+              }
+            ]
+          },
+          "Prism Tech": {
+            "remaining_non_retired": [],
+            "retired": [
+              {
+                "id": 1,
+                "status": "active"
+              }
+            ]
+          }
+        }
+      },
+      "generation": {
+        "development_cost": "5000000.00",
+        "development_rounds": 0,
+        "generation_order": 1,
+        "id": 4,
+        "is_starting_platform": true,
+        "license_cost": "8000000.00",
+        "name": "Gen 1 \u2014 Standard Electronics",
+        "unlock_round": 0
+      },
+      "platforms_before": {
+        "1": {
+          "feature_levels": [
+            {
+              "current_level": "11.00",
+              "feature_id": 36,
+              "team_platform_id": 1
+            },
+            {
+              "current_level": "4.00",
+              "feature_id": 37,
+              "team_platform_id": 1
+            },
+            {
+              "current_level": "3.00",
+              "feature_id": 38,
+              "team_platform_id": 1
+            },
+            {
+              "current_level": "8.00",
+              "feature_id": 39,
+              "team_platform_id": 1
+            },
+            {
+              "current_level": "4.00",
+              "feature_id": 41,
+              "team_platform_id": 1
+            }
+          ],
+          "platforms": [
+            {
+              "development_rounds_remaining": null,
+              "id": 1,
+              "name": "Prism Tech Base Platform",
+              "platform_generation_id": 4,
+              "status": "retired"
+            }
+          ]
+        },
+        "2": {
+          "feature_levels": [
+            {
+              "current_level": "3.00",
+              "feature_id": 36,
+              "team_platform_id": 2
+            },
+            {
+              "current_level": "3.00",
+              "feature_id": 37,
+              "team_platform_id": 2
+            },
+            {
+              "current_level": "5.00",
+              "feature_id": 39,
+              "team_platform_id": 2
+            },
+            {
+              "current_level": "11.00",
+              "feature_id": 41,
+              "team_platform_id": 2
+            },
+            {
+              "current_level": "7.00",
+              "feature_id": 44,
+              "team_platform_id": 2
+            }
+          ],
+          "platforms": [
+            {
+              "development_rounds_remaining": null,
+              "id": 2,
+              "name": "Photon Labs Base Platform",
+              "platform_generation_id": 4,
+              "status": "retired"
+            }
+          ]
+        }
+      },
+      "round_precondition": "round open",
+      "submission": {
+        "per_type": {
+          "body": "{'id': 1, 'team': 1, 'round': 2, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 1, 'platform_generation': 4, 'method': 'in_house', 'committed_cost': '500000",
+          "payload": [
+            {
+              "committed_cost": "5000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 4,
+              "platform_name": "Rework dr0 per-type"
+            }
+          ],
+          "status": 200,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/1/platforms/",
+        "whole_submission": {
+          "body": "{'id': 2, 'team': 2, 'round': 2, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 2, 'platform_generation': 4, 'method': 'in_house', 'committed_cost': '500000",
+          "payload": [
+            {
+              "committed_cost": "5000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 4,
+              "platform_name": "Rework dr0 whole"
+            }
+          ],
+          "status": 201,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/1/"
+      },
+      "submitted_in_round": 1,
+      "timeline": [
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 2,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          }
+        },
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 3,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          }
+        },
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 4,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              }
+            ]
+          }
+        }
+      ],
+      "why_the_first_pass_could_not_measure_it": "every team owns the starting generation and creation is skipped when a non-retired platform of it exists, so the probe recorded a 200 and unchanged rows -- the skip, not the timing"
+    },
+    "A3_development_rounds_2_control": {
+      "claim": "an authored development_rounds of 2 behaves as 1",
+      "generation": {
+        "development_cost": "15000000.00",
+        "development_rounds": 2,
+        "generation_order": 2,
+        "id": 5,
+        "is_starting_platform": false,
+        "license_cost": "35000000.00",
+        "name": "Gen 2 \u2014 Smart Connected Platform",
+        "unlock_round": 2
+      },
+      "round_precondition": "round open",
+      "submission": {
+        "per_type": {
+          "body": "{'id': 10, 'team': 1, 'round': 5, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 3, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '15000",
+          "payload": [
+            {
+              "committed_cost": "15000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Rework dr2 per-type"
+            }
+          ],
+          "status": 200,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/4/platforms/",
+        "whole_submission": {
+          "body": "{'id': 11, 'team': 2, 'round': 5, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 4, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '15000",
+          "payload": [
+            {
+              "committed_cost": "15000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Rework dr2 whole"
+            }
+          ],
+          "status": 201,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/4/"
+      },
+      "submitted_in_round": 4,
+      "timeline": [
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 5,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 7
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 7,
+                "name": "Rework dr2 per-type",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 8
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 8,
+                "name": "Rework dr2 whole",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          }
+        },
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 6,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 7
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 7,
+                "name": "Rework dr2 per-type",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 8
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 8,
+                "name": "Rework dr2 whole",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          }
+        },
+        {
+          "advance": {
+            "advance": 200,
+            "close": 200,
+            "process": 200
+          },
+          "round_now": 7,
+          "team_a": {
+            "feature_levels": [
+              {
+                "current_level": "11.00",
+                "feature_id": 36,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 38,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 39,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 41,
+                "team_platform_id": 1
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 5
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 7
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 7
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 1,
+                "name": "Prism Tech Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 5,
+                "name": "Rework dr0 per-type",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 7,
+                "name": "Rework dr2 per-type",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          },
+          "team_b": {
+            "feature_levels": [
+              {
+                "current_level": "3.00",
+                "feature_id": 36,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "3.00",
+                "feature_id": 37,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "5.00",
+                "feature_id": 39,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "11.00",
+                "feature_id": 41,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "7.00",
+                "feature_id": 44,
+                "team_platform_id": 2
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 36,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "6.00",
+                "feature_id": 39,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 37,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "4.00",
+                "feature_id": 38,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "2.00",
+                "feature_id": 44,
+                "team_platform_id": 6
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 41,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 36,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "10.00",
+                "feature_id": 39,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 38,
+                "team_platform_id": 8
+              },
+              {
+                "current_level": "8.00",
+                "feature_id": 37,
+                "team_platform_id": 8
+              }
+            ],
+            "platforms": [
+              {
+                "development_rounds_remaining": null,
+                "id": 2,
+                "name": "Photon Labs Base Platform",
+                "platform_generation_id": 4,
+                "status": "retired"
+              },
+              {
+                "development_rounds_remaining": -1,
+                "id": 6,
+                "name": "Rework dr0 whole",
+                "platform_generation_id": 4,
+                "status": "active"
+              },
+              {
+                "development_rounds_remaining": 0,
+                "id": 8,
+                "name": "Rework dr2 whole",
+                "platform_generation_id": 5,
+                "status": "active"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "D1_both_surfaces": {
+      "after": {
+        "markets": [
+          {
+            "id": 1,
+            "is_active": true,
+            "market_id": 6,
+            "team_product_id": 1
+          },
+          {
+            "id": 3,
+            "is_active": true,
+            "market_id": 6,
+            "team_product_id": 3
+          }
+        ],
+        "products": [
+          {
+            "id": 1,
+            "name": "Nexus One",
+            "status": "retired"
+          },
+          {
+            "id": 3,
+            "name": "Aura Pro",
+            "status": "retired"
+          }
+        ]
+      },
+      "before": {
+        "markets": [
+          {
+            "id": 1,
+            "is_active": true,
+            "market_id": 6,
+            "team_product_id": 1
+          },
+          {
+            "id": 3,
+            "is_active": true,
+            "market_id": 6,
+            "team_product_id": 3
+          }
+        ],
+        "products": [
+          {
+            "id": 1,
+            "name": "Nexus One",
+            "status": "active"
+          },
+          {
+            "id": 3,
+            "name": "Aura Pro",
+            "status": "active"
+          }
+        ]
+      },
+      "claim": "end_of_round retirement sets status retired and leaves TeamProductMarket active, on both surfaces",
+      "products": {
+        "per_type": {
+          "id": 1,
+          "name": "Nexus One",
+          "positioning": "mainstream",
+          "status": "active"
+        },
+        "whole_submission": {
+          "id": 3,
+          "name": "Aura Pro",
+          "positioning": "premium",
+          "status": "active"
+        }
+      },
+      "round_advance": {
+        "advance": 200,
+        "close": 200,
+        "process": 200
+      },
+      "round_precondition": "round open",
+      "submission": {
+        "per_type": {
+          "body": "{'id': 21, 'team': 1, 'round': 8, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [], 'product_creates': [], 'product_retires': [{'id': 1, 'team_product': 1, 'timing",
+          "payload": [
+            {
+              "team_product": 1,
+              "timing": "end_of_round"
+            }
+          ],
+          "status": 200,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/7/product-retires/",
+        "whole_submission": {
+          "body": "{'id': 19, 'team': 2, 'round': 8, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': {'id': 1, 'rd_budget': '2000000.00', 'marketing_budget': '3000000.00', 'strategy_budget': '1000000.00', 'warnings': []}, 'financing': None, 'esg': {'id': 1, 'environmen",
+          "payload": [
+            {
+              "team_product": 3,
+              "timing": "end_of_round"
+            }
+          ],
+          "status": 200,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/7/"
+      },
+      "submitted_in_round": 7
+    },
+    "free_ceiling_initialisation": {
+      "authored_ceilings": [
+        {
+          "ceiling_value": "17.00",
+          "feature_id": 36
+        },
+        {
+          "ceiling_value": "16.00",
+          "feature_id": 37
+        },
+        {
+          "ceiling_value": "16.00",
+          "feature_id": 38
+        },
+        {
+          "ceiling_value": "17.00",
+          "feature_id": 39
+        },
+        {
+          "ceiling_value": "16.00",
+          "feature_id": 40
+        },
+        {
+          "ceiling_value": "17.00",
+          "feature_id": 41
+        },
+        {
+          "ceiling_value": "0.00",
+          "feature_id": 42
+        },
+        {
+          "ceiling_value": "16.00",
+          "feature_id": 43
+        },
+        {
+          "ceiling_value": "14.00",
+          "feature_id": 44
+        }
+      ],
+      "claim": "a newly created platform has its features initialised without any decision naming them",
+      "levels_after": [
+        {
+          "current_level": "10.00",
+          "feature_id": 41,
+          "team_platform_id": 7
+        },
+        {
+          "current_level": "10.00",
+          "feature_id": 36,
+          "team_platform_id": 7
+        },
+        {
+          "current_level": "10.00",
+          "feature_id": 39,
+          "team_platform_id": 7
+        },
+        {
+          "current_level": "8.00",
+          "feature_id": 38,
+          "team_platform_id": 7
+        },
+        {
+          "current_level": "8.00",
+          "feature_id": 37,
+          "team_platform_id": 7
+        }
+      ],
+      "levels_at_or_above_ceiling": [],
+      "payload_feature_levels": {},
+      "platform_created": [
+        {
+          "development_rounds_remaining": 0,
+          "id": 7,
+          "name": "Rework dr2 per-type",
+          "platform_generation_id": 5,
+          "status": "active"
+        }
+      ]
+    }
+  },
+  "stack_pid": 4130412,
+  "started_at": "2026-08-31T05:04:11+0000"
+}
