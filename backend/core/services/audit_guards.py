@@ -28,6 +28,7 @@ PROTECTED_TABLES = (
     'competition_decision_audit_event',
     'competition_operator_audit_event',
     'competition_sensitive_read_event',
+    'competition_authorization_refusal_event',
     'competition_audit_chain',
 )
 

@@ -25,7 +25,8 @@ from django.db import connection, models, transaction
 from django.utils import timezone
 
 from core.models import (
-    AuditChainEntry, DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
+    AuditChainEntry, AuthorizationRefusalEvent, DecisionAuditEvent,
+    OperatorAuditEvent, ResolutionManifest,
     SensitiveReadEvent,
 )
 from core.models.audit_integrity import GENESIS_SHA256
@@ -57,6 +58,11 @@ PROJECTIONS = {
          'input_section_digests', 'output_sha256', 'output_section_digests',
          'narrative_sha256', 'decision_event_count', 'code_revision',
          'source_tree_sha256', 'created_at', 'completed_at'),
+    ),
+    'competition_authorization_refusal_event': (
+        AuthorizationRefusalEvent,
+        ('id', 'actor_user_id', 'username', 'game_id_attempted', 'method',
+         'route', 'endpoint', 'outcome', 'reason', 'request_id', 'created_at'),
     ),
     'competition_sensitive_read_event': (
         SensitiveReadEvent,
@@ -92,6 +98,7 @@ SEAL_ORDER = (
     'competition_operator_audit_event',
     'competition_resolution_manifest',
     'competition_sensitive_read_event',
+    'competition_authorization_refusal_event',
 )
 
 

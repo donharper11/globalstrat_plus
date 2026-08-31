@@ -82,7 +82,8 @@ def shell(database, code, marker='---OUT---'):
 STATE = '''
 from core.models import (DecisionAuditEvent, DecisionSubmission, Game,
                          OperatorAuditEvent, Round, Team)
-from core.models.audit_integrity import SensitiveReadEvent
+from core.models.audit_integrity import (AuthorizationRefusalEvent,
+                                         SensitiveReadEvent)
 game = Game.objects.get(id=%d)
 result = {
     'game_status': game.status,
@@ -96,6 +97,8 @@ result = {
     'operator_events': OperatorAuditEvent.objects.filter(game=game).count(),
     'decision_events': DecisionAuditEvent.objects.filter(game=game).count(),
     'sensitive_reads': SensitiveReadEvent.objects.filter(game_id_read=game.id).count(),
+    'refusal_events': AuthorizationRefusalEvent.objects.filter(
+        game_id_attempted=game.id).count(),
 }
 ''' % GAME
 
@@ -158,8 +161,13 @@ def main():
                     # this loop issues a GET, and counting that as a mutation
                     # reported four clean refusals as state changes.
                     def competition_state(snapshot):
+                        # The read log and the refusal log both grow because
+                        # this loop is issuing requests; neither is competition
+                        # state, and counting them as mutation reported clean
+                        # refusals as state changes.
                         return {k: v for k, v in snapshot.items()
-                                if k != 'sensitive_reads'}
+                                if k not in ('sensitive_reads',
+                                             'refusal_events')}
                     before = shell(CLONE_DB, STATE)
                     status, body = api(port, method, path, outsider)
                     row['status'], row['sample'] = status, body[:120]
@@ -172,8 +180,12 @@ def main():
                     # V2-034 observation: is a refused non-owner write recorded
                     # anywhere at all?
                     row['refusal_recorded'] = (
-                        'operator_audit' if after['operator_events'] > before['operator_events']
-                        else 'sensitive_read_log' if after['sensitive_reads'] > before['sensitive_reads']
+                        'authorization_refusal_event'
+                        if after['refusal_events'] > before['refusal_events']
+                        else 'operator_audit'
+                        if after['operator_events'] > before['operator_events']
+                        else 'sensitive_read_log'
+                        if after['sensitive_reads'] > before['sensitive_reads']
                         else 'not recorded')
                     before = after
                     report['writes'].append(row)
@@ -201,6 +213,8 @@ def main():
                   if w['status'] != 403 and not w['exempt']]
     mutated = [w for w in report['writes'] if not w.get('state_unchanged')]
     unlogged = [w for w in report['writes'] if w.get('refusal_recorded') == 'not recorded']
+    recorded = [w for w in report['writes']
+                if w.get('refusal_recorded') == 'authorization_refusal_event']
     report['summary'] = {
         'reads_tested': len(report['reads']),
         'reads_disclosing_to_a_non_owner': len(leaks),
@@ -208,7 +222,9 @@ def main():
         'writes_not_refused_with_403': len(bad_writes),
         'writes_that_mutated_state': len(mutated),
         'refused_writes_not_recorded_anywhere': len(unlogged),
-        'passed': not leaks and not bad_writes and not mutated,
+        'refused_writes_recorded_as_authorization_refusals': len(recorded),
+        'passed': (not leaks and not bad_writes and not mutated
+                   and not unlogged),
     }
     (EVIDENCE / 'ownership-scan-after-repair.json').write_text(
         json.dumps(report, indent=2, sort_keys=True, default=str) + '\n')

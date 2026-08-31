@@ -332,8 +332,65 @@ class GameScopeGuardMiddleware:
             return None                       # the view answers 404 itself
         if instructor_can_access_game(request, game):
             return None
+
+        from core.services.lifecycle import request_id_for
+        request_id = request_id_for(request)
+        method = (request.method or '').upper()
+        reason = 'Game belongs to another instructor'
+
+        # A refused mutation must leave a record. CRV2-02 made operator
+        # refusals auditable, and moving authorization ahead of the view meant
+        # a cross-cohort lifecycle attempt reached no auditing code at all --
+        # thirty-seven refused writes with nothing to investigate (V2-034).
+        #
+        # Reads are deliberately not recorded here. SensitiveReadLogMiddleware
+        # already records a denied read of decisions or an audit payload, with
+        # the same actor, route, outcome and request id, and writing a second
+        # row for the same event would double-count the disclosure attempt this
+        # table exists to make countable.
+        if method in ('POST', 'PUT', 'PATCH', 'DELETE'):
+            self._record_refusal(request, game_id, method, route, request_id,
+                                 reason)
+
         return JsonResponse(
-            {'error': 'This game belongs to another instructor.'}, status=403)
+            {'error': 'This game belongs to another instructor.',
+             'request_id': request_id}, status=403)
+
+    @staticmethod
+    def _record_refusal(request, game_id, method, route, request_id, reason):
+        """Write the refusal on its own, outside any request transaction.
+
+        The refused request may sit inside an atomic block that is about to
+        unwind; a record that disappears with the rollback would be worse than
+        none, because the table would then look empty rather than incomplete.
+        """
+        try:
+            from django.db import transaction
+            from core.models import AuthorizationRefusalEvent, User
+            from core.utils.auth_context import get_request_user_id
+
+            user_id = get_request_user_id(request)
+            username = ''
+            if user_id is not None:
+                username = (User.objects.filter(pk=user_id)
+                            .values_list('username', flat=True).first() or '')
+            with transaction.atomic(durable=False):
+                AuthorizationRefusalEvent.objects.create(
+                    actor_user_id=user_id,
+                    username=username,
+                    game_id_attempted=game_id,
+                    method=method,
+                    route=(route or '')[:255],
+                    endpoint=(request.path or '')[:255],
+                    outcome='rejected',
+                    reason=reason[:255],
+                    request_id=request_id or '')
+        except Exception as e:
+            # Refusal stays fail-closed: the 403 is returned either way, and a
+            # logging failure is visible in the log rather than as a 500 that
+            # would tell the caller their attempt broke something.
+            logger.warning('Could not record authorization refusal for %s: %s',
+                           getattr(request, 'path', '?'), e)
 
 
 class SensitiveReadLogMiddleware:

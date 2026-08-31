@@ -109,5 +109,6 @@ from .auth_models import UserSession
 from .competition_audit import (
     DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
 )
-from .audit_integrity import AuditChainEntry, SensitiveReadEvent
+from .audit_integrity import (AuditChainEntry, AuthorizationRefusalEvent,
+                              SensitiveReadEvent)
 from .narrative_jobs import NarrativeJob

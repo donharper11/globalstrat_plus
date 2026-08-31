@@ -114,3 +114,60 @@ class SensitiveReadEvent(models.Model):
         who = self.username or 'anonymous'
         return (f'{who} {self.outcome} {self.method} {self.endpoint} '
                 f'({self.category})')
+
+
+class AuthorizationRefusalEvent(models.Model):
+    """One refused attempt to act on a game the caller does not own.
+
+    CRV2-02 made operator refusals auditable: a race leaves one committed row
+    and one rejected row, and the rejected one is what shows the attempt. Moving
+    authorization to `GameScopeGuardMiddleware` refused cross-cohort lifecycle
+    attempts *before* the view, which is correct, and left them invisible --
+    thirty-seven refused writes with no record anywhere (V2-034).
+
+    Deliberately not an `OperatorAuditEvent`: that model describes a lifecycle
+    action with a before and an after, and this attempt never reached one. It
+    is not a `SensitiveReadEvent` either, because a refused POST is not a read.
+    A separate narrow row says exactly what happened -- someone tried to act on
+    a cohort that is not theirs, and was refused -- and claims nothing else.
+
+    No request body, header or credential is stored. What the caller was trying
+    to send is not needed to investigate that they were refused, and copying it
+    here would put another cohort's payload in a table created to protect it.
+    """
+    # An id that outlives its user, as elsewhere in this module: every
+    # `on_delete` rule either removes the audit row with the account or
+    # rewrites it, and the database triggers refuse both.
+    actor_user_id = models.IntegerField(null=True, blank=True)
+    username = models.CharField(max_length=150, blank=True, default='')
+
+    # Plain integer: an attempt against a game the caller cannot see, or one
+    # that does not exist, is precisely the attempt worth recording.
+    game_id_attempted = models.IntegerField(null=True, blank=True)
+
+    method = models.CharField(max_length=8)
+    route = models.CharField(max_length=255)
+    endpoint = models.CharField(max_length=255)
+    outcome = models.CharField(max_length=16, default='rejected')
+    reason = models.CharField(max_length=255)
+    request_id = models.CharField(max_length=128, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'competition_authorization_refusal_event'
+        ordering = ['id']
+        indexes = [
+            models.Index(fields=['game_id_attempted', 'created_at']),
+            models.Index(fields=['actor_user_id', 'created_at']),
+            models.Index(fields=['created_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValueError('AuthorizationRefusalEvent records are immutable.')
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        who = self.username or 'anonymous'
+        return (f'{who} refused {self.method} {self.endpoint} '
+                f'(game {self.game_id_attempted})')

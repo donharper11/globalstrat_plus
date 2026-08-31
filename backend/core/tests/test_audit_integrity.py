@@ -654,7 +654,9 @@ class SensitiveReadInventoryTests(TestCase):
                 'api/games/<int:game_id>/teams/<int:team_id>'
                 '/decisions/round/<int:round_number>/')
         self.assertEqual(category, 'decisions')
-        self.assertEqual(len(middleware._routes), 30)
+        # 31 since CRV2-08 added the instructor operator-events endpoint, which
+        # serves audit rows and so registers itself as a logged audit read.
+        self.assertEqual(len(middleware._routes), 31)
 
     def test_a_stale_inventory_falls_back_to_the_live_scan(self):
         """A generated file that no longer describes the URL conf must not be

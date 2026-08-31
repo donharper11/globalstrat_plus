@@ -73,7 +73,7 @@ at `8554db3`: the shipped URL returned HTTP 404 and the identical call under
 **Repair** at `45eb83c`: the same default as the API client. **Verification:**
 re-proven at HTTP 200 in `repeat-after-repair.json`. **Disposition: closed.**
 
-### V2-032 — game ownership not enforced for instructor routes (P0) — registered before repair
+### V2-032 — game ownership not enforced for instructor routes (P0) — closed at `d39ce04`
 
 **Severity P0.** An instructor with no connection to a cohort could read that
 cohort's raw submitted decisions, their payload hashes, the actor and the
@@ -112,36 +112,77 @@ Post-repair scan `evidence/post-close-disputes/ownership-scan-after-repair.json`
 instructor against a disposable clone, **0 disclosing, 0 not refused, 0 state
 mutations**, owner reads 200 and reaches a normal `409` on a lifecycle control.
 
-**Disposition: closed pending audit.**
+**Disposition: closed at `d39ce04`, accepted in audit.**
 
-### V2-033 — an unowned course grants cross-cohort read (severity open) — not repaired
+### V2-033 — unowned course readable by any instructor — **withdrawn, not a defect**
 
-`instructor_can_access_game` treats a course whose `instructor_id` is NULL as
-unowned and readable by **any** instructor. This is deliberate and documented:
-the live pilot cohort's course row genuinely has NULL there, and scoping
-strictly would hide those games from everyone. It nonetheless means an
-instructor can read a cohort that is not theirs whenever the course is unowned.
+`instructor_can_access_game` treats a course whose `instructor_id` is NULL as a
+shared pilot cohort visible to any instructor. Raised here as a possible
+limitation; the auditor ruled it is the **adopted authorization rule**, not a
+defect. CRV2-07 pinned the behaviour because the live pilot genuinely relies on
+it, and the V2-032 rework was instructed to preserve the same helper semantics.
 
-Pinned, not repaired, on two routes behind the shared boundary
-(`test_an_unowned_course_is_readable_by_any_instructor_on_two_routes`) so that
-narrowing it later is a deliberate act that fails both assertions together.
+**Operational implication, which is the part that matters at launch:** a
+prize-competition course that is not intended to be shared between instructors
+**must have an instructor owner assigned before launch**. An unowned course is
+shared by design, and no code change alters that.
 
-**Severity, owner and disposition: open for the auditor.** No repair attempted.
+The helper is unchanged and no ownership evidence was rerun for this
+disposition. The two-route assertion in
+`test_an_unowned_course_is_readable_by_any_instructor_on_two_routes` stays as a
+pin on adopted behaviour, so narrowing it later is deliberate rather than
+accidental.
 
-### V2-034 — refused non-owner writes are not recorded anywhere (severity open) — not repaired
+### V2-034 — refused non-owner writes were not recorded (P1) — closed at this revision
 
-Every one of the 37 mutation routes exercised as an unrelated instructor was
-refused with 403 and changed nothing, which is the required outcome. None of
-those refusals was recorded: no operator audit row, no sensitive-read row.
-`refused_writes_not_recorded_anywhere: 37` in
-`ownership-scan-after-repair.json`, recorded per write as `refusal_recorded`.
+**Registered before repair.** Every one of the 37 mutation routes exercised as
+an unrelated instructor was refused with 403 and changed nothing, and none of
+those refusals was recorded: no operator audit row, no read-log row. Original
+evidence: `refused_writes_not_recorded_anywhere: 37` in
+`ownership-scan-after-repair.json` at `d39ce04`.
 
-The boundary refuses before the view runs, so the lifecycle audit that records
-operator refusals is never reached. An attempt by one instructor to act on
-another cohort's competition therefore leaves no trace to investigate.
+**Why it happened.** V2-032's boundary refuses before the view, which is the
+correct place to refuse, and it meant a cross-cohort lifecycle attempt reached
+no auditing code at all. CRV2-02 established that operator refusals are
+auditable; moving authorization earlier silently regressed that for exactly the
+attempts most worth investigating.
 
-**Severity, owner and disposition: open for the auditor.** No repair attempted,
-and no new logging path was added to produce this observation.
+**Repair.** `AuthorizationRefusalEvent`, a narrow append-only model, written at
+the boundary before the 403 is returned. It carries the actor id and username,
+the game attempted, the HTTP method, the resolved route and endpoint, the
+server timestamp, `outcome='rejected'`, an ownership reason, and the same
+`request_id` the caller receives in the response body.
+
+Deliberately **not** an `OperatorAuditEvent`: that model describes a lifecycle
+action with a before and an after, and the attempt never reached one — writing
+it there would imply an action that did not happen. Deliberately **not** a
+`SensitiveReadEvent`: a refused POST is not a read.
+
+**No payload, header or credential is stored.** What the caller was trying to
+send is not needed to investigate that they were refused, and copying it here
+would place another cohort's payload into a table created to protect it.
+
+Reads are not recorded here. `SensitiveReadLogMiddleware` already records a
+denied read with the same actor, route, outcome and request id, and a second
+row would double-count one disclosure attempt.
+
+The write happens in its own transaction, so a record cannot vanish with a
+rollback of the refused request, and a logging failure cannot turn a refusal
+into a 500 — the 403 is returned either way.
+
+The table joins `audit_guards.PROTECTED_TABLES`, so UPDATE, DELETE and TRUNCATE
+are refused by database trigger, and `audit_chain` PROJECTIONS and SEAL_ORDER,
+so the rows are chained and tamper-evident like every other audit table.
+
+**Verification.** `core/tests/test_refusal_audit.py`, 8 tests: recorded exactly
+once; response and record share one request id; no state change and no operator
+event; no payload or credential stored, asserted against the model's complete
+field list; PATCH recorded; a refused read is *not* recorded here but is
+recorded as a denied read; the owner is not audited by the boundary; the record
+is append-only. Post-repair scan: **37 of 37 refusals recorded**, still 0
+disclosing reads, 0 unrefused writes, 0 state mutations.
+
+**Disposition: closed.**
 
 ### V2-035 — instructor alerts readable by any signed-in student (P1) — closed at this revision
 
