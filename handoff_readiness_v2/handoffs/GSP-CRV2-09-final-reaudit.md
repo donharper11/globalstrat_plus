@@ -1,7 +1,9 @@
 # GSP-CRV2-09 — Independent integrated release walkthrough and re-audit
 
-**Status:** Run only after GSP-CRV2-01 through 08 are integrated and deployed to
-an isolated release-candidate environment.  
+**Status:** Run last, only after GSP-CRV2-01 through 08 and GSP-CRV2-10 through
+13 are complete, integrated, and deployed to an isolated release-candidate
+environment. Handoff numbers are identifiers rather than execution order; the
+binding sequence is in `handoffs/README.md`.
 **Owner:** independent competition-readiness auditor
 
 ## Purpose

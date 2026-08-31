@@ -13,8 +13,16 @@ Work in these enforced stages:
 2. Development with focused tests and cheap harness settings only.
 3. Auditor preflight with medium samples.
 4. Clean candidate commit/code freeze.
-5. Release-scale evidence and full regression exactly once from that commit.
+5. Task-local final evidence exactly once from that commit; run a full
+   regression only when the assigned handoff explicitly requires it.
 6. Completion report.
+
+The assigned handoff's verification budget overrides this generic stage list.
+In particular, GSP-CRV2-10 through 13 run focused checks and their named
+walkthroughs only; they do **not** run a full regression suite. GSP-CRV2-09 owns
+the single integrated backend/frontend regression after 10–13 are complete.
+Likewise, do not run another handoff's load, replay, race, provider or failure
+harness unless the assigned handoff explicitly requires it.
 
 Never run two Django suites against the same test database concurrently. Take
 the host test-runner lock or use separately named isolated databases. If a long
