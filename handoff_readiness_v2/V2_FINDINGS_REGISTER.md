@@ -47,7 +47,14 @@ Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-probe-record.json`, `stage1-a1b-reprobe.json`,
 `stage1-rework-probes.json`.
 
-### V2-037 — the price of R&D is set by the client (P0) — open, Stage 2 owns
+**Status after Stage 2.** V2-037 and V2-038 are **closed at runtime revision
+`75503cf`**, proved by `GSP-CRV2-10_STAGE2_REPORT.md` and
+`stage2-authoritative-cost.json`. V2-039, V2-040, V2-041, V2-042, V2-043 and
+V2-044 remain **open**: Stage 2 addressed the price of R&D and the budget rule
+it escaped, and nothing else. V2-039, V2-040 and V2-044 are Stage 3's; V2-041
+is Stage 5's; V2-042 is Stage 6's; V2-043 is the retirement fix.
+
+### V2-037 — the price of R&D is set by the client (P0) — closed at `75503cf`
 
 A platform authored at $15,000,000 (in-house) or $35,000,000 (licensed) is
 obtained for `committed_cost: 0` on both write surfaces, becomes `active`, and
@@ -61,12 +68,65 @@ Confirms A1 and A1b. The feature grant is lagged through `PendingFeatureGain`,
 so it lands one round after the round it was submitted for — which is why the
 first probe read it as unchanged, and why it was re-probed rather than withdrawn.
 
-### V2-038 — platform cost escapes the cash and budget checks (P1) — open
+**Repair, at runtime revision `75503cf`.** One calculator,
+`core/services/rd_costs.py`, with the adopted rule stated once: the cost a team
+is shown is the cost the server computes, and the cost the server computes is
+the cost it charges.
+
+- **Platform price is authored by generation and method** —
+  `development_cost` for `in_house`, `license_cost` for `license`. `method`
+  previously changed neither the price nor the lead time; it now changes the
+  price. Lead time is Stage 3's question.
+- **Feature-upgrade price is the authored sum of `FeatureLevelCost` rows**
+  between the current and target level. `RDContextView._build_cost_schedule`
+  delegates to the same service, so the display path and the charge path read
+  one table through one code path.
+- **On both write surfaces**: an omitted client cost is filled with the
+  authored figure, a matching value is accepted unchanged, and a disagreeing
+  value is refused with the authored figure named and nothing persisted. Never
+  silently corrected — a submitted decision quietly replaced with a different
+  one looks ordinary afterwards, which is what made this finding invisible for
+  as long as it existed. The cost fields became advisory to make server-filling
+  possible; required and advisory cannot both be true.
+- **A persisted disagreement refuses before competitive mutation**, in V2-018's
+  shape, naming model, row, team, stored value and authored value. Measured
+  with a row edited behind the API: `process` returned 400 and financial rows
+  were 0 before and 0 after — a refusal, not a rollback.
+
+**Bounded proof.** `evidence/decision-rules/stage2-authoritative-cost.json`;
+`GSP-CRV2-10_STAGE2_REPORT.md`; `core/tests/test_rd_costs.py` (15 tests) inside
+116 passing directly-affected contract tests. The single-source check asks the
+scenario, the service, the engine precondition, the stored row, the budget
+rule and the display schedule for the same platform and records
+`all_agree: true`, computed from the figures rather than asserted.
+
+**Disposition: closed.**
+
+### V2-038 — platform cost escapes the cash and budget checks (P1) — closed at `75503cf`
 
 `committed_cost: 999,999,999` accepted against $47,980,000 of cash and an
 `rd_budget` of $1,000, and charged in full to `rd_expense`. The lock refusal
 names the unlock round and three missing decision sections, and never the cost
 or the cash. Confirms A2.
+
+**Repair, at runtime revision `75503cf`.** `rd_costs.budget_assessment` is the
+single answer to whether a team can afford what it has committed, and
+**platform development counts against both cash and the R&D budget** through
+it.
+
+It replaced three copies of that rule which disagreed: `views/decisions.py:548`
+and `:888` summed three budget lines, `:1015` summed four by including
+`research_budget`, and none of the three counted platform development at all.
+Three rules that disagree is one rule that does not exist.
+
+**Bounded proof.** `core/tests/test_rd_costs.py` pins that a platform
+development committed against a $1,000 R&D budget fails both the cash and the
+R&D-budget checks and produces two named problems, and that a submission within
+its means passes. The Stage 2 evidence records the same platform figure
+appearing in the budget rule's `platform_development` line as in the service
+and the stored row.
+
+**Disposition: closed.**
 
 ### V2-039 — the generation unlock gate is enforced at lock only (P1) — open
 
