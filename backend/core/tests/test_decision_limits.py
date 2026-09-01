@@ -301,6 +301,18 @@ class DuplicateRdRowApiTests(DecisionApiBase):
             PlatformFeatureCeiling.objects.create(
                 platform_generation=generation, feature=feature,
                 ceiling_value=10, starting_value=0)
+            # CRV2-10 Stage 2: the server prices R&D from FeatureLevelCost, so
+            # a fixture with ceilings and no level prices is a scenario that
+            # cannot quote a price. Author them here rather than relax the
+            # rule that catches an unpriced level.
+            from core.models.scenario import FeatureLevelCost
+            cumulative = 0
+            for level in range(1, 11):
+                cumulative += 1000
+                FeatureLevelCost.objects.create(
+                    feature=feature, platform_generation=generation,
+                    level=level, incremental_cost=1000,
+                    cumulative_cost=cumulative)
 
     def row(self, feature):
         return {'team_platform': self.platform.pk, 'feature': feature.pk,

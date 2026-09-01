@@ -410,6 +410,24 @@ def _run_phase_1(game_id):
             f'retry. {describe_violations(violations)}'
         )
 
+    # V2-037: the authored price of R&D, asked of what is actually stored.
+    # The write surfaces now set the price themselves, but rows reach this
+    # table by other routes too, and the failure this guards is the one Stage 1
+    # measured -- a $15,000,000 platform stored at committed_cost 0, activated,
+    # and charged nothing. Refuse before any competitive mutation and name the
+    # row: do not clamp and do not reinterpret, because a decision quietly
+    # replaced with a different one looks ordinary afterwards.
+    from core.services.rd_costs import (describe_cost_violations,
+                                        persisted_cost_violations)
+    cost_violations = persisted_cost_violations(game, current_round_obj)
+    if cost_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(cost_violations)} stored R&D cost(s) disagree with the '
+            f'price this scenario authors. Correct the row(s) and retry. '
+            f'{describe_cost_violations(cost_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

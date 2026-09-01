@@ -54,6 +54,7 @@ from core.serializers.decisions import (
     DecisionPartnershipSerializer,
     DecisionAcquisitionSerializer,
     DecisionESGSerializer,
+    enforce_authoritative_costs,
     validate_product_names,
     validate_rd_investment_targets,
     DecisionEventResponseSerializer,
@@ -422,6 +423,9 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                 validated_items.append(ser.validated_data)
             if decision_type == 'rd':
                 validate_rd_investment_targets(validated_items)
+                enforce_authoritative_costs(validated_items, 'rd')
+            if decision_type == 'platforms':
+                enforce_authoritative_costs(validated_items, 'platform')
             if decision_type == 'products':
                 # Before the delete below, so a refused payload leaves the
                 # team's existing decisions exactly as they were.
@@ -544,12 +548,15 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             if getattr(budget, field) < 0:
                 errors.append(f'{field} must be >= 0.')
 
-        # Total budget vs available cash (hard limit — can't spend money you don't have)
-        total_budget = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
-        if total_budget > team.cash_on_hand:
-            errors.append(
-                f'Total budget (${total_budget:,.2f}) exceeds available cash (${team.cash_on_hand:,.2f}).'
-            )
+        # Total committed spend vs available cash, including platform
+        # development. One rule, in one place: this was written three times
+        # (here, :888 and :1015), the three disagreed about whether
+        # research_budget counted, and none of them counted platform
+        # development at all (V2-038).
+        from core.services.rd_costs import (budget_assessment,
+                                            describe_budget_problems)
+        errors.extend(describe_budget_problems(
+            budget_assessment(submission, team)))
 
         # R&D investments: total <= rd_budget
         rd_total = sum(
@@ -885,11 +892,12 @@ class DecisionSummaryView(APIView):
         # Budget
         try:
             budget = submission.budget_allocation
-            total_budget = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
+            from core.services.rd_costs import (budget_assessment,
+                                                describe_budget_problems)
+            assessment = budget_assessment(submission, team)
+            total_budget = Decimal(assessment['budget_total'])
             budget_warnings = []
-            budget_errors = []
-            if total_budget > team.cash_on_hand:
-                budget_errors.append(f'Total budget exceeds available cash.')
+            budget_errors = list(describe_budget_problems(assessment))
             for f in ('rd_budget', 'marketing_budget', 'strategy_budget'):
                 if getattr(budget, f) == 0:
                     budget_warnings.append(f'{f} is 0.')
@@ -1011,8 +1019,12 @@ class DecisionSummaryView(APIView):
             fin_errors = []
             # Projected cash check
             try:
-                budget = submission.budget_allocation
-                total_budget = budget.rd_budget + budget.marketing_budget + budget.strategy_budget + budget.research_budget
+                from core.services.rd_costs import budget_assessment
+                # The same committed total as the lock validator and the
+                # summary, so a team is not told it can afford something on one
+                # screen and refused it on another.
+                total_budget = Decimal(
+                    budget_assessment(submission, team)['committed_total'])
                 projected_cash = team.cash_on_hand - total_budget
                 projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
                 projected_cash -= fin.dividend_per_share * team.shares_outstanding
@@ -1134,25 +1146,20 @@ class RDContextView(APIView):
 
     @staticmethod
     def _build_cost_schedule(feature, platform_generation, current_level, ceiling_value):
-        """Cost schedule for levels above current up to ceiling."""
-        current = int(float(current_level))
-        ceiling = int(float(ceiling_value))
-        schedule = []
-        level_costs = FeatureLevelCost.objects.filter(
-            feature=feature,
-            platform_generation=platform_generation,
-            level__gt=current,
-            level__lte=ceiling,
-        ).order_by('level')
-        cumulative = Decimal('0')
-        for lc in level_costs:
-            cumulative += lc.incremental_cost
-            schedule.append({
-                'level': lc.level,
-                'incremental_cost': float(lc.incremental_cost),
-                'cumulative_from_current': float(cumulative),
-            })
-        return schedule
+        """Cost schedule for levels above current up to ceiling.
+
+        Delegates to `services.rd_costs`, which the charge path and the engine
+        precondition also read. This table used to live here and be used only
+        for display, while the engine charged whatever the browser posted --
+        one authored price with two unrelated consumers, which is how a feature
+        reached its ceiling for nothing (V2-037).
+        """
+        from core.services.rd_costs import level_cost_schedule
+        return [{'level': row['level'],
+                 'incremental_cost': float(row['incremental_cost']),
+                 'cumulative_from_current': float(row['cumulative_from_current'])}
+                for row in level_cost_schedule(
+                    feature, platform_generation, current_level, ceiling_value)]
 
     @staticmethod
     def _check_generation_prerequisites(team, target_gen, game, scenario):

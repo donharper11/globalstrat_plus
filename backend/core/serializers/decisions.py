@@ -90,6 +90,64 @@ def validate_product_names(creates, team):
             f'Choose a different name.']})
 
 
+def enforce_authoritative_costs(rows, kind, team=None):
+    """Replace client-supplied R&D prices with the authored ones.
+
+    Two behaviours, and the difference between them is the whole rule:
+
+    * a row that names **no** cost, or names the authored figure, is filled in
+      with the authored figure and accepted;
+    * a row that names a **different** figure is refused, and the refusal says
+      what the authored figure is.
+
+    Never silently corrected. A submitted decision quietly replaced with a
+    different one looks ordinary afterwards, which is precisely what made
+    V2-037 invisible: the browser computed the price, the server stored what it
+    was given, and the engine charged that.
+
+    `kind` is 'platform' or 'rd'. Rows are validated dicts from either write
+    surface, so both enforce the identical rule.
+    """
+    from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
+                                        rd_investment_cost)
+
+    field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
+    price = platform_cost_for if kind == 'platform' else rd_investment_cost
+    errors = []
+    for index, row in enumerate(rows):
+        try:
+            authoritative = price(row)
+        except UnauthoredCost as problem:
+            errors.append(f'row {index + 1}: {problem}')
+            continue
+
+        submitted = row.get(field)
+        if submitted is not None and Decimal(submitted) != authoritative:
+            errors.append(
+                f'row {index + 1}: {field} was submitted as '
+                f'{Decimal(submitted):,.2f}, but this scenario prices it at '
+                f'{authoritative:,.2f}. The server sets the price; correct the '
+                f'submission or leave the field out.')
+            continue
+        row[field] = authoritative
+        if kind == 'rd':
+            # `amount` is the money leg of the same decision. It follows the
+            # authored figure for the same reason.
+            submitted_amount = row.get('amount')
+            if (submitted_amount is not None
+                    and Decimal(submitted_amount) != authoritative):
+                errors.append(
+                    f'row {index + 1}: amount was submitted as '
+                    f'{Decimal(submitted_amount):,.2f}, but this scenario '
+                    f'prices it at {authoritative:,.2f}.')
+                continue
+            row['amount'] = authoritative
+
+    if errors:
+        raise serializers.ValidationError({field: errors})
+    return rows
+
+
 # ---------------------------------------------------------------------------
 # Tier 2 — Detail serializers
 # ---------------------------------------------------------------------------
@@ -148,6 +206,12 @@ class DecisionRDInvestmentListSerializer(serializers.ListSerializer):
 
 
 class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
+    # Both money fields are advisory for the same reason as committed_cost.
+    amount = serializers.DecimalField(
+        max_digits=15, decimal_places=2, required=False)
+    calculated_cost = serializers.DecimalField(
+        max_digits=15, decimal_places=2, required=False)
+
     class Meta:
         model = DecisionRDInvestment
         fields = [
@@ -228,6 +292,13 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
 
 
 class DecisionPlatformDevelopmentSerializer(NonNegativeFieldsMixin, serializers.ModelSerializer):
+    # committed_cost is advisory: the server sets it from the scenario
+    # (`enforce_authoritative_costs`). Leaving it required would refuse a
+    # submission that declines to name a price at all, which is the shape a
+    # client should be free to send once the price is not its business.
+    committed_cost = serializers.DecimalField(
+        max_digits=15, decimal_places=2, required=False)
+
     class Meta:
         model = DecisionPlatformDevelopment
         fields = [
@@ -645,6 +716,16 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
                 validate_rd_investment_targets(investments)
             except serializers.ValidationError as error:
                 raise serializers.ValidationError({'rd_investments': error.detail})
+        # The same enforcement the per-type surface applies, so a price
+        # cannot be authoritative on one endpoint and client-supplied on the
+        # other.
+        investments_for_cost = attrs.get('rd_investments')
+        if investments_for_cost is not None:
+            enforce_authoritative_costs(investments_for_cost, 'rd')
+        developments = attrs.get('platform_developments')
+        if developments is not None:
+            enforce_authoritative_costs(developments, 'platform')
+
         creates = attrs.get('product_creates')
         if creates is not None:
             # A partial update need not carry the team, so fall back to the
