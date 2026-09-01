@@ -402,3 +402,111 @@ def describe_unlock_violations(violations, limit=5):
     if len(violations) > limit:
         lines.append(f'... and {len(violations) - limit} more')
     return ' | '.join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Platform ownership (V2-044)
+# ---------------------------------------------------------------------------
+
+def ownership_problem(team_platform, team):
+    """Why this team may not invest in this platform, or None.
+
+    Stage 1 measured both halves: the write surfaces accepted an R&D
+    investment naming another team's platform, and the lock validator's
+    ownership check — which is correct — was reached only by teams that
+    locked. A team that never locks is defaulted at close, so in the first
+    probe run the foreign row reached the engine and wrote duplicate
+    PendingFeatureGain rows against the other team's platform, leaving the
+    round unprocessable.
+
+    Same shape as V2-039: a gate that binds only the teams who lock does not
+    bind anyone.
+    """
+    if team_platform is None:
+        return 'No such platform.'
+    owner_id = getattr(team_platform, 'team_id', None)
+    if team is None:
+        return None
+    if owner_id != getattr(team, 'id', team):
+        return (f'Platform "{team_platform.name}" belongs to another team. '
+                f'R&D can only be invested in your own platforms.')
+    return None
+
+
+def persisted_ownership_violations(game, round_obj):
+    """Stored R&D investments naming a platform the submitting team does not own."""
+    from core.models.decisions import DecisionRDInvestment
+
+    violations = []
+    rows = (DecisionRDInvestment.objects
+            .filter(submission__round=round_obj, submission__team__game=game)
+            .select_related('team_platform', 'submission__team')
+            .order_by('pk'))
+    for row in rows:
+        problem = ownership_problem(row.team_platform, row.submission.team)
+        if problem:
+            violations.append({
+                'model': 'DecisionRDInvestment', 'row': row.pk,
+                'team': row.submission.team.name,
+                'field': 'team_platform',
+                'platform_owner': getattr(row.team_platform, 'team_id', None),
+                'detail': problem})
+    return violations
+
+
+def describe_ownership_violations(violations, limit=5):
+    lines = [f'{item["model"]} #{item["row"]} ({item["team"]}): {item["detail"]}'
+             for item in violations[:limit]]
+    if len(violations) > limit:
+        lines.append(f'... and {len(violations) - limit} more')
+    return ' | '.join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Paid before ready
+# ---------------------------------------------------------------------------
+
+def can_fund_platform(team, development):
+    """Whether the team can actually pay for this platform this round.
+
+    Asked against the authored price rather than the submitted figure, because
+    the submitted figure is no longer the team's to choose (V2-037). Cash is
+    the test: a platform completes only if its cost was charged, and a team
+    that cannot cover it keeps an unfunded draft rather than a free platform.
+    """
+    try:
+        price = platform_cost_for(development)
+    except UnauthoredCost:
+        return False
+    cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
+    return price <= cash
+
+
+# ---------------------------------------------------------------------------
+# The per-platform feature cap
+# ---------------------------------------------------------------------------
+
+def feature_cap(scenario, default=5):
+    """The maximum number of features one platform may carry.
+
+    Stated in one place. `max_platform_features` is the scenario value; the
+    default matches the constant the engine used.
+    """
+    from core.engine.utils import get_config
+    try:
+        return int(get_config(scenario, 'max_platform_features', default))
+    except (TypeError, ValueError):
+        return default
+
+
+def feature_count_problem(feature_levels, scenario):
+    """Why this platform names too many features, or None."""
+    if not feature_levels:
+        return None
+    chosen = [level for level in feature_levels.values()
+              if level and float(level) > 0]
+    cap = feature_cap(scenario)
+    if len(chosen) > cap:
+        return (f'A platform may carry at most {cap} features; this names '
+                f'{len(chosen)}.')
+    return None

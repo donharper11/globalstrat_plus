@@ -12,6 +12,12 @@ from django.db import models
 
 class TeamPlatform(models.Model):
     STATUS_CHOICES = [
+        # A platform a team started but could not fund. It is not building and
+        # its clock has not started; the round the funding lands is the round
+        # the clock starts. Kept as a state rather than refused outright so a
+        # team that overreaches keeps the decision and can fund it later,
+        # rather than silently getting a platform it never paid for.
+        ('unfunded_draft', 'Unfunded Draft'),
         ('active', 'Active'),
         ('in_development', 'In Development'),
         ('retired', 'Retired'),
@@ -40,6 +46,9 @@ class TeamPlatform(models.Model):
         null=True, blank=True,
     )
     development_started_round = models.IntegerField(null=True, blank=True)
+    #: The round the platform's cost was actually charged. A platform completes
+    #: only if it was paid for; until this is set the clock has not started.
+    funded_round = models.IntegerField(null=True, blank=True)
     development_rounds_remaining = models.IntegerField(null=True, blank=True)
     activated_round = models.IntegerField(null=True, blank=True)
     licensed_dependency_pct = models.DecimalField(

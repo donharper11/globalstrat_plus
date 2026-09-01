@@ -424,7 +424,8 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             if decision_type == 'rd':
                 validate_rd_investment_targets(validated_items)
                 enforce_authoritative_costs(
-                    validated_items, 'rd', round_number=rnd.round_number)
+                    validated_items, 'rd', team=team,
+                    round_number=rnd.round_number)
             if decision_type == 'platforms':
                 enforce_authoritative_costs(
                     validated_items, 'platform',

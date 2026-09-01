@@ -113,15 +113,52 @@ def _process_platform_development(team, submission, current_round):
         except Exception:
             pass
 
+        # Paid before ready. A platform completes only if its cost was
+        # actually charged; a team that starts one it cannot fund keeps it as
+        # an unfunded draft and may fund it in a later round. The round the
+        # funding lands is the round the clock starts, so an unfunded draft
+        # records no started round and no remaining rounds.
+        from core.services.rd_costs import can_fund_platform
+        affordable = can_fund_platform(team, dev_decision)
         TeamPlatform.objects.create(
             team=team,
             platform_generation=gen,
             name=dev_decision.platform_name or gen.name,
-            status='in_development',
+            status='in_development' if affordable else 'unfunded_draft',
             development_method=dev_decision.method,
-            development_started_round=current_round,
-            development_rounds_remaining=dev_rounds,
+            development_started_round=current_round if affordable else None,
+            funded_round=current_round if affordable else None,
+            development_rounds_remaining=dev_rounds if affordable else None,
         )
+        continue
+
+    # An unfunded draft the team can now afford starts building. Its clock
+    # starts in the round the money lands, not the round it was first asked
+    # for.
+    from core.engine.utils import get_config
+    from core.services.rd_costs import can_fund_platform
+    for draft in TeamPlatform.objects.filter(
+            team=team, status='unfunded_draft').order_by('name'):
+        decision = (DecisionPlatformDevelopment.objects
+                    .filter(submission__team=team,
+                            platform_generation=draft.platform_generation)
+                    .order_by('-submission__round__round_number').first())
+        if decision is None or not can_fund_platform(team, decision):
+            continue
+        gen = draft.platform_generation
+        try:
+            scenario_max = int(get_config(
+                team.game.scenario, 'max_platform_development_rounds', 2))
+        except (TypeError, ValueError):
+            scenario_max = 2
+        draft.status = 'in_development'
+        draft.development_started_round = current_round
+        draft.funded_round = current_round
+        draft.development_rounds_remaining = max(
+            MIN_DEVELOPMENT_ROUNDS, min(scenario_max, gen.development_rounds or 0))
+        draft.save(update_fields=['status', 'development_started_round',
+                                  'funded_round',
+                                  'development_rounds_remaining'])
 
     # Advance in-development platforms started in an *earlier* round.
     #
@@ -149,8 +186,21 @@ def _process_platform_development(team, submission, current_round):
 
                 if dev_decision and dev_decision.feature_levels:
                     from core.models.scenario import FeatureDefinition
-                    for feat_id_str, level in dev_decision.feature_levels.items():
-                        if level and float(level) > 0:
+                    # The cap applies here too. It was applied only on the
+                    # fallback path below, so a decision naming more features
+                    # than the cap allows had every one of them initialised.
+                    from core.engine.utils import get_config as _get_config
+                    try:
+                        cap = int(_get_config(team.game.scenario,
+                                              'max_platform_features', 5))
+                    except (TypeError, ValueError):
+                        cap = 5
+                    chosen = [
+                        (fid, lvl) for fid, lvl
+                        in sorted(dev_decision.feature_levels.items())
+                        if lvl and float(lvl) > 0][:cap]
+                    for feat_id_str, level in chosen:
+                        if True:
                             try:
                                 feat = FeatureDefinition.objects.get(pk=int(feat_id_str))
                                 TeamPlatformFeatureLevel.objects.update_or_create(

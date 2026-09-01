@@ -442,6 +442,22 @@ def _run_phase_1(game_id):
             f'retry. {describe_unlock_violations(unlock_violations)}'
         )
 
+    # V2-044: a stored R&D investment naming another team's platform. The
+    # write surfaces refuse it now; this is the boundary for rows that arrive
+    # any other way, and for the default-close path that carried one into the
+    # engine during Stage 1.
+    from core.services.rd_costs import (describe_ownership_violations,
+                                        persisted_ownership_violations)
+    ownership_violations = persisted_ownership_violations(game,
+                                                          current_round_obj)
+    if ownership_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(ownership_violations)} stored R&D investment(s) name a '
+            f'platform the submitting team does not own. Correct the row(s) '
+            f'and retry. {describe_ownership_violations(ownership_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

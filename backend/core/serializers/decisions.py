@@ -111,18 +111,32 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
     from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
                                         rd_investment_cost)
 
-    from core.services.rd_costs import unlock_problem
+    from core.services.rd_costs import (feature_count_problem,
+                                        ownership_problem, unlock_problem)
 
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
     price = platform_cost_for if kind == 'platform' else rd_investment_cost
     errors = []
     for index, row in enumerate(rows):
+        if kind == 'rd' and team is not None:
+            # V2-044: the platform named must belong to the submitting team.
+            problem = ownership_problem(row.get('team_platform'), team)
+            if problem:
+                errors.append(f'row {index + 1}: {problem}')
+                continue
         if kind == 'platform':
             # V2-039: the unlock gate belongs on the write, not only on the
             # lock. A team that never locks was defaulted at close and the
             # engine built the platform anyway.
             problem = unlock_problem(row.get('platform_generation'),
                                      round_number)
+            if problem:
+                errors.append(f'row {index + 1}: {problem}')
+                continue
+            generation = row.get('platform_generation')
+            problem = feature_count_problem(
+                row.get('feature_levels'),
+                getattr(generation, 'scenario', None))
             if problem:
                 errors.append(f'row {index + 1}: {problem}')
                 continue
@@ -732,7 +746,10 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
         # other.
         investments_for_cost = attrs.get('rd_investments')
         if investments_for_cost is not None:
-            enforce_authoritative_costs(investments_for_cost, 'rd')
+            submitting_team = attrs.get('team') or getattr(
+                self.instance, 'team', None)
+            enforce_authoritative_costs(
+                investments_for_cost, 'rd', team=submitting_team)
         developments = attrs.get('platform_developments')
         if developments is not None:
             round_obj = attrs.get('round') or getattr(self.instance, 'round', None)

@@ -212,3 +212,113 @@ class UnlockGateTests(TestCase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(DecisionPlatformDevelopment.objects.get().committed_cost,
                          D('15000000'))
+
+
+class FundingLifecycleTests(PlatformTimingTests):
+    """A platform completes only if its cost was actually charged.
+
+    Before this a team that could not pay still got the platform: the engine
+    created it in development regardless, and Stage 2's charge path took the
+    committed cost whether or not the cash existed. A team that overreaches now
+    keeps an unfunded draft it may fund later, rather than a free platform.
+    """
+
+    def poor_team(self, cash):
+        from core.models import Team
+        Team.objects.filter(pk=self.team.pk).update(cash_on_hand=cash)
+        self.team.refresh_from_db()
+
+    def test_a_team_that_cannot_pay_keeps_an_unfunded_draft(self):
+        gen = self.generation(2, rounds=2)
+        self.poor_team(D('100'))
+        self.submit_and_process(gen, 1)
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'unfunded_draft')
+        self.assertIsNone(platform.development_started_round,
+                          'an unfunded draft started its clock')
+        self.assertIsNone(platform.funded_round)
+
+    def test_an_unfunded_draft_never_becomes_active_on_its_own(self):
+        gen = self.generation(2, rounds=2)
+        self.poor_team(D('100'))
+        self.submit_and_process(gen, 1)
+        for round_number in (2, 3, 4):
+            self.process(round_number)
+            self.assertEqual(self.platform(gen).status, 'unfunded_draft',
+                             f'draft advanced in round {round_number}')
+
+    def test_the_clock_starts_in_the_round_the_funding_lands(self):
+        gen = self.generation(2, rounds=2)
+        self.poor_team(D('100'))
+        self.submit_and_process(gen, 1)
+        self.assertEqual(self.platform(gen).status, 'unfunded_draft')
+
+        # The money arrives; the draft starts building in that round.
+        self.poor_team(D('50000000'))
+        self.process(2)
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'in_development')
+        self.assertEqual(platform.development_started_round, 2)
+        self.assertEqual(platform.funded_round, 2)
+
+        # And it still waits the authored two rounds from there.
+        self.process(3)
+        self.assertEqual(self.platform(gen).status, 'in_development')
+        self.process(4)
+        self.assertEqual(self.platform(gen).status, 'active')
+        self.assertEqual(self.platform(gen).activated_round, 4)
+
+    def test_a_funded_platform_records_the_round_it_was_paid_for(self):
+        gen = self.generation(2, rounds=2)
+        self.submit_and_process(gen, 1)
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'in_development')
+        self.assertEqual(platform.funded_round, 1)
+
+
+class FeatureCapTests(PlatformTimingTests):
+    """A platform carries at most `max_platform_features` features.
+
+    The cap was applied only on the fallback path at activation, so a decision
+    naming more features than the cap allows had every one of them initialised.
+    """
+
+    def features(self, count):
+        from core.models.scenario import FeatureDefinition
+        made = []
+        for index in range(count):
+            made.append(FeatureDefinition.objects.create(
+                scenario=self.scenario, code=f'F{index}', name=f'F{index}',
+                description='d', layer='platform', category='core',
+                cost_curve_type='linear', cost_base=D('1000')))
+        return made
+
+    def test_activation_initialises_no_more_than_the_cap(self):
+        from core.models.team_state import TeamPlatformFeatureLevel
+        gen = self.generation(2, rounds=1)
+        chosen = {str(f.id): 3 for f in self.features(9)}
+        rnd, _ = Round.objects.get_or_create(
+            game=self.game, round_number=1, defaults={'status': 'open'})
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=self.team, round=rnd, defaults={'status': 'locked'})
+        DecisionPlatformDevelopment.objects.create(
+            submission=submission, platform_generation=gen, method='in_house',
+            committed_cost=gen.development_cost, platform_name='Wide',
+            feature_levels=chosen)
+        self.process(1)
+        self.process(2)
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'active')
+        self.assertLessEqual(
+            TeamPlatformFeatureLevel.objects.filter(
+                team_platform=platform).count(), 5,
+            'activation initialised more features than the cap allows')
+
+    def test_the_cap_is_stated_in_one_place(self):
+        from core.services import rd_costs
+        self.assertEqual(rd_costs.feature_cap(self.scenario), 5)
+        problem = rd_costs.feature_count_problem(
+            {str(i): 3 for i in range(9)}, self.scenario)
+        self.assertIn('at most 5', problem)
+        self.assertIsNone(rd_costs.feature_count_problem(
+            {str(i): 3 for i in range(5)}, self.scenario))
