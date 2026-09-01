@@ -1,0 +1,197 @@
+{
+  "database": "gsp_crv210_stage2",
+  "demonstrations": {
+    "matching_cost_is_accepted": {
+      "authored": "15000000.00",
+      "stored": [
+        {
+          "committed_cost": "15000000.00",
+          "platform_name": "Matching per-type",
+          "submission__team__name": "Apex Devices"
+        },
+        {
+          "committed_cost": "15000000.00",
+          "platform_name": "Matching whole",
+          "submission__team__name": "Nova Circuit"
+        }
+      ],
+      "submission": {
+        "per_type": {
+          "body": "{'id': 4, 'team': 1, 'round': 3, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 3, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '150000",
+          "payload": [
+            {
+              "committed_cost": "15000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Matching per-type"
+            }
+          ],
+          "status": 200,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/2/platforms/",
+        "whole_submission": {
+          "body": "{'id': 5, 'team': 2, 'round': 3, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 4, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '150000",
+          "payload": [
+            {
+              "committed_cost": "15000000.00",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Matching whole"
+            }
+          ],
+          "status": 200,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/2/"
+      }
+    },
+    "mismatched_cost_is_refused": {
+      "authored": "15000000.00",
+      "nothing_stored_by_the_refusal": [],
+      "refusal_names_the_authored_figure": true,
+      "submission": {
+        "per_type": {
+          "body": "{'committed_cost': ['row 1: committed_cost was submitted as 0.00, but this scenario prices it at 15,000,000.00. The server sets the price; correct the submission or leave the field out.']}",
+          "payload": [
+            {
+              "committed_cost": "0",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Free per-type"
+            }
+          ],
+          "status": 400,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/2/platforms/",
+        "whole_submission": {
+          "body": "{'committed_cost': ['row 1: committed_cost was submitted as 0.00, but this scenario prices it at 15,000,000.00. The server sets the price; correct the submission or leave the field out.']}",
+          "payload": [
+            {
+              "committed_cost": "0",
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Free whole"
+            }
+          ],
+          "status": 400,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/2/"
+      }
+    },
+    "omitted_cost_is_filled": {
+      "authored": "15000000.00",
+      "stored": [
+        {
+          "committed_cost": "15000000.00",
+          "platform_name": "Omitted per-type",
+          "submission__team__name": "Apex Devices"
+        },
+        {
+          "committed_cost": "15000000.00",
+          "platform_name": "Omitted whole",
+          "submission__team__name": "Nova Circuit"
+        }
+      ],
+      "submission": {
+        "per_type": {
+          "body": "{'id': 4, 'team': 1, 'round': 3, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 1, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '150000",
+          "payload": [
+            {
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Omitted per-type"
+            }
+          ],
+          "status": 200,
+          "team": 1
+        },
+        "per_type_endpoint": "PATCH .../decisions/round/2/platforms/",
+        "whole_submission": {
+          "body": "{'id': 5, 'team': 2, 'round': 3, 'status': 'draft', 'locked_at': None, 'locked_by': None, 'team_notes': None, 'budget_allocation': None, 'financing': None, 'esg': None, 'rd_investments': [], 'platform_developments': [{'id': 2, 'platform_generation': 5, 'method': 'in_house', 'committed_cost': '150000",
+          "payload": [
+            {
+              "feature_levels": {},
+              "method": "in_house",
+              "platform_generation": 5,
+              "platform_name": "Omitted whole"
+            }
+          ],
+          "status": 201,
+          "team": 2
+        },
+        "whole_submission_endpoint": "POST .../decisions/round/2/"
+      }
+    },
+    "one_service_five_callers": {
+      "all_agree": true,
+      "authored_development_cost": "15000000.00",
+      "budget_counts_platform_development": "15000000.00",
+      "display_first_row": {
+        "cumulative_from_current": 150000.0,
+        "incremental_cost": 150000.0,
+        "level": 1
+      },
+      "display_schedule_matches_service": true,
+      "engine_precondition_compares_against": "15000000.00",
+      "generation": "Gen 2 \u2014 Smart Connected Platform",
+      "service_says": "15000000.00",
+      "stored_committed_cost": "15000000.00"
+    },
+    "persisted_tampering_refuses_the_round": {
+      "financials_after": {
+        "financial_rows_for_round": 0,
+        "round_status": "closed"
+      },
+      "financials_before": {
+        "financial_rows_for_round": 0,
+        "round_status": "open"
+      },
+      "no_competitive_mutation": true,
+      "round_control": {
+        "advance": {
+          "detail": "{'error': 'Round 2 is \"closed\", not \"processed\".', 'code': 'round_not_processed', 'guidance': 'Run post-round processing first, or resend with force=true and a written reason to advance without result",
+          "status": 400
+        },
+        "close": {
+          "detail": "ok",
+          "status": 200
+        },
+        "process": {
+          "detail": "{\"error\":\"Round 2 cannot be scored: 1 stored R&D cost(s) disagree with the price this scenario authors. Correct the row(s) and retry. DecisionPlatformDevelopment #3 (Apex Devices): committed_cost stor",
+          "status": 400
+        }
+      },
+      "tamper": {
+        "described": "DecisionPlatformDevelopment #3 (Apex Devices): committed_cost stored 0.00, authored 15000000.00 \u2014 Gen 2 \u2014 Smart Connected Platform by in_house is priced at 15,000,000.00",
+        "now": "0",
+        "row": 3,
+        "violations": [
+          {
+            "authored": "15000000.00",
+            "detail": "Gen 2 \u2014 Smart Connected Platform by in_house is priced at 15,000,000.00",
+            "field": "committed_cost",
+            "model": "DecisionPlatformDevelopment",
+            "row": 3,
+            "stored": "0.00",
+            "team": "Apex Devices"
+          }
+        ],
+        "was": "15000000.00"
+      }
+    }
+  },
+  "finished_at": "2026-09-01T06:40:10+0000",
+  "freeze_revision": "75503cf29bf32ad10fee32d712cfe38c977b997f",
+  "handoff": "GSP-CRV2-10 Stage 2",
+  "port": 58989,
+  "stack_pid": 670927,
+  "started_at": "2026-09-01T06:39:45+0000"
+}
