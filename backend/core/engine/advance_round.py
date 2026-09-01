@@ -428,6 +428,20 @@ def _run_phase_1(game_id):
             f'{describe_cost_violations(cost_violations)}'
         )
 
+    # V2-039: a stored development for a generation this round has not
+    # unlocked. Same reason the cost guard runs here: the write surfaces now
+    # refuse it, and rows arrive by other routes.
+    from core.services.rd_costs import (describe_unlock_violations,
+                                        persisted_unlock_violations)
+    unlock_violations = persisted_unlock_violations(game, current_round_obj)
+    if unlock_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(unlock_violations)} stored platform development(s) name a '
+            f'generation this round has not unlocked. Correct the row(s) and '
+            f'retry. {describe_unlock_violations(unlock_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

@@ -423,9 +423,12 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                 validated_items.append(ser.validated_data)
             if decision_type == 'rd':
                 validate_rd_investment_targets(validated_items)
-                enforce_authoritative_costs(validated_items, 'rd')
+                enforce_authoritative_costs(
+                    validated_items, 'rd', round_number=rnd.round_number)
             if decision_type == 'platforms':
-                enforce_authoritative_costs(validated_items, 'platform')
+                enforce_authoritative_costs(
+                    validated_items, 'platform',
+                    round_number=rnd.round_number)
             if decision_type == 'products':
                 # Before the delete below, so a refused payload leaves the
                 # team's existing decisions exactly as they were.

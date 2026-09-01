@@ -351,3 +351,54 @@ def describe_budget_problems(assessment):
             f'budget of ${Decimal(assessment["rd_budget"]):,.2f}. Platform '
             f'development counts against the R&D budget.')
     return problems
+
+
+# ---------------------------------------------------------------------------
+# The unlock gate (V2-039)
+# ---------------------------------------------------------------------------
+
+def unlock_problem(generation, round_number):
+    """Why this generation may not be developed in this round, or None.
+
+    The unlock check lived only in the lock validator. Stage 1 measured the
+    consequence: a Gen 3 platform unlocking at round 5 was submitted in round
+    3, the team never locked, close defaulted the submission, and the engine
+    built it anyway — active two rounds before it existed as an option.
+
+    A gate that binds only the teams who lock does not bind anyone.
+    """
+    if generation is None:
+        return 'No such platform generation.'
+    unlock = getattr(generation, 'unlock_round', None)
+    if unlock is not None and round_number is not None and round_number < unlock:
+        return (f'{generation.name} unlocks in round {unlock}; this is round '
+                f'{round_number}.')
+    return None
+
+
+def persisted_unlock_violations(game, round_obj):
+    """Stored platform developments for a generation not yet unlocked."""
+    from core.models.decisions import DecisionPlatformDevelopment
+
+    violations = []
+    rows = (DecisionPlatformDevelopment.objects
+            .filter(submission__round=round_obj, submission__team__game=game)
+            .select_related('platform_generation', 'submission__team')
+            .order_by('pk'))
+    for row in rows:
+        problem = unlock_problem(row.platform_generation,
+                                 getattr(round_obj, 'round_number', None))
+        if problem:
+            violations.append({
+                'model': 'DecisionPlatformDevelopment', 'row': row.pk,
+                'team': row.submission.team.name,
+                'field': 'platform_generation', 'detail': problem})
+    return violations
+
+
+def describe_unlock_violations(violations, limit=5):
+    lines = [f'{item["model"]} #{item["row"]} ({item["team"]}): {item["detail"]}'
+             for item in violations[:limit]]
+    if len(violations) > limit:
+        lines.append(f'... and {len(violations) - limit} more')
+    return ' | '.join(lines)

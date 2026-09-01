@@ -56,6 +56,12 @@ def process_rd(context):
         )
 
 
+#: A platform is never ready in the round it is created. A generation authored
+#: at 0 still waits this long; the scenario's `max_platform_development_rounds`
+#: bounds the other end.
+MIN_DEVELOPMENT_ROUNDS = 1
+
+
 def _process_platform_development(team, submission, current_round):
     """
     Process DecisionPlatformDevelopment decisions and advance
@@ -74,8 +80,21 @@ def _process_platform_development(team, submission, current_round):
         if existing:
             continue  # Already have this platform
 
-        # Create new platform in development
-        dev_rounds = gen.development_rounds
+        # Create new platform in development.
+        #
+        # The authored figure is the number of rounds actually waited, bounded
+        # by the scenario. V2-040 measured what it meant before: a generation
+        # authored at 0 was active in the round it was created, and one
+        # authored at 2 was ready after 1, because the decrement loop below ran
+        # against platforms this same call had just created.
+        from core.engine.utils import get_config
+        try:
+            scenario_max = int(get_config(
+                team.game.scenario, 'max_platform_development_rounds', 2))
+        except (TypeError, ValueError):
+            scenario_max = 2
+        dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
+                         min(scenario_max, gen.development_rounds or 0))
 
         # CC-32B: Apply org structure decision speed modifier
         try:
@@ -87,7 +106,10 @@ def _process_platform_development(team, submission, current_round):
             if org and org.current_structure and org.transition_rounds_remaining <= 0:
                 speed = float(org.current_structure.decision_speed_modifier)
                 if speed > 0 and speed != 1.0 and dev_rounds > 0:
-                    dev_rounds = max(1, math.floor(dev_rounds / speed))
+                    # Never below the minimum: an organisation cannot make a
+                    # platform ready in the round it was started.
+                    dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
+                                     math.floor(dev_rounds / speed))
         except Exception:
             pass
 
@@ -101,8 +123,17 @@ def _process_platform_development(team, submission, current_round):
             development_rounds_remaining=dev_rounds,
         )
 
-    # Advance existing in-development platforms
-    in_dev = (TeamPlatform.objects.filter(team=team, status='in_development')).order_by('name')
+    # Advance in-development platforms started in an *earlier* round.
+    #
+    # The filter on development_started_round is the V2-040 repair. Without it
+    # this loop decremented platforms created a few lines above, in the same
+    # call for the same round, so the authored development_rounds was always
+    # one more than the number of rounds a team actually waited -- and an
+    # authored 0 went straight to -1 and became active immediately.
+    in_dev = (TeamPlatform.objects
+              .filter(team=team, status='in_development',
+                      development_started_round__lt=current_round)
+              .order_by('name'))
     for platform in in_dev:
         if platform.development_rounds_remaining is not None:
             platform.development_rounds_remaining -= 1

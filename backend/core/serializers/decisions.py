@@ -90,7 +90,7 @@ def validate_product_names(creates, team):
             f'Choose a different name.']})
 
 
-def enforce_authoritative_costs(rows, kind, team=None):
+def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
     """Replace client-supplied R&D prices with the authored ones.
 
     Two behaviours, and the difference between them is the whole rule:
@@ -111,10 +111,21 @@ def enforce_authoritative_costs(rows, kind, team=None):
     from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
                                         rd_investment_cost)
 
+    from core.services.rd_costs import unlock_problem
+
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
     price = platform_cost_for if kind == 'platform' else rd_investment_cost
     errors = []
     for index, row in enumerate(rows):
+        if kind == 'platform':
+            # V2-039: the unlock gate belongs on the write, not only on the
+            # lock. A team that never locks was defaulted at close and the
+            # engine built the platform anyway.
+            problem = unlock_problem(row.get('platform_generation'),
+                                     round_number)
+            if problem:
+                errors.append(f'row {index + 1}: {problem}')
+                continue
         try:
             authoritative = price(row)
         except UnauthoredCost as problem:
@@ -724,7 +735,10 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
             enforce_authoritative_costs(investments_for_cost, 'rd')
         developments = attrs.get('platform_developments')
         if developments is not None:
-            enforce_authoritative_costs(developments, 'platform')
+            round_obj = attrs.get('round') or getattr(self.instance, 'round', None)
+            enforce_authoritative_costs(
+                developments, 'platform',
+                round_number=getattr(round_obj, 'round_number', None))
 
         creates = attrs.get('product_creates')
         if creates is not None:
