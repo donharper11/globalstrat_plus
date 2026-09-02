@@ -186,21 +186,17 @@ def _process_platform_development(team, submission, current_round):
 
                 if dev_decision and dev_decision.feature_levels:
                     from core.models.scenario import FeatureDefinition
-                    # The cap applies here too. It was applied only on the
-                    # fallback path below, so a decision naming more features
-                    # than the cap allows had every one of them initialised.
-                    from core.engine.utils import get_config as _get_config
-                    try:
-                        cap = int(_get_config(team.game.scenario,
-                                              'max_platform_features', 5))
-                    except (TypeError, ValueError):
-                        cap = 5
-                    chosen = [
-                        (fid, lvl) for fid, lvl
-                        in sorted(dev_decision.feature_levels.items())
-                        if lvl and float(lvl) > 0][:cap]
-                    for feat_id_str, level in chosen:
-                        if True:
+                    # Every named feature is initialised. The cap is enforced
+                    # on the write surfaces and refused at the engine
+                    # precondition; it is deliberately NOT applied by slicing
+                    # here. Truncating an over-cap decision activated an
+                    # arbitrary subset while the stored row still named more,
+                    # so the evidence disagreed with the platform built from
+                    # it -- a decision silently replaced with a different one,
+                    # which is the shape V2-037 taught this handoff to refuse.
+                    for feat_id_str, level in sorted(
+                            dev_decision.feature_levels.items()):
+                        if level and float(level) > 0:
                             try:
                                 feat = FeatureDefinition.objects.get(pk=int(feat_id_str))
                                 TeamPlatformFeatureLevel.objects.update_or_create(

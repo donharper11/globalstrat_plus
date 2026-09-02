@@ -510,3 +510,43 @@ def feature_count_problem(feature_levels, scenario):
         return (f'A platform may carry at most {cap} features; this names '
                 f'{len(chosen)}.')
     return None
+
+
+def persisted_feature_cap_violations(game, round_obj):
+    """Stored platform developments naming more features than the cap allows.
+
+    Refused rather than truncated. Activation used to slice the decision to
+    the cap, so an over-cap row produced a platform carrying an arbitrary
+    subset while the stored decision still named the full set: the evidence
+    and the platform built from it disagreed, silently.
+    """
+    from core.models.decisions import DecisionPlatformDevelopment
+
+    violations = []
+    rows = (DecisionPlatformDevelopment.objects
+            .filter(submission__round=round_obj, submission__team__game=game)
+            .select_related('platform_generation__scenario',
+                            'submission__team')
+            .order_by('pk'))
+    for row in rows:
+        levels = row.feature_levels or {}
+        named = [level for level in levels.values()
+                 if level and float(level) > 0]
+        cap = feature_cap(getattr(row.platform_generation, 'scenario', None))
+        if len(named) > cap:
+            violations.append({
+                'model': 'DecisionPlatformDevelopment', 'row': row.pk,
+                'team': row.submission.team.name,
+                'field': 'feature_levels',
+                'submitted_count': len(named), 'cap': cap,
+                'detail': (f'names {len(named)} features; a platform may carry '
+                           f'at most {cap}')})
+    return violations
+
+
+def describe_feature_cap_violations(violations, limit=5):
+    lines = [f'{item["model"]} #{item["row"]} ({item["team"]}): '
+             f'{item["detail"]}' for item in violations[:limit]]
+    if len(violations) > limit:
+        lines.append(f'... and {len(violations) - limit} more')
+    return ' | '.join(lines)

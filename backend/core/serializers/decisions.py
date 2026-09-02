@@ -111,8 +111,7 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
     from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
                                         rd_investment_cost)
 
-    from core.services.rd_costs import (feature_count_problem,
-                                        ownership_problem, unlock_problem)
+    from core.services.rd_costs import ownership_problem, unlock_problem
 
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
     price = platform_cost_for if kind == 'platform' else rd_investment_cost
@@ -130,13 +129,6 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
             # engine built the platform anyway.
             problem = unlock_problem(row.get('platform_generation'),
                                      round_number)
-            if problem:
-                errors.append(f'row {index + 1}: {problem}')
-                continue
-            generation = row.get('platform_generation')
-            problem = feature_count_problem(
-                row.get('feature_levels'),
-                getattr(generation, 'scenario', None))
             if problem:
                 errors.append(f'row {index + 1}: {problem}')
                 continue
@@ -279,12 +271,13 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
                 active_count = TeamPlatformFeatureLevel.objects.filter(
                     team_platform=team_platform, current_level__gt=0,
                 ).count()
-                try:
-                    max_features = int(ScenarioConfig.objects.get(
-                        config_key='max_platform_features',
-                    ).config_value)
-                except ScenarioConfig.DoesNotExist:
-                    max_features = 5
+                # Scoped to this platform's scenario, and stated once in
+                # rd_costs.feature_cap. Read unscoped, this raised
+                # MultipleObjectsReturned as soon as a second scenario
+                # authored the key.
+                from core.services.rd_costs import feature_cap
+                max_features = feature_cap(
+                    getattr(team_platform.platform_generation, 'scenario', None))
                 if active_count >= max_features:
                     raise serializers.ValidationError(
                         f"Maximum {max_features} features can be selected per platform. "
@@ -337,13 +330,18 @@ class DecisionPlatformDevelopmentSerializer(NonNegativeFieldsMixin, serializers.
             return value
         # Count features with non-zero levels
         selected = sum(1 for v in value.values() if v and float(v) > 0)
-        try:
-            cfg = ScenarioConfig.objects.filter(
-                config_key='max_platform_features',
-            ).first()
-            max_features = int(cfg.config_value) if cfg else 5
-        except (ScenarioConfig.DoesNotExist, ValueError):
-            max_features = 5
+        # Same single statement of the cap. Read unscoped, this took whichever
+        # scenario's row came back first.
+        from core.services.rd_costs import feature_cap
+        generation = self.initial_data.get('platform_generation') if isinstance(
+            getattr(self, 'initial_data', None), dict) else None
+        scenario = None
+        if generation is not None:
+            from core.models.scenario import PlatformGenerationDefinition
+            row = PlatformGenerationDefinition.objects.filter(
+                pk=generation).select_related('scenario').first()
+            scenario = getattr(row, 'scenario', None)
+        max_features = feature_cap(scenario)
         if selected > max_features:
             raise serializers.ValidationError(
                 f"Maximum {max_features} features can be selected per platform. "

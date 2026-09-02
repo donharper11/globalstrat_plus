@@ -98,11 +98,28 @@ def decision_outlays(scenario, team, submission, current_round,
 
     for investment in submission.rd_investments.all():
         lines['rd'] += investment.amount
-    for development in submission.platform_developments.all():
+    # Platform development is charged from the platform's funding round, not
+    # from the presence of a decision row in this round's submission. The
+    # engine moved to that basis so payment, accounting and the development
+    # clock are one exactly-once event; this rule has to read the same basis or
+    # the V2-024 invariant -- that the funding rule and the engine charge the
+    # same outlays -- fails, which is how this divergence was caught.
+    from core.models.team_state import TeamPlatform
+    from core.services.rd_costs import (UnauthoredCost,
+                                        platform_development_cost)
+    for platform in (TeamPlatform.objects
+                     .filter(team=team, funded_round=current_round)
+                     .exclude(status='unfunded_draft')
+                     .select_related('platform_generation')):
+        try:
+            price = platform_development_cost(platform.platform_generation,
+                                              platform.development_method)
+        except UnauthoredCost:
+            continue
         if capitalize_platform:
-            lines['platform_capex'] += development.committed_cost
+            lines['platform_capex'] += price
         else:
-            lines['rd'] += development.committed_cost
+            lines['rd'] += price
 
     rep_cost = _sales_rep_cost(scenario)
     for marketing in submission.marketing_decisions.all():

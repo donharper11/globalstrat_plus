@@ -458,6 +458,20 @@ def _run_phase_1(game_id):
             f'and retry. {describe_ownership_violations(ownership_violations)}'
         )
 
+    # An over-cap persisted feature set. Refused, not truncated: activation
+    # used to slice it, producing a platform that disagreed with the decision
+    # stored beside it.
+    from core.services.rd_costs import (describe_feature_cap_violations,
+                                        persisted_feature_cap_violations)
+    cap_violations = persisted_feature_cap_violations(game, current_round_obj)
+    if cap_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(cap_violations)} stored platform development(s) name more '
+            f'features than a platform may carry. Correct the row(s) and '
+            f'retry. {describe_feature_cap_violations(cap_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

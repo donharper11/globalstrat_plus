@@ -410,30 +410,55 @@ def calculate_operating_expenses(context):
             for inv in submission.rd_investments.all().order_by(
                     'team_platform__name', 'feature__code', 'method'):
                 rd_expense += inv.amount
-            for dev in submission.platform_developments.all().order_by(
-                    'platform_generation__generation_order', 'platform_name'):
+            # Platform development is charged from the platform's funding
+            # round, not from the presence of a decision row in this round's
+            # submission.
+            #
+            # Charging the submission row made payment and the clock two
+            # unrelated events: an unfunded_draft was still charged in the
+            # round it was first asked for, and when the money later arrived
+            # the draft started building with nothing booked in that round,
+            # because the decision belonged to an earlier submission. So
+            # `funded_round` recorded a state transition rather than evidence
+            # that the authored price was charged, exactly once, when the clock
+            # started.
+            #
+            # Driving the charge from `TeamPlatform.funded_round == this round`
+            # makes payment, accounting and clock start one event: a draft
+            # books nothing, the cost lands once in the round funding arrives,
+            # and later rounds neither charge it again nor restart the clock.
+            from core.models.team_state import TeamPlatform
+            from core.services.rd_costs import (UnauthoredCost,
+                                                platform_development_cost)
+            funded_now = (TeamPlatform.objects
+                          .filter(team=team, funded_round=current_round)
+                          .exclude(status='unfunded_draft')
+                          .select_related('platform_generation')
+                          .order_by('platform_generation__generation_order',
+                                    'name'))
+            for platform in funded_now:
+                try:
+                    price = platform_development_cost(
+                        platform.platform_generation,
+                        platform.development_method)
+                except UnauthoredCost:
+                    # The engine precondition refuses an unpriced row before
+                    # this point; if one reaches here, charge nothing rather
+                    # than guess.
+                    continue
                 if not capitalize_platform:
-                    rd_expense += dev.committed_cost
+                    rd_expense += price
                 else:
                     # Carry the cost as an asset and amortize it below. Before
-                    # this, committed_cost had exactly one consumer -- the
-                    # expense line above -- so turning the flag on made the
-                    # cost disappear from the P&L, the balance sheet and cash
-                    # altogether, handing the team a free platform.
-                    from core.models.team_state import TeamPlatform
-                    platform = TeamPlatform.objects.filter(
-                        team=team, platform_generation=dev.platform_generation,
-                    ).order_by('-id').first()
-                    if platform is not None:
-                        platform.capitalized_cost = (
-                            platform.capitalized_cost or D('0')
-                        ) + dev.committed_cost
-                        platform.save(update_fields=['capitalized_cost'])
-                        # The cash still leaves the business; it is an
-                        # investing outflow rather than an operating expense.
-                        platform_capex += dev.committed_cost
-                    else:
-                        rd_expense += dev.committed_cost
+                    # this, the cost had exactly one consumer -- the expense
+                    # line above -- so turning the flag on made it disappear
+                    # from the P&L, the balance sheet and cash altogether.
+                    platform.capitalized_cost = (
+                        platform.capitalized_cost or D('0')) + price
+                    platform.save(update_fields=['capitalized_cost'])
+                    # The cash still leaves the business; it is an investing
+                    # outflow rather than an operating expense.
+                    platform_capex += price
 
             # Marketing expense
             try:
