@@ -48,7 +48,7 @@ Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-rework-probes.json`.
 
 **Status after Stage 3A.** V2-039, V2-040 and V2-044 are **implemented at
-`9a29672` and pending integrated Stage 3 closure** — not closed. Stage 3 closes
+`561aa32` and pending integrated Stage 3 closure** — not closed. Stage 3 closes
 only after Stage 4 delivers re-basing and Stage 3B freezes ready platforms, so
 that the product is never in a state where neither route to a better product
 exists. See `GSP-CRV2-10_STAGE3A_CHECKPOINT.md`.
@@ -134,7 +134,7 @@ and the stored row.
 
 **Disposition: closed.**
 
-### V2-039 — the generation unlock gate is enforced at lock only (P1) — implemented at `9a29672`, pending integrated Stage 3 closure
+### V2-039 — the generation unlock gate is enforced at lock only (P1) — implemented at `561aa32`, pending integrated Stage 3 closure
 
 Found inside the A2 probe. A Gen 3 platform, unlocking at round 5, was
 submitted in round 3 and built by the engine with `status: 'active'`. The
@@ -142,7 +142,7 @@ unlock check lives in the lock validator; the team never locked, close
 defaulted the submission, and the engine created the platform anyway. Not in
 Part A.
 
-### V2-040 — authored development_rounds is off by one (P1) — implemented at `9a29672`, pending integrated Stage 3 closure
+### V2-040 — authored development_rounds is off by one (P1) — implemented at `561aa32`, pending integrated Stage 3 closure
 
 A generation authored `development_rounds: 2` is `active` with
 `development_rounds_remaining: 0` after a single close/process/advance.
@@ -203,7 +203,7 @@ consults `max_teams`, `team_size_min` or `team_size_max`. Confirms A6.
 `TeamProductMarket.is_active` true; the `immediate` branch deactivates those
 rows. Confirms D1 exactly.
 
-### V2-044 — the write path accepts another team's platform; only the lock refuses it (P1) — implemented at `9a29672`, pending integrated Stage 3 closure
+### V2-044 — the write path accepts another team's platform; only the lock refuses it (P1) — implemented at `561aa32`, pending integrated Stage 3 closure
 
 Not in Part A. Narrowed after the Stage 1 rework measured what the first pass
 left open.
