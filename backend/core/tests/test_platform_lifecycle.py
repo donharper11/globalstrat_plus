@@ -575,22 +575,6 @@ class FundingAccountingTests(LifecycleFixture):
     `funded_round`, the start round and the rounds remaining at each step.
     """
 
-    def charge_for(self, round_number):
-        """What the cost path books for this team in one round.
-
-        Mirrors the selection `calculate_operating_expenses` makes -- platforms
-        whose `funded_round` is this round, excluding drafts -- and prices them
-        through the same authoritative service.
-        """
-        from core.models.team_state import TeamPlatform
-        from core.services.rd_costs import platform_development_cost
-        booked = D('0')
-        for platform in TeamPlatform.objects.filter(
-                team=self.team, funded_round=round_number).exclude(
-                status='unfunded_draft'):
-            booked += platform_development_cost(
-                platform.platform_generation, platform.development_method)
-        return booked
 
     def run_cost_path(self, round_number, capitalize):
         """Run the real cost path for one round and report what it booked.
@@ -656,66 +640,82 @@ class FundingAccountingTests(LifecycleFixture):
             for p in TeamPlatform.objects.filter(team=self.team)}
         capitalised = sum(
             (after[pid] - before.get(pid, D('0')) for pid in after), D('0'))
-        return {'result': result, 'capitalised_delta': capitalised}
-
-    def snapshot(self, gen, round_number):
-        platform = self.platform(gen)
+        # The figures the cost path itself produced for this team, not a
+        # re-derivation. An earlier version of this test summed its own
+        # selector, which proved that funded_round picks one round and nothing
+        # about what the engine booked -- the very defect it was written for.
+        booked = context.opex.get(self.team.id, {}) if isinstance(
+            getattr(context, 'opex', None), dict) else {}
         return {
-            'round': round_number,
-            'status': platform.status if platform else None,
-            'funded_round': platform.funded_round if platform else None,
-            'started': platform.development_started_round if platform else None,
-            'remaining': (platform.development_rounds_remaining
-                          if platform else None),
-            'charged_this_round': str(self.charge_for(round_number)),
+            'result': result,
+            'rd_expense': D(str(booked.get('rd_expense', D('0')))),
+            'platform_capex': D(str(booked.get('platform_capex', D('0')))),
+            'capitalised_delta': capitalised,
         }
 
+
     def test_cost_is_booked_exactly_once_in_the_funding_round(self):
+        """Observed through calculate_operating_expenses, not re-derived."""
         from core.models import Team
         from core.services.rd_costs import platform_development_cost
         gen = self.generation(2, rounds=2)
         authored = platform_development_cost(gen, 'in_house')
+        booked = {}
 
-        # Round 1: asked for, cannot pay.
+        # Round 1: asked for, cannot pay. Nothing booked anywhere.
         Team.objects.filter(pk=self.team.pk).update(cash_on_hand=D('100'))
         self.team.refresh_from_db()
         self.submit_and_process(gen, 1)
-        before = self.snapshot(gen, 1)
-        self.assertEqual(before['status'], 'unfunded_draft')
-        self.assertIsNone(before['funded_round'])
-        self.assertIsNone(before['started'])
-        self.assertIsNone(before['remaining'])
-        self.assertEqual(before['charged_this_round'], '0',
-                         'an unfunded draft was charged in its request round')
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'unfunded_draft')
+        self.assertIsNone(platform.funded_round)
+        self.assertIsNone(platform.development_started_round)
+        self.assertIsNone(platform.development_rounds_remaining)
+        booked[1] = self.run_cost_path(1, capitalize=False)
+        self.assertTrue(booked[1]['result']['ran'], booked[1]['result'])
+        self.assertEqual(booked[1]['rd_expense'], D('0'),
+                         'an unfunded draft was expensed in its request round')
+        self.assertEqual(booked[1]['platform_capex'], D('0'))
 
-        # Round 2: the money lands. Charged here, clock starts here.
+        # Round 2: the money lands. Expensed here, clock starts here.
         Team.objects.filter(pk=self.team.pk).update(cash_on_hand=D('50000000'))
         self.team.refresh_from_db()
         self.process(2)
-        funding = self.snapshot(gen, 2)
-        self.assertEqual(funding['status'], 'in_development')
-        self.assertEqual(funding['funded_round'], 2)
-        self.assertEqual(funding['started'], 2)
-        self.assertEqual(funding['remaining'], 2)
-        self.assertEqual(D(funding['charged_this_round']), authored,
-                         'the authored cost was not booked in the funding round')
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'in_development')
+        self.assertEqual(platform.funded_round, 2)
+        self.assertEqual(platform.development_started_round, 2)
+        self.assertEqual(platform.development_rounds_remaining, 2)
+        booked[2] = self.run_cost_path(2, capitalize=False)
+        self.assertTrue(booked[2]['result']['ran'], booked[2]['result'])
+        self.assertEqual(booked[2]['rd_expense'], authored,
+                         'the authored cost was not expensed in the funding round')
+        self.assertEqual(booked[2]['platform_capex'], D('0'),
+                         'expense mode moved cost onto the balance sheet')
 
-        # Round 3: not charged again, clock not restarted.
-        self.process(3)
-        after = self.snapshot(gen, 3)
-        self.assertEqual(after['funded_round'], 2, 'funding round moved')
-        self.assertEqual(after['started'], 2, 'the clock restarted')
-        self.assertEqual(after['charged_this_round'], '0',
-                         'the platform was charged a second time')
+        # Rounds 3 and 4: not booked again, clock not restarted.
+        for round_number in (3, 4):
+            self.process(round_number)
+            booked[round_number] = self.run_cost_path(round_number,
+                                                      capitalize=False)
+            self.assertTrue(booked[round_number]['result']['ran'])
+            self.assertEqual(booked[round_number]['rd_expense'], D('0'),
+                             f'charged again in round {round_number}')
+            self.assertEqual(booked[round_number]['platform_capex'], D('0'))
+        platform = self.platform(gen)
+        self.assertEqual(platform.status, 'active')
+        self.assertEqual(platform.funded_round, 2, 'funding round moved')
+        self.assertEqual(platform.development_started_round, 2,
+                         'the clock restarted')
 
-        # Round 4: ready, two rounds after funding, still charged only once.
-        self.process(4)
-        final = self.snapshot(gen, 4)
-        self.assertEqual(final['status'], 'active')
-        self.assertEqual(final['charged_this_round'], '0')
+        # Exactly once, across the whole lifecycle, from what was booked.
         self.assertEqual(
-            sum(D(self.charge_for(r)) for r in (1, 2, 3, 4)), authored,
-            'the authored cost was not booked exactly once across the lifecycle')
+            sum((booked[r]['rd_expense'] for r in (1, 2, 3, 4)), D('0')),
+            authored,
+            'the authored cost was not booked exactly once')
+        self.assertEqual(
+            sum((booked[r]['platform_capex'] for r in (1, 2, 3, 4)), D('0')),
+            D('0'))
 
     def test_a_platform_funded_on_request_is_charged_in_that_round(self):
         from core.services.rd_costs import platform_development_cost
@@ -723,9 +723,12 @@ class FundingAccountingTests(LifecycleFixture):
         authored = platform_development_cost(gen, 'in_house')
         self.submit_and_process(gen, 1)
         self.assertEqual(self.platform(gen).funded_round, 1)
-        self.assertEqual(self.charge_for(1), authored)
+        first = self.run_cost_path(1, capitalize=False)
+        self.assertTrue(first['result']['ran'], first['result'])
+        self.assertEqual(first['rd_expense'], authored)
         self.process(2)
-        self.assertEqual(self.charge_for(2), D('0'))
+        second = self.run_cost_path(2, capitalize=False)
+        self.assertEqual(second['rd_expense'], D('0'))
 
     def test_the_capitalisation_mode_books_the_cost_as_an_asset(self):
         """The capitalised branch, exercised through the real cost path."""
@@ -738,6 +741,10 @@ class FundingAccountingTests(LifecycleFixture):
         self.team.refresh_from_db()
         self.submit_and_process(gen, 1)
         draft_round = self.run_cost_path(1, capitalize=True)
+        self.assertTrue(draft_round['result']['ran'], draft_round['result'])
+        self.assertEqual(draft_round['platform_capex'], D('0'),
+                         'an unfunded draft reported capex')
+        self.assertEqual(draft_round['rd_expense'], D('0'))
         self.assertEqual(draft_round['capitalised_delta'], D('0'),
                          'an unfunded draft was capitalised')
 
@@ -745,20 +752,38 @@ class FundingAccountingTests(LifecycleFixture):
         self.team.refresh_from_db()
         self.process(2)
         funding_round = self.run_cost_path(2, capitalize=True)
-        self.assertNotIn('error', funding_round['result'],
-                         f"the cost path did not run: {funding_round['result']}")
+        self.assertTrue(funding_round['result']['ran'], funding_round['result'])
+        self.assertEqual(funding_round['platform_capex'], authored,
+                         'the cost path did not report capex in the funding '
+                         'round')
+        self.assertEqual(funding_round['rd_expense'], D('0'),
+                         'capitalisation mode also expensed the cost')
+        # Second check, on the asset itself rather than the reported figure.
         self.assertEqual(funding_round['capitalised_delta'], authored,
                          'the authored cost was not capitalised in the '
                          'funding round')
 
         later = self.run_cost_path(3, capitalize=True)
+        self.assertEqual(later['platform_capex'], D('0'),
+                         'capex reported again after the funding round')
+        self.assertEqual(later['rd_expense'], D('0'))
         self.assertEqual(later['capitalised_delta'], D('0'),
                          'the platform was capitalised a second time')
 
-    def test_the_expense_mode_does_not_capitalise(self):
-        """The other branch of the same selection, for contrast."""
+    def test_the_expense_mode_books_the_cost_as_expense(self):
+        """Expense mode books the cost somewhere, not merely nowhere.
+
+        Asserting only that nothing was capitalised would pass for a branch
+        that booked nothing at all, which is the failure this stage began with.
+        """
+        from core.services.rd_costs import platform_development_cost
         gen = self.generation(5, rounds=1)
+        authored = platform_development_cost(gen, 'in_house')
         self.submit_and_process(gen, 1)
         expensed = self.run_cost_path(1, capitalize=False)
+        self.assertTrue(expensed['result']['ran'], expensed['result'])
+        self.assertEqual(expensed['rd_expense'], authored,
+                         'expense mode booked nothing')
+        self.assertEqual(expensed['platform_capex'], D('0'))
         self.assertEqual(expensed['capitalised_delta'], D('0'),
                          'the expense mode moved cost onto the balance sheet')
