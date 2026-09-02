@@ -78,12 +78,28 @@ fourteen.
 
 ### How it surfaced
 
-The `no-committed-secrets` pre-commit check reported it while committing
-CRV2-10 Stage 4. It runs report-only in this repository's configuration, so it
-had been reporting rather than blocking. Two of its four findings are genuine
-false positives — a throwaway `DJANGO_SECRET_KEY` used only by a disposable
-evidence stack — which is the likely reason the report was not acted on
-earlier: a check whose output is mostly noise stops being read.
+Found by inspecting tracked files during CRV2-10 Stage 4, after the
+`no-committed-secrets` pre-commit output drew attention to committed-secret
+hygiene in this repository.
+
+**The check did not report this credential, and does not report it now.** Its
+four findings are two throwaway `DJANGO_SECRET_KEY` values used only by a
+disposable evidence stack, and two hardcoded JWTs in `rework/browser_pass.js`.
+`backend/globalstrat/settings.py:133` — the origin of all fourteen occurrences
+— is not among them. The pattern that hides it is an environment lookup with a
+literal fallback: `os.environ.get('DB_PASSWORD', '<literal>')` reads as
+configuration, not as an assigned secret.
+
+So the check currently has a **100% miss rate on the one credential that
+matters and a 50% false-positive rate on what it does report**, while running
+report-only. That combination is why its output went unread, and it means
+"restore the scanner to high-signal enforcement" is a detection-coverage
+requirement, not only an exception-scoping one.
+
+The two JWTs are noted for the same owner's assessment — whether they are
+live-signed session tokens or artifacts of a disposable stack was not
+determined here, because probing stopped once the credential was confirmed
+compromised.
 
 ### Repair order (not performed here)
 
@@ -98,9 +114,14 @@ earlier: a check whose output is mostly noise stops being read.
 5. Decide whether coordinated history rewriting is required, given the GitHub
    remote and the 14 commits carrying the value. That is a decision with
    collaboration cost, not a mechanical step.
-6. Add narrowly scoped exceptions for the genuine throwaway-key false
-   positives, so the check becomes signal again rather than being muted
-   wholesale.
+6. Restore the check to high-signal enforcement. Two parts, both needed:
+   add narrowly scoped exceptions for the genuine throwaway-key false
+   positives so it is not muted wholesale, **and** extend detection to the
+   environment-lookup-with-literal-fallback pattern it currently misses —
+   otherwise the check would still pass over the credential this finding is
+   about. Then make it blocking rather than report-only.
+7. Assess the two hardcoded JWTs in `rework/browser_pass.js`: determine which
+   secret signed them and whether they are still valid.
 
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
@@ -127,6 +148,24 @@ the withdrawal is recorded rather than deleted.
 Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-probe-record.json`, `stage1-a1b-reprobe.json`,
 `stage1-rework-probes.json`.
+
+**Status after Stage 4.** Re-basing is **implemented at `8a46599` and pending
+integrated Stage 3/4 closure** — not closed. Stage 4 delivered the round-
+versioned platform history, the switch service, its supported write path and
+the Phase-1 missing-resolution precondition. Stage 3B (freezing ready platforms
+and removing the old feature-upgrade path) has not started, so the old upgrade
+route is still reachable, which is the condition Stage 3 closure waits on.
+
+V2-039, V2-040, V2-044, V2-045, V2-046 and V2-047 all remain implemented-
+pending-closure at their recorded revisions; Stage 4 did not close any of them.
+
+Stage 4 touched the CRV2-01 determinism boundary twice, both recorded in
+`GSP-CRV2-10_STAGE4_CHECKPOINT.md`: `team_product_platform_history` joined the
+enumerated manifest envelope, and the V2-012 ordering guard was found not to
+reach `core/services`, where Stage 4 put round-correct resolution. One real
+unordered iteration existed there and is fixed; the guard now covers the
+services the engine imports and derives that list from the engine rather than
+from a hand-kept one. See `GSP-CRV2-10_STAGE4_CHECKPOINT.md`.
 
 **Status after Stage 3A.** V2-039, V2-040 and V2-044 are **implemented at
 `a713349` and pending integrated Stage 3 closure** — not closed. Stage 3 closes
@@ -1861,4 +1900,4 @@ the app and asserts the router resolves the default route.
 
 - The Phase-2 LLM path is outside the existing output hash and is dispatched only after the deterministic transaction commits. No LLM value is read by the Phase-1 scoring call graph. This part of the v1 claim is structurally sound, subject to outage/restart verification.
 - Wall-clock values are lifecycle/audit metadata or duration fields. They are excluded from the competitive hash by rule (`manifest_sections.MEASURED_TIME_FIELDS`) and kept in the input envelope as frozen facts about the starting state.
-- The unordered-query sweep is complete: 168 iterated querysets in `core/engine/` had no explicit ordering — 93 written inline and 75 reached through a local name, the second group found only after a cross-environment replay failed (V2-012). All now declare one except six documented exemptions whose result cannot depend on order. See `ORDERING_AUDIT.md`. An AST test fails the suite on any new unordered loop in either form, and a forward/reverse insertion test re-runs the whole Phase-1 pipeline over reordered rows.
+- The unordered-query sweep covered `core/engine/`: 168 iterated querysets there had no explicit ordering — 93 written inline and 75 reached through a local name, the second group found only after a cross-environment replay failed (V2-012). All now declare one except six documented exemptions whose result cannot depend on order. See `ORDERING_AUDIT.md`. An AST test fails the suite on any new unordered loop in either form, and a forward/reverse insertion test re-runs the whole Phase-1 pipeline over reordered rows. **Superseded in scope by Stage 4:** that sweep and its guard stopped at `core/engine`, and CRV2-10 Stage 4 put round-correct platform resolution in `core/services`, where one unordered iteration went unseen. The guard now also covers the services the engine imports, deriving that list from the engine rather than a hand-kept one. Unordered iteration remains in `core/services` modules outside the resolution set; none is reached from `advance_round`, and their behaviour on non-resolution surfaces is unassessed. See `GSP-CRV2-10_STAGE4_CHECKPOINT.md`.
