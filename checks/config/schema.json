@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/donharper11/aide-checks/config/schema.json",
+  "title": "checks.config.json",
+  "description": "Per-repo configuration for the aide-checks package. The package is never forked per repo; every difference lives here. Every exclusion carries a reason.",
+  "type": "object",
+  "required": ["stack", "checks"],
+  "additionalProperties": false,
+  "properties": {
+    "stack": { "enum": ["python", "node", "mixed"] },
+    "repo": { "type": "string", "description": "repo name, for readability" },
+    "notes": { "type": "string" },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "no-committed-secrets": {
+          "type": "object",
+          "required": ["enabled", "mode", "include"],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mode": { "enum": ["blocking", "report-only"] },
+            "fast": { "type": "boolean", "default": true },
+            "include": {
+              "type": "array", "items": { "type": "string" }, "minItems": 2,
+              "description": "MUST contain docs/** and README.md (spec §4.1): scanners commonly skip documentation paths, and NEXUS-C116 lived exactly there."
+            },
+            "exclude": { "type": "array", "items": { "type": "string" } },
+            "exclusion_reasons": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "one entry per exclude pattern. Excluding a path because it is noisy is not a reason."
+            }
+          }
+        },
+        "no-agent-worktrees-tracked": {
+          "type": "object",
+          "required": ["enabled", "mode", "patterns"],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mode": { "enum": ["blocking", "report-only"] },
+            "fast": { "type": "boolean", "default": true },
+            "patterns": {
+              "type": "array", "items": { "type": "string" }, "minItems": 1,
+              "description": "This repo's own worktree convention, read from its .gitignore history — not assumed (spec §4.2). An empty list cannot fail and is rejected by the check."
+            },
+            "patterns_source": { "type": "string", "description": "where the convention was read from" }
+          }
+        }
+      }
+    }
+  }
+}

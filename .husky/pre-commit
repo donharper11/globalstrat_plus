@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# aide-checks pre-commit — fast subset. Bypassable with --no-verify; the
+# deploy gate is the layer that is not.
+set -uo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+
+exec "$ROOT/checks/bin/run-checks" --fast --repo="$ROOT"

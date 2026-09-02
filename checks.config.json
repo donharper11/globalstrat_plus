@@ -1,0 +1,23 @@
+{
+  "stack": "mixed",
+  "repo": "globalstrat+",
+  "notes": "Django backend + React frontend, mid-upgrade (CRV2-10 line). A live agent worktree exists at .claude/worktrees/agent-aa23a70e43fabef2c and is untracked; this check tests trackedness, so it is unaffected and was not touched.",
+  "checks": {
+    "no-committed-secrets": {
+      "enabled": true,
+      "mode": "report-only",
+      "fast": true,
+      "include": ["docs/**", "README.md"],
+      "exclude": [],
+      "exclusion_reasons": {},
+      "mode_reason": "First scan returned 4 findings: 2 rule jwt and 2 rule generic-api-key, in rework/ and handoff_readiness_v2/evidence/post-close-disputes/harness/. These are the harness files already recorded in the mine's SECURITY-NOTICE.md §3 as unresolved and un-investigated — the mine declined to read the values, and so does this check. Report-only per build spec §5, because this repo is mid-upgrade and a gate that fails its first deploy attempt gets removed rather than fixed. Promote to blocking once the four are dispositioned."
+    },
+    "no-agent-worktrees-tracked": {
+      "enabled": true,
+      "mode": "blocking",
+      "fast": true,
+      "patterns": [".claude/worktrees", "worktrees"],
+      "patterns_source": "This repo's .gitignore line 45 ignores all of .claude/, which is where its harness places worktrees — there is a live one at .claude/worktrees/agent-aa23a70e43fabef2c right now. Bare .claude is not used as a pattern: the check tests trackedness, and the narrower path is the one the convention names."
+    }
+  }
+}

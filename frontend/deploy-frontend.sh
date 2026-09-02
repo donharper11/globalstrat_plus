@@ -10,6 +10,32 @@
 
 set -euo pipefail
 
+# ─── aide-checks deploy gate ────────────────────────────────────────────────
+# Runs before anything else in this script. The pre-commit hook is a fast fail an
+# agent can bypass with --no-verify; this is the layer that cannot be bypassed,
+# so it is the one that decides whether work reaches production.
+#
+# Exit 1 = a blocking check failed. Exit 2 = a check could not run. Both refuse
+# the deploy: a scanner that is absent has not passed.
+#
+# Set AIDE_CHECKS_SKIP=1 to bypass. That is a deliberate, visible act by a human;
+# it is not something the builder does, and it is logged below.
+_AIDE_ROOT="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "${AIDE_CHECKS_SKIP:-}" ]; then
+  echo "aide-checks: BYPASSED by AIDE_CHECKS_SKIP — deploying without checks" >&2
+elif [ -n "$_AIDE_ROOT" ] && [ -x "$_AIDE_ROOT/checks/bin/run-checks" ]; then
+  if ! "$_AIDE_ROOT/checks/bin/run-checks" --full --repo="$_AIDE_ROOT"; then
+    echo "" >&2
+    echo "aide-checks: DEPLOY REFUSED — checks failed. Nothing was deployed." >&2
+    exit 1
+  fi
+else
+  echo "aide-checks: DEPLOY REFUSED — checks/bin/run-checks not found at repo root." >&2
+  echo "aide-checks: a missing gate is not a passing gate." >&2
+  exit 2
+fi
+# ─── end aide-checks deploy gate ────────────────────────────────────────────
+
 ECS_HOST="47.86.57.36"
 ECS_USER="root"
 ECS_PATH="/var/www/globalstrat/build"

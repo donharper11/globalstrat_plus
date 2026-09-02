@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Inventory a platform repo's PRE-EXISTING check machinery, for checks/EXISTING.md.
+# Spec §8: inventory it first, remove nothing. "Other repos are uninventoried —
+# find out, do not assume."
+set -uo pipefail
+R="${1:?repo root}"
+g() { git --no-optional-locks -C "$R" "$@" 2>/dev/null; }
+echo "## Pre-existing check machinery"
+echo
+echo "Inventoried $(date -u +%Y-%m-%d) before aide-checks was installed. Nothing"
+echo "listed here was removed, disabled, rewritten or weakened."
+echo
+echo "### Git hooks"
+h="$(g config core.hooksPath)"; echo "- \`core.hooksPath\`: ${h:-not set (default .git/hooks)}"
+found=0
+for f in "$R"/.git/hooks/*; do
+  case "$f" in *.sample) continue;; esac
+  [ -f "$f" ] && { echo "- live hook: \`.git/hooks/$(basename "$f")\`"; found=1; }
+done
+[ -d "$R/.husky" ] && for f in "$R"/.husky/*; do [ -f "$f" ] && { echo "- husky: \`.husky/$(basename "$f")\`"; found=1; }; done
+[ "$found" -eq 0 ] && echo "- none"
+echo
+echo "### CI workflows"
+w="$(g ls-files | grep -E '^\.github/workflows/')"
+[ -n "$w" ] && printf '%s\n' "$w" | sed 's/^/- `/;s/$/`/' || echo "- none"
+echo
+echo "### Committed validators, guards and quality runners"
+v="$(g ls-files | grep -iE '(^|/)(check|validate|verify|guard|lint|quality|preflight|assert)[^/]*\.(mjs|js|ts|py|sh)$|(^|/)(quality|guards?)/' | head -40)"
+[ -n "$v" ] && printf '%s\n' "$v" | sed 's/^/- `/;s/$/`/' || echo "- none found by name"
+echo
+echo "### Lint configuration"
+l="$(g ls-files | grep -iE '(^|/)(\.eslintrc[^/]*|eslint\.config\.[jm]s|\.flake8|ruff\.toml|setup\.cfg|\.pre-commit-config\.yaml|pyproject\.toml)$' | head -20)"
+[ -n "$l" ] && printf '%s\n' "$l" | sed 's/^/- `/;s/$/`/' || echo "- none"
+echo
+echo "### npm scripts that look like gates"
+for pj in $(g ls-files | grep -E '(^|/)package\.json$' | head -6); do
+  s="$(g show "HEAD:$pj" | python3 -c "
+import json,sys
+try: d=json.load(sys.stdin)
+except Exception: raise SystemExit
+for k,v in (d.get('scripts') or {}).items():
+    if any(t in k for t in ('lint','test','check','verify','quality','audit','guard')): print(f'  - \`{k}\`: \`{v}\`')
+" 2>/dev/null)"
+  [ -n "$s" ] && { echo "- \`$pj\`"; printf '%s\n' "$s"; }
+done
+echo
+echo "### Deploy scripts"
+d="$(g ls-files | grep -iE '(^|/)(deploy|release|publish)[^/]*\.(sh|mjs|js|py)$|docker-entrypoint' | grep -v site-packages | head -12)"
+[ -n "$d" ] && printf '%s\n' "$d" | sed 's/^/- `/;s/$/`/' || echo "- none found"

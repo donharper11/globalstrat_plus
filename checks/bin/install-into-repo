@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# ─── install aide-checks into a platform repo ───────────────────────────────
+#   bin/install-into-repo <repo root> <config json path>
+#
+# Vendors the package, installs the pre-commit hook and the CI workflow, and
+# writes checks/EXISTING.md. Does NOT touch the deploy script — that gate is
+# inserted per repo by hand, because every deploy script differs and §8 forbids
+# weakening the guards already in them.
+set -euo pipefail
+PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+R="$(cd "${1:?repo root}" && pwd)"
+CFG="${2:?config json}"
+
+"$PKG/bin/sync-into-repo" "$R"
+cp "$CFG" "$R/checks.config.json"
+jq empty "$R/checks.config.json"
+
+# EXISTING.md — written once, never overwritten by a later sync
+if [ ! -f "$R/checks/EXISTING.md" ]; then
+  { echo "# Pre-existing machinery in \`$(basename "$R")\`"; echo
+    "$PKG/bin/inventory-existing" "$R"; } > "$R/checks/EXISTING.md"
+fi
+
+# ── pre-commit ─────────────────────────────────────────────────────────────
+mkdir -p "$R/.husky"
+LEGACY=""
+if [ -f "$R/.git/hooks/pre-commit" ]; then
+  LEGACY="$R/.git/hooks/pre-commit"
+fi
+{
+  echo '#!/usr/bin/env bash'
+  echo '# aide-checks pre-commit — fast subset. Bypassable with --no-verify; the'
+  echo '# deploy gate is the layer that is not.'
+  echo 'set -uo pipefail'
+  echo 'ROOT="$(git rev-parse --show-toplevel)"'
+  if [ -n "$LEGACY" ]; then
+    echo ''
+    echo '# Pre-existing hook, preserved. It ran before aide-checks existed and still'
+    echo '# runs first; its exit code still blocks the commit (build spec §8).'
+    echo 'if [ -x "$ROOT/.git/hooks/pre-commit.local" ]; then'
+    echo '  "$ROOT/.git/hooks/pre-commit.local" "$@" || exit $?'
+    echo 'fi'
+  fi
+  echo ''
+  echo 'exec "$ROOT/checks/bin/run-checks" --fast --repo="$ROOT"'
+} > "$R/.husky/pre-commit"
+chmod +x "$R/.husky/pre-commit"
+if [ -n "$LEGACY" ]; then
+  cp "$LEGACY" "$R/.git/hooks/pre-commit.local"
+  chmod +x "$R/.git/hooks/pre-commit.local"
+fi
+git --no-optional-locks -C "$R" config core.hooksPath .husky
+
+# ── CI (advisory on the current plan) ──────────────────────────────────────
+mkdir -p "$R/.github/workflows"
+if [ ! -f "$R/.github/workflows/aide-checks.yml" ]; then
+cat > "$R/.github/workflows/aide-checks.yml" <<'YML'
+name: aide-checks
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install gitleaks
+        run: |
+          V=8.28.0
+          curl -sL -o /tmp/gl.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz"
+          tar xzf /tmp/gl.tar.gz -C /tmp gitleaks
+          sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+      - name: prove the checks can fail
+        run: ./checks/selftest/run
+      - name: run checks
+        run: ./checks/bin/run-checks --full --repo="$GITHUB_WORKSPACE"
+YML
+fi
+echo "install: done for $(basename "$R")"

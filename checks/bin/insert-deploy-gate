@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# ─── insert the aide-checks deploy gate into a deploy script ────────────────
+#   bin/insert-deploy-gate <repo root> <path to deploy script, repo-relative>
+#
+# The gate is inserted immediately after the script's `set -e...` line, so it runs
+# before anything the script does. Nothing existing is removed, reordered or
+# weakened (build spec §8) — the gate is prepended to the script's own logic, not
+# substituted for it.
+set -euo pipefail
+R="$(cd "${1:?repo root}" && pwd)"
+REL="${2:?deploy script path}"
+F="$R/$REL"
+[ -f "$F" ] || { echo "gate: no such script: $F" >&2; exit 2; }
+grep -q 'aide-checks deploy gate' "$F" && { echo "gate: already present in $REL"; exit 0; }
+
+ANCHOR="$(grep -nE '^set -[a-z]*e' "$F" | head -1 | cut -d: -f1)"
+[ -n "$ANCHOR" ] || { echo "gate: no 'set -e' anchor in $REL; refusing to guess an insertion point" >&2; exit 2; }
+
+TMP="$(mktemp)"
+{
+  head -n "$ANCHOR" "$F"
+  cat <<'GATE'
+
+# ─── aide-checks deploy gate ────────────────────────────────────────────────
+# Runs before anything else in this script. The pre-commit hook is a fast fail an
+# agent can bypass with --no-verify; this is the layer that cannot be bypassed,
+# so it is the one that decides whether work reaches production.
+#
+# Exit 1 = a blocking check failed. Exit 2 = a check could not run. Both refuse
+# the deploy: a scanner that is absent has not passed.
+#
+# Set AIDE_CHECKS_SKIP=1 to bypass. That is a deliberate, visible act by a human;
+# it is not something the builder does, and it is logged below.
+_AIDE_ROOT="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "${AIDE_CHECKS_SKIP:-}" ]; then
+  echo "aide-checks: BYPASSED by AIDE_CHECKS_SKIP — deploying without checks" >&2
+elif [ -n "$_AIDE_ROOT" ] && [ -x "$_AIDE_ROOT/checks/bin/run-checks" ]; then
+  if ! "$_AIDE_ROOT/checks/bin/run-checks" --full --repo="$_AIDE_ROOT"; then
+    echo "" >&2
+    echo "aide-checks: DEPLOY REFUSED — checks failed. Nothing was deployed." >&2
+    exit 1
+  fi
+else
+  echo "aide-checks: DEPLOY REFUSED — checks/bin/run-checks not found at repo root." >&2
+  echo "aide-checks: a missing gate is not a passing gate." >&2
+  exit 2
+fi
+# ─── end aide-checks deploy gate ────────────────────────────────────────────
+GATE
+  tail -n +"$((ANCHOR+1))" "$F"
+} > "$TMP"
+bash -n "$TMP" || { echo "gate: refusing — result would not parse" >&2; rm -f "$TMP"; exit 2; }
+cat "$TMP" > "$F"; rm -f "$TMP"
+echo "gate: inserted into $REL after line $ANCHOR"

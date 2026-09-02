@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# ─── check: no-agent-worktrees-tracked ──────────────────────────────────────
+# Fails if any harness-managed worktree path is TRACKED by git.
+#
+# Trackedness, not existence. A live worktree inside the repo is normal and is
+# not this check's business (globalstrat+ has one right now); a worktree whose
+# files are in the index is the defect. In BECSR, deleting the committed
+# worktrees blocked deploys (BECSR-C136); nexus ignored .claude/ for the same
+# reason (NEXUS-C119).
+#
+# Patterns are per-repo and come from the repo's own .gitignore convention,
+# never assumed (spec §4.2).
+#
+# Contract:
+#   exit 0  no tracked worktree paths
+#   exit 1  tracked worktree paths found (paths on stdout)
+#   exit 2  the check could not run
+set -uo pipefail
+
+REPO_ROOT="${1:?repo root required}"
+CONFIG="${2:?config path required}"
+CHECK_NAME="no-agent-worktrees-tracked"
+
+command -v jq >/dev/null 2>&1 || { echo "${CHECK_NAME}: ERROR jq not found." >&2; exit 2; }
+
+readarray -t PATTERNS < <(jq -r --arg c "$CHECK_NAME" '.checks[$c].patterns // [] | .[]' "$CONFIG")
+if [ "${#PATTERNS[@]}" -eq 0 ]; then
+  echo "${CHECK_NAME}: ERROR no patterns configured; an empty pattern list cannot fail." >&2
+  exit 2
+fi
+
+TRACKED="$(git --no-optional-locks -C "$REPO_ROOT" ls-files 2>/dev/null)" || {
+  echo "${CHECK_NAME}: ERROR not a git repository: $REPO_ROOT" >&2; exit 2; }
+
+HITS=""
+for p in "${PATTERNS[@]}"; do
+  # a pattern matches when it appears as a complete leading path segment run
+  m="$(printf '%s\n' "$TRACKED" | awk -v pat="$p" 'index($0, pat"/")==1 || index($0, "/" pat "/")>0')"
+  [ -n "$m" ] && HITS="${HITS}${m}"$'\n'
+done
+HITS="$(printf '%s' "$HITS" | sed '/^$/d' | sort -u)"
+
+if [ -n "$HITS" ]; then
+  N=$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')
+  echo "${CHECK_NAME}: FAIL ${N} tracked path(s) under a harness worktree pattern"
+  printf '%s\n' "$HITS" | head -25 | sed 's/^/  /'
+  [ "$N" -gt 25 ] && echo "  … and $((N-25)) more"
+  exit 1
+fi
+echo "${CHECK_NAME}: PASS 0 tracked worktree paths"
+exit 0

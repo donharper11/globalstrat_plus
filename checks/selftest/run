@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+# ─── aide-checks selftest runner ────────────────────────────────────────────
+# AP-R10, in force in aide-platform since 2026-08-18, form `check`:
+#   "a check counts only when the packet proves it can fail."
+#
+# Adopted as this package's standard (spec §6). Every check gets a selftest that
+#   1. builds a disposable git repo,
+#   2. asserts the check PASSES on it (no false positive),
+#   3. plants a violation,
+#   4. asserts the check FAILS non-zero on the plant,
+#   5. removes the plant and asserts it passes again.
+#
+# A check whose selftest does not do all five is not enabled in any repo config.
+set -uo pipefail
+PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PASS=0; FAIL=0
+say() { printf '%s\n' "$*"; }
+assert_rc() { # assert_rc <expected> <actual> <label>
+  if [ "$2" -eq "$1" ]; then say "    ok    $3 (exit $2)"; PASS=$((PASS+1));
+  else say "    FAIL  $3 (expected exit $1, got $2)"; FAIL=$((FAIL+1)); fi
+}
+
+mk_repo() {
+  local d; d="$(mktemp -d)"
+  git init -q "$d"; git -C "$d" config user.email t@t; git -C "$d" config user.name t
+  mkdir -p "$d/docs" "$d/src"
+  printf '# readme\n' > "$d/README.md"
+  printf 'hello\n'     > "$d/docs/guide.md"
+  printf 'print(1)\n'  > "$d/src/app.py"
+  git -C "$d" add -A >/dev/null; git -C "$d" commit -qm init
+  echo "$d"
+}
+
+# ══════════════════════════════════════════════════════════════════════════
+say "selftest: no-committed-secrets"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"], "exclude": ["**/site-packages/**"] } } }
+JSON
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+
+"$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "clean tree passes"
+
+# 3. plant. NOT the canonical AWS example key: gitleaks ships that in its default
+# allowlist, so planting it proves the opposite of what the selftest claims. A
+# private-key block fires the version-stable `private-key` rule and carries no
+# credential value. Assembled from parts so this file does not itself contain a
+# secret-shaped literal — aide-checks is scanned by aide-checks.
+PLANT="$D/docs/setup.md"
+{ printf -- '-----BEGIN RSA %s-----\n' 'PRIVATE KEY'
+  printf 'MIIEowIBAAKCAQEA%s\n' 'FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE'
+  printf -- '-----END RSA %s-----\n' 'PRIVATE KEY'; } > "$PLANT"
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm plant >/dev/null
+OUT="$("$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" 2>&1)"; RC=$?
+assert_rc 1 $RC "planted secret in docs/ fails the check"
+printf '%s' "$OUT" | grep -q 'docs/setup.md' \
+  && { say "    ok    finding names the planted path"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  finding does not name the planted path"; FAIL=$((FAIL+1)); }
+printf '%s' "$OUT" | grep -q 'MIIEowIBAAKCAQEA' \
+  && { say "    FAIL  output leaked the secret value"; FAIL=$((FAIL+1)); } \
+  || { say "    ok    output never prints the value"; PASS=$((PASS+1)); }
+
+# untracked plant must NOT fail — this is the false positive that gets a layer disabled
+git -C "$D" rm -q --cached docs/setup.md >/dev/null; printf 'docs/setup.md\n' >> "$D/.gitignore"
+git -C "$D" add .gitignore >/dev/null; git -C "$D" commit -qm untrack >/dev/null
+"$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "same secret, untracked and gitignored, does not fail"
+
+# a scanner that is absent must be exit 2, not exit 0. An unrunnable check that
+# reports success is the failure mode AP-R10 exists to prevent.
+FAKEHOME="$(mktemp -d)"
+( PATH="/usr/bin:/bin" HOME="$FAKEHOME" \
+  "$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1 )
+assert_rc 2 $? "missing scanner is exit 2, not a silent pass"
+rm -rf "$FAKEHOME"
+
+# 5. remove the plant
+rm -f "$PLANT"; git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cleanup >/dev/null
+"$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "plant removed, check passes again"
+rm -rf "$D"
+
+# ══════════════════════════════════════════════════════════════════════════
+say "selftest: no-agent-worktrees-tracked"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking",
+    "patterns": [".claude/worktrees", "worktrees"] } } }
+JSON
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+
+"$PKG/sh/no-agent-worktrees-tracked" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "clean tree passes"
+
+# an untracked worktree directory must NOT fail — globalstrat+ has one right now
+mkdir -p "$D/.claude/worktrees/agent-abc"; printf 'x\n' > "$D/.claude/worktrees/agent-abc/f.txt"
+"$PKG/sh/no-agent-worktrees-tracked" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "worktree present but untracked does not fail"
+
+# 3. plant — track it
+git -C "$D" add -f .claude/worktrees/agent-abc/f.txt >/dev/null
+git -C "$D" commit -qm plant >/dev/null
+OUT="$("$PKG/sh/no-agent-worktrees-tracked" "$D" "$D/checks.config.json" 2>&1)"; RC=$?
+assert_rc 1 $RC "tracked worktree path fails the check"
+printf '%s' "$OUT" | grep -q '.claude/worktrees/agent-abc/f.txt' \
+  && { say "    ok    finding names the tracked path"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  finding does not name the tracked path"; FAIL=$((FAIL+1)); }
+
+# an empty pattern list cannot fail, so the check must refuse to run
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking", "patterns": [] } } }
+JSON
+"$PKG/sh/no-agent-worktrees-tracked" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 2 $? "empty pattern list is refused, not silently passed"
+
+# 5. remove the plant
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking",
+    "patterns": [".claude/worktrees", "worktrees"] } } }
+JSON
+git -C "$D" rm -rq --cached .claude >/dev/null; git -C "$D" commit -qm cleanup >/dev/null
+"$PKG/sh/no-agent-worktrees-tracked" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "plant removed, check passes again"
+rm -rf "$D"
+
+# ══════════════════════════════════════════════════════════════════════════
+say "selftest: run-checks modes"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": {
+    "no-committed-secrets": { "enabled": true, "mode": "blocking", "fast": true,
+      "include": ["docs/**", "README.md"], "exclude": [] },
+    "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking", "fast": false,
+      "patterns": [".claude/worktrees"] } } }
+JSON
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1;        assert_rc 0 $? "--full passes on a clean repo"
+O="$("$PKG/bin/run-checks" --fast --repo="$D" 2>&1)";             assert_rc 0 $? "--fast passes on a clean repo"
+printf '%s' "$O" | grep -q 'SKIP no-agent-worktrees-tracked (not in the --fast subset)' \
+  && { say "    ok    --fast honours the fast subset"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  --fast did not skip the non-fast check"; FAIL=$((FAIL+1)); }
+
+mkdir -p "$D/.claude/worktrees/a"; printf 'x\n' > "$D/.claude/worktrees/a/f"
+git -C "$D" add -f .claude >/dev/null; git -C "$D" commit -qm plant >/dev/null
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1;         assert_rc 1 $? "--full fails on a planted violation"
+"$PKG/bin/run-checks" --report-only --repo="$D" >/dev/null 2>&1;  assert_rc 0 $? "--report-only exits 0 on the same violation"
+"$PKG/bin/run-checks" --fast --repo="$D" >/dev/null 2>&1;         assert_rc 0 $? "--fast skips it, so exits 0"
+
+python3 - "$D/checks.config.json" <<'PY'
+import json,sys
+c=json.load(open(sys.argv[1])); c["checks"]["no-agent-worktrees-tracked"]["mode"]="report-only"
+c["checks"]["no-agent-worktrees-tracked"]["fast"]=True
+json.dump(c,open(sys.argv[1],"w"),indent=2)
+PY
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "a report-only check does not block --full"
+
+python3 - "$D/checks.config.json" <<'PY'
+import json,sys
+c=json.load(open(sys.argv[1])); c["checks"]["not-a-real-check"]={"enabled":True,"mode":"blocking"}
+json.dump(c,open(sys.argv[1],"w"),indent=2)
+PY
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 1 $? "a configured check with no executable is a failure, not a skip"
+rm -rf "$D"
+
+say ""
+say "selftest: ${PASS} passed, ${FAIL} failed"
+[ "$FAIL" -eq 0 ] || exit 1
+exit 0

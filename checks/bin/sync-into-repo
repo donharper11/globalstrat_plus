@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# ─── vendor aide-checks into a platform repo ────────────────────────────────
+#
+#   bin/sync-into-repo /home/ubuntu/projects/<repo>
+#
+# Copies the package into <repo>/checks/. Vendored rather than submoduled: the
+# stacks are mixed and npm/pip both add friction on one side or the other, and a
+# committed copy means a deploy never depends on a network fetch (spec §5).
+#
+# Refuses to run unless the package's own selftests pass. A checks layer that
+# ships without its proof is the thing AP-R10 forbids.
+set -euo pipefail
+PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TARGET="${1:?usage: sync-into-repo <platform repo root>}"
+TARGET="$(cd "$TARGET" && pwd)"
+[ -d "$TARGET/.git" ] || { echo "sync: $TARGET is not a git repository" >&2; exit 2; }
+
+echo "sync: running package selftests first"
+"$PKG/selftest/run" >/dev/null || { echo "sync: REFUSED — selftests fail" >&2; exit 1; }
+echo "sync: selftests pass"
+
+REV="$(git --no-optional-locks -C "$PKG" rev-parse --short HEAD 2>/dev/null || echo 'uncommitted')"
+DEST="$TARGET/checks"
+mkdir -p "$DEST"
+# EXISTING.md is the host repo's own inventory of pre-existing machinery (§8).
+# It is written once per repo and never overwritten by a sync.
+for d in bin sh py js config selftest; do
+  rm -rf "$DEST/$d"; cp -R "$PKG/$d" "$DEST/$d"
+done
+cp "$PKG/README.md" "$DEST/README.md"
+printf '%s\n' "$REV" > "$DEST/.aide-checks-rev"
+find "$DEST/bin" "$DEST/sh" "$DEST/selftest" -type f -exec chmod +x {} \; 2>/dev/null || true
+echo "sync: vendored aide-checks@${REV} into ${DEST}"

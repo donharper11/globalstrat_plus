@@ -1,0 +1,18 @@
+name: aide-checks
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: install gitleaks
+        run: |
+          V=8.28.0
+          curl -sL -o /tmp/gl.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz"
+          tar xzf /tmp/gl.tar.gz -C /tmp gitleaks
+          sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+      - name: prove the checks can fail
+        run: ./checks/selftest/run
+      - name: run checks
+        run: ./checks/bin/run-checks --full --repo="$GITHUB_WORKSPACE"

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# ─── refresh the .5 clone of aide-checks from this one ──────────────────────
+# .5 has no GitHub credential, so it cannot `git pull` from origin. Until one is
+# provisioned, .220 is the relay: bundle -> scp -> fetch. The .5 clone keeps the
+# GitHub URL as origin so the day a credential lands, `git pull` just works.
+set -euo pipefail
+PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+HOST="${1:-ubuntu@192.168.50.5}"
+B=/tmp/aide-checks.bundle
+git -C "$PKG" bundle create "$B" --all >/dev/null 2>&1
+scp -q "$B" "$HOST:/tmp/aide-checks.bundle"
+ssh -o BatchMode=yes "$HOST" '
+  set -e; cd ~/projects/aide-checks
+  git fetch -q /tmp/aide-checks.bundle "+refs/heads/*:refs/remotes/relay/*"
+  git checkout -q main 2>/dev/null || git checkout -qb main
+  git reset -q --hard relay/main
+  git rev-parse --short HEAD'
+echo "push-to-vm5: .5 now at the above revision"

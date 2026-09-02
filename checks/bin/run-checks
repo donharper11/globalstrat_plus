@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# ─── aide-checks entry point ────────────────────────────────────────────────
+#
+#   run-checks --fast          pre-commit subset  (blocking checks only)
+#   run-checks --full          deploy and CI      (every enabled check)
+#   run-checks --report-only   run everything, print findings, exit 0
+#
+# Reads the host repo's checks.config.json. Exits non-zero if any check that is
+# enabled AND in blocking mode fails, except under --report-only.
+#
+# A check that cannot run (exit 2) is a failure, not a pass. That is the whole
+# point of AP-R10: a check counts only when it can fail.
+set -uo pipefail
+
+MODE="full"
+REPO_ROOT=""
+CONFIG=""
+for a in "$@"; do
+  case "$a" in
+    --fast)        MODE="fast" ;;
+    --full)        MODE="full" ;;
+    --report-only) MODE="report-only" ;;
+    --repo=*)      REPO_ROOT="${a#--repo=}" ;;
+    --config=*)    CONFIG="${a#--config=}" ;;
+    -h|--help)     sed -n '2,12p' "$0"; exit 0 ;;
+    *) echo "run-checks: unknown argument '$a'" >&2; exit 2 ;;
+  esac
+done
+
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PKG="$(cd "$HERE/.." && pwd)"
+[ -n "$REPO_ROOT" ] || REPO_ROOT="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null || cd "$PKG/.." && pwd)"
+REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
+[ -n "$CONFIG" ] || CONFIG="$REPO_ROOT/checks.config.json"
+
+command -v jq >/dev/null 2>&1 || { echo "run-checks: ERROR jq not found." >&2; exit 2; }
+[ -f "$CONFIG" ] || { echo "run-checks: ERROR no config at $CONFIG" >&2; exit 2; }
+jq empty "$CONFIG" 2>/dev/null || { echo "run-checks: ERROR $CONFIG is not valid JSON" >&2; exit 2; }
+
+STACK="$(jq -r '.stack // "unknown"' "$CONFIG")"
+echo "aide-checks ${MODE} — repo $(basename "$REPO_ROOT") (stack: ${STACK})"
+
+FAILED=0; RAN=0; SKIPPED=0; ERRORED=0
+declare -a FAILED_NAMES=()
+
+for name in $(jq -r '.checks | keys[]' "$CONFIG"); do
+  enabled="$(jq -r --arg c "$name" '.checks[$c].enabled // false' "$CONFIG")"
+  cmode="$(jq -r --arg c "$name" '.checks[$c].mode // "blocking"' "$CONFIG")"
+  # `// true` is wrong here: jq's alternative operator treats `false` as absent,
+  # so a check marked "fast": false would silently run in the --fast subset.
+  fast="$(jq -r --arg c "$name" '.checks[$c] | if has("fast") then .fast else true end' "$CONFIG")"
+
+  if [ "$enabled" != "true" ]; then
+    echo "  SKIP ${name} (disabled in config)"; SKIPPED=$((SKIPPED+1)); continue
+  fi
+  if [ "$MODE" = "fast" ] && [ "$fast" != "true" ]; then
+    echo "  SKIP ${name} (not in the --fast subset)"; SKIPPED=$((SKIPPED+1)); continue
+  fi
+
+  script=""
+  for d in sh py js; do [ -x "$PKG/$d/$name" ] && script="$PKG/$d/$name" && break; done
+  if [ -z "$script" ]; then
+    echo "  ERROR ${name}: no executable check found in ${PKG}/{sh,py,js}" >&2
+    # a configured check with no implementation is a failure, never a skip
+    ERRORED=$((ERRORED+1)); FAILED=$((FAILED+1)); FAILED_NAMES+=("$name (missing)"); continue
+  fi
+
+  RAN=$((RAN+1))
+  out="$("$script" "$REPO_ROOT" "$CONFIG" 2>&1)"; rc=$?
+  printf '%s\n' "$out" | sed 's/^/  /'
+  if [ "$rc" -ne 0 ]; then
+    if [ "$rc" -eq 2 ]; then ERRORED=$((ERRORED+1)); fi
+    if [ "$cmode" = "blocking" ] || [ "$rc" -eq 2 ]; then
+      FAILED=$((FAILED+1)); FAILED_NAMES+=("$name")
+    else
+      echo "  (report-only in this repo's config — not blocking)"
+    fi
+  fi
+done
+
+echo "aide-checks: ran ${RAN}, skipped ${SKIPPED}, blocking failures ${FAILED}, could-not-run ${ERRORED}"
+if [ "$MODE" = "report-only" ]; then
+  [ "$FAILED" -gt 0 ] && echo "aide-checks: report-only — exiting 0 despite ${FAILED} failure(s): ${FAILED_NAMES[*]}"
+  exit 0
+fi
+if [ "$FAILED" -gt 0 ]; then
+  echo "aide-checks: FAILED — ${FAILED_NAMES[*]}"
+  exit 1
+fi
+exit 0
