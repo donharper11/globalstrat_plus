@@ -1,7 +1,10 @@
-GSP-CRV2-10 Stage 3A — focused test transcript (rework)
-revision: 561aa32b39fc33e43dd977dd997834d3196eee18
-tree:     1 modified files (0 = clean)
-date:     2026-09-02T05:41:21Z
+GSP-CRV2-10 Stage 3A — focused test transcript
+revision:      a71334920244b5b708a74e31941ab8569cba3c92
+tree at start: 0 modified tracked files (0 = clean)
+written to:    /tmp/crv210-stage3a-transcript.txt, moved into the evidence directory afterwards, so
+               writing the artifact cannot itself dirty the tree the
+               header reports.
+date:          2026-09-02T06:06:56Z
 
 $ python3 manage.py test core.tests.test_platform_lifecycle \
       core.tests.test_rd_costs core.tests.test_decision_limits \
@@ -20,16 +23,17 @@ test_the_per_type_surface_refuses_an_over_cap_platform (core.tests.test_platform
   return self._jws.encode(
 /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
-2026-09-02 05:41:54,980 WARNING django.request Bad Request: /api/games/5/teams/9/decisions/round/1/platforms/
+2026-09-02 06:07:24,831 WARNING django.request Bad Request: /api/games/5/teams/9/decisions/round/1/platforms/
 ok
-test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.FeatureCapTests) ... 2026-09-02 05:41:55,036 WARNING django.request Bad Request: /api/games/6/teams/11/decisions/round/1/
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.FeatureCapTests) ... 2026-09-02 06:07:24,885 WARNING django.request Bad Request: /api/games/6/teams/11/decisions/round/1/
 ok
 test_a_platform_funded_on_request_is_charged_in_that_round (core.tests.test_platform_lifecycle.FundingAccountingTests) ... ok
-test_cost_is_booked_exactly_once_in_the_funding_round (core.tests.test_platform_lifecycle.FundingAccountingTests) ... ok
+test_cost_is_booked_exactly_once_in_the_funding_round (core.tests.test_platform_lifecycle.FundingAccountingTests)
+Observed through calculate_operating_expenses, not re-derived. ... ok
 test_the_capitalisation_mode_books_the_cost_as_an_asset (core.tests.test_platform_lifecycle.FundingAccountingTests)
 The capitalised branch, exercised through the real cost path. ... ok
-test_the_expense_mode_does_not_capitalise (core.tests.test_platform_lifecycle.FundingAccountingTests)
-The other branch of the same selection, for contrast. ... ok
+test_the_expense_mode_books_the_cost_as_expense (core.tests.test_platform_lifecycle.FundingAccountingTests)
+Expense mode books the cost somewhere, not merely nowhere. ... ok
 test_a_funded_platform_records_the_round_it_was_paid_for (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
 test_a_team_that_cannot_pay_keeps_an_unfunded_draft (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
 test_an_unfunded_draft_never_becomes_active_on_its_own (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
@@ -40,9 +44,9 @@ test_investing_in_your_own_platform_is_accepted (core.tests.test_platform_lifecy
 /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
 ok
-test_the_per_type_surface_refuses_a_foreign_platform (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-02 05:41:56,183 WARNING django.request Bad Request: /api/games/17/teams/33/decisions/round/1/rd/
+test_the_per_type_surface_refuses_a_foreign_platform (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-02 06:07:26,111 WARNING django.request Bad Request: /api/games/17/teams/33/decisions/round/1/rd/
 ok
-test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-02 05:41:56,239 WARNING django.request Bad Request: /api/games/18/teams/35/decisions/round/1/
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-02 06:07:26,163 WARNING django.request Bad Request: /api/games/18/teams/35/decisions/round/1/
 ok
 test_a_two_round_platform_waits_two_rounds (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
 test_a_zero_round_generation_still_waits_the_minimum (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
@@ -51,15 +55,15 @@ test_the_minimum_is_one_round (core.tests.test_platform_lifecycle.PlatformTiming
 test_the_scenario_bounds_the_maximum (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
 test_a_row_written_behind_the_api_refuses_the_round (core.tests.test_platform_lifecycle.UnlockGateTests) ... ok
 test_an_unlocked_generation_is_accepted (core.tests.test_platform_lifecycle.UnlockGateTests) ... ok
-test_the_per_type_surface_refuses_a_locked_generation (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-02 05:41:56,656 WARNING django.request Bad Request: /api/games/26/teams/51/decisions/round/2/platforms/
+test_the_per_type_surface_refuses_a_locked_generation (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-02 06:07:26,518 WARNING django.request Bad Request: /api/games/26/teams/51/decisions/round/2/platforms/
 ok
-test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-02 05:41:56,698 WARNING django.request Bad Request: /api/games/27/teams/53/decisions/round/2/
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-02 06:07:26,561 WARNING django.request Bad Request: /api/games/27/teams/53/decisions/round/2/
 ok
 test_a_correctly_priced_row_raises_no_violation (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_a_correctly_priced_upgrade_is_accepted_and_stored (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_a_feature_upgrade_sums_the_authored_levels (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
-test_a_free_feature_upgrade_is_refused_on_both_surfaces (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 05:41:56,915 WARNING django.request Bad Request: /api/games/31/teams/61/decisions/round/1/rd/
-2026-09-02 05:41:56,948 WARNING django.request Bad Request: /api/games/31/teams/61/decisions/round/1/
+test_a_free_feature_upgrade_is_refused_on_both_surfaces (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 06:07:26,732 WARNING django.request Bad Request: /api/games/31/teams/61/decisions/round/1/rd/
+2026-09-02 06:07:26,759 WARNING django.request Bad Request: /api/games/31/teams/61/decisions/round/1/
 ok
 test_a_row_written_behind_the_api_refuses_the_round (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_a_submission_within_its_means_passes_the_budget_rule (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
@@ -68,35 +72,35 @@ test_an_omitted_cost_is_filled_with_the_authored_price (core.tests.test_rd_costs
 test_an_unknown_method_is_refused_rather_than_priced_at_zero (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_an_unpriced_level_is_refused_not_partially_charged (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_method_selects_the_authored_price (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
-test_per_type_surface_refuses_a_platform_priced_at_zero (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 05:41:57,232 WARNING django.request Bad Request: /api/games/39/teams/77/decisions/round/1/platforms/
+test_per_type_surface_refuses_a_platform_priced_at_zero (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 06:07:26,973 WARNING django.request Bad Request: /api/games/39/teams/77/decisions/round/1/platforms/
 ok
 test_platform_development_counts_against_cash_and_the_rd_budget (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
 test_the_authored_price_is_accepted_unchanged (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
-test_whole_submission_surface_refuses_the_same_payload (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 05:41:57,386 WARNING django.request Bad Request: /api/games/42/teams/83/decisions/round/1/
+test_whole_submission_surface_refuses_the_same_payload (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-02 06:07:27,100 WARNING django.request Bad Request: /api/games/42/teams/83/decisions/round/1/
 ok
-test_a_refused_duplicate_writes_nothing (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 05:41:57,469 WARNING django.request Bad Request: /api/games/43/teams/85/decisions/round/1/rd/
+test_a_refused_duplicate_writes_nothing (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 06:07:27,174 WARNING django.request Bad Request: /api/games/43/teams/85/decisions/round/1/rd/
 ok
 test_distinct_features_are_still_accepted_on_both_paths (core.tests.test_decision_limits.DuplicateRdRowApiTests)
 The control both refusals are meaningless without. ... ok
-test_the_partial_api_refuses_a_duplicate_platform_feature (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 05:41:57,655 WARNING django.request Bad Request: /api/games/45/teams/87/decisions/round/1/rd/
+test_the_partial_api_refuses_a_duplicate_platform_feature (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 06:07:27,339 WARNING django.request Bad Request: /api/games/45/teams/87/decisions/round/1/rd/
 ok
-test_the_whole_submission_api_refuses_it_too (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 05:41:57,723 WARNING django.request Bad Request: /api/games/46/teams/88/decisions/round/1/
+test_the_whole_submission_api_refuses_it_too (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-02 06:07:27,403 WARNING django.request Bad Request: /api/games/46/teams/88/decisions/round/1/
 ok
 test_a_refused_payload_writes_nothing (core.tests.test_decision_limits.NegativeInvestmentApiTests)
-The engine must never see the row. A 400 that still stored the ... 2026-09-02 05:41:57,772 WARNING django.request Bad Request: /api/games/47/teams/89/decisions/round/1/esg/
+The engine must never see the row. A 400 that still stored the ... 2026-09-02 06:07:27,449 WARNING django.request Bad Request: /api/games/47/teams/89/decisions/round/1/esg/
 ok
 test_talent_is_reachable_on_one_path_only (core.tests.test_decision_limits.NegativeInvestmentApiTests)
 Recorded because it shapes what "both APIs agree" can mean. ... ok
-test_the_partial_api_refuses_every_negative_investment (core.tests.test_decision_limits.NegativeInvestmentApiTests) ... 2026-09-02 05:41:57,883 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/esg/
-2026-09-02 05:41:57,902 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/esg/
-2026-09-02 05:41:57,920 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
-2026-09-02 05:41:57,945 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
-2026-09-02 05:41:57,966 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
-2026-09-02 05:41:57,989 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
+test_the_partial_api_refuses_every_negative_investment (core.tests.test_decision_limits.NegativeInvestmentApiTests) ... 2026-09-02 06:07:27,558 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/esg/
+2026-09-02 06:07:27,576 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/esg/
+2026-09-02 06:07:27,593 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
+2026-09-02 06:07:27,610 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
+2026-09-02 06:07:27,626 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
+2026-09-02 06:07:27,642 WARNING django.request Bad Request: /api/games/49/teams/91/decisions/round/1/talent/
 ok
 test_the_whole_submission_api_refuses_the_negatives_it_accepts (core.tests.test_decision_limits.NegativeInvestmentApiTests)
-Only for decision types the whole-submission serializer nests. ... 2026-09-02 05:41:58,025 WARNING django.request Bad Request: /api/games/50/teams/92/decisions/round/1/
-2026-09-02 05:41:58,047 WARNING django.request Bad Request: /api/games/50/teams/92/decisions/round/1/
+Only for decision types the whole-submission serializer nests. ... 2026-09-02 06:07:27,673 WARNING django.request Bad Request: /api/games/50/teams/92/decisions/round/1/
+2026-09-02 06:07:27,692 WARNING django.request Bad Request: /api/games/50/teams/92/decisions/round/1/
 ok
 test_zero_and_positive_are_still_accepted (core.tests.test_decision_limits.NegativeInvestmentApiTests)
 The control. A guard that refuses everything is not a guard. ... ok
@@ -110,29 +114,29 @@ test_the_scan_covers_every_protected_model (core.tests.test_decision_limits.Pers
 The precondition is only worth what it looks at. ... ok
 test_zero_and_positive_persisted_values_still_resolve (core.tests.test_decision_limits.PersistedRowEngineGuardTests)
 The control. A precondition that refuses everything is not a guard. ... ok
-test_a_corrected_payload_is_accepted_and_the_round_resolves (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:41:58,524 WARNING django.request Bad Request: /api/games/57/teams/99/decisions/round/1/products/
-2026-09-02 05:41:59,421 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
-2026-09-02 05:41:59,422 INFO agent_orchestrator   competitor: proposed 0 actions
-2026-09-02 05:41:59,422 INFO agent_orchestrator   investor: proposed 0 actions
-2026-09-02 05:41:59,422 INFO agent_orchestrator   alliance: proposed 0 actions
-2026-09-02 05:41:59,422 INFO agent_orchestrator   government: proposed 0 actions
-2026-09-02 05:41:59,422 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
-2026-09-02 05:41:59,422 INFO agent_orchestrator   Converged after 1 iterations
-2026-09-02 05:41:59,427 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
-2026-09-02 05:41:59,499 INFO engine Phase 1 complete: 0.7s
+test_a_corrected_payload_is_accepted_and_the_round_resolves (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:28,127 WARNING django.request Bad Request: /api/games/57/teams/99/decisions/round/1/products/
+2026-09-02 06:07:28,923 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-02 06:07:28,923 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-02 06:07:28,923 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-02 06:07:28,923 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-02 06:07:28,924 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-02 06:07:28,924 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-02 06:07:28,924 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-02 06:07:28,928 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-02 06:07:28,997 INFO engine Phase 1 complete: 0.6s
 ok
 test_a_rejected_payload_leaves_the_persisted_set_unchanged (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   return self._jws.encode(
 /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
-2026-09-02 05:41:59,829 WARNING django.request Bad Request: /api/games/58/teams/101/decisions/round/1/products/
+2026-09-02 06:07:29,283 WARNING django.request Bad Request: /api/games/58/teams/101/decisions/round/1/products/
 ok
-test_a_retired_product_does_not_free_its_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:41:59,875 WARNING django.request Bad Request: /api/games/59/teams/103/decisions/round/1/products/
+test_a_retired_product_does_not_free_its_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:29,321 WARNING django.request Bad Request: /api/games/59/teams/103/decisions/round/1/products/
 ok
 test_another_team_may_use_the_same_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... ok
-test_per_type_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:41:59,996 WARNING django.request Bad Request: /api/games/61/teams/107/decisions/round/1/products/
+test_per_type_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:29,423 WARNING django.request Bad Request: /api/games/61/teams/107/decisions/round/1/products/
 ok
-test_per_type_endpoint_rejects_two_creates_sharing_a_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:42:00,041 WARNING django.request Bad Request: /api/games/62/teams/109/decisions/round/1/products/
+test_per_type_endpoint_rejects_two_creates_sharing_a_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:29,463 WARNING django.request Bad Request: /api/games/62/teams/109/decisions/round/1/products/
 ok
 test_the_manifest_still_refuses_rows_inserted_outside_the_api (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests)
 The write-path check is the fix; the manifest key is the backstop. ... ok
@@ -141,13 +145,13 @@ test_two_distinct_names_are_accepted (core.tests.test_product_name_uniqueness.Pr
 /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
   decoded = self.decode_complete(
 ok
-test_whole_submission_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:42:00,288 WARNING django.request Bad Request: /api/games/65/teams/115/decisions/round/1/
+test_whole_submission_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:29,677 WARNING django.request Bad Request: /api/games/65/teams/115/decisions/round/1/
 ok
-test_whole_submission_endpoint_rejects_the_same_payload (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 05:42:00,334 WARNING django.request Bad Request: /api/games/66/teams/117/decisions/round/1/
+test_whole_submission_endpoint_rejects_the_same_payload (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-02 06:07:29,718 WARNING django.request Bad Request: /api/games/66/teams/117/decisions/round/1/
 ok
 
 ----------------------------------------------------------------------
-Ran 69 tests in 5.971s
+Ran 69 tests in 5.475s
 
 OK
 Destroying test database for alias 'default' ('test_gsp_crv210_probe')...
@@ -345,3 +349,5 @@ Running migrations:
   No migrations to apply.
 System check identified no issues (0 silenced).
 exit=0
+
+tree at end:   0 modified tracked files

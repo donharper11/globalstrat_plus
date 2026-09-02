@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `561aa32`.** Clean tree. Frozen before this evidence was
+**Runtime revision `a713349`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -61,25 +61,51 @@ value. Both now read the scenario-scoped `rd_costs.feature_cap`.
 on both writes and at the engine, and cap enforcement on both writes, when
 neither test existed. Both now do.
 
-## Accounting: both modes
+## Accounting: observed from the accounting path
 
 `FundingAccountingTests` runs the real `calculate_operating_expenses` with the
-engine's own `RoundContext`, not a stand-in:
+engine's own `RoundContext` and reads the figures that call produced for the
+team from `context.opex` — `rd_expense` and `platform_capex`. It does **not**
+re-derive them.
 
-- **expense mode** — nothing moves onto the balance sheet
-- **capitalisation mode** — the authored cost is capitalised in the funding
-  round, nothing for a draft, nothing again afterwards
+Across four rounds, in expense mode:
 
-An earlier version of the helper took a `capitalize` flag and ignored it, so
-the capitalisation test asserted nothing about capitalisation. It now asserts
-the cost path actually ran, and clears the scenario config cache first, because
-`get_config` memoises per scenario and the test would otherwise measure the
+| Round | State | `rd_expense` | `platform_capex` |
+|---|---|---|---|
+| 1 | requested, unfunded | 0 | 0 |
+| 2 | funding lands, clock starts | **authored** | 0 |
+| 3 | building | 0 | 0 |
+| 4 | active | 0 | 0 |
+
+with the sum across the lifecycle asserted equal to the authored cost — once,
+and nowhere else. In capitalisation mode the same platform reports
+`platform_capex == authored` in the funding round with `rd_expense` zero, zero
+in later rounds, and the asset balance on the platform is checked separately as
+a second observation.
+
+**What is not observed: cash.** These assertions cover the expense and capex
+the cost path reports and the capitalised balance on the platform. No cash
+figure is read, and this report does not claim one. An earlier version of this
+section said cash was recorded when the test recorded no cash field.
+
+Two earlier versions of this proof were wrong in ways worth recording. The
+first summed a helper that queried `funded_round` and re-priced the platform
+itself, which proved that `funded_round` selects one round and nothing about
+what the engine booked. The second asserted only that nothing was capitalised
+in expense mode, which a branch booking nothing at all would have passed. The
+helper is deleted rather than left unused.
+
+The test clears the scenario config cache before each run, because `get_config`
+memoises per scenario and the capitalisation test would otherwise measure the
 default branch twice.
 
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `561aa32`: **69 tests, OK**, with per-class counts
+  at `a713349`: **69 tests, OK**. Written to a temporary path outside the
+  repository and moved in afterwards, so producing the artifact cannot dirty
+  the tree its header reports; the header records **0 modified tracked files
+  at the start and at the end**
 - `evidence/decision-rules/stage3a/migration-check.txt` —
   `makemigrations --check --dry-run` → **No changes detected**, exit 0; one
   migration: `0080_platform_funding_lifecycle`
@@ -101,7 +127,7 @@ invented.
 
 ## Status of the findings
 
-**V2-039, V2-040 and V2-044 are implemented at `561aa32`, pending integrated
+**V2-039, V2-040 and V2-044 are implemented at `a713349`, pending integrated
 Stage 3 closure.** Not closed; the register records them the same way. Closure
 comes with the integrated Stage 3/4 evidence, after immutability lands.
 
