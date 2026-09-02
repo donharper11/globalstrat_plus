@@ -926,15 +926,13 @@ class AggregateFundingTests(LifecycleFixture):
         self.assertEqual(booked['rd_expense'], D('0'))
 
 
-class DuplicateGenerationTests(LifecycleFixture):
-    """A team develops one platform per generation.
+class GenerationRequestMixin:
+    """Fixture and helpers for the generation-conflict classes.
 
-    V2-046, a regression introduced by the V2-045 refactor. The engine used to
-    get this for free: it created each platform inside the decision loop, so
-    the next row's existing-platform query saw the one just created and
-    skipped. Collecting candidates before creating any -- which the aggregate
-    allocation needs -- made every row see the same pre-loop state, so two rows
-    naming one generation were both funded, both created and both charged.
+    Deliberately holds no `test_*` methods. `HeldGenerationTests`
+    subclassed `DuplicateGenerationTests` and re-ran seven of its cases,
+    inflating 48 distinct tests to 55 executions and contradicting the
+    checkpoint's own claim that no class inherits another's tests.
     """
 
     def setUp(self):
@@ -972,6 +970,18 @@ class DuplicateGenerationTests(LifecycleFixture):
                  'platform_name': 'Duplicate B', 'feature_levels': {}}]
 
     # -- both supported write surfaces --------------------------------------
+
+
+class DuplicateGenerationTests(GenerationRequestMixin, LifecycleFixture):
+    """A team develops one platform per generation.
+
+    V2-046, a regression introduced by the V2-045 refactor. The engine used to
+    get this for free: it created each platform inside the decision loop, so
+    the next row's existing-platform query saw the one just created and
+    skipped. Collecting candidates before creating any -- which the aggregate
+    allocation needs -- made every row see the same pre-loop state, so two rows
+    naming one generation were both funded, both created and both charged.
+    """
 
     def test_the_per_type_surface_refuses_a_duplicate_generation(self):
         response = self.client_as_student().patch(
@@ -1107,7 +1117,7 @@ class DuplicateGenerationTests(LifecycleFixture):
             [('Old', 'retired'), ('Rebuilt', 'in_development')])
 
 
-class HeldGenerationTests(DuplicateGenerationTests):
+class HeldGenerationTests(GenerationRequestMixin, LifecycleFixture):
     """One platform per generation, against state as well as against payload.
 
     Two gaps the V2-046 repair left. A carried draft was never reconciled
@@ -1273,3 +1283,96 @@ class HeldGenerationTests(DuplicateGenerationTests):
             f'round/1/platforms/', self.request_row('Rebuilt'), format='json')
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 1)
+
+
+class ConflictedDraftAllocatorTests(GenerationRequestMixin, LifecycleFixture):
+    """Two carried drafts for one generation are invalid inventory, not a choice.
+
+    The allocator built its `live_generations` set by excluding
+    `unfunded_draft`, so a two-draft conflict was invisible to it and the
+    de-duplication then promoted the first one -- picking a winner from
+    inventory that should be refused outright.
+
+    Phase 1 does refuse that state before the allocator is reached. These tests
+    drive the lifecycle directly, without that refusal, because the defence has
+    to hold on its own terms rather than because something upstream usually
+    fires first.
+    """
+
+    def two_drafts(self):
+        from core.models.team_state import TeamPlatform
+        # `development_method` matters: without it the allocator declines the
+        # candidate as unpriced, and the two-draft assertions below would pass
+        # for the wrong reason rather than because the conflict was detected.
+        return [TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.gen, name=name,
+            status='unfunded_draft', development_method='in_house',
+            development_started_round=None, funded_round=None,
+            development_rounds_remaining=None)
+            for name in ('Draft One', 'Draft Two')]
+
+    def rows(self):
+        from core.models.team_state import TeamPlatform
+        return sorted(TeamPlatform.objects
+                      .filter(team=self.team, platform_generation=self.gen)
+                      .values_list('name', 'status', 'funded_round',
+                                   'development_started_round'))
+
+    def fund_generously(self):
+        from core.models import Team
+        Team.objects.filter(pk=self.team.pk).update(
+            cash_on_hand=self.gen.development_cost * 10)
+        self.team.refresh_from_db()
+
+    def test_each_draft_would_be_fundable_on_its_own(self):
+        """So the two-draft refusals below cannot pass for the wrong reason."""
+        from core.services.rd_costs import allocate_platform_funding
+        drafts = self.two_drafts()
+        self.fund_generously()
+        funded = allocate_platform_funding(
+            self.team, [(('draft', drafts[0].id), self.gen, 'in_house')])
+        self.assertEqual(funded, {('draft', drafts[0].id):
+                                  self.gen.development_cost})
+
+    def test_neither_conflicting_draft_is_promoted(self):
+        self.two_drafts()
+        self.fund_generously()
+        self.process(1)
+        self.assertEqual(
+            self.rows(),
+            [('Draft One', 'unfunded_draft', None, None),
+             ('Draft Two', 'unfunded_draft', None, None)],
+            'a conflicting draft was promoted, funded or given a start round')
+
+    def test_neither_conflicting_draft_is_charged(self):
+        self.two_drafts()
+        self.fund_generously()
+        self.process(1)
+        booked = self.run_cost_path(1, capitalize=False)
+        self.assertTrue(booked['result']['ran'], booked['result'])
+        self.assertEqual(booked['rd_expense'], D('0'),
+                         'a conflicting draft was charged')
+        self.assertEqual(booked['platform_capex'], D('0'))
+
+    def test_the_capitalisation_selection_is_the_same(self):
+        self.two_drafts()
+        self.fund_generously()
+        self.process(1)
+        booked = self.run_cost_path(1, capitalize=True)
+        self.assertTrue(booked['result']['ran'], booked['result'])
+        self.assertEqual(booked['platform_capex'], D('0'),
+                         'a conflicting draft was capitalised')
+        self.assertEqual(booked['capitalised_delta'], D('0'))
+
+    def test_a_single_draft_still_funds_normally(self):
+        """The control: the guard must bite only on conflicted inventory."""
+        from core.models.team_state import TeamPlatform
+        TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.gen, name='Only Draft',
+            status='unfunded_draft', development_method='in_house')
+        self.fund_generously()
+        self.process(1)
+        self.assertEqual(
+            self.rows(), [('Only Draft', 'in_development', 1, 1)])
+        booked = self.run_cost_path(1, capitalize=False)
+        self.assertEqual(booked['rd_expense'], self.gen.development_cost)

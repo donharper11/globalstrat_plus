@@ -119,24 +119,32 @@ def _process_platform_development(team, submission, current_round):
     # generation. Phase 1 refuses that state outright; this guard is the
     # defence, not the repair, so nothing is silently promoted if the engine is
     # reached another way.
-    live_generations = set(TeamPlatform.objects
-                           .filter(team=team)
-                           .exclude(status__in=('retired', 'unfunded_draft'))
-                           .values_list('platform_generation_id', flat=True))
+    # Count every non-retired row per generation, drafts included. A
+    # generation holding more than one is invalid inventory, not a choice
+    # between candidates: **no** draft for it is promoted.
+    #
+    # An earlier version built this set by excluding unfunded_draft, so two
+    # carried drafts for one generation were invisible to it and the
+    # de-duplication then promoted the first one -- picking a winner from
+    # inventory that should have been refused outright. Phase 1 does refuse
+    # that state before the allocator is reached, but this defence has to hold
+    # on its own terms, not because something upstream usually fires first.
+    from collections import Counter
+    non_retired = list(TeamPlatform.objects
+                       .filter(team=team).exclude(status='retired')
+                       .values_list('platform_generation_id', 'status'))
+    per_generation = Counter(generation for generation, _ in non_retired)
+    conflicted = {generation for generation, count in per_generation.items()
+                  if count > 1}
+    live_generations = {generation for generation, status in non_retired
+                        if status != 'unfunded_draft'}
+
     drafts = [draft for draft in TeamPlatform.objects
               .filter(team=team, status='unfunded_draft')
               .select_related('platform_generation')
               .order_by('platform_generation__generation_order', 'name', 'id')
-              if draft.platform_generation_id not in live_generations]
-    # And one draft per generation, if two were ever carried.
-    seen_draft_generations = set()
-    deduped_drafts = []
-    for draft in drafts:
-        if draft.platform_generation_id in seen_draft_generations:
-            continue
-        seen_draft_generations.add(draft.platform_generation_id)
-        deduped_drafts.append(draft)
-    drafts = deduped_drafts
+              if draft.platform_generation_id not in live_generations
+              and draft.platform_generation_id not in conflicted]
 
     # -- new requests -------------------------------------------------------
     #
