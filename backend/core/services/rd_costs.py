@@ -466,20 +466,48 @@ def describe_ownership_violations(violations, limit=5):
 # Paid before ready
 # ---------------------------------------------------------------------------
 
-def can_fund_platform(team, development):
-    """Whether the team can actually pay for this platform this round.
-
-    Asked against the authored price rather than the submitted figure, because
-    the submitted figure is no longer the team's to choose (V2-037). Cash is
-    the test: a platform completes only if its cost was charged, and a team
-    that cannot cover it keeps an unfunded draft rather than a free platform.
-    """
+def platform_price(generation, method):
+    """The authored price of one candidate, or None if the scenario has none."""
     try:
-        price = platform_cost_for(development)
+        return platform_development_cost(generation, method)
     except UnauthoredCost:
-        return False
-    cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
-    return price <= cash
+        return None
+
+
+def allocate_platform_funding(team, candidates):
+    """Decide which platforms this team can fund **together**, this round.
+
+    V2-045. Affordability used to be a per-row boolean against
+    `team.cash_on_hand`, and both lifecycle loops asked it independently: two
+    $1,000,000 drafts against $1,500,000 of cash both came back affordable,
+    both started their clocks, and the accounting path then booked $2,000,000
+    against $1,500,000. A per-item test that never reserves what it has already
+    accepted does not compose.
+
+    One allocation, one running balance. Each accepted candidate's authoritative
+    cost is reserved before the next is considered, so no set of transitions can
+    book more than the funding available to that set.
+
+    `candidates` is an ordered sequence of `(key, generation, method)`. The
+    caller fixes the order and the ordering rule is stated there; this function
+    keeps it deterministic by walking the sequence as given.
+
+    Returns `{key: Decimal price}` for the funded candidates only. A candidate
+    that does not fit the remaining balance is simply absent, and the caller
+    leaves it an unfunded draft with no funding round and no running clock.
+    """
+    remaining = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
+    funded = {}
+    for key, generation, method in candidates:
+        price = platform_price(generation, method)
+        if price is None:
+            # Unpriced: refused by the engine precondition before this point.
+            # Never funded on a guess.
+            continue
+        if price <= remaining:
+            funded[key] = price
+            remaining -= price
+    return funded
 
 
 # ---------------------------------------------------------------------------

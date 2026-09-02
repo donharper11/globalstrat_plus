@@ -62,103 +62,107 @@ def process_rd(context):
 MIN_DEVELOPMENT_ROUNDS = 1
 
 
-def _process_platform_development(team, submission, current_round):
-    """
-    Process DecisionPlatformDevelopment decisions and advance
-    in-development platforms.
-    """
-    # Process new platform development decisions
-    for dev_decision in submission.platform_developments.all().order_by(
-            'platform_generation__generation_order', 'platform_name'):
-        gen = dev_decision.platform_generation
-
-        # Check if team already has this generation
-        existing = TeamPlatform.objects.filter(
-            team=team, platform_generation=gen,
-        ).exclude(status='retired').first()
-
-        if existing:
-            continue  # Already have this platform
-
-        # Create new platform in development.
-        #
-        # The authored figure is the number of rounds actually waited, bounded
-        # by the scenario. V2-040 measured what it meant before: a generation
-        # authored at 0 was active in the round it was created, and one
-        # authored at 2 was ready after 1, because the decrement loop below ran
-        # against platforms this same call had just created.
-        from core.engine.utils import get_config
-        try:
-            scenario_max = int(get_config(
-                team.game.scenario, 'max_platform_development_rounds', 2))
-        except (TypeError, ValueError):
-            scenario_max = 2
-        dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
-                         min(scenario_max, gen.development_rounds or 0))
-
-        # CC-32B: Apply org structure decision speed modifier
-        try:
-            from core.models.cc32b_models import TeamOrganizationalStructure
-            import math
-            org = TeamOrganizationalStructure.objects.filter(
-                game=team.game, team=team,
-            ).select_related('current_structure').first()
-            if org and org.current_structure and org.transition_rounds_remaining <= 0:
-                speed = float(org.current_structure.decision_speed_modifier)
-                if speed > 0 and speed != 1.0 and dev_rounds > 0:
-                    # Never below the minimum: an organisation cannot make a
-                    # platform ready in the round it was started.
-                    dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
-                                     math.floor(dev_rounds / speed))
-        except Exception:
-            pass
-
-        # Paid before ready. A platform completes only if its cost was
-        # actually charged; a team that starts one it cannot fund keeps it as
-        # an unfunded draft and may fund it in a later round. The round the
-        # funding lands is the round the clock starts, so an unfunded draft
-        # records no started round and no remaining rounds.
-        from core.services.rd_costs import can_fund_platform
-        affordable = can_fund_platform(team, dev_decision)
-        TeamPlatform.objects.create(
-            team=team,
-            platform_generation=gen,
-            name=dev_decision.platform_name or gen.name,
-            status='in_development' if affordable else 'unfunded_draft',
-            development_method=dev_decision.method,
-            development_started_round=current_round if affordable else None,
-            funded_round=current_round if affordable else None,
-            development_rounds_remaining=dev_rounds if affordable else None,
-        )
-        continue
-
-    # An unfunded draft the team can now afford starts building. Its clock
-    # starts in the round the money lands, not the round it was first asked
-    # for.
+def _development_rounds_for(team, gen):
+    """The authored wait for one generation, bounded by the scenario."""
+    import math
     from core.engine.utils import get_config
-    from core.services.rd_costs import can_fund_platform
-    for draft in TeamPlatform.objects.filter(
-            team=team, status='unfunded_draft').order_by('name'):
-        decision = (DecisionPlatformDevelopment.objects
-                    .filter(submission__team=team,
-                            platform_generation=draft.platform_generation)
-                    .order_by('-submission__round__round_number').first())
-        if decision is None or not can_fund_platform(team, decision):
-            continue
-        gen = draft.platform_generation
-        try:
-            scenario_max = int(get_config(
-                team.game.scenario, 'max_platform_development_rounds', 2))
-        except (TypeError, ValueError):
-            scenario_max = 2
+    try:
+        scenario_max = int(get_config(
+            team.game.scenario, 'max_platform_development_rounds', 2))
+    except (TypeError, ValueError):
+        scenario_max = 2
+    dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
+                     min(scenario_max, gen.development_rounds or 0))
+
+    # CC-32B: organisational structure speed modifier, never below the
+    # minimum -- an org chart cannot make a platform ready in the round it
+    # was started.
+    try:
+        from core.models.cc32b_models import TeamOrganizationalStructure
+        org = TeamOrganizationalStructure.objects.filter(
+            game=team.game, team=team,
+        ).select_related('current_structure').first()
+        if org and org.current_structure and org.transition_rounds_remaining <= 0:
+            speed = float(org.current_structure.decision_speed_modifier)
+            if speed > 0 and speed != 1.0 and dev_rounds > 0:
+                dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
+                                 math.floor(dev_rounds / speed))
+    except Exception:
+        pass
+    return dev_rounds
+
+
+def _process_platform_development(team, submission, current_round):
+    """Process platform development decisions and advance in-development rows.
+
+    Funding is decided **once for the whole team**, over every candidate this
+    round: the drafts carried from earlier rounds and the new requests in this
+    submission. V2-045: deciding it one platform at a time against an
+    unreserved balance let two $1,000,000 drafts both start against $1,500,000
+    of cash, and the accounting path then booked $2,000,000.
+
+    Priority is carried drafts first, then new requests, each in generation
+    order and then by name. Drafts first because a team that committed in an
+    earlier round and could not pay should not be pushed further back by a
+    request it made later; without a stated rule an old draft can starve
+    indefinitely. The order is deterministic either way, which is what the
+    accounting depends on.
+    """
+    from core.services.rd_costs import allocate_platform_funding
+
+    # -- carried drafts, oldest commitment first --------------------------
+    drafts = list(TeamPlatform.objects
+                  .filter(team=team, status='unfunded_draft')
+                  .select_related('platform_generation')
+                  .order_by('platform_generation__generation_order', 'name',
+                            'id'))
+
+    # -- new requests, skipping generations the team already holds ---------
+    new_requests = []
+    for dev_decision in submission.platform_developments.all().order_by(
+            'platform_generation__generation_order', 'platform_name', 'id'):
+        gen = dev_decision.platform_generation
+        if TeamPlatform.objects.filter(
+                team=team, platform_generation=gen).exclude(
+                status='retired').exists():
+            continue        # already held, or already carried as a draft
+        new_requests.append(dev_decision)
+
+    candidates = (
+        [(('draft', draft.id), draft.platform_generation,
+          draft.development_method) for draft in drafts]
+        + [(('new', decision.id), decision.platform_generation,
+            decision.method) for decision in new_requests])
+    funded = allocate_platform_funding(team, candidates)
+
+    # -- promote the drafts that fit --------------------------------------
+    for draft in drafts:
+        if ('draft', draft.id) not in funded:
+            continue        # stays a draft: no funding round, no clock
         draft.status = 'in_development'
         draft.development_started_round = current_round
         draft.funded_round = current_round
-        draft.development_rounds_remaining = max(
-            MIN_DEVELOPMENT_ROUNDS, min(scenario_max, gen.development_rounds or 0))
+        draft.development_rounds_remaining = _development_rounds_for(
+            team, draft.platform_generation)
         draft.save(update_fields=['status', 'development_started_round',
                                   'funded_round',
                                   'development_rounds_remaining'])
+
+    # -- create this round's requests, funded or not -----------------------
+    for decision in new_requests:
+        gen = decision.platform_generation
+        affordable = ('new', decision.id) in funded
+        TeamPlatform.objects.create(
+            team=team,
+            platform_generation=gen,
+            name=decision.platform_name or gen.name,
+            status='in_development' if affordable else 'unfunded_draft',
+            development_method=decision.method,
+            development_started_round=current_round if affordable else None,
+            funded_round=current_round if affordable else None,
+            development_rounds_remaining=(
+                _development_rounds_for(team, gen) if affordable else None),
+        )
 
     # Advance in-development platforms started in an *earlier* round.
     #
