@@ -316,10 +316,10 @@ def committed_outlay(submission):
 
     platform = sum(
         (Decimal(row.committed_cost or ZERO)
-         for row in submission.platform_developments.all()), ZERO)
+         for row in submission.platform_developments.order_by('id')), ZERO)
     rd_rows = sum(
         (Decimal(row.amount or ZERO)
-         for row in submission.rd_investments.all()), ZERO)
+         for row in submission.rd_investments.order_by('id')), ZERO)
     lines['platform_development'] = platform
     lines['rd_investments'] = rd_rows
     return lines

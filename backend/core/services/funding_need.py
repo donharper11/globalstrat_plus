@@ -96,7 +96,7 @@ def decision_outlays(scenario, team, submission, current_round,
     if submission is None:
         return lines
 
-    for investment in submission.rd_investments.all():
+    for investment in submission.rd_investments.order_by('id'):
         lines['rd'] += investment.amount
     # Platform development is charged from the platform's funding round, not
     # from the presence of a decision row in this round's submission. The
@@ -110,7 +110,8 @@ def decision_outlays(scenario, team, submission, current_round,
     for platform in (TeamPlatform.objects
                      .filter(team=team, funded_round=current_round)
                      .exclude(status='unfunded_draft')
-                     .select_related('platform_generation')):
+                     .select_related('platform_generation')
+                     .order_by('id')):
         try:
             price = platform_development_cost(platform.platform_generation,
                                               platform.development_method)
@@ -122,11 +123,11 @@ def decision_outlays(scenario, team, submission, current_round,
             lines['rd'] += price
 
     rep_cost = _sales_rep_cost(scenario)
-    for marketing in submission.marketing_decisions.all():
+    for marketing in submission.marketing_decisions.order_by('id'):
         lines['marketing'] += (marketing.promotion_budget
                                + rep_cost * marketing.sales_team_count)
 
-    for entry in submission.market_entries.all():
+    for entry in submission.market_entries.order_by('id'):
         if entry.action == 'enter':
             lines['strategy'] += entry.initial_investment
         elif entry.action == 'exit':
@@ -135,7 +136,7 @@ def decision_outlays(scenario, team, submission, current_round,
                     D('0.01'), rounding=ROUND_HALF_UP)
 
     for partnership in TeamPartnership.objects.filter(
-            team=team, status='active'):
+            team=team, status='active').order_by('id'):
         lines['strategy'] += partnership.annual_investment
 
     try:
@@ -146,7 +147,7 @@ def decision_outlays(scenario, team, submission, current_round,
     except Exception:
         pass
 
-    for plant in submission.plant_decisions.all():
+    for plant in submission.plant_decisions.order_by('id'):
         if plant.action == 'build' and plant.market.plant_build_cost:
             lines['plant_capex'] += plant.market.plant_build_cost
 

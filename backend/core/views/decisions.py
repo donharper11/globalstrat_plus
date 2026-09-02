@@ -475,6 +475,49 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
         return Response(DecisionSubmissionSerializer(submission).data)
 
 
+class ProductRebaseView(CompetitionDecisionWriteMixin, APIView):
+    """
+    POST /api/games/<game_id>/teams/<team_id>/products/<product_id>/rebase/
+
+    Move a product onto another of the team's ready platforms.
+
+    Body: {"team_platform": <id>}
+
+    The switch is validated, the stock left behind is written off and the
+    round-versioned association is recorded in one transaction, so a switch
+    that charged but did not move -- or moved but did not charge -- cannot
+    happen. Refusals name what is wrong and change nothing.
+    """
+    permission_classes = [IsTeamMember, IsCurrentRoundOpen]
+    throttle_scope = 'decision_write'
+
+    def post(self, request, game_id, team_id, product_id):
+        from core.models.team_state import TeamPlatform, TeamProduct
+        from core.services.product_rebase import RebaseRefused, rebase
+
+        # The round is the game's current one, never the client's. A switch
+        # names the round it takes effect from, so accepting that from the
+        # request would let a team backdate one into a scored round.
+        game = get_object_or_404(Game, pk=game_id)
+        rnd = Round.objects.filter(
+            game=game, round_number=game.current_round).first()
+        team = _get_team(team_id)
+        product = TeamProduct.objects.filter(pk=product_id,
+                                             team=team).first()
+        target = TeamPlatform.objects.filter(
+            pk=request.data.get('team_platform')).first()
+
+        try:
+            result = rebase(product, target, team, game.current_round)
+        except RebaseRefused as refusal:
+            return Response({'detail': refusal.message},
+                            status=refusal.status_code)
+
+        from core.services.competition_audit import record_decision_event
+        record_decision_event(request, game, team, rnd, 'rebase', result)
+        return Response(result, status=status.HTTP_200_OK)
+
+
 # ---------------------------------------------------------------------------
 # Lock / Unlock
 # ---------------------------------------------------------------------------

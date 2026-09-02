@@ -239,6 +239,22 @@ ENGINE_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'engine'
 # hash by construction, so their iteration order cannot move a result.
 NARRATIVE_MODULES = {
     'narratives.py', 'briefing.py', 'llm_runner.py', 'strategy_advisory.py',
+    # The Phase-2 job queue. Its claim order is deliberately unspecified --
+    # `FOR UPDATE SKIP LOCKED` is how workers avoid each other -- and nothing
+    # it produces enters the competitive hash.
+    'narrative_jobs.py',
+}
+
+SERVICES_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'services'
+
+# The services the engine calls during resolution. Anything reached from
+# `core/engine` is inside the competitive envelope no matter which directory
+# it lives in, so the ordering rule follows it there. Kept honest by
+# `test_the_scanned_service_list_is_what_the_engine_actually_calls`.
+RESOLUTION_SERVICES = {
+    'competition_backup.py', 'competition_locks.py', 'funding_need.py',
+    'product_platform.py', 'product_rebase.py', 'rd_costs.py',
+    'resolution_manifest.py',
 }
 
 QUERYSET_MARKERS = ('.objects.', '.filter(', '.all()', '.exclude(')
@@ -319,6 +335,58 @@ class EngineIterationOrderTests(SimpleTestCase):
                 offenders.append(f'{path.name}:{lineno} {source[:110]}')
         self.assertFalse(offenders, 'Unordered iterated querysets:\n' +
                          '\n'.join(offenders))
+
+    def test_resolution_services_declare_their_order(self):
+        """The same rule, applied where the engine reaches outside itself.
+
+        `ENGINE_ROOT` stops at `core/engine`, but resolution calls into
+        `core/services`, and Stage 4 moved the round-correct platform lookup
+        there. An unordered scan in `product_platform.missing_platform_
+        resolutions` survived that move precisely because this scan did not
+        reach it -- the refusal list it builds was ordered by whatever the
+        database returned.
+        """
+        offenders = []
+        for name in sorted(RESOLUTION_SERVICES):
+            path = SERVICES_ROOT / name
+            tree = ast.parse(path.read_text(encoding='utf-8'))
+            for lineno, node in _iterators(tree):
+                source = ast.unparse(node)
+                if not any(marker in source for marker in QUERYSET_MARKERS):
+                    continue
+                if '.order_by(' in source:
+                    continue
+                offenders.append(f'{name}:{lineno} {source[:110]}')
+        self.assertFalse(offenders, 'Unordered iterated querysets:\n' +
+                         '\n'.join(offenders))
+
+    def test_the_scanned_service_list_is_what_the_engine_actually_calls(self):
+        """The allowlist above is derived, not remembered.
+
+        A scan scoped by a hand-kept list decays the first time someone adds
+        an engine import. This fails when the engine reaches a service the
+        scan does not cover, so the scope follows the code.
+        """
+        imported = set()
+        for path in sorted(ENGINE_ROOT.rglob('*.py')):
+            if '__pycache__' in str(path) or 'tests' in path.parts:
+                continue
+            tree = ast.parse(path.read_text(encoding='utf-8'))
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.ImportFrom) or not node.module:
+                    continue
+                if node.module.startswith('core.services.'):
+                    imported.add(node.module.split('.')[-1] + '.py')
+                elif node.module == 'core.services':
+                    for alias in node.names:
+                        if (SERVICES_ROOT / f'{alias.name}.py').exists():
+                            imported.add(f'{alias.name}.py')
+        unscanned = imported - RESOLUTION_SERVICES - NARRATIVE_MODULES
+        self.assertFalse(
+            unscanned,
+            'The engine calls these services, but the ordering scan above '
+            'does not cover them. Add them to RESOLUTION_SERVICES (and fix '
+            f'what that surfaces), or mark them narrative: {sorted(unscanned)}')
 
     def test_exemptions_are_all_still_reachable(self):
         """An exemption that no longer matches anything is stale documentation."""

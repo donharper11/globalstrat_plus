@@ -127,7 +127,8 @@ def missing_platform_resolutions(game, round_number):
 
     products = list(TeamProduct.objects
                     .filter(team__game=game, status='active')
-                    .select_related('team', 'team_platform'))
+                    .select_related('team', 'team_platform')
+                    .order_by('id'))
     resolved = platform_ids_as_of_round(products, round_number)
 
     from core.models.team_state import TeamPlatform

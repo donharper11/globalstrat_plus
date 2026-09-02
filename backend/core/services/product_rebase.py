@@ -118,8 +118,10 @@ def rebase(product, target_platform, team, round_number):
     from core.services.product_platform import (record_association,
                                                 seed_prior_association)
 
-    # The association that held before this switch, so earlier rounds keep
-    # resolving to the platform they were scored against.
+    # Captured before anything moves: the platform being left behind.
+    previous_id = product.team_platform_id
+    # Record the association that held before this switch, so earlier rounds
+    # keep resolving to the platform they were scored against.
     seed_prior_association(product, round_number)
 
     units, unit_cost = unsold_on_platform(product, round_number)
@@ -139,7 +141,7 @@ def rebase(product, target_platform, team, round_number):
 
     return {
         'product': product.id,
-        'from_platform': None,
+        'from_platform': previous_id,
         'to_platform': target_platform.id,
         'effective_from_round': round_number,
         'units_written_off': units,
@@ -160,5 +162,6 @@ def write_offs_for_round(team, round_number):
 
     total = (TeamProductPlatformHistory.objects
              .filter(team_product__team=team, effective_from_round=round_number)
+             .order_by('team_product_id')
              .values_list('inventory_write_off', flat=True))
     return sum((Decimal(str(value or 0)) for value in total), ZERO)

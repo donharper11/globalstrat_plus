@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .views.decisions import (
-    DecisionSubmissionView, DecisionPartialUpdateView,
+    DecisionSubmissionView, DecisionPartialUpdateView, ProductRebaseView,
     DecisionLockView, DecisionUnlockView,
     DecisionSummaryView,
     RDContextView, ProductContextView, MarketingContextView,
@@ -278,6 +278,8 @@ urlpatterns = [
          DecisionLockView.as_view(), name='decision-lock'),
     path('games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/unlock/',
          DecisionUnlockView.as_view(), name='decision-unlock'),
+    path('games/<int:game_id>/teams/<int:team_id>/products/<int:product_id>/rebase/',
+         ProductRebaseView.as_view(), name='product-rebase'),
     path('games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/summary/',
          DecisionSummaryView.as_view(), name='decision-summary'),
     path('games/<int:game_id>/teams/<int:team_id>/decisions/round/<int:round_number>/<str:decision_type>/',

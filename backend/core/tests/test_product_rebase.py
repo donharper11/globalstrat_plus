@@ -329,3 +329,148 @@ class SwitchThenReplayTests(RebaseFixture):
                 product_platform.platform_as_of_round(other, round_number).id,
                 self.old_platform.id,
                 'an unswitched product moved with another product\'s switch')
+
+
+class RebaseEndpointTests(RebaseFixture):
+    """The supported write surface for the switch.
+
+    The service is proved above; what these add is that a team can actually
+    reach it, that its refusals arrive as refusals rather than 500s, and that
+    a refused call leaves nothing behind.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        self.student = User.objects.create(
+            username=f'rebase-student-{id(self)}', role='student',
+            password_hash='x')
+        course = Course.objects.create(
+            course_code=f'REB{id(self) % 100000}', course_name='Rebase',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+        Round.objects.update_or_create(
+            game=self.game, round_number=self.game.current_round,
+            defaults={'status': 'open'})
+
+    def client_as_student(self):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.student)}')
+        return client
+
+    def url(self, product=None):
+        product = product or self.product
+        return (f'/api/games/{self.game.id}/teams/{self.team.id}'
+                f'/products/{product.id}/rebase/')
+
+    def test_a_team_can_switch_its_product_through_the_api(self):
+        response = self.client_as_student().post(
+            self.url(), {'team_platform': self.new_platform.id},
+            format='json')
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['to_platform'], self.new_platform.id)
+        self.assertEqual(response.data['from_platform'],
+                         self.old_platform.id)
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.team_platform_id, self.new_platform.id)
+
+    def test_the_switch_is_recorded_as_history_not_only_a_pointer_move(self):
+        round_number = self.game.current_round
+        self.client_as_student().post(
+            self.url(), {'team_platform': self.new_platform.id},
+            format='json')
+
+        row = TeamProductPlatformHistory.objects.get(
+            team_product=self.product, effective_from_round=round_number)
+        self.assertEqual(row.team_platform_id, self.new_platform.id)
+
+    def test_another_teams_platform_is_refused_with_400_not_500(self):
+        foreign = self.platform(self.new_gen, 'Theirs',
+                                team=self.other_team)
+        response = self.client_as_student().post(
+            self.url(), {'team_platform': foreign.id}, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('belongs to another team', response.data['detail'])
+
+    def test_a_refused_call_moves_nothing(self):
+        foreign = self.platform(self.new_gen, 'Theirs',
+                                team=self.other_team)
+        self.client_as_student().post(
+            self.url(), {'team_platform': foreign.id}, format='json')
+
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.team_platform_id, self.old_platform.id)
+        self.assertFalse(TeamProductPlatformHistory.objects.filter(
+            team_product=self.product).exists())
+
+    def test_an_unknown_platform_is_refused_rather_than_crashing(self):
+        response = self.client_as_student().post(
+            self.url(), {'team_platform': 9_999_999}, format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('No such platform', response.data['detail'])
+
+    def test_the_switch_is_written_to_the_decision_audit_trail(self):
+        from core.models.competition_audit import DecisionAuditEvent
+        self.client_as_student().post(
+            self.url(), {'team_platform': self.new_platform.id},
+            format='json')
+
+        event = DecisionAuditEvent.objects.filter(
+            team=self.team, action='rebase').first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.payload['to_platform'], self.new_platform.id)
+
+    def rival_client(self):
+        """A student enrolled on the *other* team in the same game."""
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        rival = User.objects.create(
+            username=f'rebase-rival-{id(self)}', role='student',
+            password_hash='x')
+        course = Course.objects.create(
+            course_code=f'RIV{id(self) % 100000}', course_name='Rival',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        Enrollment.objects.create(
+            user_id=rival.user_id, section_id=section.section_id,
+            team_id=self.other_team.id, is_active=True)
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(rival)}')
+        return client
+
+    def test_a_rival_cannot_re_base_another_teams_product(self):
+        response = self.rival_client().post(
+            self.url(), {'team_platform': self.new_platform.id},
+            format='json')
+
+        # Refused by the shared scope-guard middleware, which returns a
+        # plain JsonResponse rather than a DRF response -- the new route
+        # inherits the CRV2-08 default-deny boundary without opting in.
+        self.assertEqual(response.status_code, 403, response.content)
+
+    def test_a_rivals_attempt_moves_nothing(self):
+        self.rival_client().post(
+            self.url(), {'team_platform': self.new_platform.id},
+            format='json')
+
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.team_platform_id, self.old_platform.id)
+        self.assertFalse(TeamProductPlatformHistory.objects.filter(
+            team_product=self.product).exists())
