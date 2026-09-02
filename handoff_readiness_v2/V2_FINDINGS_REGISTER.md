@@ -274,93 +274,60 @@ Not closed: Stage 3 closes with the integrated Stage 3/4 evidence, after
 immutability lands.
 
 
-### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — repair incomplete at `9987688`, Stage 3A rework
+### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — implemented at `f348d24`, pending integrated Stage 3 closure
 
-**Incomplete twice before `f348d24`.** At `9987688` it refused duplicate rows
-within a submission but never reconciled a carried draft against another
-non-retired platform of the same generation. At `83ec2bd` the allocator's
-defence was still incomplete: it built its live-generations set by excluding
-`unfunded_draft`, so two carried drafts for one generation were invisible to
-it, and the de-duplication promoted the first — picking a winner from inventory
-that should have been refused, and charging for it. Phase 1 refused that state
-upstream, which is why the ordinary path looked correct; the audit found it by
-invoking the allocator directly.
+**Current status: implemented at `f348d24`.** The repair took three passes; the
+two superseded states below are dated historical audit notes, not current
+guidance.
 
-At `f348d24` the allocator counts every non-retired row per generation, drafts
-included, and a generation holding more than one promotes none of them: no
-status change, no funded round, no start round, nothing booked.
-`ConflictedDraftAllocatorTests` drives the lifecycle and accounting directly,
-in both accounting modes, with a single-draft control and a further control
-asserting each draft is individually fundable — so the refusal can only be the
-conflict, not an unpriced candidate.
+**The defect, as raised** at `c20bd8b`. The V2-045 allocation refactor collected
+every new request before creating any `TeamPlatform`, so the existing-platform
+query saw the same initial state for two rows naming one generation. Both
+entered the candidate set, both were funded, both were created. The supported
+per-type write returned 200 and persisted two same-generation rows; with
+$3,000,000 of cash and two authoritative $1,000,000 rows the production
+lifecycle created two `in_development` platforms for one generation, gave both
+`funded_round=1`, and the accounting output booked $2,000,000. Before the
+refactor, creation happened inside the decision loop, so the second row
+observed the first platform and was skipped.
 
-**Earlier note, retained:** That revision refused duplicate rows within a
-submission but never reconciled a *carried draft* against another non-retired
-platform of the same generation, so an upgrade residue from `f39b853` — one
-funded platform and one draft for one generation — still promoted into a
-second live platform. The Phase-1 part was repaired at `83ec2bd`, but the
-direct two-draft allocator defence remains incomplete. See V2-047 below for
-the held-request half of the repair.
-
-Raised by the independent audit of the V2-045 repair at `c20bd8b`, before
-repair. The allocation refactor collects all new requests before creating any
-`TeamPlatform`. Its existing-platform query therefore sees the same initial
-state for two rows naming one generation; both enter the candidate set, both
-can be funded, and both are created afterwards.
-
-The supported per-type write returned 200 and persisted two same-generation
-rows. With $3,000,000 opening cash and two authoritative $1,000,000 rows, the
-production lifecycle created two `in_development` platforms for that one
-generation, gave both `funded_round=1`, and the real accounting output booked
-$2,000,000. Before `f39b853`, creation happened inside the decision loop, so
-the second row observed the first platform and was skipped. The refactor has
-therefore changed both platform state and the charge.
-
-**Disposition: open.** GSP-CRV2-10 Stage 3A must refuse duplicate-generation
-rows on both write surfaces and at the Phase-1 persisted boundary, reconcile
-the allocator inventory defensively, and prove refusal before platform/result/
-accounting mutation. See `rework/GSP-CRV2-10_STAGE3A_REWORK_4.md`.
-
-**Repair, at runtime revision `9987688`.** Three layers, so the invariant holds
-whatever route a row arrives by.
+**Repair, completed at `f348d24`.** Three layers on the decision side, and a
+fourth on state:
 
 - **Both write surfaces** refuse a submission naming one generation twice, as a
-  cross-row rule (`duplicate_generation_problem`) raised before any row is
-  priced — so a refusal writes none of the replacement payload. A partly
-  applied replacement would leave a team's stored decisions in a state it never
-  submitted.
+  cross-row rule raised before any row is priced, so a refusal writes none of
+  the replacement payload.
 - **The Phase-1 precondition** refuses a stored duplicate pair before any
   platform, result or accounting mutation. It refuses rather than
-  de-duplicates: discarding one row would leave the stored decision and the
+  de-duplicates: discarding a row would leave the stored decision and the
   resolved decision disagreeing.
-- **The allocator's own inventory** excludes a generation already held and one
-  already claimed by an earlier row in the same submission. Deliberately not a
-  substitute for the checks above; it keeps the inventory correct on its own
-  terms so no path produces two live platforms for one team and generation.
+- **The allocator** counts every non-retired platform per generation, drafts
+  included, and a generation holding more than one promotes none of them — no
+  status change, no funded round, no start round, nothing booked.
+- **Existing duplicate state** refuses the round outright, naming every
+  conflicting row, and is never deleted, retired or merged.
 
-**Verification.** `DuplicateGenerationTests`, 8 tests: refusal on both surfaces
-with nothing persisted; a refused pair leaving an earlier accepted row
-untouched; the Phase-1 refusal with no platform created and no financial rows;
-the allocator bounded independently of API validation, booking one price rather
-than two; and positive controls — a corrected single request creating one
-platform and booking its one authoritative price, two distinct generations
-still accepted, and a retired generation still re-buildable.
+**Verification.** `DuplicateGenerationTests` (8) and
+`ConflictedDraftAllocatorTests` (5): refusal on both surfaces with nothing
+persisted; a refused pair leaving an earlier accepted row untouched; the
+Phase-1 refusal with no platform created and no financial rows; the two-draft
+case driven directly at the lifecycle and accounting boundary in both
+accounting modes, with a single-draft control and a further control asserting
+each draft is individually fundable, so the refusal can only be the conflict
+rather than an unpriced candidate.
 
-**Audit disposition at `f878ab6`: repair incomplete.** The current-submission
-duplicate checks pass, but carried drafts are added to the funding candidates
-before the `held`/`claimed` reconciliation. A duplicate draft left by the
-faulty predecessor can still be promoted and charged beside another
-non-retired platform of the same generation. See
-`rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`.
+**Historical — superseded, recorded because each was audited as incomplete:**
 
-**Second audit disposition at `dedd74b`: repair still incomplete.** Phase 1
-now refuses both active-plus-draft and two-draft conflicts before mutation, and
-the allocator declines an active-plus-draft residue. But, given two carried
-drafts for one generation, the allocator silently retains, promotes and books
-the first. The evidence did not expose that path: `HeldGenerationTests`
-inherits seven runnable tests from `DuplicateGenerationTests` despite the
-checkpoint claiming no test inheritance, and its two-draft regression stops at
-the Phase-1 refusal. See `rework/GSP-CRV2-10_STAGE3A_REWORK_6.md`.
+- *At `9987688`:* refused duplicate rows within a submission, but never
+  reconciled a carried draft against another non-retired platform of the same
+  generation, so an upgrade residue from `f39b853` still promoted into a second
+  live platform.
+- *At `83ec2bd`:* the allocator's defence built its live-generations set by
+  excluding `unfunded_draft`, so two carried drafts for one generation were
+  invisible to it and the de-duplication promoted the first — choosing a winner
+  from inventory that should have been refused, and charging for it. Phase 1
+  refused that state upstream, which is why the ordinary path looked correct;
+  the audit found it by invoking the allocator directly.
 
 
 ### V2-047 — an already-held generation is accepted, persisted and silently ignored (P1) — implemented at `83ec2bd`, pending integrated Stage 3 closure
@@ -377,10 +344,11 @@ lifecycle's defensive `held` set then skipped it, created nothing and the real
 accounting path booked zero. The stored decision therefore says “develop this
 platform” while the resolved state and charge say no decision existed.
 
-**Disposition: open.** Both supported writes and the Phase-1 persisted boundary
-must refuse an already-held non-retired generation before mutation and leave
-the retired-generation exception intact. See
-`rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`.
+*Disposition when raised (historical): open.* Both supported writes and the
+Phase-1 persisted boundary had to refuse an already-held non-retired generation
+before mutation, leaving the retired-generation exception intact. See
+`rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`. The current status is the repair
+below.
 
 **Repair, at runtime revision `83ec2bd`.**
 
@@ -403,7 +371,7 @@ non-retired platform rows across 302 distinct team/generation pairs — zero
 duplicates today. No database constraint prevents the state and runtime
 `f39b853` could create it, which is why the guard exists.
 
-**Verification.** `HeldGenerationTests`, 16 tests: both write surfaces refusing
+**Verification.** `HeldGenerationTests`, 9 tests: both write surfaces refusing
 a held generation, including when the holding row is a draft; a refusal leaving
 the previously accepted payload unchanged; the stored-row bypass refused at
 Phase 1 with nothing created and no financial rows; the active-plus-draft and

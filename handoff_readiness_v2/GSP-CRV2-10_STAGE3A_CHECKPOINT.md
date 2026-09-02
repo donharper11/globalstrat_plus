@@ -164,7 +164,7 @@ platform rows across 302 distinct team/generation pairs, zero duplicates today.
 The state is reachable from the predecessor revision, which is why the guard
 exists.
 
-`HeldGenerationTests` — 16 tests, including the retired positive control.
+`HeldGenerationTests` — 9 tests, including the retired positive control.
 
 ## Two carried drafts are invalid inventory
 
@@ -198,9 +198,21 @@ invented.
 
 ## Status of the findings
 
-**V2-039, V2-040, V2-044, V2-045, V2-046 and V2-047 are implemented at
-`83ec2bd`, pending integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
-comes with the integrated Stage 3/4 evidence, after immutability lands.
+**All Stage 3A findings are implemented by `f348d24`, pending integrated Stage
+3 closure.** Each landed at its own revision, and the last of them is what the
+frozen runtime carries:
+
+| Finding | Implemented at |
+|---|---|
+| V2-039 unlock gate | `8c10dbf` |
+| V2-040 timing | `8c10dbf` |
+| V2-044 ownership | `9a29672` |
+| V2-045 aggregate funding | `f39b853` |
+| V2-046 duplicate generations | **`f348d24`** — the allocator defence completed only here |
+| V2-047 held generations | `83ec2bd` |
+
+**None is closed.** The register records them the same way. Closure comes with
+the integrated Stage 3/4 evidence, after immutability lands.
 
 ## Not run
 
