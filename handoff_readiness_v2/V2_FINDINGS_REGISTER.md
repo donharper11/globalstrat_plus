@@ -274,6 +274,55 @@ Not closed: Stage 3 closes with the integrated Stage 3/4 evidence, after
 immutability lands.
 
 
+### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — implemented at `9987688`, pending integrated Stage 3 closure
+
+Raised by the independent audit of the V2-045 repair at `c20bd8b`, before
+repair. The allocation refactor collects all new requests before creating any
+`TeamPlatform`. Its existing-platform query therefore sees the same initial
+state for two rows naming one generation; both enter the candidate set, both
+can be funded, and both are created afterwards.
+
+The supported per-type write returned 200 and persisted two same-generation
+rows. With $3,000,000 opening cash and two authoritative $1,000,000 rows, the
+production lifecycle created two `in_development` platforms for that one
+generation, gave both `funded_round=1`, and the real accounting output booked
+$2,000,000. Before `f39b853`, creation happened inside the decision loop, so
+the second row observed the first platform and was skipped. The refactor has
+therefore changed both platform state and the charge.
+
+**Disposition: open.** GSP-CRV2-10 Stage 3A must refuse duplicate-generation
+rows on both write surfaces and at the Phase-1 persisted boundary, reconcile
+the allocator inventory defensively, and prove refusal before platform/result/
+accounting mutation. See `rework/GSP-CRV2-10_STAGE3A_REWORK_4.md`.
+
+**Repair, at runtime revision `9987688`.** Three layers, so the invariant holds
+whatever route a row arrives by.
+
+- **Both write surfaces** refuse a submission naming one generation twice, as a
+  cross-row rule (`duplicate_generation_problem`) raised before any row is
+  priced — so a refusal writes none of the replacement payload. A partly
+  applied replacement would leave a team's stored decisions in a state it never
+  submitted.
+- **The Phase-1 precondition** refuses a stored duplicate pair before any
+  platform, result or accounting mutation. It refuses rather than
+  de-duplicates: discarding one row would leave the stored decision and the
+  resolved decision disagreeing.
+- **The allocator's own inventory** excludes a generation already held and one
+  already claimed by an earlier row in the same submission. Deliberately not a
+  substitute for the checks above; it keeps the inventory correct on its own
+  terms so no path produces two live platforms for one team and generation.
+
+**Verification.** `DuplicateGenerationTests`, 8 tests: refusal on both surfaces
+with nothing persisted; a refused pair leaving an earlier accepted row
+untouched; the Phase-1 refusal with no platform created and no financial rows;
+the allocator bounded independently of API validation, booking one price rather
+than two; and positive controls — a corrected single request creating one
+platform and booking its one authoritative price, two distinct generations
+still accepted, and a retired generation still re-buildable.
+
+**Disposition: implemented at `9987688`, pending integrated Stage 3 closure.**
+
+
 ### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
 
 **Found** during the CRV2-08 dispute walkthrough. The runbook's dispute-5

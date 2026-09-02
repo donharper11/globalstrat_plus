@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `f39b853`.** Clean tree. Frozen before this evidence was
+**Runtime revision `9987688`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -22,7 +22,7 @@ recorded below rather than quietly fixed.
 | 5 | Feature cap | scenario-scoped `rd_costs.feature_cap` on both write surfaces; `persisted_feature_cap_violations` refuses at the engine | `FeatureCapTests` — **6** |
 | — | Old upgrade path operational | untouched | two existing contract tests, below |
 
-**31 tests in `test_platform_lifecycle`; 73 in the affected set.** No class
+**39 tests in `test_platform_lifecycle`; 81 in the affected set.** No class
 inherits another's tests — see the per-class table in the transcript.
 
 ## What the audit caught, and what it turned out to be
@@ -102,7 +102,7 @@ default branch twice.
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `f39b853`: **73 tests, OK**. Written to a temporary path outside the
+  at `9987688`: **81 tests, OK**. Written to a temporary path outside the
   repository and moved in afterwards, so producing the artifact cannot dirty
   the tree its header reports; the header records **0 modified tracked files
   at the start and at the end**
@@ -128,6 +128,21 @@ pair written straight to the table, and the capitalisation mode. The allocator
 was also exercised directly against the audit's figures and funds one of the
 two.
 
+## V2-046 — one platform per generation
+
+The V2-045 refactor lost an invariant the old code got for free. Creating each
+platform inside the decision loop meant the next row's existing-platform query
+saw the one just created; collecting candidates first — which the aggregate
+allocation needs — made every row see the same pre-loop state, so two rows
+naming one generation were both funded, created and charged. The allocator was
+internally consistent and allocating over the wrong inventory.
+
+Refused now on both write surfaces as a cross-row rule, at the Phase-1
+precondition for rows that bypass the API, and excluded from the allocator's
+inventory independently of either. `DuplicateGenerationTests` — 8 tests,
+including the positive controls that two distinct generations still allocate as
+V2-045 specifies and a retired generation remains re-buildable.
+
 ## The old upgrade path is still reachable
 
 - `test_distinct_features_are_still_accepted_on_both_paths` — R&D investments
@@ -145,8 +160,8 @@ invented.
 
 ## Status of the findings
 
-**V2-039, V2-040, V2-044 and V2-045 are implemented at `f39b853`, pending
-integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
+**V2-039, V2-040, V2-044, V2-045 and V2-046 are implemented at `9987688`,
+pending integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
 comes with the integrated Stage 3/4 evidence, after immutability lands.
 
 ## Not run
