@@ -117,15 +117,31 @@ def _process_platform_development(team, submission, current_round):
                   .order_by('platform_generation__generation_order', 'name',
                             'id'))
 
-    # -- new requests, skipping generations the team already holds ---------
+    # -- new requests -------------------------------------------------------
+    #
+    # Two independent exclusions, both needed. A generation the team already
+    # holds -- active, in development, or carried as an unfunded draft -- is
+    # not a new candidate. And a generation already taken by an earlier row in
+    # this same submission is not a second candidate: collecting candidates
+    # before creating any platform means every row sees the same pre-loop
+    # database state, so without this a duplicate pair was funded twice and
+    # created twice (V2-046).
+    #
+    # The write surfaces and the Phase-1 precondition both refuse a duplicate
+    # pair outright. This exclusion is deliberately not their substitute: it
+    # keeps the allocator's inventory correct on its own terms, so no path can
+    # produce two live platforms for one team and generation.
+    held = set(TeamPlatform.objects
+               .filter(team=team).exclude(status='retired')
+               .values_list('platform_generation_id', flat=True))
     new_requests = []
+    claimed = set()
     for dev_decision in submission.platform_developments.all().order_by(
             'platform_generation__generation_order', 'platform_name', 'id'):
-        gen = dev_decision.platform_generation
-        if TeamPlatform.objects.filter(
-                team=team, platform_generation=gen).exclude(
-                status='retired').exists():
-            continue        # already held, or already carried as a draft
+        generation_id = dev_decision.platform_generation_id
+        if generation_id in held or generation_id in claimed:
+            continue
+        claimed.add(generation_id)
         new_requests.append(dev_decision)
 
     candidates = (

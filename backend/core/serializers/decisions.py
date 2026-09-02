@@ -111,11 +111,19 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
     from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
                                         rd_investment_cost)
 
-    from core.services.rd_costs import ownership_problem, unlock_problem
+    from core.services.rd_costs import (duplicate_generation_problem,
+                                        ownership_problem, unlock_problem)
 
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
     price = platform_cost_for if kind == 'platform' else rd_investment_cost
     errors = []
+    if kind == 'platform':
+        # A cross-row rule: one generation per submission (V2-046). Raised
+        # before any row is priced so a refusal writes none of the replacement
+        # payload.
+        duplicate = duplicate_generation_problem(rows)
+        if duplicate:
+            raise serializers.ValidationError({'platform_generation': [duplicate]})
     for index, row in enumerate(rows):
         if kind == 'rd' and team is not None:
             # V2-044: the platform named must belong to the submitting team.

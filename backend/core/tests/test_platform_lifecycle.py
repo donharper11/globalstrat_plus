@@ -924,3 +924,184 @@ class AggregateFundingTests(LifecycleFixture):
         self.assertEqual(booked['platform_capex'], price,
                          'capitalisation mode funded a different set')
         self.assertEqual(booked['rd_expense'], D('0'))
+
+
+class DuplicateGenerationTests(LifecycleFixture):
+    """A team develops one platform per generation.
+
+    V2-046, a regression introduced by the V2-045 refactor. The engine used to
+    get this for free: it created each platform inside the decision loop, so
+    the next row's existing-platform query saw the one just created and
+    skipped. Collecting candidates before creating any -- which the aggregate
+    allocation needs -- made every row see the same pre-loop state, so two rows
+    naming one generation were both funded, both created and both charged.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        self.gen = self.generation(2, rounds=1)
+        self.student = User.objects.create(
+            username=f'dup-student-{id(self)}', role='student',
+            password_hash='x')
+        course = Course.objects.create(
+            course_code=f'DUP{id(self) % 100000}', course_name='Dup',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+        Round.objects.get_or_create(game=self.game, round_number=1,
+                                    defaults={'status': 'open'})
+
+    def client_as_student(self):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.student)}')
+        return client
+
+    def pair(self):
+        return [{'platform_generation': self.gen.id, 'method': 'in_house',
+                 'platform_name': 'Duplicate A', 'feature_levels': {}},
+                {'platform_generation': self.gen.id, 'method': 'in_house',
+                 'platform_name': 'Duplicate B', 'feature_levels': {}}]
+
+    # -- both supported write surfaces --------------------------------------
+
+    def test_the_per_type_surface_refuses_a_duplicate_generation(self):
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.pair(), format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('one platform per generation', str(response.data))
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0,
+                         'a refused duplicate pair persisted rows')
+
+    def test_the_whole_submission_surface_refuses_it_too(self):
+        response = self.client_as_student().post(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/1/',
+            {'platform_developments': self.pair()}, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('one platform per generation', str(response.data))
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
+
+    def test_a_refused_pair_replaces_nothing_already_stored(self):
+        """A refusal writes none of the replacement payload."""
+        other = self.generation(3, rounds=1)
+        client = self.client_as_student()
+        accepted = client.patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/',
+            [{'platform_generation': other.id, 'method': 'in_house',
+              'platform_name': 'Keeper', 'feature_levels': {}}], format='json')
+        self.assertEqual(accepted.status_code, 200, accepted.data)
+        refused = client.patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.pair(), format='json')
+        self.assertEqual(refused.status_code, 400)
+        self.assertEqual(
+            list(DecisionPlatformDevelopment.objects.values_list(
+                'platform_name', flat=True)), ['Keeper'])
+
+    # -- the Phase-1 boundary, for rows that bypassed the API ---------------
+
+    def test_a_stored_duplicate_pair_refuses_phase_1(self):
+        from core.engine.advance_round import (InvalidPersistedDecisionError,
+                                               process_round)
+        from core.models.results_financials import RoundResultFinancials
+        from core.models.team_state import TeamPlatform
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        Round.objects.filter(pk=rnd.pk).update(status='closed')
+        for team in self.teams:
+            DecisionSubmission.objects.update_or_create(
+                team=team, round=rnd, defaults={'status': 'locked'})
+        submission = DecisionSubmission.objects.get(team=self.team, round=rnd)
+        for name in ('Duplicate A', 'Duplicate B'):
+            DecisionPlatformDevelopment.objects.create(
+                submission=submission, platform_generation=self.gen,
+                method='in_house', committed_cost=self.gen.development_cost,
+                platform_name=name, feature_levels={})
+
+        with self.assertRaises(InvalidPersistedDecisionError) as caught:
+            process_round(self.game.id)
+        self.assertIn('already names', str(caught.exception))
+
+        # Refused before any mutation, and nothing was booked.
+        self.assertEqual(TeamPlatform.objects.filter(
+            team=self.team, platform_generation=self.gen).count(), 0)
+        self.assertEqual(
+            RoundResultFinancials.objects.filter(game=self.game).count(), 0)
+
+    def test_the_allocator_never_creates_two_for_one_generation(self):
+        """Independent of API validation, as the audit required."""
+        from core.models.team_state import TeamPlatform
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=self.team, round=rnd, defaults={'status': 'locked'})
+        for name in ('Duplicate A', 'Duplicate B'):
+            DecisionPlatformDevelopment.objects.create(
+                submission=submission, platform_generation=self.gen,
+                method='in_house', committed_cost=self.gen.development_cost,
+                platform_name=name, feature_levels={})
+        self.process(1)
+        self.assertEqual(
+            TeamPlatform.objects.filter(
+                team=self.team, platform_generation=self.gen).count(), 1,
+            'the allocator created two platforms for one generation')
+        booked = self.run_cost_path(1, capitalize=False)
+        self.assertEqual(booked['rd_expense'], self.gen.development_cost,
+                         'the team was charged twice for one generation')
+
+    # -- positive controls ---------------------------------------------------
+
+    def test_a_corrected_single_request_creates_one_platform(self):
+        from core.models.team_state import TeamPlatform
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/',
+            [{'platform_generation': self.gen.id, 'method': 'in_house',
+              'platform_name': 'Corrected', 'feature_levels': {}}],
+            format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.process(1)
+        self.assertEqual(TeamPlatform.objects.filter(
+            team=self.team, platform_generation=self.gen).count(), 1)
+        booked = self.run_cost_path(1, capitalize=False)
+        self.assertEqual(booked['rd_expense'], self.gen.development_cost)
+
+    def test_two_distinct_generations_are_still_accepted(self):
+        other = self.generation(3, rounds=1)
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/',
+            [{'platform_generation': self.gen.id, 'method': 'in_house',
+              'platform_name': 'First', 'feature_levels': {}},
+             {'platform_generation': other.id, 'method': 'in_house',
+              'platform_name': 'Second', 'feature_levels': {}}], format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 2)
+
+    def test_a_retired_generation_may_be_requested_again(self):
+        """The existing rule: only a non-retired platform blocks a request."""
+        from core.models.team_state import TeamPlatform
+        TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.gen, name='Old',
+            status='retired')
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=self.team, round=rnd, defaults={'status': 'locked'})
+        DecisionPlatformDevelopment.objects.create(
+            submission=submission, platform_generation=self.gen,
+            method='in_house', committed_cost=self.gen.development_cost,
+            platform_name='Rebuilt', feature_levels={})
+        self.process(1)
+        self.assertEqual(
+            sorted(TeamPlatform.objects.filter(
+                team=self.team, platform_generation=self.gen)
+                .values_list('name', 'status')),
+            [('Old', 'retired'), ('Rebuilt', 'in_development')])

@@ -578,3 +578,74 @@ def describe_feature_cap_violations(violations, limit=5):
     if len(violations) > limit:
         lines.append(f'... and {len(violations) - limit} more')
     return ' | '.join(lines)
+
+
+# ---------------------------------------------------------------------------
+# One request per generation (V2-046)
+# ---------------------------------------------------------------------------
+
+def duplicate_generation_problem(rows):
+    """Why this submission names one generation twice, or None.
+
+    A cross-row rule, so it cannot be expressed as field validation. Before the
+    V2-045 refactor the engine got this for free: it created each platform
+    inside the decision loop, so the next row's existing-platform query saw the
+    one just created and skipped. Collecting the candidates first — which the
+    aggregate allocation needs — made every row see the same pre-loop state,
+    and two rows naming one generation both created and both charged.
+    """
+    seen = {}
+    for index, row in enumerate(rows):
+        generation = row.get('platform_generation') if isinstance(row, dict) \
+            else getattr(row, 'platform_generation', None)
+        key = getattr(generation, 'pk', generation)
+        if key is None:
+            continue
+        if key in seen:
+            name = getattr(generation, 'name', key)
+            return (f'row {index + 1}: {name} is already requested in row '
+                    f'{seen[key] + 1}. A team develops one platform per '
+                    f'generation.')
+        seen[key] = index
+    return None
+
+
+def persisted_duplicate_generation_violations(game, round_obj):
+    """Stored submissions naming one generation more than once."""
+    from collections import defaultdict
+    from core.models.decisions import DecisionPlatformDevelopment
+
+    by_submission = defaultdict(list)
+    rows = (DecisionPlatformDevelopment.objects
+            .filter(submission__round=round_obj, submission__team__game=game)
+            .select_related('platform_generation', 'submission__team')
+            .order_by('pk'))
+    for row in rows:
+        by_submission[row.submission_id].append(row)
+
+    violations = []
+    for submission_id, submission_rows in sorted(by_submission.items()):
+        seen = {}
+        for row in submission_rows:
+            key = row.platform_generation_id
+            if key in seen:
+                violations.append({
+                    'model': 'DecisionPlatformDevelopment', 'row': row.pk,
+                    'team': row.submission.team.name,
+                    'field': 'platform_generation',
+                    'duplicate_of': seen[key],
+                    'detail': (f'{row.platform_generation.name} is requested '
+                               f'twice in one submission (also row '
+                               f'{seen[key]}); a team develops one platform '
+                               f'per generation')})
+            else:
+                seen[key] = row.pk
+    return violations
+
+
+def describe_duplicate_generation_violations(violations, limit=5):
+    lines = [f'{item["model"]} #{item["row"]} ({item["team"]}): {item["detail"]}'
+             for item in violations[:limit]]
+    if len(violations) > limit:
+        lines.append(f'... and {len(violations) - limit} more')
+    return ' | '.join(lines)

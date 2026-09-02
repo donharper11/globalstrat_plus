@@ -472,6 +472,23 @@ def _run_phase_1(game_id):
             f'retry. {describe_feature_cap_violations(cap_violations)}'
         )
 
+    # V2-046: one generation requested twice in a submission. Refused rather
+    # than de-duplicated: discarding a row would leave the stored decision and
+    # the resolved decision disagreeing.
+    from core.services.rd_costs import (
+        describe_duplicate_generation_violations,
+        persisted_duplicate_generation_violations)
+    duplicate_violations = persisted_duplicate_generation_violations(
+        game, current_round_obj)
+    if duplicate_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(duplicate_violations)} stored platform development(s) '
+            f'request a generation their submission already names. Correct the '
+            f'row(s) and retry. '
+            f'{describe_duplicate_generation_violations(duplicate_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the
