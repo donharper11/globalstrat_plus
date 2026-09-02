@@ -24,6 +24,87 @@ checkpoint 2 caught the omission. Registration did not precede implementation
 and this entry does not imply it did. V2-032 onwards were registered before
 repair, as the rule requires.
 
+## V2-048 — a live database credential is committed to Git (P0) — OPEN, security/operations
+
+**Owner: security and operations.** Not a GSP-CRV2-10 finding and not to be
+folded into any stage of it. Stage 4 development may continue; this finding
+blocks integrated release approval.
+
+**A credential committed to a repository must be treated as compromised.** The
+value is not reproduced here, in the inventory below, or in any commit message.
+
+### What is exposed
+
+The password for the PostgreSQL role `donwh` on the competition database host
+appears in **14 occurrences across 12 tracked files**. It is the **active**
+credential: confirmed by authenticating with it, not by comparing strings.
+
+The role is not a superuser, but it holds **CREATEROLE and CREATEDB**. CREATEROLE
+is the significant one: it is a privilege-escalation path, not merely read and
+write on existing data. **87 non-template databases** are reachable with it,
+including the live competition database.
+
+`listen_addresses` is `*`, so the host accepts connections on every interface —
+the credential is not protected by the database being unreachable.
+
+The repository has a GitHub remote (`donharper11/globalstrat_plus`), so exposure
+is not limited to this machine. The value appears in **14 commits across
+history**, the earliest being the baseline snapshot the repository was seeded
+from, so removing it from `HEAD` alone does not remove it from the repository.
+
+### Sanitized inventory (path:line, value never printed)
+
+```text
+backend/globalstrat/settings.py:133                              <- runtime default
+handoff_readiness_v2/audit_integrity_evidence.py:31
+handoff_readiness_v2/audit_truncate_rework_evidence.py:36
+handoff_readiness_v2/evidence/adversarial-balance/harness/inventory_run.py:31
+handoff_readiness_v2/evidence/decision-rules/harness/stage1_probes.py:87
+handoff_readiness_v2/evidence/load-failure/harness/driver.py:212
+handoff_readiness_v2/evidence/load-failure/harness/driver.py:247
+handoff_readiness_v2/evidence/load-failure/harness/driver.py:273
+handoff_readiness_v2/evidence/load-failure/harness/failure_walkthrough_body.py:321
+handoff_readiness_v2/evidence/load-failure/harness/failure_walkthrough_run.py:58
+handoff_readiness_v2/evidence/load-failure/harness/stack.py:103
+handoff_readiness_v2/evidence/post-close-disputes/harness/ownership_scan.py:125
+handoff_readiness_v2/evidence/post-close-disputes/harness/start_stack.py:29
+rework/REWORK_SPEC_2026-07-13.md:156
+```
+
+The runtime default at `settings.py:133` is the origin; every harness copy took
+it from there, several of them written by me across CRV2-04, CRV2-07, CRV2-08
+and CRV2-10. Copying an existing default is how a single exposure became
+fourteen.
+
+### How it surfaced
+
+The `no-committed-secrets` pre-commit check reported it while committing
+CRV2-10 Stage 4. It runs report-only in this repository's configuration, so it
+had been reporting rather than blocking. Two of its four findings are genuine
+false positives — a throwaway `DJANGO_SECRET_KEY` used only by a disposable
+evidence stack — which is the likely reason the report was not acted on
+earlier: a check whose output is mostly noise stops being read.
+
+### Repair order (not performed here)
+
+1. **Rotate or revoke the credential first.** Everything else is cleanup;
+   until this is done the exposure is live.
+2. Move runtime credentials to deployment secret configuration, so no default
+   value exists in tracked source.
+3. Remove every tracked default and harness copy, including the ones in this
+   directory.
+4. Assess database access logs for use of the credential from unexpected
+   sources, and review whether the role needs CREATEROLE and CREATEDB at all.
+5. Decide whether coordinated history rewriting is required, given the GitHub
+   remote and the 14 commits carrying the value. That is a decision with
+   collaboration cost, not a mechanical step.
+6. Add narrowly scoped exceptions for the genuine throwaway-key false
+   positives, so the check becomes signal again rather than being muted
+   wholesale.
+
+**Disposition: open.** No repair attempted, no rotation performed, and nothing
+about the exposure changed by recording it.
+
 ## V2-037 through V2-044 — raised by GSP-CRV2-10 Stage 1
 
 **Eight confirmed findings, one withdrawn theory.** All registered before any
