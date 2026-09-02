@@ -41,8 +41,12 @@ ECS_USER="root"
 ECS_PATH="/var/www/globalstrat/build"
 SSH_KEY="/home/ubuntu/.ssh/alibaba2.pem"
 
-CF_TOKEN="${CF_TOKEN:-}"
-CF_ZONE="${CF_ZONE:-fafa0995894f903b99c9d9812005e487}"
+# Cloudflare — camdani.com zone (shared with the other apps).
+[ -f "$HOME/.config/camdani/cloudflare.env" ] && . "$HOME/.config/camdani/cloudflare.env"
+if [ -z "${CF_TOKEN:-}" ] || [ -z "${CF_ZONE:-}" ]; then
+  echo "CF_TOKEN/CF_ZONE not set — see ~/.config/camdani/cloudflare.env" >&2
+  exit 1
+fi
 
 FRONTEND_DIR="$HOME/projects/globalstrat+/frontend/globalstrat-frontend"
 
