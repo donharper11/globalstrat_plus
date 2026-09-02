@@ -11,9 +11,11 @@ GlobalStrat's shape was different and, for determinism, worse: every consumer
 read one live pointer, so a switch would have silently re-resolved rounds
 already scored and published — the boundary GSP-CRV2-01 certified.
 """
+import ast
+import pathlib
 from decimal import Decimal as D
 
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 
 from core.models import DecisionSubmission, Round
 from core.models.results_financials import RoundResultProductMarket
@@ -77,7 +79,7 @@ class RebaseFixture(TestCase):
         return RoundResultProductMarket.objects.create(
             game=self.game, round_number=round_number, team=self.team,
             team_product=self.product, market=self.market,
-            units_produced=int(unsold), units_sold=D('0'),
+            units_produced=int(D(str(unsold))), units_sold=D('0'),
             units_unsold=D(str(unsold)), unit_cost=D(str(unit_cost)))
 
 
@@ -141,7 +143,7 @@ class RebaseWriteOffTests(RebaseFixture):
         self.stock(1, unsold=100, unit_cost=50)
         result = product_rebase.rebase(self.product, self.new_platform,
                                        self.team, 2)
-        self.assertEqual(result['units_written_off'], 100)
+        self.assertEqual(D(result['units_written_off']), D('100'))
         self.assertEqual(D(result['write_off']), D('750.00'))   # 100*50*0.15
 
     def test_the_percentage_comes_from_the_scenario(self):
@@ -158,7 +160,7 @@ class RebaseWriteOffTests(RebaseFixture):
     def test_no_stock_costs_nothing(self):
         result = product_rebase.rebase(self.product, self.new_platform,
                                        self.team, 2)
-        self.assertEqual(result['units_written_off'], 0)
+        self.assertEqual(D(result['units_written_off']), D('0'))
         self.assertEqual(D(result['write_off']), D('0'))
 
     def test_only_the_latest_closing_position_is_written_off(self):
@@ -167,7 +169,7 @@ class RebaseWriteOffTests(RebaseFixture):
         self.stock(2, unsold=100, unit_cost=50)
         result = product_rebase.rebase(self.product, self.new_platform,
                                        self.team, 2)
-        self.assertEqual(result['units_written_off'], 100)
+        self.assertEqual(D(result['units_written_off']), D('100'))
 
     def test_the_charge_is_read_once_from_the_history_row(self):
         self.stock(1, unsold=100, unit_cost=50)
@@ -401,7 +403,13 @@ class RebaseEndpointTests(RebaseFixture):
             self.url(), {'team_platform': foreign.id}, format='json')
 
         self.assertEqual(response.status_code, 400)
-        self.assertIn('belongs to another team', response.data['detail'])
+        # The endpoint resolves the platform *through* the team, so a rival's
+        # id is simply not found. It deliberately does not answer "that one
+        # exists but is not yours", which would turn the route into an
+        # enumeration oracle for rivals' platform ids. The service still
+        # distinguishes the two for its own callers -- see
+        # RebaseRefusalTests.test_another_teams_platform_is_refused.
+        self.assertIn('No such platform', response.data['detail'])
 
     def test_a_refused_call_moves_nothing(self):
         foreign = self.platform(self.new_gen, 'Theirs',
@@ -474,3 +482,507 @@ class RebaseEndpointTests(RebaseFixture):
         self.assertEqual(self.product.team_platform_id, self.old_platform.id)
         self.assertFalse(TeamProductPlatformHistory.objects.filter(
             team_product=self.product).exists())
+
+
+class PlatformConsumerGuardTests(SimpleTestCase):
+    """Static inventory of every way resolution code can reach a platform.
+
+    The Stage 4 inventory looked for direct attribute reads and calls to
+    `resolved_platform`, so it saw neither of the two forms that actually
+    matter here. A queryset can reach the live pointer through a relationship
+    traversal -- `team_product__team_platform=<round-resolved platform>` -- and
+    that comparison is guaranteed to fail after a re-base rather than to
+    return the wrong row, which is why it emptied a historical sum instead of
+    raising anything (V2-050).
+    """
+
+    ENGINE_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'engine'
+    SERVICES_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'services'
+    RESOLUTION_SERVICES = ('funding_need.py', 'product_platform.py',
+                           'product_rebase.py', 'rd_costs.py',
+                           'resolution_manifest.py')
+
+    # Decision rows carry their own platform choice; that is the row's data,
+    # not a product's round-varying association.
+    DECISION_ROW_NAMES = {'investment', 'pg', 'create_dec', 'dec', 'row'}
+
+    def _sources(self):
+        for path in sorted(self.ENGINE_ROOT.rglob('*.py')):
+            if '__pycache__' in str(path) or 'tests' in path.parts:
+                continue
+            yield path
+        for name in self.RESOLUTION_SERVICES:
+            yield self.SERVICES_ROOT / name
+
+    def test_no_queryset_traverses_a_relationship_to_the_live_platform(self):
+        offenders = []
+        for path in self._sources():
+            tree = ast.parse(path.read_text(encoding='utf-8'))
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                for kw in node.keywords:
+                    if kw.arg and '__team_platform' in kw.arg:
+                        offenders.append(
+                            f'{path.name}:{node.lineno} {kw.arg}=...')
+        self.assertFalse(offenders, (
+            'These filter through a product\'s live platform foreign key. '
+            'Resolve each row as of its own round instead:\n'
+            + '\n'.join(offenders)))
+
+    def test_no_product_reads_its_platform_pointer_directly(self):
+        offenders = []
+        for path in self._sources():
+            # The two modules that own the association itself: one resolves
+            # it, the other moves it. Everything else must go through them.
+            if path.name in ('product_platform.py', 'product_rebase.py'):
+                continue
+            tree = ast.parse(path.read_text(encoding='utf-8'))
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Attribute):
+                    continue
+                if node.attr not in ('team_platform', 'team_platform_id'):
+                    continue
+                base = node.value
+                if not isinstance(base, ast.Name):
+                    continue
+                if base.id in self.DECISION_ROW_NAMES:
+                    continue
+                if 'product' not in base.id and base.id not in ('p', 'prod'):
+                    continue
+                offenders.append(
+                    f'{path.name}:{node.lineno} {base.id}.{node.attr}')
+        self.assertFalse(offenders, (
+            'Read the platform as of the round being scored, via '
+            'resolved_platform()/platform_as_of_round():\n'
+            + '\n'.join(offenders)))
+
+
+class RebaseGameBindingTests(RebaseFixture):
+    """One game's URL must not reach another game's team.
+
+    Neither shared guard supplies this relationship. The student guard proves
+    membership in the URL *team* but not that the team is in the URL *game*;
+    the instructor guard proves ownership of the URL *game* while `IsTeamMember`
+    exempts instructors entirely. So a route that resolves the team by global
+    primary key is unprotected in both directions (V2-051).
+    """
+
+    def setUp(self):
+        super().setUp()
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        # A second, unrelated game with its own owner.
+        self.other_game, other_teams = build_minimal_game(f'bind-{id(self)}')
+        self.foreign_team = other_teams[0]
+        foreign_gen = PlatformGenerationDefinition.objects.create(
+            scenario=self.other_game.scenario, name='Foreign Gen',
+            description='d', generation_order=1, unlock_round=0,
+            development_cost=D('1000000'), license_cost=D('2000000'),
+            development_rounds=1)
+        self.foreign_platform = TeamPlatform.objects.create(
+            team=self.foreign_team, platform_generation=foreign_gen,
+            name='Foreign Platform', status='active',
+            development_method='in_house', development_started_round=0,
+            funded_round=0, development_rounds_remaining=0)
+
+        self.student = User.objects.create(
+            username=f'bind-student-{id(self)}', role='student',
+            password_hash='x')
+        course = Course.objects.create(
+            course_code=f'BND{id(self) % 100000}', course_name='Bind',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+        Round.objects.update_or_create(
+            game=self.game, round_number=self.game.current_round,
+            defaults={'status': 'open'})
+        Round.objects.update_or_create(
+            game=self.other_game,
+            round_number=self.other_game.current_round,
+            defaults={'status': 'open'})
+
+    def client_as(self, user):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(user)}')
+        return client
+
+    def instructor_owning(self, game):
+        """An instructor who owns `game` and nothing else.
+
+        Ownership runs game -> section -> course.instructor_id, so the cohort
+        has to be built for the guard to see the instructor as the owner.
+        """
+        from core.models import User
+        from core.models.course import Course, Section
+        user = User.objects.create(
+            username=f'bind-instr-{game.id}-{id(self)}', role='instructor',
+            password_hash='x')
+        course = Course.objects.create(
+            course_code=f'OWN{game.id}{id(self) % 10000}',
+            course_name='Owned', instructor_id=user.user_id, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        game.section_id = section.section_id
+        game.save(update_fields=['section_id'])
+        return user
+
+    def unchanged(self):
+        """The state a refused call must leave exactly as it found it."""
+        self.product.refresh_from_db()
+        return (self.product.team_platform_id,
+                TeamProductPlatformHistory.objects.filter(
+                    team_product=self.product).count())
+
+    # -- the student direction ---------------------------------------------
+
+    def test_a_student_cannot_route_their_own_team_through_another_game(self):
+        before = self.unchanged()
+        response = self.client_as(self.student).post(
+            f'/api/games/{self.other_game.id}/teams/{self.team.id}'
+            f'/products/{self.product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+
+        self.assertIn(response.status_code, (403, 404))
+        self.assertEqual(self.unchanged(), before)
+
+    # -- the instructor direction ------------------------------------------
+
+    def test_an_instructor_cannot_reach_another_game_through_their_own(self):
+        """The case `IsTeamMember` cannot catch, because it exempts them."""
+        instructor = self.instructor_owning(self.game)
+        foreign_product = TeamProduct.objects.create(
+            team=self.foreign_team, team_platform=self.foreign_platform,
+            name='Theirs',
+            positioning='mainstream', status='active', created_round=1)
+        before_platform = foreign_product.team_platform_id
+
+        response = self.client_as(instructor).post(
+            f'/api/games/{self.game.id}/teams/{self.foreign_team.id}'
+            f'/products/{foreign_product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+
+        self.assertIn(response.status_code, (403, 404))
+        foreign_product.refresh_from_db()
+        self.assertEqual(foreign_product.team_platform_id, before_platform)
+        self.assertFalse(TeamProductPlatformHistory.objects.filter(
+            team_product=foreign_product).exists())
+
+    def test_no_decision_audit_row_is_written_for_a_refused_cross_game_call(self):
+        from core.models.competition_audit import DecisionAuditEvent
+        instructor = self.instructor_owning(self.game)
+        foreign_product = TeamProduct.objects.create(
+            team=self.foreign_team, team_platform=self.foreign_platform,
+            name='Theirs2',
+            positioning='mainstream', status='active', created_round=1)
+
+        self.client_as(instructor).post(
+            f'/api/games/{self.game.id}/teams/{self.foreign_team.id}'
+            f'/products/{foreign_product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+
+        self.assertFalse(
+            DecisionAuditEvent.objects.filter(action='rebase').exists(),
+            'A refused cross-game call must not leave a successful decision '
+            'audit row, least of all one attributed to the wrong game.')
+
+    def test_a_cross_game_attempt_is_recorded_as_a_refusal(self):
+        """Neither guard reaches this, so without a record it is invisible."""
+        from core.models import AuthorizationRefusalEvent
+        instructor = self.instructor_owning(self.game)
+        foreign_product = TeamProduct.objects.create(
+            team=self.foreign_team, team_platform=self.foreign_platform,
+            name='Theirs3',
+            positioning='mainstream', status='active', created_round=1)
+
+        self.client_as(instructor).post(
+            f'/api/games/{self.game.id}/teams/{self.foreign_team.id}'
+            f'/products/{foreign_product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+
+        event = AuthorizationRefusalEvent.objects.filter(
+            reason='Team belongs to another game').first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.actor_user_id, instructor.user_id)
+        self.assertEqual(event.game_id_attempted, self.game.id)
+        self.assertEqual(event.outcome, 'rejected')
+        self.assertEqual(event.method, 'POST')
+
+    def test_an_unknown_team_records_nothing(self):
+        """Only a real team in another game is a cross-cohort attempt."""
+        from core.models import AuthorizationRefusalEvent
+        self.client_as(self.student).post(
+            f'/api/games/{self.game.id}/teams/99999999'
+            f'/products/{self.product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+
+        self.assertFalse(AuthorizationRefusalEvent.objects.filter(
+            reason='Team belongs to another game').exists())
+
+    # -- and the positive control ------------------------------------------
+
+    def test_a_successful_event_has_one_coherent_hierarchy(self):
+        from core.models.competition_audit import DecisionAuditEvent
+        response = self.client_as(self.student).post(
+            f'/api/games/{self.game.id}/teams/{self.team.id}'
+            f'/products/{self.product.id}/rebase/',
+            {'team_platform': self.new_platform.id}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+
+        event = DecisionAuditEvent.objects.get(action='rebase')
+        self.product.refresh_from_db()
+        # game -> team -> product -> platform, all one chain.
+        self.assertEqual(event.game_id, self.game.id)
+        self.assertEqual(event.team_id, self.team.id)
+        self.assertEqual(event.team.game_id, event.game_id)
+        self.assertEqual(event.round.round_number, self.game.current_round)
+        self.assertEqual(event.payload['product'], self.product.id)
+        self.assertEqual(self.product.team_id, event.team_id)
+        self.assertEqual(event.payload['to_platform'],
+                         self.new_platform.id)
+        self.assertEqual(self.new_platform.team_id, event.team_id)
+
+
+class BrandAwarenessReplayTests(RebaseFixture):
+    """A later switch must not change what an earlier round scored with.
+
+    The existing replay tests checked the platform id and one platform feature
+    level. Brand awareness is reached differently -- a cumulative query over
+    historical marketing rows -- and that query filtered on the product's live
+    platform foreign key while comparing it against a round-resolved platform.
+    After a re-base the two could never agree, so every historical promotion
+    row silently dropped out and a past round's awareness fell to zero
+    (V2-050). Nothing raised, because an emptied sum is still a number.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from core.models.decisions import DecisionMarketing
+        self.rounds = {}
+        for n in (1, 2, 3, 4):
+            self.rounds[n], _ = Round.objects.get_or_create(
+                game=self.game, round_number=n,
+                defaults={'status': 'open'})
+        # $1,000,000 of promotion spent while the product was on the old
+        # platform. Non-zero on purpose: a control that starts at zero cannot
+        # tell "correctly zero" from "silently emptied".
+        for n in (1, 2, 3):
+            submission = DecisionSubmission.objects.create(
+                team=self.team, round=self.rounds[n], status='submitted')
+            DecisionMarketing.objects.create(
+                submission=submission, team_product=self.product,
+                market=self.market, retail_price=D('500'),
+                promotion_budget=D('1000000'), sales_team_count=0,
+                production_volume=100, demand_estimate=100,
+                campaign_focus_feature_ids=[],
+                channel_digital_pct=D('1.0'),
+                channel_traditional_pct=D('0'),
+                channel_trade_pct=D('0'),
+                distribution_strategy='direct',
+                distribution_investment=D('0'),
+                production_source_market=self.market)
+
+    def awareness(self, round_number):
+        from core.engine.preference_engine import _derive_brand_awareness
+
+        class _Ctx:
+            pass
+        ctx = _Ctx()
+        ctx.game = self.game
+        return _derive_brand_awareness(
+            ctx, self.team, self.product, self.market, None,
+            self.scenario, round_number, 0.0, 1.0)
+
+    def test_a_past_round_keeps_its_awareness_after_a_later_switch(self):
+        before = self.awareness(3)
+        self.assertGreater(before, 0.0,
+                           'The control must start non-zero, or it proves '
+                           'nothing about a value falling to zero.')
+
+        product_rebase.rebase(self.product, self.new_platform, self.team, 4)
+
+        self.assertEqual(self.awareness(3), before)
+
+    def test_the_spend_follows_the_platform_it_was_spent_on(self):
+        """After the switch, the new platform starts from its own history."""
+        before = self.awareness(3)
+        product_rebase.rebase(self.product, self.new_platform, self.team, 4)
+
+        # Round 4 resolves to the new platform, which carries none of the
+        # promotion spent while the product was on the old one.
+        self.assertEqual(self.awareness(4), 0.0)
+        # And the old platform's rounds are untouched.
+        self.assertEqual(self.awareness(3), before)
+
+    def test_an_unswitched_product_is_unaffected(self):
+        before = self.awareness(3)
+        other = TeamProduct.objects.create(
+            team=self.team, team_platform=self.old_platform, name='Steady',
+            positioning='mainstream', status='active', created_round=1)
+        product_rebase.rebase(other, self.new_platform, self.team, 4)
+
+        self.assertEqual(self.awareness(3), before)
+        self.assertEqual(self.awareness(4), before)
+
+
+class WriteOffAccountingTests(TestCase):
+    """The write-off has to reach the team's money, not just a history row.
+
+    Every previous write-off test read the history row back, or read
+    `context.opex`. Both were true while the charge was invisible: it was
+    computed, stored, put into the opex dict, and then dropped by the statement
+    assembly, which enumerated six other opex keys by name. The team paid
+    nothing, saw nothing, and was taxed as though the switch had not happened
+    (V2-049).
+
+    So these assert from `RoundResultFinancials` -- what the results API and the
+    UI actually read -- and never from an intermediate. Each case is a whole
+    independent game resolved once, because a resolved round is immutable and
+    cannot be re-run to produce a comparison.
+    """
+
+    def case(self, switch=True, units='100', unit_cost='50'):
+        """Build, optionally switch, resolve, and return the stored row."""
+        from core.engine.advance_round import process_round
+        from core.models.results_financials import (RoundResultFinancials,
+                                                    RoundResultProductMarket)
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        game, teams = build_minimal_game(f'wo-{id(self)}-{switch}-{units}')
+        team = teams[0]
+        scenario = game.scenario
+        market = MarketDefinition.objects.filter(scenario=scenario).first()
+
+        gens = [PlatformGenerationDefinition.objects.create(
+            scenario=scenario, name=f'G{n}', generation_order=n,
+            development_cost=D('1000000'), license_cost=D('500000'),
+            development_rounds=0, unlock_round=0) for n in (1, 2)]
+        platforms = [TeamPlatform.objects.create(
+            team=team, platform_generation=g, name=f'P{g.generation_order}',
+            status='active', development_method='in_house',
+            development_started_round=0, funded_round=0,
+            development_rounds_remaining=0) for g in gens]
+
+        product = TeamProduct.objects.create(
+            team=team, team_platform=platforms[0], name='Aurora',
+            positioning='mainstream', status='active', created_round=1)
+
+        # Closing stock from the round *before* the one being resolved, so the
+        # snapshot is a prior position rather than a row this round will write.
+        RoundResultProductMarket.objects.create(
+            game=game, round_number=0, team=team, team_product=product,
+            market=market, units_produced=int(D(str(units))),
+            units_sold=D('0'), units_unsold=D(str(units)),
+            unit_cost=D(str(unit_cost)))
+
+        rnd, _ = Round.objects.get_or_create(
+            game=game, round_number=1, defaults={'status': 'closed'})
+        Round.objects.filter(pk=rnd.pk).update(status='closed')
+        for t in teams:
+            DecisionSubmission.objects.update_or_create(
+                team=t, round=rnd, defaults={'status': 'locked'})
+
+        written = None
+        if switch:
+            written = product_rebase.rebase(product, platforms[1], team, 1)
+
+        process_round(game.id)
+        financials = RoundResultFinancials.objects.get(
+            game=game, team=team, round_number=1)
+        return financials, written, game, team
+
+    # -- the line exists, and it is the authored amount ----------------------
+
+    def test_the_write_off_is_stored_as_its_own_line(self):
+        financials, written, _game, _team = self.case()
+
+        # 100 x $50 x 15%
+        self.assertEqual(D(written['write_off']), D('750.00'))
+        self.assertEqual(financials.platform_switch_write_off, D('750.00'))
+
+    def test_no_switch_stores_nothing(self):
+        financials, _w, _g, _t = self.case(switch=False)
+
+        self.assertEqual(financials.platform_switch_write_off, D('0'))
+
+    # -- and it changes the money ------------------------------------------
+
+    def test_it_reduces_operating_income_by_exactly_the_write_off(self):
+        without, _w, _g, _t = self.case(switch=False)
+        with_switch, written, _g2, _t2 = self.case(switch=True)
+
+        self.assertEqual(without.operating_income - with_switch.operating_income,
+                         D(written['write_off']))
+
+    def test_it_is_carried_into_net_income_and_cash(self):
+        without, _w, _g, _t = self.case(switch=False)
+        with_switch, _w2, _g2, _t2 = self.case(switch=True)
+
+        self.assertLess(with_switch.net_income, without.net_income)
+        self.assertLess(with_switch.cash_closing, without.cash_closing)
+
+    def test_it_is_deducted_for_tax(self):
+        """Taxable profit falls with the charge, like any other opex line."""
+        without, _w, game_a, team_a = self.case(switch=False)
+        with_switch, _w2, game_b, team_b = self.case(switch=True)
+
+        self.assertLessEqual(with_switch.tax_expense, without.tax_expense)
+        self.assertLess(with_switch.pre_tax_income, without.pre_tax_income)
+
+    # -- exactly once -------------------------------------------------------
+
+    def test_a_later_round_is_not_charged_again(self):
+        from core.engine.advance_round import process_round
+        from core.models.results_financials import RoundResultFinancials
+        financials, _w, game, team = self.case()
+        self.assertEqual(financials.platform_switch_write_off, D('750.00'))
+
+        rnd2, _ = Round.objects.get_or_create(
+            game=game, round_number=2, defaults={'status': 'closed'})
+        Round.objects.filter(pk=rnd2.pk).update(status='closed')
+        for t in game.teams.all():
+            DecisionSubmission.objects.update_or_create(
+                team=t, round=rnd2, defaults={'status': 'locked'})
+        game.refresh_from_db()
+        game.current_round = 2
+        game.save(update_fields=['current_round'])
+        process_round(game.id)
+
+        second = RoundResultFinancials.objects.get(
+            game=game, team=team, round_number=2)
+        self.assertEqual(second.platform_switch_write_off, D('0'))
+
+    def test_a_resolved_round_cannot_be_charged_a_second_time(self):
+        """Re-running is refused outright, so double-charging has no path."""
+        from core.engine.advance_round import process_round
+        from core.models.results_financials import RoundResultFinancials
+        financials, _w, game, team = self.case()
+
+        with self.assertRaises(Exception):
+            process_round(game.id, round_number=1)
+
+        financials.refresh_from_db()
+        self.assertEqual(financials.platform_switch_write_off, D('750.00'))
+        self.assertEqual(
+            RoundResultFinancials.objects.filter(
+                game=game, team=team, round_number=1).count(), 1)
+
+    # -- decimal stock is not truncated -------------------------------------
+
+    def test_a_fractional_balance_is_written_off_in_full(self):
+        financials, written, _g, _t = self.case(units='100.50')
+
+        # 100.50 x 50 x 15% = 753.75, not the 750.00 an integer cast gives.
+        self.assertEqual(D(written['units_written_off']), D('100.50'))
+        self.assertEqual(D(written['write_off']), D('753.75'))
+        self.assertEqual(financials.platform_switch_write_off, D('753.75'))

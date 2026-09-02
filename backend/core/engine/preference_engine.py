@@ -381,19 +381,46 @@ def _derive_brand_awareness(
     """
     brand_awareness: cumulative spend → exponential saturation curve.
     """
-    # Sum all historical promotion spend for this platform in this market
+    # Sum all historical promotion spend for this platform in this market.
+    #
+    # Each row is attributed to the platform its product used *in that row's
+    # round*, not to the product's live pointer. Filtering on
+    # `team_product__team_platform` compared a live foreign key against a
+    # round-resolved platform: after a later re-base the two could never agree,
+    # every qualifying historical row vanished, and a past round's brand
+    # awareness silently became 0 (V2-050).
     from core.models.decisions import DecisionMarketing as DM
+    from core.services.product_platform import platform_ids_as_of_round
 
-    cumulative_spend = 0.0
-    historical = (DM.objects.filter(
+    target = resolved_platform(product, current_round)
+    target_id = getattr(target, 'id', None)
+
+    historical = list(DM.objects.filter(
         submission__team=team,
         submission__round__game=context.game,
         submission__round__round_number__lte=current_round,
         market=market,
-        team_product__team_platform=resolved_platform(product, current_round),
-    )).order_by('pk')
+    ).select_related('team_product', 'submission__round').order_by('pk'))
+
+    # One resolution pass per distinct round rather than one per row.
+    by_round = {}
     for h in historical:
-        cumulative_spend += float(h.promotion_budget)
+        if h.team_product_id is None:
+            continue
+        by_round.setdefault(h.submission.round.round_number,
+                            []).append(h.team_product)
+    resolved_by_round = {
+        rnd: platform_ids_as_of_round(products, rnd)
+        for rnd, products in by_round.items()
+    }
+
+    cumulative_spend = 0.0
+    for h in historical:
+        if h.team_product_id is None:
+            continue
+        row_round = h.submission.round.round_number
+        if resolved_by_round[row_round].get(h.team_product_id) == target_id:
+            cumulative_spend += float(h.promotion_budget)
 
     halflife = get_config(scenario, 'brand_awareness_halflife', default=10000000.0)
     awareness_curve = 1 - math.exp(-cumulative_spend / max(halflife, 1))
@@ -421,15 +448,34 @@ def _derive_product_availability(
     return clamp(value, f_min, f_max)
 
 
-def _team_has_generation(team, min_generation_required):
-    """Check if a team has a marketed product on a platform at or above the required generation."""
-    from core.models.team_state import TeamProductMarket
-    return TeamProductMarket.objects.filter(
+def _team_has_generation(team, min_generation_required, round_number=None):
+    """Whether the team markets a product on a platform at or above a generation.
+
+    Resolved as of `round_number`, like every other platform consumer. This
+    currently has no callers; it is corrected rather than left in place because
+    the shape it had -- traversing `team_product__team_platform` -- is the one
+    that silently emptied a historical sum after a re-base (V2-050), and a
+    latent copy of that shape is how it comes back.
+    """
+    from core.models.team_state import (TeamPlatform, TeamProduct,
+                                        TeamProductMarket)
+    from core.services.product_platform import platform_ids_as_of_round
+
+    marketed_ids = list(TeamProductMarket.objects.filter(
         team_product__team=team,
         team_product__status='active',
         is_active=True,
-        team_product__team_platform__status='active',
-        team_product__team_platform__platform_generation__generation_order__gte=min_generation_required,
+    ).order_by('team_product_id').values_list('team_product_id', flat=True))
+    if not marketed_ids:
+        return False
+
+    products = list(TeamProduct.objects.filter(id__in=marketed_ids)
+                    .select_related('team_platform').order_by('id'))
+    resolved = platform_ids_as_of_round(products, round_number)
+    return TeamPlatform.objects.filter(
+        id__in=[pid for pid in resolved.values() if pid],
+        status='active',
+        platform_generation__generation_order__gte=min_generation_required,
     ).exists()
 
 

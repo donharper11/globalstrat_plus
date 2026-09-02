@@ -54,6 +54,11 @@ class RoundResultFinancials(models.Model):
         max_digits=15, decimal_places=2, default=0,
         help_text='Straight-line amortization of capitalized platform development cost.',
     )
+    platform_switch_write_off = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0,
+        help_text='Stock left unsellable by re-basing a product onto another '
+                  'platform, written off at the authored percentage.',
+    )
     marketing_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     strategy_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     research_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)

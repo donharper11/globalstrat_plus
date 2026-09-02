@@ -96,10 +96,18 @@ def generate_financial_statements(context):
         research_expense = opex.get('research_expense', D('0'))
         admin_overhead = opex.get('admin_overhead', D('0'))
         platform_amortization = opex.get('platform_amortization', D('0'))
+        # Stock stranded by a re-base. Cash-effective like `retirement_expense`,
+        # its closest sibling: it is subtracted here and carried into operating
+        # cash flow through net income with no add-back. Previously it reached
+        # `context.opex` and stopped there, so the team was charged nothing
+        # (V2-049).
+        platform_switch_write_off = opex.get(
+            'platform_switch_write_off', D('0'))
 
         total_opex = (
             rd_expense + marketing_expense + strategy_expense
             + research_expense + admin_overhead + platform_amortization
+            + platform_switch_write_off
         )
 
         logistics_tariff = D('0')
@@ -353,6 +361,7 @@ def generate_financial_statements(context):
                 'gross_profit': gross_profit,
                 'rd_expense': rd_expense,
                 'platform_amortization': platform_amortization,
+                'platform_switch_write_off': platform_switch_write_off,
                 'marketing_expense': marketing_expense,
                 'strategy_expense': strategy_expense,
                 'research_expense': research_expense,

@@ -11,6 +11,9 @@ Endpoints:
 from decimal import Decimal
 
 from django.db import transaction
+import logging
+
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import permissions, serializers, status
@@ -232,8 +235,55 @@ def _get_round(game_id, round_number):
     return get_object_or_404(Round, game_id=game_id, round_number=round_number)
 
 
-def _get_team(team_id):
-    return get_object_or_404(Team, pk=team_id)
+logger = logging.getLogger(__name__)
+
+
+def _record_cross_game_refusal(request, game_id, team_id):
+    """One row for a mutating request that addressed another game's team.
+
+    Written outside any request transaction, for the reason
+    `GameScopeGuardMiddleware._record_refusal` gives: a record that unwinds
+    with the request would leave the table looking empty rather than
+    incomplete.
+    """
+    try:
+        from django.db import transaction
+        from core.models import AuthorizationRefusalEvent, User
+        from core.services.lifecycle import request_id_for
+        from core.utils.auth_context import get_request_user_id
+
+        user_id = get_request_user_id(request)
+        username = ''
+        if user_id is not None:
+            username = (User.objects.filter(pk=user_id)
+                        .values_list('username', flat=True).first() or '')
+        with transaction.atomic(durable=False):
+            AuthorizationRefusalEvent.objects.create(
+                actor_user_id=user_id,
+                username=username,
+                game_id_attempted=game_id,
+                method=(request.method or '').upper(),
+                route=f'team {team_id} addressed through game {game_id}'[:255],
+                endpoint=(request.path or '')[:255],
+                outcome='rejected',
+                reason='Team belongs to another game'[:255],
+                request_id=request_id_for(request) or '')
+    except Exception:
+        logger.exception('Failed to record a cross-game refusal')
+
+
+def _get_team(game_id, team_id):
+    """The team, resolved *through* the game in the URL.
+
+    Every caller sits under `games/<game_id>/teams/<team_id>/`, so a team that
+    does not belong to that game is a malformed address, not a team. Resolving
+    by primary key alone let one game's URL reach another game's team: the
+    student guard proves membership in the URL team but not that the team is in
+    the URL game, and the instructor guard proves ownership of the URL game
+    while `IsTeamMember` exempts instructors -- so neither guard supplies the
+    relationship, and only this lookup can (V2-051).
+    """
+    return get_object_or_404(Team, pk=team_id, game_id=game_id)
 
 
 # ---------------------------------------------------------------------------
@@ -367,7 +417,7 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             )
 
         rnd = _get_round(game_id, round_number)
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         submission, _ = DecisionSubmission.objects.get_or_create(
             team=team, round=rnd,
             defaults={'status': 'draft'},
@@ -501,11 +551,28 @@ class ProductRebaseView(CompetitionDecisionWriteMixin, APIView):
         game = get_object_or_404(Game, pk=game_id)
         rnd = Round.objects.filter(
             game=game, round_number=game.current_round).first()
-        team = _get_team(team_id)
+
+        # A team addressed through the wrong game is refused here rather than
+        # by a guard: the student guard proves membership in the URL team, and
+        # the instructor guard passes because the actor really does own the URL
+        # game. Neither sees the mismatch (V2-051).
+        team = Team.objects.filter(pk=team_id, game_id=game_id).first()
+        if team is None:
+            # Recorded when the team exists but lives in another game -- a
+            # deliberate cross-cohort attempt, which the guards never reached
+            # and so never logged. The response is the same 404 either way, so
+            # the record costs the caller no information about what exists.
+            if Team.objects.filter(pk=team_id).exists():
+                _record_cross_game_refusal(request, game_id, team_id)
+            raise Http404('No such team in this game.')
+        # Every object resolves through the one above it: game -> team ->
+        # product, and game -> team -> platform. The service also checks
+        # ownership, but it can only check what it is handed, and a platform
+        # fetched by global primary key is already the wrong object by then.
         product = TeamProduct.objects.filter(pk=product_id,
                                              team=team).first()
         target = TeamPlatform.objects.filter(
-            pk=request.data.get('team_platform')).first()
+            pk=request.data.get('team_platform'), team=team).first()
 
         try:
             result = rebase(product, target, team, game.current_round)
@@ -932,7 +999,7 @@ class DecisionSummaryView(APIView):
                 'budget_summary': None,
             })
 
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         categories = dict(sc_categories)
         lock_blockers = []
 
@@ -1289,7 +1356,7 @@ class RDContextView(APIView):
 
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
         scenario = game.scenario
 
@@ -1582,7 +1649,7 @@ class ProductContextView(APIView):
 
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
         scenario = game.scenario
 
@@ -1689,7 +1756,7 @@ class MarketingContextView(APIView):
 
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
 
         # Active products with their markets
@@ -1861,7 +1928,7 @@ class StrategyContextView(APIView):
 
     def get(self, request, game_id, team_id):
         language = get_user_language(request)
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
         scenario = game.scenario
 
@@ -2041,7 +2108,7 @@ class FinanceContextView(APIView):
     permission_classes = [IsTeamMember]
 
     def get(self, request, game_id, team_id):
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
 
         # Basic financial position
@@ -2196,7 +2263,7 @@ class TalentContextView(APIView):
 
     def get(self, request, game_id, team_id):
         from core.models.talent import TeamTalentState, DecisionTalent
-        team = _get_team(team_id)
+        team = _get_team(game_id, team_id)
         game = get_object_or_404(Game, pk=game_id)
 
         current_round = game.current_round

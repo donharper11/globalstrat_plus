@@ -383,7 +383,8 @@ class TeamProductPlatformHistory(models.Model):
     switched_at = models.DateTimeField(auto_now_add=True)
     #: What the switch cost the team, so the write-off stays reconstructable
     #: beside the association that caused it.
-    inventory_written_off_units = models.IntegerField(default=0)
+    inventory_written_off_units = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0)
     inventory_write_off = models.DecimalField(
         max_digits=15, decimal_places=2, default=0)
 

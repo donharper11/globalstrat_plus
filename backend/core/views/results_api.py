@@ -126,6 +126,10 @@ class RoundResultsView(APIView):
                 'debt_to_equity': _dec(fin.debt_to_equity),
                 'shareholder_return_cumulative': _dec(fin.shareholder_return_cumulative),
                 'rd_expense': _dec(fin.rd_expense),
+                # A team's own results only. The competitor block below
+                # deliberately does not carry it: when a rival re-based, and
+                # what it cost them, is not public information.
+                'platform_switch_write_off': _dec(fin.platform_switch_write_off),
                 'marketing_expense': _dec(fin.marketing_expense),
                 'strategy_expense': _dec(fin.strategy_expense),
                 'interest_expense': _dec(fin.interest_expense),

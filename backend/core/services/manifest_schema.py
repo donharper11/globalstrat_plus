@@ -14,10 +14,16 @@ from core.services.manifest_sections import (
     INPUT_SECTIONS, NARRATIVE_SECTIONS, OUTPUT_SECTIONS,
 )
 from core.services.manifest_snapshot import Snapshot
+from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
 
 
+# The inventory file is named for the version whose meaning it records, and
+# earlier ones are kept. A version's definition is what makes its stored hashes
+# interpretable later; overwriting `v2` when the envelope moved to v3 would
+# leave every v2 manifest describing an inventory no longer written down.
 SCHEMA_INVENTORY_PATH = str(
-    pathlib.Path(__file__).resolve().parent / 'manifest_schema_v2.json')
+    pathlib.Path(__file__).resolve().parent
+    / f'manifest_schema_v{MANIFEST_SCHEMA_VERSION}.json')
 
 
 def _inventory(sections, mode):
@@ -32,7 +38,7 @@ def _inventory(sections, mode):
 
 def build_schema_inventory():
     inventory = {
-        'schema_version': 2,
+        'schema_version': MANIFEST_SCHEMA_VERSION,
         'input': _inventory(INPUT_SECTIONS, 'input'),
         'output': _inventory(OUTPUT_SECTIONS, 'output'),
         'narrative': _inventory(NARRATIVE_SECTIONS, 'output'),

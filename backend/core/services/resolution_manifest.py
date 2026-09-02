@@ -13,12 +13,25 @@ Version 2 replaces both envelopes with canonical snapshots taken through
 tables that carry competitive state — serialised through
 ``core.services.canonical_json`` so the bytes do not move with the machine.
 
+Version 3 is version 2's mechanism with a wider inventory. CRV2-10 Stage 4
+added the ``team_product_platform_history`` section and the
+``platform_switch_write_off`` financial line, both of which change the hashed
+bytes of a round.
+
+The version has to move whenever the reviewed inventory does. Two envelope
+definitions sharing one version number is the single thing this field cannot
+survive: ``require_schema_version`` would compare a manifest written under the
+old definition against a hash computed under the new one, agree that the
+versions match, and report the difference as a mismatch -- reading a definition
+change as evidence of tampering.
+
 Reading old manifests
 ---------------------
-Version-1 rows stay readable and keep their stored hashes. They are never
-re-interpreted as version 2: ``require_schema_version`` refuses, so a v1 hash
-can never be compared against a v2 hash and called a match. Anything that
-needs the expanded envelope has to say so and gets a clear error on old rows.
+Version-1 and version-2 rows stay readable and keep their stored hashes. They
+are never re-interpreted under a later definition: ``require_schema_version``
+refuses, so an older hash can never be compared against a newer one and called
+a match -- or, worse, called a mismatch. Anything that needs the expanded
+envelope has to say so and gets a clear error on old rows.
 """
 import hashlib
 import json
@@ -45,7 +58,7 @@ from core.services.manifest_sections import (
 from core.services.manifest_snapshot import build_snapshot
 
 
-MANIFEST_SCHEMA_VERSION = 2
+from core.services.manifest_version import MANIFEST_SCHEMA_VERSION  # noqa: F401
 MANIFEST_KIND = 'globalstrat.resolution-manifest'
 
 _UNRESOLVED_REVISIONS = {'', 'unknown', 'unset', 'none', 'null', 'dev', 'development'}

@@ -72,7 +72,10 @@ def unsold_on_platform(product, round_number):
         unsold = Decimal(str(row.units_unsold or 0))
         units += unsold
         weighted_cost += unsold * Decimal(str(row.unit_cost or 0))
-    return int(units), (weighted_cost / units if units else ZERO)
+    # Decimal throughout: `units_unsold` is decimal, and coercing it to int
+    # silently discarded part of a real balance -- 100.50 units wrote off $750
+    # instead of $753.75 (V2-049).
+    return units, (weighted_cost / units if units else ZERO)
 
 
 def validate(product, target_platform, team, round_number):
@@ -144,7 +147,7 @@ def rebase(product, target_platform, team, round_number):
         'from_platform': previous_id,
         'to_platform': target_platform.id,
         'effective_from_round': round_number,
-        'units_written_off': units,
+        'units_written_off': str(units),
         'unit_cost': str(unit_cost),
         'write_off_pct': str(pct),
         'write_off': str(write_off),

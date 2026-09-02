@@ -725,6 +725,7 @@ def calculate_tax(context):
             opex.get('rd_expense', D('0')) + opex.get('marketing_expense', D('0'))
             + opex.get('strategy_expense', D('0')) + opex.get('research_expense', D('0'))
             + opex.get('admin_overhead', D('0'))
+            + opex.get('platform_switch_write_off', D('0'))
         )
         interest = context.interest.get(team.id, D('0'))
         total_deductions = total_opex + interest

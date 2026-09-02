@@ -126,6 +126,64 @@ compromised.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
+## V2-049 through V2-051 — raised by the GSP-CRV2-10 Stage 4 audit
+
+Registered by the independent audit of frozen runtime `8a46599` / checkpoint
+`762d70d`, before repair. The submitted hashes, clean-backend provenance and
+179 distinct passing executions all reconcile; these are gaps in what that
+suite exercised. Full reproduction and the bounded repair contract are in
+`rework/GSP-CRV2-10_STAGE4_REWORK.md`.
+
+### V2-049 — the platform-switch write-off is recorded but neither charged nor shown (P1) — open
+
+`calculate_operating_expenses()` records `platform_switch_write_off` in
+`context.opex`, but `generate_financial_statements()` does not include it in
+`total_opex`, operating income, net income or cash, and `calculate_tax()` does
+not include it in deductions. `RoundResultFinancials` has no distinct field,
+so the results surfaces cannot show the line the Stage 4 rule promises.
+
+An isolated real-path probe produced the authoritative $750 history/context
+amount for 100 units at $50 and 15%, then stored operating income without that
+$750. A second probe exposed an amount error before financial assembly:
+`units_unsold` is decimal, but the service and history coerce it to integer;
+100.50 units were recorded as 100 and undercharged accordingly.
+
+**Disposition: open.** The stored result/visible line, P&L, tax, cash and exact
+decimal basis must all agree at the actual Phase-1/results boundary.
+
+### V2-050 — a later re-base changes a past round's brand-awareness input (P0) — open
+
+`preference_engine._derive_brand_awareness()` compares an as-of-round target
+platform with historical decisions filtered through
+`team_product__team_platform`, the product's live pointer. After a later
+switch, the two sides refer to different dates and the old promotion rows
+vanish. With $1,000,000 historical promotion spend, the same round-3 call
+changed from `0.9516258196404048` before a round-4 switch to `0` after it.
+
+The submitted replay test covers the helper ID and a platform feature value,
+not this cumulative marketing feature. The six-site inventory also searched
+for direct reads and missed a relational ORM traversal.
+
+**Disposition: open.** A published round's competitive input changes after
+later state, so the CRV2-01 determinism boundary is not preserved.
+
+### V2-051 — the re-base route permits cross-game competitive writes (P0) — open
+
+`ProductRebaseView` resolves the URL game and the URL team independently. A
+student can use an unrelated game's current round/status to re-base a product
+on the student's own team. More severely, an instructor who owns game A can
+place a team/product from instructor-owned game B in game A's URL: the game
+scope guard approves A, the team permission exempts instructors, and the view
+mutates B. The isolated probe returned HTTP 200 and moved the foreign product
+from platform 1 to platform 2.
+
+The resulting successful decision-audit event is attributed to URL game A and
+its round while naming game B's team, so both state and evidence cross the
+cohort boundary.
+
+**Disposition: open.** Resolve and authorize the game/team/product/platform as
+one hierarchy before any switch or successful audit write.
+
 ## V2-037 through V2-044 — raised by GSP-CRV2-10 Stage 1
 
 **Eight confirmed findings, one withdrawn theory.** All registered before any
@@ -149,12 +207,12 @@ Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-probe-record.json`, `stage1-a1b-reprobe.json`,
 `stage1-rework-probes.json`.
 
-**Status after Stage 4.** Re-basing is **implemented at `8a46599` and pending
-integrated Stage 3/4 closure** — not closed. Stage 4 delivered the round-
-versioned platform history, the switch service, its supported write path and
-the Phase-1 missing-resolution precondition. Stage 3B (freezing ready platforms
-and removing the old feature-upgrade path) has not started, so the old upgrade
-route is still reachable, which is the condition Stage 3 closure waits on.
+**Status after the Stage 4 audit.** Runtime `8a46599` contains the round-
+versioned platform history, switch service, endpoint and Phase-1 precondition,
+but Stage 4 **failed independent audit** with open V2-049, V2-050 and V2-051;
+see `rework/GSP-CRV2-10_STAGE4_REWORK.md`. It is not implemented-pending-
+closure yet. Stage 3B (freezing ready platforms and removing the old feature-
+upgrade path) has not started and must not begin during this rework.
 
 V2-039, V2-040, V2-044, V2-045, V2-046 and V2-047 all remain implemented-
 pending-closure at their recorded revisions; Stage 4 did not close any of them.
