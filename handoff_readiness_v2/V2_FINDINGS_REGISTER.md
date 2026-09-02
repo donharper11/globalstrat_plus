@@ -276,12 +276,31 @@ immutability lands.
 
 ### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — repair incomplete at `9987688`, Stage 3A rework
 
-**Incomplete at `9987688`.** That revision refused duplicate rows within a
+**Incomplete twice before `f348d24`.** At `9987688` it refused duplicate rows
+within a submission but never reconciled a carried draft against another
+non-retired platform of the same generation. At `83ec2bd` the allocator's
+defence was still incomplete: it built its live-generations set by excluding
+`unfunded_draft`, so two carried drafts for one generation were invisible to
+it, and the de-duplication promoted the first — picking a winner from inventory
+that should have been refused, and charging for it. Phase 1 refused that state
+upstream, which is why the ordinary path looked correct; the audit found it by
+invoking the allocator directly.
+
+At `f348d24` the allocator counts every non-retired row per generation, drafts
+included, and a generation holding more than one promotes none of them: no
+status change, no funded round, no start round, nothing booked.
+`ConflictedDraftAllocatorTests` drives the lifecycle and accounting directly,
+in both accounting modes, with a single-draft control and a further control
+asserting each draft is individually fundable — so the refusal can only be the
+conflict, not an unpriced candidate.
+
+**Earlier note, retained:** That revision refused duplicate rows within a
 submission but never reconciled a *carried draft* against another non-retired
 platform of the same generation, so an upgrade residue from `f39b853` — one
 funded platform and one draft for one generation — still promoted into a
-second live platform. Completed at `83ec2bd`; see V2-047 below, which shares
-its repair.
+second live platform. The Phase-1 part was repaired at `83ec2bd`, but the
+direct two-draft allocator defence remains incomplete. See V2-047 below for
+the held-request half of the repair.
 
 Raised by the independent audit of the V2-045 repair at `c20bd8b`, before
 repair. The allocation refactor collects all new requests before creating any
@@ -333,6 +352,15 @@ before the `held`/`claimed` reconciliation. A duplicate draft left by the
 faulty predecessor can still be promoted and charged beside another
 non-retired platform of the same generation. See
 `rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`.
+
+**Second audit disposition at `dedd74b`: repair still incomplete.** Phase 1
+now refuses both active-plus-draft and two-draft conflicts before mutation, and
+the allocator declines an active-plus-draft residue. But, given two carried
+drafts for one generation, the allocator silently retains, promotes and books
+the first. The evidence did not expose that path: `HeldGenerationTests`
+inherits seven runnable tests from `DuplicateGenerationTests` despite the
+checkpoint claiming no test inheritance, and its two-draft regression stops at
+the Phase-1 refusal. See `rework/GSP-CRV2-10_STAGE3A_REWORK_6.md`.
 
 
 ### V2-047 — an already-held generation is accepted, persisted and silently ignored (P1) — implemented at `83ec2bd`, pending integrated Stage 3 closure

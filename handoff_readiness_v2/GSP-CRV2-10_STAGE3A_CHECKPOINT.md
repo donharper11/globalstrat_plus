@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `83ec2bd`.** Clean tree. Frozen before this evidence was
+**Runtime revision `f348d24`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -22,7 +22,7 @@ recorded below rather than quietly fixed.
 | 5 | Feature cap | scenario-scoped `rd_costs.feature_cap` on both write surfaces; `persisted_feature_cap_violations` refuses at the engine | `FeatureCapTests` — **6** |
 | — | Old upgrade path operational | untouched | two existing contract tests, below |
 
-**55 tests in `test_platform_lifecycle`; 97 in the affected set.** No class
+**53 tests in `test_platform_lifecycle`; 95 in the affected set — distinct definitions, since no class inherits another class's test methods. An earlier count of 55 included seven inherited reruns while this report claimed there were none.** No class
 inherits another's tests — see the per-class table in the transcript.
 
 ## What the audit caught, and what it turned out to be
@@ -102,7 +102,7 @@ default branch twice.
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `83ec2bd`: **97 tests, OK**. Written to a temporary path outside the
+  at `f348d24`: **95 tests, OK**. Written to a temporary path outside the
   repository and moved in afterwards, so producing the artifact cannot dirty
   the tree its header reports; the header records **0 modified tracked files
   at the start and at the end**
@@ -165,6 +165,21 @@ The state is reachable from the predecessor revision, which is why the guard
 exists.
 
 `HeldGenerationTests` — 16 tests, including the retired positive control.
+
+## Two carried drafts are invalid inventory
+
+The allocator's defence was incomplete twice. At `83ec2bd` it built its
+live-generations set by excluding `unfunded_draft`, so two carried drafts for
+one generation were invisible to it and the de-duplication promoted the first —
+choosing a winner from inventory that should be refused, and charging for it.
+Phase 1 refused that state upstream, which is why the ordinary path looked
+correct; the audit found it by invoking the allocator directly.
+
+It now counts every non-retired row per generation, drafts included, and a
+generation holding more than one promotes none. `ConflictedDraftAllocatorTests`
+drives the lifecycle and accounting directly in both modes, with a single-draft
+control, and a further control asserting each draft is individually fundable so
+the refusal can only be the conflict rather than an unpriced candidate.
 
 ## The old upgrade path is still reachable
 
