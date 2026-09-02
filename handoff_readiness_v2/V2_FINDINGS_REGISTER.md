@@ -128,6 +128,42 @@ about the exposure changed by recording it.
 
 ## V2-049 through V2-051 — raised by the GSP-CRV2-10 Stage 4 audit
 
+**Status after the Stage 4 rework.** All three are **implemented at `b9e1282`
+and pending integrated Stage 3/4 closure** — not closed. Each has a reason
+control reverting the repair in isolation and reproducing the audit's own
+figures; see `GSP-CRV2-10_STAGE4_REWORK_CHECKPOINT.md` and
+`evidence/decision-rules/stage4-rework/reason-controls.md`.
+
+- **V2-051** — the root cause was the shared `_get_team()` helper, used by nine
+  call sites, not the one route the audit probed. All nine now resolve the team
+  through the URL game. A cross-cohort attempt on the mutating route is
+  recorded as an `AuthorizationRefusalEvent`, which nothing was doing: the
+  middleware refusal never fired because the instructor genuinely owns the URL
+  game.
+- **V2-050** — historical marketing rows are attributed to the platform their
+  product used in each row's own round. A new static guard covers relationship
+  traversals, not only direct reads, and found a second latent copy of the same
+  shape in `_team_has_generation` (uncalled; corrected).
+- **V2-049** — the write-off reaches `total_opex`, operating income, net
+  income, cash and the tax deductions, and is stored as its own
+  `RoundResultFinancials` field exposed on the team's own results but not on
+  the competitor block. Decimal units preserved end to end.
+
+Two further items surfaced during the rework and are recorded rather than left
+implicit:
+
+- `MANIFEST_SCHEMA_VERSION` moved to **3**. The new financial field and Stage
+  4's earlier `team_product_platform_history` section both change what a round
+  hashes to; the section landed without a bump, which it should have had. Two
+  envelope definitions sharing one version is the one case
+  `require_schema_version` cannot survive — it would read a definition change
+  as tampering.
+- `read_inventory.json` had been stale since `8a46599` (route count 780 vs
+  781). The route is POST-only and adds no read disclosure surface, but the
+  guard test lived outside the affected set of both the checkpoint and the
+  audit.
+
+
 Registered by the independent audit of frozen runtime `8a46599` / checkpoint
 `762d70d`, before repair. The submitted hashes, clean-backend provenance and
 179 distinct passing executions all reconcile; these are gaps in what that
