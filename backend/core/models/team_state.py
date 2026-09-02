@@ -356,3 +356,45 @@ class TeamMarketModifier(models.Model):
 
     def __str__(self):
         return f"{self.team.name} — {self.modifier_type} in {self.market.name}"
+
+
+class TeamProductPlatformHistory(models.Model):
+    """Which platform a product was based on, from a given round onward.
+
+    `TeamProduct.team_platform` is a live pointer and answers only "what now".
+    Once a team can re-base a product, replaying an earlier round through that
+    pointer resolves features from the platform the team moved to afterwards,
+    changing the competitive hash of a round already resolved and published.
+
+    These rows are what make a past round reconstructable. They are written
+    lazily: a product has none until the first switch, which seeds the prior
+    association so the rounds before it keep resolving to the platform they
+    were actually scored against.
+    """
+    id = models.BigAutoField(primary_key=True)
+    team_product = models.ForeignKey(
+        'core.TeamProduct', on_delete=models.CASCADE,
+        related_name='platform_history')
+    team_platform = models.ForeignKey(
+        'core.TeamPlatform', on_delete=models.PROTECT,
+        related_name='product_history')
+    #: The first round in which this association applied.
+    effective_from_round = models.IntegerField()
+    switched_at = models.DateTimeField(auto_now_add=True)
+    #: What the switch cost the team, so the write-off stays reconstructable
+    #: beside the association that caused it.
+    inventory_written_off_units = models.IntegerField(default=0)
+    inventory_write_off = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0)
+
+    class Meta:
+        db_table = 'team_product_platform_history'
+        ordering = ['team_product_id', 'effective_from_round', 'id']
+        unique_together = [('team_product', 'effective_from_round')]
+        indexes = [
+            models.Index(fields=['team_product', 'effective_from_round']),
+        ]
+
+    def __str__(self):
+        return (f'{self.team_product_id} on platform {self.team_platform_id} '
+                f'from round {self.effective_from_round}')

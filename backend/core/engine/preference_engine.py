@@ -22,7 +22,8 @@ from core.models.results import ActiveModifier
 from core.models.financials import FinancialExpense
 from core.models.cc31_models import TeamMarketCompliance
 from core.engine.utils import (
-    clamp, gaussian_fit, get_config, scenario_reference_price)
+    clamp, gaussian_fit, get_config, resolved_platform,
+    scenario_reference_price)
 
 
 def calculate_fit_scores(context):
@@ -69,7 +70,9 @@ def calculate_fit_scores(context):
             if segment.min_generation_required:
                 products = [
                     p for p in products
-                    if p.team_platform.platform_generation.generation_order
+                    if resolved_platform(
+                        p, context.round_number
+                    ).platform_generation.generation_order
                     >= segment.min_generation_required
                 ]
                 if not products:
@@ -178,7 +181,8 @@ def _calculate_product_segment_fit(
 
         # Get the team's actual value for this feature
         if feature.layer == 'platform':
-            actual = _get_platform_value(team, product, feature)
+            actual = _get_platform_value(
+                team, product, feature, current_round)
         elif feature.layer == 'marketing':
             actual = _get_marketing_feature_value(
                 context, team, product, market, feature,
@@ -213,11 +217,11 @@ def _apply_pref_modifiers(ideal, seg_state, feature, pref):
     return ideal + modifier
 
 
-def _get_platform_value(team, product, feature):
-    """Get the team's platform feature level for a product."""
+def _get_platform_value(team, product, feature, round_number=None):
+    """Get the team's platform feature level for a product, in this round."""
     try:
         fl = TeamPlatformFeatureLevel.objects.get(
-            team_platform=product.team_platform,
+            team_platform=resolved_platform(product, round_number),
             feature=feature,
         )
         return float(fl.current_level)
@@ -386,7 +390,7 @@ def _derive_brand_awareness(
         submission__round__game=context.game,
         submission__round__round_number__lte=current_round,
         market=market,
-        team_product__team_platform=product.team_platform,
+        team_product__team_platform=resolved_platform(product, current_round),
     )).order_by('pk')
     for h in historical:
         cumulative_spend += float(h.promotion_budget)

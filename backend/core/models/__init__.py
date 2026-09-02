@@ -16,7 +16,7 @@ from .team_state import (
     TeamMarketPresence, TeamPlant, TeamPartnership,
     TeamStrategyFeatureLevel,
     TeamAcquisition, TeamMarketModifier,
-)
+                         TeamProductPlatformHistory)
 from .scenario import (
     Scenario, ScenarioConfig,
     FeatureDefinition, PlatformGenerationDefinition,

@@ -54,6 +54,11 @@ def run_bass_adoption(context):
         in DecisionMarketing.objects
         .filter(submission__round__game=game,
                 submission__round__round_number=current_round)
+        # Ordered because the CRV2-01 boundary requires every iterated queryset
+        # to declare one. This dict comprehension is order-insensitive in its
+        # result, but the rule is deliberately unconditional: an exemption
+        # judged case by case is how the last unordered loop got in.
+        .order_by('submission__team_id', 'team_product_id', 'market_id', 'pk')
         .values_list('submission__team_id', 'team_product_id', 'market_id',
                      'retail_price', 'team_product__positioning')
     }

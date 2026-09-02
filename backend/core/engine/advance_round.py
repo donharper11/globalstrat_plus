@@ -519,6 +519,22 @@ def _run_phase_1(game_id):
             f'{describe_state_conflicts(held_violations)}'
         )
 
+    # Every active product must resolve to exactly one platform it owns, for
+    # this round. The check defect B needed and did not have: a reconciliation
+    # that sums the rows it finds cannot see a row that is absent, so BECSR's
+    # demand-sold-lost balance stayed at zero while a whole product's demand
+    # went unreconciled.
+    from core.services.product_platform import (describe_missing_resolutions,
+                                                missing_platform_resolutions)
+    unresolved = missing_platform_resolutions(game, current_round)
+    if unresolved:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(unresolved)} active product(s) do not resolve to a platform '
+            f'this team owns for this round. Correct the rows and retry. '
+            f'{describe_missing_resolutions(unresolved)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

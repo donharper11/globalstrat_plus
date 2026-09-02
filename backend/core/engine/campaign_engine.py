@@ -125,8 +125,10 @@ def _get_actual_level(team, product, feature_id, context, market):
 
     if feature.layer == 'platform':
         try:
+            from core.engine.utils import resolved_platform
             fl = TeamPlatformFeatureLevel.objects.get(
-                team_platform=product.team_platform,
+                team_platform=resolved_platform(
+                    product, getattr(context, 'round_number', None)),
                 feature_id=feature_id,
             )
             return float(fl.current_level)

@@ -34,6 +34,15 @@ METHOD_COST_FIELD = {
 }
 
 
+class NotPricedByLevel(Exception):
+    """This investment is not on the level-based path, so it has no authored price.
+
+    Distinct from `UnauthoredCost`, which means the scenario should price
+    something and does not. Conflating the two refuses legitimate dollar-based
+    rows as configuration faults.
+    """
+
+
 class UnauthoredCost(Exception):
     """The scenario does not author a price for what was asked.
 
@@ -161,10 +170,21 @@ def rd_investment_cost(investment):
     platform = _get(investment, 'team_platform')
     feature = _get(investment, 'feature')
     target = _get(investment, 'target_level')
-    if platform is None or feature is None or target is None:
+    if target is None:
+        # The legacy dollar-based path: `amount` is the input and buys whatever
+        # level gain it buys, so the team is paying for what it gets and there
+        # is no authored per-level price to compare against. Only the
+        # level-based path -- which grants `target_level` outright -- is the
+        # one V2-037 found giving capability away, so only that path is priced
+        # here. Refusing a dollar-based row as "unpriced" would refuse every
+        # round in a game that uses it.
+        raise NotPricedByLevel(
+            'This investment names no target level; it is the dollar-based '
+            'path and carries no authored per-level price.')
+    if platform is None or feature is None:
         raise UnauthoredCost(
-            'An R&D investment needs a platform, a feature and a target level '
-            'before its cost can be computed.')
+            'An R&D investment needs a platform and a feature before its cost '
+            'can be computed.')
     generation = platform.platform_generation
     return feature_upgrade_cost(
         feature, generation, current_feature_level(platform, feature), target)
@@ -237,6 +257,8 @@ def persisted_cost_violations(game, round_obj):
     for row in investments:
         try:
             authored = rd_investment_cost(row)
+        except NotPricedByLevel:
+            continue        # dollar-based path: nothing authored to compare
         except UnauthoredCost as problem:
             violations.append({
                 'model': 'DecisionRDInvestment', 'row': row.pk,

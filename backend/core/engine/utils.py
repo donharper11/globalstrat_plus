@@ -358,3 +358,17 @@ def notify_team(game_id, team, round_number, message):
             'Could not create TeamNotification for %s', getattr(team, 'name', team),
             exc_info=True,
         )
+
+
+def resolved_platform(product, round_number):
+    """The platform a product was based on in this round.
+
+    Every engine consumer resolves through here rather than reading
+    `product.team_platform` directly, so the demand side and the supply side
+    cannot answer the question differently. BECSR's defect B was exactly that
+    divergence -- demand as of the round, supply as of now -- and it reconciled
+    a re-based product's demand to nothing without raising anything, because
+    the conservation check only summed rows that existed.
+    """
+    from core.services.product_platform import platform_as_of_round
+    return platform_as_of_round(product, round_number)

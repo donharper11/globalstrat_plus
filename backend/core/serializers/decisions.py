@@ -108,8 +108,8 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
     `kind` is 'platform' or 'rd'. Rows are validated dicts from either write
     surface, so both enforce the identical rule.
     """
-    from core.services.rd_costs import (UnauthoredCost, platform_cost_for,
-                                        rd_investment_cost)
+    from core.services.rd_costs import (NotPricedByLevel, UnauthoredCost,
+                                        platform_cost_for, rd_investment_cost)
 
     from core.services.rd_costs import (duplicate_generation_problem,
                                         held_generation_problem,
@@ -148,6 +148,8 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
                 continue
         try:
             authoritative = price(row)
+        except NotPricedByLevel:
+            continue        # dollar-based path: the team's amount is the input
         except UnauthoredCost as problem:
             errors.append(f'row {index + 1}: {problem}')
             continue

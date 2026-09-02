@@ -132,6 +132,7 @@ def _process_platform_development(team, submission, current_round):
     from collections import Counter
     non_retired = list(TeamPlatform.objects
                        .filter(team=team).exclude(status='retired')
+                       .order_by('platform_generation_id', 'id')
                        .values_list('platform_generation_id', 'status'))
     per_generation = Counter(generation for generation, _ in non_retired)
     conflicted = {generation for generation, count in per_generation.items()
@@ -162,6 +163,7 @@ def _process_platform_development(team, submission, current_round):
     # produce two live platforms for one team and generation.
     held = set(TeamPlatform.objects
                .filter(team=team).exclude(status='retired')
+               .order_by('platform_generation_id', 'id')
                .values_list('platform_generation_id', flat=True))
     new_requests = []
     claimed = set()

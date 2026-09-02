@@ -133,7 +133,8 @@ EXPECTED_OUTPUT_SECTIONS = {
     'compliance_enforcement', 'ai_investor_holding',
     # carried team state
     'team_platform', 'team_platform_feature_level', 'pending_feature_gain',
-    'team_product', 'team_product_market', 'team_market_presence',
+    'team_product', 'team_product_platform_history', 'team_product_market',
+    'team_market_presence',
     'team_market_modifier', 'team_strategy_feature_level', 'team_talent_state',
     'team_plant', 'team_partnership', 'team_acquisition', 'team_alliance_state',
     'team_governance_commitment', 'team_market_compliance', 'team_tax_structure',

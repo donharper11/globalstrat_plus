@@ -73,7 +73,9 @@ def calculate_cogs(context):
             }
             continue
 
-        gen_order = product.team_platform.platform_generation.generation_order
+        from core.engine.utils import resolved_platform
+        gen_order = resolved_platform(
+            product, context.round_number).platform_generation.generation_order
         gen_factor = D('1') + D(str(gen_order - 1)) * D('0.20')
 
         # Get production source market
@@ -460,6 +462,13 @@ def calculate_operating_expenses(context):
                     # outflow rather than an operating expense.
                     platform_capex += price
 
+            # Platform-switch write-off: stock built on a platform the team
+            # has left. Read from the history rows that recorded it rather than
+            # recomputed here, so the charge and the association that caused it
+            # cannot disagree, and a round with no switch costs nothing.
+            from core.services.product_rebase import write_offs_for_round
+            platform_switch_write_off = write_offs_for_round(team, current_round)
+
             # Marketing expense
             try:
                 sales_rep_cost = Decimal(ScenarioConfig.objects.get(
@@ -635,6 +644,7 @@ def calculate_operating_expenses(context):
             'rd_expense': rd_expense,
             'platform_amortization': platform_amortization,
             'platform_capex': platform_capex,
+            'platform_switch_write_off': platform_switch_write_off,
             'marketing_expense': marketing_expense,
             'strategy_expense': strategy_expense,
             'research_expense': D('0'),

@@ -437,6 +437,14 @@ TEAM_STATE_SECTIONS = (
             why='Lagged R&D gains not yet applied.'),
     Section('team_product', 'core.TeamProduct', GAME, 'team__game_id',
             key=('team_id', 'name'), why='Products, positioning and lifecycle.'),
+    Section('team_product_platform_history', 'core.TeamProductPlatformHistory',
+            GAME, 'team_product__team__game_id',
+            key=('team_product_id', 'effective_from_round'),
+            exclude={'switched_at': 'Row-write wall clock.'},
+            why='Which platform a product was based on in each round. In the '
+                'envelope because it decides how a round resolves: without it '
+                'a re-based product would replay against the platform its team '
+                'moved to afterwards.'),
     Section('team_product_market', 'core.TeamProductMarket', GAME,
             'team_product__team__game_id', why='Where each product is offered.'),
     Section('team_market_presence', 'core.TeamMarketPresence', GAME, 'team__game_id',

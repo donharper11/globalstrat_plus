@@ -24,7 +24,9 @@ def apply_readiness_gating(context):
         ).select_related('team_platform__platform_generation')).order_by('name')
 
         for product in products:
-            platform_gen = product.team_platform.platform_generation
+            from core.engine.utils import resolved_platform
+            platform_gen = resolved_platform(
+                product, current_round).platform_generation
 
             # Get markets where this product is offered
             product_markets = (TeamProductMarket.objects.filter(
