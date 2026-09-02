@@ -1105,3 +1105,171 @@ class DuplicateGenerationTests(LifecycleFixture):
                 team=self.team, platform_generation=self.gen)
                 .values_list('name', 'status')),
             [('Old', 'retired'), ('Rebuilt', 'in_development')])
+
+
+class HeldGenerationTests(DuplicateGenerationTests):
+    """One platform per generation, against state as well as against payload.
+
+    Two gaps the V2-046 repair left. A carried draft was never reconciled
+    against another non-retired platform of the same generation, so an upgrade
+    residue from runtime `f39b853` -- one funded platform and one draft for the
+    same generation -- promoted into a second live platform. And a request for
+    an already-held generation was accepted with a 200, persisted at its
+    authoritative price, then silently skipped by the engine, which booked
+    nothing: a stored decision replaced with no decision at all (V2-047).
+    """
+
+    def hold(self, status='active', name='Already Live'):
+        from core.models.team_state import TeamPlatform
+        return TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.gen, name=name,
+            status=status,
+            development_started_round=1 if status != 'unfunded_draft' else None,
+            funded_round=1 if status != 'unfunded_draft' else None,
+            development_rounds_remaining=0 if status == 'active' else None)
+
+    def nonretired(self):
+        from core.models.team_state import TeamPlatform
+        return sorted(TeamPlatform.objects
+                      .filter(team=self.team, platform_generation=self.gen)
+                      .exclude(status='retired')
+                      .values_list('name', 'status'))
+
+    def request_row(self, name='Second Live'):
+        return [{'platform_generation': self.gen.id, 'method': 'in_house',
+                 'platform_name': name, 'feature_levels': {}}]
+
+    # -- V2-047: the supported writes ---------------------------------------
+
+    def test_the_per_type_surface_refuses_an_already_held_generation(self):
+        self.hold()
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.request_row(), format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('already holds', str(response.data))
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
+
+    def test_the_whole_submission_surface_refuses_it_too(self):
+        self.hold()
+        response = self.client_as_student().post(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/1/',
+            {'platform_developments': self.request_row()}, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('already holds', str(response.data))
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
+
+    def test_a_held_generation_is_refused_for_a_draft_too(self):
+        self.hold(status='unfunded_draft', name='Carried Draft')
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.request_row(), format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('already holds', str(response.data))
+
+    def test_a_refusal_leaves_the_previously_accepted_payload_unchanged(self):
+        other = self.generation(3, rounds=1)
+        client = self.client_as_student()
+        accepted = client.patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/',
+            [{'platform_generation': other.id, 'method': 'in_house',
+              'platform_name': 'Keeper', 'feature_levels': {}}], format='json')
+        self.assertEqual(accepted.status_code, 200, accepted.data)
+        self.hold()
+        refused = client.patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.request_row(), format='json')
+        self.assertEqual(refused.status_code, 400)
+        self.assertEqual(
+            list(DecisionPlatformDevelopment.objects.values_list(
+                'platform_name', flat=True)), ['Keeper'])
+
+    # -- V2-047: the stored-row bypass --------------------------------------
+
+    def test_a_stored_held_generation_request_refuses_phase_1(self):
+        from core.engine.advance_round import (InvalidPersistedDecisionError,
+                                               process_round)
+        from core.models.results_financials import RoundResultFinancials
+        self.hold()
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        Round.objects.filter(pk=rnd.pk).update(status='closed')
+        for team in self.teams:
+            DecisionSubmission.objects.update_or_create(
+                team=team, round=rnd, defaults={'status': 'locked'})
+        submission = DecisionSubmission.objects.get(team=self.team, round=rnd)
+        DecisionPlatformDevelopment.objects.create(
+            submission=submission, platform_generation=self.gen,
+            method='in_house', committed_cost=self.gen.development_cost,
+            platform_name='Second Live', feature_levels={})
+        with self.assertRaises(InvalidPersistedDecisionError) as caught:
+            process_round(self.game.id)
+        self.assertIn('already holds', str(caught.exception))
+        self.assertEqual(self.nonretired(), [('Already Live', 'active')])
+        self.assertEqual(
+            RoundResultFinancials.objects.filter(game=self.game).count(), 0)
+
+    # -- the upgrade residue -------------------------------------------------
+
+    def test_an_active_plus_draft_residue_refuses_phase_1(self):
+        from core.engine.advance_round import (InvalidPersistedDecisionError,
+                                               process_round)
+        self.hold()
+        self.hold(status='unfunded_draft', name='Legacy Draft')
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        Round.objects.filter(pk=rnd.pk).update(status='closed')
+        for team in self.teams:
+            DecisionSubmission.objects.update_or_create(
+                team=team, round=rnd, defaults={'status': 'locked'})
+        with self.assertRaises(InvalidPersistedDecisionError) as caught:
+            process_round(self.game.id)
+        message = str(caught.exception)
+        self.assertIn('more than one non-retired platform', message)
+        self.assertIn('Already Live', message)
+        self.assertIn('Legacy Draft', message)
+
+    def test_two_draft_residue_refuses_phase_1(self):
+        from core.engine.advance_round import (InvalidPersistedDecisionError,
+                                               process_round)
+        self.hold(status='unfunded_draft', name='Draft One')
+        self.hold(status='unfunded_draft', name='Draft Two')
+        rnd = Round.objects.get(game=self.game, round_number=1)
+        Round.objects.filter(pk=rnd.pk).update(status='closed')
+        for team in self.teams:
+            DecisionSubmission.objects.update_or_create(
+                team=team, round=rnd, defaults={'status': 'locked'})
+        with self.assertRaises(InvalidPersistedDecisionError):
+            process_round(self.game.id)
+
+    def test_the_allocator_never_promotes_a_draft_beside_a_live_platform(self):
+        """The defence behind the refusal, exercised on its own."""
+        self.hold()
+        self.hold(status='unfunded_draft', name='Legacy Draft')
+        self.set_cash_for_one_price()
+        self.process(1)
+        self.assertEqual(
+            self.nonretired(),
+            [('Already Live', 'active'), ('Legacy Draft', 'unfunded_draft')],
+            'the carried draft was promoted beside a live platform')
+        booked = self.run_cost_path(1, capitalize=False)
+        self.assertEqual(booked['rd_expense'], D('0'),
+                         'the residue draft was funded and booked')
+
+    def set_cash_for_one_price(self):
+        from core.models import Team
+        Team.objects.filter(pk=self.team.pk).update(
+            cash_on_hand=self.gen.development_cost + D('500000'))
+        self.team.refresh_from_db()
+
+    # -- the retired positive control ---------------------------------------
+
+    def test_a_retired_generation_may_still_be_requested(self):
+        from core.models.team_state import TeamPlatform
+        TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.gen, name='Old',
+            status='retired')
+        response = self.client_as_student().patch(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/platforms/', self.request_row('Rebuilt'), format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(DecisionPlatformDevelopment.objects.count(), 1)

@@ -112,6 +112,7 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
                                         rd_investment_cost)
 
     from core.services.rd_costs import (duplicate_generation_problem,
+                                        held_generation_problem,
                                         ownership_problem, unlock_problem)
 
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'
@@ -124,6 +125,11 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
         duplicate = duplicate_generation_problem(rows)
         if duplicate:
             raise serializers.ValidationError({'platform_generation': [duplicate]})
+        # V2-047: and against what the team already holds, not only against the
+        # other rows in this payload.
+        held = held_generation_problem(rows, team)
+        if held:
+            raise serializers.ValidationError({'platform_generation': [held]})
     for index, row in enumerate(rows):
         if kind == 'rd' and team is not None:
             # V2-044: the platform named must belong to the submitting team.
@@ -759,8 +765,10 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
         developments = attrs.get('platform_developments')
         if developments is not None:
             round_obj = attrs.get('round') or getattr(self.instance, 'round', None)
+            submitting_team = attrs.get('team') or getattr(
+                self.instance, 'team', None)
             enforce_authoritative_costs(
-                developments, 'platform',
+                developments, 'platform', team=submitting_team,
                 round_number=getattr(round_obj, 'round_number', None))
 
         creates = attrs.get('product_creates')

@@ -111,11 +111,32 @@ def _process_platform_development(team, submission, current_round):
     from core.services.rd_costs import allocate_platform_funding
 
     # -- carried drafts, oldest commitment first --------------------------
-    drafts = list(TeamPlatform.objects
-                  .filter(team=team, status='unfunded_draft')
-                  .select_related('platform_generation')
-                  .order_by('platform_generation__generation_order', 'name',
-                            'id'))
+    #
+    # A draft is only a candidate if the team holds no other non-retired
+    # platform for its generation. Runtime f39b853 could leave exactly that
+    # residue -- one platform funded and one draft for the same generation --
+    # and promoting the draft would create a second live platform for one
+    # generation. Phase 1 refuses that state outright; this guard is the
+    # defence, not the repair, so nothing is silently promoted if the engine is
+    # reached another way.
+    live_generations = set(TeamPlatform.objects
+                           .filter(team=team)
+                           .exclude(status__in=('retired', 'unfunded_draft'))
+                           .values_list('platform_generation_id', flat=True))
+    drafts = [draft for draft in TeamPlatform.objects
+              .filter(team=team, status='unfunded_draft')
+              .select_related('platform_generation')
+              .order_by('platform_generation__generation_order', 'name', 'id')
+              if draft.platform_generation_id not in live_generations]
+    # And one draft per generation, if two were ever carried.
+    seen_draft_generations = set()
+    deduped_drafts = []
+    for draft in drafts:
+        if draft.platform_generation_id in seen_draft_generations:
+            continue
+        seen_draft_generations.add(draft.platform_generation_id)
+        deduped_drafts.append(draft)
+    drafts = deduped_drafts
 
     # -- new requests -------------------------------------------------------
     #

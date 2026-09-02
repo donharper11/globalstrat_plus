@@ -489,6 +489,36 @@ def _run_phase_1(game_id):
             f'{describe_duplicate_generation_violations(duplicate_violations)}'
         )
 
+    # Existing platform state that already violates one-per-generation. This
+    # is state rather than a decision: runtime f39b853 could create it from a
+    # supported duplicate submission, so an upgrade from that revision can
+    # carry it in. Refused, never repaired -- deleting, retiring or merging a
+    # row would silently discard competition state.
+    from core.services.rd_costs import (describe_state_conflicts,
+                                        duplicate_platform_state,
+                                        persisted_held_generation_violations)
+    state_conflicts = duplicate_platform_state(game)
+    if state_conflicts:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(state_conflicts)} team/generation pair(s) hold more than one '
+            f'non-retired platform. Correct the rows and retry. '
+            f'{describe_state_conflicts(state_conflicts)}'
+        )
+
+    # V2-047: a stored request for a generation the team already holds. The
+    # engine would skip it and book nothing, replacing the stored decision with
+    # no decision at all.
+    held_violations = persisted_held_generation_violations(game,
+                                                           current_round_obj)
+    if held_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(held_violations)} stored platform development(s) request a '
+            f'generation the team already holds. Correct the row(s) and retry. '
+            f'{describe_state_conflicts(held_violations)}'
+        )
+
     # V2-024: equity raises are checked against the round's funding shortfall
     # before any competitive write, for the same reason the decision-limit
     # check above runs here -- a persisted row that never passed the

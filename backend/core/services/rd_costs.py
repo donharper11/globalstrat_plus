@@ -649,3 +649,112 @@ def describe_duplicate_generation_violations(violations, limit=5):
     if len(violations) > limit:
         lines.append(f'... and {len(violations) - limit} more')
     return ' | '.join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Held generations and duplicate platform state (V2-046 carried state, V2-047)
+# ---------------------------------------------------------------------------
+
+def held_generation_ids(team):
+    """Generations this team already holds: active, in development, or draft.
+
+    A retired platform is deliberately absent, so a team may rebuild a
+    generation it has retired.
+    """
+    from core.models.team_state import TeamPlatform
+    return set(TeamPlatform.objects
+               .filter(team=team).exclude(status='retired')
+               .values_list('platform_generation_id', flat=True))
+
+
+def held_generation_problem(rows, team):
+    """Why this submission asks for a generation the team already holds.
+
+    V2-047. The cross-row rule compared rows only with each other, so a request
+    for an already-held generation was accepted with a 200, persisted at its
+    authoritative price, and then silently skipped by the engine, which booked
+    nothing. That replaces a stored decision with no decision at all -- the
+    shape the fail-closed rules exist to reject. Refuse it at the write.
+    """
+    if team is None:
+        return None
+    held = held_generation_ids(team)
+    if not held:
+        return None
+    for index, row in enumerate(rows):
+        generation = (row.get('platform_generation') if isinstance(row, dict)
+                      else getattr(row, 'platform_generation', None))
+        key = getattr(generation, 'pk', generation)
+        if key in held:
+            name = getattr(generation, 'name', key)
+            return (f'row {index + 1}: your team already holds {name}. A team '
+                    f'develops one platform per generation; retire it first to '
+                    f'rebuild.')
+    return None
+
+
+def duplicate_platform_state(game):
+    """Existing non-retired platform rows sharing a team and generation.
+
+    Not a decision problem: state. Runtime `f39b853` could create it from a
+    supported duplicate submission -- one platform funded, one left as a draft
+    for the same generation -- so an upgrade from that revision can carry it in.
+    Refused rather than repaired: deleting, retiring or merging one of them
+    would silently discard competition state.
+    """
+    from collections import defaultdict
+    from core.models.team_state import TeamPlatform
+
+    groups = defaultdict(list)
+    rows = (TeamPlatform.objects
+            .filter(team__game=game).exclude(status='retired')
+            .select_related('team', 'platform_generation')
+            .order_by('team_id', 'platform_generation_id', 'id'))
+    for row in rows:
+        groups[(row.team_id, row.platform_generation_id)].append(row)
+
+    conflicts = []
+    for (team_id, generation_id), rows_in_group in sorted(groups.items()):
+        if len(rows_in_group) > 1:
+            conflicts.append({
+                'team': rows_in_group[0].team.name,
+                'generation': rows_in_group[0].platform_generation.name,
+                'rows': [{'id': r.id, 'name': r.name, 'status': r.status}
+                         for r in rows_in_group],
+                'detail': (f'{rows_in_group[0].team.name} holds '
+                           f'{len(rows_in_group)} non-retired platforms for '
+                           f'{rows_in_group[0].platform_generation.name}: '
+                           + ', '.join(f'#{r.id} {r.name} ({r.status})'
+                                       for r in rows_in_group))})
+    return conflicts
+
+
+def persisted_held_generation_violations(game, round_obj):
+    """Stored requests for a generation the submitting team already holds."""
+    from core.models.decisions import DecisionPlatformDevelopment
+
+    violations = []
+    rows = (DecisionPlatformDevelopment.objects
+            .filter(submission__round=round_obj, submission__team__game=game)
+            .select_related('platform_generation', 'submission__team')
+            .order_by('pk'))
+    held_by_team = {}
+    for row in rows:
+        team = row.submission.team
+        if team.id not in held_by_team:
+            held_by_team[team.id] = held_generation_ids(team)
+        if row.platform_generation_id in held_by_team[team.id]:
+            violations.append({
+                'model': 'DecisionPlatformDevelopment', 'row': row.pk,
+                'team': team.name, 'field': 'platform_generation',
+                'detail': (f'{team.name} already holds '
+                           f'{row.platform_generation.name}; the request would '
+                           f'be skipped and charged nothing')})
+    return violations
+
+
+def describe_state_conflicts(items, limit=5):
+    lines = [item['detail'] for item in items[:limit]]
+    if len(items) > limit:
+        lines.append(f'... and {len(items) - limit} more')
+    return ' | '.join(lines)

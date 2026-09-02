@@ -428,7 +428,7 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                     round_number=rnd.round_number)
             if decision_type == 'platforms':
                 enforce_authoritative_costs(
-                    validated_items, 'platform',
+                    validated_items, 'platform', team=team,
                     round_number=rnd.round_number)
             if decision_type == 'products':
                 # Before the delete below, so a refused payload leaves the

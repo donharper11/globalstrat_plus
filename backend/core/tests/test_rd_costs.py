@@ -43,6 +43,16 @@ class RDCostFixture(TestCase):
         self.platform = TeamPlatform.objects.create(
             team=self.team, platform_generation=self.gen, name='P',
             status='active')
+        # A generation the team does NOT hold, for the platform-development
+        # cases. The team holds `self.gen` so the feature-upgrade cases have a
+        # platform to invest in, and a development request naming a held
+        # generation is now refused before its price is examined (V2-047), so
+        # the two cases need different generations.
+        self.unheld_gen = PlatformGenerationDefinition.objects.create(
+            scenario=self.scenario, name='Gen 2 unheld', description='d',
+            generation_order=3, unlock_round=0,
+            development_cost=D('15000000'), license_cost=D('35000000'),
+            development_rounds=2)
 
         from core.models.scenario import FeatureDefinition
         self.feature = FeatureDefinition.objects.create(
@@ -128,7 +138,7 @@ class AuthoritativePriceTests(RDCostFixture):
     def test_per_type_surface_refuses_a_platform_priced_at_zero(self):
         response = self.client_as_student().patch(
             self.url('platforms'),
-            [{'platform_generation': self.gen.id, 'method': 'in_house',
+            [{'platform_generation': self.unheld_gen.id, 'method': 'in_house',
               'committed_cost': '0', 'platform_name': 'Free',
               'feature_levels': {}}], format='json')
         self.assertEqual(response.status_code, 400)
@@ -139,7 +149,7 @@ class AuthoritativePriceTests(RDCostFixture):
         response = self.client_as_student().post(
             self.whole_url(),
             {'platform_developments': [
-                {'platform_generation': self.gen.id, 'method': 'in_house',
+                {'platform_generation': self.unheld_gen.id, 'method': 'in_house',
                  'committed_cost': '0', 'platform_name': 'Free',
                  'feature_levels': {}}]}, format='json')
         self.assertEqual(response.status_code, 400)
@@ -149,7 +159,7 @@ class AuthoritativePriceTests(RDCostFixture):
     def test_an_omitted_cost_is_filled_with_the_authored_price(self):
         response = self.client_as_student().patch(
             self.url('platforms'),
-            [{'platform_generation': self.gen.id, 'method': 'license',
+            [{'platform_generation': self.unheld_gen.id, 'method': 'license',
               'platform_name': 'Licensed', 'feature_levels': {}}],
             format='json')
         self.assertEqual(response.status_code, 200, response.data)
@@ -159,7 +169,7 @@ class AuthoritativePriceTests(RDCostFixture):
     def test_the_authored_price_is_accepted_unchanged(self):
         response = self.client_as_student().patch(
             self.url('platforms'),
-            [{'platform_generation': self.gen.id, 'method': 'in_house',
+            [{'platform_generation': self.unheld_gen.id, 'method': 'in_house',
               'committed_cost': '15000000', 'platform_name': 'Paid',
               'feature_levels': {}}], format='json')
         self.assertEqual(response.status_code, 200, response.data)
