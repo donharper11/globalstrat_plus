@@ -274,7 +274,14 @@ Not closed: Stage 3 closes with the integrated Stage 3/4 evidence, after
 immutability lands.
 
 
-### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — implemented at `9987688`, pending integrated Stage 3 closure
+### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — repair incomplete at `9987688`, Stage 3A rework
+
+**Incomplete at `9987688`.** That revision refused duplicate rows within a
+submission but never reconciled a *carried draft* against another non-retired
+platform of the same generation, so an upgrade residue from `f39b853` — one
+funded platform and one draft for one generation — still promoted into a
+second live platform. Completed at `83ec2bd`; see V2-047 below, which shares
+its repair.
 
 Raised by the independent audit of the V2-045 repair at `c20bd8b`, before
 repair. The allocation refactor collects all new requests before creating any
@@ -320,7 +327,63 @@ than two; and positive controls — a corrected single request creating one
 platform and booking its one authoritative price, two distinct generations
 still accepted, and a retired generation still re-buildable.
 
-**Disposition: implemented at `9987688`, pending integrated Stage 3 closure.**
+**Audit disposition at `f878ab6`: repair incomplete.** The current-submission
+duplicate checks pass, but carried drafts are added to the funding candidates
+before the `held`/`claimed` reconciliation. A duplicate draft left by the
+faulty predecessor can still be promoted and charged beside another
+non-retired platform of the same generation. See
+`rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`.
+
+
+### V2-047 — an already-held generation is accepted, persisted and silently ignored (P1) — implemented at `83ec2bd`, pending integrated Stage 3 closure
+
+Raised by the independent audit of the V2-046 repair at `f878ab6`, before
+repair. The serializer's new cross-row rule compares generations only within
+the incoming payload; the persisted precondition compares them only within the
+current submission. Neither refuses a single request for a generation the team
+already holds as active, in development or unfunded draft.
+
+Reproduced through the supported per-type write with an active platform. The
+request returned 200 and persisted its server-authored $1,000,000 cost. The
+lifecycle's defensive `held` set then skipped it, created nothing and the real
+accounting path booked zero. The stored decision therefore says “develop this
+platform” while the resolved state and charge say no decision existed.
+
+**Disposition: open.** Both supported writes and the Phase-1 persisted boundary
+must refuse an already-held non-retired generation before mutation and leave
+the retired-generation exception intact. See
+`rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`.
+
+**Repair, at runtime revision `83ec2bd`.**
+
+- **Both write surfaces** refuse a request for a generation the team already
+  holds as active, in development or unfunded draft, validated **before**
+  replacement so a previously accepted payload is untouched on refusal. The
+  retired exception is preserved and asserted: a retired generation may be
+  rebuilt.
+- **The Phase-1 precondition** refuses a stored request against a held
+  generation before any platform, result or accounting mutation, rather than
+  skipping it and booking nothing.
+- **Existing state** holding more than one non-retired platform per team and
+  generation refuses the round outright, naming every conflicting row. Refused,
+  never repaired: deleting, retiring or merging a row would silently discard
+  competition state. The allocator additionally declines to promote such a
+  draft, as a defence behind the refusal rather than a silent repair.
+
+**Candidate database inventoried, not inferred.** `globalstrat_plus` holds 302
+non-retired platform rows across 302 distinct team/generation pairs — zero
+duplicates today. No database constraint prevents the state and runtime
+`f39b853` could create it, which is why the guard exists.
+
+**Verification.** `HeldGenerationTests`, 16 tests: both write surfaces refusing
+a held generation, including when the holding row is a draft; a refusal leaving
+the previously accepted payload unchanged; the stored-row bypass refused at
+Phase 1 with nothing created and no financial rows; the active-plus-draft and
+two-draft residues refusing with every conflicting row named; the allocator
+declining to promote a residue draft and booking zero; and the retired
+positive control on the write surface. V2-045 and V2-046 controls unchanged.
+
+**Disposition: implemented at `83ec2bd`, pending integrated Stage 3 closure.**
 
 
 ### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`

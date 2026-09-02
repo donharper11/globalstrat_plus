@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `9987688`.** Clean tree. Frozen before this evidence was
+**Runtime revision `83ec2bd`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -22,7 +22,7 @@ recorded below rather than quietly fixed.
 | 5 | Feature cap | scenario-scoped `rd_costs.feature_cap` on both write surfaces; `persisted_feature_cap_violations` refuses at the engine | `FeatureCapTests` — **6** |
 | — | Old upgrade path operational | untouched | two existing contract tests, below |
 
-**39 tests in `test_platform_lifecycle`; 81 in the affected set.** No class
+**55 tests in `test_platform_lifecycle`; 97 in the affected set.** No class
 inherits another's tests — see the per-class table in the transcript.
 
 ## What the audit caught, and what it turned out to be
@@ -102,7 +102,7 @@ default branch twice.
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `9987688`: **81 tests, OK**. Written to a temporary path outside the
+  at `83ec2bd`: **97 tests, OK**. Written to a temporary path outside the
   repository and moved in afterwards, so producing the artifact cannot dirty
   the tree its header reports; the header records **0 modified tracked files
   at the start and at the end**
@@ -143,6 +143,29 @@ inventory independently of either. `DuplicateGenerationTests` — 8 tests,
 including the positive controls that two distinct generations still allocate as
 V2-045 specifies and a retired generation remains re-buildable.
 
+## V2-047 and the V2-046 carried state — held generations
+
+Two gaps the first duplicate repair left, both about **state** rather than
+payload. A request for an already-held generation was accepted with a 200,
+persisted at its price, then silently skipped by the engine, which booked
+nothing — a stored decision replaced with no decision at all. And a carried
+draft was never reconciled against another non-retired platform of its
+generation, so an upgrade residue from `f39b853` promoted into a second live
+platform.
+
+Both writes now refuse a held generation before replacement; Phase 1 refuses a
+stored one, and refuses existing state holding more than one non-retired
+platform per team and generation, naming every conflicting row rather than
+repairing it. The allocator declines to promote such a draft as a defence
+behind the refusal.
+
+**The candidate database was inventoried, not assumed:** 302 non-retired
+platform rows across 302 distinct team/generation pairs, zero duplicates today.
+The state is reachable from the predecessor revision, which is why the guard
+exists.
+
+`HeldGenerationTests` — 16 tests, including the retired positive control.
+
 ## The old upgrade path is still reachable
 
 - `test_distinct_features_are_still_accepted_on_both_paths` — R&D investments
@@ -160,8 +183,8 @@ invented.
 
 ## Status of the findings
 
-**V2-039, V2-040, V2-044, V2-045 and V2-046 are implemented at `9987688`,
-pending integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
+**V2-039, V2-040, V2-044, V2-045, V2-046 and V2-047 are implemented at
+`83ec2bd`, pending integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
 comes with the integrated Stage 3/4 evidence, after immutability lands.
 
 ## Not run
