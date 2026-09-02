@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `a713349`.** Clean tree. Frozen before this evidence was
+**Runtime revision `f39b853`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -18,11 +18,11 @@ recorded below rather than quietly fixed.
 | 1 | **V2-040** timing | decrement loop filters `development_started_round__lt=current_round`; `MIN_DEVELOPMENT_ROUNDS = 1`; maximum from `max_platform_development_rounds` | `PlatformTimingTests` — **5** |
 | 2 | **V2-039** unlock | `unlock_problem` on both write surfaces; `persisted_unlock_violations` at the engine | `UnlockGateTests` — **4** |
 | 3 | **V2-044** ownership | `ownership_problem` on both write surfaces; `persisted_ownership_violations` at the engine | `PlatformOwnershipTests` — **4** |
-| 4 | Funding / draft lifecycle | `unfunded_draft` + `funded_round` (migration `0080`); the charge follows `funded_round` | `FundingLifecycleTests` — **4**, `FundingAccountingTests` — **4** |
+| 4 | Funding / draft lifecycle | `unfunded_draft` + `funded_round` (migration `0080`); the charge follows `funded_round`; **`allocate_platform_funding` decides the whole team's funding once per round** | `FundingLifecycleTests` — **4**, `FundingAccountingTests` — **4**, `AggregateFundingTests` — **4** |
 | 5 | Feature cap | scenario-scoped `rd_costs.feature_cap` on both write surfaces; `persisted_feature_cap_violations` refuses at the engine | `FeatureCapTests` — **6** |
 | — | Old upgrade path operational | untouched | two existing contract tests, below |
 
-**27 tests in `test_platform_lifecycle`; 69 in the affected set.** No class
+**31 tests in `test_platform_lifecycle`; 73 in the affected set.** No class
 inherits another's tests — see the per-class table in the transcript.
 
 ## What the audit caught, and what it turned out to be
@@ -102,13 +102,31 @@ default branch twice.
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `a713349`: **69 tests, OK**. Written to a temporary path outside the
+  at `f39b853`: **73 tests, OK**. Written to a temporary path outside the
   repository and moved in afterwards, so producing the artifact cannot dirty
   the tree its header reports; the header records **0 modified tracked files
   at the start and at the end**
 - `evidence/decision-rules/stage3a/migration-check.txt` —
   `makemigrations --check --dry-run` → **No changes detected**, exit 0; one
   migration: `0080_platform_funding_lifecycle`
+
+## V2-045 — funding is allocated as a set
+
+The independent audit of `f81426c` found the funding decision was made one
+platform at a time against the same unreserved balance: two $1,000,000 drafts
+against $1,500,000 both started, and the accounting path booked $2,000,000.
+
+`allocate_platform_funding` now decides once per team per round across carried
+drafts and new requests together, reserving each accepted cost before
+considering the next, and returns the single set both the lifecycle and the
+accounting read. Priority is carried drafts first, then new requests, in
+generation then name then id order — stated because it must be deterministic,
+and drafts-first so an old draft cannot starve behind later requests.
+
+`AggregateFundingTests` covers the reported case, the same-round control, a
+pair written straight to the table, and the capitalisation mode. The allocator
+was also exercised directly against the audit's figures and funds one of the
+two.
 
 ## The old upgrade path is still reachable
 
@@ -127,8 +145,8 @@ invented.
 
 ## Status of the findings
 
-**V2-039, V2-040 and V2-044 are implemented at `a713349`, pending integrated
-Stage 3 closure.** Not closed; the register records them the same way. Closure
+**V2-039, V2-040, V2-044 and V2-045 are implemented at `f39b853`, pending
+integrated Stage 3 closure.** Not closed; the register records them the same way. Closure
 comes with the integrated Stage 3/4 evidence, after immutability lands.
 
 ## Not run

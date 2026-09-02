@@ -227,6 +227,53 @@ that never locks.
 Found by accident — the first probe run reused one team's platform id for both
 teams. Registered because the API accepted it, not because the harness sent it.
 
+### V2-045 — platform auto-funding spends the same opening cash more than once (P1) — implemented at `f39b853`, pending integrated Stage 3 closure
+
+Raised by the independent audit of the Stage 3A checkpoint at `f81426c`, before
+repair. `rd_costs.can_fund_platform()` compares each candidate's authoritative
+price with the same unchanged `team.cash_on_hand`; the new-platform and carried-
+draft loops do not reserve the cost of an earlier accepted candidate.
+
+Reproduced with two $1,000,000 carried drafts and $1,500,000 of round-opening
+cash. Both changed from `unfunded_draft` to `in_development`, both recorded
+`funded_round=2`, and both clocks started. The real
+`calculate_operating_expenses` output then booked $2,000,000 of `rd_expense` in
+round 2. The lifecycle therefore labels both platforms funded even though the
+team cannot fund them together, reopening the cash side of V2-038 on the new
+auto-funding path.
+
+**Repair, at runtime revision `f39b853`.**
+`rd_costs.allocate_platform_funding` decides funding **once per team per
+round** over every candidate — the drafts carried from earlier rounds and the
+new requests in this submission — walking them with a running balance and
+reserving each accepted authoritative cost before considering the next. It
+returns only the funded set, so the lifecycle and the accounting path read one
+authoritative selection; no second cost is approximated and no price is
+lowered.
+
+Priority is carried drafts first, then new requests, each in generation order,
+then name, then id. Drafts first because a team that committed in an earlier
+round and could not pay should not be pushed behind a request it made later,
+which would let an old draft starve indefinitely. Deterministic either way,
+which is what the accounting depends on. A candidate that does not fit stays
+`unfunded_draft` with a null funded round and start round and no running clock,
+and is reconsidered next round.
+
+**Verification.** `AggregateFundingTests`, four tests at the real lifecycle and
+accounting boundary: the reported two-draft case, where exactly one platform
+starts and `context.opex` reports one price rather than two, and the remaining
+draft is booked once in the later round its own clock starts; the same-round
+two-request control; a pair written straight to the table, so aggregate safety
+does not depend on the serializer having run; and the capitalisation mode
+observing the same selection. The allocator was also run directly against the
+audit's reported figures — two $1,000,000 candidates, $1,500,000 cash — and
+funds one.
+
+**Disposition: implemented at `f39b853`, pending integrated Stage 3 closure.**
+Not closed: Stage 3 closes with the integrated Stage 3/4 evidence, after
+immutability lands.
+
+
 ### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
 
 **Found** during the CRV2-08 dispute walkthrough. The runbook's dispute-5
