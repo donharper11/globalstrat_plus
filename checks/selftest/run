@@ -76,13 +76,25 @@ git -C "$D" add .gitignore >/dev/null; git -C "$D" commit -qm untrack >/dev/null
 "$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1
 assert_rc 0 $? "same secret, untracked and gitignored, does not fail"
 
-# a scanner that is absent must be exit 2, not exit 0. An unrunnable check that
+# A scanner that is absent must be exit 2, not exit 0. An unrunnable check that
 # reports success is the failure mode AP-R10 exists to prevent.
-FAKEHOME="$(mktemp -d)"
-( PATH="/usr/bin:/bin" HOME="$FAKEHOME" \
+#
+# Asserted through AIDE_CHECKS_GITLEAKS rather than by hiding the binary. Hiding
+# it was environment-dependent and quietly wrong: on both VMs gitleaks lives in
+# ~/bin, so faking HOME concealed it and this passed, but a CI runner installs it
+# to /usr/local/bin, which find_gitleaks probes by absolute path whatever PATH
+# and HOME say. The check found it, exited 0, and this assertion failed on every
+# CI run since phase 1 — the AP-R10 proof step red, in the one place nobody was
+# reading it, because CI is advisory.
+( AIDE_CHECKS_GITLEAKS="/nonexistent/gitleaks" \
   "$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1 )
-assert_rc 2 $? "missing scanner is exit 2, not a silent pass"
-rm -rf "$FAKEHOME"
+assert_rc 2 $? "a scanner path that does not exist is exit 2, not a silent pass"
+
+# and a binary that is not a scanner cannot manufacture a pass either: it writes
+# no report, which is could-not-run, not zero findings.
+( AIDE_CHECKS_GITLEAKS="/bin/true" \
+  "$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1 )
+assert_rc 2 $? "a scanner that produces no report is exit 2, not zero findings"
 
 # 5. remove the plant
 rm -f "$PLANT"; git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cleanup >/dev/null

@@ -174,9 +174,13 @@ as they stand.
   used SSH and authenticated fine. Corrected 2026-09-03 — the origin is now
   `git@github.com:donharper11/aide-checks.git`. `bin/push-to-vm5` is retained
   only as an offline fallback for when GitHub is unreachable from `.5`.
-- **gitleaks is a host dependency**, installed to `~/bin` on both VMs. The check
-  exits 2 rather than 0 when it is absent, so a missing scanner refuses a deploy
-  instead of passing one.
+- **gitleaks is a host dependency**, installed to `~/bin` on both VMs and to
+  `/usr/local/bin` on a CI runner. The check exits 2 rather than 0 when it is
+  absent, so a missing scanner refuses a deploy instead of passing one.
+  `AIDE_CHECKS_GITLEAKS` names an explicit scanner path and is consulted before
+  discovery. It only ever makes the check stricter: a path that is not
+  executable is exit 2, and a binary that is not gitleaks writes no report,
+  which is also exit 2. No value of it produces a pass.
 - **CI is advisory.** GitHub Free does not enforce rulesets on private repos.
 - **`accounting` is gated at build, not at the entrypoint.** `docker compose
   build` run by hand does not pass through `scripts/build-images.sh` and is not
