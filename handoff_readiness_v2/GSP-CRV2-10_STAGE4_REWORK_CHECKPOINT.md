@@ -208,6 +208,28 @@ static checks clean — `makemigrations --check`, `dump_manifest_schema --check`
 ("Manifest schema inventory is current."), `dump_read_inventory --check`.
 Evidence in `evidence/decision-rules/stage4-rework2/`.
 
+### Reconciled freeze — `29c636d`
+
+The `5873695` freeze was not clean: seven `checks/*` files were modified in the
+working tree. They were the operator's V2-048 remediation, not this handoff's
+work, and they are now committed (`a4479cb`). A second aide-checks sync landed
+*during* the re-run and was committed too (`29c636d`).
+
+**That is twice a vendored tool has dirtied the tree between a freeze and its
+audit**, and it will recur, because `checks/` is synced from upstream
+asynchronously and not on this handoff's schedule. Either the sync should be
+committed by its owner before a freeze is declared, or checkpoint identity
+should be pinned to `backend/` plus `handoff_readiness_v2/` rather than to the
+whole tree. Naming it rather than working around it, because a freeze that
+silently excludes a directory is worse than one that is occasionally dirty.
+
+Final run at `29c636d`, with `test_no_credential_literals` added:
+**230 distinct, 230 executed, `OK`**. Whole tree clean at both ends, same
+revision at both ends. `makemigrations`, `dump_manifest_schema`,
+`dump_read_inventory` all current; `no-committed-secrets` PASS in blocking
+mode; checks selftest 71 passed, 0 failed. Evidence in
+`evidence/decision-rules/stage4-final/`.
+
 **Provenance.** The transcript was generated outside the repository and moved
 in afterwards. It records the **whole tree** clean at both ends — the
 previously-noted `frontend/deploy-frontend.sh` was committed by the operator at
