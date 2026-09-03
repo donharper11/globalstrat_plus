@@ -24,7 +24,7 @@ checkpoint 2 caught the omission. Registration did not precede implementation
 and this entry does not imply it did. V2-032 onwards were registered before
 repair, as the rule requires.
 
-## V2-048 — a live database credential is committed to Git (P0) — OPEN, security/operations
+## V2-048 — a live database credential is committed to Git (P0) — OPEN, security/operations — rotation still outstanding
 
 **Owner: security and operations.** Not a GSP-CRV2-10 finding and not to be
 folded into any stage of it. Stage 4 development may continue; this finding
@@ -100,6 +100,40 @@ The two JWTs are noted for the same owner's assessment — whether they are
 live-signed session tokens or artifacts of a disposable stack was not
 determined here, because probing stopped once the credential was confirmed
 compromised.
+
+### Repair progress at `b309de0`
+
+**The credential is still live and still not rotated. Steps 3, 6 and 7 do not
+reduce the exposure until step 1 does.** The value remains valid, remains in 14
+commits of history, and that history remains behind a GitHub remote.
+
+| Step | State |
+|---|---|
+| 1. Rotate or revoke | **NOT DONE — blocking.** Requires database administrator action on a live host holding 87 databases, including a competition database. Not taken unilaterally. |
+| 2. Move to deployment secret configuration | **Partly.** `DB_PASSWORD` is now read from the environment with no fallback; wiring it into the systemd `EnvironmentFile` is the operator's step. |
+| 3. Remove tracked defaults and harness copies | **Done.** All 14 occurrences across 12 files. `_required_db_password()` raises `ImproperlyConfigured` rather than defaulting, in every environment. |
+| 4. Assess access logs and role privileges | **NOT DONE.** Needs the database host. Recorded privileges stand: not superuser, but CREATEROLE and CREATEDB. |
+| 5. Decide on history rewriting | **NOT DONE — a decision, not a task.** 14 commits, earliest the baseline snapshot, GitHub remote. |
+| 6. Restore the scanner to high-signal enforcement | **Done, in two halves.** The operator promoted `no-committed-secrets` to blocking and dispositioned its four findings with narrow, reasoned, fingerprint-pinned exceptions (`a4479cb`). Detection coverage was added separately — see below. |
+| 7. Disposition the two JWTs | **Done.** Decoded by the operator: instructor and student walkthrough tokens, `exp` April 2026, expired five months. |
+
+**Detection coverage.** The scanner is now blocking *and green*, which is a
+stronger claim than the report-only version made on the same detection — and it
+still does not see this credential's shape. `os.environ.get('DB_PASSWORD',
+'<literal>')` reads as configuration rather than as an assigned secret, so
+gitleaks' default ruleset passes over it. Upstream `aide-checks` builds its
+config with `useDefault = true` and no rule extension point, so rather than
+fork a rev-pinned vendored tool, `core/tests/test_no_credential_literals.py`
+adds an AST check in this repository's own suite. **Adding the rule upstream
+would be the better fix and is recorded as an upstream request.**
+
+That check found a **thirteenth** file the inventory above had missed:
+`DASHSCOPE_API_KEY` in `narrative_restart_drill.py:116`. Read and confirmed
+benign — `'drill-key'`, nine characters, in the same dict that points
+`DASHSCOPE_COMPATIBLE_URL` at a local stall server on `127.0.0.1`, where a real
+DashScope key is `sk-` plus 32 hex. Pinned to one file:line:variable with its
+reason, and a further test fails if the pin stops matching the line it was
+written for.
 
 ### Repair order (not performed here)
 

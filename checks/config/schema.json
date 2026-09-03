@@ -56,7 +56,7 @@
                 "type": "string"
               },
               "minItems": 2,
-              "description": "MUST contain docs/** and README.md (spec §4.1): scanners commonly skip documentation paths, and NEXUS-C116 lived exactly there."
+              "description": "MUST contain docs/** and README.md (spec \u00a74.1): scanners commonly skip documentation paths, and NEXUS-C116 lived exactly there."
             },
             "exclude": {
               "type": "array",
@@ -77,7 +77,7 @@
                 "type": "string",
                 "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
               },
-              "description": "Field names whose assigned value is a domain identifier, not a credential (e.g. idempotency_key, feature_key). Suppresses a finding only when gitleaks matched that field, NOT the path: the file stays fully scanned, so a real secret elsewhere in it — or on the same line — still fails. This exists because spec §3 forbids excluding a path for noise, and a committed evidence dump is exactly where a real leak also lands. Every entry requires a matching allow_fields_reasons entry or the check exits 2."
+              "description": "Field names whose assigned value is a domain identifier, not a credential (e.g. idempotency_key, feature_key). Suppresses a finding only when gitleaks matched that field, NOT the path: the file stays fully scanned, so a real secret elsewhere in it \u2014 or on the same line \u2014 still fails. This exists because spec \u00a73 forbids excluding a path for noise, and a committed evidence dump is exactly where a real leak also lands. Every entry requires a matching allow_fields_reasons entry or the check exits 2."
             },
             "allow_fields_reasons": {
               "type": "object",
@@ -116,11 +116,99 @@
                 "type": "string"
               },
               "minItems": 1,
-              "description": "This repo's own worktree convention, read from its .gitignore history — not assumed (spec §4.2). An empty list cannot fail and is rejected by the check."
+              "description": "This repo's own worktree convention, read from its .gitignore history \u2014 not assumed (spec \u00a74.2). An empty list cannot fail and is rejected by the check."
             },
             "patterns_source": {
               "type": "string",
               "description": "where the convention was read from"
+            }
+          }
+        },
+        "rls-policy-present": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "mode",
+            "connection_env",
+            "schemas",
+            "tenant_columns",
+            "context_function_pattern",
+            "global_vocabulary_tables",
+            "global_vocabulary_source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "blocking",
+                "report-only"
+              ]
+            },
+            "fast": {
+              "type": "boolean",
+              "default": true
+            },
+            "mode_reason": {
+              "type": "string"
+            },
+            "connection_env": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z_][A-Z0-9_]*$"
+              },
+              "minItems": 1,
+              "description": "Environment variable names holding the connection string, tried in order. There is deliberately no fallback literal (phase 2 spec \u00a74.1): a connection string baked into a check is a credential in a repo. Nothing set, or nothing reachable, is exit 2 \u2014 could not run, never a pass."
+            },
+            "schemas": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "The application schema(s). Declared, not inferred: a database also holds job-queue, warehouse and per-team sandbox schemas that are not the application's and are not this check's business."
+            },
+            "schemas_reason": {
+              "type": "string",
+              "description": "why this schema set is the application schema, and what was deliberately left out"
+            },
+            "tenant_columns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+              },
+              "minItems": 1,
+              "description": "The repo's canonical tenant/context column names. Clause (b) of R-V8-07 \u2014 'must contain no tenant-private facts' \u2014 is asserted at column level against this list. An empty list cannot fail and is refused."
+            },
+            "tenant_columns_reason": {
+              "type": "string",
+              "description": "where this list was read from"
+            },
+            "context_function_pattern": {
+              "type": "string",
+              "description": "POSIX ERE matching this repo's RLS context functions. A policy counts as 'authenticated' only when its USING expression names one of them, so USING (true) and USING (is_active = true) do not qualify. Without this, 'authenticated' has no definition and clause (a) would pass on any policy at all."
+            },
+            "context_function_pattern_source": {
+              "type": "string"
+            },
+            "global_vocabulary_tables": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "table name -> the recorded reason it is global vocabulary. Same shape as allow_fields_reasons, and required for the same reason: an entry with no reason is exit 2. Which tables count is a judgment R-V8-07 assumes and does not define, and \u00a74.1 forbids inferring it from naming conventions."
+            },
+            "global_vocabulary_source": {
+              "type": "string",
+              "description": "How the set was determined, so the judgment is auditable rather than asserted. Refused if empty."
+            },
+            "zero_is_suspect_reason": {
+              "type": "string",
+              "description": "Printed on a zero-violation result. A zero against a rule with recorded failures is suspect, not a pass (\u00a79.5)."
             }
           }
         }

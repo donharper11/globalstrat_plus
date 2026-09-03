@@ -20,6 +20,13 @@ assert_rc() { # assert_rc <expected> <actual> <label>
   else say "    FAIL  $3 (expected exit $1, got $2)"; FAIL=$((FAIL+1)); fi
 }
 
+# The revision assertion (spec §2) applies to every run-checks invocation, so a
+# synthetic repo has to carry a vendored stamp the same way a real one does.
+# Asking the runner what it is, rather than recomputing it here, is deliberate:
+# a selftest that re-derives the value it is checking proves nothing.
+PKG_REV="$("$PKG/bin/run-checks" --print-revision 2>/dev/null || echo unknown)"
+stamp_repo() { mkdir -p "$1/checks"; printf '%s\n' "${2:-$PKG_REV}" > "$1/checks/.aide-checks-rev"; }
+
 mk_repo() {
   local d; d="$(mktemp -d)"
   git init -q "$d"; git -C "$d" config user.email t@t; git -C "$d" config user.name t
@@ -285,6 +292,7 @@ cat > "$D/checks.config.json" <<'JSON'
     "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking", "fast": false,
       "patterns": [".claude/worktrees"] } } }
 JSON
+stamp_repo "$D"
 git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
 "$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1;        assert_rc 0 $? "--full passes on a clean repo"
 O="$("$PKG/bin/run-checks" --fast --repo="$D" 2>&1)";             assert_rc 0 $? "--fast passes on a clean repo"
@@ -315,6 +323,323 @@ PY
 "$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
 assert_rc 1 $? "a configured check with no executable is a failure, not a skip"
 rm -rf "$D"
+
+# ══════════════════════════════════════════════════════════════════════════
+# The revision assertion (spec §2). AP-R10 applies to it exactly as it does to
+# a check: it counts only when it is proven it can fail. Proven three times,
+# because the claim is that no mode escapes it — --report-only included.
+say "selftest: revision assertion"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking",
+    "patterns": [".claude/worktrees"] } } }
+JSON
+stamp_repo "$D"
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "matching revision runs normally"
+
+# 3. plant — a deliberately mismatched vendored revision
+stamp_repo "$D" "0000dead"
+for m in --fast --full --report-only; do
+  OUT="$("$PKG/bin/run-checks" $m --repo="$D" 2>&1)"; RC=$?
+  assert_rc 2 $RC "mismatched revision is exit 2 in ${m}"
+done
+
+# the message has to be actionable: both revisions and the command that fixes it
+OUT="$("$PKG/bin/run-checks" --full --repo="$D" 2>&1)"
+printf '%s' "$OUT" | grep -q '0000dead' \
+  && { say "    ok    message names the vendored revision"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  message does not name the vendored revision"; FAIL=$((FAIL+1)); }
+printf '%s' "$OUT" | grep -q "$PKG_REV" \
+  && { say "    ok    message names the running revision"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  message does not name the running revision"; FAIL=$((FAIL+1)); }
+printf '%s' "$OUT" | grep -q 'sync-into-repo' \
+  && { say "    ok    message names the sync command that fixes it"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  message does not name the fix command"; FAIL=$((FAIL+1)); }
+
+# report-only must not soften it to a reported failure: exit 2, and no findings
+OUT="$("$PKG/bin/run-checks" --report-only --repo="$D" 2>&1)"
+printf '%s' "$OUT" | grep -q 'report-only — exiting 0' \
+  && { say "    FAIL  --report-only swallowed the mismatch"; FAIL=$((FAIL+1)); } \
+  || { say "    ok    --report-only does not swallow the mismatch"; PASS=$((PASS+1)); }
+
+# no bypass. Any env var that turned this off would be the defect it prevents.
+OUT="$(AIDE_CHECKS_SKIP=1 AIDE_CHECKS_SKIP_REVISION=1 AIDE_CHECKS_REV_SKIP=1 \
+       "$PKG/bin/run-checks" --full --repo="$D" 2>&1)"; RC=$?
+assert_rc 2 $RC "no environment variable bypasses the assertion"
+
+# a repo configured for aide-checks with no vendored revision at all
+rm -rf "$D/checks"
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 2 $? "a missing vendored revision is exit 2, not a silent pass"
+
+# 5. remove the plant
+stamp_repo "$D"
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "correct revision restored, run-checks passes again"
+
+# The stamp has to live in the CODE, not only beside it. This is the drift the
+# sidecar alone cannot see: checks/bin replaced from an older clone while
+# .aide-checks-rev stays current. Simulated by stamping a copied runner.
+V="$(mktemp -d)/vendored"
+mkdir -p "$V"; cp -R "$PKG/bin" "$PKG/sh" "$PKG/config" "$V/"
+sed -i 's|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM="0000dead"|' "$V/bin/run-checks"
+"$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 2 $? "a stale runner is caught by its own stamp, not by the sidecar"
+stamp_repo "$D" "0000dead"
+"$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "the same runner passes against a repo vendored at its own revision"
+
+# a runner carrying no revision at all cannot be told from a stale one
+sed -i 's|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM="__AIDE_CHECKS_REV__"|' "$V/bin/run-checks"
+"$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 2 $? "an unstamped runner outside a git checkout is exit 2"
+rm -rf "$V" "$D"
+
+# ══════════════════════════════════════════════════════════════════════════
+# rls-policy-present.
+#
+# THIS SELFTEST MUST NOT TOUCH A LIVE DATABASE (spec §5). It starts a postgres
+# of its own and drops it again — a disposable server, which is strictly more
+# than the disposable schema §5 asks for, and it creates and drops a uniquely
+# named schema inside it as well.
+#
+# The reason is on the record: accounting's production database was destroyed on
+# 2026-08-24 by a committed test running `DROP SCHEMA public CASCADE`. A selftest
+# that reaches a real database is that defect waiting to recur. So:
+#   * every ambient connection variable is unset before the check is invoked —
+#     the only one set is the URL of the server this selftest started;
+#   * the initdb path listens on a unix socket with listen_addresses='' , so it
+#     has no TCP port and cannot be confused with anything running;
+#   * nothing here runs DROP SCHEMA against a schema the selftest did not create.
+say "selftest: rls-policy-present"
+
+PGTMP=""; PGCID=""; PGBIN=""
+rls_teardown() {
+  [ -n "$PGCID" ] && docker rm -f "$PGCID" >/dev/null 2>&1
+  [ -n "$PGBIN" ] && [ -n "$PGTMP" ] && "$PGBIN/pg_ctl" -D "$PGTMP/data" -m immediate -w stop >/dev/null 2>&1
+  [ -n "$PGTMP" ] && rm -rf "$PGTMP"
+  PGCID=""; PGBIN=""; PGTMP=""
+}
+trap rls_teardown EXIT
+
+DBURL=""
+PGBIN_CAND="$(ls -d /usr/lib/postgresql/*/bin 2>/dev/null | sort -V | tail -1)"
+if [ -n "$PGBIN_CAND" ] && [ -x "$PGBIN_CAND/initdb" ]; then
+  PGTMP="$(mktemp -d)"; mkdir -p "$PGTMP/sock"
+  # The port is pinned on both sides rather than left to a default. On Debian
+  # and Ubuntu the postgresql-common client wrapper reports a default port taken
+  # from the host's own cluster (5438 here) while the server binaries use the
+  # compiled 5432, so an unpinned socket is named by one number and looked for
+  # under the other. It is a socket in our own temp directory; the number is
+  # only a filename suffix and cannot collide.
+  if "$PGBIN_CAND/initdb" -D "$PGTMP/data" -U aide_selftest -A trust -E UTF8 --no-sync >/dev/null 2>&1 \
+     && "$PGBIN_CAND/pg_ctl" -D "$PGTMP/data" -l "$PGTMP/log" -w -t 30 \
+          -o "-k $PGTMP/sock -h '' -p 5432 -c fsync=off" start >/dev/null 2>&1 \
+     && "$PGBIN_CAND/createdb" -h "$PGTMP/sock" -p 5432 -U aide_selftest aide_selftest >/dev/null 2>&1; then
+    PGBIN="$PGBIN_CAND"
+    DBURL="postgresql://aide_selftest@/aide_selftest?host=$PGTMP/sock&port=5432"
+    say "    (disposable cluster: local initdb, unix socket only, no TCP port)"
+  else
+    rm -rf "$PGTMP"; PGTMP=""
+  fi
+fi
+if [ -z "$DBURL" ] && command -v docker >/dev/null 2>&1 && docker ps >/dev/null 2>&1; then
+  PGCID="$(docker run --rm -d -e POSTGRES_PASSWORD=aide_selftest -e POSTGRES_USER=aide_selftest \
+             -e POSTGRES_DB=aide_selftest -p 127.0.0.1::5432 postgres:16-alpine 2>/dev/null)"
+  if [ -n "$PGCID" ]; then
+    PGPORT_T="$(docker port "$PGCID" 5432/tcp 2>/dev/null | head -1 | sed 's/.*://')"
+    for _ in $(seq 1 60); do
+      docker exec "$PGCID" pg_isready -U aide_selftest -d aide_selftest >/dev/null 2>&1 && break
+      sleep 1
+    done
+    [ -n "$PGPORT_T" ] && DBURL="postgres://aide_selftest:aide_selftest@127.0.0.1:${PGPORT_T}/aide_selftest"
+    say "    (disposable cluster: throwaway container ${PGCID:0:12} on 127.0.0.1:${PGPORT_T})"
+  fi
+fi
+
+if [ -z "$DBURL" ]; then
+  # Not a skip. AP-R10: a check counts only when the packet proves it can fail,
+  # and an unproven check is not vendored anywhere.
+  say "    FAIL  no disposable postgres available (need local initdb or docker);"
+  say "          rls-policy-present cannot be proven able to fail on this host"
+  FAIL=$((FAIL+1))
+else
+  SCH="aide_checks_selftest_$$"
+  # Every invocation runs with the ambient connection environment stripped. The
+  # check reads its connection from the environment and has no fallback literal;
+  # this is what makes "no live database" a property of the selftest, not a hope.
+  # ON_ERROR_STOP plus an explicit rc assertion: a fixture that fails to build is
+  # the quietest way to get a green line for the wrong reason. `AS RESTRICTIVE`
+  # in the wrong clause position did exactly that here before this was added.
+  q() { env -u PGHOST -u PGPORT -u PGUSER -u PGPASSWORD -u PGDATABASE -u PGSERVICE \
+          psql "$DBURL" -X -q -v ON_ERROR_STOP=1 -At --no-psqlrc \
+          -c "SET client_min_messages = warning;" -c "$1"; }
+  fixture() { q "$1" >/dev/null || { say "    FAIL  fixture SQL did not apply: $2"; FAIL=$((FAIL+1)); }; }
+  run_rls() { env -u DATABASE_URL -u PGHOST -u PGPORT -u PGUSER -u PGPASSWORD -u PGDATABASE \
+                AIDE_CHECKS_DATABASE_URL="$DBURL" "$PKG/sh/rls-policy-present" "$RD" "$RD/checks.config.json"; }
+
+  RD="$(mktemp -d)"
+  rls_cfg() { # rls_cfg <global_vocabulary_tables json>
+    cat > "$RD/checks.config.json" <<JSON
+{ "stack": "python",
+  "checks": { "rls-policy-present": {
+    "enabled": true, "mode": "report-only", "fast": false,
+    "connection_env": ["AIDE_CHECKS_DATABASE_URL"],
+    "schemas": ["$SCH"],
+    "tenant_columns": ["institution_id", "course_id", "team_id"],
+    "context_function_pattern": "selftest_ctx\\\\.current_[a-z_]+\\\\(\\\\)",
+    "global_vocabulary_tables": ${1:-'{}'},
+    "global_vocabulary_source": "selftest fixture: the set is stated, never inferred"
+  } } }
+JSON
+  }
+
+  q "CREATE SCHEMA \"$SCH\";" >/dev/null
+  q "CREATE SCHEMA selftest_ctx;" >/dev/null
+  q "CREATE FUNCTION selftest_ctx.current_institution_id() RETURNS bigint LANGUAGE sql STABLE
+     AS \$\$ SELECT NULLIF(current_setting('app.inst', true), '')::bigint \$\$;" >/dev/null
+
+  # a scoped table, correctly policed, and a global vocabulary table with the
+  # explicit authenticated policy the rule asks for
+  q "CREATE TABLE \"$SCH\".scoped (id bigserial primary key, institution_id bigint not null);
+     ALTER TABLE \"$SCH\".scoped ENABLE ROW LEVEL SECURITY;
+     CREATE POLICY p_scoped ON \"$SCH\".scoped FOR ALL TO PUBLIC
+       USING (institution_id = selftest_ctx.current_institution_id());
+     CREATE TABLE \"$SCH\".vocab (id bigserial primary key, term text not null);
+     ALTER TABLE \"$SCH\".vocab ENABLE ROW LEVEL SECURITY;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR SELECT TO PUBLIC
+       USING (selftest_ctx.current_institution_id() IS NOT NULL);" >/dev/null
+
+  rls_cfg '{"vocab": "selftest fixture: the shared term list, no tenant scope"}'
+  run_rls >/dev/null 2>&1
+  assert_rc 0 $? "clean disposable schema passes"
+
+  # ── A1: a table with no policy ────────────────────────────────────────────
+  q "CREATE TABLE \"$SCH\".unpoliced (id bigserial primary key, institution_id bigint);" >/dev/null
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "A1: a table with no RLS policy fails"
+  printf '%s' "$OUT" | grep -q "${SCH}.unpoliced" \
+    && { say "    ok    A1 finding names the table"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  A1 finding does not name the table"; FAIL=$((FAIL+1)); }
+
+  # RLS enabled but still no policy is the same violation — enabling RLS without
+  # a policy denies everything and asserts nothing.
+  q "ALTER TABLE \"$SCH\".unpoliced ENABLE ROW LEVEL SECURITY;" >/dev/null
+  run_rls >/dev/null 2>&1
+  assert_rc 1 $? "A1: RLS enabled with no policy still fails"
+
+  q "CREATE POLICY p_u ON \"$SCH\".unpoliced FOR ALL TO PUBLIC
+       USING (institution_id = selftest_ctx.current_institution_id());" >/dev/null
+  run_rls >/dev/null 2>&1
+  assert_rc 0 $? "A1: policy added, check passes again"
+
+  # ── A2a: global vocabulary without an authenticated/global policy ─────────
+  # USING (true) is global but NOT authenticated. This is the distinction the
+  # rule turns on, and the one a looser check would miss.
+  q "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR SELECT TO PUBLIC USING (true);" >/dev/null
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "A2a: USING (true) is not an authenticated policy"
+  printf '%s' "$OUT" | grep -q 'p_vocab' \
+    && { say "    ok    A2a finding names the policy it judged"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  A2a finding does not name the policy"; FAIL=$((FAIL+1)); }
+
+  # USING (false) — the deny-all default a per-tenant loop leaves behind
+  q "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR ALL TO PUBLIC USING (false);" >/dev/null
+  run_rls >/dev/null 2>&1
+  assert_rc 1 $? "A2a: the deny-all USING (false) default fails"
+
+  # A RESTRICTIVE policy naming the context function is not a grant of access —
+  # it only narrows one. The finding must still be A2a (policies exist, none of
+  # them authenticated/global), not A1 (no policy at all): if the fixture failed
+  # to apply, the table would have no policy and this would pass for the wrong
+  # reason. That is why the finding shape is asserted, not just the exit code.
+  fixture "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab AS RESTRICTIVE FOR SELECT TO PUBLIC
+       USING (selftest_ctx.current_institution_id() IS NOT NULL);" "restrictive policy"
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "A2a: a restrictive policy does not satisfy the clause"
+  printf '%s' "$OUT" | grep -q 'A2a' \
+    && { say "    ok    reported as A2a, not as a missing policy"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  restrictive-policy case was not reported as A2a"; FAIL=$((FAIL+1)); }
+
+  q "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR SELECT TO PUBLIC
+       USING (selftest_ctx.current_institution_id() IS NOT NULL);" >/dev/null
+  run_rls >/dev/null 2>&1
+  assert_rc 0 $? "A2a: the explicit authenticated policy passes"
+
+  # ── A2b: a tenant column on a global vocabulary table ─────────────────────
+  q "ALTER TABLE \"$SCH\".vocab ADD COLUMN institution_id bigint;" >/dev/null
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "A2b: a tenant column on a global vocabulary table fails"
+  printf '%s' "$OUT" | grep -q 'institution_id' \
+    && { say "    ok    A2b finding names the column"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  A2b finding does not name the column"; FAIL=$((FAIL+1)); }
+  q "ALTER TABLE \"$SCH\".vocab DROP COLUMN institution_id;" >/dev/null
+  run_rls >/dev/null 2>&1
+  assert_rc 0 $? "A2b: column dropped, check passes again"
+
+  # ── could-not-run cases. Each of these would otherwise be a silent pass. ──
+  env -u DATABASE_URL -u AIDE_CHECKS_DATABASE_URL "$PKG/sh/rls-policy-present" \
+      "$RD" "$RD/checks.config.json" >/dev/null 2>&1
+  assert_rc 2 $? "no connection in the environment is exit 2, not a pass"
+
+  env AIDE_CHECKS_DATABASE_URL="postgres://nobody@127.0.0.1:1/nothing" \
+      "$PKG/sh/rls-policy-present" "$RD" "$RD/checks.config.json" >/dev/null 2>&1
+  assert_rc 2 $? "an unreachable database is exit 2, not a pass"
+
+  rls_cfg '{"vocab": ""}'
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "a global vocabulary table with no reason is exit 2"
+
+  rls_cfg '{"no_such_table": "configured but gone"}'
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "a configured global vocabulary table that does not exist is exit 2"
+
+  rls_cfg '{"vocab": "selftest fixture"}'
+  python3 - "$RD/checks.config.json" <<'PY'
+import json,sys
+c=json.load(open(sys.argv[1])); c["checks"]["rls-policy-present"]["global_vocabulary_source"]=""
+json.dump(c,open(sys.argv[1],"w"),indent=2)
+PY
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "an unrecorded global_vocabulary_source is exit 2"
+
+  rls_cfg '{"vocab": "selftest fixture"}'
+  python3 - "$RD/checks.config.json" <<'PY'
+import json,sys
+c=json.load(open(sys.argv[1])); c["checks"]["rls-policy-present"]["context_function_pattern"]=""
+json.dump(c,open(sys.argv[1],"w"),indent=2)
+PY
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "no context_function_pattern is exit 2, not a pass on any policy"
+
+  rls_cfg '{}'
+  python3 - "$RD/checks.config.json" <<'PY'
+import json,sys
+c=json.load(open(sys.argv[1])); c["checks"]["rls-policy-present"]["schemas"]=["aide_checks_no_such_schema"]
+json.dump(c,open(sys.argv[1],"w"),indent=2)
+PY
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "a schema holding no tables is exit 2 — nothing inspected is not a pass"
+
+  # ── the disposable schema is dropped, and it is the one we created ────────
+  q "DROP SCHEMA \"$SCH\" CASCADE; DROP SCHEMA selftest_ctx CASCADE;" >/dev/null
+  LEFT="$(q "SELECT count(*) FROM pg_namespace WHERE nspname = '$SCH';")"
+  [ "$LEFT" = "0" ] \
+    && { say "    ok    the disposable schema was dropped"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  the disposable schema outlived the selftest"; FAIL=$((FAIL+1)); }
+  rm -rf "$RD"
+fi
+rls_teardown
+trap - EXIT
+
 
 say ""
 say "selftest: ${PASS} passed, ${FAIL} failed"

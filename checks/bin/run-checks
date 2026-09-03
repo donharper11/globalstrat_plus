@@ -4,12 +4,17 @@
 #   run-checks --fast          pre-commit subset  (blocking checks only)
 #   run-checks --full          deploy and CI      (every enabled check)
 #   run-checks --report-only   run everything, print findings, exit 0
+#   run-checks --print-revision  print the revision this runner was built from
 #
 # Reads the host repo's checks.config.json. Exits non-zero if any check that is
 # enabled AND in blocking mode fails, except under --report-only.
 #
 # A check that cannot run (exit 2) is a failure, not a pass. That is the whole
 # point of AP-R10: a check counts only when it can fail.
+#
+# Before any check runs, the revision this runner was built from is asserted
+# against the revision the repo was vendored at. A mismatch is exit 2 in every
+# mode, --report-only included, and there is no flag that turns it off.
 set -uo pipefail
 
 MODE="full"
@@ -20,18 +25,121 @@ for a in "$@"; do
     --fast)        MODE="fast" ;;
     --full)        MODE="full" ;;
     --report-only) MODE="report-only" ;;
+    # Diagnostic only: prints the revision this runner was built from and stops.
+    # It suppresses nothing — the mismatch message is hard to act on without a
+    # way to ask a runner what it is.
+    --print-revision) MODE="print-revision" ;;
     --repo=*)      REPO_ROOT="${a#--repo=}" ;;
     --config=*)    CONFIG="${a#--config=}" ;;
-    -h|--help)     sed -n '2,12p' "$0"; exit 0 ;;
+    -h|--help)     sed -n '2,16p' "$0"; exit 0 ;;
     *) echo "run-checks: unknown argument '$a'" >&2; exit 2 ;;
   esac
 done
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG="$(cd "$HERE/.." && pwd)"
-[ -n "$REPO_ROOT" ] || REPO_ROOT="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null || cd "$PKG/.." && pwd)"
+# Two statements, not one: `A || B && C` binds left-to-right, so the original
+# one-liner ran `pwd` after a SUCCESSFUL git call and put two paths in REPO_ROOT.
+# The following `cd` then failed and left it empty. Latent until now — every
+# caller passes --repo — but the revision assertion below reads REPO_ROOT.
+[ -n "$REPO_ROOT" ] || REPO_ROOT="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null)"
+[ -n "$REPO_ROOT" ] || REPO_ROOT="$(cd "$PKG/.." && pwd)"
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
 [ -n "$CONFIG" ] || CONFIG="$REPO_ROOT/checks.config.json"
+
+# ─── revision assertion — phase 2 spec §2 ───────────────────────────────────
+# Version drift must not be able to produce a silent pass.
+#
+# Observed 2026-09-02: `.5` ran aide-checks@6e0f6b2 while `.220` ran d60d74b.
+# The older runner had no allowlist support, ignored valid suppressions and
+# failed a repo that should have passed. That was caught only because a FAILURE
+# is visible. The same drift in reverse is not: an older runner missing a check
+# entirely reports PASS, and nothing distinguishes that from a genuine pass.
+# That is `verification-false-pass` — 86 corrections, second-highest category,
+# present in all seven repos — reproduced inside the tooling built to prevent it.
+#
+# On mismatch: exit 2. Could-not-run, not a failure and never a pass; the runner
+# already treats an absent scanner this way and a stale runner is the same class
+# of event. `--report-only` does NOT suppress this, and there is no bypass flag:
+# a stale runner cannot report meaningfully on anything, report-only included.
+AIDE_CHECKS_BUILT_FROM="dcac2c7"  # stamped by bin/sync-into-repo
+
+# The revision the RUNNING package was built from.
+#
+# Two authorities, and which one applies is structural, not a preference:
+#   * the package's own git checkout, when run from the clone;
+#   * the stamp above, in a vendored copy — written INTO this file by
+#     sync-into-repo at the moment it wrote .aide-checks-rev beside it.
+#
+# The stamp has to travel with the code rather than only sit next to it. A
+# sidecar file alone cannot catch the drift this exists for: replace checks/bin
+# from an older clone and the sidecar still reads current, so the two must be
+# able to disagree.
+_rev_running() {
+  local top
+  top="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null)" || true
+  if [ -n "$top" ] && [ "$top" = "$PKG" ] && [ -f "$PKG/bin/sync-into-repo" ]; then
+    git --no-optional-locks -C "$PKG" rev-parse --short HEAD 2>/dev/null || echo "uncommitted"
+    return 0
+  fi
+  case "$AIDE_CHECKS_BUILT_FROM" in
+    __AIDE_CHECKS_REV__|"") echo "unknown" ;;
+    *)                      printf '%s\n' "$AIDE_CHECKS_BUILT_FROM" ;;
+  esac
+}
+
+REV_STAMP="$REPO_ROOT/checks/.aide-checks-rev"
+REV_RUNNING="$(_rev_running)"
+
+if [ "$MODE" = "print-revision" ]; then printf '%s\n' "$REV_RUNNING"; exit 0; fi
+
+# Name the clone, never the vendored copy: re-vendoring from checks/ would
+# re-install the stale runner and call the drift resolved.
+_sync_hint() {
+  local clone="$PKG"
+  [ "$(basename "$PKG")" = "checks" ] && clone="<your aide-checks clone>"
+  printf '    %s/bin/sync-into-repo %s\n' "$clone" "$REPO_ROOT"
+}
+
+if [ ! -f "$REV_STAMP" ]; then
+  if [ "$PKG" = "$REPO_ROOT" ]; then
+    # aide-checks running on its own repo. The runner and the repo are one tree,
+    # so there is no vendored copy to drift from. Stated out loud rather than
+    # skipped silently — an assertion that quietly does not apply is the same
+    # false pass in a different costume.
+    echo "aide-checks: revision ${REV_RUNNING} — package running on its own repo, no vendored copy to compare"
+  else
+    echo "run-checks: ERROR no vendored revision at ${REV_STAMP}" >&2
+    echo "run-checks: runner built from : ${REV_RUNNING}" >&2
+    echo "run-checks: repo vendored at  : (absent)" >&2
+    echo "run-checks: this repo is configured for aide-checks but records no revision, so a" >&2
+    echo "            stale runner cannot be told from a current one. Vendor the package:" >&2
+    _sync_hint >&2
+    exit 2
+  fi
+else
+  REV_VENDORED="$(tr -d '[:space:]' < "$REV_STAMP")"
+  if [ "$REV_RUNNING" = "unknown" ]; then
+    echo "run-checks: ERROR the running package carries no revision." >&2
+    echo "run-checks: runner built from : unknown (no git checkout, no sync stamp)" >&2
+    echo "run-checks: repo vendored at  : ${REV_VENDORED}  (${REV_STAMP})" >&2
+    echo "run-checks: a runner that cannot say what it is cannot be told from a stale one." >&2
+    _sync_hint >&2
+    exit 2
+  fi
+  if [ "$REV_RUNNING" != "$REV_VENDORED" ]; then
+    echo "run-checks: ERROR revision mismatch — could not run." >&2
+    echo "run-checks: runner built from : ${REV_RUNNING}" >&2
+    echo "run-checks: repo vendored at  : ${REV_VENDORED}  (${REV_STAMP})" >&2
+    echo "run-checks: a stale runner reports PASS for checks it does not carry. That is a false" >&2
+    echo "            pass, not a pass, so this is exit 2 in every mode including --report-only." >&2
+    echo "run-checks: fix — re-vendor this repo from the aide-checks clone:" >&2
+    _sync_hint >&2
+    exit 2
+  fi
+  echo "aide-checks: revision ${REV_RUNNING} matches $(basename "$REPO_ROOT")/checks/.aide-checks-rev"
+fi
+
 
 command -v jq >/dev/null 2>&1 || { echo "run-checks: ERROR jq not found." >&2; exit 2; }
 [ -f "$CONFIG" ] || { echo "run-checks: ERROR no config at $CONFIG" >&2; exit 2; }

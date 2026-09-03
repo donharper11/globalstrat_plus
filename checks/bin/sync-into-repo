@@ -29,5 +29,15 @@ for d in bin sh py js config selftest; do
 done
 cp "$PKG/README.md" "$DEST/README.md"
 printf '%s\n' "$REV" > "$DEST/.aide-checks-rev"
+
+# Stamp the revision INTO the copied runner as well as beside it (phase 2 §2).
+# The sidecar alone cannot catch the drift the assertion exists for: replace
+# checks/bin from an older clone and .aide-checks-rev still reads current. The
+# stamp travels with the code, so the two are able to disagree.
+sed -i "s|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM=\"${REV}\"  # stamped by bin/sync-into-repo|" \
+  "$DEST/bin/run-checks"
+grep -qx "AIDE_CHECKS_BUILT_FROM=\"${REV}\"  # stamped by bin/sync-into-repo" "$DEST/bin/run-checks" || {
+  echo "sync: REFUSED — could not stamp the revision into ${DEST}/bin/run-checks" >&2; exit 2; }
+bash -n "$DEST/bin/run-checks" || { echo "sync: REFUSED — stamped runner does not parse" >&2; exit 2; }
 find "$DEST/bin" "$DEST/sh" "$DEST/selftest" -type f -exec chmod +x {} \; 2>/dev/null || true
 echo "sync: vendored aide-checks@${REV} into ${DEST}"

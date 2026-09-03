@@ -1,0 +1,255 @@
+#!/usr/bin/env bash
+# ─── check: rls-policy-present ──────────────────────────────────────────────
+# Makes `R-V8-07` executable. The prose rule is NOT modified by this check and
+# is not replaced by it (phase 2 spec §4.1, §8); nexus `handoffs_v8/GOVERNANCE.md`
+# stays exactly as written:
+#
+#   "RLS is the final boundary; application predicates are defense in depth.
+#    Global vocabulary tables require an explicit authenticated/global policy
+#    and must contain no tenant-private facts."
+#
+# Evidence: corrections_governed 11, matched failures 11, catches 0,
+# never_fired = true. The highest-evidence rule conversion in the corpus.
+#
+# Two assertions, one per clause of the rule:
+#
+#   A1  every table in the application schema has at least one RLS policy.
+#   A2  every global vocabulary table
+#         a) carries an explicit authenticated/global policy, and
+#         b) carries no tenant-scoped column.
+#
+# WHICH TABLES ARE "GLOBAL VOCABULARY" IS NOT DERIVABLE FROM THE SCHEMA. It is a
+# judgment the rule assumes and does not define, and it is not inferable from
+# naming conventions: in nexus, 53 of 197 public tables carry no tenant column,
+# and most of those are child tables scoped through a parent, not vocabulary.
+# The set therefore lives in checks.config.json with a stated reason per table
+# (§4.1), the same shape as allow_fields_reasons. A table with no reason is
+# exit 2, never a silent inclusion.
+#
+# Everything else this check would otherwise have to guess is config too — the
+# application schemas, the tenant column names, the context-function pattern —
+# because the package is never forked per repo.
+#
+# Contract:
+#   exit 0  no violations
+#   exit 1  violations (table names and policy names on stdout)
+#   exit 2  the check could not run — no psql, no connection in the environment,
+#           unreachable database, or a config that cannot be honoured
+#
+# Connection comes from the environment, with NO fallback literal (§4.1). An
+# unreachable database is exit 2. It is never a pass: a boundary that could not
+# be inspected has not been shown to exist.
+set -uo pipefail
+
+REPO_ROOT="${1:?repo root required}"
+CONFIG="${2:?config path required}"
+CHECK_NAME="rls-policy-present"
+
+command -v jq   >/dev/null 2>&1 || { echo "${CHECK_NAME}: ERROR jq not found." >&2; exit 2; }
+command -v psql >/dev/null 2>&1 || {
+  echo "${CHECK_NAME}: ERROR psql not found on PATH." >&2
+  echo "${CHECK_NAME}: a boundary that cannot be inspected has not been shown to exist." >&2
+  exit 2; }
+
+cfg() { jq -r --arg c "$CHECK_NAME" "$1" "$CONFIG"; }
+
+# ── config: every judgment is declared, none is inferred ───────────────────
+readarray -t SCHEMAS       < <(cfg '.checks[$c].schemas // [] | .[]')
+readarray -t TENANT_COLS   < <(cfg '.checks[$c].tenant_columns // [] | .[]')
+readarray -t GLOBAL_TABLES < <(cfg '.checks[$c].global_vocabulary_tables // {} | keys[]')
+CTX_RX="$(cfg '.checks[$c].context_function_pattern // ""')"
+GLOBAL_SRC="$(cfg '.checks[$c].global_vocabulary_source // ""')"
+SUSPECT_NOTE="$(cfg '.checks[$c].zero_is_suspect_reason // ""')"
+readarray -t CONN_ENV      < <(cfg '.checks[$c].connection_env // [] | .[]')
+
+[ "${#SCHEMAS[@]}" -gt 0 ] && [ -n "${SCHEMAS[0]}" ] || {
+  echo "${CHECK_NAME}: ERROR no schemas configured. The application schema is a judgment," >&2
+  echo "${CHECK_NAME}: not something to guess from the catalog; declare it in checks.config.json." >&2
+  exit 2; }
+[ "${#TENANT_COLS[@]}" -gt 0 ] && [ -n "${TENANT_COLS[0]}" ] || {
+  echo "${CHECK_NAME}: ERROR no tenant_columns configured; clause (b) of the rule cannot fail." >&2; exit 2; }
+[ -n "$CTX_RX" ] || {
+  echo "${CHECK_NAME}: ERROR no context_function_pattern configured; 'authenticated' has no" >&2
+  echo "${CHECK_NAME}: definition in this repo, so clause (a) would pass on any policy at all." >&2
+  exit 2; }
+[ -n "$GLOBAL_SRC" ] || {
+  echo "${CHECK_NAME}: ERROR global_vocabulary_source is empty. §4.1 forbids inferring this set;" >&2
+  echo "${CHECK_NAME}: record how it was determined or the config is unauditable." >&2
+  exit 2; }
+[ "${#CONN_ENV[@]}" -gt 0 ] && [ -n "${CONN_ENV[0]}" ] || {
+  echo "${CHECK_NAME}: ERROR no connection_env configured." >&2; exit 2; }
+
+# A global vocabulary table with no recorded reason is refused, not honoured.
+# An allowlist nobody has to justify grows until the check means nothing.
+if [ "${#GLOBAL_TABLES[@]}" -gt 0 ] && [ -n "${GLOBAL_TABLES[0]}" ]; then
+  for t in "${GLOBAL_TABLES[@]}"; do
+    case "$t" in *[!A-Za-z0-9_.]*|"")
+      echo "${CHECK_NAME}: ERROR global_vocabulary_tables entry '$t' is not a bare [schema.]table name." >&2; exit 2 ;;
+    esac
+    r="$(jq -r --arg c "$CHECK_NAME" --arg t "$t" '.checks[$c].global_vocabulary_tables[$t] // ""' "$CONFIG")"
+    [ -n "$r" ] || {
+      echo "${CHECK_NAME}: ERROR global_vocabulary_tables entry '$t' has no reason." >&2
+      echo "${CHECK_NAME}: §4.1 requires a stated reason per table; the set is a judgment, not a lookup." >&2
+      exit 2; }
+  done
+else
+  GLOBAL_TABLES=()
+fi
+
+# ── connection: environment only, no fallback literal ──────────────────────
+DBURL=""; DBVAR=""
+for v in "${CONN_ENV[@]}"; do
+  if [ -n "${!v:-}" ]; then DBURL="${!v}"; DBVAR="$v"; break; fi
+done
+[ -n "$DBURL" ] || {
+  echo "${CHECK_NAME}: ERROR no database connection in the environment (tried: ${CONN_ENV[*]})." >&2
+  echo "${CHECK_NAME}: there is deliberately no fallback literal — a connection string baked into" >&2
+  echo "${CHECK_NAME}: a check is a credential in a repo. Exit 2: could not run, not a pass." >&2
+  exit 2; }
+
+export PGCONNECT_TIMEOUT="${PGCONNECT_TIMEOUT:-10}"
+PSQL=(psql "$DBURL" -X -q -v ON_ERROR_STOP=1 -At -F $'\t' --no-psqlrc)
+
+WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
+
+# Never print the URL: it carries a password. Only the variable name it came from.
+"${PSQL[@]}" -c 'SELECT 1' >/dev/null 2>"$WORK/conn.err" || {
+  echo "${CHECK_NAME}: ERROR could not connect to the database named by \$${DBVAR}." >&2
+  sed -e 's#://[^@]*@#://<redacted>@#g' "$WORK/conn.err" | head -5 >&2
+  echo "${CHECK_NAME}: an unreachable database is exit 2 — could not run. Never a pass." >&2
+  exit 2; }
+
+# psql array literal for the configured schemas
+sql_array() { local out="" x; for x in "$@"; do out="${out}${out:+,}$(printf '%s' "$x" | sed "s/'/''/g")"; done
+              printf "'{%s}'" "$out"; }
+SCHEMA_ARR="$(sql_array "${SCHEMAS[@]}")"
+
+# ── A1: every table in the application schema has at least one RLS policy ──
+#
+# Partitions are excluded: a partition is covered by its parent's policies, so
+# flagging one is a false positive, and a check that cries wolf gets the layer
+# disabled. Extension-owned tables are excluded for the same reason — they are
+# not this application's schema and are not ours to police.
+"${PSQL[@]}" -c "
+SELECT n.nspname, c.relname, c.relrowsecurity::text, COALESCE(p.k,0)::text
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+LEFT JOIN (SELECT polrelid, count(*) k FROM pg_policy GROUP BY 1) p ON p.polrelid = c.oid
+WHERE c.relkind IN ('r','p')
+  AND NOT c.relispartition
+  AND n.nspname = ANY(${SCHEMA_ARR}::text[])
+  AND NOT EXISTS (SELECT 1 FROM pg_depend d
+                  WHERE d.objid = c.oid AND d.classid = 'pg_class'::regclass AND d.deptype = 'e')
+ORDER BY 1,2;" > "$WORK/tables.tsv" 2>"$WORK/q.err" || {
+  echo "${CHECK_NAME}: ERROR catalog query failed." >&2; head -5 "$WORK/q.err" >&2; exit 2; }
+
+TOTAL=$(wc -l < "$WORK/tables.tsv" | tr -d ' ')
+[ "$TOTAL" -gt 0 ] || {
+  echo "${CHECK_NAME}: ERROR the configured schema(s) ${SCHEMAS[*]} hold no tables." >&2
+  echo "${CHECK_NAME}: a check that inspects nothing cannot fail; refusing to report a pass." >&2
+  exit 2; }
+
+awk -F'\t' '$4+0 == 0 { printf "%s.%s\trls_enabled=%s\tpolicies=%s\n", $1,$2,$3,$4 }' \
+  "$WORK/tables.tsv" > "$WORK/a1.tsv"
+A1=$(wc -l < "$WORK/a1.tsv" | tr -d ' ')
+
+# ── A2: the two clauses that apply to global vocabulary tables ─────────────
+: > "$WORK/a2a.tsv"; : > "$WORK/a2b.tsv"; : > "$WORK/a2missing.tsv"
+if [ "${#GLOBAL_TABLES[@]}" -gt 0 ]; then
+  for gt in "${GLOBAL_TABLES[@]}"; do
+    case "$gt" in
+      *.*) gs="${gt%%.*}"; gn="${gt#*.}" ;;
+      *)   gs="${SCHEMAS[0]}"; gn="$gt" ;;
+    esac
+    esc_s="$(printf '%s' "$gs" | sed "s/'/''/g")"; esc_n="$(printf '%s' "$gn" | sed "s/'/''/g")"
+
+    # The table must exist. A configured table that is gone is exit-2 material,
+    # not a quiet pass: the config no longer describes the schema it governs.
+    ex="$("${PSQL[@]}" -c "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+                           WHERE c.relkind IN ('r','p') AND n.nspname='${esc_s}' AND c.relname='${esc_n}';" 2>/dev/null)"
+    if [ "${ex:-0}" -eq 0 ]; then printf '%s.%s\n' "$gs" "$gn" >> "$WORK/a2missing.tsv"; continue; fi
+
+    # (a) an explicit authenticated/global policy: permissive, covering reads
+    # (SELECT or ALL), whose USING expression requires a real authenticated
+    # context — it names one of this repo's context functions. `USING (true)`
+    # and `USING (is_active = true)` are global but NOT authenticated;
+    # `USING (false)` is the deny-all default that migration 012's ELSE branch
+    # installs, which is what 053 had to undo. All three are reported.
+    "${PSQL[@]}" -c "
+      SELECT pol.polname,
+             CASE pol.polcmd WHEN '*' THEN 'ALL' WHEN 'r' THEN 'SELECT' WHEN 'a' THEN 'INSERT'
+                             WHEN 'w' THEN 'UPDATE' WHEN 'd' THEN 'DELETE' ELSE pol.polcmd::text END,
+             pol.polpermissive::text,
+             COALESCE(pg_get_expr(pol.polqual, pol.polrelid), '')
+      FROM pg_policy pol
+      JOIN pg_class c ON c.oid = pol.polrelid
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE n.nspname='${esc_s}' AND c.relname='${esc_n}'
+      ORDER BY 1;" > "$WORK/pol.tsv" 2>/dev/null
+
+    if ! awk -F'\t' -v rx="$CTX_RX" \
+         '($2=="ALL" || $2=="SELECT") && $3=="true" && $4 ~ rx { found=1 } END { exit found?0:1 }' \
+         "$WORK/pol.tsv"; then
+      if [ ! -s "$WORK/pol.tsv" ]; then
+        printf '%s.%s\tno policy at all\n' "$gs" "$gn" >> "$WORK/a2a.tsv"
+      else
+        # Name the policies that exist and what they actually say, so the
+        # reviewer judges the finding rather than the check's opinion of it.
+        summary="$(awk -F'\t' '{ q=$4; if (length(q)>90) q=substr(q,1,90) "…"; printf "%s [%s] USING (%s); ", $1, $2, q }' "$WORK/pol.tsv")"
+        printf '%s.%s\t%s\n' "$gs" "$gn" "${summary% }" >> "$WORK/a2a.tsv"
+      fi
+    fi
+
+    # (b) no tenant-scoped column — "must contain no tenant-private facts".
+    # Column-level, which is the part a check can actually assert; whether the
+    # rows hold private facts is a reading of the data, not of the schema.
+    TCOL_ARR="$(sql_array "${TENANT_COLS[@]}")"
+    hits="$("${PSQL[@]}" -c "
+      SELECT string_agg(a.attname, ', ' ORDER BY a.attname)
+      FROM pg_attribute a
+      JOIN pg_class c ON c.oid = a.attrelid
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE n.nspname='${esc_s}' AND c.relname='${esc_n}'
+        AND a.attnum > 0 AND NOT a.attisdropped
+        AND a.attname = ANY(${TCOL_ARR}::text[]);" 2>/dev/null)"
+    [ -n "$hits" ] && printf '%s.%s\t%s\n' "$gs" "$gn" "$hits" >> "$WORK/a2b.tsv"
+  done
+fi
+
+A2A=$(wc -l < "$WORK/a2a.tsv" | tr -d ' ')
+A2B=$(wc -l < "$WORK/a2b.tsv" | tr -d ' ')
+MISSING=$(wc -l < "$WORK/a2missing.tsv" | tr -d ' ')
+
+if [ "$MISSING" -gt 0 ]; then
+  echo "${CHECK_NAME}: ERROR ${MISSING} configured global vocabulary table(s) do not exist:" >&2
+  sed 's/^/  /' "$WORK/a2missing.tsv" >&2
+  echo "${CHECK_NAME}: the config no longer describes the schema it governs. Exit 2, not a pass." >&2
+  exit 2
+fi
+
+VIOL=$((A1 + A2A + A2B))
+GTN=${#GLOBAL_TABLES[@]}
+
+if [ "$VIOL" -gt 0 ]; then
+  echo "${CHECK_NAME}: FAIL ${VIOL} violation(s) — ${TOTAL} table(s) scanned in schema(s): ${SCHEMAS[*]}; ${GTN} global vocabulary table(s) configured"
+  if [ "$A1" -gt 0 ]; then
+    echo "  A1 — no RLS policy (${A1}):"
+    head -40 "$WORK/a1.tsv" | awk -F'\t' '{printf "    %-52s %s  %s\n", $1, $2, $3}'
+    [ "$A1" -gt 40 ] && echo "    … and $((A1-40)) more"
+  fi
+  if [ "$A2A" -gt 0 ]; then
+    echo "  A2a — global vocabulary without an explicit authenticated/global policy (${A2A}):"
+    awk -F'\t' '{printf "    %s\n      %s\n", $1, $2}' "$WORK/a2a.tsv"
+  fi
+  if [ "$A2B" -gt 0 ]; then
+    echo "  A2b — global vocabulary carrying a tenant-scoped column (${A2B}):"
+    awk -F'\t' '{printf "    %-52s columns: %s\n", $1, $2}' "$WORK/a2b.tsv"
+  fi
+  echo "  source rule R-V8-07, handoffs_v8/GOVERNANCE.md — unmodified by this check"
+  exit 1
+fi
+
+echo "${CHECK_NAME}: PASS 0 violation(s) — ${TOTAL} table(s) scanned in schema(s): ${SCHEMAS[*]}; ${GTN} global vocabulary table(s) configured"
+# A zero is reported as a zero. Whether it is a pass is not this check's call.
+[ -n "$SUSPECT_NOTE" ] && echo "  NOTE zero is suspect, not a pass: ${SUSPECT_NOTE}"
+exit 0
