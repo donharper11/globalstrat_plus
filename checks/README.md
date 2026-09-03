@@ -79,6 +79,14 @@ determined. An entry without a reason is exit 2, never a silent inclusion. The
 application schemas, the tenant column names and the context-function pattern
 are config for the same reason.
 
+`exempt_tables` records a table that deliberately carries no policy — in nexus,
+three tables whose own migrations state why: they are read and written on
+pre-authentication, context-less paths, where a policy keyed to a context
+function matches zero rows. Same rule as everywhere else in this package: a
+required reason, exit 2 without one. It suppresses A1 for that table and nothing
+else, a table cannot be both exempt and global vocabulary, and an exemption
+whose table has since acquired a policy is reported as stale.
+
 The connection is read from the environment named in `connection_env`, with **no
 fallback literal**: a connection string baked into a check is a credential in a
 repo. No connection, or an unreachable database, is exit 2 — never a pass.

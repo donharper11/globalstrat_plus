@@ -57,6 +57,7 @@ cfg() { jq -r --arg c "$CHECK_NAME" "$1" "$CONFIG"; }
 readarray -t SCHEMAS       < <(cfg '.checks[$c].schemas // [] | .[]')
 readarray -t TENANT_COLS   < <(cfg '.checks[$c].tenant_columns // [] | .[]')
 readarray -t GLOBAL_TABLES < <(cfg '.checks[$c].global_vocabulary_tables // {} | keys[]')
+readarray -t EXEMPT_TABLES < <(cfg '.checks[$c].exempt_tables // {} | keys[]')
 CTX_RX="$(cfg '.checks[$c].context_function_pattern // ""')"
 GLOBAL_SRC="$(cfg '.checks[$c].global_vocabulary_source // ""')"
 SUSPECT_NOTE="$(cfg '.checks[$c].zero_is_suspect_reason // ""')"
@@ -94,6 +95,44 @@ if [ "${#GLOBAL_TABLES[@]}" -gt 0 ] && [ -n "${GLOBAL_TABLES[0]}" ]; then
   done
 else
   GLOBAL_TABLES=()
+fi
+
+# exempt_tables: A1 says every table has a policy, and some deliberately do not.
+# In nexus, migrations 124, 125 and 146 each state in their own header why the
+# table they create carries no RLS: it is read and written on pre-authentication,
+# context-less paths, where a policy keyed to a current_*() context function
+# matches zero rows. 146 exists BECAUSE exactly that happened — FORCE RLS on
+# lms_registrations returned 404 on every real LTI launch.
+#
+# Without somewhere to record that, a reviewer re-derives the same judgment every
+# run, and a finding that has to be re-dismissed every run is a finding that
+# stops being read. Same shape as allow_fields_reasons, global_vocabulary_tables
+# and allow_findings: an explicit entry, a required reason, exit 2 without one.
+#
+# Deliberately narrow. It exempts a table from A1 only — the "has any policy at
+# all" clause. It is not a way to exempt a table from A2, and a table cannot be
+# both exempt and global vocabulary; that combination is contradictory and is
+# refused rather than resolved in some order nobody would predict.
+if [ "${#EXEMPT_TABLES[@]}" -gt 0 ] && [ -n "${EXEMPT_TABLES[0]}" ]; then
+  for t in "${EXEMPT_TABLES[@]}"; do
+    case "$t" in *[!A-Za-z0-9_.]*|"")
+      echo "${CHECK_NAME}: ERROR exempt_tables entry '$t' is not a bare [schema.]table name." >&2; exit 2 ;;
+    esac
+    r="$(jq -r --arg c "$CHECK_NAME" --arg t "$t" '.checks[$c].exempt_tables[$t] // ""' "$CONFIG")"
+    [ -n "$r" ] || {
+      echo "${CHECK_NAME}: ERROR exempt_tables entry '$t' has no reason." >&2
+      echo "${CHECK_NAME}: an exemption nobody has to justify grows until the check means nothing." >&2
+      exit 2; }
+    for g in "${GLOBAL_TABLES[@]:-}"; do
+      [ "$t" = "$g" ] && {
+        echo "${CHECK_NAME}: ERROR '$t' is in both exempt_tables and global_vocabulary_tables." >&2
+        echo "${CHECK_NAME}: a table cannot be exempt from having a policy and required to have a" >&2
+        echo "${CHECK_NAME}: particular one. Refusing rather than picking an order." >&2
+        exit 2; }
+    done
+  done
+else
+  EXEMPT_TABLES=()
 fi
 
 # ── connection: environment only, no fallback literal ──────────────────────
@@ -149,9 +188,49 @@ TOTAL=$(wc -l < "$WORK/tables.tsv" | tr -d ' ')
   echo "${CHECK_NAME}: a check that inspects nothing cannot fail; refusing to report a pass." >&2
   exit 2; }
 
-awk -F'\t' '$4+0 == 0 { printf "%s.%s\trls_enabled=%s\tpolicies=%s\n", $1,$2,$3,$4 }' \
+# Resolve each exemption against the scanned set. An exemption naming a table
+# that is not there — dropped, renamed, or in a schema this config does not scan
+# — is exit 2, the same doctrine global_vocabulary_tables uses: a config that no
+# longer describes the schema it governs has stopped being a description of
+# anything.
+: > "$WORK/exempt.txt"; : > "$WORK/exempt_stale.tsv"
+if [ "${#EXEMPT_TABLES[@]}" -gt 0 ]; then
+  for et in "${EXEMPT_TABLES[@]}"; do
+    case "$et" in
+      *.*) eq="$et" ;;
+      *)   eq="${SCHEMAS[0]}.$et" ;;
+    esac
+    row="$(awk -F'\t' -v q="$eq" '$1"."$2 == q {print; exit}' "$WORK/tables.tsv")"
+    if [ -z "$row" ]; then
+      echo "${CHECK_NAME}: ERROR exempt_tables names '${eq}', which is not among the tables scanned." >&2
+      echo "${CHECK_NAME}: the config no longer describes the schema it governs. Exit 2, not a pass." >&2
+      exit 2
+    fi
+    printf '%s\n' "$eq" >> "$WORK/exempt.txt"
+    # An exemption for a table that has since acquired a policy is dead weight.
+    # Reported, not failed: the table is now compliant, and the exemption is the
+    # thing that is wrong. Silence here is how an exemption list rots.
+    printf '%s' "$row" | awk -F'\t' -v q="$eq" '$4+0 > 0 { printf "%s\t%s\n", q, $4 }' >> "$WORK/exempt_stale.tsv"
+  done
+fi
+
+# The exemption set is read in BEGIN rather than through awk's NR==FNR idiom.
+# NR==FNR is only equivalent to "still reading the first file" when that file has
+# records: with an empty exemption list it stays true across the whole SECOND
+# file, so every scanned table was consumed as an exemption and A1 reported 0.
+# That is a silent false pass in every repo that configures no exemptions —
+# which, today, is six of the seven.
+awk -F'\t' -v exf="$WORK/exempt.txt" '
+  BEGIN { while ((getline line < exf) > 0) ex[line] = 1 }
+  $4+0 == 0 && !(($1"."$2) in ex) { printf "%s.%s\trls_enabled=%s\tpolicies=%s\n", $1,$2,$3,$4 }' \
   "$WORK/tables.tsv" > "$WORK/a1.tsv"
 A1=$(wc -l < "$WORK/a1.tsv" | tr -d ' ')
+# how many exemptions actually suppressed an A1 finding, as opposed to sitting idle
+A1EX=$(awk -F'\t' -v exf="$WORK/exempt.txt" '
+  BEGIN { while ((getline line < exf) > 0) ex[line] = 1 }
+  $4+0 == 0 && (($1"."$2) in ex) { n++ } END { print n+0 }' \
+  "$WORK/tables.tsv")
+STALE=$(wc -l < "$WORK/exempt_stale.tsv" | tr -d ' ')
 
 # ── A2: the two clauses that apply to global vocabulary tables ─────────────
 : > "$WORK/a2a.tsv"; : > "$WORK/a2b.tsv"; : > "$WORK/a2missing.tsv"
@@ -180,7 +259,8 @@ if [ "${#GLOBAL_TABLES[@]}" -gt 0 ]; then
              CASE pol.polcmd WHEN '*' THEN 'ALL' WHEN 'r' THEN 'SELECT' WHEN 'a' THEN 'INSERT'
                              WHEN 'w' THEN 'UPDATE' WHEN 'd' THEN 'DELETE' ELSE pol.polcmd::text END,
              pol.polpermissive::text,
-             COALESCE(pg_get_expr(pol.polqual, pol.polrelid), '')
+             COALESCE(pg_get_expr(pol.polqual, pol.polrelid), ''),
+             COALESCE(pg_get_expr(pol.polwithcheck, pol.polrelid), '')
       FROM pg_policy pol
       JOIN pg_class c ON c.oid = pol.polrelid
       JOIN pg_namespace n ON n.oid = c.relnamespace
@@ -195,7 +275,15 @@ if [ "${#GLOBAL_TABLES[@]}" -gt 0 ]; then
       else
         # Name the policies that exist and what they actually say, so the
         # reviewer judges the finding rather than the check's opinion of it.
-        summary="$(awk -F'\t' '{ q=$4; if (length(q)>90) q=substr(q,1,90) "…"; printf "%s [%s] USING (%s); ", $1, $2, q }' "$WORK/pol.tsv")"
+        # An INSERT policy has no USING clause at all — only WITH CHECK — so
+        # rendering one as `USING ()` misreads as an empty predicate rather than
+        # an absent one. Print whichever clause the policy actually has.
+        summary="$(awk -F'\t' '{
+            if ($4 != "") { c="USING"; e=$4 } else if ($5 != "") { c="WITH CHECK"; e=$5 } else { c=""; e="" }
+            if (length(e)>90) e=substr(e,1,90) "…";
+            if (c == "") printf "%s [%s] (no predicate); ", $1, $2;
+            else         printf "%s [%s] %s (%s); ", $1, $2, c, e
+          }' "$WORK/pol.tsv")"
         printf '%s.%s\t%s\n' "$gs" "$gn" "${summary% }" >> "$WORK/a2a.tsv"
       fi
     fi
@@ -229,6 +317,20 @@ fi
 
 VIOL=$((A1 + A2A + A2B))
 GTN=${#GLOBAL_TABLES[@]}
+EXN=${#EXEMPT_TABLES[@]}
+
+# An exemption is never silent. If the exemption list is doing the work, the
+# count says so on PASS and on FAIL alike, so nobody reads a low number as
+# "almost everything has a policy".
+exempt_note() {
+  [ "$EXN" -gt 0 ] && echo "  ${A1EX} A1 finding(s) suppressed by exempt_tables (${EXN} entry/entries) — see the config for each reason"
+  if [ "$STALE" -gt 0 ]; then
+    echo "  NOTE ${STALE} exemption(s) no longer suppress anything — the table has a policy now:"
+    awk -F'\t' '{printf "    %-52s policies=%s\n", $1, $2}' "$WORK/exempt_stale.tsv"
+    echo "    an exemption that suppresses nothing should be removed from the config"
+  fi
+  return 0
+}
 
 if [ "$VIOL" -gt 0 ]; then
   echo "${CHECK_NAME}: FAIL ${VIOL} violation(s) — ${TOTAL} table(s) scanned in schema(s): ${SCHEMAS[*]}; ${GTN} global vocabulary table(s) configured"
@@ -245,11 +347,13 @@ if [ "$VIOL" -gt 0 ]; then
     echo "  A2b — global vocabulary carrying a tenant-scoped column (${A2B}):"
     awk -F'\t' '{printf "    %-52s columns: %s\n", $1, $2}' "$WORK/a2b.tsv"
   fi
+  exempt_note
   echo "  source rule R-V8-07, handoffs_v8/GOVERNANCE.md — unmodified by this check"
   exit 1
 fi
 
 echo "${CHECK_NAME}: PASS 0 violation(s) — ${TOTAL} table(s) scanned in schema(s): ${SCHEMAS[*]}; ${GTN} global vocabulary table(s) configured"
+exempt_note
 # A zero is reported as a zero. Whether it is a pass is not this check's call.
 [ -n "$SUSPECT_NOTE" ] && echo "  NOTE zero is suspect, not a pass: ${SUSPECT_NOTE}"
 exit 0

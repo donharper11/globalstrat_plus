@@ -495,7 +495,16 @@ else
                 AIDE_CHECKS_DATABASE_URL="$DBURL" "$PKG/sh/rls-policy-present" "$RD" "$RD/checks.config.json"; }
 
   RD="$(mktemp -d)"
-  rls_cfg() { # rls_cfg <global_vocabulary_tables json>
+  # `${1:-'{}'}` emits the single quotes into the JSON, so an omitted argument
+  # produced a config that does not parse. jq then returned nothing, the check
+  # saw no schemas and exited 2 — and three exit-2 assertions went green on a
+  # broken fixture rather than on the behaviour they name. Hence the jq empty
+  # guard below: a fixture that fails to build is the quietest way to get a
+  # green line for the wrong reason.
+  rls_cfg() { # rls_cfg [global_vocabulary_tables json] [exempt_tables json]
+    local gv="${1:-}" ex="${2:-}"
+    [ -n "$gv" ] || gv='{}'
+    [ -n "$ex" ] || ex='{}'
     cat > "$RD/checks.config.json" <<JSON
 { "stack": "python",
   "checks": { "rls-policy-present": {
@@ -504,10 +513,14 @@ else
     "schemas": ["$SCH"],
     "tenant_columns": ["institution_id", "course_id", "team_id"],
     "context_function_pattern": "selftest_ctx\\\\.current_[a-z_]+\\\\(\\\\)",
-    "global_vocabulary_tables": ${1:-'{}'},
-    "global_vocabulary_source": "selftest fixture: the set is stated, never inferred"
+    "global_vocabulary_tables": $gv,
+    "global_vocabulary_source": "selftest fixture: the set is stated, never inferred",
+    "exempt_tables": $ex
   } } }
 JSON
+    jq empty "$RD/checks.config.json" 2>/dev/null || {
+      say "    FAIL  fixture config is not valid JSON — any assertion after this is meaningless"
+      FAIL=$((FAIL+1)); }
   }
 
   q "CREATE SCHEMA \"$SCH\";" >/dev/null
@@ -596,6 +609,61 @@ JSON
   q "ALTER TABLE \"$SCH\".vocab DROP COLUMN institution_id;" >/dev/null
   run_rls >/dev/null 2>&1
   assert_rc 0 $? "A2b: column dropped, check passes again"
+
+  # ── exempt_tables ─────────────────────────────────────────────────────────
+  # The load-bearing property is the same one allow_fields has: it suppresses
+  # ONE named thing for a recorded reason, and it does not become a way to turn
+  # the check off. Every assertion below exists to prove the rest still fires.
+  fixture "CREATE TABLE \"$SCH\".ctxless (id bigserial primary key, k text);" "exempt fixture"
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "baseline: the new policy-less table is reported"
+
+  rls_cfg '{"vocab": "selftest fixture"}' '{"ctxless": "selftest fixture: written on a context-less path, a policy keyed to a context function would match zero rows"}'
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 0 $RC "an exempt table is suppressed"
+  printf '%s' "$OUT" | grep -q 'suppressed by exempt_tables' \
+    && { say "    ok    the exemption is reported, not silent"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  the exemption was silent"; FAIL=$((FAIL+1)); }
+
+  # THE ONE THAT MATTERS: exempting one table must not exempt any other.
+  fixture "CREATE TABLE \"$SCH\".other_unpoliced (id bigserial primary key);" "second policy-less table"
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 1 $RC "a DIFFERENT policy-less table still fails while one is exempt"
+  printf '%s' "$OUT" | grep -q "${SCH}.other_unpoliced" \
+    && { say "    ok    the still-reported table is named"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  the second table was wrongly suppressed"; FAIL=$((FAIL+1)); }
+  fixture "DROP TABLE \"$SCH\".other_unpoliced;" "drop second table"
+
+  # an exemption does NOT reach the global-vocabulary clauses
+  fixture "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR SELECT TO PUBLIC USING (true);" "vocab open policy"
+  rls_cfg '{"vocab": "selftest fixture"}' '{"vocab": "attempt to exempt a global vocabulary table"}'
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "a table in both exempt_tables and global_vocabulary_tables is exit 2"
+  fixture "DROP POLICY p_vocab ON \"$SCH\".vocab;
+     CREATE POLICY p_vocab ON \"$SCH\".vocab FOR SELECT TO PUBLIC
+       USING (selftest_ctx.current_institution_id() IS NOT NULL);" "vocab authenticated policy"
+
+  rls_cfg '{"vocab": "selftest fixture"}' '{"ctxless": ""}'
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "an exemption with no reason is exit 2, not a silent allow"
+
+  rls_cfg '{"vocab": "selftest fixture"}' '{"no_such_table": "configured but gone"}'
+  run_rls >/dev/null 2>&1
+  assert_rc 2 $? "an exemption naming a table that is not scanned is exit 2"
+
+  # a stale exemption — the table acquired a policy — is reported, not failed
+  fixture "CREATE POLICY p_ctxless ON \"$SCH\".ctxless FOR ALL TO PUBLIC
+             USING (selftest_ctx.current_institution_id() IS NOT NULL);
+           ALTER TABLE \"$SCH\".ctxless ENABLE ROW LEVEL SECURITY;" "policy on the exempt table"
+  rls_cfg '{"vocab": "selftest fixture"}' '{"ctxless": "selftest fixture: reason recorded"}'
+  OUT="$(run_rls 2>&1)"; RC=$?
+  assert_rc 0 $RC "an exemption that suppresses nothing does not fail the check"
+  printf '%s' "$OUT" | grep -q 'no longer suppress anything' \
+    && { say "    ok    a stale exemption is reported as stale"; PASS=$((PASS+1)); } \
+    || { say "    FAIL  a stale exemption was silent"; FAIL=$((FAIL+1)); }
+  fixture "DROP TABLE \"$SCH\".ctxless;" "drop exempt fixture"
+  rls_cfg '{"vocab": "selftest fixture"}'
 
   # ── could-not-run cases. Each of these would otherwise be a silent pass. ──
   env -u DATABASE_URL -u AIDE_CHECKS_DATABASE_URL "$PKG/sh/rls-policy-present" \

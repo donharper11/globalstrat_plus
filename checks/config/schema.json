@@ -206,6 +206,13 @@
               "type": "string",
               "description": "How the set was determined, so the judgment is auditable rather than asserted. Refused if empty."
             },
+            "exempt_tables": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "table name -> the recorded reason it carries no RLS policy deliberately. Suppresses A1 (the 'has any policy at all' clause) for that table and nothing else: it cannot exempt a table from the global-vocabulary clauses, and a table listed here AND in global_vocabulary_tables is refused rather than resolved in some unpredictable order. Same shape and same rule as allow_fields_reasons \u2014 an entry with no reason is exit 2, and an entry naming a table that is not among those scanned is exit 2, because a config that no longer describes its schema has stopped describing anything. Exemptions are reported on PASS and FAIL alike; an exemption whose table has since acquired a policy is reported as stale."
+            },
             "zero_is_suspect_reason": {
               "type": "string",
               "description": "Printed on a zero-violation result. A zero against a rule with recorded failures is suspect, not a pass (\u00a79.5)."
