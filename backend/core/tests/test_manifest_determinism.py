@@ -27,6 +27,7 @@ from django.utils import timezone
 
 from core.services import canonical_json as cj
 from core.services import manifest_sections as ms
+from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
 from core.services.manifest_schema import (
     SCHEMA_INVENTORY_PATH, build_schema_inventory,
 )
@@ -311,6 +312,75 @@ def _iterators(tree):
                 else:
                     found.append((node.lineno, iterator))
     return found
+
+
+class SchemaProvenanceTests(SimpleTestCase):
+    """A superseded schema definition must stay exactly as it was.
+
+    Version 2's inventory was rewritten twice while still calling itself
+    version 2 -- once by CRV2-03 and once by Stage 4 -- so the file named
+    `manifest_schema_v2.json` was not the definition any earlier v2 manifest
+    was hashed under. `require_schema_version` still refused to compare across
+    versions, so no hash was ever wrongly matched; what was lost was the
+    ability to reconstruct what a stored v2 hash meant (V2-052).
+
+    Pinning the historical definitions by digest is what makes the chain
+    reconstructable, and what stops the next `dump_manifest_schema` from
+    quietly overwriting one.
+    """
+
+    HISTORY = (pathlib.Path(__file__).resolve().parent.parent
+               / 'services' / 'manifest_schema_history')
+
+    def provenance(self):
+        return json.loads((self.HISTORY / 'PROVENANCE.json')
+                          .read_text(encoding='utf-8'))
+
+    def test_every_recorded_definition_still_hashes_to_its_record(self):
+        import hashlib
+        offenders = []
+        for version, record in self.provenance()['versions'].items():
+            for entry in record['definitions']:
+                path = (self.HISTORY / entry['path']).resolve()
+                if not path.exists():
+                    offenders.append(f'v{version} {entry["commit"]}: missing')
+                    continue
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                if digest != entry['sha256']:
+                    offenders.append(
+                        f'v{version} {entry["commit"]}: {path.name} changed')
+        self.assertFalse(offenders, (
+            'A schema definition that has already been in force was modified. '
+            'Superseded definitions are evidence, not working files:\n'
+            + '\n'.join(offenders)))
+
+    def test_the_current_inventory_declares_the_current_version(self):
+        inventory = json.loads(
+            pathlib.Path(SCHEMA_INVENTORY_PATH).read_text(encoding='utf-8'))
+        # The canonical writer renders scalars as strings, so compare as one.
+        self.assertEqual(str(inventory['schema_version']),
+                         str(MANIFEST_SCHEMA_VERSION))
+
+    def test_the_current_version_has_a_provenance_entry(self):
+        record = self.provenance()['versions'].get(
+            str(MANIFEST_SCHEMA_VERSION))
+        self.assertIsNotNone(
+            record,
+            f'Version {MANIFEST_SCHEMA_VERSION} is in force but unrecorded. '
+            'Every version needs its definition written down, or a hash '
+            'stored under it cannot be interpreted later.')
+        self.assertTrue(record['definitions'])
+
+    def test_the_superseded_canonical_file_is_the_original_definition(self):
+        """`manifest_schema_v2.json` is v2 as introduced, not as last edited."""
+        import hashlib
+        record = self.provenance()['versions']['2']
+        canonical = (pathlib.Path(SCHEMA_INVENTORY_PATH).parent
+                     / record['canonical_path'])
+        expected = next(e['sha256'] for e in record['definitions']
+                        if e['commit'] == record['canonical_is'])
+        self.assertEqual(
+            hashlib.sha256(canonical.read_bytes()).hexdigest(), expected)
 
 
 class EngineIterationOrderTests(SimpleTestCase):

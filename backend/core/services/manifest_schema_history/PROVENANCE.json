@@ -1,0 +1,53 @@
+{
+  "note": "Every definition that has been in force for each manifest schema version. Pinned by sha256 so a superseded definition cannot be quietly rewritten again.",
+  "versions": {
+    "2": {
+      "canonical_is": "61c43da",
+      "canonical_path": "manifest_schema_v2.json",
+      "definitions": [
+        {
+          "bytes": 96114,
+          "change": "Version 2 as introduced: canonical snapshots through manifest_sections.",
+          "commit": "61c43da",
+          "committed": "2026-08-28T03:28:51+00:00",
+          "handoff": "GSP-CRV2-01",
+          "path": "manifest_schema_v2@61c43da.json",
+          "sha256": "41f1c510546f9c417dd01ac3f573a495345a7a2fc4ac18984ba6024d00169374"
+        },
+        {
+          "bytes": 96637,
+          "change": "Added the narrative_alert section and a hashed \"source\" field.",
+          "commit": "f63e8b7",
+          "committed": "2026-08-28T13:08:24+00:00",
+          "handoff": "GSP-CRV2-03",
+          "path": "manifest_schema_v2@f63e8b7.json",
+          "sha256": "0fb3253f288a410b5e50f0cc4e7793bc217ad8965ba67e38af4f341a1a8f06b5"
+        },
+        {
+          "bytes": 97695,
+          "change": "Added the team_product_platform_history section and a hashed \"funded_round\" field.",
+          "commit": "24687f0",
+          "committed": "2026-09-02T14:30:25+00:00",
+          "handoff": "GSP-CRV2-10 Stage 4",
+          "path": "manifest_schema_v2@24687f0.json",
+          "sha256": "aaa5e1f869ccc2b52bac118723f5aa9ed585bb3ef50e91cda44bc42a1ab1f9f6"
+        }
+      ],
+      "warning": "Version 2 had three definitions in force at different times. A stored v2 manifest must be interpreted against the definition current when it was written, identified by the resolution date against the committed dates above -- not against manifest_schema_v2.json alone."
+    },
+    "3": {
+      "canonical_is": "eae18e5",
+      "canonical_path": "manifest_schema_v3.json",
+      "definitions": [
+        {
+          "bytes": 97751,
+          "change": "Version 3: carries Stage 4's history section and funded_round, and adds the platform_switch_write_off financial line.",
+          "commit": "eae18e5",
+          "handoff": "GSP-CRV2-10 Stage 4 rework",
+          "path": "../manifest_schema_v3.json",
+          "sha256": "c76afb78b4476fe07c51d9f51e362c4dab3642efdd0fbdd847139934953287d0"
+        }
+      ]
+    }
+  }
+}

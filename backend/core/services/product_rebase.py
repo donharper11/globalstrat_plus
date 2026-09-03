@@ -38,6 +38,11 @@ class RebaseRefused(Exception):
         self.status_code = status_code
 
 
+# Governing rule decisions for this module -- the write-off's cash treatment,
+# its percentage basis and the round it takes effect in -- are recorded in
+# `handoff_readiness_v2/GSP-CRV2-10_RULE_DECISIONS.md` (R1, R2, R3, R7). They
+# are choices the specification does not uniquely determine, so reversing one
+# is a rules decision rather than a bug fix.
 def write_off_pct(scenario):
     """The authored markdown on stock left behind, as a fraction."""
     from core.engine.utils import get_config

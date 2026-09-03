@@ -1,7 +1,9 @@
 """Resolution manifests: what a round was given, and what it produced.
 
-Schema version 2 (GSP-CRV2-01). Version 1 recorded decision-event ids, six
-audit metadata fields, the active team ids and a scenario id on the input
+Current schema version: 3 (GSP-CRV2-10 Stage 4).
+
+Version 1 recorded decision-event ids, six audit metadata fields, the active
+team ids and a scenario id on the input
 side, and financials / performance / leaderboard rows on the output side. That
 was not enough to reconstruct or defend a round: it could not show the
 decision payloads that were accepted, the scenario constants the maths used,
@@ -24,6 +26,17 @@ survive: ``require_schema_version`` would compare a manifest written under the
 old definition against a hash computed under the new one, agree that the
 versions match, and report the difference as a mismatch -- reading a definition
 change as evidence of tampering.
+
+That rule was broken twice before it was written down. Version 2's inventory
+was rewritten by GSP-CRV2-03 (a ``narrative_alert`` section and a hashed
+``source`` field) and again by CRV2-10 Stage 4 (``team_product_platform_history``
+and a hashed ``funded_round``), both while still calling itself version 2. No
+hash was ever wrongly matched, because the version guard only ever compares
+equal versions -- but three different definitions had been in force under one
+number, so a stored v2 hash could no longer be traced to the definition it was
+taken over (V2-052). Each is now kept and pinned by digest under
+``manifest_schema_history/``, with ``manifest_schema_v2.json`` restored to
+version 2 as introduced.
 
 Reading old manifests
 ---------------------

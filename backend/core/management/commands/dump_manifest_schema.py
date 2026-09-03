@@ -1,10 +1,17 @@
 """Regenerate the checked-in manifest field inventory.
 
-``test_manifest_determinism`` compares the live registry against
-``core/services/manifest_schema_v2.json``. Any model that gains, loses or
-renames a field changes the live inventory and fails that test, which is what
-makes schema drift a review event rather than a silent hash change. Running
-this command is the deliberate act of accepting the new shape.
+``test_manifest_determinism`` compares the live registry against the inventory
+for the current schema version -- ``core/services/manifest_schema_v<N>.json``,
+where N is ``MANIFEST_SCHEMA_VERSION``. Any model that gains, loses or renames
+a field changes the live inventory and fails that test, which is what makes
+schema drift a review event rather than a silent hash change. Running this
+command is the deliberate act of accepting the new shape.
+
+Accepting a shape that changes what a round *hashes to* also means bumping the
+version. Version 2's inventory was rewritten twice while still calling itself
+version 2, which left no way to reconstruct what an earlier v2 hash was taken
+over (V2-052). Superseded definitions are kept under
+``core/services/manifest_schema_history/`` and pinned by digest.
 """
 import pathlib
 
@@ -17,7 +24,8 @@ from core.services.canonical_json import canonical_dumps
 
 
 class Command(BaseCommand):
-    help = 'Rewrite core/services/manifest_schema_v2.json from the live registry.'
+    help = ('Rewrite the current version\'s manifest field inventory '
+            'from the live registry.')
 
     def add_arguments(self, parser):
         parser.add_argument('--check', action='store_true',
