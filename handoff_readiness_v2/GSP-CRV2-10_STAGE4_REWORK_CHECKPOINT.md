@@ -103,9 +103,14 @@ version when it landed and did not** — recording that here rather than leaving
 it as an inconsistency for the next reader.
 
 `MANIFEST_SCHEMA_VERSION` is now **3**, with the reviewed inventory written to
-`manifest_schema_v3.json`; `manifest_schema_v2.json` is kept as the record of
-what version 2 meant, because a version's definition is what makes its stored
-hashes interpretable later.
+`manifest_schema_v3.json`.
+
+> **Corrected after re-audit (V2-052).** This section originally said
+> `manifest_schema_v2.json` "is kept as the record of what version 2 meant".
+> That was false when written: the file had already been rewritten twice while
+> still calling itself version 2 — by GSP-CRV2-03 and again by Stage 4 at
+> `24687f0` — so it recorded neither the original v2 definition nor any single
+> one. Repaired at `5873695`; see section 4a.
 
 Two envelope definitions sharing one version number is the single thing
 `require_schema_version` cannot survive: it would compare a manifest written
@@ -114,6 +119,48 @@ versions match, and report the difference as a mismatch — reading a definition
 change as evidence of tampering. The version and the inventory filename now
 both derive from one constant in `manifest_version.py`, so they cannot drift
 apart again.
+
+### 4a. V2-052 — the v2 definition chain, repaired
+
+Version 2 had **three** definitions in force at different times, not the two
+the re-audit named:
+
+| Commit | Date | Handoff | What changed under version 2 |
+|---|---|---|---|
+| `61c43da` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
+| `f63e8b7` | 2026-08-28 | GSP-CRV2-03 | added the `narrative_alert` section and a hashed `source` field |
+| `24687f0` | 2026-09-02 | CRV2-10 Stage 4 | added `team_product_platform_history` and a hashed `funded_round` |
+
+No hash was ever wrongly matched — `require_schema_version` only ever compares
+equal versions, and it refused everything else. What was lost is the ability to
+say which definition a stored v2 hash was taken over.
+
+Repair:
+
+- All three definitions are preserved under
+  `core/services/manifest_schema_history/`, each pinned by sha256 in
+  `PROVENANCE.json`.
+- `manifest_schema_v2.json` is restored to its `61c43da` content — version 2 as
+  introduced — and is no longer read by any code, since the inventory path now
+  derives from the current version.
+- `SchemaProvenanceTests` (4) fails if any already-in-force definition is
+  modified, if the canonical v2 file is not the original, if the current
+  inventory does not declare the current version, or if the current version has
+  no provenance entry.
+- The two stale references the re-audit named are corrected:
+  `resolution_manifest.py` announced version 2 in its module docstring, and
+  `dump_manifest_schema.py` named `manifest_schema_v2.json` as the file it
+  writes.
+
+**Controls.** Overwriting `manifest_schema_v2.json` with the `24687f0` state —
+reproducing V2-052 exactly — fails the guard with both digests named. Editing a
+pinned historical definition fails it by name.
+
+Worth recording: my *first* attempt at the second control was a silent no-op —
+the edit string did not match the minified JSON on disk, so the test "passed"
+and briefly looked like proof. It is the same false-confidence shape as the
+finding itself, caught only because the mutation was asserted before the test
+ran.
 
 ## 5. A stale artifact the affected set could not have caught
 
@@ -155,6 +202,12 @@ Affected focused set, run once from clean revision `b9e1282`:
 - `dump_read_inventory --check` → `Read inventory is current.`
 - Migration `0082_stage4_write_off_accounting` (one added field, one altered)
 
+**Re-run after the V2-052 repair**, at runtime `5873695`, with
+`SchemaProvenanceTests` added: **226 distinct, 226 executed, `OK`**. All three
+static checks clean — `makemigrations --check`, `dump_manifest_schema --check`
+("Manifest schema inventory is current."), `dump_read_inventory --check`.
+Evidence in `evidence/decision-rules/stage4-rework2/`.
+
 **Provenance.** The transcript was generated outside the repository and moved
 in afterwards. It records the **whole tree** clean at both ends — the
 previously-noted `frontend/deploy-frontend.sh` was committed by the operator at
@@ -177,10 +230,11 @@ rather than on any scope check. It was still not refused for the right reason.
   integrated Stage 3/4 closure*. V2-049, V2-050 and V2-051 join them at
   `b9e1282`; none is closed.
 - No full suite, browser, concurrency, load or tournament run.
-- The write-off's cash treatment follows `retirement_expense` — a stated
-  modelling choice, not a derived result. If the intended treatment is non-cash
-  (an add-back, with inventory value reduced instead), that is a rule decision
-  and would change the cash assertions.
+- The write-off's cash treatment follows `retirement_expense` — a modelling
+  choice, not a derived result, accepted by the re-audit as a valid simulation
+  rule. It is now recorded as a governing decision in
+  `GSP-CRV2-10_RULE_DECISIONS.md` (R1), together with the seven other Stage 2–4
+  decisions the specification does not uniquely determine.
 - Unordered iteration remains in `core/services` modules outside the resolution
   set; unchanged from the previous checkpoint and unassessed for non-resolution
   surfaces.

@@ -126,6 +126,45 @@ compromised.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
+## V2-052 — the manifest schema definition chain was overwritten (P1) — implemented at `5873695`, pending integrated Stage 3/4 closure
+
+Raised by the Stage 4 rework re-audit at `b9e1282`. The Stage 4 rework
+checkpoint claimed `manifest_schema_v2.json` was "kept as the record of what
+version 2 meant". It was not: the file had already been rewritten while still
+declaring version 2.
+
+**Three definitions were in force under version 2**, not the two the re-audit
+named:
+
+| Commit | Date | Handoff | Change under version 2 |
+|---|---|---|---|
+| `61c43da` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
+| `f63e8b7` | 2026-08-28 | GSP-CRV2-03 | `narrative_alert` section; hashed `source` field |
+| `24687f0` | 2026-09-02 | CRV2-10 Stage 4 | `team_product_platform_history`; hashed `funded_round` |
+
+**Bounded correctly by the re-audit:** no stored hash was ever wrongly matched.
+`require_schema_version` only ever compares equal versions and refuses the
+rest, so the failure is evidentiary, not a false verification result. What was
+lost is the ability to say which definition a stored v2 hash was taken over —
+and CRV2-08's whole dispute posture rests on being able to say exactly that.
+
+**Repaired at `5873695`.** All three definitions preserved under
+`core/services/manifest_schema_history/` and pinned by sha256 in
+`PROVENANCE.json`; `manifest_schema_v2.json` restored to its `61c43da`
+content; `SchemaProvenanceTests` (4) fails on any modification to an
+already-in-force definition, on a canonical v2 file that is not the original,
+on an inventory that does not declare the current version, and on a current
+version with no provenance entry. Both stale version references corrected.
+
+Controls: overwriting the canonical v2 file with the `24687f0` state — V2-052
+reproduced exactly — fails the guard with both digests named; editing a pinned
+historical definition fails it by name.
+
+**Why it was possible:** nothing distinguished a *current* inventory file,
+which `dump_manifest_schema` is meant to rewrite, from a *superseded* one,
+which is evidence. The version guard protected comparisons between versions and
+nobody had asked what protects a version's own definition.
+
 ## V2-049 through V2-051 — raised by the GSP-CRV2-10 Stage 4 audit
 
 **Status after the Stage 4 rework.** All three are **implemented at `b9e1282`
