@@ -5,12 +5,20 @@
   "checks": {
     "no-committed-secrets": {
       "enabled": true,
-      "mode": "report-only",
+      "mode": "blocking",
       "fast": true,
       "include": ["docs/**", "README.md"],
       "exclude": [],
       "exclusion_reasons": {},
-      "mode_reason": "First scan returned 4 findings: 2 rule jwt and 2 rule generic-api-key, in rework/ and handoff_readiness_v2/evidence/post-close-disputes/harness/. These are the harness files already recorded in the mine's SECURITY-NOTICE.md §3 as unresolved and un-investigated — the mine declined to read the values, and so does this check. Report-only per build spec §5, because this repo is mid-upgrade and a gate that fails its first deploy attempt gets removed rather than fixed. Promote to blocking once the four are dispositioned."
+      "mode_reason": "Promoted to blocking 2026-09 once the four findings recorded in SECURITY-NOTICE.md §3 were dispositioned. All four were read and confirmed non-credentials; see allow_fields_reasons and allow_findings.",
+      "allow_fields": ["DJANGO_SECRET_KEY"],
+      "allow_fields_reasons": {
+        "DJANGO_SECRET_KEY": "Fixture value 'crv208-walkthrough' in the CRV2 audit harnesses under handoff_readiness_v2/evidence/post-close-disputes/harness/ (start_stack.py:28, disputes.py:25). Named for the walkthrough it drives, used only by the disposable evidence stack, never a production value. Read and confirmed 2026-09."
+      },
+      "allow_findings": {
+        "rework/browser_pass.js:jwt:12": "Expired instructor walkthrough token. Payload decoded 2026-09: role instructor, exp 1783947018 (April 2026), an 8-hour token dead five months. Browser-pass test credential, not a live secret.",
+        "rework/browser_pass.js:jwt:13": "Expired student walkthrough token from the same browser pass. Same provenance and expiry window as line 12."
+      }
     },
     "no-agent-worktrees-tracked": {
       "enabled": true,

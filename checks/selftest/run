@@ -81,6 +81,151 @@ rm -rf "$FAKEHOME"
 rm -f "$PLANT"; git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cleanup >/dev/null
 "$PKG/sh/no-committed-secrets" "$D" "$D/checks.config.json" >/dev/null 2>&1
 assert_rc 0 $? "plant removed, check passes again"
+
+# ══════════════════════════════════════════════════════════════════════════
+# allow_fields — suppress an identifier-shaped field WITHOUT excluding its path.
+# The danger this guards against is a scanner that looks green because someone
+# allowlisted the directory a real leak would land in. Every assertion below
+# exists to prove the file is still being scanned.
+say "selftest: no-committed-secrets / allow_fields"
+D2="$(mk_repo)"
+mkdir -p "$D2/evidence"
+
+# An identifier with real entropy, assembled from parts so this selftest file
+# does not itself carry a secret-shaped literal.
+IDENT="$(printf '%s%s%s' 'b7f3a91c4d2e' '48a6b0c5f19d' '3e7a2c8b6f04')"
+printf '{"idempotency_key": "%s", "label": "checkout"}\n' "$IDENT" > "$D2/evidence/run.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm evidence >/dev/null
+
+cfg() { cat > "$D2/checks.config.json"; git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm cfg >/dev/null 2>&1; }
+
+# baseline: with no allowlist the identifier IS reported, so we know the plant fires
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"] } } }
+JSON
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "baseline: identifier field is reported when not allowlisted"
+
+# 1. allowlisted field is suppressed
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": ["idempotency_key"],
+    "allow_fields_reasons": { "idempotency_key": "request de-duplication id in captured browser-proof evidence; not a credential" } } } }
+JSON
+OUT="$("$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" 2>&1)"; RC=$?
+assert_rc 0 $RC "allowlisted field is suppressed"
+printf '%s' "$OUT" | grep -q 'suppressed by allow_fields' \
+  && { say "    ok    suppression is reported, not silent"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  suppression was silent"; FAIL=$((FAIL+1)); }
+
+# 2. THE ONE THAT MATTERS: a real secret in the SAME file still fails.
+# If this passes, allow_fields has become a path exclusion and is unsafe.
+{ printf -- '-----BEGIN RSA %s-----\n' 'PRIVATE KEY'
+  printf 'MIIEowIBAAKCAQEA%s\n' 'FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE'
+  printf -- '-----END RSA %s-----\n' 'PRIVATE KEY'; } >> "$D2/evidence/run.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm realplant >/dev/null
+OUT="$("$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" 2>&1)"; RC=$?
+assert_rc 1 $RC "real secret in an allowlisted file STILL fails (path not excluded)"
+printf '%s' "$OUT" | grep -q 'evidence/run.json' \
+  && { say "    ok    finding names the still-scanned file"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  finding does not name the file"; FAIL=$((FAIL+1)); }
+
+# restore
+printf '{"idempotency_key": "%s", "label": "checkout"}\n' "$IDENT" > "$D2/evidence/run.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm restore >/dev/null
+
+# 3. the same value under a NON-allowlisted field still fails
+printf '{"api_key": "%s"}\n' "$IDENT" > "$D2/evidence/other.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm otherfield >/dev/null
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "same value under a non-allowlisted field still fails"
+rm -f "$D2/evidence/other.json"; git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm rmother >/dev/null
+
+# 3b. a qualified reference to the same field (SQL alias / property access) is
+# treated as that field, but a DIFFERENT field that merely ends in the same
+# characters is not — the name must match in full.
+printf 'SELECT x FROM t WHERE f.idempotency_key=%s%s%s\n' "'" "$IDENT" "'" > "$D2/evidence/q.sql"
+printf '{"other_idempotency_key": "%s"}\n' "$IDENT" > "$D2/evidence/near.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm qualified >/dev/null
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": ["idempotency_key"],
+    "allow_fields_reasons": { "idempotency_key": "request de-duplication id; not a credential" } } } }
+JSON
+OUT="$("$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" 2>&1)"; RC=$?
+assert_rc 1 $RC "a near-miss field name is NOT suppressed by the allowlist"
+printf '%s' "$OUT" | grep -q 'near.json' \
+  && { say "    ok    the near-miss field is the one still reported"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  near-miss field was wrongly suppressed"; FAIL=$((FAIL+1)); }
+printf '%s' "$OUT" | grep -q 'q.sql' \
+  && { say "    FAIL  qualified f.idempotency_key was not suppressed"; FAIL=$((FAIL+1)); } \
+  || { say "    ok    qualified f.idempotency_key is suppressed"; PASS=$((PASS+1)); }
+rm -f "$D2/evidence/q.sql" "$D2/evidence/near.json"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm rmq >/dev/null
+
+# 3c. allow_findings pins an exception to ONE occurrence. The load-bearing
+# property is that it does NOT become a path or file exclusion.
+printf -- '-----BEGIN RSA %s-----\n' 'PRIVATE KEY' > "$D2/evidence/pinned.md"
+printf 'MIIEowIBAAKCAQEA%s\n' 'FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE' >> "$D2/evidence/pinned.md"
+printf -- '-----END RSA %s-----\n' 'PRIVATE KEY' >> "$D2/evidence/pinned.md"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm pinned >/dev/null
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": ["idempotency_key"],
+    "allow_fields_reasons": { "idempotency_key": "request de-duplication id; not a credential" },
+    "allow_findings": { "evidence/pinned.md:private-key:1": "selftest fixture" } } } }
+JSON
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "a pinned fingerprint is suppressed"
+
+# a SECOND secret in the same pinned file, at a different line, still fails
+printf -- '\n-----BEGIN EC %s-----\nMHcCAQEEIF%s\n-----END EC %s-----\n' 'PRIVATE KEY' 'FAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKEFAKE' 'PRIVATE KEY' >> "$D2/evidence/pinned.md"
+git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm second >/dev/null
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "a different secret in the SAME pinned file still fails"
+rm -f "$D2/evidence/pinned.md"; git -C "$D2" add -A >/dev/null; git -C "$D2" commit -qm rmpin >/dev/null
+
+# a pin without a reason is refused
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": ["idempotency_key"],
+    "allow_fields_reasons": { "idempotency_key": "request de-duplication id; not a credential" },
+    "allow_findings": { "evidence/run.json:generic-api-key:1": "" } } } }
+JSON
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 2 $? "allow_findings without a reason is exit 2"
+
+# 4. an allow_fields entry with no recorded reason is refused, not honoured
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": ["idempotency_key"] } } }
+JSON
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 2 $? "allow_fields without a reason is exit 2, not a silent allow"
+
+# 5. a non-bare field name is refused rather than injected into the regex
+cfg <<'JSON'
+{ "stack": "python",
+  "checks": { "no-committed-secrets": { "enabled": true, "mode": "blocking",
+    "include": ["docs/**", "README.md"],
+    "allow_fields": [".*"],
+    "allow_fields_reasons": { ".*": "attempt to allowlist everything" } } } }
+JSON
+"$PKG/sh/no-committed-secrets" "$D2" "$D2/checks.config.json" >/dev/null 2>&1
+assert_rc 2 $? "a regex in allow_fields is refused, not honoured"
+rm -rf "$D2"
 rm -rf "$D"
 
 # ══════════════════════════════════════════════════════════════════════════

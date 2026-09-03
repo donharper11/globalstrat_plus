@@ -65,3 +65,43 @@ Exclusions are per-repo and evidenced: each one carries a reason in
 
 The deploy gate is the enforcement layer. The builder does not invoke the deploy
 script.
+
+## Phase 1 install — where it stands
+
+| repo | VM | secrets | mode | worktrees | deploy gate |
+|---|---|---:|---|---:|---|
+| nexus | .220 | 10 | report-only | 0 | `scripts/deploy-public.sh` |
+| accounting | .220 | 0 | blocking | 0 | none — deploy path retired by `86fab7e1a` |
+| worklab | .220 | 31 | report-only | 0 | `deploy.sh` |
+| prism-nexus | .220 | 1 | report-only | 0 | `frontend/deploy-frontend.sh` |
+| aide-platform | .220 | 7114 | report-only | 0 | `frontend/deploy-frontend.sh` |
+| BECSR | .5 | 0 | blocking | 0 | `deploy-becsr.sh` |
+| globalstrat+ | .5 | 4 | report-only | 0 | `frontend/deploy-frontend.sh` |
+
+Both zeros were probed before being accepted (build spec §9.8): a planted
+private-key block was detected in each, and the zero returned when it was
+removed.
+
+`report-only` is the build spec §5 instruction for a repo whose first scan would
+fail its first deploy — the count stays visible and the gate stays installed
+rather than being removed. No path is excluded anywhere; the counts are reported
+as they stand.
+
+## Known limitations
+
+- **`generic-api-key` is the noisy rule.** 7,155 of the 7,160 secret findings
+  across all seven repos are that one rule firing on JSON identifier fields whose
+  names end in `_key` — `component_key`, `artifact_key`, `outcome_key`,
+  `idempotency_key`. It was left untuned: narrowing it risks blinding the check to
+  the class it exists for (NEXUS-C116 was a demo password in a doc), and that
+  trade is the owner's to make, not the installer's.
+- **`.5` pulls from GitHub directly over SSH.** An earlier note here claimed the
+  host had no credential. That was wrong: this package's clone on `.5` had an
+  HTTPS origin and no credential helper, while every other repo there already
+  used SSH and authenticated fine. Corrected 2026-09-03 — the origin is now
+  `git@github.com:donharper11/aide-checks.git`. `bin/push-to-vm5` is retained
+  only as an offline fallback for when GitHub is unreachable from `.5`.
+- **gitleaks is a host dependency**, installed to `~/bin` on both VMs. The check
+  exits 2 rather than 0 when it is absent, so a missing scanner refuses a deploy
+  instead of passing one.
+- **CI is advisory.** GitHub Free does not enforce rulesets on private repos.

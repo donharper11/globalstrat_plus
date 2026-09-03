@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 # ─── refresh the .5 clone of aide-checks from this one ──────────────────────
-# .5 has no GitHub credential, so it cannot `git pull` from origin. Until one is
-# provisioned, .220 is the relay: bundle -> scp -> fetch. The .5 clone keeps the
-# GitHub URL as origin so the day a credential lands, `git pull` just works.
+# OPTIONAL FALLBACK. .5 pulls from GitHub directly over SSH and has since
+# 2026-09-03; `git pull` there is the normal path.
+#
+# This script exists because .5's aide-checks clone was originally created with
+# an HTTPS origin and no credential helper, so `git pull` failed with "could not
+# read Username". That was one repo's remote URL, not a missing credential on
+# the host — .5's other repos already used SSH and authenticated fine. The clone
+# now uses git@github.com and the relay is not needed for routine syncs.
+#
+# Kept for the case it actually covers: moving a revision to .5 when GitHub is
+# unreachable from there, by bundle -> scp -> fetch.
 set -euo pipefail
 PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOST="${1:-ubuntu@192.168.50.5}"
