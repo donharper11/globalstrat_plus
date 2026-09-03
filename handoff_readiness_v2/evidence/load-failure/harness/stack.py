@@ -100,7 +100,7 @@ def disposable_stack(label, seed=True):
                    GLOBALSTRAT_ENV='production',
                    DJANGO_SECRET_KEY='crv2-07-load-test-key-' + database,
                    DB_PASSWORD=os.environ.get('DB_PASSWORD',
-                                              '***REMOVED-CREDENTIAL-V2-048***'))
+                                              os.environ['DB_PASSWORD']))
         log = open(HERE.parent / f'gunicorn-{label}.log', 'w')
         process = subprocess.Popen(
             ['gunicorn', '-c', 'gunicorn.conf.py',

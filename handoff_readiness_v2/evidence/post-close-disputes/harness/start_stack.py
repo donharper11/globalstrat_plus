@@ -26,7 +26,7 @@ def main():
                GLOBALSTRAT_ENV='production', GIT_REVISION=revision,
                COMPETITION_BACKUP_DIR='/tmp/crv208-backups',
                DJANGO_SECRET_KEY='crv208-walkthrough',
-               DB_PASSWORD=os.environ.get('DB_PASSWORD', '***REMOVED-CREDENTIAL-V2-048***'))
+               DB_PASSWORD=os.environ['DB_PASSWORD'])
     RUNTIME.mkdir(parents=True, exist_ok=True)
     backend_log = open(RUNTIME / 'stack-backend.log', 'w')
     backend = subprocess.Popen(

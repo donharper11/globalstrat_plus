@@ -47,8 +47,12 @@ DEBUG = not IS_PRODUCTION
 
 # Fail *closed* in production (W7). A deploy that forgets to set real secrets must
 # REFUSE TO BOOT rather than silently sign JWTs with the committed
-# django-insecure key (an auth-bypass risk, since JWT_SECRET_KEY = SECRET_KEY) or
-# connect with the default DB password. Env-overridable everywhere else.
+# django-insecure key -- an auth-bypass risk, since JWT_SECRET_KEY = SECRET_KEY.
+#
+# DB_PASSWORD is checked here too, but it can no longer reach this point unset:
+# `_required_db_password()` has no default to fall back to, in any environment.
+# The check stays because it names the variable in the same refusal as the
+# others, and because an empty string is legal but is not a production value.
 if IS_PRODUCTION:
     _insecure_secrets = []
     if os.environ.get('DJANGO_SECRET_KEY') is None or SECRET_KEY == _INSECURE_SECRET_KEY:
@@ -122,6 +126,32 @@ TEMPLATES = [
 WSGI_APPLICATION = 'globalstrat.wsgi.application'
 
 
+def _required_db_password():
+    """The database password, from the environment, with no fallback.
+
+    There used to be a literal default here. It was the live credential, it was
+    committed, and twelve other tracked files had copied it from this line --
+    every one of them a harness that took the default because a default was
+    there to take (V2-048).
+
+    A missing password now stops the process. The alternative is worse than it
+    looks: a blank or wrong password does not fail cleanly at import, it fails
+    later as a connection error somewhere unrelated, and the obvious fix is to
+    put the literal back.
+    """
+    import os as _os
+    value = _os.environ.get('DB_PASSWORD')
+    if value is None:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured(
+            'DB_PASSWORD is not set. It has no default: the previous default '
+            'was a live credential committed to this repository. Set it in '
+            'the deployment secret configuration (systemd EnvironmentFile, or '
+            'the shell for a local run). Set it to the empty string only if '
+            'the database genuinely takes no password.')
+    return value
+
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -130,7 +160,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME', 'globalstrat_plus'),
         'USER': os.environ.get('DB_USER', 'donwh'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', '***REMOVED-CREDENTIAL-V2-048***'),
+        'PASSWORD': _required_db_password(),
         'HOST': os.environ.get('DB_HOST', '192.168.50.38'),
         'PORT': os.environ.get('DB_PORT', '5432'),
     }

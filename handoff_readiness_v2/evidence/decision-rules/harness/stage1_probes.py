@@ -84,7 +84,7 @@ def start(revision):
                GLOBALSTRAT_ENV='production', GIT_REVISION=revision,
                COMPETITION_BACKUP_DIR=str(BACKUPS),
                DJANGO_SECRET_KEY='crv210-probe-stack',
-               DB_PASSWORD=os.environ.get('DB_PASSWORD', '***REMOVED-CREDENTIAL-V2-048***'))
+               DB_PASSWORD=os.environ['DB_PASSWORD'])
     log = open('/tmp/crv210-stack.log', 'w')
     process = subprocess.Popen(
         ['gunicorn', '-c', 'gunicorn.conf.py', '-b', f'127.0.0.1:{port}',

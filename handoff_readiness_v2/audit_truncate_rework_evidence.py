@@ -33,7 +33,7 @@ EVIDENCE = ROOT / 'evidence' / 'audit-integrity-rework'
 
 DB_HOST = os.environ.get('DB_HOST', '192.168.50.38')
 DB_USER = os.environ.get('DB_USER', 'donwh')
-DB_PASSWORD = os.environ.get('DB_PASSWORD', '***REMOVED-CREDENTIAL-V2-048***')
+DB_PASSWORD = os.environ['DB_PASSWORD']
 DB_PORT = os.environ.get('DB_PORT', '5432')
 
 BYPASS_SQL = ("SET globalstrat.allow_truncate = 'on'; "

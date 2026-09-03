@@ -122,7 +122,7 @@ def main():
                GIT_REVISION=revision, DJANGO_SECRET_KEY='crv208-authscan',
                COMPETITION_BACKUP_DIR='/tmp/crv208-backups',
                COMPETITION_RECOVERY_ENABLED='true',
-               DB_PASSWORD=os.environ.get('DB_PASSWORD', '***REMOVED-CREDENTIAL-V2-048***'))
+               DB_PASSWORD=os.environ['DB_PASSWORD'])
     log = open('/tmp/crv208-runtime/authscan.log', 'w')
     proc = subprocess.Popen(
         ['gunicorn', '-c', 'gunicorn.conf.py', '-b', f'127.0.0.1:{port}',

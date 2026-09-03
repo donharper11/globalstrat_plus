@@ -153,7 +153,7 @@ hardening, and housekeeping.
   operational risk: a subtle SC bug degrades to "no disruptions ever" without a hard
   signal.
 - **Hardcoded secrets default to known values.** `settings.py:96`
-  `DB_PASSWORD` default `'***REMOVED-CREDENTIAL-V2-048***'`; `SECRET_KEY` defaults to a committed
+  `DB_PASSWORD` default `<redacted: rotate per V2-048>`; `SECRET_KEY` defaults to a committed
   `django-insecure-…` literal; `JWT_SECRET_KEY = SECRET_KEY` (line 228) — so a
   deploy that forgets `DJANGO_SECRET_KEY` **signs JWTs with a publicly-known key**
   (auth-bypass risk). Env-overridable, but fail-*open*.

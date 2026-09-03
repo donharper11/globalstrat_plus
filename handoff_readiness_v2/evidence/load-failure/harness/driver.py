@@ -209,7 +209,8 @@ def sample_activity(database, stop, samples, interval=2.0):
     while not stop.is_set():
         try:
             out = subprocess.run(
-                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
+             f"@192.168.50.38/postgres",
                  '-tAc', query], capture_output=True, text=True, timeout=10)
             rows = [r for r in out.stdout.strip().splitlines() if r.strip()]
             parsed = []
@@ -244,7 +245,8 @@ def sample_checkpoints(stop, samples, interval=2.0):
     while not stop.is_set():
         try:
             out = subprocess.run(
-                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
+             f"@192.168.50.38/postgres",
                  '-tAc', query], capture_output=True, text=True, timeout=10)
             parts = out.stdout.strip().split('|')
             if len(parts) == 4:
@@ -270,7 +272,8 @@ def sample_database(database, stop, samples, interval=2.0):
     while not stop.is_set():
         try:
             out = subprocess.run(
-                ['psql', 'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
+             f"@192.168.50.38/postgres",
                  '-tAc', query], capture_output=True, text=True, timeout=10)
             value = out.stdout.strip()
             if value.isdigit():

@@ -318,7 +318,8 @@ def stage_6_database_loss(game):
             f'(team {getattr(instance, "team_id", None)})')
         out = subprocess.run(
             ['psql',
-             'postgresql://donwh:***REMOVED-CREDENTIAL-V2-048***@192.168.50.38/postgres',
+             f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
+             f"@192.168.50.38/postgres",
              '-tAc',
              "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
              f"WHERE datname = '{db_name}' AND pid <> pg_backend_pid()"],
