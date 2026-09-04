@@ -340,17 +340,26 @@ class DuplicateRdRowApiTests(DecisionApiBase):
         self.assertIn('Only one R&D investment per platform feature',
                       str(response.data))
 
-    def test_distinct_features_are_still_accepted_on_both_paths(self):
-        """The control both refusals are meaningless without."""
+    def test_distinct_features_are_now_refused_by_retirement_instead(self):
+        """[R10] What used to be this suite's acceptance control.
+
+        Distinct features were accepted until R10 retired the decision. They
+        are refused now -- but for a different reason than a duplicate, and the
+        distinction is the point: the duplicate rule runs first and still
+        answers with its own message, so the two refusals above are not passing
+        vacuously on the retirement.
+        """
         from core.models.decisions import DecisionRDInvestment
         response = self.client.patch(
             self.partial_url('rd'),
             [self.row(self.feature_a), self.row(self.feature_b)],
             format='json')
-        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn('retired', str(response.data).lower())
+        self.assertNotIn('Only one R&D investment', str(response.data))
         self.assertEqual(
             DecisionRDInvestment.objects.filter(
-                submission=self.submission()).count(), 2)
+                submission=self.submission()).count(), 0)
 
     def test_a_refused_duplicate_writes_nothing(self):
         from core.models.decisions import DecisionRDInvestment

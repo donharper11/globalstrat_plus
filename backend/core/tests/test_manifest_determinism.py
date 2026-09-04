@@ -580,38 +580,13 @@ class ManifestSnapshotIntegrationTests(TestCase):
                                 demand_estimate=1000 * (i + 1),
                                 production_source_market=m)))
 
-            # R&D rows still populate their manifest section, so they stay in
-            # the envelope. They no longer bind a feature-level or pending-gain
-            # mutation loop -- Ruling 1 retired both -- and they must not target
-            # a ready platform, which the engine now refuses outright. A
-            # platform still in development is the one legal target left.
-            # Its own generation: one non-retired platform per team per
-            # generation, or the duplicate-generation precondition refuses.
-            base_gen = (TeamPlatform.objects.filter(team=team)
-                        .order_by('id').first().platform_generation)
-            draft_gen, _ = PlatformGenerationDefinition.objects.get_or_create(
-                scenario=base_gen.scenario, generation_order=90,
-                defaults=dict(name='Drafting Gen', description='d',
-                              unlock_round=0,
-                              development_cost=D('1000000'),
-                              license_cost=D('2000000'),
-                              development_rounds=1))
-            drafting, _ = TeamPlatform.objects.get_or_create(
-                team=team, platform_generation=draft_gen,
-                defaults=dict(
-                    name=f'{team.name} Drafting Platform',
-                    status='unfunded_draft', development_method='in_house',
-                    development_started_round=0, funded_round=None,
-                    development_rounds_remaining=1))
-            for platform in [drafting]:
-                for offset, feature in enumerate(features):
-                    rows.append(
-                        lambda s=submission, p=platform, f=feature, i=index, o=offset:
-                        DecisionRDInvestment.objects.update_or_create(
-                            submission=s, team_platform=p, feature=f,
-                            method='in_house',
-                            defaults=dict(amount=D(200_000 + 1_000 * o + 100 * i),
-                                          calculated_cost=D(200_000))))
+            # R&D rows are gone from this fixture. R10 retired the decision
+            # outright, so a round carrying one is refused by the engine before
+            # any competitive mutation -- seeding them here made the snapshot
+            # integration tests fail on a rule rather than on the snapshot.
+            #
+            # Its manifest section is unchanged and still enumerated; nothing
+            # writes rows into it now, which is what retirement means.
 
             # Market entry and plant build: both mutate carried team state.
             for offset, market in enumerate(markets[1:], start=1):

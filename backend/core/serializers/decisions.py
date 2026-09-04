@@ -113,7 +113,6 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
 
     from core.services.rd_costs import (duplicate_generation_problem,
                                         held_generation_problem,
-                                        frozen_platform_problem,
                                         ownership_problem, unlock_problem)
 
     field = 'committed_cost' if kind == 'platform' else 'calculated_cost'

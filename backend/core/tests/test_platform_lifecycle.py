@@ -583,7 +583,12 @@ class PlatformOwnershipTests(LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
             f'round/1/rd/', [self.foreign_row()], format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('belongs to another team', str(response.data))
+        # R10 retired the decision, so the surface now answers with the
+        # retirement rather than with ownership. The ownership rule itself is
+        # unchanged and is still enforced at the engine boundary below, which
+        # is the surface V2-044 was raised about -- a team that never locks was
+        # defaulted at close and reached the engine regardless.
+        self.assertIn('retired', str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0,
                          'a refused foreign-platform payload persisted a row')
 
@@ -595,10 +600,15 @@ class PlatformOwnershipTests(LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/1/',
             {'rd_investments': [self.foreign_row()]}, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('belongs to another team', str(response.data))
+        # R10 retired the decision, so the surface now answers with the
+        # retirement rather than with ownership. The ownership rule itself is
+        # unchanged and is still enforced at the engine boundary below, which
+        # is the surface V2-044 was raised about -- a team that never locks was
+        # defaulted at close and reached the engine regardless.
+        self.assertIn('retired', str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
-    def test_investing_in_your_own_platform_is_accepted(self):
+    def test_investing_in_your_own_platform_is_now_refused_too(self):
         from core.models.decisions import DecisionRDInvestment
         Round.objects.get_or_create(game=self.game, round_number=1,
                                     defaults={'status': 'open'})
@@ -607,8 +617,14 @@ class PlatformOwnershipTests(LifecycleFixture):
             f'round/1/rd/',
             [{'team_platform': self.mine.id, 'feature': self.feature.id,
               'method': 'in_house', 'target_level': 3}], format='json')
-        self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(DecisionRDInvestment.objects.count(), 1)
+        # Was accepted until R10. The decision is retired for every platform,
+        # owned or not, so the positive control for ownership now lives at the
+        # engine boundary rather than on the write surface.
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn('retired', str(response.data).lower())
+        # And nothing persists: a refused row must not be stored, or the
+        # engine precondition would be doing the work the write should have.
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_a_stored_foreign_row_refuses_phase_1(self):
         from core.engine.advance_round import (InvalidPersistedDecisionError,

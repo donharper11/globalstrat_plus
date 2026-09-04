@@ -119,13 +119,17 @@ class FreezeWriteSurfaceTests(FreezeFixture):
         response = self.per_type([self.rd_row(self.ready)])
 
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('frozen', str(response.data))
+        # R10 subsumed this rule. Every R&D row is refused now, so a row naming
+        # a ready platform is refused a fortiori -- and the surface answers
+        # with the retirement, which is the more useful thing to tell a team.
+        # The freeze itself is still proved at the engine boundary below.
+        self.assertIn('retired', str(response.data).lower())
 
     def test_the_whole_submission_write_refuses_it_too(self):
         response = self.whole_submission([self.rd_row(self.ready)])
 
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('frozen', str(response.data))
+        self.assertIn('retired', str(response.data).lower())
 
     def test_a_refused_write_persists_nothing(self):
         self.per_type([self.rd_row(self.ready)])
@@ -137,19 +141,18 @@ class FreezeWriteSurfaceTests(FreezeFixture):
         """A rule a team cannot act on is a bug report addressed to them."""
         response = self.per_type([self.rd_row(self.ready)])
 
-        message = str(response.data)
-        self.assertIn('re-base', message.lower())
-        self.assertIn('new platform', message.lower())
+        message = str(response.data).lower()
+        self.assertIn('re-base', message)
+        self.assertIn('new platform', message)
 
-    def test_a_platform_still_in_development_is_not_frozen_by_this_rule(self):
-        """The rule is about *ready* platforms; it must not over-reach.
+    def test_a_row_on_a_platform_in_development_is_refused_too(self):
+        """R10 widened this. Ruling 1 froze *ready* platforms and left rows on
+        one still in development storable-but-inert; every row is refused now,
+        which is what closes that gap rather than documenting it."""
+        response = self.per_type([self.rd_row(self.building)])
 
-        Its feature set is still fixed at request time by the cap and cost
-        checks -- this only proves the freeze itself does not fire early.
-        """
-        from core.services.rd_costs import frozen_platform_problem
-        self.assertIsNone(frozen_platform_problem(self.building))
-        self.assertIsNotNone(frozen_platform_problem(self.ready))
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn('retired', str(response.data).lower())
 
 
 class FreezeEngineBoundaryTests(FreezeFixture):
@@ -180,7 +183,10 @@ class FreezeEngineBoundaryTests(FreezeFixture):
             process_round(self.game.id)
 
         message = str(caught.exception)
-        self.assertIn('already ready', message)
+        # R10 wording: the row is refused because the decision is retired, not
+        # only because this platform is ready. It still names the row and the
+        # platform, so the refusal remains actionable.
+        self.assertIn('retired', message.lower())
         self.assertIn(str(row.pk), message)
         self.assertIn('Ready Platform', message)
 

@@ -177,6 +177,9 @@ class AuthoritativePriceTests(RDCostFixture):
                          D('15000000'))
 
     def test_a_free_feature_upgrade_is_refused_on_both_surfaces(self):
+        """[R10] Still refused on both surfaces, for a broader reason than mispricing.
+        The authored-cost rule that this exercised is unchanged and still
+        applies to platform development."""
         row = {'team_platform': self.platform.id, 'feature': self.feature.id,
                'method': 'in_house', 'amount': '0', 'target_level': 14,
                'calculated_cost': '0'}
@@ -186,18 +189,30 @@ class AuthoritativePriceTests(RDCostFixture):
             self.whole_url(), {'rd_investments': [row]}, format='json')
         self.assertEqual(per_type.status_code, 400)
         self.assertEqual(whole.status_code, 400)
-        self.assertIn('600,000', str(per_type.data))
+        self.assertIn('retired', str(per_type.data).lower())
+        self.assertIn('retired', str(whole.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
-    def test_a_correctly_priced_upgrade_is_accepted_and_stored(self):
+    def test_a_correctly_priced_upgrade_is_refused_but_still_priced(self):
+        """[R10] Priced correctly or not, an R&D row is refused now (R10). The pricing
+        service is unchanged and still proved by the unit tests above; what
+        is gone is the write surface that reached it."""
         response = self.client_as_student().patch(
             self.url('rd'),
             [{'team_platform': self.platform.id, 'feature': self.feature.id,
               'method': 'in_house', 'target_level': 14}], format='json')
-        self.assertEqual(response.status_code, 200, response.data)
-        row = DecisionRDInvestment.objects.get()
-        self.assertEqual(row.calculated_cost, self.upgrade_price)
-        self.assertEqual(row.amount, self.upgrade_price)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn('retired', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
+
+        # The price itself is unchanged and still authoritative -- what is gone
+        # is the write surface that used to reach it. Asserted directly against
+        # the service so the rule keeps a proof after its API path retired.
+        from core.services.rd_costs import feature_upgrade_cost
+        self.assertEqual(
+            feature_upgrade_cost(self.feature, self.platform.platform_generation,
+                                 current_level=11, target_level=14),
+            self.upgrade_price)
 
     # -- the engine boundary ------------------------------------------------
 

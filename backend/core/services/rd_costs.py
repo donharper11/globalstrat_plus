@@ -455,30 +455,8 @@ def ownership_problem(team_platform, team):
     return None
 
 
-def frozen_platform_problem(team_platform):
-    """Why this platform may not be upgraded, or None.
-
-    Ruling 1: a ready platform is frozen -- no features added, no levels
-    changed. Building a new platform, and re-basing onto it, is the only route
-    to a better product.
-
-    The rule bites hardest where it is least visible. Before this, a team could
-    hold one platform for the whole game and buy its way up the feature curve,
-    so the platform decision was a formality and the generation ladder decided
-    nothing. Freezing it makes the choice of what to build, and when, the
-    decision the round is actually about.
-    """
-    if team_platform is None:
-        return None                 # ownership_problem() names this one
-    if team_platform.status == 'active':
-        return (f'Platform "{team_platform.name}" is ready, and a ready '
-                f'platform is frozen: its features cannot be changed. Build a '
-                f'new platform and re-base this product onto it.')
-    return None
-
-
-def persisted_frozen_platform_violations(game, round_obj):
-    """Stored R&D investments that would upgrade an already-ready platform.
+def persisted_retired_rd_violations(game, round_obj):
+    """Stored R&D investments of any kind. The decision is retired (R10).
 
     The engine refuses these rather than ignoring them. An ignored row is a
     team's decision silently not happening, and they are charged for it

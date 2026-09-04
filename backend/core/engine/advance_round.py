@@ -430,12 +430,13 @@ def _run_phase_1(game_id):
             f'and retry. {describe_ownership_violations(ownership_violations)}'
         )
 
-    # Ruling 1: a ready platform is frozen. A stored row that would upgrade one
+    # R10 / V2-053: feature-level R&D investment is retired, so any stored row
     # is refused rather than ignored -- an ignored row is a team's decision
     # silently not happening while they are charged for the rest of the same
-    # submission.
-    from core.services.rd_costs import persisted_frozen_platform_violations
-    frozen_violations = persisted_frozen_platform_violations(
+    # submission. Ruling 1's narrower "ready platforms are frozen" rule is
+    # subsumed: a row naming a ready platform is refused a fortiori.
+    from core.services.rd_costs import persisted_retired_rd_violations
+    frozen_violations = persisted_retired_rd_violations(
         game, current_round_obj)
     if frozen_violations:
         detail = '; '.join(
@@ -444,9 +445,9 @@ def _run_phase_1(game_id):
             for v in frozen_violations)
         raise InvalidPersistedDecisionError(
             f'Round {current_round} cannot be scored: '
-            f'{len(frozen_violations)} stored R&D investment(s) would change '
-            f'the features of a platform that is already ready. A ready '
-            f'platform is frozen; build a new platform and re-base onto it. '
+            f'{len(frozen_violations)} stored R&D investment(s) remain, and '
+            f'feature-level R&D investment is retired (R10). Develop a new '
+            f'platform and re-base the product onto it. '
             f'{detail}'
         )
 
