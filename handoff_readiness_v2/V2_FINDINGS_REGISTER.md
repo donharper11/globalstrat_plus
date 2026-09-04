@@ -178,7 +178,7 @@ written for.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
-## V2-053 — Ruling 1 left R&D investment scored but mechanically inert (P1) — implemented at `8c3edb9`, pending independent re-audit
+## V2-053 — Ruling 1 left R&D investment scored but mechanically inert (P1) — CLOSED at `f746cd4`
 
 **Implemented per R10.** Both supported writes refuse a new
 `DecisionRDInvestment` naming the platform-development/re-base route; the
