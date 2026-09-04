@@ -95,14 +95,23 @@ class Stage34JourneyTests(TestCase):
     # -- the journey --------------------------------------------------------
 
     def test_the_old_route_is_closed_and_the_new_route_completes(self):
-        # Round 1: the upgrade a team would previously have bought.
-        from core.services.rd_costs import frozen_platform_problem
-        self.assertIsNotNone(
-            frozen_platform_problem(self.old),
-            'Stage 3B: a ready platform must refuse a feature upgrade.')
+        # Round 1: the upgrade a team would previously have bought. Ruling 1
+        # froze ready platforms; R10 then retired the decision outright, so the
+        # check is now "is any R&D row left standing", not "is this platform
+        # ready".
+        from core.services.rd_costs import persisted_retired_rd_violations
+        submission_r1 = self.submission_for(1)
+        DecisionRDInvestment.objects.create(
+            submission=submission_r1, team_platform=self.old,
+            feature=self.feature, method='in_house',
+            target_level=8, amount=D('500000'))
+        self.assertTrue(
+            persisted_retired_rd_violations(self.game, submission_r1.round),
+            'Stage 3B/R10: the old route must be closed.')
+        DecisionRDInvestment.objects.all().delete()
 
         # Round 1: so they build instead. Authored lead time is 2 rounds.
-        submission = self.submission_for(1)
+        submission = submission_r1
         DecisionPlatformDevelopment.objects.create(
             submission=submission, platform_generation=self.gen2,
             method='in_house', committed_cost=self.gen2.development_cost,
