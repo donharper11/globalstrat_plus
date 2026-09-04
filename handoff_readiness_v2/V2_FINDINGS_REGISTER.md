@@ -178,7 +178,35 @@ written for.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
-## V2-053 — Ruling 1 left R&D investment scored but mechanically inert (P1) — DECIDED, pending implementation
+## V2-053 — Ruling 1 left R&D investment scored but mechanically inert (P1) — implemented at `8c3edb9`, pending independent re-audit
+
+**Implemented per R10.** Both supported writes refuse a new
+`DecisionRDInvestment` naming the platform-development/re-base route; the
+engine precondition refuses any persisted row before competitive mutation,
+refused rather than discarded or charged; `performance.py` no longer reads the
+amount; `coherence.py`'s market-alignment component is removed with its scorer.
+
+Nothing replaces either term. The surviving strategic-capability terms keep
+their authored 30:30 ratio, normalised over their own weights so removal does
+not deflate every team's ceiling to 0.60; coherence needed no adjustment
+because the component contributed to numerator and denominator alike.
+
+**Proved by mutation, not only by passing tests.** Restoring spend scoring
+moves strategic capability 0.27 → 0.67; restoring the coherence component puts
+`rd_market_alignment` back in the stored breakdown. Both first-attempt controls
+*passed* under mutation — an unstaffed fixture compares 0 with 0, and a source
+scan misses a restoration by another route — and that is recorded with the
+evidence rather than quietly fixed.
+
+**Carried consequences.** Ruling 1's narrower freeze is subsumed and
+`frozen_platform_problem` deleted; four suites that tested sub-rules of the
+retired decision are updated to the rule that now answers.
+`scenario_rd_spend_target` is now an orphaned requirement — nothing divides by
+it — and is left standing deliberately: removing a fail-closed guard an audit
+installed was not this change's business, and the handoff fenced the setting
+off. **That orphan is the one item worth an owner's decision.**
+
+Evidence: `evidence/decision-rules/v2-053/`.
 
 Raised by the builder during Stage 3B, before repair, because the repair is a
 rules decision rather than a defect fix.
