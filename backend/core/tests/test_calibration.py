@@ -91,7 +91,10 @@ class CalibrationDemandAccountingTests(TestCase):
         ScenarioConfig.objects.bulk_create([
             ScenarioConfig(scenario=cls.scenario, config_key='competition_sharpness', config_value='1.5'),
             ScenarioConfig(scenario=cls.scenario, config_key='high_price_elasticity', config_value='1.5'),
+            ScenarioConfig(scenario=cls.scenario, config_key='reference_price_budget', config_value='250'),
+            ScenarioConfig(scenario=cls.scenario, config_key='reference_price_mainstream', config_value='420'),
             ScenarioConfig(scenario=cls.scenario, config_key='reference_price_premium', config_value='500'),
+            ScenarioConfig(scenario=cls.scenario, config_key='reference_price_ultra_premium', config_value='1000'),
         ])
         cls.market = MarketDefinition.objects.create(
             scenario=cls.scenario, name='Home', code='HM', description='Test',
