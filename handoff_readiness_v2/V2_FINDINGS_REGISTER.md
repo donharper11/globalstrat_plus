@@ -24,7 +24,7 @@ checkpoint 2 caught the omission. Registration did not precede implementation
 and this entry does not imply it did. V2-032 onwards were registered before
 repair, as the rule requires.
 
-## V2-048 — a live database credential is committed to Git (P0) — OPEN, security/operations — rotation still outstanding
+## V2-048 — a live database credential is committed to Git (P0) — REMEDIATED at `192b6e1`; one review item open
 
 **Owner: security and operations.** Not a GSP-CRV2-10 finding and not to be
 folded into any stage of it. Stage 4 development may continue; this finding
@@ -101,11 +101,29 @@ live-signed session tokens or artifacts of a disposable stack was not
 determined here, because probing stopped once the credential was confirmed
 compromised.
 
-### Repair progress at `b309de0`
+### Repair complete at `192b6e1` — one review item remains
 
-**The credential is still live and still not rotated. Steps 3, 6 and 7 do not
-reduce the exposure until step 1 does.** The value remains valid, remains in 14
-commits of history, and that history remains behind a GitHub remote.
+**The credential is rotated, revoked and verified refused. The history is
+rewritten and the cleaned branches are pushed.** The exposure is closed.
+
+| Step | State |
+|---|---|
+| 1. Rotate or revoke | **Done** 2026-09-04. Old digest `ce87835d94b0` independently confirmed refused; new `0f61ba06ef43`. All three consumers updated and restarted; the v1 deadline cron verified authenticating. |
+| 2. Move to deployment secret configuration | **Done.** No fallback in any environment; `_required_db_password()` refuses to boot without it. |
+| 3. Remove tracked defaults and copies | **Done.** All 14 occurrences across 12 files. |
+| 4. Assess access logs and role privileges | **OPEN.** Needs the database host. The role is not a superuser but holds `CREATEROLE` (a privilege-escalation path) and `CREATEDB`. |
+| 5. History rewrite | **Done.** 15 commits rewritten, 0 of 5,256 objects retain the value, 25 origin branches force-pushed with lease protection and re-verified from a fresh fetch. See `V2-048_HISTORY_REWRITE_RECORD.md`. |
+| 6. Restore the scanner to high-signal enforcement | **Done.** Blocking, four findings dispositioned with pinned reasons, plus repo-owned AST detection for the env-lookup-with-literal-fallback shape gitleaks misses. |
+| 7. Disposition the two JWTs | **Done.** Decoded; expired April 2026. |
+
+**Consequence, incurred deliberately:** every existing clone is now divergent
+and must be re-cloned or hard-reset. A `git pull` would merge the old objects
+back into a local store.
+
+**Historical record of the original exposure**, kept because the finding's
+severity rested on it: the value was live, held `CREATEROLE`/`CREATEDB`, reached
+87 databases, sat behind a GitHub remote on a host with `listen_addresses = *`,
+and was shared by three applications across two repositories.
 
 | Step | State |
 |---|---|
