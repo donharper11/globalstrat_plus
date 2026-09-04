@@ -1,0 +1,944 @@
+GSP-CRV2-10 Stage 3B — frozen evidence
+generated: 2026-09-04T01:10:37+00:00
+runtime revision: dc601311ca38e04cd47fdcbd65a074b4bc4b6dfe
+whole tree at start: 0 modified files (0 = clean)
+
+Creating test database for alias 'default' ('test_gsp_crv210_probe')...
+test_a_round_with_no_such_row_still_resolves (core.tests.test_platform_freeze.FreezeEngineBoundaryTests)
+The control: the precondition must not refuse a healthy round. ... 2026-09-04 01:11:05,019 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:05,020 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:05,020 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:05,020 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:05,020 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:05,020 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:05,020 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:05,025 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:05,099 INFO engine Phase 1 complete: 0.7s
+ok
+test_nothing_competitive_is_written_when_it_refuses (core.tests.test_platform_freeze.FreezeEngineBoundaryTests) ... ok
+test_phase_1_refuses_a_stored_upgrade_to_a_ready_platform (core.tests.test_platform_freeze.FreezeEngineBoundaryTests) ... ok
+test_the_stored_level_is_unchanged_by_the_refused_round (core.tests.test_platform_freeze.FreezeEngineBoundaryTests) ... ok
+test_a_platform_still_in_development_is_not_frozen_by_this_rule (core.tests.test_platform_freeze.FreezeWriteSurfaceTests)
+The rule is about *ready* platforms; it must not over-reach. ... ok
+test_a_refused_write_persists_nothing (core.tests.test_platform_freeze.FreezeWriteSurfaceTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:06,188 WARNING django.request Bad Request: /api/games/6/teams/11/decisions/round/1/rd/
+2026-09-04 01:11:06,219 WARNING django.request Bad Request: /api/games/6/teams/11/decisions/round/1/
+ok
+test_the_per_type_write_refuses_an_upgrade_to_a_ready_platform (core.tests.test_platform_freeze.FreezeWriteSurfaceTests) ... 2026-09-04 01:11:06,270 WARNING django.request Bad Request: /api/games/7/teams/13/decisions/round/1/rd/
+ok
+test_the_refusal_says_what_to_do_instead (core.tests.test_platform_freeze.FreezeWriteSurfaceTests)
+A rule a team cannot act on is a bug report addressed to them. ... 2026-09-04 01:11:06,323 WARNING django.request Bad Request: /api/games/8/teams/15/decisions/round/1/rd/
+ok
+test_the_whole_submission_write_refuses_it_too (core.tests.test_platform_freeze.FreezeWriteSurfaceTests) ... 2026-09-04 01:11:06,378 WARNING django.request Bad Request: /api/games/9/teams/17/decisions/round/1/
+ok
+test_no_pending_feature_gain_is_created_by_a_resolved_round (core.tests.test_platform_freeze.UpgradePathRetiredTests)
+Feature time lags retire with the path that created them. ... 2026-09-04 01:11:07,221 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:07,222 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:07,222 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:07,222 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:07,222 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:07,222 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:07,222 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:07,226 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:07,288 INFO engine Phase 1 complete: 0.7s
+ok
+test_the_feature_investment_processor_no_longer_exists (core.tests.test_platform_freeze.UpgradePathRetiredTests) ... ok
+test_a_past_round_keeps_its_awareness_after_a_later_switch (core.tests.test_product_rebase.BrandAwarenessReplayTests) ... ok
+test_an_unswitched_product_is_unaffected (core.tests.test_product_rebase.BrandAwarenessReplayTests) ... ok
+test_the_spend_follows_the_platform_it_was_spent_on (core.tests.test_product_rebase.BrandAwarenessReplayTests)
+After the switch, the new platform starts from its own history. ... ok
+test_a_healthy_game_reports_nothing (core.tests.test_product_rebase.MissingResolutionTests) ... ok
+test_a_product_resolving_to_another_teams_platform_is_named (core.tests.test_product_rebase.MissingResolutionTests) ... ok
+test_the_check_reads_the_round_it_is_asked_about (core.tests.test_product_rebase.MissingResolutionTests) ... ok
+test_a_refused_call_moves_nothing (core.tests.test_product_rebase.RebaseEndpointTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:07,956 WARNING django.request Bad Request: /api/games/18/teams/35/products/8/rebase/
+ok
+test_a_rival_cannot_re_base_another_teams_product (core.tests.test_product_rebase.RebaseEndpointTests) ... 2026-09-04 01:11:07,995 WARNING django.request Forbidden: /api/games/19/teams/37/products/9/rebase/
+ok
+test_a_rivals_attempt_moves_nothing (core.tests.test_product_rebase.RebaseEndpointTests) ... 2026-09-04 01:11:08,031 WARNING django.request Forbidden: /api/games/20/teams/39/products/10/rebase/
+ok
+test_a_team_can_switch_its_product_through_the_api (core.tests.test_product_rebase.RebaseEndpointTests) ... ok
+test_an_unknown_platform_is_refused_rather_than_crashing (core.tests.test_product_rebase.RebaseEndpointTests) ... 2026-09-04 01:11:08,151 WARNING django.request Bad Request: /api/games/22/teams/43/products/12/rebase/
+ok
+test_another_teams_platform_is_refused_with_400_not_500 (core.tests.test_product_rebase.RebaseEndpointTests) ... 2026-09-04 01:11:08,203 WARNING django.request Bad Request: /api/games/23/teams/45/products/13/rebase/
+ok
+test_the_switch_is_recorded_as_history_not_only_a_pointer_move (core.tests.test_product_rebase.RebaseEndpointTests) ... ok
+test_the_switch_is_written_to_the_decision_audit_trail (core.tests.test_product_rebase.RebaseEndpointTests) ... ok
+test_a_cross_game_attempt_is_recorded_as_a_refusal (core.tests.test_product_rebase.RebaseGameBindingTests)
+Neither guard reaches this, so without a record it is invisible. ... 2026-09-04 01:11:08,416 WARNING django.request Not Found: /api/games/26/teams/53/products/17/rebase/
+ok
+test_a_student_cannot_route_their_own_team_through_another_game (core.tests.test_product_rebase.RebaseGameBindingTests) ... 2026-09-04 01:11:08,483 WARNING django.request Not Found: /api/games/29/teams/55/products/18/rebase/
+ok
+test_a_successful_event_has_one_coherent_hierarchy (core.tests.test_product_rebase.RebaseGameBindingTests) ... ok
+test_an_instructor_cannot_reach_another_game_through_their_own (core.tests.test_product_rebase.RebaseGameBindingTests)
+The case `IsTeamMember` cannot catch, because it exempts them. ... 2026-09-04 01:11:08,638 WARNING django.request Not Found: /api/games/32/teams/65/products/21/rebase/
+ok
+test_an_unknown_team_records_nothing (core.tests.test_product_rebase.RebaseGameBindingTests)
+Only a real team in another game is a cross-cohort attempt. ... 2026-09-04 01:11:08,690 WARNING django.request Forbidden: /api/games/34/teams/99999999/products/22/rebase/
+ok
+test_no_decision_audit_row_is_written_for_a_refused_cross_game_call (core.tests.test_product_rebase.RebaseGameBindingTests) ... 2026-09-04 01:11:08,753 WARNING django.request Not Found: /api/games/36/teams/73/products/24/rebase/
+ok
+test_a_product_without_history_resolves_to_its_pointer (core.tests.test_product_rebase.RebaseHistoryTests) ... ok
+test_earlier_rounds_still_resolve_to_the_old_platform (core.tests.test_product_rebase.RebaseHistoryTests) ... ok
+test_the_batched_resolution_agrees_with_the_single_one (core.tests.test_product_rebase.RebaseHistoryTests) ... ok
+test_the_live_pointer_moves_with_the_switch (core.tests.test_product_rebase.RebaseHistoryTests) ... ok
+test_the_prior_association_is_seeded_on_the_first_switch (core.tests.test_product_rebase.RebaseHistoryTests) ... ok
+test_a_platform_still_in_development_is_refused (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_a_refusal_charges_nothing_and_writes_no_history (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_an_unfunded_draft_is_refused (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_another_teams_platform_is_refused (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_another_teams_product_is_refused (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_re_basing_onto_the_current_platform_is_refused (core.tests.test_product_rebase.RebaseRefusalTests) ... ok
+test_a_second_switch_in_one_round_updates_rather_than_adds (core.tests.test_product_rebase.RebaseWriteOffTests) ... ok
+test_no_stock_costs_nothing (core.tests.test_product_rebase.RebaseWriteOffTests) ... ok
+test_only_the_latest_closing_position_is_written_off (core.tests.test_product_rebase.RebaseWriteOffTests)
+Summing older rows would write off stock sold rounds ago. ... ok
+test_the_charge_is_read_once_from_the_history_row (core.tests.test_product_rebase.RebaseWriteOffTests) ... ok
+test_the_percentage_comes_from_the_scenario (core.tests.test_product_rebase.RebaseWriteOffTests) ... ok
+test_the_write_off_is_the_authored_percentage_of_stock (core.tests.test_product_rebase.RebaseWriteOffTests) ... ok
+test_a_switch_does_not_disturb_an_unswitched_product (core.tests.test_product_rebase.SwitchThenReplayTests) ... ok
+test_demand_and_supply_resolve_identically (core.tests.test_product_rebase.SwitchThenReplayTests)
+Defect B in one assertion: the two sides cannot disagree. ... ok
+test_the_engine_helper_resolves_as_of_the_round (core.tests.test_product_rebase.SwitchThenReplayTests) ... ok
+test_the_feature_level_a_past_round_scored_with_is_unchanged (core.tests.test_product_rebase.SwitchThenReplayTests)
+The value that actually feeds the fit score, not just the FK. ... ok
+test_a_fractional_balance_is_written_off_in_full (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:10,401 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:10,401 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:10,401 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:10,401 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:10,401 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:10,401 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:10,401 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:10,405 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:10,473 INFO engine Phase 1 complete: 0.6s
+ok
+test_a_later_round_is_not_charged_again (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:11,559 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:11,559 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:11,559 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:11,559 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:11,559 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:11,559 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:11,559 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:11,564 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:11,629 INFO engine Phase 1 complete: 0.7s
+2026-09-04 01:11:12,642 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-04 01:11:12,642 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:12,643 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:12,643 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:12,643 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:12,643 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:12,643 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:12,647 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:12,714 INFO engine Phase 1 complete: 0.6s
+ok
+test_a_resolved_round_cannot_be_charged_a_second_time (core.tests.test_product_rebase.WriteOffAccountingTests)
+Re-running is refused outright, so double-charging has no path. ... 2026-09-04 01:11:13,743 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:13,743 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:13,743 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:13,743 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:13,743 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:13,744 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:13,744 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:13,748 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:13,815 INFO engine Phase 1 complete: 0.7s
+ok
+test_it_is_carried_into_net_income_and_cash (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:14,797 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:14,797 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:14,797 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:14,797 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:14,797 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:14,797 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:14,797 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:14,801 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:14,865 INFO engine Phase 1 complete: 0.6s
+2026-09-04 01:11:15,865 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:15,865 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:15,865 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:15,865 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:15,865 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:15,865 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:15,865 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:15,870 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:15,938 INFO engine Phase 1 complete: 0.6s
+ok
+test_it_is_deducted_for_tax (core.tests.test_product_rebase.WriteOffAccountingTests)
+Taxable profit falls with the charge, like any other opex line. ... 2026-09-04 01:11:16,942 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:16,942 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:16,942 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:16,942 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:16,942 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:16,942 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:16,942 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:16,947 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:17,025 INFO engine Phase 1 complete: 0.6s
+2026-09-04 01:11:18,034 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:18,035 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:18,035 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:18,035 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:18,035 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:18,035 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:18,035 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:18,040 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:18,106 INFO engine Phase 1 complete: 0.6s
+ok
+test_it_reduces_operating_income_by_exactly_the_write_off (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:19,115 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:19,115 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:19,115 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:19,115 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:19,115 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:19,115 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:19,116 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:19,120 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:19,190 INFO engine Phase 1 complete: 0.7s
+2026-09-04 01:11:20,252 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:20,252 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:20,252 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:20,252 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:20,252 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:20,253 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:20,253 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:20,257 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:20,333 INFO engine Phase 1 complete: 0.7s
+ok
+test_no_switch_stores_nothing (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:21,405 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:21,405 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:21,405 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:21,405 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:21,405 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:21,405 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:21,405 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:21,410 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:21,473 INFO engine Phase 1 complete: 0.6s
+ok
+test_the_write_off_is_stored_as_its_own_line (core.tests.test_product_rebase.WriteOffAccountingTests) ... 2026-09-04 01:11:22,480 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:22,480 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:22,480 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:22,480 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:22,480 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:22,480 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:22,480 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:22,484 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:22,549 INFO engine Phase 1 complete: 0.6s
+ok
+test_a_row_inserted_outside_the_api_is_still_bounded (core.tests.test_platform_lifecycle.AggregateFundingTests)
+Aggregate safety must not depend on the serializer having run. ... ok
+test_the_capitalisation_mode_observes_the_same_selection (core.tests.test_platform_lifecycle.AggregateFundingTests) ... ok
+test_two_drafts_cannot_both_spend_the_same_cash (core.tests.test_platform_lifecycle.AggregateFundingTests) ... ok
+test_two_requests_in_one_round_cannot_both_spend_the_same_cash (core.tests.test_platform_lifecycle.AggregateFundingTests)
+The same-round control: aggregate safety without a carried draft. ... ok
+test_a_single_draft_still_funds_normally (core.tests.test_platform_lifecycle.ConflictedDraftAllocatorTests)
+The control: the guard must bite only on conflicted inventory. ... ok
+test_each_draft_would_be_fundable_on_its_own (core.tests.test_platform_lifecycle.ConflictedDraftAllocatorTests)
+So the two-draft refusals below cannot pass for the wrong reason. ... ok
+test_neither_conflicting_draft_is_charged (core.tests.test_platform_lifecycle.ConflictedDraftAllocatorTests) ... ok
+test_neither_conflicting_draft_is_promoted (core.tests.test_platform_lifecycle.ConflictedDraftAllocatorTests) ... ok
+test_the_capitalisation_selection_is_the_same (core.tests.test_platform_lifecycle.ConflictedDraftAllocatorTests) ... ok
+test_a_corrected_single_request_creates_one_platform (core.tests.test_platform_lifecycle.DuplicateGenerationTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+ok
+test_a_refused_pair_replaces_nothing_already_stored (core.tests.test_platform_lifecycle.DuplicateGenerationTests)
+A refusal writes none of the replacement payload. ... 2026-09-04 01:11:23,664 WARNING django.request Bad Request: /api/games/80/teams/159/decisions/round/1/platforms/
+ok
+test_a_retired_generation_may_be_requested_again (core.tests.test_platform_lifecycle.DuplicateGenerationTests)
+The existing rule: only a non-retired platform blocks a request. ... ok
+test_a_stored_duplicate_pair_refuses_phase_1 (core.tests.test_platform_lifecycle.DuplicateGenerationTests) ... ok
+test_the_allocator_never_creates_two_for_one_generation (core.tests.test_platform_lifecycle.DuplicateGenerationTests)
+Independent of API validation, as the audit required. ... ok
+test_the_per_type_surface_refuses_a_duplicate_generation (core.tests.test_platform_lifecycle.DuplicateGenerationTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:24,099 WARNING django.request Bad Request: /api/games/84/teams/167/decisions/round/1/platforms/
+ok
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.DuplicateGenerationTests) ... 2026-09-04 01:11:24,146 WARNING django.request Bad Request: /api/games/85/teams/169/decisions/round/1/
+ok
+test_two_distinct_generations_are_still_accepted (core.tests.test_platform_lifecycle.DuplicateGenerationTests) ... ok
+test_a_within_cap_payload_is_accepted (core.tests.test_platform_lifecycle.FeatureCapTests) ... ok
+test_a_within_cap_row_still_activates_with_every_feature (core.tests.test_platform_lifecycle.FeatureCapTests) ... ok
+test_an_over_cap_persisted_row_refuses_phase_1 (core.tests.test_platform_lifecycle.FeatureCapTests) ... ok
+test_the_cap_is_stated_in_one_place (core.tests.test_platform_lifecycle.FeatureCapTests) ... ok
+test_the_per_type_surface_refuses_an_over_cap_platform (core.tests.test_platform_lifecycle.FeatureCapTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:24,704 WARNING django.request Bad Request: /api/games/91/teams/181/decisions/round/1/platforms/
+ok
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.FeatureCapTests) ... 2026-09-04 01:11:24,751 WARNING django.request Bad Request: /api/games/92/teams/183/decisions/round/1/
+ok
+test_a_platform_funded_on_request_is_charged_in_that_round (core.tests.test_platform_lifecycle.FundingAccountingTests) ... ok
+test_cost_is_booked_exactly_once_in_the_funding_round (core.tests.test_platform_lifecycle.FundingAccountingTests)
+Observed through calculate_operating_expenses, not re-derived. ... ok
+test_the_capitalisation_mode_books_the_cost_as_an_asset (core.tests.test_platform_lifecycle.FundingAccountingTests)
+The capitalised branch, exercised through the real cost path. ... ok
+test_the_expense_mode_books_the_cost_as_expense (core.tests.test_platform_lifecycle.FundingAccountingTests)
+Expense mode books the cost somewhere, not merely nowhere. ... ok
+test_a_funded_platform_records_the_round_it_was_paid_for (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
+test_a_team_that_cannot_pay_keeps_an_unfunded_draft (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
+test_an_unfunded_draft_never_becomes_active_on_its_own (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
+test_the_clock_starts_in_the_round_the_funding_lands (core.tests.test_platform_lifecycle.FundingLifecycleTests) ... ok
+test_a_held_generation_is_refused_for_a_draft_too (core.tests.test_platform_lifecycle.HeldGenerationTests) ... 2026-09-04 01:11:25,629 WARNING django.request Bad Request: /api/games/101/teams/201/decisions/round/1/platforms/
+ok
+test_a_refusal_leaves_the_previously_accepted_payload_unchanged (core.tests.test_platform_lifecycle.HeldGenerationTests) ... 2026-09-04 01:11:25,717 WARNING django.request Bad Request: /api/games/102/teams/203/decisions/round/1/platforms/
+ok
+test_a_retired_generation_may_still_be_requested (core.tests.test_platform_lifecycle.HeldGenerationTests) ... ok
+test_a_stored_held_generation_request_refuses_phase_1 (core.tests.test_platform_lifecycle.HeldGenerationTests) ... ok
+test_an_active_plus_draft_residue_refuses_phase_1 (core.tests.test_platform_lifecycle.HeldGenerationTests) ... ok
+test_the_allocator_never_promotes_a_draft_beside_a_live_platform (core.tests.test_platform_lifecycle.HeldGenerationTests)
+The defence behind the refusal, exercised on its own. ... ok
+test_the_per_type_surface_refuses_an_already_held_generation (core.tests.test_platform_lifecycle.HeldGenerationTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:26,412 WARNING django.request Bad Request: /api/games/107/teams/213/decisions/round/1/platforms/
+ok
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.HeldGenerationTests) ... 2026-09-04 01:11:26,457 WARNING django.request Bad Request: /api/games/108/teams/215/decisions/round/1/
+ok
+test_two_draft_residue_refuses_phase_1 (core.tests.test_platform_lifecycle.HeldGenerationTests) ... ok
+test_a_stored_foreign_row_refuses_phase_1 (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... ok
+test_investing_in_your_own_platform_is_accepted (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+ok
+test_the_per_type_surface_refuses_a_foreign_platform (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-04 01:11:27,096 WARNING django.request Bad Request: /api/games/112/teams/223/decisions/round/1/rd/
+ok
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.PlatformOwnershipTests) ... 2026-09-04 01:11:27,152 WARNING django.request Bad Request: /api/games/113/teams/225/decisions/round/1/
+ok
+test_a_two_round_platform_waits_two_rounds (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
+test_a_zero_round_generation_still_waits_the_minimum (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
+test_development_rounds_remaining_never_goes_negative (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
+test_the_minimum_is_one_round (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
+test_the_scenario_bounds_the_maximum (core.tests.test_platform_lifecycle.PlatformTimingTests) ... ok
+test_a_row_written_behind_the_api_refuses_the_round (core.tests.test_platform_lifecycle.UnlockGateTests) ... ok
+test_an_unlocked_generation_is_accepted (core.tests.test_platform_lifecycle.UnlockGateTests) ... ok
+test_the_per_type_surface_refuses_a_locked_generation (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-04 01:11:27,554 WARNING django.request Bad Request: /api/games/121/teams/241/decisions/round/2/platforms/
+ok
+test_the_whole_submission_surface_refuses_it_too (core.tests.test_platform_lifecycle.UnlockGateTests) ... 2026-09-04 01:11:27,592 WARNING django.request Bad Request: /api/games/122/teams/243/decisions/round/2/
+ok
+test_a_correctly_priced_row_raises_no_violation (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_a_correctly_priced_upgrade_is_accepted_and_stored (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_a_feature_upgrade_sums_the_authored_levels (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_a_free_feature_upgrade_is_refused_on_both_surfaces (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-04 01:11:27,779 WARNING django.request Bad Request: /api/games/126/teams/251/decisions/round/1/rd/
+2026-09-04 01:11:27,805 WARNING django.request Bad Request: /api/games/126/teams/251/decisions/round/1/
+ok
+test_a_row_written_behind_the_api_refuses_the_round (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_a_submission_within_its_means_passes_the_budget_rule (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_a_target_at_or_below_the_current_level_costs_nothing (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_an_omitted_cost_is_filled_with_the_authored_price (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_an_unknown_method_is_refused_rather_than_priced_at_zero (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_an_unpriced_level_is_refused_not_partially_charged (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_method_selects_the_authored_price (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_per_type_surface_refuses_a_platform_priced_at_zero (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-04 01:11:28,040 WARNING django.request Bad Request: /api/games/134/teams/267/decisions/round/1/platforms/
+ok
+test_platform_development_counts_against_cash_and_the_rd_budget (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_the_authored_price_is_accepted_unchanged (core.tests.test_rd_costs.AuthoritativePriceTests) ... ok
+test_whole_submission_surface_refuses_the_same_payload (core.tests.test_rd_costs.AuthoritativePriceTests) ... 2026-09-04 01:11:28,174 WARNING django.request Bad Request: /api/games/137/teams/273/decisions/round/1/
+ok
+test_a_refused_duplicate_writes_nothing (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-04 01:11:28,246 WARNING django.request Bad Request: /api/games/138/teams/275/decisions/round/1/rd/
+ok
+test_distinct_features_are_still_accepted_on_both_paths (core.tests.test_decision_limits.DuplicateRdRowApiTests)
+The control both refusals are meaningless without. ... ok
+test_the_partial_api_refuses_a_duplicate_platform_feature (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-04 01:11:28,390 WARNING django.request Bad Request: /api/games/140/teams/277/decisions/round/1/rd/
+ok
+test_the_whole_submission_api_refuses_it_too (core.tests.test_decision_limits.DuplicateRdRowApiTests) ... 2026-09-04 01:11:28,443 WARNING django.request Bad Request: /api/games/141/teams/278/decisions/round/1/
+ok
+test_a_refused_payload_writes_nothing (core.tests.test_decision_limits.NegativeInvestmentApiTests)
+The engine must never see the row. A 400 that still stored the ... 2026-09-04 01:11:28,489 WARNING django.request Bad Request: /api/games/142/teams/279/decisions/round/1/esg/
+ok
+test_talent_is_reachable_on_one_path_only (core.tests.test_decision_limits.NegativeInvestmentApiTests)
+Recorded because it shapes what "both APIs agree" can mean. ... ok
+test_the_partial_api_refuses_every_negative_investment (core.tests.test_decision_limits.NegativeInvestmentApiTests) ... 2026-09-04 01:11:28,585 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/esg/
+2026-09-04 01:11:28,602 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/esg/
+2026-09-04 01:11:28,619 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/talent/
+2026-09-04 01:11:28,642 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/talent/
+2026-09-04 01:11:28,659 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/talent/
+2026-09-04 01:11:28,676 WARNING django.request Bad Request: /api/games/144/teams/281/decisions/round/1/talent/
+ok
+test_the_whole_submission_api_refuses_the_negatives_it_accepts (core.tests.test_decision_limits.NegativeInvestmentApiTests)
+Only for decision types the whole-submission serializer nests. ... 2026-09-04 01:11:28,707 WARNING django.request Bad Request: /api/games/145/teams/282/decisions/round/1/
+2026-09-04 01:11:28,726 WARNING django.request Bad Request: /api/games/145/teams/282/decisions/round/1/
+ok
+test_zero_and_positive_are_still_accepted (core.tests.test_decision_limits.NegativeInvestmentApiTests)
+The control. A guard that refuses everything is not a guard. ... ok
+test_every_named_field_exists_on_its_serializer (core.tests.test_decision_limits.NonNegativeTableTests) ... ok
+test_nothing_is_allowed_to_be_negative_without_a_reason (core.tests.test_decision_limits.NonNegativeTableTests) ... ok
+test_the_guard_is_attached_to_each_named_field (core.tests.test_decision_limits.NonNegativeTableTests) ... ok
+test_a_negative_row_written_past_the_serializers_is_refused (core.tests.test_decision_limits.PersistedRowEngineGuardTests) ... ok
+test_a_refused_round_leaves_no_competitive_result (core.tests.test_decision_limits.PersistedRowEngineGuardTests) ... ok
+test_the_refusal_names_the_row_and_the_field (core.tests.test_decision_limits.PersistedRowEngineGuardTests) ... ok
+test_the_scan_covers_every_protected_model (core.tests.test_decision_limits.PersistedRowEngineGuardTests)
+The precondition is only worth what it looks at. ... ok
+test_zero_and_positive_persisted_values_still_resolve (core.tests.test_decision_limits.PersistedRowEngineGuardTests)
+The control. A precondition that refuses everything is not a guard. ... ok
+test_a_corrected_payload_is_accepted_and_the_round_resolves (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:29,166 WARNING django.request Bad Request: /api/games/152/teams/289/decisions/round/1/products/
+2026-09-04 01:11:29,975 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-04 01:11:29,975 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-04 01:11:29,975 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-04 01:11:29,975 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:29,975 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-04 01:11:29,975 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:29,976 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:29,979 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-04 01:11:30,034 INFO engine Phase 1 complete: 0.6s
+ok
+test_a_rejected_payload_leaves_the_persisted_set_unchanged (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:11:30,331 WARNING django.request Bad Request: /api/games/153/teams/291/decisions/round/1/products/
+ok
+test_a_retired_product_does_not_free_its_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:30,378 WARNING django.request Bad Request: /api/games/154/teams/293/decisions/round/1/products/
+ok
+test_another_team_may_use_the_same_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... ok
+test_per_type_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:30,482 WARNING django.request Bad Request: /api/games/156/teams/297/decisions/round/1/products/
+ok
+test_per_type_endpoint_rejects_two_creates_sharing_a_name (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:30,528 WARNING django.request Bad Request: /api/games/157/teams/299/decisions/round/1/products/
+ok
+test_the_manifest_still_refuses_rows_inserted_outside_the_api (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests)
+The write-path check is the fix; the manifest key is the backstop. ... ok
+test_two_distinct_names_are_accepted (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+ok
+test_whole_submission_endpoint_rejects_the_name_of_an_existing_product (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:30,794 WARNING django.request Bad Request: /api/games/160/teams/305/decisions/round/1/
+ok
+test_whole_submission_endpoint_rejects_the_same_payload (core.tests.test_product_name_uniqueness.ProductNameUniquenessTests) ... 2026-09-04 01:11:30,842 WARNING django.request Bad Request: /api/games/161/teams/307/decisions/round/1/
+ok
+test_changed_prose_leaves_the_competitive_hash_alone (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+The other half of the same claim: prose moves, the result does not. ... ok
+test_corrupted_carried_state_fails_verification_before_processing (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... ok
+test_corrupted_decision_payload_fails_verification_before_processing (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... Found 298 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: admin, auth, contenttypes, core, corsheaders, messages, rest_framework, sessions, staticfiles
+  Apply all migrations: (none)
+Synchronizing apps without migrations:
+  Creating tables...
+    Creating table django_admin_log
+    Creating table auth_permission
+    Creating table auth_group
+    Creating table auth_user
+    Creating table django_content_type
+    Creating table django_session
+    Creating table decision_submission
+    Creating table decision_budget_allocation
+    Creating table decision_rd_investment
+    Creating table decision_platform_development
+    Creating table decision_product_create
+    Creating table decision_product_retire
+    Creating table decision_marketing
+    Creating table decision_market_entry
+    Creating table decision_financing
+    Creating table decision_plant
+    Creating table decision_partnership
+    Creating table decision_acquisition
+    Creating table decision_esg
+    Creating table decision_event_response
+    Creating table decision_research_allocation
+    Creating table game
+    Creating table team
+    Creating table team_member
+    Creating table round
+    Creating table users
+    Creating table simulation_state
+    Creating table simulation_settings
+    Creating table simulation_parameters
+    Creating table team_platform
+    Creating table team_market_presence
+    Creating table team_plant
+    Creating table team_partnership
+    Creating table team_platform_feature_level
+    Creating table pending_feature_gain
+    Creating table team_product
+    Creating table team_strategy_feature_level
+    Creating table team_product_market
+    Creating table team_acquisition
+    Creating table team_market_modifier
+    Creating table team_product_platform_history
+    Creating table scenario
+    Creating table scenario_config
+    Creating table feature_definition
+    Creating table platform_generation_definition
+    Creating table market_definition
+    Creating table entry_mode_definition
+    Creating table strategy_option_definition
+    Creating table ai_competitor_definition
+    Creating table platform_feature_ceiling
+    Creating table market_readiness
+    Creating table segment_definition
+    Creating table strategy_option_effect
+    Creating table event_template_definition
+    Creating table firm_starter_profile
+    Creating table market_condition_by_round
+    Creating table segment_preference
+    Creating table event_impact_definition
+    Creating table event_response_definition
+    Creating table firm_starter_platform_config
+    Creating table firm_starter_product
+    Creating table feature_level_cost
+    Creating table ai_competitor_fit_by_round
+    Creating table acquisition_target
+    Creating table ai_competitor_behavior
+    Creating table program_types
+    Creating table programs
+    Creating table program_portfolio
+    Creating table program_features
+    Creating table decisions
+    Creating table score_types
+    Creating table scores
+    Creating table leaderboard_metrics
+    Creating table leaderboard_scores
+    Creating table team_performance
+    Creating table team_income_statements
+    Creating table team_balance_sheets
+    Creating table team_cash_flows
+    Creating table team_resources
+    Creating table financial_revenue
+    Creating table financial_expenses
+    Creating table new_sales_by_round
+    Creating table triggered_events
+    Creating table event_instance
+    Creating table active_modifier
+    Creating table round_result_adoption
+    Creating table research_query_log
+    Creating table round_result_product_market
+    Creating table round_result_financials
+    Creating table round_result_market_revenue
+    Creating table round_result_performance_index
+    Creating table round_result_coherence
+    Creating table leaderboard_entry
+    Creating table market_intelligence_brief
+    Creating table instructor_actions
+    Creating table instructor_evaluations
+    Creating table instructor_notes
+    Creating table instructor_feedback_templates
+    Creating table instructor_scenario_customization
+    Creating table achievements
+    Creating table gamification_badges
+    Creating table player_progress
+    Creating table team_achievements
+    Creating table team_badges
+    Creating table messages
+    Creating table message_responses
+    Creating table message_threads
+    Creating table team_notifications
+    Creating table notification_logs
+    Creating table course
+    Creating table section
+    Creating table simulation_instance
+    Creating table enrollment
+    Creating table grading_rubric
+    Creating table grading_rubric_category
+    Creating table grading_component_mapping
+    Creating table team_grade
+    Creating table student_grade_adjustment
+    Creating table team_framework_analysis
+    Creating table forecast_scenario
+    Creating table decision_talent
+    Creating table team_talent_state
+    Creating table instructor_alert
+    Creating table decision_change_log
+    Creating table esg_economic_impact
+    Creating table talent_economic_impact
+    Creating table partnership_economic_impact
+    Creating table ai_investor_fund
+    Creating table ai_investor_preference
+    Creating table ai_investor_holding
+    Creating table share_price_history
+    Creating table strategic_briefing
+    Creating table briefing_read_status
+    Creating table cultural_distance_matrix
+    Creating table origin_trust_modifier
+    Creating table talent_allocation
+    Creating table compliance_investment
+    Creating table team_market_compliance
+    Creating table governance_commitment_type
+    Creating table team_governance_commitment
+    Creating table communication_assignment
+    Creating table team_communication
+    Creating table core_organizationalstructuretype
+    Creating table core_teamorganizationalstructure
+    Creating table tax_structure_type
+    Creating table team_tax_structure
+    Creating table alliance_partner_profile
+    Creating table team_alliance_state
+    Creating table core_agentcyclelog
+    Creating table government_profile
+    Creating table government_satisfaction
+    Creating table government_action
+    Creating table sc_supplier
+    Creating table sc_shipping_lane
+    Creating table sc_trade_finance_instrument
+    Creating table sc_compliance_regime
+    Creating table sc_resilience_parameters
+    Creating table sc_freight_market
+    Creating table sc_sourcing_allocation
+    Creating table sc_sourcing_decision
+    Creating table sc_logistics_decision
+    Creating table sc_incoterms_decision
+    Creating table sc_customs_classification_decision
+    Creating table sc_trade_finance_decision
+    Creating table sc_sinosure_enrollment
+    Creating table sc_fx_hedge_decision
+    Creating table sc_inventory_decision
+    Creating table sc_contingency_plan
+    Creating table sc_supplier_state
+    Creating table sc_lane_state
+    Creating table sc_event_instance
+    Creating table sc_hedge_position
+    Creating table sc_resilience_score_history
+    Creating table sc_compliance_enforcement_event
+    Creating table class_progressive_disclosure_override
+    Creating table class_resilience_weight_override
+    Creating table user_session
+    Creating table competition_decision_audit_event
+    Creating table competition_operator_audit_event
+    Creating table competition_resolution_manifest
+    Creating table competition_audit_chain
+    Creating table competition_sensitive_read_event
+    Creating table competition_authorization_refusal_event
+    Creating table narrative_job
+    Running deferred SQL...
+Running migrations:
+  No migrations to apply.
+System check identified no issues (0 silenced).
+Round 0 bootstrap complete for 3 teams.
+  Lumen Devices: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Helix Digital: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Nova Circuit: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Cipher Systems: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Quantum Edge: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Lumen Devices: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+ok
+test_corrupted_scenario_value_fails_verification_before_processing (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... ok
+test_input_manifest_carries_the_accepted_decision_payloads (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+V2-002: the payload itself, not a hash of it. ... ok
+test_narrative_envelope_carries_the_prose_itself (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+Hashing a narrative section's metadata and calling it the narrative ... ok
+test_natural_keys_are_unique_across_every_populated_section (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+A duplicate token would silently merge two rows in the manifest. ... ok
+test_no_surrogate_primary_key_reaches_the_manifest (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... ok
+test_no_surrogate_reference_reaches_the_output_or_narrative_envelope (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+A competitive row points at configuration the output snapshot does ... ok
+test_prepare_and_complete_write_a_version_2_envelope (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... 2026-09-04 01:11:57,456 INFO agent_orchestrator Agent cycle starting: Round 1, 3 teams, 5 markets
+2026-09-04 01:11:57,456 INFO agent_orchestrator   competitor: proposed 10 actions
+2026-09-04 01:11:57,456 INFO agent_orchestrator   investor: proposed 9 actions
+2026-09-04 01:11:57,456 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:11:57,457 INFO agent_orchestrator   government: proposed 6 actions
+2026-09-04 01:11:57,457 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:11:57,457 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:11:57,457 INFO agent_orchestrator   competitor: applied 10 actions
+2026-09-04 01:11:57,457 INFO agent_orchestrator   investor: applied 9 actions
+2026-09-04 01:11:57,587 INFO agent_orchestrator   government: applied 6 actions
+2026-09-04 01:11:57,595 INFO agent_orchestrator Agent cycle complete: 25 actions, 17 narratives, 1 iterations
+2026-09-04 01:11:57,742 INFO engine Phase 1 complete: 4.2s
+ok
+test_row_insertion_order_does_not_change_the_competitive_hash (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests)
+The whole Phase-1 pipeline, replayed over reordered rows. ... 2026-09-04 01:12:03,587 INFO agent_orchestrator Agent cycle starting: Round 1, 3 teams, 5 markets
+2026-09-04 01:12:03,587 INFO agent_orchestrator   competitor: proposed 10 actions
+2026-09-04 01:12:03,587 INFO agent_orchestrator   investor: proposed 9 actions
+2026-09-04 01:12:03,588 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:12:03,588 INFO agent_orchestrator   government: proposed 6 actions
+2026-09-04 01:12:03,588 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:12:03,588 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:12:03,588 INFO agent_orchestrator   competitor: applied 10 actions
+2026-09-04 01:12:03,588 INFO agent_orchestrator   investor: applied 9 actions
+2026-09-04 01:12:03,710 INFO agent_orchestrator   government: applied 6 actions
+2026-09-04 01:12:03,719 INFO agent_orchestrator Agent cycle complete: 25 actions, 17 narratives, 1 iterations
+2026-09-04 01:12:03,849 INFO engine Phase 1 complete: 4.2s
+2026-09-04 01:12:08,082 INFO agent_orchestrator Agent cycle starting: Round 1, 3 teams, 5 markets
+2026-09-04 01:12:08,083 INFO agent_orchestrator   competitor: proposed 10 actions
+2026-09-04 01:12:08,083 INFO agent_orchestrator   investor: proposed 9 actions
+2026-09-04 01:12:08,083 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-04 01:12:08,083 INFO agent_orchestrator   government: proposed 6 actions
+2026-09-04 01:12:08,083 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-04 01:12:08,083 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-04 01:12:08,084 INFO agent_orchestrator   competitor: applied 10 actions
+2026-09-04 01:12:08,084 INFO agent_orchestrator   investor: applied 9 actions
+2026-09-04 01:12:08,226 INFO agent_orchestrator   government: applied 6 actions
+2026-09-04 01:12:08,233 INFO agent_orchestrator Agent cycle complete: 25 actions, 17 narratives, 1 iterations
+2026-09-04 01:12:08,348 INFO engine Phase 1 complete: 3.8s
+ok
+test_row_insertion_order_does_not_change_the_input_manifest (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... ok
+test_version_1_manifests_are_readable_but_never_read_as_version_2 (core.tests.test_manifest_determinism.ManifestSnapshotIntegrationTests) ... ok
+test_assign_tags_fallback_general (core.tests.test_engine.TestArticleIngestion)
+No keyword matches → 'general' tag. ... ok
+test_assign_tags_market_entry (core.tests.test_engine.TestArticleIngestion)
+Market entry keywords produce market_entry tag. ... ok
+test_assign_tags_multiple (core.tests.test_engine.TestArticleIngestion)
+Multiple keyword matches produce multiple tags. ... ok
+test_chunk_article_small (core.tests.test_engine.TestArticleIngestion)
+Small text produces a single chunk. ... ok
+test_chunk_article_with_sections (core.tests.test_engine.TestArticleIngestion)
+Text with section headers is chunked by section. ... ok
+test_coherence_rag_disabled (core.tests.test_engine.TestArticleIngestion)
+RAG coherence returns None when RAG disabled. ... ok
+test_compile_decision_summary_empty (core.tests.test_engine.TestArticleIngestion)
+Empty decisions produce fallback summary. ... ok
+test_enhance_query_market_expansion (core.tests.test_engine.TestArticleIngestion)
+Query with 'asia' gets APAC expansion. ... ok
+test_enhance_query_no_expansion (core.tests.test_engine.TestArticleIngestion)
+Query without market keyword returns original. ... ok
+test_fallback_brief (core.tests.test_engine.TestArticleIngestion)
+Fallback brief returns structured excerpts. ... ok
+test_ingest_module_imports (core.tests.test_engine.TestArticleIngestion)
+CC-11 ingestion module imports. ... ok
+test_above_max (core.tests.test_engine.TestClamp) ... ok
+test_at_boundaries (core.tests.test_engine.TestClamp) ... ok
+test_below_min (core.tests.test_engine.TestClamp) ... ok
+test_within_range (core.tests.test_engine.TestClamp) ... ok
+test_aligned_pricing (core.tests.test_engine.TestCoherenceScoring)
+Price within positioning range → full score. ... ok
+test_budget_mass_retail_alignment (core.tests.test_engine.TestCoherenceScoring) ... ok
+test_distribution_alignment_matrix (core.tests.test_engine.TestCoherenceScoring)
+Premium + exclusive = 1.0, premium + mass = 0.2. ... ok
+test_misaligned_pricing (core.tests.test_engine.TestCoherenceScoring)
+Premium price in budget range → out of range. ... ok
+test_ultra_premium_mass_retail_misalignment (core.tests.test_engine.TestCoherenceScoring) ... ok
+test_imports (core.tests.test_engine.TestEngineIntegration)
+All engine modules (CC-5 + CC-6 + CC-7 + CC-11) import without error. ... ok
+test_process_round_auto_locks_an_unlocked_team (core.tests.test_engine.TestEngineIntegration)
+An unlocked team is auto-locked, not rejected. ... 2026-09-04 01:12:14,361 INFO engine Closed round 1 of game 176 (reason=manual, 1 submissions locked)
+ok
+test_process_round_with_no_current_round (core.tests.test_engine.TestEngineIntegration)
+Processing raises ValueError when the game has no current round. ... ok
+test_round_context_initialization (core.tests.test_engine.TestEngineIntegration)
+RoundContext initializes with correct structure. ... ok
+test_generate_event_context_cost_change (core.tests.test_engine.TestEventNarrativeGeneration)
+Context generation for cost change. ... ok
+test_generate_event_context_demand_shock (core.tests.test_engine.TestEventNarrativeGeneration)
+Context generation for demand shock. ... ok
+test_generate_event_context_max_sentences (core.tests.test_engine.TestEventNarrativeGeneration)
+Context limited to 3 sentences max. ... ok
+test_generate_event_narrative_market_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {market} placeholder resolved to market name. ... ok
+test_generate_event_narrative_no_market (core.tests.test_engine.TestEventNarrativeGeneration)
+No target market → 'global markets'. ... ok
+test_generate_event_narrative_round_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {round} resolved to round number. ... ok
+test_generate_event_narrative_value_placeholder (core.tests.test_engine.TestEventNarrativeGeneration)
+Template {value} resolved from impact. ... ok
+test_imports (core.tests.test_engine.TestEventResponseProcessing)
+CC-7 event functions import without error. ... ok
+test_process_event_responses_no_events (core.tests.test_engine.TestEventResponseProcessing)
+process_event_responses with empty events_fired does nothing. ... ok
+test_coherence_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_leaderboard_entry_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_market_intelligence_brief_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_performance_index_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_round_result_financials_create (core.tests.test_engine.TestFinancialModels) ... ok
+test_always_between_zero_and_one (core.tests.test_engine.TestGaussianFit)
+Fit should always be in [0, 1]. ... ok
+test_distance_decay (core.tests.test_engine.TestGaussianFit)
+actual far from ideal → fit approaches 0 ... ok
+test_exact_match (core.tests.test_engine.TestGaussianFit)
+actual == ideal → fit = 1.0 ... ok
+test_high_tolerance_gentle_decay (core.tests.test_engine.TestGaussianFit)
+High tolerance → gentle decay ... ok
+test_symmetric (core.tests.test_engine.TestGaussianFit)
+Fit is symmetric around ideal. ... ok
+test_zero_tolerance_exact_only (core.tests.test_engine.TestGaussianFit)
+Zero tolerance → exact match only ... ok
+test_diminishing_higher_level_less_gain (core.tests.test_engine.TestLevelGain)
+Diminishing: higher current level → less gain per dollar ... ok
+test_exponential_higher_level_less_gain (core.tests.test_engine.TestLevelGain)
+Exponential: much steeper cost growth ... ok
+test_gain_never_negative (core.tests.test_engine.TestLevelGain)
+Gain should never be negative ... ok
+test_linear_gain (core.tests.test_engine.TestLevelGain)
+Linear curve: gain = investment / cost_base ... ok
+test_negative_investment_returns_zero (core.tests.test_engine.TestLevelGain)
+Negative investment → zero gain. ... ok
+test_step_discrete_levels (core.tests.test_engine.TestLevelGain)
+Step: gain is always an integer (floored). ... ok
+test_unknown_curve_fallback (core.tests.test_engine.TestLevelGain)
+Unknown curve type falls back to linear. ... ok
+test_zero_cost_base_returns_zero (core.tests.test_engine.TestLevelGain)
+Zero cost_base → no gain (avoid divide by zero). ... ok
+test_rag_client_import (core.tests.test_engine.TestRAGInfrastructure)
+Qdrant client module imports. ... ok
+test_rag_embeddings_import (core.tests.test_engine.TestRAGInfrastructure)
+Embedding module imports. ... ok
+test_rag_model_import (core.tests.test_engine.TestRAGInfrastructure)
+ResearchQueryLog model imports. ... ok
+test_rag_views_import (core.tests.test_engine.TestRAGInfrastructure)
+RAG views import. ... ok
+test_research_query_log_create (core.tests.test_engine.TestRAGInfrastructure)
+ResearchQueryLog can be created. ... ok
+test_a_student_is_refused (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... /home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  return self._jws.encode(
+/home/ubuntu/.local/lib/python3.10/site-packages/jwt/api_jwt.py:365: InsecureKeyLengthWarning: The HMAC key is 11 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+  decoded = self.decode_complete(
+2026-09-04 01:12:15,942 WARNING django.request Forbidden: /api/games/181/instructor/operator-events/
+ok
+test_an_unowned_course_is_readable_by_any_instructor_on_two_routes (core.tests.test_game_scope_boundary.GameScopeBoundaryTests)
+Pinned deliberately, and recorded as V2-033 rather than repaired. ... ok
+test_an_unrelated_instructor_is_refused_a_lifecycle_write (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... 2026-09-04 01:12:16,087 WARNING django.request Forbidden: /api/games/185/round-control/close/
+ok
+test_an_unrelated_instructor_is_refused_every_protected_read (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... 2026-09-04 01:12:16,123 WARNING django.request Forbidden: /api/games/187/instructor/operator-events/
+2026-09-04 01:12:16,128 WARNING django.request Forbidden: /api/games/187/instructor/dashboard/
+2026-09-04 01:12:16,135 WARNING django.request Forbidden: /api/games/187/instructor/teams/1/decisions/
+ok
+test_every_game_scoped_instructor_route_is_guarded_or_exempt (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... ok
+test_owning_one_game_grants_no_access_to_another (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... 2026-09-04 01:12:16,222 WARNING django.request Forbidden: /api/games/191/instructor/operator-events/
+ok
+test_the_guard_is_installed (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... ok
+test_the_inventory_includes_the_routes_that_leaked (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... ok
+test_the_owner_reaches_a_normal_outcome (core.tests.test_game_scope_boundary.GameScopeBoundaryTests) ... 2026-09-04 01:12:16,382 INFO engine Closed round 1 of game 197 (reason=manual, 2 submissions locked)
+ok
+test_a_nonmatching_game_excludes_the_row (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_a_refusal_is_found_by_game (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_a_refusal_is_found_by_request_id (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_a_time_range_excludes_the_row (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_an_unparseable_timestamp_is_refused_clearly (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_every_field_the_incident_needs_is_present (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_no_payload_token_or_credential_appears (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_nonmatching_actor_request_id_method_and_route_exclude_the_row (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_text_and_json_describe_the_same_row (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_the_command_changes_nothing (core.tests.test_who_attempted.WhoAttemptedTests) ... ok
+test_a_stale_inventory_falls_back_to_the_live_scan (core.tests.test_audit_integrity.SensitiveReadInventoryTests)
+A generated file that no longer describes the URL conf must not be ... ok
+test_every_exemption_names_a_registered_view_and_gives_a_reason (core.tests.test_audit_integrity.SensitiveReadInventoryTests) ... ok
+test_the_checked_in_inventory_matches_the_live_url_conf (core.tests.test_audit_integrity.SensitiveReadInventoryTests) ... ok
+test_the_inventory_route_format_is_what_a_request_resolves_to (core.tests.test_audit_integrity.SensitiveReadInventoryTests)
+A pattern the middleware can never match protects nothing. ... ok
+test_the_middleware_reads_the_generated_file_rather_than_rebuilding (core.tests.test_audit_integrity.SensitiveReadInventoryTests)
+Rebuilding the inventory parses the source of every view, which ... ok
+test_no_product_reads_its_platform_pointer_directly (core.tests.test_product_rebase.PlatformConsumerGuardTests) ... ok
+test_no_queryset_traverses_a_relationship_to_the_live_platform (core.tests.test_product_rebase.PlatformConsumerGuardTests) ... ok
+test_a_one_byte_content_change_changes_the_digest (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_caches_and_operator_data_are_not_part_of_the_build (core.tests.test_manifest_determinism.BuildIdentityTests)
+A resolution writes into competition_backups; that must not change ... ok
+test_clean_build_gate_accepts_a_named_revision (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_clean_build_gate_refuses_an_uncommitted_tree (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_environment_fingerprint_carries_the_source_digest (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_identical_trees_digest_identically (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_moving_a_file_changes_the_digest (core.tests.test_manifest_determinism.BuildIdentityTests) ... ok
+test_untracked_source_is_included (core.tests.test_manifest_determinism.BuildIdentityTests)
+The digest is content-derived, so it does not care about git at all ... ok
+test_aware_datetimes_normalise_to_utc (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_decimal_exponent_is_expanded_not_kept (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_decimal_representation_is_collapsed (core.tests.test_manifest_determinism.CanonicalSerialisationTests)
+Three spellings of one number must hash identically. ... ok
+test_decimal_zero_and_negative_zero_collapse (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_float_negative_zero_folds_and_bits_round_trip (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_mapping_order_does_not_change_the_bytes (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_naive_datetimes_are_tagged_so_they_cannot_pass_as_utc (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_non_finite_values_are_tagged_not_emitted_as_json_literals (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_output_is_pure_ascii (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_sets_are_ordered_before_serialisation (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_unknown_types_are_refused_rather_than_stringified (core.tests.test_manifest_determinism.CanonicalSerialisationTests) ... ok
+test_agent_execution_order_is_fixed_by_registration (core.tests.test_manifest_determinism.EngineIterationOrderTests)
+Agent order decides ties when two actions share a priority. ... ok
+test_every_iterated_queryset_declares_its_order (core.tests.test_manifest_determinism.EngineIterationOrderTests) ... ok
+test_exemptions_are_all_still_reachable (core.tests.test_manifest_determinism.EngineIterationOrderTests)
+An exemption that no longer matches anything is stale documentation. ... ok
+test_resolution_services_declare_their_order (core.tests.test_manifest_determinism.EngineIterationOrderTests)
+The same rule, applied where the engine reaches outside itself. ... ok
+test_the_scanned_service_list_is_what_the_engine_actually_calls (core.tests.test_manifest_determinism.EngineIterationOrderTests)
+The allowlist above is derived, not remembered. ... ok
+test_checked_in_inventory_matches_the_live_registry (core.tests.test_manifest_determinism.ManifestEnvelopeTests)
+Schema drift must be a review event, not a silent hash change. ... ok
+test_every_model_field_is_classified_with_a_reason_when_dropped (core.tests.test_manifest_determinism.ManifestEnvelopeTests)
+No field may be silently absent from the envelope. ... ok
+test_every_section_declares_why_it_is_in_the_manifest (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_input_sections_add_configuration_and_provenance_only (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_measured_wall_clock_never_reaches_the_competitive_hash (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_narrative_fields_are_excluded_from_the_competitive_hash (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_narrative_sections_are_separate_from_the_competitive_hash (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_natural_keys_resolve_against_the_model (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_no_model_is_claimed_by_two_sections (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_output_sections_are_the_enumerated_competitive_set (core.tests.test_manifest_determinism.ManifestEnvelopeTests) ... ok
+test_exported_manifest_reads_plain_and_gzipped (core.tests.test_manifest_determinism.ReplayCommandGuardTests)
+The stored evidence is gzipped; the documented command must read it ... ok
+test_malformed_requirement_is_refused (core.tests.test_manifest_determinism.ReplayCommandGuardTests) ... ok
+test_required_environment_match_is_reported (core.tests.test_manifest_determinism.ReplayCommandGuardTests) ... ok
+test_required_environment_mismatch_is_refused (core.tests.test_manifest_determinism.ReplayCommandGuardTests) ... ok
+test_unknown_required_environment_key_is_refused (core.tests.test_manifest_determinism.ReplayCommandGuardTests) ... ok
+test_every_recorded_definition_still_hashes_to_its_record (core.tests.test_manifest_determinism.SchemaProvenanceTests) ... ok
+test_the_current_inventory_declares_the_current_version (core.tests.test_manifest_determinism.SchemaProvenanceTests) ... ok
+test_the_current_version_has_a_provenance_entry (core.tests.test_manifest_determinism.SchemaProvenanceTests) ... ok
+test_the_superseded_canonical_file_is_the_original_definition (core.tests.test_manifest_determinism.SchemaProvenanceTests)
+`manifest_schema_v2.json` is v2 as introduced, not as last edited. ... ok
+test_a_benign_default_is_not_reported (core.tests.test_no_credential_literals.CredentialLiteralTests)
+Empty and explicitly-insecure placeholders must not be findings. ... ok
+test_every_pinned_exception_still_points_at_what_it_describes (core.tests.test_no_credential_literals.CredentialLiteralTests)
+A stale pin is a hole nobody is looking at. ... ok
+test_no_environment_lookup_falls_back_to_a_literal_credential (core.tests.test_no_credential_literals.CredentialLiteralTests) ... ok
+test_the_check_recognises_the_shape_it_exists_for (core.tests.test_no_credential_literals.CredentialLiteralTests)
+A control: the detector must fire on the V2-048 line as it was. ... ok
+
+----------------------------------------------------------------------
+Ran 298 tests in 98.207s
+
+OK
+Destroying test database for alias 'default' ('test_gsp_crv210_probe')...
+Round 0 bootstrap complete for 3 teams.
+  Quantum Edge: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Nova Circuit: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Meridian Tech: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Titan Micro: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Helix Digital: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Prism Tech: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Stratos Electronics: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Eclipse Gadgets: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Nova Circuit: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Nova Circuit: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Quantum Edge: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Zenith Hardware: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Solaris Consumer: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Helix Digital: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Vertex Electronics: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Vertex Electronics: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Prism Tech: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Solaris Consumer: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Helix Digital: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Cobalt Innovations: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Titan Micro: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Lumen Devices: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Solaris Consumer: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Apex Devices: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Titan Micro: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Prism Tech: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Cobalt Innovations: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Photon Labs: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Prism Tech: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Solaris Consumer: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Round 0 bootstrap complete for 3 teams.
+  Quantum Edge: Revenue=$22,650,000, Net Income=$15,436,600, Index=55.00
+  Cipher Systems: Revenue=$20,750,000, Net Income=$13,129,800, Index=55.00
+  Apex Devices: Revenue=$20,050,000, Net Income=$12,434,600, Index=55.00
+Read inventory is current.
+Environment verified: tz_env=Asia/Kolkata
+Environment verified: locale=de_DE,UTF-8
+EXIT=0
+
+=== makemigrations --check --dry-run ===
+No changes detected
+
+=== dump_manifest_schema --check ===
+Manifest schema inventory is current.
+
+=== dump_read_inventory --check ===
+Read inventory is current.
+
+revision at end: dc601311ca38e04cd47fdcbd65a074b4bc4b6dfe
+whole tree at end: 0 modified files
