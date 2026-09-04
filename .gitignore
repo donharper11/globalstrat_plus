@@ -50,3 +50,7 @@ docs/rag_sources/staging/
 # aide-checks execution receipt: written per run, proof of a run rather than
 # a fact about the tree. CI uploads it as an artifact instead.
 checks/.last-run.json
+
+# stale-worktrees writes these per run and their counts include the current
+# checkout and worktree state, so a tracked copy drifts on every run.
+checks/*-FINDINGS.md

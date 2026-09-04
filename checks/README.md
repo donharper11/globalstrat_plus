@@ -111,7 +111,10 @@ user-facing scope, correction-backed internal vocabulary, deploy boundary,
 secret input names, deliberately non-fatal deploy steps, and worktree age
 policy in `checks.config.json`. The scanner never turns its own matches into a
 term list or an allowlist. Each run writes a findings document under `checks/`
-so every flag is visible for owner adjudication.
+so every flag is visible for owner adjudication. These documents are runtime
+artifacts: their counts include the current checkout and worktree state, so
+host repositories ignore `checks/*-FINDINGS.md` while the files are present for
+the duration of each run.
 
 ## Usage
 
