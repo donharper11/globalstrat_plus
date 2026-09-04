@@ -1,10 +1,9 @@
 """The documented baseline every screening probe deviates from.
 
-R&D note: the baseline invests the scenario's `rd_spend_target` in actual
-`DecisionRDInvestment.amount`. It previously carried a $100,000 placeholder
-while declaring a $2,000,000 budget, which V2-021 had already established
-scoring ignores. Anything measured against that baseline was measured against
-an opponent earning five per cent of the available R&D capability.
+R&D note: feature-level `DecisionRDInvestment` was retired in R10. The
+baseline deliberately writes none: a persisted row makes the resolver refuse
+the round rather than silently charging a decision with no effect. Platform
+development remains the screenable R&D choice.
 
 Staffing note: the baseline staffs each pool at the scenario's authored optimum
 rather than at `load_demo`'s 50/30/40, which is an adequacy of 0.7944 under the
@@ -183,7 +182,6 @@ def build_optional(submission, team):
                                        DecisionProductRetire,
                                        DecisionRDInvestment)
     from core.models.scenario import (EntryModeDefinition, MarketDefinition,
-                                      PlatformFeatureCeiling,
                                       PlatformGenerationDefinition,
                                       StrategyOptionDefinition)
     from core.models.team_state import (TeamMarketPresence, TeamPlatform,
@@ -212,32 +210,12 @@ def build_optional(submission, team):
             new_equity=D('0'), dividend_per_share=D('0'))
 
     def rd():
+        """Declare feature-level R&D unavailable without leaving stale rows."""
         DecisionRDInvestment.objects.filter(submission=submission).delete()
-        if platform is None:
-            raise ScenarioLimit(
-                'the starter profile grants this team no platform, so no R&D '
-                'row can name a team_platform')
-        ceiling = (PlatformFeatureCeiling.objects
-                   .filter(platform_generation=platform.platform_generation,
-                           ceiling_value__gt=0)
-                   .order_by('feature_id').first())
-        if ceiling is None:
-            raise ScenarioLimit(
-                f'no PlatformFeatureCeiling with ceiling_value > 0 exists for '
-                f'platform generation {platform.platform_generation_id}, so no '
-                f'feature is reachable for R&D on this platform')
-        # The baseline spends the scenario's R&D target, not the $100,000
-        # placeholder this row used to carry. V2-021 made the declared
-        # `rd_budget` inert and scores actual `DecisionRDInvestment.amount`
-        # against the target, so a baseline declaring $2,000,000 while
-        # investing $100,000 earned five per cent of the available capability
-        # credit and was not competent play in the only sense scoring reads.
-        # Every margin measured against it was a margin over a weak opponent.
-        from core.engine.performance import scenario_rd_spend_target
-        DecisionRDInvestment.objects.create(
-            submission=submission, team_platform=platform,
-            feature_id=ceiling.feature_id, method='in_house',
-            amount=scenario_rd_spend_target(scenario), target_level=1)
+        raise ScenarioLimit(
+            'feature-level R&D investment is retired (R10); platform '
+            'development is the supported R&D decision and is screened '
+            'separately')
 
     def plants():
         DecisionPlant.objects.filter(submission=submission).delete()
@@ -282,15 +260,21 @@ def build_optional(submission, team):
     def platforms():
         DecisionPlatformDevelopment.objects.filter(submission=submission).delete()
         generation = (PlatformGenerationDefinition.objects
-                      .filter(scenario=scenario)
+                      .filter(scenario=scenario,
+                              unlock_round__lte=submission.round.round_number)
+                      .exclude(pk=platform.platform_generation_id
+                               if platform is not None else None)
                       .order_by('generation_order').first())
         if generation is None:
             raise ScenarioLimit(
-                'the scenario defines no PlatformGenerationDefinition rows, so '
-                'a platform development cannot name a generation')
+                'no unheld platform generation is unlocked in round '
+                f'{submission.round.round_number}, so a new platform cannot '
+                'be developed yet')
+        from core.services.rd_costs import platform_development_cost
         DecisionPlatformDevelopment.objects.create(
             submission=submission, platform_generation=generation,
-            method='in_house', committed_cost=OPTIONAL_AMOUNT)
+            method='in_house', committed_cost=platform_development_cost(
+                generation, 'in_house'))
 
     def products():
         DecisionProductCreate.objects.filter(submission=submission).delete()

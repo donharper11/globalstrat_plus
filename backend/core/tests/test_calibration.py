@@ -12,7 +12,10 @@ import yaml
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from core.engine.bass_engine import _get_total_cumulative, run_bass_adoption
+from core.engine.bass_engine import (
+    _get_total_cumulative, _record_ai_take_and_reconciliation,
+    run_bass_adoption,
+)
 from core.engine.events import update_market_conditions
 from core.engine.utils import RoundContext, SegmentEffectiveState
 from core.management.commands.load_scenario import (
@@ -183,3 +186,35 @@ class CalibrationDemandAccountingTests(TestCase):
         # Fix A is observational: only human result rows enter Bass N.
         self.assertEqual(_get_total_cumulative(game, self.segment, self.market, 2),
                          float(human.cumulative_adopters))
+
+    def test_ai_rounding_residue_is_reconciled_without_overallocating_the_pool(self):
+        game, _team, _product = self._game_with_team()
+        first = AICompetitorDefinition.objects.create(
+            scenario=self.scenario, name='First AI')
+        second = AICompetitorDefinition.objects.create(
+            scenario=self.scenario, name='Second AI')
+
+        # Two 0.335 theoretical AI takes each round to 0.34.  Together with
+        # 0.33 of published human adoption that is 1.01 against a 1.00 pool.
+        # The accounting row must absorb the one-cent presentation residue,
+        # never publish demand that exceeds the Bass pool.
+        _record_ai_take_and_reconciliation(
+            game=game, round_number=1, segment=self.segment, market=self.market,
+            adoption_pool=1.0, human_adopters=D('0.33'),
+            total_attractiveness=1.0,
+            ai_allocations=[
+                (first, 0.7, 0.335),
+                (second, 0.7, 0.335),
+            ],
+        )
+
+        reconciliation = RoundResultDemandReconciliation.objects.get(
+            game=game, round_number=1, segment=self.segment, market=self.market,
+        )
+        ai_total = sum(
+            RoundResultAIAdoption.objects.filter(game=game, round_number=1)
+            .values_list('new_adopters', flat=True), D('0.00'))
+        self.assertEqual(ai_total, D('0.67'))
+        self.assertEqual(reconciliation.adoption_pool,
+                         reconciliation.human_adopters + reconciliation.ai_adopters
+                         + reconciliation.unserved_adopters)

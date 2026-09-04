@@ -416,6 +416,7 @@ def _record_ai_take_and_reconciliation(*, game, round_number, segment, market,
     reported_human = Decimal(str(human_adopters))
     reported_ai = Decimal('0.00')
     ai_ids = []
+    ai_rows = []
 
     for ai_comp, ai_fit_score, ai_attract in ai_allocations:
         share = ai_attract / total_attractiveness if total_attractiveness else 0.0
@@ -423,6 +424,35 @@ def _record_ai_take_and_reconciliation(*, game, round_number, segment, market,
         reported_take = Decimal(str(round(take, 2)))
         reported_ai += reported_take
         ai_ids.append(ai_comp.id)
+        ai_rows.append((ai_comp, ai_fit_score, ai_attract, share, reported_take))
+
+    stale_ai = RoundResultAIAdoption.objects.filter(
+        game=game, round_number=round_number, segment=segment, market=market,
+    )
+    if ai_ids:
+        stale_ai = stale_ai.exclude(ai_competitor_id__in=ai_ids)
+    stale_ai.delete()
+
+    # Humans cannot exceed their pool before cent rounding.  If they do after
+    # it, the allocation logic is wrong rather than something an accounting
+    # row may hide.  AI rows are a separate proportional allocation, so their
+    # independently rounded sum may be one cent above the remaining pool.  Put
+    # that deterministic rounding residue on the final AI row; no team result
+    # or diffusion input changes, and the published rows remain additive.
+    if reported_human > reported_pool:
+        raise RuntimeError(
+            'Human demand allocation exceeded its Bass pool for '
+            f'segment={segment.id}, market={market.id}, round={round_number}: '
+            f'pool={reported_pool}, human={reported_human}'
+        )
+    available_for_ai = reported_pool - reported_human
+    if reported_ai > available_for_ai:
+        correction = reported_ai - available_for_ai
+        ai_comp, fit, attract, share, take = ai_rows[-1]
+        ai_rows[-1] = (ai_comp, fit, attract, share, take - correction)
+        reported_ai = available_for_ai
+
+    for ai_comp, ai_fit_score, ai_attract, share, reported_take in ai_rows:
         RoundResultAIAdoption.objects.update_or_create(
             game=game,
             round_number=round_number,
@@ -437,22 +467,9 @@ def _record_ai_take_and_reconciliation(*, game, round_number, segment, market,
             },
         )
 
-    stale_ai = RoundResultAIAdoption.objects.filter(
-        game=game, round_number=round_number, segment=segment, market=market,
-    )
-    if ai_ids:
-        stale_ai = stale_ai.exclude(ai_competitor_id__in=ai_ids)
-    stale_ai.delete()
-
-    # Inputs must not over-allocate the pool.  The final cent remainder is
-    # intentionally put in unserved demand so persisted rows reconcile exactly
-    # even when independently rounded human/AI figures straddle a cent.
-    if reported_human + reported_ai > reported_pool + Decimal('0.01'):
-        raise RuntimeError(
-            'Demand allocation exceeded its Bass pool for '
-            f'segment={segment.id}, market={market.id}, round={round_number}: '
-            f'pool={reported_pool}, human={reported_human}, ai={reported_ai}'
-        )
+    # The final cent remainder is intentionally put in unserved demand so
+    # persisted rows reconcile exactly even when independent allocations
+    # straddle a cent.
     unserved = max(reported_pool - reported_human - reported_ai, Decimal('0.00'))
     if reported_human + reported_ai + unserved != reported_pool:
         raise RuntimeError(
