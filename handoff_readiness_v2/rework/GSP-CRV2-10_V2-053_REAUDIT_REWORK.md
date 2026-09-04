@@ -1,8 +1,11 @@
 # GSP-CRV2-10 V2-053 re-audit — runtime pass / documentation rework
 
-Date: 2026-09-04  
-Audited runtime revision: `8c3edb978e18fdf9c765e290da571c5f560c28a7`  
-Audited packet revision: `6262915a5b0f55589e7d9d97a8f770118bcb587c`  
+Date: 2026-09-04
+
+Audited runtime revision: `8c3edb978e18fdf9c765e290da571c5f560c28a7`
+
+Audited packet revision: `6262915a5b0f55589e7d9d97a8f770118bcb587c`
+
 Rules decision: R10, `GSP-CRV2-10_RULE_DECISIONS.md`
 
 ## Verdict
