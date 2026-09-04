@@ -526,10 +526,14 @@ class PlatformOwnershipTests(LifecycleFixture):
         self.gen = self.generation(2, rounds=1)
         self.mine = TeamPlatform.objects.create(
             team=self.team, platform_generation=self.gen, name='Mine',
-            status='active')
+            # Ruling 1 froze ready platforms. This suite is about
+            # ownership, so both platforms stay in development --
+            # otherwise the freeze refuses first and the ownership
+            # message is never reached.
+            status='in_development')
         self.theirs = TeamPlatform.objects.create(
             team=self.other_team, platform_generation=self.gen,
-            name='Theirs', status='active')
+            name='Theirs', status='in_development')
         self.feature = FeatureDefinition.objects.create(
             scenario=self.scenario, code='OWN', name='Owned', description='d',
             layer='platform', category='core', cost_curve_type='linear',

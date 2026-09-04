@@ -417,6 +417,39 @@ def _run_phase_1(game_id):
     # and charged nothing. Refuse before any competitive mutation and name the
     # row: do not clamp and do not reinterpret, because a decision quietly
     # replaced with a different one looks ordinary afterwards.
+    # engine during Stage 1.
+    from core.services.rd_costs import (describe_ownership_violations,
+                                        persisted_ownership_violations)
+    ownership_violations = persisted_ownership_violations(game,
+                                                          current_round_obj)
+    if ownership_violations:
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(ownership_violations)} stored R&D investment(s) name a '
+            f'platform the submitting team does not own. Correct the row(s) '
+            f'and retry. {describe_ownership_violations(ownership_violations)}'
+        )
+
+    # Ruling 1: a ready platform is frozen. A stored row that would upgrade one
+    # is refused rather than ignored -- an ignored row is a team's decision
+    # silently not happening while they are charged for the rest of the same
+    # submission.
+    from core.services.rd_costs import persisted_frozen_platform_violations
+    frozen_violations = persisted_frozen_platform_violations(
+        game, current_round_obj)
+    if frozen_violations:
+        detail = '; '.join(
+            f"{v['model']} row {v['row']} ({v['team']}) targets "
+            f"\"{v['platform']}\" [{v['platform_status']}]"
+            for v in frozen_violations)
+        raise InvalidPersistedDecisionError(
+            f'Round {current_round} cannot be scored: '
+            f'{len(frozen_violations)} stored R&D investment(s) would change '
+            f'the features of a platform that is already ready. A ready '
+            f'platform is frozen; build a new platform and re-base onto it. '
+            f'{detail}'
+        )
+
     from core.services.rd_costs import (describe_cost_violations,
                                         persisted_cost_violations)
     cost_violations = persisted_cost_violations(game, current_round_obj)
@@ -445,19 +478,6 @@ def _run_phase_1(game_id):
     # V2-044: a stored R&D investment naming another team's platform. The
     # write surfaces refuse it now; this is the boundary for rows that arrive
     # any other way, and for the default-close path that carried one into the
-    # engine during Stage 1.
-    from core.services.rd_costs import (describe_ownership_violations,
-                                        persisted_ownership_violations)
-    ownership_violations = persisted_ownership_violations(game,
-                                                          current_round_obj)
-    if ownership_violations:
-        raise InvalidPersistedDecisionError(
-            f'Round {current_round} cannot be scored: '
-            f'{len(ownership_violations)} stored R&D investment(s) name a '
-            f'platform the submitting team does not own. Correct the row(s) '
-            f'and retry. {describe_ownership_violations(ownership_violations)}'
-        )
-
     # An over-cap persisted feature set. Refused, not truncated: activation
     # used to slice it, producing a platform that disagreed with the decision
     # stored beside it.

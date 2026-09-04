@@ -5,7 +5,7 @@ From 03-engine-logic.md Section 3.
 from decimal import Decimal
 
 from core.models.decisions import (
-    DecisionRDInvestment, DecisionPlatformDevelopment,
+    DecisionPlatformDevelopment,
     DecisionProductCreate, DecisionProductRetire, DecisionSubmission,
 )
 from core.models.team_state import (
@@ -13,7 +13,6 @@ from core.models.team_state import (
     TeamProduct, TeamProductMarket,
 )
 from core.models.scenario import PlatformFeatureCeiling
-from core.engine.utils import calculate_level_gain
 
 
 def process_rd(context):
@@ -40,7 +39,18 @@ def process_rd(context):
         _process_platform_development(team, submission, current_round)
 
         # ----- Feature investments (R&D) -----
-        _process_feature_investments(team, submission, scenario, current_round, context)
+        # Ruling 1 (CRV2-10 Stage 3B): a ready platform is frozen, so there
+        # is no live feature-upgrade path. Building a new platform and
+        # re-basing onto it is the only route to a better product.
+        #
+        # Not called, rather than made a no-op: a stored row that would have
+        # upgraded a ready platform is refused by a Phase-1 precondition
+        # before this point, so reaching here with one is impossible. What
+        # remains below is the creation-time feature set on a *new* platform,
+        # which is how a platform gets its features in the first place.
+        #
+        # `_process_feature_investments` is retired with this call. See
+        # GSP-CRV2-10_RULE_DECISIONS.md R9.
 
         # ----- Apply pending feature gains from earlier rounds -----
         _apply_pending_gains(team, current_round)
@@ -274,117 +284,6 @@ def _process_platform_development(team, submission, current_round):
                             defaults={'current_level': ceiling.starting_value},
                         )
             platform.save()
-
-
-def _process_feature_investments(team, submission, scenario, current_round, context=None):
-    """Process DecisionRDInvestment records — level-based or legacy dollar-based."""
-    for investment in submission.rd_investments.all().order_by(
-            'team_platform__name', 'feature__code', 'method'):
-        tp = investment.team_platform
-        feature = investment.feature
-
-        # Must be on an active platform
-        if tp.status != 'active':
-            continue
-
-        # Get current level
-        fl, _ = TeamPlatformFeatureLevel.objects.get_or_create(
-            team_platform=tp,
-            feature=feature,
-            defaults={'current_level': feature.default_value},
-        )
-        current_level = float(fl.current_level)
-
-        # Get ceiling
-        try:
-            ceiling = PlatformFeatureCeiling.objects.get(
-                platform_generation=tp.platform_generation,
-                feature=feature,
-            )
-            ceiling_val = float(ceiling.ceiling_value)
-        except PlatformFeatureCeiling.DoesNotExist:
-            ceiling_val = float(feature.max_value)
-
-        if current_level >= ceiling_val:
-            continue  # Already at max
-
-        # CC-16: Apply R&D talent cost modifier
-        # Talent level 3 = baseline (1.0x), level 7 = 0.80x (20% cheaper)
-        from core.engine.talent import get_talent_level
-        from core.engine.utils import clamp as _clamp
-        rd_talent = get_talent_level(team, 'rd', current_round)
-        talent_cost_modifier = Decimal('1.0') - (rd_talent - Decimal('3')) * Decimal('0.05')
-        talent_cost_modifier = _clamp(talent_cost_modifier, Decimal('0.60'), Decimal('1.20'))
-
-        # Level-based R&D (new model)
-        if investment.target_level and investment.target_level > int(current_level):
-            target = min(investment.target_level, int(ceiling_val))
-
-            if investment.method == 'license':
-                if not feature.is_licensable:
-                    continue
-                # Licensed: immediate effect
-                fl.current_level = Decimal(str(target))
-                fl.save()
-            elif investment.method == 'in_house':
-                # In-house: delayed effect
-                applies_round = current_round + feature.time_lag_rounds
-                gain = target - current_level
-                # CC-32B: Apply org innovation modifier
-                if context:
-                    org_mods = getattr(context, 'org_modifiers', {}).get(team.id, {})
-                    innovation_mod = float(org_mods.get('innovation_modifier', 1.0))
-                    gain = gain * innovation_mod
-                PendingFeatureGain.objects.create(
-                    team_platform=tp,
-                    feature=feature,
-                    gain_amount=Decimal(str(round(gain, 2))),
-                    applies_round=applies_round,
-                )
-        else:
-            # Legacy dollar-based fallback
-            # CC-16: Talent modifier makes each dollar more effective
-            amount = float(investment.amount) / float(talent_cost_modifier)
-            if amount <= 0:
-                continue
-
-            if investment.method == 'license':
-                if not feature.is_licensable:
-                    continue
-                effective_amount = amount / float(feature.license_cost_multiplier)
-                gain = calculate_level_gain(
-                    effective_amount, current_level,
-                    feature.cost_curve_type, float(feature.cost_base),
-                    scenario=scenario,
-                )
-                # CC-32B: Apply org innovation modifier
-                if context:
-                    org_mods = getattr(context, 'org_modifiers', {}).get(team.id, {})
-                    innovation_mod = float(org_mods.get('innovation_modifier', 1.0))
-                    gain = gain * innovation_mod
-                new_level = min(current_level + gain, ceiling_val)
-                fl.current_level = Decimal(str(round(new_level, 2)))
-                fl.save()
-
-            elif investment.method == 'in_house':
-                gain = calculate_level_gain(
-                    amount, current_level,
-                    feature.cost_curve_type, float(feature.cost_base),
-                    scenario=scenario,
-                )
-                # CC-32B: Apply org innovation modifier
-                if context:
-                    org_mods = getattr(context, 'org_modifiers', {}).get(team.id, {})
-                    innovation_mod = float(org_mods.get('innovation_modifier', 1.0))
-                    gain = gain * innovation_mod
-                if gain > 0:
-                    applies_round = current_round + feature.time_lag_rounds
-                    PendingFeatureGain.objects.create(
-                        team_platform=tp,
-                        feature=feature,
-                        gain_amount=Decimal(str(round(gain, 2))),
-                        applies_round=applies_round,
-                    )
 
 
 def _apply_pending_gains(team, current_round):

@@ -42,7 +42,7 @@ class RDCostFixture(TestCase):
             development_rounds=2)
         self.platform = TeamPlatform.objects.create(
             team=self.team, platform_generation=self.gen, name='P',
-            status='active')
+            status='in_development')
         # A generation the team does NOT hold, for the platform-development
         # cases. The team holds `self.gen` so the feature-upgrade cases have a
         # platform to invest in, and a development request naming a held

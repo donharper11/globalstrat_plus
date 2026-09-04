@@ -114,14 +114,62 @@ and deliberately omitted from the competitor block.
 they were carrying. Competitive intelligence in this simulation is what a team
 can infer from published market outcomes, not what the API volunteers.
 
+## R9. A ready platform is frozen, and the upgrade path is retired
+
+**Decision (Ruling 1, confirmed by the handoff owner 2026-08-31).** A platform
+with status `active` cannot have features added or levels changed. Building a
+new platform, and re-basing a product onto it, is the only route to a better
+product. `_process_feature_investments` is **removed**, not gated.
+
+**What retires with it:** per-generation ceilings as a live upgrade path,
+licensing as a mid-life mechanic, feature time lags, and the creation of
+`PendingFeatureGain` rows. The model and its manifest section remain, so the
+competitive envelope and any legacy row are unaffected; nothing creates new
+ones.
+
+**Why removed rather than gated.** A gated-but-present implementation is the
+thing that comes back — a later change flips the gate and the mechanic returns
+without a decision. A test asserts the function no longer exists.
+
+**Refused, not ignored, on all three surfaces.** Both write surfaces refuse
+with a message naming what to do instead, and a Phase-1 precondition refuses a
+stored row before competitive mutation. An ignored row would be a team's
+decision silently not happening while they are charged for the rest of the same
+submission — the shape V2-047 was raised for.
+
+**Ordering.** The freeze precondition runs *before* the cost precondition. A
+row that may not exist at all should not be refused for its price: doing so
+told the operator to author missing `FeatureLevelCost` rows for an upgrade that
+is no longer a mechanic.
+
+**What this changes about the game.** A team could previously hold one platform
+all game and buy its way up the feature curve, so the platform decision was a
+formality and the generation ladder decided nothing. It is now the decision the
+round is about — and it makes Stage 4's re-basing load-bearing, its write-off
+the main cost of changing your mind.
+
+**Sequencing, verified.** Re-basing landed before the upgrade path was removed.
+Checked across every commit in the window: the upgrade path was present at each
+one until the re-base route existed, and is retired only now that it does.
+There is no commit in which a team had neither route.
+
+**If reversed:** restore `_process_feature_investments`, drop the freeze checks
+from both write surfaces and the engine, and expect `PendingFeatureGain` to
+carry state again. GSP-CRV2-06's tournament result becomes relevant again — see
+below.
+
+---
+
+## Consequence for GSP-CRV2-06
+
+R9 **invalidates the strategy space GSP-CRV2-06's tournament searched.** That
+tournament's strongest-strategy result is evidence for the game as it was, when
+buying up the feature curve on a held platform was available. It is not
+evidence for the game as it now is. CRV2-09 must not accept it as current.
+
 ---
 
 ## Still open — not decided here
 
-- **A8, "a finalised platform is fully modifiable"** remains a rules decision
-  for Stage 3B. Freezing ready platforms is the intent, but until Stage 3B
-  lands, both the old upgrade path and re-basing are reachable, which is
-  deliberate: removing one before the other exists would leave a window with
-  no route to a better product.
 - **A5, no operating budget and no overspend financing**, is untouched by
-  Stage 4.
+  Stages 3 and 4.

@@ -160,6 +160,52 @@ written for.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
+## V2-053 — Ruling 1 leaves R&D investment scored but mechanically inert (P1) — OPEN, rules owner / GSP-CRV2-11
+
+Raised by the builder during Stage 3B, before repair, because the repair is a
+rules decision rather than a defect fix.
+
+Ruling 1 retires `_process_feature_investments`. That function was the only
+consumer of `DecisionRDInvestment` that changed anything about a product. The
+rows themselves are still accepted (on platforms not yet ready), still charged
+against cash and the R&D budget, and still **scored**:
+
+- `engine/performance.py` sums `rd_investments.amount` into `rd_spend` and
+  scores it against the scenario's `rd_spend_target`. This is the R&D component
+  of the performance index (V2-021).
+- `engine/coherence.py` iterates the same rows to score feature/segment
+  alignment.
+
+So after Ruling 1 a team can spend on R&D, be charged for it, score for it, and
+receive no capability in return. Spend becomes score-buying disconnected from
+the product.
+
+**Two further facts, both measured:**
+
+- Rows targeting a platform that is not yet ready were **already** inert before
+  Ruling 1 — the retired processor began with `if tp.status != 'active':
+  continue`. So the silent-ignore predates this handoff; Ruling 1 widens it to
+  every row.
+- Freezing *all* platforms rather than only ready ones would close the
+  silent-ignore, but it would take `rd_spend` and the R&D coherence term to zero
+  for every team in every round, permanently. **That is a balance rewrite and
+  was not done.**
+
+**Options for the owner, neither taken here:**
+
+1. Point `rd_score` and the coherence term at platform-development spend, which
+   is where R&D investment now actually happens. Note that platform spend is
+   lumpy — one large charge in a funding round, nothing in others — so the
+   ratio against a per-round target needs recalibration. That makes it
+   GSP-CRV2-11 work, not a drop-in.
+2. Keep `DecisionRDInvestment` as pure research spend with no feature effect,
+   and say so in the student-facing rules, so a team is not buying a capability
+   that never arrives.
+
+**Not repaired in Stage 3B.** The freeze was implemented exactly as ruled —
+ready platforms only — precisely so that this decision stays with the owner
+rather than being made silently by a builder closing a test failure.
+
 ## V2-052 — the manifest schema definition chain was overwritten (P1) — implemented at `5873695`, pending integrated Stage 3/4 closure
 
 Raised by the Stage 4 rework re-audit at `b9e1282`. The Stage 4 rework

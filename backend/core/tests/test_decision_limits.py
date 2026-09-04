@@ -284,7 +284,9 @@ class DuplicateRdRowApiTests(DecisionApiBase):
             is_starting_platform=True)
         self.platform = TeamPlatform.objects.create(
             team=self.team, platform_generation=generation, name='P1',
-            status='active')
+            # Ruling 1 froze ready platforms; this suite is about duplicate
+            # rows, not the freeze, so its platform stays in development.
+            status='in_development')
         self.feature_a = FeatureDefinition.objects.create(
             scenario=self.scenario, name='Feature A', code='FA',
             description='d', layer='core', category='performance',

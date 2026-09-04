@@ -532,6 +532,7 @@ class ManifestSnapshotIntegrationTests(TestCase):
         from core.models.decisions import (
             DecisionBudgetAllocation, DecisionMarketEntry, DecisionMarketing,
             DecisionPlant, DecisionRDInvestment, DecisionSubmission)
+        from core.models.scenario import PlatformGenerationDefinition
         from core.models.scenario import (
             EntryModeDefinition, FeatureDefinition, MarketDefinition)
         from core.models.sc_decisions import SourcingAllocation
@@ -579,8 +580,30 @@ class ManifestSnapshotIntegrationTests(TestCase):
                                 demand_estimate=1000 * (i + 1),
                                 production_source_market=m)))
 
-            # R&D: binds the feature-level and pending-gain mutation loops.
-            for platform in TeamPlatform.objects.filter(team=team).order_by('id'):
+            # R&D rows still populate their manifest section, so they stay in
+            # the envelope. They no longer bind a feature-level or pending-gain
+            # mutation loop -- Ruling 1 retired both -- and they must not target
+            # a ready platform, which the engine now refuses outright. A
+            # platform still in development is the one legal target left.
+            # Its own generation: one non-retired platform per team per
+            # generation, or the duplicate-generation precondition refuses.
+            base_gen = (TeamPlatform.objects.filter(team=team)
+                        .order_by('id').first().platform_generation)
+            draft_gen, _ = PlatformGenerationDefinition.objects.get_or_create(
+                scenario=base_gen.scenario, generation_order=90,
+                defaults=dict(name='Drafting Gen', description='d',
+                              unlock_round=0,
+                              development_cost=D('1000000'),
+                              license_cost=D('2000000'),
+                              development_rounds=1))
+            drafting, _ = TeamPlatform.objects.get_or_create(
+                team=team, platform_generation=draft_gen,
+                defaults=dict(
+                    name=f'{team.name} Drafting Platform',
+                    status='unfunded_draft', development_method='in_house',
+                    development_started_round=0, funded_round=None,
+                    development_rounds_remaining=1))
+            for platform in [drafting]:
                 for offset, feature in enumerate(features):
                     rows.append(
                         lambda s=submission, p=platform, f=feature, i=index, o=offset:
