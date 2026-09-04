@@ -131,20 +131,20 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
         held = held_generation_problem(rows, team)
         if held:
             raise serializers.ValidationError({'platform_generation': [held]})
+    if kind == 'rd' and rows:
+        # R10 / V2-053. The decision is retired outright, not merely gated to
+        # platforms still in development. R9 removed the processor that made it
+        # do anything, so every remaining row spent a team's money and earned
+        # them score while changing no product. Refusing it on the write is what
+        # stops them paying for that.
+        #
+        # An empty list still succeeds: clearing R&D is how a team removes a
+        # draft row, and refusing that would strand anyone who already has one.
+        raise serializers.ValidationError({'rd_investments': [
+            'Feature-level R&D investment is retired. Develop a new platform '
+            'and re-base the product onto it; that is the route to a better '
+            'product (R10).']})
     for index, row in enumerate(rows):
-        if kind == 'rd' and team is not None:
-            # V2-044: the platform named must belong to the submitting team.
-            problem = ownership_problem(row.get('team_platform'), team)
-            if problem:
-                errors.append(f'row {index + 1}: {problem}')
-                continue
-            # Ruling 1: a ready platform is frozen. Refused on the write, so a
-            # team is told at submission rather than having the row accepted,
-            # priced, and then refused by the engine at close.
-            problem = frozen_platform_problem(row.get('team_platform'))
-            if problem:
-                errors.append(f'row {index + 1}: {problem}')
-                continue
         if kind == 'platform':
             # V2-039: the unlock gate belongs on the write, not only on the
             # lock. A team that never locks was defaulted at close and the

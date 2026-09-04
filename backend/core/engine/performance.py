@@ -42,7 +42,15 @@ RD_SPEND_TARGET_CONFIG_KEY = 'rd_spend_target'
 
 
 def scenario_rd_spend_target(scenario):
-    """The R&D spend that earns full capability credit, or refuse to score."""
+    """Validate the configured R&D spend target, or refuse to score.
+
+    R10 / V2-053 removed the term that divided by this, so nothing scores
+    against it now. The V2-021 precondition is deliberately left standing
+    rather than quietly dropped: removing a fail-closed guard an audit
+    installed is not this change's business, and the handoff fences
+    `rd_spend_target` off from being touched. It is now an orphaned
+    requirement, recorded as such for the owner.
+    """
     raw = get_config(scenario, RD_SPEND_TARGET_CONFIG_KEY, default=None)
     if raw is None:
         raise InvalidScenarioConfiguration(
@@ -54,7 +62,8 @@ def scenario_rd_spend_target(scenario):
         raise InvalidScenarioConfiguration(
             f'scenario {getattr(scenario, "id", scenario)} sets '
             f'{RD_SPEND_TARGET_CONFIG_KEY}={target}; it must be greater than '
-            f'zero, because it is the denominator of the R&D capability score')
+            f'zero. It was the denominator of the R&D capability score until '
+            f'R10 retired that term; the check stands, the score does not.')
     return target
 
 
@@ -143,12 +152,15 @@ def _strategic_capability_component(team, current_round, rd_spend_target,
     if submission is None:
         return D('0.35')
 
-    # Scored against the scenario's target spend, not the team's own declared
-    # budget. Zero spend scores zero; spend at or above the target scores 1.
-    rd_spend = sum(D(str(row.amount or 0))
-                   for row in submission.rd_investments.all().order_by(
-                       'team_platform__name', 'feature__code', 'method'))
-    rd_score = _ratio(rd_spend, rd_spend_target)
+    # R10 / V2-053: the R&D-spend term is gone. It scored the *amount* of a
+    # DecisionRDInvestment, so a team earned strategic capability by spending
+    # rather than by delivering anything -- and after R9 retired the upgrade
+    # path, the money bought no capability at all. Money spent is a financial
+    # consequence, not a capability.
+    #
+    # Nothing replaces it. Platform development already registers below through
+    # `has_product_action`, and what it delivers is scored where capability is
+    # actually felt: market fit, revenue and profit.
 
     has_product_action = (
         submission.product_creates.exists()
@@ -165,8 +177,12 @@ def _strategic_capability_component(team, current_round, rd_spend_target,
 
     product_score = D('1') if has_product_action else D('0.45')
     strategy_score = D('1') if has_strategy_action else D('0.45')
-    earned = _clamp01(rd_score * D('0.40') + product_score * D('0.30')
-                      + strategy_score * D('0.30'))
+    # The surviving terms keep their authored 30:30 ratio and are normalised
+    # over their own weights, so removing a term does not silently deflate
+    # every team's ceiling to 0.60. This is removal, not a re-weighting: no
+    # weight was retuned, and the handoff forbids that in this change.
+    earned = _clamp01((product_score * D('0.30') + strategy_score * D('0.30'))
+                      / D('0.60'))
 
     from core.models.talent import DecisionTalent
     try:

@@ -98,13 +98,15 @@ def calculate_coherence(context, skip_rag=False):
         breakdown['entry_mode_risk'] = {'score': em_score / max(em_max, 1), 'details': em_details}
 
         # 4. R&D-Market Alignment
-        rd_score, rd_max, rd_feedback = _score_rd_alignment(team, submission, context)
-        coherence_score += rd_score
-        max_possible += rd_max
-        breakdown['rd_market_alignment'] = {
-            'score': rd_score / max(rd_max, 1),
-            'feedback': rd_feedback,
-        }
+        # R10 / V2-053: the R&D market-alignment component is retired with the
+        # decision it scored. It read DecisionRDInvestment rows, which after R9
+        # change no product, so it credited an intention rather than a
+        # capability. It contributed to both the numerator and the denominator,
+        # so removing it leaves the surviving components' ratio untouched --
+        # nothing needs re-weighting here.
+        #
+        # Whether a team's *delivered* platform features match segment demand
+        # is still scored, by the market outcomes those features produce.
 
         # 5. Financial Prudence
         fp_score, fp_details = _score_financial_prudence(team, context)
@@ -390,48 +392,6 @@ def _score_entry_mode_risk(team, context):
         })
 
     return score, max_possible, details
-
-
-def _score_rd_alignment(team, submission, context):
-    """Are R&D investments in features valued by target segments?"""
-    score = 0.0
-    max_possible = 0.0
-    feedback_parts = []
-
-    if not submission:
-        return score, max_possible, 'No R&D investments this round.'
-
-    active_market_ids = set(
-        TeamMarketPresence.objects.filter(
-            team=team, status='active',
-        ).values_list('market_id', flat=True)
-    )
-
-    for inv in submission.rd_investments.all().select_related('feature').order_by(
-            'team_platform__name', 'feature__code', 'method'):
-        feature = inv.feature
-        # Sum preference weights for this feature across active market segments
-        total_weight = 0.0
-        prefs = (SegmentPreference.objects.filter(
-            feature=feature,
-            segment__market_id__in=active_market_ids,
-        )).order_by('feature__code')
-        for p in prefs:
-            total_weight += float(p.weight)
-
-        if total_weight > 0:
-            s = min(total_weight / 2.0, 1.0)
-        else:
-            s = 0.1
-            feedback_parts.append(
-                f'{feature.name}: low demand from your target segments.'
-            )
-
-        score += s
-        max_possible += 1.0
-
-    feedback = ' '.join(feedback_parts) if feedback_parts else 'R&D investments well-aligned with market demand.'
-    return score, max_possible, feedback
 
 
 def _score_financial_prudence(team, context):

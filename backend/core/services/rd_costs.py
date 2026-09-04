@@ -492,15 +492,20 @@ def persisted_frozen_platform_violations(game, round_obj):
             .select_related('team_platform', 'submission__team')
             .order_by('pk'))
     for row in rows:
-        problem = frozen_platform_problem(row.team_platform)
-        if problem:
-            violations.append({
-                'model': 'DecisionRDInvestment', 'row': row.pk,
-                'team': row.submission.team.name,
-                'field': 'team_platform',
-                'platform': row.team_platform.name,
-                'platform_status': row.team_platform.status,
-                'detail': problem})
+        # R10 / V2-053: every persisted row is a violation now, not only one
+        # naming a ready platform. The processor that gave any of them an
+        # effect is gone, so a row that reaches here would be charged and
+        # scored for nothing. Refused, never discarded: a row silently dropped
+        # is a team's decision disappearing while they pay for the rest of the
+        # submission.
+        violations.append({
+            'model': 'DecisionRDInvestment', 'row': row.pk,
+            'team': row.submission.team.name,
+            'field': 'team_platform',
+            'platform': getattr(row.team_platform, 'name', '(none)'),
+            'platform_status': getattr(row.team_platform, 'status', '(none)'),
+            'detail': ('Feature-level R&D investment is retired (R10). '
+                       'Develop a new platform and re-base onto it.')})
     return violations
 
 
