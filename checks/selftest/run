@@ -357,6 +357,46 @@ assert_rc 0 $? "CI receipt assertion passes on a real receipt"
 jq -e '.environment == "ci" and .ran == 1 and .exit_code == 0 and (.checks_run[0].units_examined > 0)' \
   "$D/checks/.last-run.json" >/dev/null 2>&1
 assert_rc 0 $? "receipt carries CI environment, run count, exit and units"
+
+# The assertion has to reject a receipt that satisfies every type and states
+# the opposite of what it certifies. Each case below alters exactly one value
+# of the real receipt, so a pass proves that rule bites and not another.
+REAL="$D/checks/.last-run.json"
+FORGED="$D/forged.json"
+forge() { jq "$1" "$REAL" > "$FORGED"; }
+
+forge '.environment = "local"'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects a non-ci environment"
+
+forge '.committed_revision = "deadbee"'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects vendored != committed revision"
+
+# Both revisions changed together: internally consistent, still not this
+# checkout. Without the repo anchor this case passes.
+forge '.vendored_revision = "deadbee" | .committed_revision = "deadbee"'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects revisions that agree but are not the repo's"
+
+forge '.ran = 0 | .checks_run = []'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects a run in which nothing executed"
+
+forge '.ran = 1 | .checks_run = []'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects ran>0 with no executed check recorded"
+
+forge '.exit_code = 1'
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 1 $? "receipt assertion rejects a failing exit_code"
+
+# The control: an unaltered copy through the same path still passes, so the
+# rejections above are the altered value and not the copying.
+cp "$REAL" "$FORGED"
+"$PKG/bin/assert-ci-receipt" "$D" "$FORGED" >/dev/null 2>&1
+assert_rc 0 $? "receipt assertion still passes on an unaltered copy"
+
 rm -rf "$D"
 
 # §2.1/§2.2: an enabled configuration in which no check executes is exit 2.

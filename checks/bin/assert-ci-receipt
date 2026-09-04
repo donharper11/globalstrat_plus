@@ -24,8 +24,10 @@ jq empty "$RECEIPT" >/dev/null 2>&1 || {
   exit 1
 }
 jq -e '
-  (.environment == "ci") and
+  (.environment | type == "string") and
   (.revision | type == "string") and
+  (.vendored_revision | type == "string") and
+  (.committed_revision | type == "string") and
   (.mode | type == "string") and
   (.repo | type == "string") and
   (.timestamp_utc | type == "string") and
@@ -33,9 +35,49 @@ jq -e '
   (.checks_skipped | type == "array") and
   (.findings_per_check | type == "object") and
   (.suppressions_per_check | type == "object") and
+  (.ran | type == "number") and
   (.exit_code | type == "number")
 ' "$RECEIPT" >/dev/null 2>&1 || {
   echo "aide-checks CI receipt: ERROR receipt is missing required CI fields: $RECEIPT" >&2
   exit 1
 }
+
+# ── the values, not just their types ───────────────────────────────────────
+#
+# Shape alone is not proof. A receipt naming the wrong revisions, reporting
+# that nothing ran, and recording a failing exit satisfies every type above,
+# so an assertion that stops at types accepts a receipt stating the opposite
+# of what it is supposed to certify.
+fail() { echo "aide-checks CI receipt: ERROR $1" >&2; exit 1; }
+
+ENVIRONMENT="$(jq -r '.environment' "$RECEIPT")"
+[ "$ENVIRONMENT" = "ci" ] || \
+  fail "environment is \"$ENVIRONMENT\", not \"ci\" — this receipt is not from a CI run: $RECEIPT"
+
+REV_VENDORED="$(jq -r '.vendored_revision' "$RECEIPT")"
+REV_COMMITTED="$(jq -r '.committed_revision' "$RECEIPT")"
+[ "$REV_VENDORED" = "$REV_COMMITTED" ] || \
+  fail "vendored_revision ($REV_VENDORED) != committed_revision ($REV_COMMITTED) — the tree that ran is not the tree that was committed"
+
+# Anchored to the repository, not only to itself: two matching-but-wrong
+# revisions inside one receipt agree with each other perfectly.
+REV_STAMP="$REPO_ROOT/checks/.aide-checks-rev"
+if [ -f "$REV_STAMP" ]; then
+  REV_REPO="$(tr -d '[:space:]' < "$REV_STAMP")"
+  [ "$REV_VENDORED" = "$REV_REPO" ] || \
+    fail "receipt revision ($REV_VENDORED) != $REV_STAMP ($REV_REPO) — the receipt is not from this checkout"
+fi
+
+RAN="$(jq -r '.ran' "$RECEIPT")"
+EXECUTED="$(jq -r '.checks_run | length' "$RECEIPT")"
+[ "$RAN" -gt 0 ] 2>/dev/null || \
+  fail "ran is $RAN — no check executed, so the run proves nothing"
+[ "$EXECUTED" -gt 0 ] || \
+  fail "checks_run is empty — the receipt records no executed check"
+
+EXIT_CODE="$(jq -r '.exit_code' "$RECEIPT")"
+[ "$EXIT_CODE" = "0" ] || \
+  fail "exit_code is $EXIT_CODE — the run this receipt certifies did not succeed"
+
 echo "aide-checks CI receipt: present at $RECEIPT"
+echo "aide-checks CI receipt: environment=ci revision=${REV_VENDORED} ran=${RAN} exit_code=0"
