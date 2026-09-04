@@ -14,4 +14,5 @@ module having to import the whole manifest machinery.
 # 1 -> 2: canonical snapshots through `manifest_sections`.
 # 2 -> 3: CRV2-10 Stage 4 -- the `team_product_platform_history` section and
 #         the `platform_switch_write_off` financial line.
-MANIFEST_SCHEMA_VERSION = 3
+# 3 -> 4: CRV2-11 -- recorded AI adoption and per-pool demand reconciliation.
+MANIFEST_SCHEMA_VERSION = 4

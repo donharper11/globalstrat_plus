@@ -47,7 +47,10 @@ from .financials import (
 from .events import (
     TriggeredEvent,
 )
-from .results import EventInstance, ActiveModifier, RoundResultAdoption
+from .results import (
+    EventInstance, ActiveModifier, RoundResultAdoption, RoundResultAIAdoption,
+    RoundResultDemandReconciliation,
+)
 from .rag import ResearchQueryLog
 from .results_financials import (
     RoundResultProductMarket, RoundResultFinancials, RoundResultMarketRevenue,

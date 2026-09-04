@@ -367,7 +367,7 @@ def bootstrap_round_zero(game):
 
     # ── Leaderboard ──
     leaderboard_data.sort(key=lambda x: (-float(x['index']), -float(x['revenue'])))
-    for rank, data in enumerate(leaderboard_data, 1):
+    for ordinal_rank, data in enumerate(leaderboard_data, 1):
         team = data['team']
         presence = (TeamMarketPresence.objects.filter(team=team, status='active')).order_by('market__code')
         share_summary = {}
@@ -381,7 +381,11 @@ def bootstrap_round_zero(game):
         LeaderboardEntry.objects.update_or_create(
             game=game, round_number=0, team=team,
             defaults={
-                'rank': rank,
+                # Round 0 is a deliberately score-equal briefing state.  The
+                # inherited revenue is useful context, but is not a legitimate
+                # score tiebreak before a team has made a decision.
+                'rank': 1 if float(data['index']) == float(scenario.performance_index_base)
+                else ordinal_rank,
                 'performance_index': D(str(data['index'])),
                 'shareholder_return': D('0'),
                 'total_revenue': data['revenue'],

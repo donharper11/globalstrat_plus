@@ -36,12 +36,41 @@ def load_scenario(path):
     return yaml.safe_load(pathlib.Path(path).read_text())
 
 
-def segment_rows(scenario):
-    """(market, segment, population, p, q, growth, revenue_per_unit) tuples."""
+def _market_paths(scenario, rounds):
+    """Independent replay of the authored market growth/demand schedule.
+
+    ``events.update_market_conditions`` grows a customer segment from its
+    market's base growth rate plus the scheduled round modifier.  The YAML also
+    contains informational segment ``growth_rates`` fields, but the engine does
+    not read them; using those here would make a tidy but unfaithful replay.
+    """
+    paths = {}
+    condition_rows = scenario.get('market_conditions') or {}
+    for market in scenario['markets']:
+        code = market['code']
+        base_growth = float(market.get('base_growth_rate') or 0)
+        scheduled = {
+            int(row[0]): row
+            for row in condition_rows.get(code, [])
+        }
+        paths[code] = [
+            {
+                'growth': base_growth + float(scheduled.get(r, [r, 0])[1] or 0),
+                # Demand multipliers are one-round demand shocks, not a
+                # population-growth rate, and therefore do not compound.
+                'demand_multiplier': float(scheduled.get(r, [r, 0, 0, 0, 1])[4] or 1),
+            }
+            for r in range(1, rounds + 1)
+        ]
+    return paths
+
+
+def segment_rows(scenario, rounds):
+    """(market, segment, population, p, q, market path, revenue) tuples."""
     rows = []
+    paths = _market_paths(scenario, rounds)
     for seg in scenario['customer_segments']:
         pops = seg.get('populations') or {}
-        growths = seg.get('growth_rates') or {}
         for market_code, population in sorted(pops.items()):
             rows.append({
                 'market': market_code,
@@ -49,7 +78,7 @@ def segment_rows(scenario):
                 'population': float(population),
                 'p': float(seg['bass_p']),
                 'q': float(seg['bass_q']),
-                'growth': float(growths.get(market_code, 0) or 0),
+                'market_path': paths[market_code],
                 'revenue_per_unit': float(seg.get('revenue_per_unit') or 0),
             })
     return rows
@@ -61,17 +90,24 @@ def trajectory(row, rounds, regime):
     No team behaviour and no AI: this is the pool the field competes over, so
     it is the quantity the calibration target is stated in.
     """
-    p, q, pop, g = row['p'], row['q'], row['population'], row['growth']
+    p, q, pop = row['p'], row['q'], row['population']
     out, cumulative = [], 0.0
     for r in range(1, rounds + 1):
+        market_state = row['market_path'][r - 1]
         if regime == 'flat':
-            M = pop + pop * g              # events.py: applied once, per round
+            # Pre-CRV2-11 engine: current period's growth applied once to the
+            # authored population. Conditions can vary M, but no prior growth
+            # carries forward.
+            M = pop * (1 + market_state['growth'])
         elif regime == 'compounding':
-            M = pop * ((1 + g) ** r)
+            M = pop
+            for prior in row['market_path'][:r]:
+                M *= 1 + prior['growth']
         elif regime == 'static':
             M = pop                        # no growth at all, for reference
         else:
             raise ValueError(regime)
+        M *= market_state['demand_multiplier']
         remaining = max(M - cumulative, 0.0)
         pool = (p + q * cumulative / max(M, 1)) * remaining if M > 0 else 0.0
         pool = max(pool, 0.0)
@@ -98,7 +134,7 @@ def main():
     args = ap.parse_args()
 
     scenario = load_scenario(args.scenario)
-    rows = segment_rows(scenario)
+    rows = segment_rows(scenario, args.rounds)
     results = {}
     for regime in ('flat', 'compounding', 'static'):
         results[regime] = {

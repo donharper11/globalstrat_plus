@@ -12,7 +12,10 @@ from core.models.decisions import DecisionMarketing, DecisionSubmission
 from core.models.team_state import TeamMarketPresence, TeamProductMarket, TeamAcquisition
 from core.models.scenario import AICompetitorFitByRound, AICompetitorDefinition, AICompetitorBehavior
 from core.engine.ai_competitors import calculate_ai_competitor_fit
-from core.models.results import RoundResultAdoption
+from core.models.results import (
+    RoundResultAdoption, RoundResultAIAdoption,
+    RoundResultDemandReconciliation,
+)
 from core.engine.utils import (InvalidScenarioConfiguration,
                                get_config, high_price_demand_multiplier,
                                scenario_high_price_elasticity,
@@ -131,7 +134,10 @@ def run_bass_adoption(context):
             team_attractiveness[('team', team.id)] = raw_attract
             total_attractiveness += raw_attract
 
-        # AI competitors (CC-20: dynamic fit scores)
+        # AI competitors (CC-20: dynamic fit scores).  Their attractiveness
+        # has always diluted human share.  Keep it separate so we can publish
+        # the exact take without feeding it into N (Fix A: accounting only).
+        ai_allocations = []
         ai_competitors = (AICompetitorDefinition.objects.filter(
             scenario=context.scenario,
         )).order_by('name')
@@ -156,8 +162,13 @@ def run_bass_adoption(context):
             ai_attract = ai_fit_score ** competition_sharpness
             team_attractiveness[('ai', ai_comp.id)] = ai_attract
             total_attractiveness += ai_attract
+            ai_allocations.append((ai_comp, ai_fit_score, ai_attract))
 
         # Distribute adoption pool
+        # Sum the same cent-rounded values published in RoundResultAdoption;
+        # otherwise independently rounding every team's result can make the
+        # aggregate reconciliation differ by a cent.
+        human_new_adopters = Decimal('0.00')
         for team in context.teams:
             key = (team.id, segment.id, market.id)
             fit = context.adjusted_fit_scores.get(
@@ -224,6 +235,7 @@ def run_bass_adoption(context):
 
             # Store adoption result
             context.adoption[key] = team_new_adopters
+            human_new_adopters += Decimal(str(round(team_new_adopters, 2)))
 
             # Write to database
             RoundResultAdoption.objects.update_or_create(
@@ -246,6 +258,17 @@ def run_bass_adoption(context):
                     'cumulative_adopters': Decimal(str(round(new_cumulative, 2))),
                 },
             )
+
+        _record_ai_take_and_reconciliation(
+            game=game,
+            round_number=current_round,
+            segment=segment,
+            market=market,
+            adoption_pool=adoption_pool,
+            human_adopters=human_new_adopters,
+            total_attractiveness=total_attractiveness,
+            ai_allocations=ai_allocations,
+        )
 
     _log_adoption_summary(context)
 
@@ -376,6 +399,78 @@ def _get_acquisition_market_share_bonus(team, market):
         integration_complete=True,
     ).select_related('acquisition_target')).order_by('acquisition_target__target_name')
     return sum(float(a.acquisition_target.market_share_gained or 0) for a in completed)
+
+
+def _record_ai_take_and_reconciliation(*, game, round_number, segment, market,
+                                       adoption_pool, human_adopters,
+                                       total_attractiveness, ai_allocations):
+    """Persist an auditable accounting identity for one Bass pool.
+
+    This is deliberately after human allocation.  A price multiplier or a
+    production ceiling may make part of a human team's theoretical share
+    unserved, but it must never be silently reassigned to the AI.  Thus Fix A
+    records the take the existing denominator already gave AI competitors and
+    leaves both human outcomes and diffusion dynamics unchanged.
+    """
+    reported_pool = Decimal(str(round(adoption_pool, 2)))
+    reported_human = Decimal(str(human_adopters))
+    reported_ai = Decimal('0.00')
+    ai_ids = []
+
+    for ai_comp, ai_fit_score, ai_attract in ai_allocations:
+        share = ai_attract / total_attractiveness if total_attractiveness else 0.0
+        take = adoption_pool * share
+        reported_take = Decimal(str(round(take, 2)))
+        reported_ai += reported_take
+        ai_ids.append(ai_comp.id)
+        RoundResultAIAdoption.objects.update_or_create(
+            game=game,
+            round_number=round_number,
+            ai_competitor=ai_comp,
+            segment=segment,
+            market=market,
+            defaults={
+                'fit_score': Decimal(str(round(ai_fit_score, 4))),
+                'attractiveness': Decimal(str(round(ai_attract, 4))),
+                'share_pct': Decimal(str(round(share, 6))),
+                'new_adopters': reported_take,
+            },
+        )
+
+    stale_ai = RoundResultAIAdoption.objects.filter(
+        game=game, round_number=round_number, segment=segment, market=market,
+    )
+    if ai_ids:
+        stale_ai = stale_ai.exclude(ai_competitor_id__in=ai_ids)
+    stale_ai.delete()
+
+    # Inputs must not over-allocate the pool.  The final cent remainder is
+    # intentionally put in unserved demand so persisted rows reconcile exactly
+    # even when independently rounded human/AI figures straddle a cent.
+    if reported_human + reported_ai > reported_pool + Decimal('0.01'):
+        raise RuntimeError(
+            'Demand allocation exceeded its Bass pool for '
+            f'segment={segment.id}, market={market.id}, round={round_number}: '
+            f'pool={reported_pool}, human={reported_human}, ai={reported_ai}'
+        )
+    unserved = max(reported_pool - reported_human - reported_ai, Decimal('0.00'))
+    if reported_human + reported_ai + unserved != reported_pool:
+        raise RuntimeError(
+            'Demand reconciliation did not close for '
+            f'segment={segment.id}, market={market.id}, round={round_number}'
+        )
+    RoundResultDemandReconciliation.objects.update_or_create(
+        game=game,
+        round_number=round_number,
+        segment=segment,
+        market=market,
+        defaults={
+            'adoption_pool': reported_pool,
+            'human_adopters': reported_human,
+            'ai_adopters': reported_ai,
+            'unserved_adopters': unserved,
+        },
+    )
 
 
 def _log_adoption_summary(context):

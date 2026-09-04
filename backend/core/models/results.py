@@ -72,3 +72,67 @@ class RoundResultAdoption(models.Model):
     def __str__(self):
         market_name = self.market.name if self.market else 'Global'
         return f"Adoption: {self.team.name} × {self.segment.name} × {market_name} R{self.round_number}"
+
+
+class RoundResultAIAdoption(models.Model):
+    """The demand an AI competitor takes from a segment's Bass pool.
+
+    AI competitors have always participated in the attractiveness denominator.
+    Keeping their allocation beside the human result rows makes that otherwise
+    invisible share auditable without changing the diffusion dynamics.
+    """
+    id = models.BigAutoField(primary_key=True)
+    game = models.ForeignKey('core.Game', on_delete=models.PROTECT,
+                             related_name='ai_adoption_results')
+    round_number = models.IntegerField()
+    ai_competitor = models.ForeignKey(
+        'core.AICompetitorDefinition', on_delete=models.PROTECT,
+        related_name='adoption_results',
+    )
+    segment = models.ForeignKey('core.SegmentDefinition', on_delete=models.PROTECT,
+                                related_name='ai_adoption_results')
+    market = models.ForeignKey('core.MarketDefinition', on_delete=models.PROTECT,
+                               related_name='ai_adoption_results')
+    fit_score = models.DecimalField(max_digits=5, decimal_places=4)
+    attractiveness = models.DecimalField(max_digits=10, decimal_places=4)
+    share_pct = models.DecimalField(max_digits=7, decimal_places=6)
+    new_adopters = models.DecimalField(max_digits=15, decimal_places=2)
+
+    class Meta:
+        db_table = 'round_result_ai_adoption'
+        unique_together = [
+            ('game', 'round_number', 'ai_competitor', 'segment', 'market'),
+        ]
+
+    def __str__(self):
+        return (f"AI adoption: {self.ai_competitor.name} × {self.segment.name} "
+                f"× {self.market.name} R{self.round_number}")
+
+
+class RoundResultDemandReconciliation(models.Model):
+    """Per-pool accounting identity for a resolved demand allocation.
+
+    ``human + AI + unserved == adoption_pool`` is stored to cents, so a share
+    query is answerable from published game state instead of from a code audit.
+    ``unserved`` includes capacity and price-constrained human demand.
+    """
+    id = models.BigAutoField(primary_key=True)
+    game = models.ForeignKey('core.Game', on_delete=models.PROTECT,
+                             related_name='demand_reconciliations')
+    round_number = models.IntegerField()
+    segment = models.ForeignKey('core.SegmentDefinition', on_delete=models.PROTECT,
+                                related_name='demand_reconciliations')
+    market = models.ForeignKey('core.MarketDefinition', on_delete=models.PROTECT,
+                               related_name='demand_reconciliations')
+    adoption_pool = models.DecimalField(max_digits=15, decimal_places=2)
+    human_adopters = models.DecimalField(max_digits=15, decimal_places=2)
+    ai_adopters = models.DecimalField(max_digits=15, decimal_places=2)
+    unserved_adopters = models.DecimalField(max_digits=15, decimal_places=2)
+
+    class Meta:
+        db_table = 'round_result_demand_reconciliation'
+        unique_together = [('game', 'round_number', 'segment', 'market')]
+
+    def __str__(self):
+        return (f"Demand reconciliation: {self.segment.name} × {self.market.name} "
+                f"R{self.round_number}")

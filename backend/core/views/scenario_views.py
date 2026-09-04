@@ -713,7 +713,10 @@ def _delete_game_cascade(game):
         TeamMarketPresence, TeamStrategyFeatureLevel,
         TeamPlant, TeamPartnership, TeamAcquisition, TeamMarketModifier,
     )
-    from core.models.results import EventInstance, ActiveModifier, RoundResultAdoption
+    from core.models.results import (
+        EventInstance, ActiveModifier, RoundResultAdoption,
+        RoundResultAIAdoption, RoundResultDemandReconciliation,
+    )
     from core.models.results_financials import (
         RoundResultProductMarket as RRPM,
         RoundResultFinancials, RoundResultMarketRevenue,
@@ -738,6 +741,8 @@ def _delete_game_cascade(game):
     # unnoticed.
     EventInstance.objects.filter(game=game).delete()
     ActiveModifier.objects.filter(game=game).delete()
+    RoundResultAIAdoption.objects.filter(game=game).delete()
+    RoundResultDemandReconciliation.objects.filter(game=game).delete()
     RoundResultAdoption.objects.filter(game=game).delete()
     RRPM.objects.filter(game=game).delete()
     RoundResultFinancials.objects.filter(game=game).delete()

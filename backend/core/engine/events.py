@@ -381,6 +381,10 @@ def update_market_conditions(context):
 
         context.markets[market.id] = state
 
+        compounded_growth_factor = _compounded_growth_factor(
+            game, market, current_round,
+        )
+
         # Grow segment populations
         segments = (SegmentDefinition.objects.filter(
             scenario=scenario, market=market,
@@ -388,8 +392,14 @@ def update_market_conditions(context):
         for segment in segments:
             seg_state = SegmentEffectiveState(segment)
             base_pop = float(segment.population_size)
-            growth = base_pop * state.effective_growth_rate
-            seg_state.effective_population = (base_pop + growth) * state.demand_multiplier
+            # A round represents one market-growth interval. Population builds
+            # on the prior round's base, and uses the rate actually effective
+            # in *each* preceding round (including time-bounded events), not
+            # today's rate retroactively applied to all history.
+            seg_state.effective_population = (
+                base_pop * compounded_growth_factor
+                * state.demand_multiplier
+            )
 
             # Apply demand shock modifiers
             shocks = (ActiveModifier.objects.filter(
@@ -431,6 +441,40 @@ def update_market_conditions(context):
         seg_state = SegmentEffectiveState(segment)
         seg_state.effective_population = float(segment.population_size)
         context.segments[segment.id] = seg_state
+
+
+def _compounded_growth_factor(game, market, current_round):
+    """Return market population growth accumulated through ``current_round``.
+
+    ``MarketConditionByRound`` and temporary market-condition events can vary
+    the growth rate.  Applying the current rate to every historic period would
+    be another (subtler) form of the old flat-growth defect, so replay the
+    authored/event rate path and multiply one period at a time.
+    """
+    by_round = {
+        row.round_number: float(row.growth_rate_modifier)
+        for row in MarketConditionByRound.objects.filter(
+            market=market, round_number__lte=current_round,
+        ).order_by('round_number')
+    }
+    modifiers = list(ActiveModifier.objects.filter(
+        game=game,
+        modifier_type='market_condition',
+        target_market=market,
+        target_field='growth_rate',
+        started_round__lte=current_round,
+    ).order_by('pk'))
+    factor = 1.0
+    base_rate = float(market.base_growth_rate)
+    for round_number in range(1, current_round + 1):
+        rate = base_rate + by_round.get(round_number, 0.0)
+        for modifier in modifiers:
+            if (modifier.started_round <= round_number
+                    and (modifier.expires_round is None
+                         or modifier.expires_round > round_number)):
+                rate += float(modifier.modifier_value)
+        factor *= max(1.0 + rate, 0.0)
+    return factor
 
 
 # ---------------------------------------------------------------------------

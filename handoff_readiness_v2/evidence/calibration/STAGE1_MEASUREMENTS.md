@@ -14,7 +14,7 @@ Status: **items 2, 3 and 5 complete; items 1 and 4 need an engine run.**
 
 ## Item 3 — B2 confirmed. The economy contracts. (largest defect)
 
-`events.py` computes, every round:
+Before this handoff, `events.py` computed, every round:
 
 ```python
 base_pop = float(segment.population_size)      # the static authored value
@@ -22,43 +22,49 @@ growth   = base_pop * state.effective_growth_rate
 seg_state.effective_population = (base_pop + growth) * state.demand_multiplier
 ```
 
-Growth is applied **once, to the authored constant, every round**. It never
-accumulates. Measured across the whole economy:
+Growth was applied **once, to the authored constant, every round**. It never
+accumulated. Market conditions made the one-period value vary, but could not
+carry population from a prior round. The independent replay now follows the
+actual engine input path — `markets[].base_growth_rate` plus each
+`market_conditions` growth modifier — rather than the informational,
+engine-unused per-segment `growth_rates` YAML field. Measured across the whole
+economy:
 
 | | round 1 | round 5 | round 10 |
 |---|---|---|---|
-| M today (flat) | 58,590,000 | 58,590,000 | 58,590,000 |
-| M compounding | 58,590,000 | 78,210,778 | 115,692,118 |
+| M pre-fix (one-period) | 57,953,500 | 61,499,100 | 57,953,500 |
+| M compounding (shipped) | 57,953,500 | 80,561,643 | 107,504,457 |
 
-**The market is the same size in round 10 as in round 1.** Meanwhile `N`
-accumulates, so `M − N` drains:
+**The scheduled market condition can vary the one-period size, but no growth
+carries across rounds.** Meanwhile `N` accumulates, so `M − N` drains:
 
 | round | adoption pool (flat) | compounding | ratio |
 |---:|---:|---:|---:|
-| 1 | 1,655,745 | 1,655,745 | 1.00x |
-| 5 | 4,129,757 | 5,053,306 | 1.22x |
-| 8 | 5,691,569 | 8,821,544 | 1.55x |
-| 9 | **5,697,567** | 10,050,246 | 1.76x |
-| 10 | **5,364,072** | 11,176,920 | 2.08x |
+| 1 | 1,629,470 | 1,629,470 | 1.00x |
+| 5 | 4,234,041 | 5,040,030 | 1.19x |
+| 8 | **6,145,081** | 8,901,190 | 1.45x |
+| 9 | 5,565,161 | 9,451,719 | 1.70x |
+| 10 | 5,200,428 | 10,339,572 | 1.99x |
 
-**The pool peaks in round 9 and falls in round 10.** Penetration reaches
-**70%** economy-wide. Per segment-market it is worse than the aggregate hides:
+**The pre-fix pool peaks in round 8 and falls for two rounds.** Penetration
+reaches **71%** economy-wide. Per segment-market it is worse than the aggregate
+hides:
 
 - **Tech Enthusiasts peak in round 5** — half the game is played in decline.
-- **Premium Consumers reach 92% penetration**; their round-10 pool is **32%
+- **Premium Consumers reach 93% penetration**; their round-10 pool is **34%
   below** round 9.
-- **15 of 25 segment-markets are already contracting by round 10**; 5 are past
+- **20 of 25 segment-markets are already contracting by round 10**; 5 are past
   90% penetration.
 
-By round 10 the late game is **less than half** the size the authored growth
-rates describe. A team's late-round decisions compete over a shrinking pool,
-which inverts the intended arc of a ten-round course.
+By round 10 the late game was **about half** the size the authored growth path
+describes. A team's late-round decisions competed over a shrinking pool, which
+inverted the intended arc of a ten-round course. CRV2-11 now compounds each
+historical market rate, including finite event windows, into the effective
+population.
 
-Penetration is identical across markets for a given segment, because in the
-flat regime `N/M` depends only on `p` and `q` — the authored per-market growth
-rates (NA 0.02 … AFR 0.12) change absolute size and **nothing about the shape**.
-That is the defect in one sentence: authored growth currently cannot alter the
-trajectory.
+The pre-fix calculation did not accumulate any authored growth path. That is
+the defect in one sentence: the economy could be shocked in a round, but it
+could not grow across the game.
 
 ## Item 5 — round-0 parity holds; the ladder beneath it does not
 

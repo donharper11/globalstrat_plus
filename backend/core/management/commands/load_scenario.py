@@ -56,6 +56,13 @@ def _dec(val):
     return Decimal(str(val))
 
 
+def _ceiling_value(value):
+    """Return the ceiling from YAML's ``[ceiling, starting]`` pair."""
+    if isinstance(value, (list, tuple)):
+        value = value[0] if value else 0
+    return float(value or 0)
+
+
 def _validate_supply_chain(data, market_codes):
     """
     CC-1 §8 supply-chain cross-reference validation. Only runs when the scenario
@@ -163,7 +170,123 @@ def validate_scenario_yaml(data):
     # CC-1 §8: supply-chain cross-reference validation (runs only when SC present)
     errors.extend(_validate_supply_chain(data, market_codes))
 
+    # Calibration contract: a preference cannot ask students to attain a value
+    # outside the feature's legal range, or spend weight on a platform feature
+    # that no platform generation can ever provide.  These are loader errors,
+    # not soft data-quality observations, because both make an outcome
+    # unachievable by construction.
+    feature_defs = {
+        feature.get('code'): feature
+        for layer in (data.get('features') or {}).values()
+        for feature in (layer or [])
+        if isinstance(feature, dict) and feature.get('code')
+    }
+    platform_ceilings = {}
+    for generation in data.get('platform_generations', []) or []:
+        for code, ceiling in (generation.get('ceilings') or {}).items():
+            platform_ceilings.setdefault(code, []).append(_ceiling_value(ceiling))
+
+    for segment_name, market_preferences in (data.get('segment_preferences') or {}).items():
+        for market_code, preferences in (market_preferences or {}).items():
+            for pref in preferences or []:
+                if not isinstance(pref, (list, tuple)) or len(pref) < 4:
+                    errors.append(
+                        f"Preference {segment_name}/{market_code} must be "
+                        "[feature, ideal, weight, tolerance]."
+                    )
+                    continue
+                feature_code, ideal, weight, tolerance = pref[:4]
+                feature = feature_defs.get(feature_code)
+                if feature is None:
+                    errors.append(
+                        f"Preference {segment_name}/{market_code} references "
+                        f"unknown feature '{feature_code}'."
+                    )
+                    continue
+                try:
+                    ideal_value = float(ideal)
+                    weight_value = float(weight)
+                    tolerance_value = float(tolerance)
+                except (TypeError, ValueError):
+                    errors.append(
+                        f"Preference {segment_name}/{market_code}/{feature_code} "
+                        "ideal, weight and tolerance must be numeric."
+                    )
+                    continue
+                minimum = float(feature.get('min_value', 0))
+                maximum = float(feature.get('max_value', 20))
+                if not minimum <= ideal_value <= maximum:
+                    errors.append(
+                        f"Preference {segment_name}/{market_code}/{feature_code} "
+                        f"ideal {ideal} is outside feature range [{minimum}, {maximum}]."
+                    )
+                if tolerance_value <= 0:
+                    errors.append(
+                        f"Preference {segment_name}/{market_code}/{feature_code} "
+                        "tolerance must be greater than zero."
+                    )
+                if weight_value < 0:
+                    errors.append(
+                        f"Preference {segment_name}/{market_code}/{feature_code} "
+                        "weight must not be negative."
+                    )
+                if (feature.get('layer') == 'platform'
+                        and not any(value > 0 for value in platform_ceilings.get(feature_code, []))):
+                    errors.append(
+                        f"Preference {segment_name}/{market_code}/{feature_code} "
+                        "has weight on a platform feature unreachable in every generation."
+                    )
+
     return errors
+
+
+def scenario_validation_warnings(data):
+    """Return non-fatal calibration warnings a scenario author must see.
+
+    A zero weight is legal (it documents a deliberately dormant preference),
+    but it is reported.  Likewise a Gen-1-inaccessible platform preference can
+    be a deliberate upgrade incentive, so it remains loadable while being
+    explicit in the loader output and calibration report.
+    """
+    warnings = []
+    zero_weight_counts = {}
+    gen_one_unreachable_counts = {}
+    feature_defs = {
+        feature.get('code'): feature
+        for layer in (data.get('features') or {}).values()
+        for feature in (layer or [])
+        if isinstance(feature, dict) and feature.get('code')
+    }
+    generations = sorted(data.get('platform_generations', []) or [],
+                         key=lambda generation: generation.get('generation_order', 0))
+    first_gen = generations[0] if generations else None
+    for segment_name, market_preferences in (data.get('segment_preferences') or {}).items():
+        for market_code, preferences in (market_preferences or {}).items():
+            for pref in preferences or []:
+                if not isinstance(pref, (list, tuple)) or len(pref) < 4:
+                    continue
+                feature_code, _ideal, weight, _tolerance = pref[:4]
+                feature = feature_defs.get(feature_code)
+                if feature is None:
+                    continue
+                if float(weight) == 0:
+                    zero_weight_counts[feature_code] = zero_weight_counts.get(feature_code, 0) + 1
+                if (first_gen and feature.get('layer') == 'platform'
+                        and _ceiling_value(
+                            (first_gen.get('ceilings') or {}).get(feature_code, 0)) <= 0
+                        and float(weight) > 0):
+                    gen_one_unreachable_counts[feature_code] = (
+                        gen_one_unreachable_counts.get(feature_code, 0) + 1)
+    for feature_code, count in sorted(zero_weight_counts.items()):
+        warnings.append(
+            f"{count} preference(s) assign zero weight to {feature_code} "
+            "(deliberately dormant or dead weight).")
+    for feature_code, count in sorted(gen_one_unreachable_counts.items()):
+        warnings.append(
+            f"{count} preference(s) assign positive weight to {feature_code}, "
+            f"unreachable on Gen {first_gen.get('generation_order')}; document "
+            "it as an upgrade incentive.")
+    return warnings
 
 
 class Command(BaseCommand):
@@ -225,6 +348,8 @@ class Command(BaseCommand):
             for e in errors:
                 self.stderr.write(self.style.ERROR(e))
             raise CommandError(f"YAML validation failed with {len(errors)} errors")
+        for warning in scenario_validation_warnings(data):
+            self.stdout.write(self.style.WARNING(f"Calibration warning: {warning}"))
 
         scenario_name = data['scenario']['name']
 
@@ -260,7 +385,8 @@ class Command(BaseCommand):
                 'decision_budget_allocation', 'decision_esg', 'decision_partnership',
                 'decision_plant', 'decision_acquisition', 'decision_event_response',
                 'decision_research_allocation', 'decision_change_log', 'decision_submission',
-                'round_result_adoption', 'round_result_product_market',
+                'round_result_adoption', 'round_result_ai_adoption',
+                'round_result_demand_reconciliation', 'round_result_product_market',
                 'round_result_financials', 'round_result_market_revenue',
                 'round_result_performance_index', 'round_result_coherence',
                 'leaderboard_entry', 'instructor_alert',
