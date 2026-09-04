@@ -141,7 +141,8 @@ EXPECTED_OUTPUT_SECTIONS = {
     'team_governance_commitment', 'team_market_compliance', 'team_tax_structure',
     'team_org_structure', 'hedge_position',
     # published results
-    'financials', 'market_revenue', 'product_market', 'adoption', 'performance',
+    'financials', 'market_revenue', 'product_market', 'adoption', 'ai_adoption',
+    'demand_reconciliation', 'performance',
     'coherence', 'resilience', 'share_price', 'leaderboard', 'esg_impact',
     'talent_impact', 'partnership_impact', 'agent_cycle', 'instructor_alert',
 }
@@ -847,7 +848,7 @@ class ManifestSnapshotIntegrationTests(TestCase):
         with self.assertRaises(ManifestSchemaError):
             verify_input_state(legacy)
 
-    def test_prepare_and_complete_write_a_version_2_envelope(self):
+    def test_prepare_and_complete_write_the_current_version_envelope(self):
         from core.services.resolution_manifest import (
             MANIFEST_SCHEMA_VERSION, complete_manifest, prepare_manifest)
         self._write_decisions()
