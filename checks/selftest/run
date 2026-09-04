@@ -333,8 +333,77 @@ c=json.load(open(sys.argv[1])); c["checks"]["not-a-real-check"]={"enabled":True,
 json.dump(c,open(sys.argv[1],"w"),indent=2)
 PY
 "$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
-assert_rc 1 $? "a configured check with no executable is a failure, not a skip"
+assert_rc 2 $? "a configured check with no executable is could-not-run, not a skip"
 rm -rf "$D"
+
+# §2.1/§2.3: a CI run must leave a receipt, and the final workflow assertion
+# must fail when that receipt is absent. The assertion is deliberately tested
+# before the run, then against the receipt produced by the run.
+say "selftest: receipt and CI assertion"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": true, "mode": "blocking",
+    "patterns": [".claude/worktrees"] } } }
+JSON
+stamp_repo "$D"
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+"$PKG/bin/assert-ci-receipt" "$D" >/dev/null 2>&1
+assert_rc 1 $? "CI receipt assertion fails before a run"
+AIDE_CHECKS_ENV=ci "$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "CI-mode run writes a receipt"
+"$PKG/bin/assert-ci-receipt" "$D" >/dev/null 2>&1
+assert_rc 0 $? "CI receipt assertion passes on a real receipt"
+jq -e '.environment == "ci" and .ran == 1 and .exit_code == 0 and (.checks_run[0].units_examined > 0)' \
+  "$D/checks/.last-run.json" >/dev/null 2>&1
+assert_rc 0 $? "receipt carries CI environment, run count, exit and units"
+rm -rf "$D"
+
+# §2.1/§2.2: an enabled configuration in which no check executes is exit 2.
+# This is separate from a missing implementation: all configured checks are
+# deliberately disabled, so the runner must not call that clean.
+say "selftest: empty execution and empty corpus"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "no-agent-worktrees-tracked": { "enabled": false, "mode": "blocking",
+    "patterns": [".claude/worktrees"] } } }
+JSON
+stamp_repo "$D"
+git -C "$D" add -A >/dev/null; git -C "$D" commit -qm cfg
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 2 $? "ran 0 checks is exit 2"
+jq -e '.ran == 0 and .exit_code == 2 and (.checks_skipped[0].reason == "disabled in config")' \
+  "$D/checks/.last-run.json" >/dev/null 2>&1
+assert_rc 0 $? "ran-0 receipt records the skip reason and exit 2"
+
+# A tiny disposable package supplies a check that falsely reports a clean empty
+# corpus. The runner must turn that false pass into exit 2, independently of the
+# check's own implementation.
+ZROOT="$(mktemp -d)"; ZPKG="$ZROOT/pkg"; ZREPO="$(mktemp -d)"
+mkdir -p "$ZPKG"; cp -R "$PKG/bin" "$PKG/sh" "$ZPKG/"
+sed -i 's|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM="zero-fixture"|' "$ZPKG/bin/run-checks"
+cat > "$ZPKG/sh/zero-check" <<'SH'
+#!/usr/bin/env bash
+echo 'aide-checks: check-result name=zero-check units=0 findings=0 suppressions=0'
+exit 0
+SH
+chmod +x "$ZPKG/sh/zero-check"
+git init -q "$ZREPO"; git -C "$ZREPO" config user.email t@t; git -C "$ZREPO" config user.name t
+printf '# empty fixture\n' > "$ZREPO/README.md"
+mkdir -p "$ZREPO/checks"
+printf 'zero-fixture\n' > "$ZREPO/checks/.aide-checks-rev"
+cat > "$ZREPO/checks.config.json" <<'JSON'
+{ "stack": "python",
+  "checks": { "zero-check": { "enabled": true, "mode": "blocking" } } }
+JSON
+git -C "$ZREPO" add -A; git -C "$ZREPO" commit -qm cfg
+"$ZPKG/bin/run-checks" --full --repo="$ZREPO" >/dev/null 2>&1
+assert_rc 2 $? "zero findings over zero examined units is exit 2"
+jq -e '.checks_run[0].units_examined == 0 and .checks_run[0].findings == 0 and .exit_code == 2' \
+  "$ZREPO/checks/.last-run.json" >/dev/null 2>&1
+assert_rc 0 $? "empty-corpus receipt records zero units and exit 2"
+rm -rf "$ZROOT" "$ZREPO" "$D"
 
 # ══════════════════════════════════════════════════════════════════════════
 # The revision assertion (spec §2). AP-R10 applies to it exactly as it does to
@@ -401,7 +470,37 @@ mkdir -p "$V"; cp -R "$PKG/bin" "$PKG/sh" "$PKG/config" "$V/"
 sed -i 's|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM="0000dead"|' "$V/bin/run-checks"
 "$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
 assert_rc 2 $? "a stale runner is caught by its own stamp, not by the sidecar"
+# A runner and working tree can agree while the committed checks directory is
+# stale. That is the phase-2 failure mode §2.4 exists to catch.
+sed -i "s|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM=\"$PKG_REV\"|" "$V/bin/run-checks"
 stamp_repo "$D" "0000dead"
+git -C "$D" add checks/.aide-checks-rev; git -C "$D" commit -qm old-committed-revision
+stamp_repo "$D"
+"$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 2 $? "vendored revision differing from committed HEAD is exit 2"
+OUT="$("$V/bin/run-checks" --full --repo="$D" 2>&1)"
+printf '%s' "$OUT" | grep -q 'vendored working tree revision' \
+  && { say "    ok    divergence names the working vendored revision"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  divergence omits the working vendored revision"; FAIL=$((FAIL+1)); }
+printf '%s' "$OUT" | grep -q 'revision committed at HEAD' \
+  && { say "    ok    divergence names the committed revision"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  divergence omits the committed revision"; FAIL=$((FAIL+1)); }
+
+# A normal adoption commit stages the new marker while HEAD still contains the
+# old one. The pre-commit hook must validate the staged claim; otherwise the
+# assertion makes the first commit of every runner revision impossible. The
+# unstaged case above remains the HEAD comparison that catches current working
+# tree content beside a stale commit.
+stamp_repo "$D"
+git -C "$D" add checks/.aide-checks-rev
+"$PKG/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
+assert_rc 0 $? "a staged vendored revision is compared against the index"
+jq -e --arg rev "$PKG_REV" '.committed_revision == $rev' \
+  "$D/checks/.last-run.json" >/dev/null 2>&1
+assert_rc 0 $? "receipt records the staged committed revision"
+git -C "$D" reset -q HEAD -- checks/.aide-checks-rev
+stamp_repo "$D" "0000dead"
+sed -i 's|^AIDE_CHECKS_BUILT_FROM=.*|AIDE_CHECKS_BUILT_FROM="0000dead"|' "$V/bin/run-checks"
 "$V/bin/run-checks" --full --repo="$D" >/dev/null 2>&1
 assert_rc 0 $? "the same runner passes against a repo vendored at its own revision"
 

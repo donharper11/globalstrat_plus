@@ -7,7 +7,8 @@
 #   run-checks --print-revision  print the revision this runner was built from
 #
 # Reads the host repo's checks.config.json. Exits non-zero if any check that is
-# enabled AND in blocking mode fails, except under --report-only.
+# enabled AND in blocking mode fails, except under --report-only. A check that
+# cannot run, or a run that executes nothing, is exit 2 in every mode.
 #
 # A check that cannot run (exit 2) is a failure, not a pass. That is the whole
 # point of AP-R10: a check counts only when it can fail.
@@ -20,6 +21,8 @@ set -uo pipefail
 MODE="full"
 REPO_ROOT=""
 CONFIG=""
+PARSE_ERROR=0
+HELP=0
 for a in "$@"; do
   case "$a" in
     --fast)        MODE="fast" ;;
@@ -31,8 +34,8 @@ for a in "$@"; do
     --print-revision) MODE="print-revision" ;;
     --repo=*)      REPO_ROOT="${a#--repo=}" ;;
     --config=*)    CONFIG="${a#--config=}" ;;
-    -h|--help)     sed -n '2,16p' "$0"; exit 0 ;;
-    *) echo "run-checks: unknown argument '$a'" >&2; exit 2 ;;
+    -h|--help)     HELP=1 ;;
+    *) echo "run-checks: unknown argument '$a'" >&2; PARSE_ERROR=1 ;;
   esac
 done
 
@@ -42,10 +45,109 @@ PKG="$(cd "$HERE/.." && pwd)"
 # one-liner ran `pwd` after a SUCCESSFUL git call and put two paths in REPO_ROOT.
 # The following `cd` then failed and left it empty. Latent until now — every
 # caller passes --repo — but the revision assertion below reads REPO_ROOT.
-[ -n "$REPO_ROOT" ] || REPO_ROOT="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null)"
-[ -n "$REPO_ROOT" ] || REPO_ROOT="$(cd "$PKG/.." && pwd)"
-REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
+if [ -z "$REPO_ROOT" ]; then
+  REPO_ROOT="$(git --no-optional-locks -C "$PKG" rev-parse --show-toplevel 2>/dev/null || true)"
+fi
+if [ -z "$REPO_ROOT" ]; then
+  REPO_ROOT="$(cd "$PKG/.." && pwd)"
+fi
+if ! REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"; then
+  REPO_ROOT="unknown"
+fi
 [ -n "$CONFIG" ] || CONFIG="$REPO_ROOT/checks.config.json"
+
+# ─── receipt ───────────────────────────────────────────────────────────────
+# A green status without evidence that the layer ran is not a green result.
+# Keep receipt construction in the runner so revision/configuration errors are
+# receipts too, not exceptions to the proof.
+case "${AIDE_CHECKS_ENV:-}" in
+  local|ci|deploy-gate) ENVIRONMENT="$AIDE_CHECKS_ENV" ;;
+  *)
+    if [ "${GITHUB_ACTIONS:-}" = "true" ] || [ "${CI:-}" = "true" ] || [ "${CODEX_CI:-}" = "1" ]; then
+      ENVIRONMENT="ci"
+    else
+      ENVIRONMENT="local"
+    fi
+    ;;
+esac
+
+declare -a RUN_NAMES=() RUN_UNITS=() RUN_FINDINGS=() RUN_SUPPRESSIONS=() RUN_EXITS=()
+declare -a SKIP_NAMES=() SKIP_REASONS=()
+RAN=0; SKIPPED=0; FAILED=0; ERRORED=0
+RECEIPT_DONE=0
+RECEIPT_TMP="$(mktemp)"
+RECEIPT_PATH="$REPO_ROOT/checks/.last-run.json"
+REV_VENDORED="absent"
+REV_COMMITTED="absent"
+REV_RUNNING="unknown"
+
+json_string() {
+  local s="${1-}"
+  s=${s//\\/\\\\}; s=${s//\"/\\\"}
+  s=${s//$'\n'/\\n}; s=${s//$'\r'/\\r}; s=${s//$'\t'/\\t}
+  printf '"%s"' "$s"
+}
+
+write_receipt() {
+  local rc="$1" now i
+  [ "$RECEIPT_DONE" -eq 0 ] || return 0
+  RECEIPT_DONE=1
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  {
+    printf '{\n'
+    printf '  "revision": '; json_string "$REV_RUNNING"; printf ',\n'
+    printf '  "vendored_revision": '; json_string "$REV_VENDORED"; printf ',\n'
+    printf '  "committed_revision": '; json_string "$REV_COMMITTED"; printf ',\n'
+    printf '  "mode": '; json_string "$MODE"; printf ',\n'
+    printf '  "repo": '; json_string "$(basename "$REPO_ROOT")"; printf ',\n'
+    printf '  "environment": '; json_string "$ENVIRONMENT"; printf ',\n'
+    printf '  "timestamp_utc": '; json_string "$now"; printf ',\n'
+    printf '  "checks_run": ['
+    for i in "${!RUN_NAMES[@]}"; do
+      [ "$i" -eq 0 ] || printf ', '
+      printf '{"name": '; json_string "${RUN_NAMES[$i]}"
+      printf ', "units_examined": %s, "findings": %s, "suppressions": %s, "exit_code": %s}' \
+        "${RUN_UNITS[$i]}" "${RUN_FINDINGS[$i]}" "${RUN_SUPPRESSIONS[$i]}" "${RUN_EXITS[$i]}"
+    done
+    printf '],\n'
+    printf '  "checks_skipped": ['
+    for i in "${!SKIP_NAMES[@]}"; do
+      [ "$i" -eq 0 ] || printf ', '
+      printf '{"name": '; json_string "${SKIP_NAMES[$i]}"; printf ', "reason": '; json_string "${SKIP_REASONS[$i]}"; printf '}'
+    done
+    printf '],\n'
+    printf '  "findings_per_check": {'
+    for i in "${!RUN_NAMES[@]}"; do
+      [ "$i" -eq 0 ] || printf ', '
+      json_string "${RUN_NAMES[$i]}"; printf ': %s' "${RUN_FINDINGS[$i]}"
+    done
+    printf '},\n  "suppressions_per_check": {'
+    for i in "${!RUN_NAMES[@]}"; do
+      [ "$i" -eq 0 ] || printf ', '
+      json_string "${RUN_NAMES[$i]}"; printf ': %s' "${RUN_SUPPRESSIONS[$i]}"
+    done
+    printf '},\n'
+    printf '  "ran": %s, "skipped": %s, "blocking_failures": %s, "could_not_run": %s,\n' \
+      "$RAN" "$SKIPPED" "$FAILED" "$ERRORED"
+    printf '  "exit_code": %s\n' "$rc"
+    printf '}\n'
+  } > "$RECEIPT_TMP"
+
+  if [ -d "$REPO_ROOT/checks" ] && [ -w "$REPO_ROOT/checks" ]; then
+    cp "$RECEIPT_TMP" "$RECEIPT_PATH" 2>/dev/null || true
+  fi
+  printf 'aide-checks receipt: '
+  sed -n '1p' "$RECEIPT_TMP"
+  rm -f "$RECEIPT_TMP"
+}
+on_exit() { local rc="$1"; write_receipt "$rc"; }
+trap 'on_exit $?' EXIT
+
+if [ "$HELP" -eq 1 ]; then
+  sed -n '2,16p' "$0"
+  exit 0
+fi
+[ "$PARSE_ERROR" -eq 0 ] || exit 2
 
 # ─── revision assertion — phase 2 spec §2 ───────────────────────────────────
 # Version drift must not be able to produce a silent pass.
@@ -62,7 +164,7 @@ REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
 # already treats an absent scanner this way and a stale runner is the same class
 # of event. `--report-only` does NOT suppress this, and there is no bypass flag:
 # a stale runner cannot report meaningfully on anything, report-only included.
-AIDE_CHECKS_BUILT_FROM="b50aeba"  # stamped by bin/sync-into-repo
+AIDE_CHECKS_BUILT_FROM="f9f2332"  # stamped by bin/sync-into-repo
 
 # The revision the RUNNING package was built from.
 #
@@ -88,10 +190,16 @@ _rev_running() {
   esac
 }
 
-REV_STAMP="$REPO_ROOT/checks/.aide-checks-rev"
 REV_RUNNING="$(_rev_running)"
 
-if [ "$MODE" = "print-revision" ]; then printf '%s\n' "$REV_RUNNING"; exit 0; fi
+if [ "$MODE" = "print-revision" ]; then
+  trap - EXIT
+  rm -f "$RECEIPT_TMP"
+  printf '%s\n' "$REV_RUNNING"
+  exit 0
+fi
+
+REV_STAMP="$REPO_ROOT/checks/.aide-checks-rev"
 
 # Name the clone, never the vendored copy: re-vendoring from checks/ would
 # re-install the stale runner and call the drift resolved.
@@ -100,6 +208,28 @@ _sync_hint() {
   [ "$(basename "$PKG")" = "checks" ] && clone="<your aide-checks clone>"
   printf '    %s/bin/sync-into-repo %s\n' "$clone" "$REPO_ROOT"
 }
+
+if [ -f "$REV_STAMP" ]; then
+  REV_VENDORED="$(tr -d '[:space:]' < "$REV_STAMP")"
+fi
+
+# The sidecar is the working-tree claim. The index is the claim that a
+# pre-commit hook is about to make when the revision marker is staged; HEAD is
+# the committed claim otherwise. A current working tree beside a stale commit
+# is still stale to a fresh CI checkout, so an unstaged marker is compared to
+# HEAD. Reading the staged marker closes the bootstrap gap where the assertion
+# would otherwise reject the commit that first adopts a new runner.
+if [ "$PKG" != "$REPO_ROOT" ]; then
+  REV_INDEX_DIFF=0
+  git --no-optional-locks -C "$REPO_ROOT" diff --cached --quiet -- checks/.aide-checks-rev >/dev/null 2>&1
+  REV_INDEX_DIFF=$?
+  if [ "$REV_INDEX_DIFF" -eq 1 ]; then
+    REV_COMMITTED="$(git --no-optional-locks -C "$REPO_ROOT" show :checks/.aide-checks-rev 2>/dev/null | tr -d '[:space:]' || true)"
+  else
+    REV_COMMITTED="$(git --no-optional-locks -C "$REPO_ROOT" show HEAD:checks/.aide-checks-rev 2>/dev/null | tr -d '[:space:]' || true)"
+  fi
+  [ -n "$REV_COMMITTED" ] || REV_COMMITTED="absent"
+fi
 
 if [ ! -f "$REV_STAMP" ]; then
   if [ "$PKG" = "$REPO_ROOT" ]; then
@@ -118,7 +248,6 @@ if [ ! -f "$REV_STAMP" ]; then
     exit 2
   fi
 else
-  REV_VENDORED="$(tr -d '[:space:]' < "$REV_STAMP")"
   if [ "$REV_RUNNING" = "unknown" ]; then
     echo "run-checks: ERROR the running package carries no revision." >&2
     echo "run-checks: runner built from : unknown (no git checkout, no sync stamp)" >&2
@@ -140,6 +269,15 @@ else
   echo "aide-checks: revision ${REV_RUNNING} matches $(basename "$REPO_ROOT")/checks/.aide-checks-rev"
 fi
 
+if [ "$PKG" != "$REPO_ROOT" ] && [ "$REV_VENDORED" != "$REV_COMMITTED" ]; then
+  echo "run-checks: ERROR vendored-vs-committed revision divergence — could not run." >&2
+  echo "run-checks: vendored working tree revision : ${REV_VENDORED}" >&2
+  echo "run-checks: revision committed at HEAD     : ${REV_COMMITTED}" >&2
+  echo "run-checks: both revisions must match; fix — re-vendor and commit the checks directory:" >&2
+  _sync_hint >&2
+  exit 2
+fi
+
 
 command -v jq >/dev/null 2>&1 || { echo "run-checks: ERROR jq not found." >&2; exit 2; }
 [ -f "$CONFIG" ] || { echo "run-checks: ERROR no config at $CONFIG" >&2; exit 2; }
@@ -148,7 +286,6 @@ jq empty "$CONFIG" 2>/dev/null || { echo "run-checks: ERROR $CONFIG is not valid
 STACK="$(jq -r '.stack // "unknown"' "$CONFIG")"
 echo "aide-checks ${MODE} — repo $(basename "$REPO_ROOT") (stack: ${STACK})"
 
-FAILED=0; RAN=0; SKIPPED=0; ERRORED=0
 declare -a FAILED_NAMES=()
 
 for name in $(jq -r '.checks | keys[]' "$CONFIG"); do
@@ -159,10 +296,12 @@ for name in $(jq -r '.checks | keys[]' "$CONFIG"); do
   fast="$(jq -r --arg c "$name" '.checks[$c] | if has("fast") then .fast else true end' "$CONFIG")"
 
   if [ "$enabled" != "true" ]; then
-    echo "  SKIP ${name} (disabled in config)"; SKIPPED=$((SKIPPED+1)); continue
+    echo "  SKIP ${name} (disabled in config)"
+    SKIP_NAMES+=("$name"); SKIP_REASONS+=("disabled in config"); SKIPPED=$((SKIPPED+1)); continue
   fi
   if [ "$MODE" = "fast" ] && [ "$fast" != "true" ]; then
-    echo "  SKIP ${name} (not in the --fast subset)"; SKIPPED=$((SKIPPED+1)); continue
+    echo "  SKIP ${name} (not in the --fast subset)"
+    SKIP_NAMES+=("$name"); SKIP_REASONS+=("not in the --fast subset"); SKIPPED=$((SKIPPED+1)); continue
   fi
 
   script=""
@@ -176,6 +315,25 @@ for name in $(jq -r '.checks | keys[]' "$CONFIG"); do
   RAN=$((RAN+1))
   out="$("$script" "$REPO_ROOT" "$CONFIG" 2>&1)"; rc=$?
   printf '%s\n' "$out" | sed 's/^/  /'
+
+  units=""; findings=""; suppressions=""
+  result_line="$(printf '%s\n' "$out" | sed -n 's/^aide-checks: check-result name=\([^ ]*\) units=\([0-9][0-9]*\) findings=\([0-9][0-9]*\) suppressions=\([0-9][0-9]*\)$/\1\t\2\t\3\t\4/p' | tail -1)"
+  if [ -n "$result_line" ]; then
+    IFS=$'\t' read -r result_name units findings suppressions <<< "$result_line"
+    if [ "$result_name" != "$name" ]; then
+      echo "  ERROR ${name}: result line names ${result_name}, not ${name}" >&2
+      rc=2
+    fi
+  else
+    echo "  ERROR ${name}: check emitted no units/findings/suppressions result" >&2
+    rc=2
+  fi
+  if [ -n "$units" ] && [ -n "$findings" ] && [ "$units" -eq 0 ] && [ "$findings" -eq 0 ]; then
+    echo "  ERROR ${name}: zero findings over zero examined units is exit 2, not a pass" >&2
+    rc=2
+  fi
+  units="${units:-0}"; findings="${findings:-0}"; suppressions="${suppressions:-0}"
+  RUN_NAMES+=("$name"); RUN_UNITS+=("$units"); RUN_FINDINGS+=("$findings"); RUN_SUPPRESSIONS+=("$suppressions"); RUN_EXITS+=("$rc")
   if [ "$rc" -ne 0 ]; then
     if [ "$rc" -eq 2 ]; then ERRORED=$((ERRORED+1)); fi
     if [ "$cmode" = "blocking" ] || [ "$rc" -eq 2 ]; then
@@ -187,6 +345,14 @@ for name in $(jq -r '.checks | keys[]' "$CONFIG"); do
 done
 
 echo "aide-checks: ran ${RAN}, skipped ${SKIPPED}, blocking failures ${FAILED}, could-not-run ${ERRORED}"
+if [ "$RAN" -eq 0 ]; then
+  echo "aide-checks: ERROR ran 0 checks — an empty execution is exit 2, not a pass." >&2
+  exit 2
+fi
+if [ "$ERRORED" -gt 0 ]; then
+  echo "aide-checks: COULD NOT RUN — ${FAILED_NAMES[*]}" >&2
+  exit 2
+fi
 if [ "$MODE" = "report-only" ]; then
   [ "$FAILED" -gt 0 ] && echo "aide-checks: report-only — exiting 0 despite ${FAILED} failure(s): ${FAILED_NAMES[*]}"
   exit 0

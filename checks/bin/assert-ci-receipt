@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# ─── CI execution assertion ────────────────────────────────────────────────
+#
+#   bin/assert-ci-receipt <repo root>
+#
+# A workflow that has no receipt did not demonstrate that aide-checks ran.
+# This is intentionally a separate, final workflow step so a failed or skipped
+# run cannot make the artifact assertion disappear with it.
+set -uo pipefail
+
+REPO_ROOT="${1:?repo root required}"
+RECEIPT="${2:-$REPO_ROOT/checks/.last-run.json}"
+
+command -v jq >/dev/null 2>&1 || {
+  echo "aide-checks CI receipt: ERROR jq is required to inspect the receipt" >&2
+  exit 2
+}
+[ -s "$RECEIPT" ] || {
+  echo "aide-checks CI receipt: ERROR no receipt at $RECEIPT — checks did not run" >&2
+  exit 1
+}
+jq empty "$RECEIPT" >/dev/null 2>&1 || {
+  echo "aide-checks CI receipt: ERROR receipt is not valid JSON: $RECEIPT" >&2
+  exit 1
+}
+jq -e '
+  (.environment == "ci") and
+  (.revision | type == "string") and
+  (.mode | type == "string") and
+  (.repo | type == "string") and
+  (.timestamp_utc | type == "string") and
+  (.checks_run | type == "array") and
+  (.checks_skipped | type == "array") and
+  (.findings_per_check | type == "object") and
+  (.suppressions_per_check | type == "object") and
+  (.exit_code | type == "number")
+' "$RECEIPT" >/dev/null 2>&1 || {
+  echo "aide-checks CI receipt: ERROR receipt is missing required CI fields: $RECEIPT" >&2
+  exit 1
+}
+echo "aide-checks CI receipt: present at $RECEIPT"

@@ -1,10 +1,18 @@
 name: aide-checks
 on: [push, pull_request]
+
+# Declared rather than inferred. run-checks would guess "ci" from
+# GITHUB_ACTIONS, but the receipt assertion requires environment == "ci", and a
+# proof that depends on a guess is one runner change away from being wrong.
+env:
+  AIDE_CHECKS_ENV: ci
+
 jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: install gitleaks
         run: |
           V=8.28.0
@@ -12,7 +20,51 @@ jobs:
             "https://github.com/gitleaks/gitleaks/releases/download/v${V}/gitleaks_${V}_linux_x64.tar.gz"
           tar xzf /tmp/gl.tar.gz -C /tmp gitleaks
           sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+
       - name: prove the checks can fail
+        id: selftest
+        continue-on-error: true
         run: ./checks/selftest/run
+
+      # Runs even if the selftest failed. A run that stops before this point
+      # produces no receipt, and "no receipt" is indistinguishable from "the
+      # checks were skipped" -- which is the state the receipt exists to make
+      # visible. The gate step below is what fails the job.
       - name: run checks
+        id: checks
+        if: always()
+        continue-on-error: true
         run: ./checks/bin/run-checks --full --repo="$GITHUB_WORKSPACE"
+
+      # Deliberately not continue-on-error: an invalid or absent receipt fails
+      # the job on its own, independently of what the runner reported.
+      - name: assert the CI receipt
+        id: receipt
+        if: always()
+        run: ./checks/bin/assert-ci-receipt "$GITHUB_WORKSPACE"
+
+      # The receipt is a dotfile, which upload-artifact excludes by default --
+      # the upload would silently succeed with nothing in it.
+      - name: upload the receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aide-checks-receipt
+          path: checks/.last-run.json
+          include-hidden-files: true
+          if-no-files-found: error
+
+      - name: gate on selftest and runner outcome
+        if: always()
+        run: |
+          fail=0
+          if [ "${{ steps.selftest.outcome }}" != "success" ]; then
+            echo "aide-checks: selftest did not succeed (${{ steps.selftest.outcome }})"
+            fail=1
+          fi
+          if [ "${{ steps.checks.outcome }}" != "success" ]; then
+            echo "aide-checks: checks runner did not succeed (${{ steps.checks.outcome }})"
+            fail=1
+          fi
+          [ "$fail" -eq 0 ] && echo "aide-checks: selftest and runner both succeeded"
+          exit "$fail"

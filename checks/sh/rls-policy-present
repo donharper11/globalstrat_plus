@@ -184,6 +184,7 @@ ORDER BY 1,2;" > "$WORK/tables.tsv" 2>"$WORK/q.err" || {
 
 TOTAL=$(wc -l < "$WORK/tables.tsv" | tr -d ' ')
 [ "$TOTAL" -gt 0 ] || {
+  echo "aide-checks: check-result name=${CHECK_NAME} units=0 findings=0 suppressions=0"
   echo "${CHECK_NAME}: ERROR the configured schema(s) ${SCHEMAS[*]} hold no tables." >&2
   echo "${CHECK_NAME}: a check that inspects nothing cannot fail; refusing to report a pass." >&2
   exit 2; }
@@ -318,6 +319,8 @@ fi
 VIOL=$((A1 + A2A + A2B))
 GTN=${#GLOBAL_TABLES[@]}
 EXN=${#EXEMPT_TABLES[@]}
+
+echo "aide-checks: check-result name=${CHECK_NAME} units=${TOTAL} findings=${VIOL} suppressions=${A1EX}"
 
 # An exemption is never silent. If the exemption list is doing the work, the
 # count says so on PASS and on FAIL alike, so nobody reads a low number as

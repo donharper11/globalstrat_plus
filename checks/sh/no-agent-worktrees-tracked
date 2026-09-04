@@ -31,6 +31,8 @@ fi
 
 TRACKED="$(git --no-optional-locks -C "$REPO_ROOT" ls-files 2>/dev/null)" || {
   echo "${CHECK_NAME}: ERROR not a git repository: $REPO_ROOT" >&2; exit 2; }
+UNITS=0
+[ -n "$TRACKED" ] && UNITS=$(printf '%s\n' "$TRACKED" | sed '/^$/d' | wc -l | tr -d ' ')
 
 HITS=""
 for p in "${PATTERNS[@]}"; do
@@ -39,9 +41,17 @@ for p in "${PATTERNS[@]}"; do
   [ -n "$m" ] && HITS="${HITS}${m}"$'\n'
 done
 HITS="$(printf '%s' "$HITS" | sed '/^$/d' | sort -u)"
+N=0
+[ -n "$HITS" ] && N=$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')
+
+echo "aide-checks: check-result name=${CHECK_NAME} units=${UNITS} findings=${N} suppressions=0"
+
+if [ "$UNITS" -eq 0 ] && [ "$N" -eq 0 ]; then
+  echo "${CHECK_NAME}: ERROR zero findings over zero examined units — could not run." >&2
+  exit 2
+fi
 
 if [ -n "$HITS" ]; then
-  N=$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')
   echo "${CHECK_NAME}: FAIL ${N} tracked path(s) under a harness worktree pattern"
   printf '%s\n' "$HITS" | head -25 | sed 's/^/  /'
   [ "$N" -gt 25 ] && echo "  … and $((N-25)) more"

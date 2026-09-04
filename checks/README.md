@@ -49,7 +49,10 @@ The revision is stamped in two places, and both are load-bearing.
 `AIDE_CHECKS_BUILT_FROM` inside the copied `bin/run-checks`. The sidecar alone
 cannot catch the drift the assertion exists for — replace `checks/bin` from an
 older clone and the sidecar still reads current. Run from the package's own git
-checkout, `HEAD` is the authority instead.
+checkout, `HEAD` is the authority instead. During a pre-commit adoption, when
+`checks/.aide-checks-rev` is staged, the assertion reads the staged marker;
+otherwise it reads `HEAD`. That permits the adoption commit while still
+rejecting an unstaged current tree beside a stale committed revision.
 
 `run-checks --print-revision` prints what a runner thinks it is. It suppresses
 nothing.
