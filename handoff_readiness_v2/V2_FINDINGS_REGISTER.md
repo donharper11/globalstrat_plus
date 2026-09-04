@@ -208,34 +208,44 @@ off. **That orphan is the one item worth an owner's decision.**
 
 Evidence: `evidence/decision-rules/v2-053/`.
 
-Raised by the builder during Stage 3B, before repair, because the repair is a
+### Historical condition before R10 — superseded
+
+**Everything in this section describes the state that raised V2-053, between
+Ruling 1 and R10. None of it is current.** It is kept because it is why the
+finding exists and what the implementation had to undo; the rule in force is
+the one stated above.
+
+Raised by the builder during Stage 3B, before repair, because the repair was a
 rules decision rather than a defect fix.
 
-Ruling 1 retires `_process_feature_investments`. That function was the only
+Ruling 1 retired `_process_feature_investments`. That function was the only
 consumer of `DecisionRDInvestment` that changed anything about a product. The
-rows themselves are still accepted (on platforms not yet ready), still charged
+rows themselves were still accepted (on platforms not yet ready), still charged
 against cash and the R&D budget, and still **scored**:
 
-- `engine/performance.py` sums `rd_investments.amount` into `rd_spend` and
-  scores it against the scenario's `rd_spend_target`. This is the R&D component
-  of the performance index (V2-021).
-- `engine/coherence.py` iterates the same rows to score feature/segment
+- `engine/performance.py` summed `rd_investments.amount` into `rd_spend` and
+  scored it against the scenario's `rd_spend_target`. That was the R&D
+  component of the performance index (V2-021).
+- `engine/coherence.py` iterated the same rows to score feature/segment
   alignment.
 
-So after Ruling 1 a team can spend on R&D, be charged for it, score for it, and
-receive no capability in return. Spend becomes score-buying disconnected from
-the product.
+So between Ruling 1 and R10 a team could spend on R&D, be charged for it, score
+for it, and receive no capability in return. Spend had become score-buying
+disconnected from the product.
 
-**Two further facts, both measured:**
+**Two further facts, both measured at the time:**
 
-- Rows targeting a platform that is not yet ready were **already** inert before
-  Ruling 1 — the retired processor began with `if tp.status != 'active':
-  continue`. So the silent-ignore predates this handoff; Ruling 1 widens it to
-  every row.
-- Freezing *all* platforms rather than only ready ones would close the
-  silent-ignore, but it would take `rd_spend` and the R&D coherence term to zero
-  for every team in every round, permanently. **That is a balance rewrite and
-  was not done.**
+- Rows targeting a platform that was not yet ready were **already** inert
+  before Ruling 1 — the retired processor began with `if tp.status !=
+  'active': continue`. So the silent-ignore predated that handoff; Ruling 1
+  widened it to every row.
+- Freezing *all* platforms rather than only ready ones would have closed the
+  silent-ignore, but would also have taken `rd_spend` and the R&D coherence
+  term to zero for every team in every round, permanently. **That was a balance
+  rewrite, and was not done by a builder** — it is what R10 was raised to
+  decide.
+
+### Rule in force — R10
 
 **Rules-owner decision, 2026-09-04.** Spending affects the simulation through
 its budget, cash, financial-performance, and delivered-capability consequences;
