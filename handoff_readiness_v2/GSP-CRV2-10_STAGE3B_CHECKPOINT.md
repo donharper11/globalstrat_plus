@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3B checkpoint — the upgrade path is retired
 
-Runtime revision: `dc60131` (frozen before evidence)
+Runtime revision: `0a3d6a2` (frozen before evidence)
 Evidence: `handoff_readiness_v2/evidence/decision-rules/stage3b/`
 
 **Status: implemented, pending integrated Stage 3/4 closure.**
@@ -102,7 +102,7 @@ not accept it as current. Recorded in `GSP-CRV2-10_RULE_DECISIONS.md`.
 
 ## 7. Verification
 
-Affected focused set, run once from clean revision `dc60131`:
+Affected focused set, run once from clean revision `0a3d6a2`:
 **298 distinct, 298 executed, `OK`**, whole tree clean at both ends, same
 revision at both ends.
 

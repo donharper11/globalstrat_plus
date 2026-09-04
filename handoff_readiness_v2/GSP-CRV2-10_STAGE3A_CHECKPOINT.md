@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 3A — checkpoint, not closure
 
-**Runtime revision `f348d24`.** Clean tree. Frozen before this evidence was
+**Runtime revision `5ccb9f8`.** Clean tree. Frozen before this evidence was
 generated.
 
 **Stage 3 is not closed.** Immutability — freezing a ready platform and
@@ -8,7 +8,7 @@ retiring the feature-upgrade path — lands only after Stage 4 delivers
 re-basing, so the product is never in a state where neither route to a better
 product exists.
 
-Reworked once after the checkpoint audit of `ce163bb`. What that audit found is
+Reworked once after the checkpoint audit of `34035de`. What that audit found is
 recorded below rather than quietly fixed.
 
 ## The five items
@@ -102,7 +102,7 @@ default branch twice.
 ## Evidence
 
 - `evidence/decision-rules/stage3a/test-transcript.txt` — affected set run once
-  at `f348d24`: **95 tests, OK**. Written to a temporary path outside the
+  at `5ccb9f8`: **95 tests, OK**. Written to a temporary path outside the
   repository and moved in afterwards, so producing the artifact cannot dirty
   the tree its header reports; the header records **0 modified tracked files
   at the start and at the end**
@@ -112,7 +112,7 @@ default branch twice.
 
 ## V2-045 — funding is allocated as a set
 
-The independent audit of `f81426c` found the funding decision was made one
+The independent audit of `a79c935` found the funding decision was made one
 platform at a time against the same unreserved balance: two $1,000,000 drafts
 against $1,500,000 both started, and the accounting path booked $2,000,000.
 
@@ -150,7 +150,7 @@ payload. A request for an already-held generation was accepted with a 200,
 persisted at its price, then silently skipped by the engine, which booked
 nothing — a stored decision replaced with no decision at all. And a carried
 draft was never reconciled against another non-retired platform of its
-generation, so an upgrade residue from `f39b853` promoted into a second live
+generation, so an upgrade residue from `1f68f5e` promoted into a second live
 platform.
 
 Both writes now refuse a held generation before replacement; Phase 1 refuses a
@@ -168,7 +168,7 @@ exists.
 
 ## Two carried drafts are invalid inventory
 
-The allocator's defence was incomplete twice. At `83ec2bd` it built its
+The allocator's defence was incomplete twice. At `2195a0b` it built its
 live-generations set by excluding `unfunded_draft`, so two carried drafts for
 one generation were invisible to it and the de-duplication promoted the first —
 choosing a winner from inventory that should be refused, and charging for it.
@@ -198,18 +198,18 @@ invented.
 
 ## Status of the findings
 
-**All Stage 3A findings are implemented by `f348d24`, pending integrated Stage
+**All Stage 3A findings are implemented by `5ccb9f8`, pending integrated Stage
 3 closure.** Each landed at its own revision, and the last of them is what the
 frozen runtime carries:
 
 | Finding | Implemented at |
 |---|---|
-| V2-039 unlock gate | `8c10dbf` |
-| V2-040 timing | `8c10dbf` |
-| V2-044 ownership | `9a29672` |
-| V2-045 aggregate funding | `f39b853` |
-| V2-046 duplicate generations | **`f348d24`** — the allocator defence completed only here |
-| V2-047 held generations | `83ec2bd` |
+| V2-039 unlock gate | `525e660` |
+| V2-040 timing | `525e660` |
+| V2-044 ownership | `fd9f2d5` |
+| V2-045 aggregate funding | `1f68f5e` |
+| V2-046 duplicate generations | **`5ccb9f8`** — the allocator defence completed only here |
+| V2-047 held generations | `2195a0b` |
 
 **None is closed.** The register records them the same way. Closure comes with
 the integrated Stage 3/4 evidence, after immutability lands.

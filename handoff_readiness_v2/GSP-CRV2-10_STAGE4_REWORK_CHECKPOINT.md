@@ -1,7 +1,7 @@
 # GSP-CRV2-10 Stage 4 rework checkpoint — V2-049, V2-050, V2-051
 
-Runtime revision: `b9e1282` (frozen before evidence)
-Audited revision that failed: `8a46599` / checkpoint `762d70d`
+Runtime revision: `301bb64` (frozen before evidence)
+Audited revision that failed: `ac2883b` / checkpoint `17057d6`
 Evidence: `handoff_readiness_v2/evidence/decision-rules/stage4-rework/`
 
 **Status: implemented, pending integrated Stage 3/4 closure. Stage 3 is not
@@ -109,8 +109,8 @@ it as an inconsistency for the next reader.
 > `manifest_schema_v2.json` "is kept as the record of what version 2 meant".
 > That was false when written: the file had already been rewritten twice while
 > still calling itself version 2 — by GSP-CRV2-03 and again by Stage 4 at
-> `24687f0` — so it recorded neither the original v2 definition nor any single
-> one. Repaired at `5873695`; see section 4a.
+> `729cc2c` — so it recorded neither the original v2 definition nor any single
+> one. Repaired at `105ad44`; see section 4a.
 
 Two envelope definitions sharing one version number is the single thing
 `require_schema_version` cannot survive: it would compare a manifest written
@@ -127,9 +127,9 @@ the re-audit named:
 
 | Commit | Date | Handoff | What changed under version 2 |
 |---|---|---|---|
-| `61c43da` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
-| `f63e8b7` | 2026-08-28 | GSP-CRV2-03 | added the `narrative_alert` section and a hashed `source` field |
-| `24687f0` | 2026-09-02 | CRV2-10 Stage 4 | added `team_product_platform_history` and a hashed `funded_round` |
+| `1d87281` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
+| `4cec6ac` | 2026-08-28 | GSP-CRV2-03 | added the `narrative_alert` section and a hashed `source` field |
+| `729cc2c` | 2026-09-02 | CRV2-10 Stage 4 | added `team_product_platform_history` and a hashed `funded_round` |
 
 No hash was ever wrongly matched — `require_schema_version` only ever compares
 equal versions, and it refused everything else. What was lost is the ability to
@@ -140,7 +140,7 @@ Repair:
 - All three definitions are preserved under
   `core/services/manifest_schema_history/`, each pinned by sha256 in
   `PROVENANCE.json`.
-- `manifest_schema_v2.json` is restored to its `61c43da` content — version 2 as
+- `manifest_schema_v2.json` is restored to its `1d87281` content — version 2 as
   introduced — and is no longer read by any code, since the inventory path now
   derives from the current version.
 - `SchemaProvenanceTests` (4) fails if any already-in-force definition is
@@ -152,7 +152,7 @@ Repair:
   `dump_manifest_schema.py` named `manifest_schema_v2.json` as the file it
   writes.
 
-**Controls.** Overwriting `manifest_schema_v2.json` with the `24687f0` state —
+**Controls.** Overwriting `manifest_schema_v2.json` with the `729cc2c` state —
 reproducing V2-052 exactly — fails the guard with both digests named. Editing a
 pinned historical definition fails it by name.
 
@@ -165,12 +165,12 @@ ran.
 ## 5. A stale artifact the affected set could not have caught
 
 The suite warned that `read_inventory.json` was stale: 780 routes recorded,
-781 registered. Adding the re-base route at `8a46599` moved the count, and
+781 registered. Adding the re-base route at `ac2883b` moved the count, and
 `dump_read_inventory --check` pins it — a test in `test_audit_integrity`, which
 was outside both my affected set and the audit's.
 
 The count is the only change; the route is POST-only and adds no read
-disclosure surface. Regenerated at `b9e1282`, and
+disclosure surface. Regenerated at `301bb64`, and
 `SensitiveReadInventoryTests` is now inside the affected set.
 
 The general lesson is recorded because it will recur: adding a route changes
@@ -181,7 +181,7 @@ behaviour will run.
 
 ## 6. Verification
 
-Affected focused set, run once from clean revision `b9e1282`:
+Affected focused set, run once from clean revision `301bb64`:
 
 | Area | Distinct tests |
 |---|---|
@@ -202,18 +202,18 @@ Affected focused set, run once from clean revision `b9e1282`:
 - `dump_read_inventory --check` → `Read inventory is current.`
 - Migration `0082_stage4_write_off_accounting` (one added field, one altered)
 
-**Re-run after the V2-052 repair**, at runtime `5873695`, with
+**Re-run after the V2-052 repair**, at runtime `105ad44`, with
 `SchemaProvenanceTests` added: **226 distinct, 226 executed, `OK`**. All three
 static checks clean — `makemigrations --check`, `dump_manifest_schema --check`
 ("Manifest schema inventory is current."), `dump_read_inventory --check`.
 Evidence in `evidence/decision-rules/stage4-rework2/`.
 
-### Reconciled freeze — `29c636d`
+### Reconciled freeze — `285bace`
 
-The `5873695` freeze was not clean: seven `checks/*` files were modified in the
+The `105ad44` freeze was not clean: seven `checks/*` files were modified in the
 working tree. They were the operator's V2-048 remediation, not this handoff's
-work, and they are now committed (`a4479cb`). A second aide-checks sync landed
-*during* the re-run and was committed too (`29c636d`).
+work, and they are now committed (`47e5748`). A second aide-checks sync landed
+*during* the re-run and was committed too (`285bace`).
 
 **That is twice a vendored tool has dirtied the tree between a freeze and its
 audit**, and it will recur, because `checks/` is synced from upstream
@@ -223,7 +223,7 @@ should be pinned to `backend/` plus `handoff_readiness_v2/` rather than to the
 whole tree. Naming it rather than working around it, because a freeze that
 silently excludes a directory is worse than one that is occasionally dirty.
 
-Final run at `29c636d`, with `test_no_credential_literals` added:
+Final run at `285bace`, with `test_no_credential_literals` added:
 **230 distinct, 230 executed, `OK`**. Whole tree clean at both ends, same
 revision at both ends. `makemigrations`, `dump_manifest_schema`,
 `dump_read_inventory` all current; `no-committed-secrets` PASS in blocking
@@ -233,7 +233,7 @@ mode; checks selftest 71 passed, 0 failed. Evidence in
 **Provenance.** The transcript was generated outside the repository and moved
 in afterwards. It records the **whole tree** clean at both ends — the
 previously-noted `frontend/deploy-frontend.sh` was committed by the operator at
-`9ada6e5`, so no outside-scope modification remains to name.
+`a411329`, so no outside-scope modification remains to name.
 
 **Reason controls** are in `evidence/.../reason-controls.md`: each repair
 reverted in isolation, the new tests failing with the audit's own figures, and
@@ -250,7 +250,7 @@ rather than on any scope check. It was still not refused for the right reason.
   remains reachable.
 - V2-039, V2-040, V2-044, V2-045, V2-046, V2-047 stay *implemented, pending
   integrated Stage 3/4 closure*. V2-049, V2-050 and V2-051 join them at
-  `b9e1282`; none is closed.
+  `301bb64`; none is closed.
 - No full suite, browser, concurrency, load or tournament run.
 - The write-off's cash treatment follows `retirement_expense` — a modelling
   choice, not a derived result, accepted by the re-audit as a valid simulation

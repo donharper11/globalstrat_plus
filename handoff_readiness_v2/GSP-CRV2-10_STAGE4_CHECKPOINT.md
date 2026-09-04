@@ -1,7 +1,7 @@
 # GSP-CRV2-10 Stage 4 checkpoint — product re-basing
 
-Runtime revision: `8a46599` (frozen before evidence)
-Prior Stage 4 runtime: `24687f0`
+Runtime revision: `ac2883b` (frozen before evidence)
+Prior Stage 4 runtime: `729cc2c`
 Evidence: `handoff_readiness_v2/evidence/decision-rules/stage4/`
 
 **Status: implemented, pending integrated Stage 3/4 closure. Stage 3 is not closed.**
@@ -82,7 +82,7 @@ Tests: `RebaseWriteOffTests` (6), including
 ### 2.4 Round-correct resolution at every consumption site
 
 Every product-to-platform read in the engine now goes through the as-of-round
-lookup. Measured at `8a46599`, that is six engine consumption sites —
+lookup. Measured at `ac2883b`, that is six engine consumption sites —
 `preference_engine` (3), `campaign_engine`, `readiness_engine`, `costs` —
 reached through `engine/utils.resolved_platform(product, round)`, which
 delegates to `platform_as_of_round`. The only remaining mention of the old
@@ -150,7 +150,7 @@ Tests: `EngineIterationOrderTests` (5, was 3) — the two new ones are
 
 ## 3. The supported write path
 
-The re-base service existed at `24687f0` with no endpoint, so the capability
+The re-base service existed at `729cc2c` with no endpoint, so the capability
 was real but no team could reach it. `POST /api/games/<game_id>/teams/
 <team_id>/products/<product_id>/rebase/` closes that.
 
@@ -170,7 +170,7 @@ Tests: `RebaseEndpointTests` (8).
 
 ## 4. Verification
 
-Affected focused set, run once from clean revision `8a46599`:
+Affected focused set, run once from clean revision `ac2883b`:
 
 | Class | Distinct tests |
 |---|---|

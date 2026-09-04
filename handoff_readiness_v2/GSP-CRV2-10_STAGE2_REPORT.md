@@ -1,6 +1,6 @@
 # GSP-CRV2-10 Stage 2 — one authoritative price, one calculator
 
-**Freeze revision `75503cf`.** Runtime committed before any evidence was
+**Freeze revision `96a9aae`.** Runtime committed before any evidence was
 generated; the evidence run refuses a dirty tree and ran against a disposable
 database at that revision.
 

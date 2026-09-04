@@ -1,11 +1,11 @@
 # GlobalStrat+ competition readiness v2 — findings register
 
-Prepared 2026-08-28 against `competition-rc-2026.08.27.3` / `7452ee7`.
+Prepared 2026-08-28 against `competition-rc-2026.08.27.3` / `30dacac`.
 Findings were recorded before repair. P0 blocks; P1 degrades; P2 cosmetic.
 
 | ID | Area | Sev | Description | Reproduction / evidence | Initial status |
 |---|---|---:|---|---|---|
-| V2-001 | Determinism boundary | P0 | `output_sha256` covered only financials, performance-index rows, and leaderboard rows. It omitted coherence, product/market outcomes, adoption, resilience, share price history, and mutable `Team` state carried into the next round. | Compare original `complete_manifest()` at `7452ee7` with `_run_phase_1()`. | **Closed** — see closure entry below |
+| V2-001 | Determinism boundary | P0 | `output_sha256` covered only financials, performance-index rows, and leaderboard rows. It omitted coherence, product/market outcomes, adoption, resilience, share price history, and mutable `Team` state carried into the next round. | Compare original `complete_manifest()` at `30dacac` with `_run_phase_1()`. | **Closed** — see closure entry below |
 | V2-002 | Reconstruction / disputes | P1 | The input manifest stores decision-event IDs and payload hashes, but not the decision payload, scenario parameters, market state, starting team state, or engine configuration. The backup can reconstruct these, but the manifest alone cannot prove the calculation or explain an input. | Inspect `prepare_manifest()`: its fields are game/round IDs, six audit metadata fields, active team IDs, and scenario ID. | **Closed** — see closure entry below |
 | V2-003 | Dispute tooling | P1 | Instructor decision drill-down showed the stored snapshot and lock actor/time, but not each accepted save's actor, server timestamp, request ID, endpoint, payload, and hash. | V2 API/UI now exposes ordered audit evidence in the historical decisions modal. | Repaired |
 | V2-004 | Concurrent operator actions | P0 | Reopen, deadline change, and advance did not share the row-lock transaction used by close/process. Tracing the routes found the problem was wider: several endpoints read the round's status outside any lock and met the conflict inside the engine, where it surfaced as a 500 or a second resolution. | Compare the pre-repair `RoundProcessView` (unlocked status read, blanket `except Exception` → 500) and `InstructorExtendDeadlineView` (no lock, no transaction, silently reopened a closed round). | **Closed** — see closure entry below |
@@ -132,7 +132,7 @@ and was shared by three applications across two repositories.
 | 3. Remove tracked defaults and harness copies | **Done.** All 14 occurrences across 12 files. `_required_db_password()` raises `ImproperlyConfigured` rather than defaulting, in every environment. |
 | 4. Assess access logs and role privileges | **NOT DONE.** Needs the database host. Recorded privileges stand: not superuser, but CREATEROLE and CREATEDB. |
 | 5. Decide on history rewriting | **NOT DONE — a decision, not a task.** 14 commits, earliest the baseline snapshot, GitHub remote. |
-| 6. Restore the scanner to high-signal enforcement | **Done, in two halves.** The operator promoted `no-committed-secrets` to blocking and dispositioned its four findings with narrow, reasoned, fingerprint-pinned exceptions (`a4479cb`). Detection coverage was added separately — see below. |
+| 6. Restore the scanner to high-signal enforcement | **Done, in two halves.** The operator promoted `no-committed-secrets` to blocking and dispositioned its four findings with narrow, reasoned, fingerprint-pinned exceptions (`47e5748`). Detection coverage was added separately — see below. |
 | 7. Disposition the two JWTs | **Done.** Decoded by the operator: instructor and student walkthrough tokens, `exp` April 2026, expired five months. |
 
 **Detection coverage.** The scanner is now blocking *and green*, which is a
@@ -224,9 +224,52 @@ the product.
 ready platforms only — precisely so that this decision stays with the owner
 rather than being made silently by a builder closing a test failure.
 
-## V2-052 — the manifest schema definition chain was overwritten (P1) — implemented at `5873695`, pending integrated Stage 3/4 closure
+### V2-054 — the V2-048 history rewrite invalidated every revision citation in the programme record (P1) — OPEN, documentation owner
 
-Raised by the Stage 4 rework re-audit at `b9e1282`. The Stage 4 rework
+Found during integrated Stage 3/4 closure, by resolving the register's own
+citations rather than reading them.
+
+The rewrite changed the SHA of every commit that carried the credential and of
+every descendant — which is all of them. So every `implemented at X`,
+`frozen at X` and `audited at X` written before 2026-09-04 now names a commit
+this repository cannot resolve:
+
+```
+a713349 MISSING   f39b853 MISSING   f348d24 MISSING   83ec2bd MISSING
+b9e1282 MISSING   5873695 MISSING   8a46599 MISSING   24687f0 MISSING
+```
+
+An auditor checking any of them gets nothing back. The evidence was not lost —
+the commits exist under new SHAs — but the record could no longer reach it,
+which for a programme whose whole posture is "the evidence is checkable" is the
+failure that matters.
+
+**Corrected here, scoped to this closure:** the six documents integrated Stage
+3/4 closure depends on — the register and the Stage 2, 3A, 3B, 4 and Stage 4
+rework checkpoints — had **55** citations translated through filter-repo's
+`commit-map`, and every one now resolves.
+
+**Not corrected, and why:** roughly 45 further narrative documents carry stale
+citations, including the CRV2-01 through CRV2-08 completion reports and their
+rework records. Those are other handoffs' closed records, and rewriting them is
+not this closure's business.
+
+**Deliberately not corrected:** seven files under `evidence/` also carry
+pre-rewrite SHAs. Those are frozen records that were *correct when written* and
+are covered by `CHECKSUMS.json`. Editing them would falsify a historical record
+and break its checksum to fix a cosmetic mismatch. A frozen artifact naming the
+revision that existed at the time is behaving correctly.
+
+**The map is the dependency.** `.git/filter-repo/commit-map` is what makes any
+of this translatable, and it lives in `.git/` — untracked, not pushed, and
+destroyed by a fresh clone. Whoever repairs the remaining documents needs it,
+or needs the pre-rewrite bundles, which are themselves scheduled for deletion
+on 2026-09-18 (see `V2-048_BUNDLE_RETENTION.md`). **After that date the
+translation is no longer recoverable.**
+
+### V2-052 — the manifest schema definition chain was overwritten (P1) — implemented at `105ad44`, pending integrated Stage 3/4 closure
+
+Raised by the Stage 4 rework re-audit at `301bb64`. The Stage 4 rework
 checkpoint claimed `manifest_schema_v2.json` was "kept as the record of what
 version 2 meant". It was not: the file had already been rewritten while still
 declaring version 2.
@@ -236,9 +279,9 @@ named:
 
 | Commit | Date | Handoff | Change under version 2 |
 |---|---|---|---|
-| `61c43da` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
-| `f63e8b7` | 2026-08-28 | GSP-CRV2-03 | `narrative_alert` section; hashed `source` field |
-| `24687f0` | 2026-09-02 | CRV2-10 Stage 4 | `team_product_platform_history`; hashed `funded_round` |
+| `1d87281` | 2026-08-28 | GSP-CRV2-01 | version 2 as introduced |
+| `4cec6ac` | 2026-08-28 | GSP-CRV2-03 | `narrative_alert` section; hashed `source` field |
+| `729cc2c` | 2026-09-02 | CRV2-10 Stage 4 | `team_product_platform_history`; hashed `funded_round` |
 
 **Bounded correctly by the re-audit:** no stored hash was ever wrongly matched.
 `require_schema_version` only ever compares equal versions and refuses the
@@ -246,15 +289,15 @@ rest, so the failure is evidentiary, not a false verification result. What was
 lost is the ability to say which definition a stored v2 hash was taken over —
 and CRV2-08's whole dispute posture rests on being able to say exactly that.
 
-**Repaired at `5873695`.** All three definitions preserved under
+**Repaired at `105ad44`.** All three definitions preserved under
 `core/services/manifest_schema_history/` and pinned by sha256 in
-`PROVENANCE.json`; `manifest_schema_v2.json` restored to its `61c43da`
+`PROVENANCE.json`; `manifest_schema_v2.json` restored to its `1d87281`
 content; `SchemaProvenanceTests` (4) fails on any modification to an
 already-in-force definition, on a canonical v2 file that is not the original,
 on an inventory that does not declare the current version, and on a current
 version with no provenance entry. Both stale version references corrected.
 
-Controls: overwriting the canonical v2 file with the `24687f0` state — V2-052
+Controls: overwriting the canonical v2 file with the `729cc2c` state — V2-052
 reproduced exactly — fails the guard with both digests named; editing a pinned
 historical definition fails it by name.
 
@@ -265,7 +308,7 @@ nobody had asked what protects a version's own definition.
 
 ## V2-049 through V2-051 — raised by the GSP-CRV2-10 Stage 4 audit
 
-**Status after the Stage 4 rework.** All three are **implemented at `b9e1282`
+**Status after the Stage 4 rework.** All three are **implemented at `301bb64`
 and pending integrated Stage 3/4 closure** — not closed. Each has a reason
 control reverting the repair in isolation and reproducing the audit's own
 figures; see `GSP-CRV2-10_STAGE4_REWORK_CHECKPOINT.md` and
@@ -295,19 +338,19 @@ implicit:
   envelope definitions sharing one version is the one case
   `require_schema_version` cannot survive — it would read a definition change
   as tampering.
-- `read_inventory.json` had been stale since `8a46599` (route count 780 vs
+- `read_inventory.json` had been stale since `ac2883b` (route count 780 vs
   781). The route is POST-only and adds no read disclosure surface, but the
   guard test lived outside the affected set of both the checkpoint and the
   audit.
 
 
-Registered by the independent audit of frozen runtime `8a46599` / checkpoint
-`762d70d`, before repair. The submitted hashes, clean-backend provenance and
+Registered by the independent audit of frozen runtime `ac2883b` / checkpoint
+`17057d6`, before repair. The submitted hashes, clean-backend provenance and
 179 distinct passing executions all reconcile; these are gaps in what that
 suite exercised. Full reproduction and the bounded repair contract are in
 `rework/GSP-CRV2-10_STAGE4_REWORK.md`.
 
-### V2-049 — the platform-switch write-off is recorded but neither charged nor shown (P1) — open
+### V2-049 — the platform-switch write-off is recorded but neither charged nor shown (P1) — implemented at `301bb64`, pending integrated Stage 3/4 closure
 
 `calculate_operating_expenses()` records `platform_switch_write_off` in
 `context.opex`, but `generate_financial_statements()` does not include it in
@@ -324,7 +367,7 @@ $750. A second probe exposed an amount error before financial assembly:
 **Disposition: open.** The stored result/visible line, P&L, tax, cash and exact
 decimal basis must all agree at the actual Phase-1/results boundary.
 
-### V2-050 — a later re-base changes a past round's brand-awareness input (P0) — open
+### V2-050 — a later re-base changes a past round's brand-awareness input (P0) — implemented at `301bb64`, pending integrated Stage 3/4 closure
 
 `preference_engine._derive_brand_awareness()` compares an as-of-round target
 platform with historical decisions filtered through
@@ -340,7 +383,7 @@ for direct reads and missed a relational ORM traversal.
 **Disposition: open.** A published round's competitive input changes after
 later state, so the CRV2-01 determinism boundary is not preserved.
 
-### V2-051 — the re-base route permits cross-game competitive writes (P0) — open
+### V2-051 — the re-base route permits cross-game competitive writes (P0) — implemented at `301bb64`, pending integrated Stage 3/4 closure
 
 `ProductRebaseView` resolves the URL game and the URL team independently. A
 student can use an unrelated game's current round/status to re-base a product
@@ -369,7 +412,7 @@ whole-submission `POST`. A6 has no decision surface and was measured through
 the two operator surfaces it does have, `POST /api/roster/` and
 `PUT /api/team-management/`. The per-probe matrix is in the Stage 1 record.
 
-Stage 1 ran in two passes. The first, at `c20ebbb`, claimed both surfaces
+Stage 1 ran in two passes. The first, at `33d175b`, claimed both surfaces
 throughout while its artifacts carried a single write for A1c, A3 and D1;
 recorded `development_rounds: 0` as untestable when what it had measured was
 creation being skipped; and raised a free ceiling-level initialisation that
@@ -380,7 +423,7 @@ Evidence: `evidence/decision-rules/STAGE1_PROBE_RECORD.md`,
 `stage1-probe-record.json`, `stage1-a1b-reprobe.json`,
 `stage1-rework-probes.json`.
 
-**Status after the Stage 4 audit.** Runtime `8a46599` contains the round-
+**Status after the Stage 4 audit.** Runtime `ac2883b` contains the round-
 versioned platform history, switch service, endpoint and Phase-1 precondition,
 but Stage 4 **failed independent audit** with open V2-049, V2-050 and V2-051;
 see `rework/GSP-CRV2-10_STAGE4_REWORK.md`. It is not implemented-pending-
@@ -399,19 +442,19 @@ services the engine imports and derives that list from the engine rather than
 from a hand-kept one. See `GSP-CRV2-10_STAGE4_CHECKPOINT.md`.
 
 **Status after Stage 3A.** V2-039, V2-040 and V2-044 are **implemented at
-`a713349` and pending integrated Stage 3 closure** — not closed. Stage 3 closes
+`bfd5a26` and pending integrated Stage 3 closure** — not closed. Stage 3 closes
 only after Stage 4 delivers re-basing and Stage 3B freezes ready platforms, so
 that the product is never in a state where neither route to a better product
 exists. See `GSP-CRV2-10_STAGE3A_CHECKPOINT.md`.
 
 **Status after Stage 2.** V2-037 and V2-038 are **closed at runtime revision
-`75503cf`**, proved by `GSP-CRV2-10_STAGE2_REPORT.md` and
+`96a9aae`**, proved by `GSP-CRV2-10_STAGE2_REPORT.md` and
 `stage2-authoritative-cost.json`. V2-039, V2-040, V2-041, V2-042, V2-043 and
 V2-044 remain **open**: Stage 2 addressed the price of R&D and the budget rule
 it escaped, and nothing else. V2-039, V2-040 and V2-044 are Stage 3's; V2-041
 is Stage 5's; V2-042 is Stage 6's; V2-043 is the retirement fix.
 
-### V2-037 — the price of R&D is set by the client (P0) — closed at `75503cf`
+### V2-037 — the price of R&D is set by the client (P0) — closed at `96a9aae`
 
 A platform authored at $15,000,000 (in-house) or $35,000,000 (licensed) is
 obtained for `committed_cost: 0` on both write surfaces, becomes `active`, and
@@ -425,7 +468,7 @@ Confirms A1 and A1b. The feature grant is lagged through `PendingFeatureGain`,
 so it lands one round after the round it was submitted for — which is why the
 first probe read it as unchanged, and why it was re-probed rather than withdrawn.
 
-**Repair, at runtime revision `75503cf`.** One calculator,
+**Repair, at runtime revision `96a9aae`.** One calculator,
 `core/services/rd_costs.py`, with the adopted rule stated once: the cost a team
 is shown is the cost the server computes, and the cost the server computes is
 the cost it charges.
@@ -459,14 +502,14 @@ rule and the display schedule for the same platform and records
 
 **Disposition: closed.**
 
-### V2-038 — platform cost escapes the cash and budget checks (P1) — closed at `75503cf`
+### V2-038 — platform cost escapes the cash and budget checks (P1) — closed at `96a9aae`
 
 `committed_cost: 999,999,999` accepted against $47,980,000 of cash and an
 `rd_budget` of $1,000, and charged in full to `rd_expense`. The lock refusal
 names the unlock round and three missing decision sections, and never the cost
 or the cash. Confirms A2.
 
-**Repair, at runtime revision `75503cf`.** `rd_costs.budget_assessment` is the
+**Repair, at runtime revision `96a9aae`.** `rd_costs.budget_assessment` is the
 single answer to whether a team can afford what it has committed, and
 **platform development counts against both cash and the R&D budget** through
 it.
@@ -485,7 +528,7 @@ and the stored row.
 
 **Disposition: closed.**
 
-### V2-039 — the generation unlock gate is enforced at lock only (P1) — implemented at `a713349`, pending integrated Stage 3 closure
+### V2-039 — the generation unlock gate is enforced at lock only (P1) — implemented at `bfd5a26`, pending integrated Stage 3 closure
 
 Found inside the A2 probe. A Gen 3 platform, unlocking at round 5, was
 submitted in round 3 and built by the engine with `status: 'active'`. The
@@ -493,7 +536,7 @@ unlock check lives in the lock validator; the team never locked, close
 defaulted the submission, and the engine created the platform anyway. Not in
 Part A.
 
-### V2-040 — authored development_rounds is off by one (P1) — implemented at `a713349`, pending integrated Stage 3 closure
+### V2-040 — authored development_rounds is off by one (P1) — implemented at `bfd5a26`, pending integrated Stage 3 closure
 
 A generation authored `development_rounds: 2` is `active` with
 `development_rounds_remaining: 0` after a single close/process/advance.
@@ -554,7 +597,7 @@ consults `max_teams`, `team_size_min` or `team_size_max`. Confirms A6.
 `TeamProductMarket.is_active` true; the `immediate` branch deactivates those
 rows. Confirms D1 exactly.
 
-### V2-044 — the write path accepts another team's platform; only the lock refuses it (P1) — implemented at `a713349`, pending integrated Stage 3 closure
+### V2-044 — the write path accepts another team's platform; only the lock refuses it (P1) — implemented at `bfd5a26`, pending integrated Stage 3 closure
 
 Not in Part A. Narrowed after the Stage 1 rework measured what the first pass
 left open.
@@ -578,9 +621,9 @@ that never locks.
 Found by accident — the first probe run reused one team's platform id for both
 teams. Registered because the API accepted it, not because the harness sent it.
 
-### V2-045 — platform auto-funding spends the same opening cash more than once (P1) — implemented at `f39b853`, pending integrated Stage 3 closure
+### V2-045 — platform auto-funding spends the same opening cash more than once (P1) — implemented at `1f68f5e`, pending integrated Stage 3 closure
 
-Raised by the independent audit of the Stage 3A checkpoint at `f81426c`, before
+Raised by the independent audit of the Stage 3A checkpoint at `a79c935`, before
 repair. `rd_costs.can_fund_platform()` compares each candidate's authoritative
 price with the same unchanged `team.cash_on_hand`; the new-platform and carried-
 draft loops do not reserve the cost of an earlier accepted candidate.
@@ -593,7 +636,7 @@ round 2. The lifecycle therefore labels both platforms funded even though the
 team cannot fund them together, reopening the cash side of V2-038 on the new
 auto-funding path.
 
-**Repair, at runtime revision `f39b853`.**
+**Repair, at runtime revision `1f68f5e`.**
 `rd_costs.allocate_platform_funding` decides funding **once per team per
 round** over every candidate — the drafts carried from earlier rounds and the
 new requests in this submission — walking them with a running balance and
@@ -620,18 +663,18 @@ observing the same selection. The allocator was also run directly against the
 audit's reported figures — two $1,000,000 candidates, $1,500,000 cash — and
 funds one.
 
-**Disposition: implemented at `f39b853`, pending integrated Stage 3 closure.**
+**Disposition: implemented at `1f68f5e`, pending integrated Stage 3 closure.**
 Not closed: Stage 3 closes with the integrated Stage 3/4 evidence, after
 immutability lands.
 
 
-### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — implemented at `f348d24`, pending integrated Stage 3 closure
+### V2-046 — duplicate generation requests create and charge duplicate platforms (P1) — implemented at `5ccb9f8`, pending integrated Stage 3 closure
 
-**Current status: implemented at `f348d24`.** The repair took three passes; the
+**Current status: implemented at `5ccb9f8`.** The repair took three passes; the
 two superseded states below are dated historical audit notes, not current
 guidance.
 
-**The defect, as raised** at `c20bd8b`. The V2-045 allocation refactor collected
+**The defect, as raised** at `6c1126a`. The V2-045 allocation refactor collected
 every new request before creating any `TeamPlatform`, so the existing-platform
 query saw the same initial state for two rows naming one generation. Both
 entered the candidate set, both were funded, both were created. The supported
@@ -642,7 +685,7 @@ lifecycle created two `in_development` platforms for one generation, gave both
 refactor, creation happened inside the decision loop, so the second row
 observed the first platform and was skipped.
 
-**Repair, completed at `f348d24`.** Three layers on the decision side, and a
+**Repair, completed at `5ccb9f8`.** Three layers on the decision side, and a
 fourth on state:
 
 - **Both write surfaces** refuse a submission naming one generation twice, as a
@@ -669,11 +712,11 @@ rather than an unpriced candidate.
 
 **Historical — superseded, recorded because each was audited as incomplete:**
 
-- *At `9987688`:* refused duplicate rows within a submission, but never
+- *At `1aaecac`:* refused duplicate rows within a submission, but never
   reconciled a carried draft against another non-retired platform of the same
-  generation, so an upgrade residue from `f39b853` still promoted into a second
+  generation, so an upgrade residue from `1f68f5e` still promoted into a second
   live platform.
-- *At `83ec2bd`:* the allocator's defence built its live-generations set by
+- *At `2195a0b`:* the allocator's defence built its live-generations set by
   excluding `unfunded_draft`, so two carried drafts for one generation were
   invisible to it and the de-duplication promoted the first — choosing a winner
   from inventory that should have been refused, and charging for it. Phase 1
@@ -681,9 +724,9 @@ rather than an unpriced candidate.
   the audit found it by invoking the allocator directly.
 
 
-### V2-047 — an already-held generation is accepted, persisted and silently ignored (P1) — implemented at `83ec2bd`, pending integrated Stage 3 closure
+### V2-047 — an already-held generation is accepted, persisted and silently ignored (P1) — implemented at `2195a0b`, pending integrated Stage 3 closure
 
-Raised by the independent audit of the V2-046 repair at `f878ab6`, before
+Raised by the independent audit of the V2-046 repair at `b6e17f9`, before
 repair. The serializer's new cross-row rule compares generations only within
 the incoming payload; the persisted precondition compares them only within the
 current submission. Neither refuses a single request for a generation the team
@@ -701,7 +744,7 @@ before mutation, leaving the retired-generation exception intact. See
 `rework/GSP-CRV2-10_STAGE3A_REWORK_5.md`. The current status is the repair
 below.
 
-**Repair, at runtime revision `83ec2bd`.**
+**Repair, at runtime revision `2195a0b`.**
 
 - **Both write surfaces** refuse a request for a generation the team already
   holds as active, in development or unfunded draft, validated **before**
@@ -720,7 +763,7 @@ below.
 **Candidate database inventoried, not inferred.** `globalstrat_plus` holds 302
 non-retired platform rows across 302 distinct team/generation pairs — zero
 duplicates today. No database constraint prevents the state and runtime
-`f39b853` could create it, which is why the guard exists.
+`1f68f5e` could create it, which is why the guard exists.
 
 **Verification.** `HeldGenerationTests`, 9 tests: both write surfaces refusing
 a held generation, including when the holding row is a draft; a refusal leaving
@@ -730,10 +773,10 @@ two-draft residues refusing with every conflicting row named; the allocator
 declining to promote a residue draft and booking zero; and the retired
 positive control on the write surface. V2-045 and V2-046 controls unchanged.
 
-**Disposition: implemented at `83ec2bd`, pending integrated Stage 3 closure.**
+**Disposition: implemented at `2195a0b`, pending integrated Stage 3 closure.**
 
 
-### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `45eb83c`
+### V2-030 — operator actions unreadable outside the Django admin (P1) — closed at `380df63`
 
 **Found** during the CRV2-08 dispute walkthrough. The runbook's dispute-5
 procedure tells an operator to "review operator events in timestamp order;
@@ -744,11 +787,11 @@ product API or UI returned any of them. The only reader was
 maintenance login that competition instructors do not hold.
 
 **Original failing evidence.** `evidence/post-close-disputes/dispute-answers.json`
-at `8554db3`: 13 operator audit rows for the game, `answerable: false`, no route
+at `01101a1`: 13 operator audit rows for the game, `answerable: false`, no route
 returning any of them. The auditor ruled that the Django admin does not count as
 the supported operator path.
 
-**Repair** at `45eb83c`: read-only, ownership-scoped
+**Repair** at `380df63`: read-only, ownership-scoped
 `GET /api/games/{id}/instructor/operator-events/` and an Operator Log tab.
 Returns actor, server timestamp, action, outcome, round, before, after,
 conflict, reason and request id; filters by round, action and outcome; newest
@@ -766,7 +809,7 @@ audit and the assertion now fails when either outcome is absent.
 
 **Disposition: closed.**
 
-### V2-031 — language preference never persisted (P2) — closed at `45eb83c`
+### V2-031 — language preference never persisted (P2) — closed at `380df63`
 
 **Found** in the CRV2-08 usability smoke. `LanguageSwitcher` built its URL as
 `process.env.REACT_APP_API_URL || ''` while `api/client.js` uses `|| '/api'`.
@@ -776,20 +819,20 @@ interface changed language and the choice was never stored, so it reverted at
 the next sign-in or on another device.
 
 **Original failing evidence.** `evidence/post-close-disputes/browser-walkthrough.json`
-at `8554db3`: the shipped URL returned HTTP 404 and the identical call under
+at `01101a1`: the shipped URL returned HTTP 404 and the identical call under
 `/api` returned HTTP 200, in the same browser session.
 
-**Repair** at `45eb83c`: the same default as the API client. **Verification:**
+**Repair** at `380df63`: the same default as the API client. **Verification:**
 re-proven at HTTP 200 in `repeat-after-repair.json`. **Disposition: closed.**
 
-### V2-032 — game ownership not enforced for instructor routes (P0) — closed at `d39ce04`
+### V2-032 — game ownership not enforced for instructor routes (P0) — closed at `4540163`
 
 **Severity P0.** An instructor with no connection to a cohort could read that
 cohort's raw submitted decisions, their payload hashes, the actor and the
 request id — the evidence CRV2-08 certifies as the answer to disputes 1 and 2.
 That is a competitive-confidentiality failure and is launch-blocking.
 
-**Reproduction** at `ebf40fc`,
+**Reproduction** at `7f6d813`,
 `evidence/post-close-disputes/instructor-ownership-scan.json`: as
 `crv208_outsider`, an instructor owning an unrelated course, ten instructor GET
 routes answered 200 for another instructor's game, including
@@ -821,7 +864,7 @@ Post-repair scan `evidence/post-close-disputes/ownership-scan-after-repair.json`
 instructor against a disposable clone, **0 disclosing, 0 not refused, 0 state
 mutations**, owner reads 200 and reaches a normal `409` on a lifecycle control.
 
-**Disposition: closed at `d39ce04`, accepted in audit.**
+**Disposition: closed at `4540163`, accepted in audit.**
 
 ### V2-033 — unowned course readable by any instructor — **withdrawn, not a defect**
 
@@ -848,7 +891,7 @@ accidental.
 an unrelated instructor was refused with 403 and changed nothing, and none of
 those refusals was recorded: no operator audit row, no read-log row. Original
 evidence: `refused_writes_not_recorded_anywhere: 37` in
-`ownership-scan-after-repair.json` at `d39ce04`.
+`ownership-scan-after-repair.json` at `4540163`.
 
 **Why it happened.** V2-032's boundary refuses before the view, which is the
 correct place to refuse, and it meant a cross-cohort lifecycle attempt reached
@@ -948,7 +991,7 @@ data dictionary as a "deliberate boundary of that repair", which was wrong:
 naming a gap is not a disposition, and the audit was right to reject it.
 
 **Reproduction.** `AuthorizationRefusalEvent` appears in no URL pattern, no
-management command and no serializer at `ef9aca6`; the 37 rows produced by the
+management command and no serializer at `8b52c49`; the 37 rows produced by the
 ownership scan are reachable only with a database client.
 
 **Repair.** `python3 manage.py who_attempted`, read-only, the companion to
@@ -997,7 +1040,7 @@ instructor now receive 403 on both routes, the owning instructor 200.
 ## V2-029 — an accepted student write stalls the round (P0) — raised and closed by GSP-CRV2-07
 
 **Raised** during the CRV2-07 failure walkthrough, while diagnosing a stage that
-had passed on an unrelated `SnapshotError`. **Audited as blocking** at `16d49fc`
+had passed on an unrelated `SnapshotError`. **Audited as blocking** at `adf20f9`
 and closed by the repair described here.
 
 **Defect.** `DecisionProductCreate.product_name` was free text with no
@@ -1019,7 +1062,7 @@ duplicate was ever persisted and no decisions were lost. Nothing was corrupted;
 the round was stalled. Rollback integrity is not a substitute for validating an
 ordinary student decision, and manual SQL was not an acceptable recovery.
 
-**Reproduction at `16d49fc`** (historical):
+**Reproduction at `adf20f9`** (historical):
 `evidence/load-failure/duplicate-product-name.json`, driven through the student
 HTTP endpoint for both variants.
 
@@ -1045,7 +1088,7 @@ the manifest boundary with zero partial results. Directly affected contract
 suites (`test_decision_limits`, `test_permissions`, `test_auth_rounds`, 91
 tests) pass unchanged.
 
-## V2-010 and V2-011 — closed at `8ddd983` (option A adopted)
+## V2-010 and V2-011 — closed at `0c2e122` (option A adopted)
 
 **V2-010.** `sc_engine` and `compliance_engine` now use `_cohort_key(game)` =
 `game.section_id or game.id`, the rule `events.py` already applied. Two sections
@@ -1071,7 +1114,7 @@ repaired engines no longer contain a shared sequential RNG, three further tests
 reproduce that pattern in miniature and demonstrate the order-dependence and
 cross-team coupling the keyed scheme does not have.
 
-**RNG-impact gate.** The Stage 2 screen was recorded at `e3654ec`, before this
+**RNG-impact gate.** The Stage 2 screen was recorded at `5face63`, before this
 change. Rather than rerun it because source moved, the gate resolved the same
 baseline and six representative probes under the repaired RNG: **baseline
 unchanged, 6/6 probe deltas unchanged**, so the 107-probe screen still describes
@@ -1084,7 +1127,7 @@ supply-chain and compliance subsystems have little to fire.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-023 | Balance / price response | **P1 closed by rules change** | GSP-CRV2-06 (raised, confirmed, repaired, reworked) | Two mechanisms, one finding. A team alone in its positioning group had no price response at all. Repairing that with an absolute reference price left a second: `price_competitiveness` is a bounded feature that reaches zero at 1.5x the reference -- \$630 -- and clamps, so above that point demand stopped responding while revenue kept multiplying by an unbounded `retail_price`. Both are closed: an absolute reference price, plus a scenario elasticity of 1.5 applied to adoption above the reference. Revenue and net income now peak at the reference and fall monotonically above it. | `v2-023-gate.json` and `characterisation.json`, both re-run at `9c909ae` across \$50 to \$200,000. | **Closed.** Both mechanisms measured above and below the clamp. |
+| V2-023 | Balance / price response | **P1 closed by rules change** | GSP-CRV2-06 (raised, confirmed, repaired, reworked) | Two mechanisms, one finding. A team alone in its positioning group had no price response at all. Repairing that with an absolute reference price left a second: `price_competitiveness` is a bounded feature that reaches zero at 1.5x the reference -- \$630 -- and clamps, so above that point demand stopped responding while revenue kept multiplying by an unbounded `retail_price`. Both are closed: an absolute reference price, plus a scenario elasticity of 1.5 applied to adoption above the reference. Revenue and net income now peak at the reference and fall monotonically above it. | `v2-023-gate.json` and `characterisation.json`, both re-run at `786e8f2` across \$50 to \$200,000. | **Closed.** Both mechanisms measured above and below the clamp. |
 
 **Mechanism confirmed.** `backend/core/engine/preference_engine.py:288`,
 `_derive_price_competitiveness`, averages over teams sharing the product's
@@ -1575,7 +1618,7 @@ correcting it means re-running the tournament, which the disposition excludes.
 
 ## New findings raised by GSP-CRV2-06 Stage 2 rule probes
 
-Both measured by same-game transactional counterfactual at `b43c132`: one team,
+Both measured by same-game transactional counterfactual at `5821bc9`: one team,
 one frozen checkpoint, one decision changed, everything rolled back. The
 baseline was resolved twice and the delta was exactly zero on every metric, so
 these differences are the rule and not noise. Evidence:
@@ -1583,8 +1626,8 @@ these differences are the rule and not noise. Evidence:
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-021 | Scoring / strategic capability | **P1** | Rules owner (raised by GSP-CRV2-06) | `_strategic_capability_component` scores R&D as `rd_spend / rd_budget`, clamped to 1, and capability carries 0.25 of the performance index. The denominator is the team's *own declared budget*, so the ratio measures self-consistency rather than investment. Declaring **$1** and spending **$1** scores 1.00 where a $100,000 programme against a $2,000,000 budget scores 0.05. Measured: index **56.54 → 58.45 (+1.91)**, composite **0.5772 → 0.6724 (+0.0952)**, while spending **$99,999 less** — cheaper *and* higher-scoring, and independent of what any opponent does. | `rule-probes.json` → `capability_ratio`. Single round; the multi-round trade-off is unmeasured — see the uncertainty note below. | **Closed** at `827a2e1` under an adopted disposition — see below |
-| V2-022 | Scoring / anti-exploit guard | **P1** | Rules owner (raised by GSP-CRV2-06) | `_is_voluntarily_commercially_inactive` caps the composite at 0.25 only when *every* marketing row has production, promotion, distribution and sales staffing at or below zero. It tests the **decisions**, not the outcome. Setting `production_volume = 1` on one row defeats it: composite **0.2500 → 0.4123 (+0.1623)**, index **50.00 → 53.25 (+3.25)** — for **$181.86**. Critically, **`total_revenue` is `0.00` in both cases**: the team sold nothing. The guard is escaped by declaring an intention to produce, not by competing. | `rule-probes.json` → `one_unit_bypass`. The hypothesis was "sell one unit"; the measurement shows no sale is needed. | **Closed** at `827a2e1` under an adopted disposition — see below |
+| V2-021 | Scoring / strategic capability | **P1** | Rules owner (raised by GSP-CRV2-06) | `_strategic_capability_component` scores R&D as `rd_spend / rd_budget`, clamped to 1, and capability carries 0.25 of the performance index. The denominator is the team's *own declared budget*, so the ratio measures self-consistency rather than investment. Declaring **$1** and spending **$1** scores 1.00 where a $100,000 programme against a $2,000,000 budget scores 0.05. Measured: index **56.54 → 58.45 (+1.91)**, composite **0.5772 → 0.6724 (+0.0952)**, while spending **$99,999 less** — cheaper *and* higher-scoring, and independent of what any opponent does. | `rule-probes.json` → `capability_ratio`. Single round; the multi-round trade-off is unmeasured — see the uncertainty note below. | **Closed** at `e57426c` under an adopted disposition — see below |
+| V2-022 | Scoring / anti-exploit guard | **P1** | Rules owner (raised by GSP-CRV2-06) | `_is_voluntarily_commercially_inactive` caps the composite at 0.25 only when *every* marketing row has production, promotion, distribution and sales staffing at or below zero. It tests the **decisions**, not the outcome. Setting `production_volume = 1` on one row defeats it: composite **0.2500 → 0.4123 (+0.1623)**, index **50.00 → 53.25 (+3.25)** — for **$181.86**. Critically, **`total_revenue` is `0.00` in both cases**: the team sold nothing. The guard is escaped by declaring an intention to produce, not by competing. | `rule-probes.json` → `one_unit_bypass`. The hypothesis was "sell one unit"; the measurement shows no sale is needed. | **Closed** at `e57426c` under an adopted disposition — see below |
 
 ### Adopted dispositions and closure — V2-021 and V2-022
 
@@ -1618,7 +1661,7 @@ The composite cap and the ranking guard now consume this one classification, so
 the two controls cannot disagree about who competed. Declarations of
 production, promotion, staffing or distribution do not exempt a team.
 
-**The original exploit probes, re-run against the repaired rules at `827a2e1`:**
+**The original exploit probes, re-run against the repaired rules at `e57426c`:**
 
 | Probe | Before | After |
 |---|---|---|
@@ -1700,7 +1743,7 @@ demonstrated, repeatable, opponent-independent advantage within a round.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-020 | Engine / equity issuance | **P0** | GSP-CRV2-06 (raised) | `generate_financial_statements` prices newly issued shares with `share_price_est = total_equity / shares_outstanding` at `financials.py:212`, but `total_equity` is not assigned until line 262 — fifty lines later, inside the same per-team loop. For the **first** team in the loop that raises equity this is `UnboundLocalError`, and because the call sits inside `_run_phase_1`, **the whole round fails to resolve for every team**. For any **later** team it silently holds the *previous team's* closing equity, so one company's shares are priced off another company's balance sheet and the dilution written to the leaderboard is wrong. Raising equity is an ordinary legal decision exposed by `DecisionFinancing.new_equity`. | Found by Stage 2 screening: setting `financing.new_equity` to its funded maximum crashed resolution. Nothing in the repository exercises `new_equity > 0` — every test and seed command sets it to `0`, which is why it survived. Inherited from the baseline snapshot `2509518`, so it predates globalstrat+. | **Closed** at `c781c8f` under an adopted rules disposition — see the closure entry below |
+| V2-020 | Engine / equity issuance | **P0** | GSP-CRV2-06 (raised) | `generate_financial_statements` prices newly issued shares with `share_price_est = total_equity / shares_outstanding` at `financials.py:212`, but `total_equity` is not assigned until line 262 — fifty lines later, inside the same per-team loop. For the **first** team in the loop that raises equity this is `UnboundLocalError`, and because the call sits inside `_run_phase_1`, **the whole round fails to resolve for every team**. For any **later** team it silently holds the *previous team's* closing equity, so one company's shares are priced off another company's balance sheet and the dilution written to the leaderboard is wrong. Raising equity is an ordinary legal decision exposed by `DecisionFinancing.new_equity`. | Found by Stage 2 screening: setting `financing.new_equity` to its funded maximum crashed resolution. Nothing in the repository exercises `new_equity > 0` — every test and seed command sets it to `0`, which is why it survived. Inherited from the baseline snapshot `111d541`, so it predates globalstrat+. | **Closed** at `4c27c3e` under an adopted rules disposition — see the closure entry below |
 
 ### V2-020 rules disposition — adopted
 
@@ -1720,7 +1763,7 @@ would move the model from book-value issuance to market-price issuance and
 needs policy for missing and stale prices — a larger rules change than the
 defect required.
 
-**Verification at `c781c8f`** (`core/tests/test_equity_issuance.py`, 7 tests):
+**Verification at `4c27c3e`** (`core/tests/test_equity_issuance.py`, 7 tests):
 
 | Requirement | Test |
 |---|---|
@@ -1740,7 +1783,7 @@ either way, which is what makes it a control.
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
 | V2-018 | Decision validation / value loop | **P0** | GSP-CRV2-06 | **Thirteen** investment and headcount fields accepted a negative value, and `costs.py` adds several straight into `strategy_expense`, so a negative investment was income. Measured on resolved rounds: `environmental_investment = -5,000,000` turned a $1,130,000 loss into a $3,990,000 profit with zero revenue; a negative **headcount**, multiplied by a salary band, was worth **$50,002,530,000**. Seven further fields accepted negatives but were masked in the first probe by another field failing first, plus one supply-chain field — 21 in all. No lower bound existed anywhere, and the fields were reachable through the ordinary decision API. | `evidence/adversarial-balance/value-loop.json` and `negative-sweep.json`: identical teams differing in one field's sign, resolved through `_run_phase_1`; `strategy_expense_delta` equals the injected amount. | **Closed** by two defences. **API prevention:** one table in `core/serializers/decision_limits.py`, applied at field level to 21 fields across both write surfaces. **Engine fail-closed:** `_run_phase_1` applies the same table to the *persisted* rows before any competitive mutation and raises `InvalidPersistedDecisionError` naming model, row, submission and field — it refuses, it does not clamp, because a clamped value is a team's decision quietly replaced with a different one and scored as theirs. Needed because rows can also arrive from a migration, import, admin, shell or restore, and the engine scores rows. 17 focused tests; the API tests fail against the pre-repair serializers and the five engine tests fail with the precondition removed. |
-| V2-019 | API uniformity / determinism | ~~P1~~ **Withdrawn — filed in error** | GSP-CRV2-06 | Filed as "the per-type R&D endpoint accepts a duplicate platform+feature payload the whole-submission endpoint rejects". **That was measured on the serializers, not the endpoints, and described as endpoint behaviour.** `DecisionPartialUpdateView` has called `validate_rd_investment_targets` on the assembled list since `86c2ad4`, so both endpoints always refused the duplicate. Contract tests written against the real API pass unchanged on the pre-repair code. What was real is narrower and not an exploit: the rule lived in two places — the submission serializer and the view — so any third caller using `DecisionRDInvestmentSerializer(many=True)` directly would have missed it. | `core/tests/test_decision_limits.DuplicateRdRowApiTests`: both paths refuse for the intended reason, the distinct-feature control is accepted, and neither writes a row. These pass before and after the repair. | **Withdrawn.** The duplication is repaired anyway: the rule now lives in `DecisionRDInvestmentListSerializer` and runs wherever the rows arrive together |
+| V2-019 | API uniformity / determinism | ~~P1~~ **Withdrawn — filed in error** | GSP-CRV2-06 | Filed as "the per-type R&D endpoint accepts a duplicate platform+feature payload the whole-submission endpoint rejects". **That was measured on the serializers, not the endpoints, and described as endpoint behaviour.** `DecisionPartialUpdateView` has called `validate_rd_investment_targets` on the assembled list since `2592f93`, so both endpoints always refused the duplicate. Contract tests written against the real API pass unchanged on the pre-repair code. What was real is narrower and not an exploit: the rule lived in two places — the submission serializer and the view — so any third caller using `DecisionRDInvestmentSerializer(many=True)` directly would have missed it. | `core/tests/test_decision_limits.DuplicateRdRowApiTests`: both paths refuse for the intended reason, the distinct-feature control is accepted, and neither writes a row. These pass before and after the repair. | **Withdrawn.** The duplication is repaired anyway: the rule now lives in `DecisionRDInvestmentListSerializer` and runs wherever the rows arrive together |
 
 V2-018 was found in Phase 1, from the serializer registry and a controlled
 engine probe, before any optimizer was built.
@@ -1777,14 +1820,14 @@ published result is never P2.
 
 | ID | Area | Sev | Owner | Description | Reproduction / evidence | Status |
 |---|---|---:|---|---|---|---|
-| V2-010 | RNG cohort key | **P1** | GSP-CRV2-06 | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore receive the same event stream but different supply-chain and compliance streams. Escalates to **P0** if parallel sections are ever scored against one another, because the disruption exposure they face would differ by construction. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | **Closed** at `8ddd983` — option A adopted, see below |
-| V2-011 | Shared RNG stream | **P1** | Competition-rules owner (via GSP-CRV2-09) | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw — one team's presence changes another team's outcome. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | **Closed** at `8ddd983` — option A adopted, see below |
+| V2-010 | RNG cohort key | **P1** | GSP-CRV2-06 | Two different cohort keys are in use. `core/engine/rng.py` seeds on `game.section_id or game.id`; `sc_engine._seed()` and `compliance_engine` seed on `game.id`. Two sections of one class running the same scenario therefore receive the same event stream but different supply-chain and compliance streams. Escalates to **P0** if parallel sections are ever scored against one another, because the disruption exposure they face would differ by construction. | Compare `core/engine/rng.py` with `core/engine/sc_engine.py:_seed` and `core/engine/compliance_engine.py`. | **Closed** at `0c2e122` — option A adopted, see below |
+| V2-011 | Shared RNG stream | **P1** | Competition-rules owner (via GSP-CRV2-09) | The supply-chain and compliance passes consume a single `random.Random` across all teams, so draw *n* belongs to whichever (team, regime, market) triple reaches the roll *n*-th. Iteration order is now explicit and replay is exact, but adding or withdrawing a team shifts every later team's draw — one team's presence changes another team's outcome. | `core/engine/compliance_engine.py:enforce_compliance`; `core/engine/sc_engine.py:run_sc_state`. | **Closed** at `0c2e122` — option A adopted, see below |
 | V2-012 | Iteration order | **P0** | GSP-CRV2-01 (closed) | The first ordering sweep inspected only inline loop iterators, so `rows = X.objects.filter(...)` followed by `for row in rows` was never checked. `_score_entry_mode_risk` iterated an unordered `TeamMarketPresence` scan; a restored database returned two markets in the opposite order, changing `RoundResultCoherence.breakdown` and the competitive hash. A published round did not reproduce. | Cross-environment replay of game 34 round 1: three same-host replays agreed with each other and disagreed with the original resolution; the section diff named `coherence` and the reordered `entry_mode_risk` list. | **Repaired** — 75 further sites ordered; the AST guard now resolves a loop over a local name back to its assignment. |
 | V2-013 | Manifest envelope | **P1** | GSP-CRV2-01 (closed) | The output snapshot held only the competitive sections, so foreign keys pointing at configuration it did not contain (`Team.firm_starter_profile`, `Game.scenario`, `Team.home_market`) fell back to `core.Scenario#surrogate:7`. The competitive hash carried raw sequence values, defeating the surrogate-independence requirement. Never broke a replay, because a restored database reproduces the ids. | Inspect any pre-repair `output_manifest` for `#surrogate:`. | **Repaired** — both envelopes now pull in whatever identity requires; a test forbids `#surrogate:` in either. |
 | V2-014 | Narrative envelope | **P1** | GSP-CRV2-01 (closed) | A narrative section's prose is separated into `narrative_rows` by the snapshot, and the narrative envelope was built from `rows` alone. `narrative_sha256` hashed briefing ids and round numbers, not a word of text — so a replay against a deliberately different model produced an identical narrative hash and the "prose differs, result does not" claim was unverifiable. | Two runs of game 36 round 1 under different endpoints reported the same `narrative_sha256`. | **Repaired** — the envelope carries `prose` and `prose_digests`; tests require that changing a briefing changes the narrative hash and leaves the competitive hash alone. |
 
 | V2-015 | Narrative / manifest reconciliation | **P1** | GSP-CRV2-03 | Phase 2 writes into rows and fields that `output_sha256` covers, after that hash has been taken: `RoundResultCoherence.rag_score/blended_score/breakdown`, `SCEventInstance.resolution_data['narrative']`, and newly created `InstructorAlert` coaching rows. The hash never moves — it is computed inside the Phase-1 transaction — so every replay matches; what diverges is the *stored database* from the manifest that certified it, which no replay compares. | Resolve a round with an API key configured, wait for Phase 2, then rebuild the output manifest and compare with the stored `output_sha256`. | **Repaired in GSP-CRV2-03** — see closure entry. |
-| V2-016 | LLM reaches a graded number | **P1** | GSP-CRV2-03 (closed) | `RoundResultCoherence.blended_score` is read by `core/services/grading.py`. With an LLM reachable, coherence was `0.6·formula + 0.4·RAG`; without one, the formula score stood. Two identical competitions therefore graded differently depending on an external service's availability. Rank was unaffected: neither `performance.py` nor `leaderboard.py` reads coherence. | `grep blended_score core/services/grading.py`; compare a round resolved with and without `DASHSCOPE_API_KEY`. | **Closed** at `49d6514` — see closure entry below |
+| V2-016 | LLM reaches a graded number | **P1** | GSP-CRV2-03 (closed) | `RoundResultCoherence.blended_score` is read by `core/services/grading.py`. With an LLM reachable, coherence was `0.6·formula + 0.4·RAG`; without one, the formula score stood. Two identical competitions therefore graded differently depending on an external service's availability. Rank was unaffected: neither `performance.py` nor `leaderboard.py` reads coherence. | `grep blended_score core/services/grading.py`; compare a round resolved with and without `DASHSCOPE_API_KEY`. | **Closed** at `4bf93e9` — see closure entry below |
 
 ### Disposition required for V2-010 and V2-011
 
@@ -1807,7 +1850,7 @@ ambiguous.
   to match. Option (a) is the smaller change and matches `core/engine/rng.py`'s
   documented convention.
 
-### V2-016 — LLM reaches a graded number (P1) — closed at `49d6514`
+### V2-016 — LLM reaches a graded number (P1) — closed at `4bf93e9`
 
 **Adopted rule: published coherence and the grades derived from it are the
 deterministic formula score. Retrieval is instructor commentary and nothing
@@ -1818,7 +1861,7 @@ off. The audit rejected that: a setting a supported deployment can flip is not
 a safe competition configuration, and default-off left the defect one
 environment variable away. The rework removed the Phase-2 write path outright.
 
-At `49d6514`:
+At `4bf93e9`:
 
 * `update_coherence_with_rag()` writes no competitive field in any
   configuration. It records the evaluation as an `InstructorAlert` with
