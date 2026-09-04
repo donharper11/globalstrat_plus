@@ -124,6 +124,166 @@
             }
           }
         },
+        "identifier-hygiene": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "mode",
+            "scope",
+            "scope_source",
+            "internal_terms",
+            "internal_terms_source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "blocking",
+                "report-only"
+              ]
+            },
+            "fast": {
+              "type": "boolean",
+              "default": false
+            },
+            "scope": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minProperties": 1,
+              "description": "User-facing source path glob -> the reason that path is in scope. This is a scope declaration, not a tree-wide scan."
+            },
+            "scope_source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "internal_terms": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Internal vocabulary literal -> its correction-backed reason. Terms are authored configuration and are never derived from scanner matches."
+            },
+            "internal_terms_source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "deploy-preflight": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "mode",
+            "script",
+            "script_reason",
+            "secret_names",
+            "secret_names_source",
+            "non_fatal_patterns",
+            "non_fatal_source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "blocking",
+                "report-only"
+              ]
+            },
+            "fast": {
+              "type": "boolean",
+              "default": false
+            },
+            "script": {
+              "type": "string",
+              "minLength": 1
+            },
+            "script_reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "secret_names": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Secret-bearing variable name -> why it is a secret input in this deploy path. Empty is valid only when the script reads no secrets and secret_names_source says so."
+            },
+            "secret_names_source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "non_fatal_patterns": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Regex for an explicitly non-fatal external step -> the reason that failure is deliberate. An unlisted warning/continuation remains a finding."
+            },
+            "non_fatal_source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "stale-worktrees": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "mode",
+            "max_age_days",
+            "max_age_reason",
+            "age_source",
+            "include_main",
+            "include_main_reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "blocking",
+                "report-only"
+              ]
+            },
+            "fast": {
+              "type": "boolean",
+              "default": false
+            },
+            "max_age_days": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_age_reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "age_source": {
+              "type": "string",
+              "minLength": 1
+            },
+            "include_main": {
+              "type": "boolean"
+            },
+            "include_main_reason": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
         "rls-policy-present": {
           "type": "object",
           "required": [

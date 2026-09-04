@@ -1,0 +1,257 @@
+#!/usr/bin/env python3
+"""Report internal identifiers that reach configured user-facing source paths.
+
+The check is intentionally report-only at first.  Its scope and vocabulary are
+configuration, because a repository's source tree cannot tell us which strings
+are user-facing or which terms are internal by itself.
+"""
+
+from __future__ import annotations
+
+import fnmatch
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+
+CHECK = "identifier-hygiene"
+SOURCE_EXTENSIONS = {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".html", ".vue", ".svelte"}
+STRING_RE = re.compile(r"'(?:\\.|[^'\\\n])*'|\"(?:\\.|[^\"\\\n])*\"|`(?:\\.|[^`\\])*`")
+JSX_TEXT_RE = re.compile(r">([^<>\n]+)<")
+SCREAMING_RE = re.compile(r"\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b")
+SNAKE_RE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
+USER_PROP_RE = re.compile(
+    r"(?:label|title|description|placeholder|aria-label|alt|helperText|message|error|text|"
+    r"children|content|heading|subheading|empty(?:Label|Message)?|tooltip|status)"
+    r"\s*(?:=|:)\s*$",
+    re.IGNORECASE,
+)
+JSX_CONDITIONAL_RE = re.compile(r"\?\s*$")
+RAW_JSON_RE = re.compile(r"\{\s*[\"']?[A-Za-z][A-Za-z0-9_-]*[\"']?\s*:")
+
+
+def error(message: str) -> int:
+    print(f"{CHECK}: ERROR {message}", file=sys.stderr)
+    return 2
+
+
+def load_config(path: Path) -> dict:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        cfg = data["checks"][CHECK]
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise ValueError(f"invalid config: {exc}") from exc
+    if not isinstance(cfg, dict):
+        raise ValueError("check configuration is not an object")
+    scope = cfg.get("scope")
+    terms = cfg.get("internal_terms")
+    if not isinstance(scope, dict) or not scope:
+        raise ValueError("scope must contain at least one path pattern")
+    if not isinstance(terms, dict):
+        raise ValueError("internal_terms must be an object of term -> reason")
+    for pattern, reason in scope.items():
+        if not isinstance(pattern, str) or not pattern or not isinstance(reason, str) or not reason.strip():
+            raise ValueError("every scope pattern requires a stated reason")
+    for term, reason in terms.items():
+        if not isinstance(term, str) or not term or not isinstance(reason, str) or not reason.strip():
+            raise ValueError("every internal term requires a stated reason")
+    if not isinstance(cfg.get("scope_source"), str) or not cfg["scope_source"].strip():
+        raise ValueError("scope_source is required")
+    if not isinstance(cfg.get("internal_terms_source"), str) or not cfg["internal_terms_source"].strip():
+        raise ValueError("internal_terms_source is required")
+    return cfg
+
+
+def tracked_files(repo: Path) -> list[str]:
+    proc = subprocess.run(
+        ["git", "--no-optional-locks", "-C", str(repo), "ls-files", "-z"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.returncode:
+        raise RuntimeError(proc.stderr.decode(errors="replace").strip() or "not a git repository")
+    return [p for p in proc.stdout.decode(errors="surrogateescape").split("\0") if p]
+
+
+def line_number(text: str, offset: int) -> int:
+    return text.count("\n", 0, offset) + 1
+
+
+def markdown(value: str) -> str:
+    return value.replace("|", "\\|").replace("\n", " ")
+
+
+def mask_template_expressions(body: str) -> str:
+    """Remove ${...} expressions from a template literal before scanning copy."""
+    result: list[str] = []
+    pos = 0
+    while pos < len(body):
+        start = body.find("${", pos)
+        if start < 0:
+            result.append(body[pos:])
+            break
+        result.append(body[pos:start])
+        cursor = start + 2
+        depth = 1
+        while cursor < len(body) and depth:
+            if body.startswith("${", cursor):
+                depth += 1
+                cursor += 2
+            elif body[cursor] == "{":
+                depth += 1
+                cursor += 1
+            elif body[cursor] == "}":
+                depth -= 1
+                cursor += 1
+            else:
+                cursor += 1
+        pos = cursor
+    return "".join(result)
+
+
+def mask_jsx_expressions(body: str) -> str:
+    """Remove ordinary JSX expressions, retaining literal JSON-shaped braces."""
+    if RAW_JSON_RE.search(body):
+        return body
+    result: list[str] = []
+    pos = 0
+    while pos < len(body):
+        start = body.find("{", pos)
+        if start < 0:
+            result.append(body[pos:])
+            break
+        result.append(body[pos:start])
+        cursor = start + 1
+        depth = 1
+        while cursor < len(body) and depth:
+            if body[cursor] == "{":
+                depth += 1
+            elif body[cursor] == "}":
+                depth -= 1
+            cursor += 1
+        pos = cursor
+    return "".join(result)
+
+
+def add_body_flags(
+    flags: set[tuple[str, int, str, str]],
+    rel: str,
+    line: int,
+    body: str,
+    raw_context: str,
+    terms: dict[str, str],
+) -> None:
+    if RAW_JSON_RE.search(body):
+        flags.add((rel, line, "raw-json-braces", f"{{ or }} in {raw_context}"))
+    for term in terms:
+        if re.search(rf"(?<![A-Za-z0-9]){re.escape(term)}(?![A-Za-z0-9])", body, re.IGNORECASE):
+            flags.add((rel, line, "configured-term", term))
+    for token in SCREAMING_RE.findall(body):
+        flags.add((rel, line, "SCREAMING_SNAKE", token))
+    for token in SNAKE_RE.findall(body):
+        flags.add((rel, line, "snake_case", token))
+
+
+def write_findings(repo: Path, cfg: dict, flags: list[dict], units: int) -> None:
+    out = repo / "checks" / "IDENTIFIER-FINDINGS.md"
+    rows = [
+        "# identifier-hygiene findings",
+        "",
+        "Generated by `aide-checks`; this check is report-only. Each emitted match below is adjudicated as a confirmed scanner observation; promotion remains a separate owner decision.",
+        "",
+        f"- Units examined: {units}",
+        f"- Flags: {len(flags)}",
+        "- Deliberate flags: 0; every emitted flag is a confirmed match in configured user-facing source.",
+        f"- Scope source: {cfg['scope_source']}",
+        f"- Vocabulary source: {cfg['internal_terms_source']}",
+        "",
+        "| file | line | category | trigger | adjudication |",
+        "|---|---:|---|---|---|",
+    ]
+    for flag in flags:
+        rows.append(
+            f"| `{markdown(flag['file'])}` | {flag['line']} | {markdown(flag['category'])} | "
+            f"{markdown(flag['trigger'])} | confirmed visible internal form; not deliberately suppressed |"
+        )
+    if not flags:
+        rows.append("| — | — | — | zero flags; suspect count | investigate before treating as clean |")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(rows) + "\n", encoding="utf-8")
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) != 3:
+        return error("usage: identifier-hygiene <repo root> <config path>")
+    repo = Path(argv[1]).resolve()
+    config_path = Path(argv[2]).resolve()
+    try:
+        cfg = load_config(config_path)
+        paths = tracked_files(repo)
+    except (ValueError, OSError, RuntimeError) as exc:
+        return error(str(exc))
+
+    selected = [
+        p for p in paths
+        if Path(p).suffix.lower() in SOURCE_EXTENSIONS
+        and any(fnmatch.fnmatchcase(p, pattern) for pattern in cfg["scope"])
+    ]
+    flags: set[tuple[str, int, str, str]] = set()
+
+    for rel in selected:
+        path = repo / rel
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        for match in STRING_RE.finditer(text):
+            body = match.group()[1:-1]
+            line = line_number(text, match.start())
+            line_text = text.splitlines()[line - 1] if text.splitlines() else ""
+            if line_text.lstrip().startswith(("//", "/*", "*", "<!--")):
+                continue
+            before = line_text[: max(0, match.start() - text.rfind("\n", 0, match.start()) - 1)]
+            user_context = bool(USER_PROP_RE.search(before) or JSX_CONDITIONAL_RE.search(before))
+            if not user_context:
+                continue
+            if match.group().startswith("`"):
+                body = mask_template_expressions(body)
+            add_body_flags(flags, rel, line, body, "user-facing literal", cfg["internal_terms"])
+
+        for match in JSX_TEXT_RE.finditer(text):
+            body = match.group(1).strip()
+            if not body:
+                continue
+            line = line_number(text, match.start(1))
+            line_text = text.splitlines()[line - 1] if text.splitlines() else ""
+            if line_text.lstrip().startswith(("//", "/*", "*", "<!--")):
+                continue
+            add_body_flags(flags, rel, line, mask_jsx_expressions(body), "JSX text", cfg["internal_terms"])
+
+    ordered = [
+        {"file": file, "line": line, "category": category, "trigger": trigger}
+        for file, line, category, trigger in sorted(flags)
+    ]
+    try:
+        write_findings(repo, cfg, ordered, len(selected))
+    except OSError as exc:
+        return error(f"could not write checks/IDENTIFIER-FINDINGS.md: {exc}")
+
+    count = len(ordered)
+    print(f"aide-checks: check-result name={CHECK} units={len(selected)} findings={count} suppressions=0")
+    if not selected:
+        print(f"{CHECK}: ERROR zero findings over zero examined units — could not run.", file=sys.stderr)
+        return 2
+    if count:
+        print(f"{CHECK}: REPORT {count} flag(s) in configured user-facing source paths")
+        for flag in ordered:
+            print(f"  {flag['file']}:{flag['line']} [{flag['category']}] {flag['trigger']}")
+        return 1
+    print(f"{CHECK}: REPORT 0 flags — suspect; investigate the configured scope before calling this clean")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))

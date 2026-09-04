@@ -7,11 +7,16 @@
       "enabled": true,
       "mode": "blocking",
       "fast": true,
-      "include": ["docs/**", "README.md"],
+      "include": [
+        "docs/**",
+        "README.md"
+      ],
       "exclude": [],
       "exclusion_reasons": {},
-      "mode_reason": "Promoted to blocking 2026-09 once the four findings recorded in SECURITY-NOTICE.md §3 were dispositioned. All four were read and confirmed non-credentials; see allow_fields_reasons and allow_findings.",
-      "allow_fields": ["DJANGO_SECRET_KEY"],
+      "mode_reason": "Promoted to blocking 2026-09 once the four findings recorded in SECURITY-NOTICE.md \u00a73 were dispositioned. All four were read and confirmed non-credentials; see allow_fields_reasons and allow_findings.",
+      "allow_fields": [
+        "DJANGO_SECRET_KEY"
+      ],
       "allow_fields_reasons": {
         "DJANGO_SECRET_KEY": "Fixture value 'crv208-walkthrough' in the CRV2 audit harnesses under handoff_readiness_v2/evidence/post-close-disputes/harness/ (start_stack.py:28, disputes.py:25). Named for the walkthrough it drives, used only by the disposable evidence stack, never a production value. Read and confirmed 2026-09."
       },
@@ -24,8 +29,23 @@
       "enabled": true,
       "mode": "blocking",
       "fast": true,
-      "patterns": [".claude/worktrees", "worktrees"],
-      "patterns_source": "This repo's .gitignore line 45 ignores all of .claude/, which is where its harness places worktrees — there is a live one at .claude/worktrees/agent-aa23a70e43fabef2c right now. Bare .claude is not used as a pattern: the check tests trackedness, and the narrower path is the one the convention names."
+      "patterns": [
+        ".claude/worktrees",
+        "worktrees"
+      ],
+      "patterns_source": "This repo's .gitignore line 45 ignores all of .claude/, which is where its harness places worktrees \u2014 there is a live one at .claude/worktrees/agent-aa23a70e43fabef2c right now. Bare .claude is not used as a pattern: the check tests trackedness, and the narrower path is the one the convention names."
+    },
+    "stale-worktrees": {
+      "enabled": true,
+      "mode": "report-only",
+      "fast": false,
+      "mode_reason": "Report-only is required by the check itself, and is right here: a stale linked worktree is housekeeping, not a competitive or security defect. Blocking a commit on it would put a cleanup task in the path of a round-resolution fix.",
+      "fast_reason": "Excluded from the pre-commit subset. It walks every linked worktree and asks git whether each is dirty or unpushed, which is per-worktree process work; the fast subset exists so the hook stays usable.",
+      "max_age_days": 7,
+      "max_age_reason": "One week gives a linked worktree time to be integrated or deliberately handed off before it becomes a finding. This repository has produced agent worktrees that outlived their task -- one was found holding a superseded Stage 1 commit and had to be removed before the V2-048 history rewrite could run.",
+      "age_source": "The linked worktree directory mtime. Named explicitly because it is not commit age: a worktree can hold old commits and still have been touched today, and the reverse.",
+      "include_main": false,
+      "include_main_reason": "The primary checkout is the active workspace this handoff is built in, not a stranded worktree. It is still listed and its state reported, so excluding it hides nothing."
     }
   }
 }

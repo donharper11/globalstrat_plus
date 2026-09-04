@@ -98,6 +98,21 @@ Its selftest starts a postgres of its own and drops it again. It **must not
 touch a live database**: accounting's production database was destroyed on
 2026-08-24 by a committed test running `DROP SCHEMA public CASCADE`.
 
+## Phase 3 — what was added
+
+| check | form | install mode |
+|---|---|---|
+| `identifier-hygiene` | configured user-facing source paths checked for internal terms, enum/field identifier forms, and raw JSON braces | report-only |
+| `deploy-preflight` | configured deploy/build boundary checked for credential-shaped assignments, secret fallbacks, dirty trees, and undeclared warning/continuation paths | report-only |
+| `stale-worktrees` | every registered worktree reported with branch, dirty count, upstream, pushed state, and age; old dirty or unpushed linked worktrees flagged | report-only, never deploy-blocking |
+
+The Phase 3 checks are deliberately judgment-dependent. Each repo declares the
+user-facing scope, correction-backed internal vocabulary, deploy boundary,
+secret input names, deliberately non-fatal deploy steps, and worktree age
+policy in `checks.config.json`. The scanner never turns its own matches into a
+term list or an allowlist. Each run writes a findings document under `checks/`
+so every flag is visible for owner adjudication.
+
 ## Usage
 
 ```

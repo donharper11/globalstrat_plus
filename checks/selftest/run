@@ -511,6 +511,123 @@ assert_rc 2 $? "an unstamped runner outside a git checkout is exit 2"
 rm -rf "$V" "$D"
 
 # ══════════════════════════════════════════════════════════════════════════
+# The phase-3 report-only checks. Each one gets a clean fixture, a planted
+# violation, and a restored clean run. These fixtures scan source or metadata
+# only; they never execute a deploy, open a live database, or use a credential.
+say "selftest: identifier-hygiene"
+D="$(mk_repo)"
+mkdir -p "$D/frontend/src"
+cat > "$D/frontend/src/App.jsx" <<'EOF'
+export function App() {
+  return <button label="Ready">Ready</button>;
+}
+EOF
+cat > "$D/checks.config.json" <<'JSON'
+{
+  "stack": "node",
+  "checks": {
+    "identifier-hygiene": {
+      "enabled": true,
+      "mode": "report-only",
+      "scope": {"frontend/src/**": "disposable React user-facing fixture"},
+      "scope_source": "selftest fixture declares its only UI surface",
+      "internal_terms": {"Layer 1": "fixture vocabulary used to prove a configured term is reported"},
+      "internal_terms_source": "selftest fixture term, authored before the scan"
+    }
+  }
+}
+JSON
+git -C "$D" add -A; git -C "$D" commit -qm identifier-baseline
+"$PKG/py/identifier-hygiene" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "identifier-hygiene clean fixture passes"
+printf 'const label = "Layer 1";\n' >> "$D/frontend/src/App.jsx"
+printf 'const internal = "RAW_IDENTIFIER";\n' >> "$D/frontend/src/App.jsx"
+"$PKG/py/identifier-hygiene" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "identifier-hygiene planted term and enum are reported"
+grep -q 'Layer 1' "$D/checks/IDENTIFIER-FINDINGS.md" \
+  && { say "    ok    identifier finding records configured term"; PASS=$((PASS+1)); } \
+  || { say "    FAIL  identifier finding omits configured term"; FAIL=$((FAIL+1)); }
+cat > "$D/frontend/src/App.jsx" <<'EOF'
+export function App() {
+  return <button label="Ready">Ready</button>;
+}
+EOF
+"$PKG/py/identifier-hygiene" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "identifier-hygiene plant removed, clean fixture returns"
+rm -rf "$D"
+
+say "selftest: deploy-preflight"
+D="$(mk_repo)"
+cat > "$D/deploy.sh" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+TOKEN="${TOKEN:?required}"
+curl -fsS https://example.invalid/health >/dev/null
+EOF
+chmod +x "$D/deploy.sh"
+cat > "$D/checks.config.json" <<'JSON'
+{
+  "stack": "mixed",
+  "checks": {
+    "deploy-preflight": {
+      "enabled": true,
+      "mode": "report-only",
+      "script": "deploy.sh",
+      "script_reason": "the disposable fixture's only deploy boundary",
+      "secret_names": {"TOKEN": "disposable secret input"},
+      "secret_names_source": "the fixture script declares TOKEN as its only secret input",
+      "non_fatal_patterns": {},
+      "non_fatal_source": "the fixture declares no deliberately non-fatal external step"
+    }
+  }
+}
+JSON
+git -C "$D" add -A; git -C "$D" commit -qm deploy-baseline
+"$PKG/py/deploy-preflight" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "deploy-preflight clean fixture passes"
+git -C "$D" add checks/DEPLOY-FINDINGS.md; git -C "$D" commit -qm deploy-report >/dev/null
+printf 'TOKEN="retired-value"\n' >> "$D/deploy.sh"
+git -C "$D" add deploy.sh; git -C "$D" commit -qm hardcoded-token >/dev/null
+"$PKG/py/deploy-preflight" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "deploy-preflight reports a hardcoded credential-shaped assignment"
+sed -i '/retired-value/d' "$D/deploy.sh"
+printf 'echo "${TOKEN:-retired-value}"\n' >> "$D/deploy.sh"
+git -C "$D" add deploy.sh; git -C "$D" commit -qm fallback-token >/dev/null
+"$PKG/py/deploy-preflight" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "deploy-preflight reports a secret fallback default"
+rm -rf "$D"
+
+say "selftest: stale-worktrees"
+D="$(mk_repo)"
+cat > "$D/checks.config.json" <<'JSON'
+{
+  "stack": "mixed",
+  "checks": {
+    "stale-worktrees": {
+      "enabled": true,
+      "mode": "report-only",
+      "max_age_days": 7,
+      "max_age_reason": "the fixture uses one week as the stale-work threshold",
+      "age_source": "worktree directory mtime is the available local age signal",
+      "include_main": false,
+      "include_main_reason": "the primary checkout is active work, not a stranded linked worktree"
+    }
+  }
+}
+JSON
+git -C "$D" add -A; git -C "$D" commit -qm worktree-baseline
+"$PKG/py/stale-worktrees" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 0 $? "stale-worktrees clean main worktree passes"
+git -C "$D" add checks/WORKTREE-FINDINGS.md; git -C "$D" commit -qm worktree-report >/dev/null
+W="$D/linked-stale"
+git -C "$D" worktree add -q -b stale-fixture "$W"
+touch -d '30 days ago' "$W"
+"$PKG/py/stale-worktrees" "$D" "$D/checks.config.json" >/dev/null 2>&1
+assert_rc 1 $? "stale-worktrees reports an old unpushed linked worktree"
+git -C "$D" worktree remove -f "$W" >/dev/null
+rm -rf "$D"
+
+# ══════════════════════════════════════════════════════════════════════════
 # rls-policy-present.
 #
 # THIS SELFTEST MUST NOT TOUCH A LIVE DATABASE (spec §5). It starts a postgres
