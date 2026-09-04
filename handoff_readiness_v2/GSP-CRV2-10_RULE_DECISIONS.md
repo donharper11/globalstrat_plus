@@ -160,6 +160,41 @@ below.
 
 ---
 
+## R10. Spending is a financial consequence, not a score purchase
+
+**Decision (rules owner, 2026-09-04).** Do not award direct performance-index
+or coherence credit for the amount of a legacy `DecisionRDInvestment`.
+Feature-level investment is retired with the upgrade path: future submissions
+must refuse it on every supported write surface and again at the engine
+boundary. A refusal tells the team to develop a new platform and re-base the
+product; it neither silently ignores nor charges the retired decision.
+
+**What remains scored.** Platform development remains a full financial and
+budgetary commitment. Its actual delivered platform capabilities, and the
+market fit, revenue, profit, and other outcomes those capabilities create,
+remain the competitive consequences. Money spent by itself is not a capability
+or coherence score.
+
+**Historical boundary.** Published rounds and their stored decisions/results
+are not rewritten. The rule applies to future submissions and to any
+unprocessed legacy feature-investment row, which must be refused before it can
+cause a new competitive mutation.
+
+**Why.** R9 removed the only processor that turned feature-investment rows into
+product capability. Leaving their direct `rd_spend` and feature-alignment
+scores in place turned a costly but mechanically inert decision into a way to
+purchase points. Repointing those scores at platform-development cost would
+preserve the same error under a new label, and platform development is lumpy by
+round. The simulation scores the consequence of a decision, not its receipt.
+
+**Implementation boundary.** Remove the direct use of
+`DecisionRDInvestment.amount` in strategic-capability and R&D-market-alignment
+scoring. Do not replace it with platform-development cost. Preserve the normal
+financial, cash, and budget treatment of platform development; test its actual
+competitive effects through the existing capability/market/financial paths.
+
+---
+
 ## Consequence for GSP-CRV2-06
 
 R9 **invalidates the strategy space GSP-CRV2-06's tournament searched.** That

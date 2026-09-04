@@ -178,7 +178,7 @@ written for.
 **Disposition: open.** No repair attempted, no rotation performed, and nothing
 about the exposure changed by recording it.
 
-## V2-053 — Ruling 1 leaves R&D investment scored but mechanically inert (P1) — OPEN, rules owner / GSP-CRV2-11
+## V2-053 — Ruling 1 left R&D investment scored but mechanically inert (P1) — DECIDED, pending implementation
 
 Raised by the builder during Stage 3B, before repair, because the repair is a
 rules decision rather than a defect fix.
@@ -209,20 +209,19 @@ the product.
   for every team in every round, permanently. **That is a balance rewrite and
   was not done.**
 
-**Options for the owner, neither taken here:**
+**Rules-owner decision, 2026-09-04.** Spending affects the simulation through
+its budget, cash, financial-performance, and delivered-capability consequences;
+it is not itself a score purchase. Future `DecisionRDInvestment` rows are
+retired and must be refused on every supported write surface and at the engine
+boundary. Direct strategic-capability and R&D-market-alignment scoring from
+those rows is removed. Platform-development cost is **not** substituted as a
+new direct score: a platform's actual delivered capabilities and their
+market/financial outcomes are what remain competitively meaningful.
 
-1. Point `rd_score` and the coherence term at platform-development spend, which
-   is where R&D investment now actually happens. Note that platform spend is
-   lumpy — one large charge in a funding round, nothing in others — so the
-   ratio against a per-round target needs recalibration. That makes it
-   GSP-CRV2-11 work, not a drop-in.
-2. Keep `DecisionRDInvestment` as pure research spend with no feature effect,
-   and say so in the student-facing rules, so a team is not buying a capability
-   that never arrives.
-
-**Not repaired in Stage 3B.** The freeze was implemented exactly as ruled —
-ready platforms only — precisely so that this decision stays with the owner
-rather than being made silently by a builder closing a test failure.
+Published rounds remain immutable. An unprocessed legacy row is refused before
+competitive mutation, not silently ignored or charged. See R10 in
+`GSP-CRV2-10_RULE_DECISIONS.md` and the bounded implementation handoff
+`handoffs/GSP-CRV2-10-v2-053-rd-scoring.md`.
 
 ### V2-054 — the V2-048 history rewrite invalidated every revision citation in the programme record (P1) — OPEN, documentation owner
 
