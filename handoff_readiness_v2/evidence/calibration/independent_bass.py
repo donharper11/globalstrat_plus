@@ -125,15 +125,76 @@ def trajectory(row, rounds, regime):
     return out
 
 
+def compare_runtime(path, scenario):
+    """Replay delivered pools from exported runtime state without engine code.
+
+    The runtime harness records its effective population and the published
+    human allocation for every segment-market-round.  This function uses only
+    those observations plus YAML Bass parameters.  It therefore independently
+    checks the one thing the field configuration must not change: whether the
+    engine's published adoption pool equals the authored Bass equation when
+    supplied the same ``M`` and prior *human* ``N`` (Fix A deliberately keeps
+    AI take out of N).
+    """
+    delivered = json.loads(pathlib.Path(path).read_text())
+    params = {
+        (row['market'], row['segment']): row
+        for row in segment_rows(scenario, rounds=1)
+    }
+    cumulative_human = {}
+    comparisons = []
+    for observed in sorted(delivered['rows'],
+                           key=lambda row: (row['market'], row['segment'], row['round'])):
+        key = (observed['market'], observed['segment'])
+        source = params[key]
+        M = float(observed['population'])
+        N_prev = cumulative_human.get(key, 0.0)
+        expected = (source['p'] + source['q'] * N_prev / max(M, 1)) * max(M - N_prev, 0)
+        expected = max(expected, 0.0)
+        actual = float(observed['adoption_pool'])
+        comparisons.append({
+            'round': observed['round'], 'market': key[0], 'segment': key[1],
+            'effective_population': M, 'human_n_prev': N_prev,
+            'independent_pool': expected, 'engine_pool': actual,
+            'absolute_divergence': abs(expected - actual),
+            'relative_divergence': (abs(expected - actual) / expected
+                                    if expected else 0.0),
+            'ai_adopters': float(observed['ai_adopters']),
+            'human_adopters': float(observed['human_adopters']),
+            'unserved_adopters': float(observed['unserved_adopters']),
+        })
+        cumulative_human[key] = N_prev + float(observed['human_adopters'])
+    return {
+        'scenario': delivered['scenario'],
+        'runtime_code_revision': delivered.get('code_revision'),
+        'observations': comparisons,
+        'max_absolute_divergence': max(row['absolute_divergence'] for row in comparisons),
+        'max_relative_divergence': max(row['relative_divergence'] for row in comparisons),
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--scenario',
                     default='backend/scenarios/consumer_electronics_2026.yaml')
     ap.add_argument('--rounds', type=int, default=10)
     ap.add_argument('--json', help='write full results here')
+    ap.add_argument('--runtime-input',
+                    help='Stage 1 runtime export to independently compare')
+    ap.add_argument('--comparison-json',
+                    help='where to write the runtime comparison JSON')
     args = ap.parse_args()
 
     scenario = load_scenario(args.scenario)
+    if args.runtime_input:
+        comparison = compare_runtime(args.runtime_input, scenario)
+        rendered = json.dumps(comparison, indent=2, sort_keys=True)
+        if args.comparison_json:
+            pathlib.Path(args.comparison_json).write_text(rendered + '\n')
+        print(f"runtime observations : {len(comparison['observations'])}")
+        print(f"max absolute divergence: {comparison['max_absolute_divergence']:.6f}")
+        print(f"max relative divergence: {comparison['max_relative_divergence']:.9%}")
+        return
     rows = segment_rows(scenario, args.rounds)
     results = {}
     for regime in ('flat', 'compounding', 'static'):

@@ -8,7 +8,10 @@ Tool: `independent_bass.py` — reads the scenario YAML, imports no engine code,
 writes the Bass arithmetic out longhand. A simulator sharing a helper with the
 engine would agree with it about a shared mistake.
 
-Status: **items 2, 3 and 5 complete; items 1 and 4 need an engine run.**
+Status: **items 1–5 measured.** The baseline replay below is an accounting and
+engine-fidelity run, not an archetype-balance certification: a constant
+production plan is deliberately capacity-constrained and therefore cannot
+establish that the four starting positions have equal expected value.
 
 ---
 
@@ -109,17 +112,44 @@ Full per-round, per-segment, per-market figures for all three regimes (flat,
 compounding, static) in `trajectory.json`: `M`, `N`, adoption pool, remaining
 pool, penetration and industry revenue. The flat column is what ships today.
 
-## Items 1 and 4 — outstanding
+## Items 1 and 4 — resolved runtime replay
 
-- **Item 1, engine fidelity.** The independent simulator exists and produces
-  the specified trajectory. Comparing it against delivered output needs a
-  resolved ten-round game with a competent baseline field, which is the next
-  build.
-- **Item 4, AI competitor take.** Confirmed structurally: `bass_engine.py:151-153`
-  adds `ai_attract` into `total_attractiveness`, so every human share is
-  diluted; `_get_total_cumulative` (`:336-349`) sums only `RoundResultAdoption`
-  rows, which are written per *team*, so AI adoption never enters `N`.
-  Quantifying the fraction taken needs the same engine run.
+`stage1_runtime_replay.py` created a fresh disposable PostgreSQL database,
+loaded Consumer Electronics, held the documented marketing/talent baseline
+constant for four teams, and resolved rounds 1–10. It exports every customer
+segment-market result to `stage1_runtime_replay.json`. The database was dropped
+after the run. No production game or calibration setting was changed.
+
+`independent_bass.py --runtime-input ...` then replayed Bass from the exported
+effective population and the preceding **human** cumulative adoption, using
+only YAML `p`/`q` values and no engine import. Across 250 observations, the
+largest difference between the independently calculated and persisted pool was
+**0.005 units** (maximum relative divergence **0.000054290%**): the difference
+is the result table's two-decimal rounding. This confirms the delivered engine
+implements the authored Bass arithmetic under the exact same `M` and `N`.
+
+The replay also quantifies the existing Fix-A rule. AI competitors received
+between **87.80% and 89.60%** of each round's adoption pool; human teams sold
+only 52,000–72,000 units per round under the held-constant production plan.
+The residual is explicitly recorded as unserved demand, not silently lost.
+
+| round | pool | human adopters | AI take | unserved | AI share |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 1,629,470 | 72,000 | 1,443,186 | 114,284 | 88.57% |
+| 2 | 1,827,841 | 72,000 | 1,613,907 | 141,934 | 88.30% |
+| 3 | 1,863,866 | 72,000 | 1,638,200 | 153,666 | 87.89% |
+| 4 | 2,139,495 | 72,000 | 1,878,494 | 189,000 | 87.80% |
+| 5 | 2,369,004 | 72,000 | 2,098,506 | 198,498 | 88.58% |
+| 6 | 2,325,569 | 52,000 | 2,047,622 | 225,948 | 88.05% |
+| 7 | 2,685,381 | 72,000 | 2,383,676 | 229,705 | 88.76% |
+| 8 | 3,017,743 | 52,000 | 2,703,961 | 261,782 | 89.60% |
+| 9 | 2,970,839 | 72,000 | 2,646,707 | 252,132 | 89.09% |
+| 10 | 3,175,218 | 72,000 | 2,835,150 | 268,068 | 89.29% |
+
+This is the requested evidence for Fix B, rather than a reason to enable it:
+the current model enters human adoption only into `N`. Adding the 88–90% AI
+take would make imitation rise much faster early and deplete the pool sooner;
+the ten-round side-by-side design decision is still outstanding.
 
 ---
 
@@ -127,6 +157,7 @@ pool, penetration and industry revenue. The flat column is what ships today.
 
 - No tuning is proposed here. The compounding column is a **reference**, not a
   recommendation; Stage 3 decides the trajectory the course wants.
-- Engine fidelity is **unmeasured** so far. Everything above about the engine is
-  read from source or computed from authored parameters; the handoff is right
-  that fidelity must be established before any dial moves, and it has not been.
+- This replay does not certify the held-constant field as competent play or
+  balance the starter archetypes. It only certifies the engine arithmetic and
+  makes the AI/served/unserved split observable; those are prerequisites for
+  the Stage 2 and Fix-B measurements.
