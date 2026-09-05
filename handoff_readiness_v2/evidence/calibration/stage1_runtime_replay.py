@@ -52,7 +52,8 @@ call_command('load_all_scenarios', verbosity=0)
 
 from core.models import (Game, Round, Team, LeaderboardEntry,
                          RoundResultAIAdoption, RoundResultDemandReconciliation,
-                         RoundResultFinancials, RoundResultPerformanceIndex)
+                         RoundResultFinancials, RoundResultPerformanceIndex,
+                         RoundResultProductMarket)
 from core.models.scenario import Scenario
 from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
@@ -109,6 +110,8 @@ for expected_round in range(1, scenario.num_rounds + 1):
             game=game, round_number=expected_round, team=team)
         leaderboard = LeaderboardEntry.objects.get(
             game=game, round_number=expected_round, team=team)
+        product_rows = RoundResultProductMarket.objects.filter(
+            game=game, round_number=expected_round, team=team).order_by('id')
         team_rounds.append({{
             'round': expected_round,
             'team': team.name,
@@ -119,6 +122,9 @@ for expected_round in range(1, scenario.num_rounds + 1):
             'performance_index': str(performance.index_value),
             'satisfaction_score': str(performance.satisfaction_score),
             'rank': leaderboard.rank,
+            'units_produced': str(sum((row.units_produced for row in product_rows), 0)),
+            'units_sold': str(sum((row.units_sold for row in product_rows), 0)),
+            'units_unsold': str(sum((row.units_unsold for row in product_rows), 0)),
         }})
     advance_to_next_round(game.id)
     game.refresh_from_db()
