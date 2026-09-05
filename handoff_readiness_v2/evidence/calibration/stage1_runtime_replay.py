@@ -54,7 +54,7 @@ call_command('load_all_scenarios', verbosity=0)
 from core.models import (Game, Round, Team, LeaderboardEntry,
                          RoundResultAIAdoption, RoundResultDemandReconciliation,
                          RoundResultFinancials, RoundResultPerformanceIndex,
-                         RoundResultProductMarket)
+                         RoundResultProductDemand, RoundResultProductMarket)
 from core.models.scenario import Scenario
 from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
@@ -70,6 +70,7 @@ teams = list(Team.objects.filter(game=game).order_by('id'))
 rows = []
 team_rounds = []
 product_rounds = []
+product_demand_rounds = []
 
 for expected_round in range(1, {rounds} + 1):
     assert game.current_round == expected_round, (game.current_round, expected_round)
@@ -144,6 +145,29 @@ for expected_round in range(1, {rounds} + 1):
                 'units_sold': str(product_row.units_sold),
                 'units_unsold': str(product_row.units_unsold),
             }})
+        demand_rows = RoundResultProductDemand.objects.filter(
+            game=game, round_number=expected_round, team=team).select_related(
+                'team_product', 'segment', 'market').order_by(
+                    'team_product_id', 'segment_id', 'market_id', 'id')
+        for demand_row in demand_rows:
+            product_demand_rounds.append({{
+                'round': expected_round,
+                'team': team.name,
+                'starter_profile': team.firm_starter_profile.profile_name,
+                'product_id': demand_row.team_product_id,
+                'product_name': demand_row.team_product.name,
+                'segment': demand_row.segment.name,
+                'market': demand_row.market.code,
+                'fit_score': str(demand_row.fit_score),
+                'adjusted_fit_score': str(demand_row.adjusted_fit_score),
+                'market_readiness_pct': str(demand_row.market_readiness_pct),
+                'attractiveness': str(demand_row.attractiveness),
+                'share_pct': str(demand_row.share_pct),
+                'unconstrained_demand': str(demand_row.unconstrained_demand),
+                'available_production': str(demand_row.available_production),
+                'units_sold': str(demand_row.units_sold),
+                'lost_demand': str(demand_row.lost_demand),
+            }})
         team_rounds.append({{
             'round': expected_round,
             'team': team.name,
@@ -171,6 +195,7 @@ print(json.dumps({{
     'rows': rows,
     'team_rounds': team_rounds,
     'product_rounds': product_rounds,
+    'product_demand_rounds': product_demand_rounds,
 }}, default=str, sort_keys=True))
 '''
 
