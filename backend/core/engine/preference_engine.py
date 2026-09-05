@@ -480,14 +480,20 @@ def _team_has_generation(team, min_generation_required, round_number=None):
 
 
 def _get_team_products_in_market(team, market):
-    """Get all active products a team offers in a given market."""
+    """Get all active products a team offers in a given market, stably ordered.
+
+    Equal-fit products use the first product yielded by this query.  An explicit
+    primary-key order keeps that documented tie-break reproducible across
+    database backends and replay runs.
+    """
     product_ids = TeamProductMarket.objects.filter(
         team_product__team=team,
         market=market,
         is_active=True,
         team_product__status='active',
     ).values_list('team_product_id', flat=True)
-    return TeamProduct.objects.filter(id__in=product_ids).select_related('team_platform')
+    return (TeamProduct.objects.filter(id__in=product_ids)
+            .select_related('team_platform').order_by('id'))
 
 
 def _apply_origin_trust(team, market, fit_score):

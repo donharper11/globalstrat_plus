@@ -69,6 +69,7 @@ game = Game.objects.order_by('-id').first()
 teams = list(Team.objects.filter(game=game).order_by('id'))
 rows = []
 team_rounds = []
+product_rounds = []
 
 for expected_round in range(1, {rounds} + 1):
     assert game.current_round == expected_round, (game.current_round, expected_round)
@@ -129,7 +130,20 @@ for expected_round in range(1, {rounds} + 1):
         leaderboard = LeaderboardEntry.objects.get(
             game=game, round_number=expected_round, team=team)
         product_rows = RoundResultProductMarket.objects.filter(
-            game=game, round_number=expected_round, team=team).order_by('id')
+            game=game, round_number=expected_round, team=team).select_related(
+                'team_product', 'market').order_by('team_product_id', 'market_id', 'id')
+        for product_row in product_rows:
+            product_rounds.append({{
+                'round': expected_round,
+                'team': team.name,
+                'starter_profile': team.firm_starter_profile.profile_name,
+                'product_id': product_row.team_product_id,
+                'product_name': product_row.team_product.name,
+                'market': product_row.market.code,
+                'units_produced': str(product_row.units_produced),
+                'units_sold': str(product_row.units_sold),
+                'units_unsold': str(product_row.units_unsold),
+            }})
         team_rounds.append({{
             'round': expected_round,
             'team': team.name,
@@ -156,6 +170,7 @@ print(json.dumps({{
               for team in teams],
     'rows': rows,
     'team_rounds': team_rounds,
+    'product_rounds': product_rounds,
 }}, default=str, sort_keys=True))
 '''
 

@@ -7,6 +7,7 @@ diffusion rule, and malformed stakeholder preferences cannot be loaded.
 import copy
 from decimal import Decimal as D
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 from django.contrib.auth import get_user_model
@@ -17,6 +18,9 @@ from core.engine.bass_engine import (
     run_bass_adoption,
 )
 from core.engine.events import update_market_conditions
+from core.engine.preference_engine import (
+    _get_team_products_in_market, calculate_fit_scores,
+)
 from core.engine.utils import RoundContext, SegmentEffectiveState
 from core.management.commands.load_scenario import (
     scenario_validation_warnings, validate_scenario_yaml,
@@ -28,11 +32,14 @@ from core.models.results import (
     RoundResultDemandReconciliation,
 )
 from core.models.scenario import (
-    AICompetitorDefinition, AICompetitorFitByRound, FirmStarterProfile,
-    MarketDefinition, PlatformGenerationDefinition, Scenario, ScenarioConfig,
-    SegmentDefinition,
+    AICompetitorDefinition, AICompetitorFitByRound, EntryModeDefinition,
+    FeatureDefinition, FirmStarterProfile, MarketDefinition,
+    PlatformGenerationDefinition, Scenario, ScenarioConfig, SegmentDefinition,
+    SegmentPreference,
 )
-from core.models.team_state import TeamPlatform, TeamProduct
+from core.models.team_state import (
+    TeamMarketPresence, TeamPlatform, TeamProduct, TeamProductMarket,
+)
 
 
 SCENARIO_DIR = Path(__file__).resolve().parents[2] / 'scenarios'
@@ -151,6 +158,92 @@ class CalibrationDemandAccountingTests(TestCase):
         update_market_conditions(context)
         self.assertAlmostEqual(
             context.segments[self.segment.id].effective_population, 1331.0,
+        )
+
+    def test_equal_fit_product_selection_has_a_stable_primary_key_tie_break(self):
+        game, team, first_product = self._game_with_team()
+        later_product = TeamProduct.objects.create(
+            team=team, team_platform=first_product.team_platform,
+            name='Later Product', positioning='premium', created_round=1,
+        )
+        TeamProductMarket.objects.create(
+            team_product=first_product, market=self.market,
+            first_offered_round=1,
+        )
+        TeamProductMarket.objects.create(
+            team_product=later_product, market=self.market,
+            first_offered_round=1,
+        )
+        marketing = DecisionMarketing.objects.get(team_product=first_product)
+        DecisionMarketing.objects.create(
+            submission=marketing.submission, team_product=later_product,
+            market=self.market, retail_price=marketing.retail_price,
+            promotion_budget=marketing.promotion_budget,
+            campaign_focus_feature_ids=[],
+            channel_digital_pct=marketing.channel_digital_pct,
+            channel_traditional_pct=marketing.channel_traditional_pct,
+            channel_trade_pct=marketing.channel_trade_pct,
+            distribution_strategy=marketing.distribution_strategy,
+            distribution_investment=marketing.distribution_investment,
+            demand_estimate=marketing.demand_estimate,
+            production_volume=marketing.production_volume,
+            production_source_market=self.market,
+        )
+        entry_mode = EntryModeDefinition.objects.create(
+            scenario=self.scenario, name='Direct', code='direct',
+            description='Test', capital_requirement=D('0'), control_level=D('1'),
+            risk_level=D('1'), local_presence_score=D('1'),
+        )
+        TeamMarketPresence.objects.create(
+            team=team, market=self.market, entry_mode=entry_mode,
+            established_round=1, initial_investment=D('0'), status='active',
+        )
+        feature = FeatureDefinition.objects.create(
+            scenario=self.scenario, layer='strategy', category='Test',
+            name='Tie feature', description='Test', code='tie_feature',
+            min_value=D('0'), max_value=D('10'), default_value=D('1'),
+            cost_curve_type='linear', cost_base=D('0'),
+        )
+        SegmentPreference.objects.create(
+            segment=self.segment, feature=feature, ideal_value=D('1'),
+            weight=D('1'), tolerance=D('1'),
+        )
+
+        products = _get_team_products_in_market(team, self.market)
+        self.assertEqual(
+            list(products.values_list('id', flat=True)),
+            [first_product.id, later_product.id],
+        )
+        self.assertIn('ORDER BY', str(products.query))
+        context = RoundContext(game, 1)
+        context.teams = [team]
+        context.segments = {self.segment.id: SegmentEffectiveState(self.segment)}
+        calculate_fit_scores(context)
+        self.assertEqual(
+            context.best_products[(team.id, self.segment.id, self.market.id)].id,
+            first_product.id,
+        )
+
+        # Controlled mutation evidence: reversing the otherwise equal product
+        # order changes the selected production-cap product.  The production
+        # engine therefore needs the stable order above rather than incidental
+        # database row order.
+        reverse_order = TeamProduct.objects.filter(
+            id__in=[first_product.id, later_product.id],
+        ).order_by('-id')
+        reversed_context = RoundContext(game, 1)
+        reversed_context.teams = [team]
+        reversed_context.segments = {
+            self.segment.id: SegmentEffectiveState(self.segment),
+        }
+        with patch('core.engine.preference_engine._get_team_products_in_market',
+                   return_value=reverse_order):
+            calculate_fit_scores(reversed_context)
+        self.assertEqual(
+            reversed_context.best_products[
+                (team.id, self.segment.id, self.market.id)
+            ].id,
+            later_product.id,
         )
 
     def test_ai_take_is_recorded_and_the_pool_reconciles_without_entering_n(self):
