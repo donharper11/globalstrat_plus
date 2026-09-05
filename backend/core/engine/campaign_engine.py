@@ -14,6 +14,7 @@ from core.models.team_state import (
 )
 from core.models.scenario import SegmentPreference, FeatureDefinition
 from core.engine.utils import get_config
+from core.engine.preference_engine import refresh_team_product_summary
 
 
 def apply_campaign_multipliers(context):
@@ -50,19 +51,16 @@ def apply_campaign_multipliers(context):
                 continue
 
             # Get segments in this market
-            seg_ids = [
-                seg_id for (t_id, seg_id, m_id), _ in context.fit_scores.items()
-                if t_id == team.id and m_id == market.id
-            ]
+            seg_ids = sorted({
+                seg_id
+                for (t_id, product_id, seg_id, m_id), _
+                in context.product_fit_scores.items()
+                if t_id == team.id and product_id == product.id and m_id == market.id
+            })
 
             for seg_id in seg_ids:
-                key = (team.id, seg_id, market.id)
-                fit_score = context.fit_scores.get(key, 0.0)
-                best_product = context.best_products.get(key)
-
-                # Only apply campaign bonus if this product is the best one
-                if best_product is None or best_product.id != product.id:
-                    continue
+                product_key = (team.id, product.id, seg_id, market.id)
+                fit_score = context.product_fit_scores.get(product_key, 0.0)
 
                 # CC-16: Commercial talent amplifier
                 from core.engine.talent import get_talent_level
@@ -110,8 +108,10 @@ def apply_campaign_multipliers(context):
                 campaign_bonus *= coordination_mod
 
                 adjusted_fit = min(fit_score + campaign_bonus, 1.0)
-                context.fit_scores[key] = adjusted_fit
-                context.adjusted_fit_scores[key] = adjusted_fit
+                context.adjusted_product_fit_scores[product_key] = adjusted_fit
+                refresh_team_product_summary(
+                    context, team.id, seg_id, market.id, adjusted=True,
+                )
 
     context.log.append('Campaign focus multipliers applied')
 

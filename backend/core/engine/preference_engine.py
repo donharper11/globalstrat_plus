@@ -80,29 +80,66 @@ def calculate_fit_scores(context):
                     context.best_products[(team.id, segment.id, market.id)] = None
                     continue
 
-            best_fit = 0.0
-            best_product = None
-
             for product in products:
                 fit = _calculate_product_segment_fit(
                     context, team, product, segment, market,
                     seg_state, submission, current_round,
                 )
-                if fit > best_fit:
-                    best_fit = fit
-                    best_product = product
+                # Product × segment × market is the demand grain.  The
+                # firm-level maximum below is retained only as a presentation
+                # summary for legacy consumers; it must not discard a product
+                # from allocation, capacity, revenue, or Bass accumulation.
+                if segment.segment_type == 'customer' and fit > 0:
+                    fit = _apply_origin_trust(team, market, fit)
+                product_key = (team.id, product.id, segment.id, market.id)
+                context.product_fit_scores[product_key] = fit
+                context.adjusted_product_fit_scores[product_key] = fit
+                context.products_by_id[product.id] = product
 
-            # CC-31A B4: Apply origin trust modifier to customer segments
-            if segment.segment_type == 'customer' and best_fit > 0:
-                best_fit = _apply_origin_trust(team, market, best_fit)
-
-            context.fit_scores[(team.id, segment.id, market.id)] = best_fit
-            context.best_products[(team.id, segment.id, market.id)] = best_product
+            refresh_team_product_summary(
+                context, team.id, segment.id, market.id,
+            )
 
     context.log.append(
-        f'Preference matching: {len(context.fit_scores)} '
-        f'team-segment-market combinations scored'
+        f'Preference matching: {len(context.product_fit_scores)} '
+        f'product-segment-market combinations scored'
     )
+
+
+def refresh_team_product_summary(context, team_id, segment_id, market_id,
+                                 adjusted=False):
+    """Refresh a deterministic firm-level display summary from product scores.
+
+    Demand allocation reads the product-level mappings.  Existing performance
+    and briefing consumers still read one firm-level fit, so present the
+    highest product score and use lowest product ID for an exact tie.  This
+    compatibility summary never controls demand or capacity.
+    """
+    scores = (context.adjusted_product_fit_scores if adjusted
+              else context.product_fit_scores)
+    candidates = [
+        (product_id, fit)
+        for (candidate_team, product_id, candidate_segment, candidate_market), fit
+        in scores.items()
+        if (candidate_team, candidate_segment, candidate_market)
+        == (team_id, segment_id, market_id)
+    ]
+    key = (team_id, segment_id, market_id)
+    if not candidates:
+        if adjusted:
+            context.adjusted_fit_scores[key] = 0.0
+        else:
+            context.fit_scores[key] = 0.0
+            context.best_products[key] = None
+        return
+
+    product_id, score = max(candidates, key=lambda item: (item[1], -item[0]))
+    if adjusted:
+        context.adjusted_fit_scores[key] = score
+        context.best_products[key] = context.products_by_id[product_id]
+    else:
+        context.fit_scores[key] = score
+        context.best_products[key] = context.products_by_id[product_id]
 
 
 def _score_global_segment(context, team, segment, seg_state):

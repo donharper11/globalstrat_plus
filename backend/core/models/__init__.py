@@ -48,8 +48,8 @@ from .events import (
     TriggeredEvent,
 )
 from .results import (
-    EventInstance, ActiveModifier, RoundResultAdoption, RoundResultAIAdoption,
-    RoundResultDemandReconciliation,
+    EventInstance, ActiveModifier, RoundResultAdoption, RoundResultProductDemand,
+    RoundResultAIAdoption, RoundResultDemandReconciliation,
 )
 from .rag import ResearchQueryLog
 from .results_financials import (

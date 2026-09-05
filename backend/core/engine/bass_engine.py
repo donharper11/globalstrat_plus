@@ -13,7 +13,7 @@ from core.models.team_state import TeamMarketPresence, TeamProductMarket, TeamAc
 from core.models.scenario import AICompetitorFitByRound, AICompetitorDefinition, AICompetitorBehavior
 from core.engine.ai_competitors import calculate_ai_competitor_fit
 from core.models.results import (
-    RoundResultAdoption, RoundResultAIAdoption,
+    RoundResultAdoption, RoundResultProductDemand, RoundResultAIAdoption,
     RoundResultDemandReconciliation,
 )
 from core.engine.utils import (InvalidScenarioConfiguration,
@@ -23,252 +23,200 @@ from core.engine.utils import (InvalidScenarioConfiguration,
 
 
 def run_bass_adoption(context):
-    """
-    Engine Steps 8-9: Bass adoption and competitive demand allocation.
-    For each customer segment in each market:
-    1. Calculate total adoption pool using Bass model
-    2. Calculate each team's attractiveness (fit^exponent × readiness)
-    3. Include AI competitors
-    4. Distribute pool proportionally
-    5. Cap by production availability
-    6. Record adoption results
+    """Allocate each customer Bass pool at the product × segment × market grain.
+
+    Like BECSR's current program-grain path, every eligible marketed product
+    contributes its own pull and receives its own share.  Firm-level adoption
+    rows are a roll-up only; no ``best_product`` may decide capacity, demand,
+    revenue, or cumulative Bass adoption.
     """
     game = context.game
     scenario = context.scenario
     current_round = context.round_number
-
-    competition_sharpness = get_config(
-        scenario, 'competition_sharpness', default=1.5,
-    )
-
-    # V2-023 rework. Preference fit scores price on a bounded feature that
-    # reaches its floor at 1.5x the reference price and clamps there, so above
-    # that point price stops reducing demand through fit while revenue keeps
-    # multiplying by price -- the original unbounded scaling, surviving above
-    # the clamp. This multiplier is an absolute demand response with no floor.
+    # Compatibility for narrowly scoped legacy callers that construct a
+    # minimal context by hand.  Normal round processing always arrives with
+    # product-level scores from ``calculate_fit_scores``.
+    if not hasattr(context, 'product_fit_scores'):
+        context.product_fit_scores = {}
+        context.adjusted_product_fit_scores = {}
+        context.products_by_id = {}
+        context.product_adoption = {}
+    if not context.product_fit_scores:
+        for (team_id, segment_id, market_id), fit in context.fit_scores.items():
+            product = context.best_products.get((team_id, segment_id, market_id))
+            if product is None or market_id is None:
+                continue
+            product_key = (team_id, product.id, segment_id, market_id)
+            context.product_fit_scores[product_key] = fit
+            context.adjusted_product_fit_scores[product_key] = (
+                context.adjusted_fit_scores.get((team_id, segment_id, market_id), fit))
+            context.products_by_id[product.id] = product
+    competition_sharpness = get_config(scenario, 'competition_sharpness', default=1.5)
     reference_prices = scenario_reference_prices(scenario)
     high_price_elasticity = scenario_high_price_elasticity(scenario)
-    # Keyed with the product's positioning: the elasticity is measured against
-    # the same tier reference that price competitiveness is, so a premium
-    # product priced at the premium reference is not treated as expensive.
     retail_prices = {
         (team_id, product_id, market_id): (float(price), positioning)
         for team_id, product_id, market_id, price, positioning
-        in DecisionMarketing.objects
-        .filter(submission__round__game=game,
-                submission__round__round_number=current_round)
-        # Ordered because the CRV2-01 boundary requires every iterated queryset
-        # to declare one. This dict comprehension is order-insensitive in its
-        # result, but the rule is deliberately unconditional: an exemption
-        # judged case by case is how the last unordered loop got in.
-        .order_by('submission__team_id', 'team_product_id', 'market_id', 'pk')
+        in DecisionMarketing.objects.filter(
+            submission__round__game=game,
+            submission__round__round_number=current_round,
+        ).order_by('submission__team_id', 'team_product_id', 'market_id', 'pk')
         .values_list('submission__team_id', 'team_product_id', 'market_id',
                      'retail_price', 'team_product__positioning')
     }
-
-    # Initialize production remaining from marketing decisions
     _init_production_remaining(context)
 
-    # Process each segment in each market
-    for seg_id, seg_state in context.segments.items():
+    for _seg_id, seg_state in sorted(
+            context.segments.items(),
+            key=lambda item: (
+                item[1].segment_def.market.code if item[1].segment_def.market else '',
+                item[1].segment_def.name, item[0]),
+    ):
         segment = seg_state.segment_def
         market = segment.market
-
-        # Non-customer segments: record fit scores only, no Bass adoption
         if segment.segment_type != 'customer':
             _record_non_customer_segment(context, segment, market, current_round)
             continue
-
-        # Skip global segments (no market)
         if market is None:
             continue
 
-        # Bass model parameters
         M = seg_state.effective_population
-        p = float(segment.bass_p)
-        q = float(segment.bass_q)
-
-        # Get cumulative adoption across ALL teams for this segment+market
         N_prev = _get_total_cumulative(game, segment, market, current_round)
+        adoption_pool = 0.0 if M <= 0 else max(
+            (float(segment.bass_p) + float(segment.bass_q) * N_prev / max(M, 1))
+            * max(M - N_prev, 0), 0.0,
+        )
 
-        # Calculate adoption pool
-        if M <= 0:
-            adoption_pool = 0.0
-        else:
-            adoption_pool = (p + q * N_prev / max(M, 1)) * max(M - N_prev, 0)
-            adoption_pool = max(adoption_pool, 0.0)
-
-        # Calculate each team's attractiveness
-        team_attractiveness = {}
+        # Each product's attractiveness participates in one denominator with AI.
+        product_attractiveness = {}
+        team_attractiveness = {team.id: 0.0 for team in context.teams}
         total_attractiveness = 0.0
-
-        # Human teams
         for team in context.teams:
-            key = (team.id, segment.id, market.id)
             if (team.id, market.id) in getattr(context, 'compliance_freezes', set()):
-                context.adjusted_fit_scores[key] = 0.0
-                team_attractiveness[('team', team.id)] = 0.0
+                summary_key = (team.id, segment.id, market.id)
+                context.adjusted_fit_scores[summary_key] = 0.0
+                context.best_products[summary_key] = None
+        for product_key, raw_fit in sorted(context.product_fit_scores.items()):
+            team_id, product_id, segment_id, market_id = product_key
+            if segment_id != segment.id or market_id != market.id:
                 continue
-
-            fit = context.fit_scores.get(key, 0.0)
-            # Use adjusted fit if available (post-campaign)
-            fit = context.adjusted_fit_scores.get(key, fit)
-            product = context.best_products.get(key)
-
-            if fit == 0.0 or product is None:
-                team_attractiveness[('team', team.id)] = 0.0
+            if (team_id, market.id) in getattr(context, 'compliance_freezes', set()):
+                context.adjusted_product_fit_scores[product_key] = 0.0
                 continue
-
-            # Get readiness
-            readiness = context.readiness.get(
-                (team.id, product.id, market.id), 1.0,
-            )
-
-            raw_attract = (fit ** competition_sharpness) * readiness
-
-            # Acquisition market share bonus: completed acquisitions in this
-            # market boost attractiveness (e.g. 0.04 → 1.04× multiplier)
-            acq_bonus = _get_acquisition_market_share_bonus(team, market)
-            raw_attract *= (1.0 + acq_bonus)
-
-            team_attractiveness[('team', team.id)] = raw_attract
+            product = context.products_by_id[product_id]
+            fit = context.adjusted_product_fit_scores.get(product_key, raw_fit)
+            entry = retail_prices.get((team_id, product_id, market.id))
+            if fit <= 0 or entry is None:
+                product_attractiveness[product_key] = 0.0
+                continue
+            price, positioning = entry
+            if positioning not in reference_prices:
+                raise InvalidScenarioConfiguration(
+                    f'product {product.id} has positioning {positioning!r}, '
+                    'which has no authored reference price; demand cannot be scored for it')
+            readiness = context.readiness.get((team_id, product_id, market.id), 1.0)
+            price_multiplier = high_price_demand_multiplier(
+                price, reference_prices[positioning], high_price_elasticity)
+            raw_attract = (fit ** competition_sharpness) * readiness * price_multiplier
+            team = next(team for team in context.teams if team.id == team_id)
+            raw_attract *= 1.0 + _get_acquisition_market_share_bonus(team, market)
+            product_attractiveness[product_key] = raw_attract
+            team_attractiveness[team_id] += raw_attract
             total_attractiveness += raw_attract
 
-        # AI competitors (CC-20: dynamic fit scores).  Their attractiveness
-        # has always diluted human share.  Keep it separate so we can publish
-        # the exact take without feeding it into N (Fix A: accounting only).
         ai_allocations = []
-        ai_competitors = (AICompetitorDefinition.objects.filter(
-            scenario=context.scenario,
-        )).order_by('name')
+        ai_competitors = AICompetitorDefinition.objects.filter(
+            scenario=context.scenario).order_by('name')
         for ai_comp in ai_competitors:
             ai_fit_score = calculate_ai_competitor_fit(
-                ai_comp, segment, market, current_round, context,
-            )
-
-            # CC-31A B5: IP exposure boosts aggressive AI competitors
+                ai_comp, segment, market, current_round, context)
             if getattr(ai_comp, 'strategy_type', '') == 'aggressive' or \
                AICompetitorBehavior.objects.filter(
-                   ai_competitor=ai_comp, strategy_type='aggressive',
-               ).exists():
+                   ai_competitor=ai_comp, strategy_type='aggressive').exists():
                 for team in context.teams:
                     presence = TeamMarketPresence.objects.filter(
-                        team=team, market=market, status='active',
-                    ).first()
+                        team=team, market=market, status='active').first()
                     if presence and float(presence.ip_exposure_cumulative) > 0.10:
-                        boost = float(presence.ip_exposure_cumulative) * 0.05
-                        ai_fit_score = min(ai_fit_score + boost, 0.95)
-
+                        ai_fit_score = min(
+                            ai_fit_score + float(presence.ip_exposure_cumulative) * 0.05,
+                            0.95)
             ai_attract = ai_fit_score ** competition_sharpness
-            team_attractiveness[('ai', ai_comp.id)] = ai_attract
             total_attractiveness += ai_attract
             ai_allocations.append((ai_comp, ai_fit_score, ai_attract))
 
-        # Distribute adoption pool
-        # Sum the same cent-rounded values published in RoundResultAdoption;
-        # otherwise independently rounding every team's result can make the
-        # aggregate reconciliation differ by a cent.
+        active_product_ids = [key[1] for key in product_attractiveness]
+        RoundResultProductDemand.objects.filter(
+            game=game, round_number=current_round, segment=segment, market=market,
+        ).exclude(team_product_id__in=active_product_ids).delete()
+
+        team_sales = {team.id: Decimal('0.00') for team in context.teams}
+        team_shares = {team.id: 0.0 for team in context.teams}
         human_new_adopters = Decimal('0.00')
+        for product_key, attract in sorted(product_attractiveness.items()):
+            team_id, product_id, _segment_id, _market_id = product_key
+            product = context.products_by_id[product_id]
+            share = attract / total_attractiveness if total_attractiveness else 0.0
+            unconstrained_demand = adoption_pool * share
+            production_key = (team_id, product_id, market.id)
+            available_production = context.production_remaining.get(production_key, 0.0)
+            units_sold = min(unconstrained_demand, available_production)
+            lost_demand = unconstrained_demand - units_sold
+            context.production_remaining[production_key] = available_production - units_sold
+            reported_sold = Decimal(str(round(units_sold, 2)))
+            context.product_adoption[product_key] = reported_sold
+            team_sales[team_id] += reported_sold
+            team_shares[team_id] += share
+            human_new_adopters += reported_sold
+            raw_fit = context.product_fit_scores[product_key]
+            adjusted_fit = context.adjusted_product_fit_scores.get(product_key, raw_fit)
+            readiness = context.readiness.get((team_id, product_id, market.id), 1.0)
+            RoundResultProductDemand.objects.update_or_create(
+                game=game, round_number=current_round, team_id=team_id,
+                team_product_id=product_id, segment=segment, market=market,
+                defaults={
+                    'fit_score': Decimal(str(round(raw_fit, 4))),
+                    'adjusted_fit_score': Decimal(str(round(adjusted_fit, 4))),
+                    'market_readiness_pct': Decimal(str(round(readiness, 4))),
+                    'attractiveness': Decimal(str(round(attract, 4))),
+                    'share_pct': Decimal(str(round(share, 6))),
+                    'unconstrained_demand': Decimal(str(round(unconstrained_demand, 2))),
+                    'available_production': Decimal(str(round(available_production, 2))),
+                    'units_sold': reported_sold,
+                    'lost_demand': Decimal(str(round(lost_demand, 2))),
+                },
+            )
+
         for team in context.teams:
             key = (team.id, segment.id, market.id)
-            fit = context.adjusted_fit_scores.get(
-                key, context.fit_scores.get(key, 0.0),
-            )
-            product = context.best_products.get(key)
             frozen = (team.id, market.id) in getattr(context, 'compliance_freezes', set())
-            if frozen:
-                fit = 0.0
-                product = None
-                context.best_products[key] = None
-
-            attract = team_attractiveness.get(('team', team.id), 0.0)
-
-            if total_attractiveness == 0:
-                team_share = 0.0
-            else:
-                team_share = attract / total_attractiveness
-
-            team_new_adopters = adoption_pool * team_share
-
-            # Absolute high-price demand response, before the production cap:
-            # a team cannot sell what nobody will buy at that price, and the
-            # production ceiling is a separate constraint. Applied to the
-            # team's own adopters rather than to its share, so that every team
-            # raising price together still loses demand.
-            price_multiplier = 1.0
-            if product:
-                entry = retail_prices.get((team.id, product.id, market.id))
-                if entry is not None:
-                    price, positioning = entry
-                    if positioning not in reference_prices:
-                        raise InvalidScenarioConfiguration(
-                            f'product {product.id} has positioning '
-                            f'{positioning!r}, which has no authored reference '
-                            f'price; demand cannot be scored for it')
-                    price_multiplier = high_price_demand_multiplier(
-                        price, reference_prices[positioning],
-                        high_price_elasticity)
-                    team_new_adopters *= price_multiplier
-
-            # Cap by production availability
-            if product:
-                prod_key = (team.id, product.id, market.id)
-                remaining = context.production_remaining.get(prod_key, 0.0)
-                team_new_adopters = min(team_new_adopters, remaining)
-                # Deduct from remaining
-                context.production_remaining[prod_key] = remaining - team_new_adopters
-
-            # Get previous cumulative for this team
-            prev_cumulative = _get_team_cumulative(
-                game, team, segment, market, current_round,
-            )
-            new_cumulative = prev_cumulative + team_new_adopters
-
-            # Get readiness for best product
-            readiness_pct = 0.0
-            if product:
-                readiness_pct = context.readiness.get(
-                    (team.id, product.id, market.id), 1.0,
-                )
-            if frozen:
-                readiness_pct = 0.0
-
-            # Store adoption result
-            context.adoption[key] = team_new_adopters
-            human_new_adopters += Decimal(str(round(team_new_adopters, 2)))
-
-            # Write to database
+            product = None if frozen else context.best_products.get(key)
+            raw_fit = context.fit_scores.get(key, 0.0)
+            adjusted_fit = context.adjusted_fit_scores.get(key, raw_fit)
+            readiness = (context.readiness.get((team.id, product.id, market.id), 1.0)
+                         if product else 0.0)
+            sold = team_sales[team.id]
+            context.adoption[key] = float(sold)
+            previous = _get_team_cumulative(game, team, segment, market, current_round)
             RoundResultAdoption.objects.update_or_create(
-                game=game,
-                round_number=current_round,
-                team=team,
-                segment=segment,
-                market=market,
+                game=game, round_number=current_round, team=team,
+                segment=segment, market=market,
                 defaults={
                     'best_product': product,
-                    'fit_score': Decimal(str(round(
-                        context.fit_scores.get(key, 0.0), 4,
-                    ))),
-                    'adjusted_fit_score': Decimal(str(round(fit, 4))),
-                    'market_readiness_pct': Decimal(str(round(readiness_pct, 4))),
+                    'fit_score': Decimal(str(round(raw_fit, 4))),
+                    'adjusted_fit_score': Decimal(str(round(adjusted_fit, 4))),
+                    'market_readiness_pct': Decimal(str(round(readiness, 4))),
                     'adoption_pool': Decimal(str(round(adoption_pool, 2))),
-                    'team_attractiveness': Decimal(str(round(attract, 4))),
-                    'team_share_pct': Decimal(str(round(team_share, 4))),
-                    'new_adopters': Decimal(str(round(team_new_adopters, 2))),
-                    'cumulative_adopters': Decimal(str(round(new_cumulative, 2))),
+                    'team_attractiveness': Decimal(str(round(team_attractiveness[team.id], 4))),
+                    'team_share_pct': Decimal(str(round(team_shares[team.id], 4))),
+                    'new_adopters': sold,
+                    'cumulative_adopters': Decimal(str(round(previous, 2))) + sold,
                 },
             )
 
         _record_ai_take_and_reconciliation(
-            game=game,
-            round_number=current_round,
-            segment=segment,
-            market=market,
-            adoption_pool=adoption_pool,
-            human_adopters=human_new_adopters,
-            total_attractiveness=total_attractiveness,
-            ai_allocations=ai_allocations,
-        )
+            game=game, round_number=current_round, segment=segment, market=market,
+            adoption_pool=adoption_pool, human_adopters=human_new_adopters,
+            total_attractiveness=total_attractiveness, ai_allocations=ai_allocations)
 
     _log_adoption_summary(context)
 

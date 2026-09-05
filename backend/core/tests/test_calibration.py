@@ -28,7 +28,7 @@ from core.management.commands.load_scenario import (
 from core.models.core import Game, Round, Team
 from core.models.decisions import DecisionMarketing, DecisionSubmission
 from core.models.results import (
-    RoundResultAdoption, RoundResultAIAdoption,
+    RoundResultAdoption, RoundResultAIAdoption, RoundResultProductDemand,
     RoundResultDemandReconciliation,
 )
 from core.models.scenario import (
@@ -224,10 +224,9 @@ class CalibrationDemandAccountingTests(TestCase):
             first_product.id,
         )
 
-        # Controlled mutation evidence: reversing the otherwise equal product
-        # order changes the selected production-cap product.  The production
-        # engine therefore needs the stable order above rather than incidental
-        # database row order.
+        # Reversing query order cannot change the compatibility presentation
+        # summary.  Product-level demand itself no longer consumes this
+        # summary, and an equal-fit summary resolves by the lower product ID.
         reverse_order = TeamProduct.objects.filter(
             id__in=[first_product.id, later_product.id],
         ).order_by('-id')
@@ -243,7 +242,7 @@ class CalibrationDemandAccountingTests(TestCase):
             reversed_context.best_products[
                 (team.id, self.segment.id, self.market.id)
             ].id,
-            later_product.id,
+            first_product.id,
         )
 
     def test_ai_take_is_recorded_and_the_pool_reconciles_without_entering_n(self):
@@ -279,6 +278,106 @@ class CalibrationDemandAccountingTests(TestCase):
         # Fix A is observational: only human result rows enter Bass N.
         self.assertEqual(_get_total_cumulative(game, self.segment, self.market, 2),
                          float(human.cumulative_adopters))
+
+    def test_product_level_demand_allocates_caps_and_rolls_up_without_order_dependence(self):
+        game, team, first_product = self._game_with_team()
+        first_marketing = DecisionMarketing.objects.get(team_product=first_product)
+        first_marketing.production_volume = 30
+        first_marketing.save(update_fields=['production_volume'])
+        second_product = TeamProduct.objects.create(
+            team=team, team_platform=first_product.team_platform,
+            name='Second Product', positioning='premium', created_round=1,
+        )
+        zero_demand_product = TeamProduct.objects.create(
+            team=team, team_platform=first_product.team_platform,
+            name='Zero Demand Product', positioning='premium', created_round=1,
+        )
+        for product in (second_product, zero_demand_product):
+            DecisionMarketing.objects.create(
+                submission=first_marketing.submission, team_product=product,
+                market=self.market, retail_price=D('500'), promotion_budget=D('0'),
+                campaign_focus_feature_ids=[], channel_digital_pct=D('1'),
+                channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+                distribution_strategy='hybrid', distribution_investment=D('0'),
+                demand_estimate=100, production_volume=100,
+                production_source_market=self.market,
+            )
+
+        def product_context(products):
+            context = RoundContext(game, 1)
+            context.teams = [team]
+            context.segments = {self.segment.id: SegmentEffectiveState(self.segment)}
+            context.segments[self.segment.id].effective_population = 1000
+            for product, fit in products:
+                key = (team.id, product.id, self.segment.id, self.market.id)
+                context.product_fit_scores[key] = fit
+                context.adjusted_product_fit_scores[key] = fit
+                context.products_by_id[product.id] = product
+            summary_key = (team.id, self.segment.id, self.market.id)
+            context.fit_scores[summary_key] = 0.8
+            context.adjusted_fit_scores[summary_key] = 0.8
+            context.best_products[summary_key] = first_product
+            context.compliance_freezes = set()
+            return context
+
+        ordered = product_context([
+            (first_product, 0.8), (second_product, 0.4),
+            (zero_demand_product, 0.0),
+        ])
+        run_bass_adoption(ordered)
+        rows = {
+            row.team_product_id: row
+            for row in RoundResultProductDemand.objects.filter(
+                game=game, round_number=1, team=team,
+            ).order_by('team_product_id')
+        }
+        first = rows[first_product.id]
+        second = rows[second_product.id]
+        zero = rows[zero_demand_product.id]
+        self.assertGreater(first.unconstrained_demand, D('0'))
+        self.assertGreater(second.unconstrained_demand, D('0'))
+        self.assertGreater(first.lost_demand, D('0'))
+        self.assertEqual(first.units_sold, D('30.00'))
+        self.assertGreater(second.units_sold, D('0'))
+        self.assertEqual(zero.unconstrained_demand, D('0.00'))
+        self.assertEqual(zero.units_sold, D('0.00'))
+        self.assertEqual(zero.lost_demand, D('0.00'))
+
+        adoption = RoundResultAdoption.objects.get(
+            game=game, round_number=1, team=team, segment=self.segment,
+            market=self.market,
+        )
+        reconciliation = RoundResultDemandReconciliation.objects.get(
+            game=game, round_number=1, segment=self.segment, market=self.market,
+        )
+        self.assertEqual(
+            adoption.new_adopters,
+            sum((row.units_sold for row in rows.values()), D('0.00')),
+        )
+        self.assertEqual(
+            reconciliation.adoption_pool,
+            reconciliation.human_adopters + reconciliation.ai_adopters
+            + reconciliation.unserved_adopters,
+        )
+        before_reverse = {
+            product_id: (row.unconstrained_demand, row.units_sold, row.lost_demand)
+            for product_id, row in rows.items()
+        }
+
+        reversed_context = product_context([
+            (zero_demand_product, 0.0), (second_product, 0.4),
+            (first_product, 0.8),
+        ])
+        run_bass_adoption(reversed_context)
+        after_reverse = {
+            row.team_product_id: (
+                row.unconstrained_demand, row.units_sold, row.lost_demand,
+            )
+            for row in RoundResultProductDemand.objects.filter(
+                game=game, round_number=1, team=team,
+            ).order_by('team_product_id')
+        }
+        self.assertEqual(after_reverse, before_reverse)
 
     def test_ai_rounding_residue_is_reconciled_without_overallocating_the_pool(self):
         game, _team, _product = self._game_with_team()

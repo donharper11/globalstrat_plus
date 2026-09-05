@@ -306,7 +306,11 @@ class RoundContext:
         self.fit_scores = {}       # (team_id, segment_id, market_id) → float
         self.adjusted_fit_scores = {}  # after campaign multiplier
         self.best_products = {}    # (team_id, segment_id, market_id) → TeamProduct
+        self.product_fit_scores = {}  # (team_id, product_id, segment_id, market_id) → float
+        self.adjusted_product_fit_scores = {}  # after campaign multiplier
+        self.products_by_id = {}    # product_id → TeamProduct, for allocation/presentation
         self.adoption = {}         # (team_id, segment_id, market_id) → new_adopters
+        self.product_adoption = {} # (team_id, product_id, segment_id, market_id) → sold units
         self.readiness = {}        # (team_id, product_id, market_id) → readiness_pct
         self.events_fired = []     # list of EventInstance
         self.production_remaining = {}  # (team_id, product_id, market_id) → units remaining

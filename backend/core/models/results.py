@@ -74,6 +74,47 @@ class RoundResultAdoption(models.Model):
         return f"Adoption: {self.team.name} × {self.segment.name} × {market_name} R{self.round_number}"
 
 
+class RoundResultProductDemand(models.Model):
+    """Auditable product-level allocation from one customer Bass pool.
+
+    ``RoundResultAdoption`` remains the firm-level roll-up used by existing
+    financial, performance, and cumulative-adoption consumers.  This row is
+    the allocation grain: it distinguishes no calculated demand from a
+    stock-constrained product and records every intermediate value.
+    """
+    id = models.BigAutoField(primary_key=True)
+    game = models.ForeignKey('core.Game', on_delete=models.PROTECT,
+                             related_name='product_demand_results')
+    round_number = models.IntegerField()
+    team = models.ForeignKey('core.Team', on_delete=models.PROTECT,
+                             related_name='product_demand_results')
+    team_product = models.ForeignKey('core.TeamProduct', on_delete=models.PROTECT,
+                                     related_name='demand_results')
+    segment = models.ForeignKey('core.SegmentDefinition', on_delete=models.PROTECT,
+                                related_name='product_demand_results')
+    market = models.ForeignKey('core.MarketDefinition', on_delete=models.PROTECT,
+                               related_name='product_demand_results')
+    fit_score = models.DecimalField(max_digits=5, decimal_places=4)
+    adjusted_fit_score = models.DecimalField(max_digits=5, decimal_places=4)
+    market_readiness_pct = models.DecimalField(max_digits=5, decimal_places=4)
+    attractiveness = models.DecimalField(max_digits=10, decimal_places=4)
+    share_pct = models.DecimalField(max_digits=7, decimal_places=6)
+    unconstrained_demand = models.DecimalField(max_digits=15, decimal_places=2)
+    available_production = models.DecimalField(max_digits=15, decimal_places=2)
+    units_sold = models.DecimalField(max_digits=15, decimal_places=2)
+    lost_demand = models.DecimalField(max_digits=15, decimal_places=2)
+
+    class Meta:
+        db_table = 'round_result_product_demand'
+        unique_together = [
+            ('game', 'round_number', 'team', 'team_product', 'segment', 'market'),
+        ]
+
+    def __str__(self):
+        return (f"Demand: {self.team_product.name} × {self.segment.name} × "
+                f"{self.market.name} R{self.round_number}")
+
+
 class RoundResultAIAdoption(models.Model):
     """The demand an AI competitor takes from a segment's Bass pool.
 

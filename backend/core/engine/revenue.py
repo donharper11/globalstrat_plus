@@ -5,7 +5,7 @@ From 03-engine-logic.md Section 9.
 from decimal import Decimal, ROUND_HALF_UP
 
 from core.models.decisions import DecisionMarketing, DecisionSubmission
-from core.models.results import RoundResultAdoption
+from core.models.results import RoundResultAdoption, RoundResultProductDemand
 from core.models.team_state import TeamProduct, TeamProductMarket, TeamMarketPresence
 from core.engine.utils import get_config
 
@@ -73,15 +73,26 @@ def calculate_revenue(context):
 
             # Sum new adopters for this product in this market
             units_sold = Decimal('0')
-            adoptions = (RoundResultAdoption.objects.filter(
+            adoptions = (RoundResultProductDemand.objects.filter(
                 game=game,
                 round_number=current_round,
                 team=team,
                 market=market,
-                best_product=product,
+                team_product=product,
             )).order_by('pk')
+            # Product-grain demand is authoritative for all newly resolved
+            # rounds.  The firm-grain fallback keeps pre-migration historical
+            # rounds and narrow legacy integrations readable; it never runs
+            # when a product-demand result exists.
+            if not adoptions.exists():
+                adoptions = (RoundResultAdoption.objects.filter(
+                    game=game, round_number=current_round, team=team,
+                    market=market, best_product=product,
+                )).order_by('pk')
             for adoption in adoptions:
-                units_sold += adoption.new_adopters
+                units_sold += (adoption.units_sold
+                               if isinstance(adoption, RoundResultProductDemand)
+                               else adoption.new_adopters)
 
             # CC-18: a compliance market-access freeze blocks all sales in this
             # market this round — the whole demand is lost (shipment detained /
