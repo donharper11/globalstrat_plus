@@ -2212,3 +2212,25 @@ the app and asserts the router resolves the default route.
 - The Phase-2 LLM path is outside the existing output hash and is dispatched only after the deterministic transaction commits. No LLM value is read by the Phase-1 scoring call graph. This part of the v1 claim is structurally sound, subject to outage/restart verification.
 - Wall-clock values are lifecycle/audit metadata or duration fields. They are excluded from the competitive hash by rule (`manifest_sections.MEASURED_TIME_FIELDS`) and kept in the input envelope as frozen facts about the starting state.
 - The unordered-query sweep covered `core/engine/`: 168 iterated querysets there had no explicit ordering — 93 written inline and 75 reached through a local name, the second group found only after a cross-environment replay failed (V2-012). All now declare one except six documented exemptions whose result cannot depend on order. See `ORDERING_AUDIT.md`. An AST test fails the suite on any new unordered loop in either form, and a forward/reverse insertion test re-runs the whole Phase-1 pipeline over reordered rows. **Superseded in scope by Stage 4:** that sweep and its guard stopped at `core/engine`, and CRV2-10 Stage 4 put round-correct platform resolution in `core/services`, where one unordered iteration went unseen. The guard now also covers the services the engine imports, deriving that list from the engine rather than a hand-kept one. Unordered iteration remains in `core/services` modules outside the resolution set; none is reached from `advance_round`, and their behaviour on non-resolution surfaces is unassessed. See `GSP-CRV2-10_STAGE4_CHECKPOINT.md`.
+
+## V2-055 — equal-fit products lacked a deterministic selection rule (P1) — implemented at `cb7e6f9`; Stage 2 remains open
+
+**Raised by the GSP-CRV2-11 Stage 2 audit.** The audit rework recorded this
+finding before the bounded runtime repair; this register entry follows that
+audit record. `calculate_fit_scores()` keeps the first product with a strictly
+greater fit, while `_get_team_products_in_market()` had returned an unordered
+queryset. An equal-fit product could therefore change the product whose
+production capacity limited adoption without a different team decision.
+
+`cb7e6f9` orders the query by `TeamProduct.id`, documenting the existing
+single-best-product tie-break. Its focused regression creates two equal-fit
+active products, verifies query order and lower-ID selection, and controlledly
+reverses order to prove alternate selection. The calibration and engine-order
+suites pass (9 tests).
+
+The repair is complete, but it does not certify CRV2-11 Stage 2. Replayed
+product-level evidence shows the submitted responsive policy can still
+provision the prior round's product while a genuinely higher-fit sibling is
+selected next round. That policy issue is recorded in
+`evidence/calibration/STAGE2_PARITY_MEASUREMENTS.md`; no replacement policy is
+chosen without calibration authority.
