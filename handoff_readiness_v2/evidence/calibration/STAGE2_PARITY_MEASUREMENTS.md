@@ -1,82 +1,83 @@
 # GSP-CRV2-11 Stage 2 — competent-field and archetype-parity measurement
 
-## Result: not certified; the deterministic repair is verified, but the fixed responsive policy is not capacity-adequate
+## Result: competent field established; archetype parity not certified
 
-All three disposable PostgreSQL replays were regenerated from `cb7e6f9`, the
-bounded V2-055 repair. They use the same four Consumer Electronics starter
-profiles and the same pricing, promotion, distribution, staffing, and
-production policies as the submitted measurements. No scenario, profile,
-market, Bass parameter, AI fit, or student game was changed.
+The product-level allocation ruling is implemented at `0644cf5`, with the
+cent-accurate product-capacity correction at `836cf2e`. The three disposable
+PostgreSQL replays below were regenerated at `836cf2e`; each exports the new
+product-demand ledger. No scenario, starter profile, market, Bass parameter,
+AI fit, price, or production-policy dial was changed.
 
-## V2-055 deterministic single-product rule: repaired and mutation-tested
+The implementation follows the useful part of BECSR's current demand path:
+calculate a product/program's own pull, normalise the eligible product pool
+into shares, and apply supply at product grain. GlobalStrat keeps its existing
+shared Bass pool and CRV2-11 AI accounting rule.
 
-`_get_team_products_in_market()` now orders active products by `TeamProduct.id`.
-The existing strict-greater fit loop therefore selects the lower-ID product for
-an exact equal-fit tie. `CalibrationDemandAccountingTests` builds two equal-fit
-active products with live marketing decisions, verifies both the SQL ordering
-and the selected lower-ID product, then controlledly reverses that order and
-proves the alternate product becomes selected. The focused calibration and
-engine-iteration suites pass (9 tests).
+## Product-level rule verification
 
-This is a bounded determinism repair, not a multi-product allocation change.
+For every eligible product × customer segment × market, the runtime now stores
+fit, adjusted fit, readiness, attractiveness, share, unconstrained demand,
+available production, sales, and lost demand in
+`round_result_product_demand`. Firm-level adoption remains the exact aggregate
+used by existing financial, performance, and cumulative-Bass consumers.
 
-## All-NA control: early parity only; not a competent field
+The focused contract creates three products for one firm: two have positive
+demand, one is stock-constrained, and one has zero calculated demand. It
+proves both positive-demand products receive shares, a stockout affects only
+its own sales, the zero-demand product is distinguishable from a stockout,
+product results sum exactly to the firm result, the human/AI/unserved pool
+reconciles, and reversing product insertion order changes no result. Focused
+calibration and compliance tests pass (25 tests).
 
-The existing materiality threshold is 1% of the 55-point starting index:
-**0.55 points**. The repaired control has no material archetype-score spread
-through round 4, but it does not remain parity-safe over the ten-round horizon.
+All three replay artifacts also pass these ledger checks:
 
-| round | index range | index spread | threshold | produced | sold | unsold |
-|---:|---:|---:|---:|---:|---:|---:|
-| 1 | 58.13–58.26 | 0.13 | 0.55 | 167,000 | 72,000 | 95,000 |
-| 2 | 61.32–61.55 | 0.23 | 0.55 | 167,000 | 72,000 | 95,000 |
-| 3 | 64.50–64.86 | 0.36 | 0.55 | 167,000 | 72,000 | 95,000 |
-| 4 | 67.70–68.19 | 0.49 | 0.55 | 167,000 | 72,000 | 95,000 |
-| 5 | 70.89–71.52 | 0.63 | 0.55 | 167,000 | 72,000 | 95,000 |
-| 10 | 78.22–88.27 | 10.05 | 0.55 | 167,000 | 72,000 | 95,000 |
+- `human + AI + unserved = Bass pool` to cents for every segment-market row;
+- `sales + lost demand = unconstrained demand` to cents for every product row;
+- summed product sales never exceed that product-market's production.
 
-Round 1 leaves 57% of output unsold and every profile makes a loss. The
-constant-production control is therefore neither competent-field evidence nor
-ten-round archetype-parity evidence. Its limited result is only that the
-profiles do not start with a material index advantage in the first four rounds.
+## All-NA control: competent, but not archetype-parity safe
+
+The fixed constant policy is now economically competent: all four profiles
+make a profit in round 1, only 398.63 of 167,000 units (0.24%) are unsold, and
+rounds 2–5 sell all production. The 10% per-product historical-sales policy
+also remains capacity-adequate: all products sell their allocated production
+in rounds 2–3 and every profile is profitable.
+
+The materiality threshold remains 1% of the scenario's 55-point starting
+index: **0.55 points**. The repaired all-NA control exceeds it immediately,
+so it cannot certify starter-archetype parity:
+
+| round | index range | spread | threshold | total profit range |
+|---:|---:|---:|---:|---:|
+| 1 | 58.31–59.33 | 1.02 | 0.55 | $118,461.50–$2,016,096.80 |
+| 2 | 61.79–63.73 | 1.94 | 0.55 | $570,248.86–$2,479,626.72 |
+| 3 | 65.26–68.13 | 2.87 | 0.55 | $480,438.50–$2,256,636.00 |
+| 10 | 81.22–98.24 | 17.02 | 0.55 | $480,438.50–$2,376,636.00 |
+
+The responsive probe has the same conclusion: its round 1–3 spreads are
+**1.02, 1.85, and 2.63** points, even though it is capacity-adequate and each
+profile earns positive net income.
 
 ## Regional-start variant: reject as a parity configuration
 
-With the same policy and homes `NA, APAC, EU, LATAM`, the regenerated spreads
-are **3.50, 8.16, and 9.78** in rounds 1–3, respectively. All exceed 0.55.
-The configuration remains rejected; regional diversification is not a silent
-calibration remedy.
-
-## Responsive production probe: still invalid, for a different and now observable reason
-
-The unchanged uniform policy provisions each product-market at 110% of that
-product-market's prior sales. It again sells 72,000 units in round 1 and only
-four in each of rounds 2 and 3. The regenerated product trace identifies why:
-for every profile, the lower-ID product sells in round 1 and receives 22,000
-(or 13,201) units in round 2; the higher-ID sibling then receives the one-unit
-floor and sells that one unit.
-
-This cannot be an equal-fit tie: the repaired rule and its controlled mutation
-test select the lower ID for a tie. The selected product has genuinely changed
-under the fixed scoring inputs, while the test policy has provisioned capacity
-from the prior selected product's sales. The trace thus refutes the previous
-claim that unspecified row ordering alone caused the collapse. It also proves
-the current per-product historical-sales policy cannot establish a
-capacity-adequate competent field when the single best product changes.
+The unchanged `NA, APAC, EU, LATAM` assignment remains less parity-safe than
+the all-NA control: its repaired-revision spreads are **3.77, 8.52, and
+10.61** in rounds 1–3. It is evidence against silently diversifying starter
+regions as a remedy.
 
 ## Evidence files
 
-- `stage2_archetype_parity_replay.json` — repaired-revision ten-round all-NA
-  constant-policy control with product-level output.
-- `stage2_regional_parity_replay.json` — repaired-revision three-round regional
-  variant with product-level output.
-- `stage2_competent_parity_replay.json` — repaired-revision three-round
-  responsive probe; retained as a failing measurement, not a baseline.
+- `stage2_archetype_parity_replay.json` — ten-round all-NA constant-policy
+  control: 304 product-demand rows and 76 product-market rows.
+- `stage2_regional_parity_replay.json` — three-round regional variant with the
+  same product-level ledger.
+- `stage2_competent_parity_replay.json` — three-round all-NA responsive probe:
+  96 product-demand rows and no product capacity overrun.
 
 ## Required disposition
 
-Stage 2 is not certified. V2-055 is repaired, but a new explicit, uniformly
-applied capacity policy (or a multi-product allocation rule) must be approved
-and then measured before competent-field/archetype-parity evidence can be
-claimed. The Stage 2 runtime rework expressly prohibits choosing that new
-policy during this repair, so no further calibration change is made here.
+The product-level demand-allocation runtime repair and competent-field evidence
+are complete. **Archetype parity remains an open calibration gate.** A separate
+rules-owner-approved profile or scoring calibration is required before changing
+any dial; it must then be replayed against the same threshold. Do not use the
+regional-start configuration as that remedy.
