@@ -8,10 +8,12 @@ Tool: `independent_bass.py` — reads the scenario YAML, imports no engine code,
 writes the Bass arithmetic out longhand. A simulator sharing a helper with the
 engine would agree with it about a shared mistake.
 
-Status: **items 1–5 measured.** The baseline replay below is an accounting and
-engine-fidelity run, not an archetype-balance certification: a constant
-production plan is deliberately capacity-constrained and therefore cannot
-establish that the four starting positions have equal expected value.
+Status: **items 1, 3, 4 and 5 are measured; item 2 has its parameter-level
+trajectory but not its competent-baseline field trajectory.** The replay below
+is an accounting and engine-fidelity run, not an archetype-balance
+certification: a constant production plan is deliberately capacity-constrained
+and therefore cannot establish that the four starting positions have equal
+expected value.
 
 ---
 
