@@ -112,7 +112,8 @@ that is intended. It is the authored state.
 
 Full per-round, per-segment, per-market figures for all three regimes (flat,
 compounding, static) in `trajectory.json`: `M`, `N`, adoption pool, remaining
-pool, penetration and industry revenue. The flat column is what ships today.
+pool, penetration and industry revenue. Flat is the **pre-CRV2-11 historical
+comparison**; compounding is the **current shipped runtime**.
 
 ## Items 1 and 4 — resolved runtime replay
 
@@ -157,8 +158,9 @@ the ten-round side-by-side design decision is still outstanding.
 
 ## What Stage 1 does not claim
 
-- No tuning is proposed here. The compounding column is a **reference**, not a
-  recommendation; Stage 3 decides the trajectory the course wants.
+- No further tuning is proposed here. The compounding repair is already
+  shipped; Stage 3 still decides whether its authored trajectory needs a
+  future calibration adjustment.
 - This replay does not certify the held-constant field as competent play or
   balance the starter archetypes. It only certifies the engine arithmetic and
   makes the AI/served/unserved split observable; those are prerequisites for

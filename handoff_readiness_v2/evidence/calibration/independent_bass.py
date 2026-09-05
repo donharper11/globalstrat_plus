@@ -18,11 +18,11 @@ code. This is the same test asked of this engine.
 Two population regimes are modelled, because Stage 1 item 3 turns on the
 difference:
 
-  flat        M_r = pop * (1 + g)          -- what events.py computes today:
-                                              growth applied once to the static
-                                              authored population, every round.
-  compounding M_r = pop * (1 + g) ** r     -- growth that accumulates, which is
-                                              what a ten-round market needs.
+  flat        M_r = pop * (1 + g)          -- the pre-CRV2-11 historical
+                                              runtime: growth applied once to
+                                              the static authored population.
+  compounding M_r = pop * (1 + g) ** r     -- the current shipped runtime:
+                                              growth accumulates each round.
 """
 import argparse
 import json
@@ -212,11 +212,11 @@ def main():
     print(f'rounds   : {args.rounds}')
     print()
     print('Adoption pool per round, whole economy (units):')
-    print(f"  {'round':>5}  {'flat (today)':>16}  {'compounding':>16}  {'ratio':>7}")
+    print(f"  {'round':>5}  {'flat (pre-CRV2-11)':>20}  {'compounding (current)':>22}  {'ratio':>7}")
     flat, comp = totals('flat', 'pool'), totals('compounding', 'pool')
     for i in range(args.rounds):
         ratio = (comp[i] / flat[i]) if flat[i] else float('nan')
-        print(f'  {i+1:>5}  {flat[i]:>16,.0f}  {comp[i]:>16,.0f}  {ratio:>7.2f}x')
+        print(f'  {i+1:>5}  {flat[i]:>20,.0f}  {comp[i]:>22,.0f}  {ratio:>7.2f}x')
     print()
     print(f'  round 10 / round 1, flat        : {flat[-1] / flat[0]:.3f}')
     print(f'  round 10 / round 1, compounding : {comp[-1] / comp[0]:.3f}')
