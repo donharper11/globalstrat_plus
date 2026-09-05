@@ -59,13 +59,17 @@ from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
 
 scenario = Scenario.objects.get(name='Consumer Electronics 2026')
-call_command('setup_test_game', scenario=scenario.id, verbosity=0)
+if {home_markets!r}:
+    call_command('initialize_game', scenario=scenario.id, teams=4,
+                 name='CRV2-11 parity replay', home_markets={home_markets!r})
+else:
+    call_command('setup_test_game', scenario=scenario.id, verbosity=0)
 game = Game.objects.order_by('-id').first()
 teams = list(Team.objects.filter(game=game).order_by('id'))
 rows = []
 team_rounds = []
 
-for expected_round in range(1, scenario.num_rounds + 1):
+for expected_round in range(1, {rounds} + 1):
     assert game.current_round == expected_round, (game.current_round, expected_round)
     rnd = Round.objects.get(game=game, round_number=expected_round)
     for team in teams:
@@ -132,6 +136,7 @@ for expected_round in range(1, scenario.num_rounds + 1):
 print({marker!r})
 print(json.dumps({{
     'scenario': scenario.name,
+    'home_markets': {home_markets!r},
     'teams': [{{'name': team.name, 'starter_profile': team.firm_starter_profile.profile_name}}
               for team in teams],
     'rows': rows,
@@ -167,7 +172,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=pathlib.Path,
                         default=HERE / 'stage1_runtime_replay.json')
+    parser.add_argument('--rounds', type=int, default=10,
+                        help='number of sequential rounds to resolve (1-10)')
+    parser.add_argument('--home-markets', default='',
+                        help='optional comma-separated home-market assignment')
     options = parser.parse_args()
+    if not 1 <= options.rounds <= 10:
+        raise SystemExit('--rounds must be between 1 and 10')
     stamp = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d%H%M%S')
     database = f'gsp_crv211_stage1_{stamp}'
     if psql('postgres', f'CREATE DATABASE {database}').returncode:
@@ -178,7 +189,8 @@ def main():
             if result.returncode:
                 raise RuntimeError(result.stderr[-3000:])
         result = run(database, 'shell', '-c', BODY.format(
-            harness=str(HARNESS), marker=MARKER), timeout=3600)
+            harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
+            home_markets=options.home_markets), timeout=3600)
         if result.returncode or MARKER not in result.stdout:
             raise RuntimeError(result.stderr[-5000:] + result.stdout[-5000:])
         payload = json.loads(result.stdout.split(MARKER, 1)[1].strip())
