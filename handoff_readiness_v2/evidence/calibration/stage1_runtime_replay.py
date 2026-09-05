@@ -39,6 +39,7 @@ for model in models:
 
 BODY = r'''
 import json
+import math
 import sys
 from django.contrib.auth.models import User as DjangoUser
 from django.core.management import call_command
@@ -77,6 +78,19 @@ for expected_round in range(1, {rounds} + 1):
         sub, _ = DecisionSubmission.objects.get_or_create(
             team=team, round=rnd, defaults={{'status': 'draft'}})
         BASE.build(sub, team)
+        if {adaptive_production!r} and expected_round > 1:
+            from core.models.decisions import DecisionMarketing
+            for marketing in (DecisionMarketing.objects.filter(submission=sub)
+                              .order_by('team_product_id', 'market_id')):
+                prior = RoundResultProductMarket.objects.filter(
+                    game=game, round_number=expected_round - 1, team=team,
+                    team_product=marketing.team_product, market=marketing.market,
+                ).first()
+                if prior is not None:
+                    marketing.production_volume = max(
+                        1, math.ceil(float(prior.units_sold) * 1.10))
+                    marketing.demand_estimate = int(marketing.production_volume * 1.20)
+                    marketing.save(update_fields=['production_volume', 'demand_estimate'])
         sub.status = 'locked'
         sub.locked_at = timezone.now()
         sub.save(update_fields=['status', 'locked_at'])
@@ -137,6 +151,7 @@ print({marker!r})
 print(json.dumps({{
     'scenario': scenario.name,
     'home_markets': {home_markets!r},
+    'adaptive_production': {adaptive_production!r},
     'teams': [{{'name': team.name, 'starter_profile': team.firm_starter_profile.profile_name}}
               for team in teams],
     'rows': rows,
@@ -176,6 +191,8 @@ def main():
                         help='number of sequential rounds to resolve (1-10)')
     parser.add_argument('--home-markets', default='',
                         help='optional comma-separated home-market assignment')
+    parser.add_argument('--adaptive-production', action='store_true',
+                        help='use a uniform 10%% buffer over prior sales after round 1')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
@@ -190,7 +207,8 @@ def main():
                 raise RuntimeError(result.stderr[-3000:])
         result = run(database, 'shell', '-c', BODY.format(
             harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
-            home_markets=options.home_markets), timeout=3600)
+            home_markets=options.home_markets,
+            adaptive_production=options.adaptive_production), timeout=3600)
         if result.returncode or MARKER not in result.stdout:
             raise RuntimeError(result.stderr[-5000:] + result.stdout[-5000:])
         payload = json.loads(result.stdout.split(MARKER, 1)[1].strip())
