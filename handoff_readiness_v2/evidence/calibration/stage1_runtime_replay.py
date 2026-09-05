@@ -50,8 +50,9 @@ if not DjangoUser.objects.filter(is_superuser=True).exists():
     DjangoUser.objects.create_superuser('stage1-owner', 'stage1@example.com', 'x')
 call_command('load_all_scenarios', verbosity=0)
 
-from core.models import (Game, Round, Team, RoundResultAIAdoption,
-                         RoundResultDemandReconciliation)
+from core.models import (Game, Round, Team, LeaderboardEntry,
+                         RoundResultAIAdoption, RoundResultDemandReconciliation,
+                         RoundResultFinancials, RoundResultPerformanceIndex)
 from core.models.scenario import Scenario
 from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
@@ -61,6 +62,7 @@ call_command('setup_test_game', scenario=scenario.id, verbosity=0)
 game = Game.objects.order_by('-id').first()
 teams = list(Team.objects.filter(game=game).order_by('id'))
 rows = []
+team_rounds = []
 
 for expected_round in range(1, scenario.num_rounds + 1):
     assert game.current_round == expected_round, (game.current_round, expected_round)
@@ -100,6 +102,24 @@ for expected_round in range(1, scenario.num_rounds + 1):
             'ai_adopters': str(ai_take),
             'unserved_adopters': str(rec.unserved_adopters),
         }})
+    for team in teams:
+        financials = RoundResultFinancials.objects.get(
+            game=game, round_number=expected_round, team=team)
+        performance = RoundResultPerformanceIndex.objects.get(
+            game=game, round_number=expected_round, team=team)
+        leaderboard = LeaderboardEntry.objects.get(
+            game=game, round_number=expected_round, team=team)
+        team_rounds.append({{
+            'round': expected_round,
+            'team': team.name,
+            'starter_profile': team.firm_starter_profile.profile_name,
+            'total_revenue': str(financials.total_revenue),
+            'net_income': str(financials.net_income),
+            'cash_closing': str(financials.cash_closing),
+            'performance_index': str(performance.index_value),
+            'satisfaction_score': str(performance.satisfaction_score),
+            'rank': leaderboard.rank,
+        }})
     advance_to_next_round(game.id)
     game.refresh_from_db()
 
@@ -109,6 +129,7 @@ print(json.dumps({{
     'teams': [{{'name': team.name, 'starter_profile': team.firm_starter_profile.profile_name}}
               for team in teams],
     'rows': rows,
+    'team_rounds': team_rounds,
 }}, default=str, sort_keys=True))
 '''
 
