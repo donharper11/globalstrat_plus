@@ -404,12 +404,17 @@ class Command(BaseCommand):
                 'team_member', 'team',
                 'round', 'simulation_instance', 'game',
             ]
-            with connection.cursor() as cur:
-                for tbl in game_tables:
-                    try:
-                        cur.execute(f'TRUNCATE TABLE {tbl} CASCADE')
-                    except Exception:
-                        pass
+            for tbl in game_tables:
+                try:
+                    # Some legacy databases may not have every optional
+                    # table.  Isolate each best-effort truncate so a missing
+                    # table cannot leave PostgreSQL's connection aborted for
+                    # the remaining cleanup and scenario reload.
+                    with transaction.atomic():
+                        with connection.cursor() as cur:
+                            cur.execute(f'TRUNCATE TABLE {tbl} CASCADE')
+                except Exception:
+                    pass
             # Delete SC scenario-scoped models
             FreightMarket.objects.filter(scenario=old).delete()
             ResilienceParameters.objects.filter(scenario=old).delete()

@@ -111,13 +111,19 @@ class Command(BaseCommand):
         from django.db import connection, transaction
 
         def _safe(sql, params=None):
+            """Run best-effort legacy cleanup without poisoning the connection.
+
+            Several historical deployments lack one or more of these tables.
+            A failed PostgreSQL statement aborts its transaction, so an
+            explicit ``atomic`` block is required before the next cleanup or
+            scenario reload can safely continue.
+            """
             try:
-                sid = transaction.savepoint()
-                with connection.cursor() as c:
-                    c.execute(sql, params or [])
-                transaction.savepoint_commit(sid)
+                with transaction.atomic():
+                    with connection.cursor() as c:
+                        c.execute(sql, params or [])
             except Exception:
-                transaction.savepoint_rollback(sid)
+                pass
 
         # Delete ALL game data — we're creating a fresh demo
         all_game_ids = list(Game.objects.values_list('id', flat=True))
@@ -148,6 +154,9 @@ class Command(BaseCommand):
                 pass
             if prod_ids:
                 prph = ','.join(['%s'] * len(prod_ids))
+                # Product-demand rows protect their product.  They must be
+                # removed before product-market state and TeamProduct itself.
+                _safe(f'DELETE FROM round_result_product_demand WHERE team_product_id IN ({prph})', prod_ids)
                 _safe(f'DELETE FROM team_product_market WHERE team_product_id IN ({prph})', prod_ids)
 
             # Get submission IDs
@@ -359,8 +368,11 @@ class Command(BaseCommand):
             for at in AcquisitionTarget.objects.filter(scenario=s).select_related('market')
         }
         self.teams = {}
-        for t in Team.objects.filter(game=self.game).order_by('id'):
-            num = int(t.name.split()[-1])
+        # `initialize_game` assigns scenario company names (for example
+        # "Quantum Edge"), not synthetic "Team 1" labels.  The scripted demo
+        # still needs a stable 1..5 slot, so derive it from creation order.
+        for num, t in enumerate(Team.objects.filter(game=self.game).order_by('id'),
+                                start=1):
             self.teams[num] = t
 
         self.stdout.write(f'  Markets: {list(self.markets.keys())}')
