@@ -158,11 +158,17 @@ def run_bass_adoption(context):
             share = attract / total_attractiveness if total_attractiveness else 0.0
             unconstrained_demand = adoption_pool * share
             production_key = (team_id, product_id, market.id)
-            available_production = context.production_remaining.get(production_key, 0.0)
-            units_sold = min(unconstrained_demand, available_production)
-            lost_demand = unconstrained_demand - units_sold
-            context.production_remaining[production_key] = available_production - units_sold
-            reported_sold = Decimal(str(round(units_sold, 2)))
+            # Persist and deplete at the same cent precision as the product
+            # ledger.  A product can serve several segments; independently
+            # rounding their float allocations otherwise lets the reported
+            # segment rows exceed its reported production by one cent.
+            available_production = Decimal(str(round(
+                context.production_remaining.get(production_key, 0.0), 2)))
+            reported_demand = Decimal(str(round(unconstrained_demand, 2)))
+            reported_sold = min(reported_demand, available_production)
+            reported_lost_demand = reported_demand - reported_sold
+            context.production_remaining[production_key] = float(
+                available_production - reported_sold)
             context.product_adoption[product_key] = reported_sold
             team_sales[team_id] += reported_sold
             team_shares[team_id] += share
@@ -179,10 +185,10 @@ def run_bass_adoption(context):
                     'market_readiness_pct': Decimal(str(round(readiness, 4))),
                     'attractiveness': Decimal(str(round(attract, 4))),
                     'share_pct': Decimal(str(round(share, 6))),
-                    'unconstrained_demand': Decimal(str(round(unconstrained_demand, 2))),
-                    'available_production': Decimal(str(round(available_production, 2))),
+                    'unconstrained_demand': reported_demand,
+                    'available_production': available_production,
                     'units_sold': reported_sold,
-                    'lost_demand': Decimal(str(round(lost_demand, 2))),
+                    'lost_demand': reported_lost_demand,
                 },
             )
 
