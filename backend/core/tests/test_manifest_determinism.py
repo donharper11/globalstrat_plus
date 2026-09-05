@@ -141,8 +141,8 @@ EXPECTED_OUTPUT_SECTIONS = {
     'team_governance_commitment', 'team_market_compliance', 'team_tax_structure',
     'team_org_structure', 'hedge_position',
     # published results
-    'financials', 'market_revenue', 'product_market', 'adoption', 'ai_adoption',
-    'demand_reconciliation', 'performance',
+    'financials', 'market_revenue', 'product_market', 'adoption',
+    'product_demand', 'ai_adoption', 'demand_reconciliation', 'performance',
     'coherence', 'resilience', 'share_price', 'leaderboard', 'esg_impact',
     'talent_impact', 'partnership_impact', 'agent_cycle', 'instructor_alert',
 }
@@ -788,6 +788,30 @@ class ManifestSnapshotIntegrationTests(TestCase):
             'firm_starter_profile('))
         self.assertTrue(team['game_id'].startswith('game('))
 
+    def test_product_demand_ledger_row_is_signed_in_the_round_manifest(self):
+        """The ledger that allocates competitive demand cannot sit outside it."""
+        from decimal import Decimal as D
+        from django.db import transaction
+        from core.engine.advance_round import _run_phase_1
+        from core.models import RoundResultProductDemand
+        from core.services.resolution_manifest import build_output_manifest
+
+        self._write_decisions()
+        with transaction.atomic():
+            _run_phase_1(self.game.id)
+            before, _narrative = build_output_manifest(self.round)
+            self.assertTrue(before['sections']['product_demand'])
+            row = RoundResultProductDemand.objects.filter(
+                game=self.game, round_number=self.round.round_number,
+            ).order_by('id').first()
+            self.assertIsNotNone(row)
+            row.units_sold += D('0.01')
+            row.save(update_fields=['units_sold'])
+            after, _narrative = build_output_manifest(self.round)
+            self.assertNotEqual(cj.canonical_sha256(before),
+                                cj.canonical_sha256(after))
+            transaction.set_rollback(True)
+
     def test_narrative_envelope_carries_the_prose_itself(self):
         """Hashing a narrative section's metadata and calling it the narrative
         hash would make "the prose differed" untestable."""
@@ -831,7 +855,7 @@ class ManifestSnapshotIntegrationTests(TestCase):
         self.assertEqual(cj.canonical_sha256(competitive_before),
                          cj.canonical_sha256(competitive_after))
 
-    def test_version_1_manifests_are_readable_but_never_read_as_version_2(self):
+    def test_version_1_manifests_are_readable_but_never_read_as_current(self):
         from core.models import ResolutionManifest
         from core.services.resolution_manifest import (
             ManifestSchemaError, require_schema_version, verify_input_state)

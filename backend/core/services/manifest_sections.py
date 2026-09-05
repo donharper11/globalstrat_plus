@@ -493,6 +493,11 @@ RESULT_SECTIONS = (
             why='Units, price and cost by product-market.'),
     Section('adoption', 'core.RoundResultAdoption', GAME, 'game_id',
             why='Bass adoption pools, fit and share by segment.'),
+    Section('product_demand', 'core.RoundResultProductDemand', GAME, 'game_id',
+            key=('game_id', 'round_number', 'team_id', 'team_product_id',
+                 'segment_id', 'market_id'),
+            why='Product-grain fit, attractiveness, share, demand, capacity, '
+                'sales and lost-demand allocation ledger.'),
     Section('ai_adoption', 'core.RoundResultAIAdoption', GAME, 'game_id',
             why='AI competitors’ recorded share of each Bass adoption pool.'),
     Section('demand_reconciliation', 'core.RoundResultDemandReconciliation', GAME, 'game_id',

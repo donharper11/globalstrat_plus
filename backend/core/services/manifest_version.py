@@ -15,4 +15,5 @@ module having to import the whole manifest machinery.
 # 2 -> 3: CRV2-10 Stage 4 -- the `team_product_platform_history` section and
 #         the `platform_switch_write_off` financial line.
 # 3 -> 4: CRV2-11 -- recorded AI adoption and per-pool demand reconciliation.
-MANIFEST_SCHEMA_VERSION = 4
+# 4 -> 5: CRV2-11 -- product-grain demand allocation ledger.
+MANIFEST_SCHEMA_VERSION = 5
