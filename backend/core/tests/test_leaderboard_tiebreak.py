@@ -4,14 +4,62 @@ from decimal import Decimal as D
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from core.engine.bootstrap import bootstrap_round_zero
 from core.engine.leaderboard import update_leaderboard
 from core.models.core import Game, Round, Team
-from core.models.results_financials import LeaderboardEntry, RoundResultFinancials
+from core.models.results_financials import (
+    LeaderboardEntry, RoundResultFinancials, RoundResultPerformanceIndex,
+)
 from core.models.scenario import FirmStarterProfile, MarketDefinition, Scenario
 from core.models.sc_state import ResilienceScoreHistory
 
 
 class LeaderboardTieBreakTest(TestCase):
+    def test_round_zero_keeps_different_starters_at_the_base_index_and_shared_rank(self):
+        """CRV2-11: briefing differences never create a score before decisions."""
+        user = get_user_model().objects.create_user('round-zero-parity')
+        scenario = Scenario.objects.create(
+            name='Round zero parity', industry_label='Tie', description='Tie',
+            starting_cash=1000, performance_index_base=D('55.00'))
+        market = MarketDefinition.objects.create(
+            scenario=scenario, name='Home', code='HOME', currency_code='USD',
+            exchange_rate_base=1, base_growth_rate=0, entry_cost_base=0,
+            tax_rate=0, regulatory_difficulty=1, infrastructure_quality=1)
+        first = FirmStarterProfile.objects.create(
+            scenario=scenario, profile_name='Established', description='Tie',
+            home_market=market, starting_cash=1000, starting_debt=0,
+            starting_revenue=100)
+        second = FirmStarterProfile.objects.create(
+            scenario=scenario, profile_name='Challenger', description='Tie',
+            home_market=market, starting_cash=2000, starting_debt=500,
+            starting_revenue=200)
+        game = Game.objects.create(
+            scenario=scenario, name='Round zero game', created_by=user,
+            status='active', current_round=0)
+        Team.objects.create(
+            game=game, name='Established team', firm_starter_profile=first,
+            performance_index=D('55.00'), cash_on_hand=D('1000.00'),
+            total_equity=D('1000.00'))
+        Team.objects.create(
+            game=game, name='Challenger team', firm_starter_profile=second,
+            performance_index=D('55.00'), cash_on_hand=D('2000.00'),
+            total_equity=D('1500.00'))
+
+        bootstrap_round_zero(game)
+
+        self.assertEqual(
+            set(RoundResultPerformanceIndex.objects.filter(
+                game=game, round_number=0,
+            ).values_list('index_value', flat=True)),
+            {D('55.00')},
+        )
+        self.assertEqual(
+            set(LeaderboardEntry.objects.filter(
+                game=game, round_number=0,
+            ).values_list('rank', flat=True)),
+            {1},
+        )
+
     def test_cumulative_cash_then_revenue_then_final_resilience(self):
         user = get_user_model().objects.create_user('tie-test')
         scenario = Scenario.objects.create(

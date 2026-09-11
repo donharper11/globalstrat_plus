@@ -27,8 +27,11 @@ repair, as the rule requires.
 ## V2-048 — a live database credential is committed to Git (P0) — REMEDIATED at `192b6e1`; one review item open
 
 **Owner: security and operations.** Not a GSP-CRV2-10 finding and not to be
-folded into any stage of it. Stage 4 development may continue; this finding
-blocks integrated release approval.
+folded into any stage of it. Credential rotation, revocation, source cleanup,
+and history rewrite are complete. The remaining access-log and least-privilege
+review is an operational hardening backlog; on 2026-09-05 the competition owner
+accepted that residual risk as **not a competition-release blocker**. It remains
+open until the DBA remediation and re-audit evidence are complete.
 
 **A credential committed to a repository must be treated as compromised.** The
 value is not reproduced here, in the inventory below, or in any commit message.
@@ -2231,6 +2234,8 @@ product-local, zero demand is distinguishable from a stockout, allocation is
 insertion-order invariant, and the firm/AI/Bass accounting identities hold.
 `836cf2e` keeps cent-rounded product rows from exceeding their own capacity.
 
-V2-055 is closed. CRV2-11 Stage 2 remains open only for the separate
-starter-archetype parity calibration gate; the repaired competent-field
-evidence is recorded in `evidence/calibration/STAGE2_PARITY_MEASUREMENTS.md`.
+V2-055 is closed. CRV2-11 Stage 2 is complete: the only starter-parity rule is
+round-zero base-index and shared-rank equality, which bootstrap provides. The
+repaired competent-field evidence is recorded in
+`evidence/calibration/STAGE2_PARITY_MEASUREMENTS.md`; later-round index spreads
+are outcomes, not a calibration gate.

@@ -20,6 +20,9 @@ table nor `NEGATIVE_ALLOWED`.
 """
 from django.core.exceptions import FieldError
 from rest_framework import serializers
+from core.utils.participant_messages import (
+    field_label, participant_message, serializer_language,
+)
 
 # Serializer class name → fields that must be >= 0.
 #
@@ -66,8 +69,11 @@ NON_NEGATIVE_FIELDS = {
 NEGATIVE_ALLOWED = {}
 
 
-def non_negative_message(field_name):
-    return f'{field_name} must be >= 0.'
+def non_negative_message(field_name, language='en'):
+    return participant_message(
+        'non_negative', language=language,
+        field=field_label(field_name, language),
+    )
 
 
 class NonNegativeFieldsMixin:
@@ -102,14 +108,16 @@ class ImproperlyConfiguredDecisionLimit(Exception):
 class _NonNegative:
     """A validator with a stable identity, so tests can find it on a field."""
 
-    requires_context = False
+    requires_context = True
 
     def __init__(self, field_name):
         self.field_name = field_name
 
-    def __call__(self, value):
+    def __call__(self, value, serializer_field):
         if value is not None and value < 0:
-            raise serializers.ValidationError(non_negative_message(self.field_name))
+            language = serializer_language(serializer_field)
+            raise serializers.ValidationError(
+                non_negative_message(self.field_name, language))
 
     def __eq__(self, other):
         return (isinstance(other, _NonNegative)

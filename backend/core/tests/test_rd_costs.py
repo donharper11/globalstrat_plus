@@ -18,6 +18,7 @@ from core.authentication import create_access_token
 from core.models import DecisionSubmission, Round, User
 from core.models.course import Course, Enrollment, Section
 from core.models.decisions import (DecisionBudgetAllocation,
+                                   DecisionFinancing,
                                    DecisionPlatformDevelopment,
                                    DecisionRDInvestment)
 from core.models.scenario import (FeatureLevelCost, PlatformFeatureCeiling,
@@ -189,8 +190,10 @@ class AuthoritativePriceTests(RDCostFixture):
             self.whole_url(), {'rd_investments': [row]}, format='json')
         self.assertEqual(per_type.status_code, 400)
         self.assertEqual(whole.status_code, 400)
-        self.assertIn('retired', str(per_type.data).lower())
-        self.assertIn('retired', str(whole.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(per_type.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(whole.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_a_correctly_priced_upgrade_is_refused_but_still_priced(self):
@@ -202,7 +205,8 @@ class AuthoritativePriceTests(RDCostFixture):
             [{'team_platform': self.platform.id, 'feature': self.feature.id,
               'method': 'in_house', 'target_level': 14}], format='json')
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
         # The price itself is unchanged and still authoritative -- what is gone
@@ -279,3 +283,50 @@ class AuthoritativePriceTests(RDCostFixture):
         self.assertTrue(assessment['within_cash'])
         self.assertTrue(assessment['within_rd_budget'])
         self.assertEqual(rd_costs.describe_budget_problems(assessment), [])
+
+    def test_budget_vs_cash_rule_agrees_on_lock_summary_and_finance_context(self):
+        """D2: every participant surface includes the legacy research line.
+
+        The three former copies of this rule had drifted.  This deliberately
+        uses no platform development so it also proves the otherwise easy to
+        miss `research_budget` part of the original finding.
+        """
+        self.team.cash_on_hand = D('900')
+        self.team.save(update_fields=['cash_on_hand'])
+        submission = DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        DecisionBudgetAllocation.objects.create(
+            submission=submission, rd_budget=D('100'),
+            marketing_budget=D('200'), strategy_budget=D('300'),
+            research_budget=D('400'))
+        DecisionFinancing.objects.create(submission=submission)
+
+        client = self.client_as_student()
+        base = (f'/api/games/{self.game.id}/teams/{self.team.id}')
+
+        lock = client.post(
+            f'{base}/decisions/round/{self.round.round_number}/lock/',
+            format='json')
+        self.assertEqual(lock.status_code, 400, lock.data)
+        self.assertIn('Committed spend of $1,000.00 exceeds available cash',
+                      str(lock.data))
+
+        summary = client.get(
+            f'{base}/decisions/round/{self.round.round_number}/summary/')
+        self.assertEqual(summary.status_code, 200, summary.data)
+        self.assertIn('Committed spend of $1,000.00 exceeds available cash',
+                      str(summary.data['lock_blockers']))
+        self.assertEqual(summary.data['budget_summary']['total_allocated'],
+                         1000.0)
+        self.assertEqual(summary.data['budget_summary']['committed_total'],
+                         1000.0)
+        self.assertEqual(summary.data['budget_summary']['unallocated'],
+                         -100.0)
+
+        finance = client.get(f'{base}/context/finance/')
+        self.assertEqual(finance.status_code, 200, finance.data)
+        budget_status = finance.data['budget_status']
+        self.assertEqual(budget_status['total_allocated'], 1000.0)
+        self.assertEqual(budget_status['committed_total'], 1000.0)
+        self.assertEqual(budget_status['projected_ending_cash'], -100.0)
+        self.assertEqual(budget_status['unallocated'], -100.0)

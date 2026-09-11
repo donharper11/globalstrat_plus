@@ -40,6 +40,28 @@ def lock_game_for_decision_write(game_id):
             )
 
 
+def try_lock_game_for_decision_write(game_id):
+    """Acquire the shared decision boundary without tying up a web worker.
+
+    A synchronous Phase-1 resolution owns the exclusive form of this lock for
+    several seconds.  Waiting for it in a sync Gunicorn worker is harmful: a
+    burst of late writes can consume every worker and make otherwise lock-free
+    refreshes look stalled.  Callers use this only for student mutations; a
+    ``False`` result is an explained refusal, never permission to proceed.
+
+    On non-PostgreSQL development backends there is no advisory boundary, so
+    retain the historical no-op behaviour of ``lock_game_for_decision_write``.
+    """
+    if connection.vendor != 'postgresql':
+        return True
+    with connection.cursor() as cursor:
+        cursor.execute(
+            'SELECT pg_try_advisory_xact_lock_shared(%s, %s)',
+            [_GAME_ROUND_LOCK_NAMESPACE, game_id],
+        )
+        return bool(cursor.fetchone()[0])
+
+
 def lock_game_for_lifecycle(game_id):
     """Serialise this operator action against writes and other operators.
 

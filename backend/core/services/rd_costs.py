@@ -356,22 +356,24 @@ def budget_assessment(submission, team=None):
     }
 
 
-def describe_budget_problems(assessment):
-    """The errors an operator or student should see, or an empty list."""
+def describe_budget_problems(assessment, language='en'):
+    """Business-language budget refusals, in the requested UI language."""
+    from core.utils.participant_messages import participant_message
+
     problems = []
     if not assessment['within_cash']:
-        problems.append(
-            f'Committed spend of ${Decimal(assessment["committed_total"]):,.2f} '
-            f'exceeds available cash of '
-            f'${Decimal(assessment["cash_on_hand"]):,.2f}. This includes '
-            f'${Decimal(assessment["lines"]["platform_development"]):,.2f} of '
-            f'platform development.')
+        problems.append(participant_message(
+            'committed_spend_exceeds_cash', language=language,
+            committed=f'${Decimal(assessment["committed_total"]):,.2f}',
+            cash=f'${Decimal(assessment["cash_on_hand"]):,.2f}',
+            platform=f'${Decimal(assessment["lines"]["platform_development"]):,.2f}',
+        ))
     if not assessment['within_rd_budget']:
-        problems.append(
-            f'R&D commitments of '
-            f'${Decimal(assessment["rd_committed"]):,.2f} exceed the R&D '
-            f'budget of ${Decimal(assessment["rd_budget"]):,.2f}. Platform '
-            f'development counts against the R&D budget.')
+        problems.append(participant_message(
+            'rd_commitments_exceed_budget', language=language,
+            committed=f'${Decimal(assessment["rd_committed"]):,.2f}',
+            budget=f'${Decimal(assessment["rd_budget"]):,.2f}',
+        ))
     return problems
 
 

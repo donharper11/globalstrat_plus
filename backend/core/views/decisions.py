@@ -43,6 +43,7 @@ from core.models.scenario import (
 )
 from core.models.results_financials import RoundResultFinancials
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import field_label, participant_message
 from core.serializers.decisions import (
     DecisionSubmissionSerializer,
     DecisionBudgetAllocationSerializer,
@@ -82,9 +83,11 @@ def _get_user_from_header(request):
 
 
 class IsTeamMember(permissions.BasePermission):
-    message = 'You do not have permission to perform this action.'
+    message = 'You do not have permission to change this team’s decisions.'
 
     def has_permission(self, request, view):
+        language = get_user_language(request)
+        self.message = participant_message('permission_denied', language=language)
         team_id = view.kwargs.get('team_id')
         user = _get_user_from_header(request)
         if not user:
@@ -96,7 +99,7 @@ class IsTeamMember(permissions.BasePermission):
         if not Team.objects.filter(
             pk=team_id, participation_status='active',
         ).exists():
-            self.message = 'This team has been withdrawn from the competition.'
+            self.message = participant_message('team_withdrawn', language=language)
             return False
         # Students: check enrollment team or TeamMember
         from core.models import Enrollment
@@ -121,13 +124,15 @@ class IsRoundOpen(permissions.BasePermission):
 
     Instructors are exempt so they can still fix a team's decisions.
     """
-    message = 'The round is not currently open for submissions.'
+    message = 'This round is not open for decision submissions.'
 
     def has_permission(self, request, view):
         # Read-only methods always allowed
         if request.method in permissions.SAFE_METHODS:
             return True
 
+        language = get_user_language(request)
+        self.message = participant_message('round_not_open', language=language)
         from core.utils.auth_context import get_request_role
         if get_request_role(request) in ('instructor', 'admin'):
             return True
@@ -139,11 +144,10 @@ class IsRoundOpen(permissions.BasePermission):
         game = Game.objects.filter(pk=game_id).only('status').first()
         if game:
             if game.status == 'paused':
-                self.message = ('The game is paused by your instructor. '
-                                'No changes can be made right now.')
+                self.message = participant_message('game_paused', language=language)
                 return False
             if game.status in ('completed', 'archived'):
-                self.message = f'This game is {game.status}.'
+                self.message = participant_message('game_finished', language=language)
                 return False
 
         round_obj = Round.objects.filter(
@@ -153,19 +157,21 @@ class IsRoundOpen(permissions.BasePermission):
             return False
 
         if round_obj.status != 'open':
-            self.message = (f'Round {round_number} is {round_obj.status} — '
-                            f'it is no longer accepting decisions.')
+            self.message = participant_message(
+                'round_not_accepting', language=language,
+                round=round_number, status=round_obj.status)
             return False
 
         if round_obj.decisions_locked:
-            self.message = 'Decisions have been locked by the instructor.'
+            self.message = participant_message(
+                'round_locked_by_instructor', language=language)
             return False
 
         if round_obj.deadline:
             from django.utils import timezone
             if timezone.now() >= round_obj.deadline:
-                self.message = ('The deadline for this round has passed. '
-                                'Your decisions are locked.')
+                self.message = participant_message(
+                    'round_deadline_passed', language=language)
                 return False
 
         return True
@@ -200,6 +206,34 @@ class IsInstructor(permissions.BasePermission):
 class CompetitionDecisionWriteMixin:
     """Coordinate student writes with deadline close and same-team writes."""
 
+    def _lifecycle_busy_response(self, request, *args, **kwargs):
+        """Run DRF's read-only dispatch setup, then return the fast refusal.
+
+        The mixin sits *outside* ``APIView.dispatch`` in the MRO.  Returning a
+        bare DRF ``Response`` there skips both permission checks and renderer
+        negotiation; a bare Django response would preserve rendering but leak
+        a 409 to a caller who should receive 401/403.  This is the relevant
+        non-mutating portion of APIView.dispatch, followed by its normal
+        finalizer.  It deliberately never selects or invokes the handler.
+        """
+        request = self.initialize_request(request, *args, **kwargs)
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.headers = self.default_response_headers
+        try:
+            self.initial(request, *args, **kwargs)
+            response = Response(
+                {'detail': participant_message(
+                    'lifecycle_in_progress', language=get_user_language(request)),
+                 'code': 'lifecycle_in_progress'},
+                status=status.HTTP_409_CONFLICT,
+            )
+        except Exception as exc:
+            response = self.handle_exception(exc)
+        self.response = self.finalize_response(request, response, *args, **kwargs)
+        return self.response
+
     def dispatch(self, request, *args, **kwargs):
         if request.method in permissions.SAFE_METHODS:
             return super().dispatch(request, *args, **kwargs)
@@ -207,9 +241,16 @@ class CompetitionDecisionWriteMixin:
         if not game_id:
             return super().dispatch(request, *args, **kwargs)
         from core.services.competition_locks import (
-            lock_game_for_decision_write, lock_team_for_decision_write)
+            lock_team_for_decision_write, try_lock_game_for_decision_write)
         with transaction.atomic():
-            lock_game_for_decision_write(game_id)
+            # Do not let a synchronous Phase-1 resolution turn a burst of
+            # late submissions into blocked sync workers.  The exclusive
+            # lifecycle holder has already made this mutation unsafe, so an
+            # immediate, explained 409 is more truthful than waiting until
+            # after results are computed.  A successful acquisition retains
+            # the existing shared-lock -> team-lock -> handler order.
+            if not try_lock_game_for_decision_write(game_id):
+                return self._lifecycle_busy_response(request, *args, **kwargs)
             team_id = kwargs.get('team_id')
             if team_id:
                 lock_team_for_decision_write(team_id)
@@ -310,7 +351,7 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
             # during play. Frontend (DecisionContext) already treats an empty
             # body as a fresh draft.
             return Response({}, status=status.HTTP_200_OK)
-        serializer = DecisionSubmissionSerializer(submission)
+        serializer = DecisionSubmissionSerializer(submission, context={'request': request})
         return Response(serializer.data)
 
     def post(self, request, game_id, team_id, round_number):
@@ -333,7 +374,9 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
         if (rnd.status != 'open' or rnd.decisions_locked or
                 (rnd.deadline and timezone.now() >= rnd.deadline)):
             return Response(
-                {'detail': f'Round {round_number} is closed; decisions are no longer accepted.'},
+                {'detail': participant_message(
+                    'round_closed', language=get_user_language(request),
+                    round=round_number)},
                 status=status.HTTP_403_FORBIDDEN,
             )
         team = get_object_or_404(Team, pk=team_id, game_id=game_id)
@@ -348,14 +391,16 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
         if submission:
             if submission.status == 'locked':
                 return Response(
-                    {'detail': 'Submission is locked. Unlock before editing.'},
+                {'detail': participant_message(
+                    'submission_locked', language=get_user_language(request))},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             serializer = DecisionSubmissionSerializer(
-                submission, data=data, partial=True,
+                submission, data=data, partial=True, context={'request': request},
             )
         else:
-            serializer = DecisionSubmissionSerializer(data=data)
+            serializer = DecisionSubmissionSerializer(
+                data=data, context={'request': request})
 
         serializer.is_valid(raise_exception=True)
         saved = serializer.save()
@@ -368,14 +413,19 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
         assessment = funding_need.assess_submission(saved)
         if not assessment['within_limit']:
             raise serializers.ValidationError({
-                'financing': [funding_need.describe(assessment, team.name)],
+                'financing': [participant_message(
+                    'equity_exceeds_funding_need',
+                    language=get_user_language(request),
+                    requested=f'${Decimal(assessment["requested_new_equity"]):,.2f}',
+                    maximum=f'${Decimal(assessment["maximum_new_equity"]):,.2f}')],
                 'funding_assessment': assessment,
             })
 
         from core.services.competition_audit import record_decision_event
         record_decision_event(request, team.game, team, rnd, 'save', request.data)
         resp_status = status.HTTP_200_OK if submission else status.HTTP_201_CREATED
-        return Response(DecisionSubmissionSerializer(saved).data, status=resp_status)
+        return Response(DecisionSubmissionSerializer(
+            saved, context={'request': request}).data, status=resp_status)
 
 
 # ---------------------------------------------------------------------------
@@ -412,7 +462,8 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
     def patch(self, request, game_id, team_id, round_number, decision_type):
         if decision_type not in _TYPE_MAP:
             return Response(
-                {'detail': f'Unknown decision type: {decision_type}'},
+                {'detail': participant_message(
+                    'unknown_decision_type', language=get_user_language(request))},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -424,7 +475,8 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
         )
         if submission.status == 'locked':
             return Response(
-                {'detail': 'Submission is locked.'},
+                {'detail': participant_message(
+                    'submission_locked', language=get_user_language(request))},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -443,7 +495,7 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
 
         # Validate
         if is_one_to_one:
-            ser = serializer_cls(data=nested_data)
+            ser = serializer_cls(data=nested_data, context={'request': request})
             ser.is_valid(raise_exception=True)
             validated = ser.validated_data
             if decision_type == 'financing':
@@ -455,8 +507,11 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                     submission, financing_override=validated)
                 if not assessment['within_limit']:
                     return Response(
-                        {'detail': funding_need.describe(
-                            assessment, submission.team.name),
+                        {'detail': participant_message(
+                            'equity_exceeds_funding_need',
+                            language=get_user_language(request),
+                            requested=f'${Decimal(assessment["requested_new_equity"]):,.2f}',
+                            maximum=f'${Decimal(assessment["maximum_new_equity"]):,.2f}'),
                          'funding_assessment': assessment},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
@@ -468,22 +523,26 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                 nested_data = [nested_data]
             validated_items = []
             for item in nested_data:
-                ser = serializer_cls(data=item)
+                ser = serializer_cls(data=item, context={'request': request})
                 ser.is_valid(raise_exception=True)
                 validated_items.append(ser.validated_data)
             if decision_type == 'rd':
-                validate_rd_investment_targets(validated_items)
+                validate_rd_investment_targets(
+                    validated_items, get_user_language(request))
                 enforce_authoritative_costs(
                     validated_items, 'rd', team=team,
-                    round_number=rnd.round_number)
+                    round_number=rnd.round_number,
+                    language=get_user_language(request))
             if decision_type == 'platforms':
                 enforce_authoritative_costs(
                     validated_items, 'platform', team=team,
-                    round_number=rnd.round_number)
+                    round_number=rnd.round_number,
+                    language=get_user_language(request))
             if decision_type == 'products':
                 # Before the delete below, so a refused payload leaves the
                 # team's existing decisions exactly as they were.
-                validate_product_names(validated_items, team)
+                validate_product_names(
+                    validated_items, team, get_user_language(request))
             model_cls = serializer_cls.Meta.model
             model_cls.objects.filter(submission=submission).delete()
             if validated_items:
@@ -522,7 +581,8 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
         submission.refresh_from_db()
         from core.services.competition_audit import record_decision_event
         record_decision_event(request, team.game, team, rnd, 'save', request.data)
-        return Response(DecisionSubmissionSerializer(submission).data)
+        return Response(DecisionSubmissionSerializer(
+            submission, context={'request': request}).data)
 
 
 class ProductRebaseView(CompetitionDecisionWriteMixin, APIView):
@@ -602,20 +662,26 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
 
         if not submission:
             return Response(
-                {'detail': 'No submission exists.'},
+                {'detail': participant_message(
+                    'submission_missing', language=get_user_language(request))},
                 status=status.HTTP_404_NOT_FOUND,
             )
         if submission.status == 'locked':
             return Response(
-                {'detail': 'Already locked.'},
+                {'detail': participant_message(
+                    'submission_already_locked',
+                    language=get_user_language(request))},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         # Run full validation
-        errors = self._full_validate(submission)
+        errors = self._full_validate(
+            submission, language=get_user_language(request))
         if errors:
             return Response(
-                {'detail': 'Validation failed.', 'errors': errors},
+                {'detail': participant_message(
+                    'validation_failed', language=get_user_language(request)),
+                 'errors': errors},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -641,7 +707,7 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
 
         return Response(DecisionSubmissionSerializer(submission).data)
 
-    def _full_validate(self, submission):
+    def _full_validate(self, submission, language='en'):
         """
         Run hard validation for locking. Returns list of error strings.
         """
@@ -654,13 +720,15 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         try:
             budget = submission.budget_allocation
         except DecisionBudgetAllocation.DoesNotExist:
-            errors.append('Budget allocation is required before locking.')
+            errors.append(participant_message('budget_required', language=language))
             return errors
 
         # Budget fields >= 0
         for field in ('rd_budget', 'marketing_budget', 'strategy_budget'):
             if getattr(budget, field) < 0:
-                errors.append(f'{field} must be >= 0.')
+                errors.append(participant_message(
+                    'non_negative', language=language,
+                    field=field_label(field, language)))
 
         # Total committed spend vs available cash, including platform
         # development. One rule, in one place: this was written three times
@@ -669,28 +737,32 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         # development at all (V2-038).
         from core.services.rd_costs import (budget_assessment,
                                             describe_budget_problems)
-        errors.extend(describe_budget_problems(
-            budget_assessment(submission, team)))
+        assessment = budget_assessment(submission, team)
+        errors.extend(describe_budget_problems(assessment, language=language))
 
         # R&D investments: total <= rd_budget
         rd_total = sum(
             inv.amount for inv in submission.rd_investments.all()
         )
         if rd_total > budget.rd_budget:
-            errors.append(
-                f'R&D investments (${rd_total:,.2f}) exceed R&D budget (${budget.rd_budget:,.2f}).'
-            )
+            errors.append(participant_message(
+                'rd_budget_exceeded', language=language,
+                spent=f'${rd_total:,.2f}', budget=f'${budget.rd_budget:,.2f}'))
 
         # R&D: validate team_platform belongs to team
         for inv in submission.rd_investments.all():
             if inv.team_platform.team_id != team.id:
-                errors.append(f'R&D investment references a platform not owned by this team.')
+                errors.append(participant_message(
+                    'rd_platform_not_owned', language=language))
             if inv.team_platform.status != 'active':
-                errors.append(f'R&D investment on inactive platform "{inv.team_platform}".')
+                errors.append(participant_message(
+                    'rd_platform_inactive', language=language))
             if inv.feature.layer != 'platform':
-                errors.append(f'R&D feature "{inv.feature.name}" is not a platform-layer feature.')
+                errors.append(participant_message(
+                    'rd_feature_wrong_layer', language=language))
             if inv.method == 'license' and hasattr(inv.feature, 'is_licensable') and not inv.feature.is_licensable:
-                errors.append(f'Feature "{inv.feature.name}" cannot be licensed.')
+                errors.append(participant_message(
+                    'rd_feature_unlicensable', language=language))
             # Check ceiling
             ceiling = PlatformFeatureCeiling.objects.filter(
                 platform_generation=inv.team_platform.platform_generation,
@@ -701,69 +773,82 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                     team_platform=inv.team_platform, feature=inv.feature,
                 ).values_list('current_level', flat=True).first() or Decimal('0')
                 if current_level >= ceiling.ceiling_value:
-                    errors.append(
-                        f'Feature "{inv.feature.name}" is already at ceiling '
-                        f'({ceiling.ceiling_value}) on this platform generation.'
-                    )
+                    errors.append(participant_message(
+                        'feature_at_ceiling', language=language,
+                        feature=inv.feature.name))
 
         # Platform development: validate generation
         for pd in submission.platform_developments.all():
             if pd.platform_generation.scenario_id != scenario.id:
-                errors.append(f'Platform generation "{pd.platform_generation.name}" is not in this scenario.')
+                errors.append(participant_message(
+                    'platform_wrong_scenario', language=language))
             if pd.platform_generation.unlock_round > game.current_round:
-                errors.append(
-                    f'Platform "{pd.platform_generation.name}" not unlocked yet '
-                    f'(unlocks round {pd.platform_generation.unlock_round}).'
-                )
+                errors.append(participant_message(
+                    'platform_not_unlocked', language=language,
+                    platform=pd.platform_generation.name,
+                    round=pd.platform_generation.unlock_round))
             existing = TeamPlatform.objects.filter(
                 team=team, platform_generation=pd.platform_generation,
             ).exclude(status='retired')
             if existing.exists():
-                errors.append(f'Team already has platform "{pd.platform_generation.name}".')
+                errors.append(participant_message(
+                    'platform_already_owned', language=language,
+                    platform=pd.platform_generation.name))
 
         # Product creates: validate platform and limits
         active_products = TeamProduct.objects.filter(team=team, status='active').count()
         for pc in submission.product_creates.all():
             if pc.team_platform.team_id != team.id:
-                errors.append('Product create references a platform not owned by this team.')
+                errors.append(participant_message(
+                    'product_platform_not_owned', language=language))
             if pc.team_platform.status != 'active':
-                errors.append(f'Cannot create product on inactive platform.')
+                errors.append(participant_message(
+                    'product_platform_inactive', language=language))
             # Check max products
             if active_products + 1 > scenario.max_products_total:
-                errors.append(f'Would exceed max products ({scenario.max_products_total}).')
+                errors.append(participant_message(
+                    'product_limit', language=language,
+                    maximum=scenario.max_products_total))
             # Check target markets have presence
             for mid in (pc.target_market_ids or []):
                 if not TeamMarketPresence.objects.filter(
                     team=team, market_id=mid, status='active',
                 ).exists():
-                    errors.append(f'Product "{pc.product_name}" targets market {mid} where team has no active presence.')
+                    errors.append(participant_message(
+                        'product_market_not_active', language=language,
+                        product=pc.product_name))
 
         # Product retires: validate ownership
         for pr in submission.product_retires.all():
             if pr.team_product.team_id != team.id:
-                errors.append('Product retire references a product not owned by this team.')
+                errors.append(participant_message('product_not_owned', language=language))
             if pr.team_product.status != 'active':
-                errors.append(f'Product "{pr.team_product.name}" is not active.')
+                errors.append(participant_message(
+                    'product_not_active', language=language,
+                    product=pr.team_product.name))
 
         # Marketing: channel pcts, budget
         marketing_total = Decimal('0')
         for md in submission.marketing_decisions.all():
             if md.team_product.team_id != team.id:
-                errors.append(f'Marketing decision references product not owned by team.')
+                errors.append(participant_message('product_not_owned', language=language))
             ch_sum = md.channel_digital_pct + md.channel_traditional_pct + md.channel_trade_pct
             if abs(ch_sum - Decimal('1.0')) > Decimal('0.001'):
-                errors.append(
-                    f'Marketing for "{md.team_product.name}" in {md.market.name}: '
-                    f'channel percentages sum to {ch_sum}, must be 1.0.'
-                )
+                errors.append(participant_message(
+                    'marketing_channels_invalid', language=language,
+                    product=md.team_product.name, market=md.market.name,
+                    total=f'{ch_sum * 100:g}'))
             if md.retail_price <= 0:
-                errors.append(f'Retail price must be > 0 for "{md.team_product.name}" in {md.market.name}.')
+                errors.append(participant_message(
+                    'marketing_price_invalid', language=language,
+                    product=md.team_product.name, market=md.market.name))
             marketing_total += md.promotion_budget + md.distribution_investment
 
         if marketing_total > budget.marketing_budget:
-            errors.append(
-                f'Marketing spend (${marketing_total:,.2f}) exceeds marketing budget (${budget.marketing_budget:,.2f}).'
-            )
+            errors.append(participant_message(
+                'marketing_budget_exceeded', language=language,
+                spent=f'${marketing_total:,.2f}',
+                budget=f'${budget.marketing_budget:,.2f}'))
 
         # Market entry: validate actions
         for me in submission.market_entries.all():
@@ -771,27 +856,35 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                 team=team, market=me.market,
             ).exclude(status='exited').first()
             if me.action == 'enter' and presence:
-                errors.append(f'Already have presence in {me.market.name}; cannot enter again.')
+                errors.append(participant_message(
+                    'market_already_entered', language=language,
+                    market=me.market.name))
             if me.action in ('change_mode', 'exit') and not presence:
-                errors.append(f'No active presence in {me.market.name}; cannot {me.action}.')
+                errors.append(participant_message(
+                    'market_not_active', language=language,
+                    market=me.market.name))
             if me.action == 'enter' and me.initial_investment < me.entry_mode.capital_requirement:
-                errors.append(
-                    f'Entry investment for {me.market.name} (${me.initial_investment:,.2f}) is below '
-                    f'minimum (${me.entry_mode.capital_requirement:,.2f}).'
-                )
+                errors.append(participant_message(
+                    'entry_investment_low', language=language,
+                    market=me.market.name,
+                    submitted=f'${me.initial_investment:,.2f}',
+                    minimum=f'${me.entry_mode.capital_requirement:,.2f}'))
 
         # Core Round 1 decisions must be explicit before locking.
         if submission.product_creates.count() == 0 and submission.product_retires.count() == 0:
-            errors.append('Product Portfolio is required before locking.')
+            errors.append(participant_message(
+                'product_portfolio_required', language=language))
 
         active_product_markets = TeamProductMarket.objects.filter(
             team_product__team=team, team_product__status='active', is_active=True,
         ).count()
         marketing_count = submission.marketing_decisions.count()
         if active_product_markets > 0 and marketing_count < active_product_markets:
-            errors.append('Marketing Mix is required for all active product-market combinations before locking.')
+            errors.append(participant_message(
+                'marketing_mix_required', language=language))
         elif active_product_markets == 0:
-            errors.append('Marketing Mix requires at least one active product-market combination before locking.')
+            errors.append(participant_message(
+                'marketing_mix_needs_product', language=language))
 
         strategy_configured = (
             submission.market_entries.count()
@@ -805,7 +898,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         except DecisionESG.DoesNotExist:
             pass
         if not strategy_configured:
-            errors.append('Strategy Mix is required before locking.')
+            errors.append(participant_message(
+                'strategy_mix_required', language=language))
 
         # Financing: debt ceiling
         try:
@@ -818,21 +912,22 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                 max_ratio = Decimal(cfg.config_value)
             projected_debt = team.total_debt + fin.new_debt - fin.debt_repayment
             if fin.debt_repayment > team.total_debt:
-                errors.append(
-                    f'Debt repayment (${fin.debt_repayment:,.2f}) exceeds outstanding debt (${team.total_debt:,.2f}).'
-                )
+                errors.append(participant_message(
+                    'debt_repayment_exceeds_debt', language=language,
+                    repayment=f'${fin.debt_repayment:,.2f}',
+                    debt=f'${team.total_debt:,.2f}'))
             projected_equity = team.total_equity + fin.new_equity
             if projected_equity > 0 and projected_debt / projected_equity > max_ratio:
-                errors.append(
-                    f'Projected debt-to-equity ratio ({projected_debt/projected_equity:.2f}) '
-                    f'exceeds max ({max_ratio}).'
-                )
+                errors.append(participant_message(
+                    'debt_ratio_exceeded', language=language,
+                    ratio=f'{projected_debt / projected_equity:.2f}',
+                    maximum=max_ratio))
             total_dividends = fin.dividend_per_share * team.shares_outstanding
             # Simple check: dividends shouldn't exceed equity
             if total_dividends > projected_equity:
-                errors.append(
-                    f'Total dividends (${total_dividends:,.2f}) exceed projected equity.'
-                )
+                errors.append(participant_message(
+                    'dividends_exceed_equity', language=language,
+                    dividends=f'${total_dividends:,.2f}'))
         except DecisionFinancing.DoesNotExist:
             pass  # Financing is optional
 
@@ -848,7 +943,11 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             pass
 
         # Projected ending cash check
-        projected_cash = team.cash_on_hand - total_budget
+        # Keep the lock response on the same cash total as the summary and
+        # Finance context.  `budget_total` omits platform development; only
+        # `committed_total` answers what this submission will actually cost.
+        projected_cash = team.cash_on_hand - Decimal(
+            assessment['committed_total'])
         try:
             fin = submission.financing
             projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
@@ -856,10 +955,9 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         except DecisionFinancing.DoesNotExist:
             pass
         if projected_cash < 0:
-            errors.append(
-                f'Projected ending cash is negative (${projected_cash:,.2f}). '
-                f'Increase revenue or raise financing.'
-            )
+            errors.append(participant_message(
+                'cash_negative', language=language,
+                cash=f'${projected_cash:,.2f}'))
 
         # CC-32A: Check mandatory communication assignments
         try:
@@ -888,9 +986,9 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                         assignment=ca, is_draft=False,
                     ).exists()
                     if not submitted:
-                        errors.append(
-                            f'Mandatory communication "{ca.name}" must be submitted before locking.'
-                        )
+                        errors.append(participant_message(
+                            'mandatory_communication_required', language=language,
+                            communication=ca.name))
         except Exception:
             pass  # Don't block locking if communication check fails
 
@@ -1009,9 +1107,9 @@ class DecisionSummaryView(APIView):
             from core.services.rd_costs import (budget_assessment,
                                                 describe_budget_problems)
             assessment = budget_assessment(submission, team)
-            total_budget = Decimal(assessment['budget_total'])
             budget_warnings = []
-            budget_errors = list(describe_budget_problems(assessment))
+            budget_errors = list(describe_budget_problems(
+                assessment, language=get_user_language(request)))
             for f in ('rd_budget', 'marketing_budget', 'strategy_budget'):
                 if getattr(budget, f) == 0:
                     budget_warnings.append(f'{f} is 0.')
@@ -1199,10 +1297,15 @@ class DecisionSummaryView(APIView):
                 strategy_spent += esg.environmental_investment + esg.social_investment
             except DecisionESG.DoesNotExist:
                 pass
-            total_allocated = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
+            from core.services.rd_costs import budget_assessment
+            assessment = budget_assessment(submission, team)
+            lines = assessment['lines']
+            total_allocated = Decimal(assessment['budget_total'])
+            committed_total = Decimal(assessment['committed_total'])
 
             budget_summary = {
                 'rd_allocated': float(budget.rd_budget),
+                'research_allocated': float(Decimal(lines['research_budget'])),
                 'rd_spent': float(rd_spent),
                 'marketing_allocated': float(budget.marketing_budget),
                 'marketing_spent': float(mkt_spent),
@@ -1210,7 +1313,10 @@ class DecisionSummaryView(APIView):
                 'strategy_spent': float(strategy_spent),
                 'total_available': float(team.cash_on_hand),
                 'total_allocated': float(total_allocated),
-                'unallocated': float(team.cash_on_hand - total_allocated),
+                'platform_development_committed': float(
+                    Decimal(lines['platform_development'])),
+                'committed_total': float(committed_total),
+                'unallocated': float(team.cash_on_hand - committed_total),
             }
         except DecisionBudgetAllocation.DoesNotExist:
             pass
@@ -2161,10 +2267,18 @@ class FinanceContextView(APIView):
                         strat_spent += esg.environmental_investment + esg.social_investment
                     except DecisionESG.DoesNotExist:
                         pass
-                    total_allocated = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
+                    from core.services.rd_costs import budget_assessment
+                    assessment = budget_assessment(sub, team)
+                    lines = assessment['lines']
+                    total_allocated = Decimal(assessment['budget_total'])
+                    committed_total = Decimal(assessment['committed_total'])
 
-                    # Projected cash
-                    projected_cash = team.cash_on_hand - total_allocated
+                    # Projected cash uses the same committed total that the
+                    # lock validator and decision summary use.  In particular,
+                    # this includes the legacy research line and any platform
+                    # development, neither of which may silently disappear on
+                    # the Finance page.
+                    projected_cash = team.cash_on_hand - committed_total
                     try:
                         fin = sub.financing
                         projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
@@ -2182,11 +2296,16 @@ class FinanceContextView(APIView):
                         'marketing_spent': float(mkt_spent),
                         'strategy_allocated': float(budget.strategy_budget),
                         'strategy_spent': float(strat_spent),
+                        'research_allocated': float(
+                            Decimal(lines['research_budget'])),
                         'total_allocated': float(total_allocated),
+                        'platform_development_committed': float(
+                            Decimal(lines['platform_development'])),
+                        'committed_total': float(committed_total),
                         'total_spent': total_spent,
                         'over_budget': over_budget,
                         'remaining': total_budget_available - total_spent,
-                        'unallocated': float(team.cash_on_hand - total_allocated),
+                        'unallocated': float(team.cash_on_hand - committed_total),
                         'projected_ending_cash': float(projected_cash),
                     })
                 except DecisionBudgetAllocation.DoesNotExist:

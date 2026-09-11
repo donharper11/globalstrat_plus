@@ -1,4 +1,4 @@
-"""Seed a field-sized cohort: 24 teams, and enough identities for 3x field.
+"""Seed a field-sized cohort: complete firms and enough identities for 3x field.
 
 The handoff fixes the field at 24 teams x 4 members = 96 authenticated
 sessions, and the margin profile at 288. Sessions must use separate
@@ -8,6 +8,11 @@ members a team; it is the margin profile the handoff specifies, and the extra
 identities exist to generate concurrency rather than to model a class.
 
 Run inside `manage.py shell` against the disposable load database.
+
+The teams come from ``initialize_game`` rather than extending a four-team
+fixture with bare rows.  Phase 1 needs each firm to have the same platform,
+product, market-presence and round-zero state a real game has; a team-only
+row can exercise a budget endpoint but cannot validly resolve a round.
 """
 TEAMS = 24
 MEMBERS_PER_TEAM = 12
@@ -29,8 +34,7 @@ def run(teams=TEAMS, members_per_team=MEMBERS_PER_TEAM):
     from django.utils import timezone
 
     from core.models import Enrollment, Game, Round, Scenario, Team, User
-    from core.models.course import Section
-    from core.models.scenario import FirmStarterProfile
+    from core.models.course import Course, Section, SimulationInstance
     from core.utils.passwords import hash_password
 
     if not DjangoUser.objects.filter(is_superuser=True).exists():
@@ -42,30 +46,38 @@ def run(teams=TEAMS, members_per_team=MEMBERS_PER_TEAM):
         ('sourcing', 'trade_finance', 'compliance', 'logistics'))
     if chosen is None:
         chosen = Scenario.objects.order_by('id').first()
-    call_command('setup_test_game', '--scenario', str(chosen.id), verbosity=0)
+    # Four is sufficient for the recovery walkthrough.  Field/margin calls
+    # pass 24 explicitly.  Both paths create real firms, not placeholder rows.
+    target = 4 if teams is None else teams
+    game_name = f'CRV2 load fixture ({target} firms)'
+    call_command('initialize_game', scenario=chosen.id, teams=target,
+                 name=game_name, verbosity=0)
+    game = Game.objects.get(name=game_name)
+    roster = list(Team.objects.filter(game=game).order_by('id'))
 
-    game = Game.objects.order_by('-id').first()
-    # Enrollment carries a non-null section: a student is enrolled in a
-    # section, not directly in a game. setup_test_game already created one for
-    # this game, so the seeded identities join that rather than inventing a
-    # second one.
-    section = Section.objects.order_by('section_id').first()
-    if section is None:
-        raise RuntimeError('setup_test_game left no section to enrol into')
-    profile = FirmStarterProfile.objects.filter(
-        scenario=game.scenario).order_by('id').first()
-
-    # setup_test_game seeds a handful of teams; extend to the field size using
-    # the same starter profile so every team begins from identical state.
-    existing = list(Team.objects.filter(game=game).order_by('id'))
-    target = len(existing) if teams is None else teams
-    for n in range(len(existing), target):
-        Team.objects.create(
-            game=game, name=f'Load Team {n + 1:02d}',
-            firm_starter_profile=profile, performance_index=100,
-            cash_on_hand=60_000_000, total_equity=60_000_000,
-            participation_status='active')
-    roster = list(Team.objects.filter(game=game).order_by('id')[:target])
+    # A lifecycle action is scoped through Game.section_id -> Course.  The
+    # load instructor must own this disposable course so process/ exercises
+    # the actual authorization boundary instead of an unowned-fixture bypass.
+    instructor, _ = User.objects.get_or_create(
+        username='load_instructor',
+        defaults={'role': 'instructor', 'password_hash': hash_password(PASSWORD),
+                  'email': 'inst@example.invalid'})
+    User.objects.filter(pk=instructor.pk).update(
+        password_hash=hash_password(PASSWORD), role='instructor')
+    course = Course.objects.create(
+        course_code=f'LOAD-{game.id}', course_name='CRV2 disposable load',
+        instructor_id=instructor.user_id, academic_year='2026',
+        semester='Load', is_active=True, created_at=timezone.now())
+    section = Section.objects.create(
+        course=course, section_code='LOAD', section_name='Load fixture',
+        max_teams=target, team_size_min=1, team_size_max=MEMBERS_PER_TEAM,
+        is_active=True, created_at=timezone.now())
+    game.section_id = section.section_id
+    game.save(update_fields=['section_id'])
+    SimulationInstance.objects.create(
+        section=section, game_id=game.id, current_round=game.current_round,
+        total_rounds=game.scenario.num_rounds, status='active',
+        started_at=timezone.now(), created_at=timezone.now())
 
     hashed = hash_password(PASSWORD)
     identities = []
@@ -86,13 +98,6 @@ def run(teams=TEAMS, members_per_team=MEMBERS_PER_TEAM):
             identities.append({'username': username, 'password': PASSWORD,
                                'team_id': team.id, 'user_id': user.user_id,
                                'member_index': member})
-
-    instructor, _ = User.objects.get_or_create(
-        username='load_instructor',
-        defaults={'role': 'instructor', 'password_hash': hashed,
-                  'email': 'inst@example.invalid'})
-    User.objects.filter(pk=instructor.pk).update(
-        password_hash=hashed, role='instructor')
 
     rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
     return {

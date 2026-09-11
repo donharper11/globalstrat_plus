@@ -18,6 +18,7 @@ separately from transport failures and 5xx.
 """
 import json
 import multiprocessing
+import os
 import random
 import statistics
 import threading
@@ -208,10 +209,7 @@ def sample_activity(database, stop, samples, interval=2.0):
         "AND state <> 'idle' ORDER BY query_start")
     while not stop.is_set():
         try:
-            out = subprocess.run(
-                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
-             f"@192.168.50.38/postgres",
-                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            out = _psql(query)
             rows = [r for r in out.stdout.strip().splitlines() if r.strip()]
             parsed = []
             for row in rows:
@@ -244,10 +242,7 @@ def sample_checkpoints(stop, samples, interval=2.0):
              "FROM pg_stat_bgwriter")
     while not stop.is_set():
         try:
-            out = subprocess.run(
-                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
-             f"@192.168.50.38/postgres",
-                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            out = _psql(query)
             parts = out.stdout.strip().split('|')
             if len(parts) == 4:
                 samples.append({'at': time.time(),
@@ -271,16 +266,30 @@ def sample_database(database, stop, samples, interval=2.0):
              f"'{database}'")
     while not stop.is_set():
         try:
-            out = subprocess.run(
-                ['psql', f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
-             f"@192.168.50.38/postgres",
-                 '-tAc', query], capture_output=True, text=True, timeout=10)
+            out = _psql(query)
             value = out.stdout.strip()
             if value.isdigit():
                 samples.append(int(value))
         except Exception:
             pass
         stop.wait(interval)
+
+
+def _psql(query):
+    """Query the *current disposable stack* without embedding credentials.
+
+    The old sampler named a particular remote host and account.  Apart from
+    being unsafe for a development harness, that sampled a different database
+    than the stack under test.  The runner now injects a generated credential
+    only into this process and the disposable PostgreSQL container.
+    """
+    import subprocess
+    env = dict(os.environ, PGPASSWORD=os.environ['DB_PASSWORD'])
+    return subprocess.run(
+        ['psql', '-h', os.environ.get('DB_HOST', '127.0.0.1'),
+         '-p', os.environ.get('DB_PORT', '5432'),
+         '-U', os.environ.get('DB_USER', 'globalstrat_test'), '-d', 'postgres',
+         '-tAc', query], capture_output=True, text=True, env=env, timeout=10)
 
 
 def _run_shard(args):

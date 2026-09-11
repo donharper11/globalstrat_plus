@@ -48,7 +48,7 @@ def calculate_fit_scores(context):
             team=team, round__round_number=current_round, round__game=game,
         ).first()
 
-        for market_id, seg_state in context.segments.items():
+        for segment_id, seg_state in context.segments.items():
             segment = seg_state.segment_def
             market = segment.market
 

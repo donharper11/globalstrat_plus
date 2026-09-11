@@ -60,8 +60,8 @@ from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
 
 scenario = Scenario.objects.get(name='Consumer Electronics 2026')
-if {home_markets!r}:
-    call_command('initialize_game', scenario=scenario.id, teams=4,
+if {home_markets!r} or {teams} != 4:
+    call_command('initialize_game', scenario=scenario.id, teams={teams},
                  name='CRV2-11 parity replay', home_markets={home_markets!r})
 else:
     call_command('setup_test_game', scenario=scenario.id, verbosity=0)
@@ -93,6 +93,25 @@ for expected_round in range(1, {rounds} + 1):
                         1, math.ceil(float(prior.units_sold) * 1.10))
                     marketing.demand_estimate = int(marketing.production_volume * 1.20)
                     marketing.save(update_fields=['production_volume', 'demand_estimate'])
+        if team.id == teams[{subject_team_index}].id and {policy!r} != 'baseline':
+            from core.models.decisions import DecisionMarketing
+            from decimal import Decimal
+            for marketing in (DecisionMarketing.objects.filter(submission=sub)
+                              .order_by('team_product_id', 'market_id')):
+                if {policy!r} == 'price_plus_10':
+                    marketing.retail_price *= Decimal('1.10')
+                elif {policy!r} == 'promotion_plus_50':
+                    marketing.promotion_budget *= Decimal('1.50')
+                elif {policy!r} == 'production_plus_25':
+                    marketing.production_volume = math.ceil(
+                        float(marketing.production_volume) * 1.25)
+                    marketing.demand_estimate = int(marketing.production_volume * 1.20)
+                elif {policy!r} == 'sales_team_plus_50':
+                    marketing.sales_team_count = math.ceil(
+                        marketing.sales_team_count * 1.50)
+                else:
+                    raise AssertionError('unknown fixed-policy variant: ' + {policy!r})
+                marketing.save()
         sub.status = 'locked'
         sub.locked_at = timezone.now()
         sub.save(update_fields=['status', 'locked_at'])
@@ -189,6 +208,9 @@ print({marker!r})
 print(json.dumps({{
     'scenario': scenario.name,
     'home_markets': {home_markets!r},
+    'teams_requested': {teams},
+    'policy': {policy!r},
+    'subject_team_index': {subject_team_index},
     'adaptive_production': {adaptive_production!r},
     'teams': [{{'name': team.name, 'starter_profile': team.firm_starter_profile.profile_name}}
               for team in teams],
@@ -231,11 +253,23 @@ def main():
                         help='number of sequential rounds to resolve (1-10)')
     parser.add_argument('--home-markets', default='',
                         help='optional comma-separated home-market assignment')
+    parser.add_argument('--teams', type=int, default=4,
+                        help='number of teams in the replay (minimum 1)')
+    parser.add_argument('--policy', default='baseline', choices=(
+        'baseline', 'price_plus_10', 'promotion_plus_50',
+        'production_plus_25', 'sales_team_plus_50'),
+                        help='apply one measurement-only change to team 0')
+    parser.add_argument('--subject-team-index', type=int, default=0,
+                        help='zero-based team index for a policy variation')
     parser.add_argument('--adaptive-production', action='store_true',
                         help='use a uniform 10%% buffer over prior sales after round 1')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
+    if options.teams < 1:
+        raise SystemExit('--teams must be at least 1')
+    if not 0 <= options.subject_team_index < options.teams:
+        raise SystemExit('--subject-team-index must identify a requested team')
     stamp = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d%H%M%S')
     database = f'gsp_crv211_stage1_{stamp}'
     if psql('postgres', f'CREATE DATABASE {database}').returncode:
@@ -248,7 +282,9 @@ def main():
         result = run(database, 'shell', '-c', BODY.format(
             harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
             home_markets=options.home_markets,
-            adaptive_production=options.adaptive_production), timeout=3600)
+            adaptive_production=options.adaptive_production, teams=options.teams,
+            policy=options.policy,
+            subject_team_index=options.subject_team_index), timeout=3600)
         if result.returncode or MARKER not in result.stdout:
             raise RuntimeError(result.stderr[-5000:] + result.stdout[-5000:])
         payload = json.loads(result.stdout.split(MARKER, 1)[1].strip())
