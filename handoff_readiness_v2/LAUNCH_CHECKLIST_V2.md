@@ -49,6 +49,13 @@
 - [x] Frontend production build PASS (warnings), 2026-08-28.
 - [x] Frontend clean install, Jest and production build pass on the supported
       toolchain; V2-009 closed by GSP-CRV2-05.
+- [ ] For every competition heat, set `SimulationInstance.settings['is_competition'] = True`
+      and confirm its course has a non-null `instructor_id`; verify all heats with
+      the audit snippet in `completion/GSP-CRV2-10-stage6-completion.md`. An
+      unflagged heat silently loses the V2-033 cross-cohort protection.
+- [ ] Application runs as a non-owner database role that cannot `SET ROLE
+      postgres` (V2-072, open P0 — the 2026-09-05 owner acceptance was
+      withdrawn as never given; see R19).
 - [ ] Decision rules and economic legal space certified (GSP-CRV2-10).
 - [ ] Economy, starting-field and stakeholder calibration certified
       (GSP-CRV2-11).
