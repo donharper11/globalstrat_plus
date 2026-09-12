@@ -54,13 +54,23 @@ def run_bass_adoption(context):
     competition_sharpness = get_config(scenario, 'competition_sharpness', default=1.5)
     reference_prices = scenario_reference_prices(scenario)
     high_price_elasticity = scenario_high_price_elasticity(scenario)
+    # A null price is not an offer. Stage 5 makes "submitted without a price"
+    # a representable state, and a product whose price the deadline could not
+    # resolve (nothing sold here last round, so no floor to fall back on) is
+    # NOT FOR SALE this round by the owner's ruling of 2026-09-12. Excluding
+    # those rows here is what makes that true: `entry is None` below already
+    # scores such a product at 0.0 attractiveness, so it takes no demand and
+    # displaces no rival, exactly as a product with no decision at all does.
+    # Filtered at the source rather than guarded downstream, because a price
+    # that does not exist cannot be a valid offer under any later branch.
     retail_prices = {
         (team_id, product_id, market_id): (float(price), positioning)
         for team_id, product_id, market_id, price, positioning
         in DecisionMarketing.objects.filter(
             submission__round__game=game,
             submission__round__round_number=current_round,
-        ).order_by('submission__team_id', 'team_product_id', 'market_id', 'pk')
+        ).exclude(retail_price__isnull=True)
+        .order_by('submission__team_id', 'team_product_id', 'market_id', 'pk')
         .values_list('submission__team_id', 'team_product_id', 'market_id',
                      'retail_price', 'team_product__positioning')
     }

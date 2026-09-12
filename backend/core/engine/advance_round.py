@@ -212,6 +212,27 @@ def _apply_price_band(game, round_obj, *, scenario=None):
                 # `_full_validate` and again by the engine precondition.
                 floor = band_rules.blank_price(band)
                 if floor is None:
+                    # NOT FOR SALE this round (owner's ruling, 2026-09-12).
+                    # Nothing sold here last round, so there is no floor to
+                    # fall back on and no price the system may invent. The
+                    # round must still resolve -- there is no supported
+                    # operator surface that could supply the missing price, so
+                    # refusing would stall a whole heat over one team's
+                    # oversight. The row is left unpriced and is excluded from
+                    # the offer map at source in `bass_engine`, so the product
+                    # takes no demand and displaces no rival. The team's row is
+                    # NOT deleted: it is their decision record, and this
+                    # receipt is what tells them on their results screen why
+                    # the product did not sell.
+                    DecisionAuditEvent.objects.create(
+                        game=game, team=team, round=round_obj, user=None,
+                        action=band_rules.ACTION_NOT_OFFERED,
+                        endpoint='engine:close_round',
+                        payload=band_rules.audit_payload(
+                            team_product=md.team_product, market=md.market,
+                            band=band, submitted=None, applied=None,
+                            rule=band_rules.RULE_NOT_OFFERED))
+                    changed += 1
                     continue
                 applied, rule, action = (floor, band_rules.RULE_BLANK,
                                          band_rules.ACTION_BLANK_DEFAULTED)
@@ -677,20 +698,35 @@ def _run_phase_1(game_id):
     # price out on a product that has never sold in that market (no prior-round
     # price, so the blank floor deliberately does not apply).
     from core.models.decisions import DecisionMarketing as _UnpricedCheck
-    unpriced = list(
-        _UnpricedCheck.objects
-        .filter(submission__round=current_round_obj, retail_price__isnull=True)
-        .select_related('team_product', 'market', 'submission__team')
-        .order_by('submission__team_id', 'team_product_id', 'market_id'))
-    if unpriced:
+    from core.services import price_band as _band_rules
+    unresolved = []
+    for row in (_UnpricedCheck.objects
+                .filter(submission__round=current_round_obj,
+                        retail_price__isnull=True)
+                .select_related('team_product', 'market', 'submission__team')
+                .order_by('submission__team_id', 'team_product_id',
+                          'market_id')):
+        band = _band_rules.price_band(
+            game.scenario, row.submission.team, row.team_product, row.market,
+            current_round)
+        # Only a row the DEADLINE SHOULD HAVE RESOLVED. A row with a
+        # prior-round price that is still null means `close_round` never ran
+        # over this round, which is the skipped-deadline case this guard
+        # exists for. A row with no prior-round price is legitimately unpriced
+        # and not for sale, and must NOT stop the round -- that was the defect
+        # in the first version of this precondition.
+        if _band_rules.blank_price(band) is not None:
+            unresolved.append(row)
+    if unresolved:
         detail = '; '.join(
             f'{row.submission.team.name}: {row.team_product.name} in '
-            f'{row.market.name}' for row in unpriced[:10])
+            f'{row.market.name}' for row in unresolved[:10])
         raise RoundNotReadyError(
-            f'Round {current_round} cannot be scored: {len(unpriced)} '
-            f'product-market decision(s) carry no unit price and have no '
-            f'previous price to fall back on. Set a price on each, or remove '
-            f'the decision, and retry. {detail}')
+            f'Round {current_round} cannot be scored: {len(unresolved)} '
+            f'product-market decision(s) carry no unit price although a '
+            f'previous price exists to resolve them from, which means the '
+            f'round was never closed. Close the round, or set a price on '
+            f'each, and retry. {detail}')
 
     # Scenario configuration is validated here, before the first competitive
     # write, so a missing or unusable value cannot be discovered halfway

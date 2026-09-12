@@ -298,6 +298,11 @@ def _score_positioning_price(team, submission):
     for md in (submission.marketing_decisions.all()
                .select_related('team_product', 'market')
                .order_by('team_product__name', 'market__code')):
+        # A product that was not offered for sale has no price to judge its
+        # positioning against, so it is not scored either way -- neither
+        # credited nor penalised, and it does not enter `max_possible`.
+        if md.retail_price is None:
+            continue
         positioning = md.team_product.positioning
         price = float(md.retail_price)
         price_range = PRICE_RANGES.get(positioning, (0, 9999))
@@ -697,7 +702,7 @@ def _compile_decision_summary(team, context):
     if marketing.exists():
         mktg_lines = [
             f"  - {d.team_product.name} in {d.market.name}: "
-            f"${float(d.retail_price):,.0f}, "
+            f"{('$%s' % format(float(d.retail_price), ',.0f')) if d.retail_price is not None else 'not offered'}, "
             f"promo ${float(d.promotion_budget):,.0f}, "
             f"{d.distribution_strategy}, {d.production_volume} units"
             for d in marketing

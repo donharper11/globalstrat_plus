@@ -108,10 +108,18 @@ class PriceBandFixture(TestCase):
             self.market, round_number)
 
     def adjustments(self, team=None):
+        """Events where a price was CHANGED. Deliberately excludes
+        `not_offered`, which records that no price was applied at all."""
         return list(DecisionAuditEvent.objects.filter(
             game=self.game, team=team or self.team,
             action__in=(band_rules.ACTION_ADJUSTED,
                         band_rules.ACTION_BLANK_DEFAULTED),
+        ).order_by('id'))
+
+    def not_offered(self, team=None):
+        return list(DecisionAuditEvent.objects.filter(
+            game=self.game, team=team or self.team,
+            action=band_rules.ACTION_NOT_OFFERED,
         ).order_by('id'))
 
 
@@ -281,6 +289,20 @@ class BlankIsRepresentable(PriceBandFixture):
         self.assertFalse(serializer.is_valid())
         self.assertIn('retail_price', serializer.errors)
 
+    def test_locking_with_an_unpriceable_blank_is_still_refused(self):
+        """Kept deliberately. A team that locks on purpose is at a moment it
+        can act on, so telling it to price the product is helpful. It is only
+        the DEADLINE path that must never stall."""
+        from core.models.decisions import DecisionBudgetAllocation
+        from core.views.decisions import DecisionLockView
+        submission = self.submission()
+        DecisionBudgetAllocation.objects.create(
+            submission=submission, rd_budget=D('0'),
+            marketing_budget=D('0'), strategy_budget=D('0'))
+        self.priced(None)               # never sold here: no floor
+        errors = DecisionLockView()._full_validate(submission, 'en') or []
+        self.assertTrue(any('unit price' in str(e) for e in errors), errors)
+
     def test_a_negative_price_is_still_refused(self):
         from core.serializers.decisions import DecisionMarketingSerializer
         serializer = DecisionMarketingSerializer(data={
@@ -328,28 +350,64 @@ class NoRowIsInvented(PriceBandFixture):
         self.assertIsNotNone(band['min'])
         self.assertIsNone(band_rules.blank_price(band))
 
-    def test_a_blank_on_a_never_sold_product_survives_the_deadline_unpriced(self):
+    def test_a_blank_on_a_never_sold_product_is_recorded_as_not_offered(self):
         decision = self.priced(None)
         close_round(self.game.id, reason='deadline')
         decision.refresh_from_db()
+        # Left unpriced: no price was invented.
         self.assertIsNone(decision.retail_price)
         self.assertEqual(self.adjustments(), [])
+        # The team's decision record is NOT deleted.
+        self.assertTrue(
+            DecisionMarketing.objects.filter(pk=decision.pk).exists())
+        # And the receipt says so, under its own rule.
+        events = self.not_offered()
+        self.assertEqual(len(events), 1)
+        self.assertIsNone(events[0].user_id)
+        self.assertEqual(events[0].payload['rule'],
+                         band_rules.RULE_NOT_OFFERED)
+        self.assertIsNone(events[0].payload['applied_price'])
+        self.assertIsNone(events[0].payload['submitted_price'])
 
-    def test_an_unresolved_blank_is_refused_before_any_competitive_write(self):
-        """The engine precondition, in V2-018's fail-closed shape.
+    def test_a_round_with_an_unpriced_never_sold_product_still_resolves(self):
+        """The owner's ruling of 2026-09-12, and the reason it was given.
 
-        `bass_engine` calls float() on this value, so a surviving null must
-        stop the round rather than raise halfway through one that has already
-        mutated state.
+        There is no supported way for an instructor to set a missing price --
+        `InstructorTeamDecisionsView` is GET-only and R13 made the admin
+        read-only for every competition model -- so refusing here would stall
+        the entire heat over one team's oversight. The round must resolve.
         """
-        from core.engine.advance_round import RoundNotReadyError, _run_phase_1
-        # The realistic path: the product never sold here, so the deadline
-        # locks the submission but deliberately cannot resolve the blank.
+        from core.engine.advance_round import _run_phase_1
+        from core.models.results import RoundResultProductDemand
         self.priced(None)
         close_round(self.game.id, reason='deadline')
+
+        _run_phase_1(self.game.id)      # must not raise
+
+        # ... and the product sold nothing, because `bass_engine` never
+        # accepted it as an offer.
+        self.assertFalse(
+            RoundResultProductDemand.objects.filter(
+                game=self.game, team=self.team, team_product=self.product,
+                units_sold__gt=0).exists(),
+            'an unpriced product was allocated demand')
+
+    def test_a_skipped_deadline_is_still_refused_as_defence_in_depth(self):
+        """The precondition survives, but only for a row the deadline SHOULD
+        have resolved. A prior-round price exists, so a surviving null means
+        `close_round` never ran over this round."""
+        from core.engine.advance_round import RoundNotReadyError, _run_phase_1
+        self.sold_at(0, 400)            # resolvable: a floor exists
+        self.priced(None)
+        # Locked by hand, WITHOUT the deadline path that would have filled it.
+        for team in (self.team, self.rival):
+            submission = self.submission(team=team)
+            submission.status = 'locked'
+            submission.save(update_fields=['status'])
+
         with self.assertRaises(RoundNotReadyError) as caught:
             _run_phase_1(self.game.id)
-        self.assertIn('no unit price', str(caught.exception))
+        self.assertIn('never closed', str(caught.exception))
         self.assertIn('Aurora', str(caught.exception))
 
 
@@ -439,6 +497,55 @@ class TheAuditReceipt(PriceBandFixture):
         self.assertEqual(events[0].action, band_rules.ACTION_BLANK_DEFAULTED)
         self.assertIsNone(events[0].payload['submitted_price'])
         self.assertEqual(events[0].payload['rule'], band_rules.RULE_BLANK)
+
+    def test_the_not_offered_receipt_reads_back_in_both_languages(self):
+        self.priced(None)               # never sold here
+        close_round(self.game.id, reason='deadline')
+        payload = self.not_offered()[0].payload
+        english = band_rules.adjustment_notice(payload, 'en')
+        chinese = band_rules.adjustment_notice(payload, 'zh-CN')
+        for notice in (english, chinese):
+            self.assertIn('Aurora', notice)
+        self.assertIn('not offered for sale', english)
+        self.assertNotEqual(english, chinese)
+
+    def test_the_team_is_told_why_on_its_results_screen(self):
+        """The receipt half of the ruling: the team must be able to see, on
+        their own results screen, exactly why that product sold nothing."""
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+
+        self.priced(None)
+        close_round(self.game.id, reason='deadline')
+
+        course = Course.objects.create(
+            course_code=f'NO{id(self) % 100000}', course_name='NotOffered',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        student = User.objects.create(
+            username=f'notoffered-{id(self)}', role='student',
+            password_hash='x')
+        Enrollment.objects.create(
+            user_id=student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(student)}')
+        response = client.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/results/round/1/')
+
+        self.assertEqual(response.status_code, 200, response.data)
+        notices = response.data['price_adjustments']
+        self.assertEqual(len(notices), 1)
+        self.assertEqual(notices[0]['rule'], band_rules.RULE_NOT_OFFERED)
+        self.assertIsNone(notices[0]['applied_price'])
+        self.assertIn('not offered for sale', notices[0]['message'])
+        self.assertIn('Aurora', notices[0]['message'])
 
     def test_the_adjustment_reads_back_to_the_team_in_both_languages(self):
         self.sold_at(0, 400)

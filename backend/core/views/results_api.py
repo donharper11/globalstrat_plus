@@ -261,7 +261,8 @@ class RoundResultsView(APIView):
             for event in DecisionAuditEvent.objects.filter(
                 game=game, team=team, round=adjusted_round,
                 action__in=(band_rules.ACTION_ADJUSTED,
-                            band_rules.ACTION_BLANK_DEFAULTED),
+                            band_rules.ACTION_BLANK_DEFAULTED,
+                            band_rules.ACTION_NOT_OFFERED),
             ).order_by('id'):
                 price_adjustments.append({
                     'product_name': event.payload.get('product_name'),

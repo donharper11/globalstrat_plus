@@ -74,9 +74,16 @@ NO_ANCHOR = 'no_anchor'
 # they are part of the record's meaning and are not reworded casually.
 RULE_OUT_OF_BAND = 'price_band.out_of_band_adjusted_to_nearer_edge'
 RULE_BLANK = 'price_band.blank_priced_at_band_floor'
+# The owner's ruling of 2026-09-12: a blank price on a product with no
+# prior-round price means NOT FOR SALE that round. The round must always
+# resolve, so this is a recorded outcome rather than a refusal -- there is no
+# supported operator surface that could set the missing price, so refusing
+# would stall an entire heat over one team's oversight.
+RULE_NOT_OFFERED = 'price_band.unpriced_not_offered_for_sale'
 
 ACTION_ADJUSTED = 'price_band_adjusted'
 ACTION_BLANK_DEFAULTED = 'price_blank_defaulted'
+ACTION_NOT_OFFERED = 'price_not_offered'
 
 
 def money(value):
@@ -349,6 +356,10 @@ def adjustment_notice(event_payload, language='en'):
     minimum = event_payload.get('band_min')
     maximum = event_payload.get('band_max')
 
+    if event_payload.get('rule') == RULE_NOT_OFFERED:
+        return participant_message(
+            'price_not_offered', language=language,
+            product=product, market=market)
     if event_payload.get('rule') == RULE_BLANK:
         return participant_message(
             'price_blank_applied', language=language,
@@ -371,18 +382,23 @@ def audit_payload(*, team_product, market, band, submitted, applied, rule):
     from, so the answer can be checked rather than merely asserted. Names, not
     ids, because this payload is rendered to the team.
     """
+    def _s(value):
+        """Null stays null. `str(None)` would store the string 'None', which
+        reads as a value in a dispute rather than as the absence of one."""
+        return None if value is None else str(value)
+
     return {
         'rule': rule,
         'team_product_id': team_product.id,
         'product_name': team_product.name,
         'market_id': market.id,
         'market_name': market.name,
-        'submitted_price': None if submitted is None else str(money(submitted)),
-        'applied_price': str(money(applied)),
-        'band_min': str(band['min']),
-        'band_max': str(band['max']),
+        'submitted_price': _s(money(submitted)),
+        'applied_price': _s(money(applied)),
+        'band_min': _s(band['min']),
+        'band_max': _s(band['max']),
         'band_pct': band['band_pct'],
-        'anchor_price': str(band['anchor']),
+        'anchor_price': _s(band['anchor']),
         'anchor_source': band['anchor_source'],
         'anchor_round_number': band['anchor_round_number'],
     }

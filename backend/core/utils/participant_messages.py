@@ -70,6 +70,10 @@ MESSAGES = {
         'en': '{product} in {market}: you entered {submitted}, which was outside the allowed range of {minimum} to {maximum} for this round. It was adjusted to {applied} when the round closed.',
         'zh-CN': '{market} 中的 {product}：您输入的价格为 {submitted}，超出本回合允许的区间 {minimum} 至 {maximum}。回合截止时已调整为 {applied}。',
     },
+    'price_not_offered': {
+        'en': '{product} in {market}: no unit price was set and there was no previous price to fall back on, so it was not offered for sale this round and sold nothing. Set a unit price to put it back on the market.',
+        'zh-CN': '{market} 中的 {product}：未设置单价，且没有可参考的上期价格，因此本回合未上市销售，销量为零。请设置单价，使其重新上市。',
+    },
     'price_blank_applied': {
         'en': '{product} in {market}: no price was entered, so it was priced at {applied} when the round closed — the lowest price allowed this round, whose range was {minimum} to {maximum}.',
         'zh-CN': '{market} 中的 {product}：未输入价格，回合截止时已按本回合允许的最低价 {applied} 定价（本回合允许区间为 {minimum} 至 {maximum}）。',
