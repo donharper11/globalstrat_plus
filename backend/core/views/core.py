@@ -8,6 +8,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
+from core.services.cohort_caps import (
+    section_for_team, section_for_user, team_capacity_error)
+from core.utils.cohort_messages import language_for_request
 from core.views.mixins import InstanceScopedMixin
 from core.models import (
     Team, User, Round, SimulationState,
@@ -82,6 +85,13 @@ class UserViewSet(viewsets.ModelViewSet):
                 password_hash = hashlib.sha256(password.encode()).hexdigest()
 
             try:
+                if team_id:
+                    over = team_capacity_error(
+                        section_for_team(team_id), team_id,
+                        language=language_for_request(request))
+                    if over:
+                        errors.append({'row': row_num, 'error': over})
+                        continue
                 User.objects.create(
                     username=username,
                     role=role,
@@ -104,10 +114,21 @@ class UserViewSet(viewsets.ModelViewSet):
         if team_id is not None:
             try:
                 team = Team.objects.get(pk=int(team_id))
-                user.team_id = team.pk
             except (Team.DoesNotExist, ValueError, TypeError):
                 return Response({'error': 'Team not found.'},
                                 status=status.HTTP_404_NOT_FOUND)
+            # This route writes User.team_id, a second membership record the
+            # roster surface does not write. Capping only the other one would
+            # leave the cap trivially reachable from here (see cohort_caps).
+            section = (section_for_user(user.user_id)
+                       or section_for_team(team.pk))
+            over = team_capacity_error(
+                section, team.pk, joining_user_id=user.user_id,
+                language=language_for_request(request), team_name=team.name)
+            if over:
+                return Response({'error': over, 'code': 'team_full'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            user.team_id = team.pk
         else:
             user.team_id = None
 

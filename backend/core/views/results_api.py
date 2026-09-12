@@ -755,8 +755,12 @@ class InstructorAdvanceRoundView(APIView):
             after = {'current_round': game.current_round}
             action.commit(before, after, reason=reason)
             return Response({
-                'message': f'Round advanced to {game.current_round}.',
+                # The game is named because several heats run at once and a
+                # judge who advanced the wrong one cannot undo it.
+                'message': f'{game.name}: round advanced to '
+                           f'{game.current_round}.',
                 'current_round': game.current_round,
+                'game_name': game.name,
                 'request_id': action.request_id,
             })
 
@@ -889,13 +893,14 @@ class InstructorExtendDeadlineView(APIView):
                 'reopened': reopened, 'submissions_unlocked': unlocked,
             }, reason=reason)
 
-            msg = f'Deadline extended by {hours} hour(s).'
+            msg = f'{game.name}: deadline extended by {hours} hour(s).'
             if reopened:
                 msg += (' The round was closed, so it has been reopened and '
                         f'{unlocked} submission(s) unlocked.')
 
             return Response({
                 'message': msg,
+                'game_name': game.name,
                 'reopened': reopened,
                 'new_deadline': round_obj.deadline.isoformat(),
                 'request_id': action.request_id,

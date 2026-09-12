@@ -262,6 +262,26 @@ def operator_action(request, game_id, action):
             if game is None:
                 raise LifecyclePrecondition(f'No game {game_id}.')
             holder.game = game
+            # A competition heat whose course has no instructor of record is
+            # refused before any lifecycle action runs. Every operator action
+            # passes through here, so this is a precondition on the game rather
+            # than a runbook step someone has to remember (V2-033).
+            #
+            # Non-competition games are untouched: `instructor_can_access_game`
+            # still treats an unowned course as the shared pilot cohort, which
+            # is the adopted rule and is what the live pilot relies on. What is
+            # refused is that rule's reach into a competition, where several
+            # institutions share one deployment.
+            from core.services.cohort_caps import competition_ownership_error
+            from core.utils.cohort_messages import language_for_request
+            unowned = competition_ownership_error(
+                game, language=language_for_request(request))
+            if unowned:
+                raise LifecyclePrecondition(
+                    unowned,
+                    guidance='Assign an instructor to the course behind this '
+                             'game, then repeat the action.',
+                    code='competition_course_unowned')
             yield holder
     except LifecycleError as error:
         if holder.game is not None:
