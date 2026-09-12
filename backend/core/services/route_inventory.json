@@ -2286,6 +2286,16 @@
       "uses_boundary": false,
       "view": "core.views.cc15_views.ForecastScenarioView"
     },
+    "api/games/<int:game_id>/teams/<int:team_id>/products/<int:product_id>/rebase/|post": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/products/<int:product_id>/rebase/",
+      "uses_boundary": true,
+      "view": "core.views.decisions.ProductRebaseView"
+    },
     "api/games/<int:game_id>/teams/<int:team_id>/research/query/|post": {
       "exempt": false,
       "lifecycle_mutating": false,
@@ -2500,6 +2510,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 219,
+  "total_mutating_routes": 220,
   "unguarded": 0
 }
