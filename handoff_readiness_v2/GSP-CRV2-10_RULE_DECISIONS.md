@@ -195,6 +195,39 @@ competitive effects through the existing capability/market/financial paths.
 
 ---
 
+---
+
+## R11–R14 — competition owner rulings, 2026-09-11
+
+Four rulings issued by the competition owner on 2026-09-11. They are recorded
+in full — question, ruling, consequence and disposition — in
+`OWNER_RULINGS_2026-09-11.md`. Indexed here because this file is where the
+rules in force are looked up.
+
+- **R11 — round-0 adoption is derived from the authored starter sales.** The
+  unauthored `* 10` at `bootstrap.py:175` is retired; round-0 adopters are each
+  team's authored starting unit sales apportioned across its home-market
+  segments, so the round-0 adoption table reconciles with the round-0 product
+  sales rows on the same screens. No unauthored constant replaces it.
+  Measurement proved the factor **display-only** — zero differences in every
+  competitive row in rounds 1–10. Implementation belongs to GSP-CRV2-11.
+  Dispositions **V2-060** (D6).
+- **R12 — cohort caps.** 8 firms per game maximum; team size 3–5 members. The
+  authored `CourseSection` defaults are correct; enforcement on the enrolment
+  and team-assignment write surfaces is what is missing. Dispositions the rule
+  behind **V2-042**, which stays open against its enforcement owner.
+- **R13 — the Django admin is a read-only evidence surface** for every
+  competition-domain model. Lifecycle services and the instructor UI are the
+  only supported write paths. Losing admin editing of scenarios and team
+  membership is accepted. `auth.User`/`auth.Group` stay writable. Dispositions
+  **V2-017**; the route-inventory blind spot remains open separately.
+- **R14 — A5 operating budget and overspend financing: deferred.** The current
+  rule stands — spend is refused beyond cash, and a voluntary debt raise is
+  available. No loan mechanic is built. **A5 closes as "deliberately not
+  built", not as an open gap.**
+
+---
+
 ## Consequence for GSP-CRV2-06
 
 R9 **invalidates the strategy space GSP-CRV2-06's tournament searched.** That
@@ -206,5 +239,7 @@ evidence for the game as it now is. CRV2-09 must not accept it as current.
 
 ## Still open — not decided here
 
-- **A5, no operating budget and no overspend financing**, is untouched by
-  Stages 3 and 4.
+- **A5, no operating budget and no overspend financing**, was untouched by
+  Stages 3 and 4. **Superseded by R14 (2026-09-11):** deferred for this
+  competition, the current refuse-beyond-cash rule stands, and A5 is closed as
+  deliberately not built rather than carried as an open gap.
