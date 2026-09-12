@@ -43,10 +43,12 @@ def _sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None):
+def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None,
+                home_markets='NA'):
     command = [
         sys.executable, str(RUNTIME_REPLAY), '--output', str(output),
-        '--teams', str(teams), '--rounds', str(rounds), '--home-markets', 'NA',
+        '--teams', str(teams), '--rounds', str(rounds),
+        '--home-markets', home_markets,
         '--adaptive-production', '--policy', policy,
     ]
     if name_seed is not None:
@@ -178,6 +180,11 @@ def main():
     parser.add_argument('--baseline-only', action='store_true',
                         help='run only the field-size baselines, no policy '
                              'variations (used for the R28 per-profile table)')
+    parser.add_argument('--home-markets', default='NA',
+                        help='comma-separated home-market assignment for the '
+                             'teams, in order (default: NA for every team, '
+                             'which is the measured baseline). Use it to '
+                             'measure what spreading home markets does.')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
@@ -209,7 +216,8 @@ def main():
             print(f'running {size}-team baseline ({options.rounds} rounds)', flush=True)
             payload, command = _run_replay(tempdir / f'field-{size}.json', teams=size,
                                            rounds=options.rounds,
-                                           name_seed=options.name_seed)
+                                           name_seed=options.name_seed,
+                                           home_markets=options.home_markets)
             _assert_integrity(payload, teams=size, rounds=options.rounds)
             field_runs[size] = payload
             commands.append(command)
@@ -226,7 +234,8 @@ def main():
                   flush=True)
             payload, command = _run_replay(tempdir / f'{policy}.json', teams=baseline_size,
                                            rounds=options.rounds, policy=policy,
-                                           name_seed=options.name_seed)
+                                           name_seed=options.name_seed,
+                                           home_markets=options.home_markets)
             _assert_integrity(payload, teams=baseline_size, rounds=options.rounds)
             observed = _team_final(payload, 0, options.rounds)
             sensitivity_runs[policy] = {
@@ -251,7 +260,7 @@ def main():
         'method': {
             'scenario': 'Consumer Electronics 2026',
             'rounds': options.rounds,
-            'home_market_assignment': 'NA for every team',
+            'home_market_assignment': options.home_markets,
             'baseline_policy': 'documented competent baseline with 10% adaptive production',
             'ai_diffusion_rule': 'Fix A only: AI take is recorded but is excluded from Bass N',
             'measurement_rule': 'No scenario, profile, market, AI, price, production, or scoring dial is retuned.',
