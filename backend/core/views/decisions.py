@@ -206,6 +206,34 @@ class IsInstructor(permissions.BasePermission):
 class CompetitionDecisionWriteMixin:
     """Coordinate student writes with deadline close and same-team writes."""
 
+    def _lifecycle_busy_response(self, request, *args, **kwargs):
+        """Run DRF's read-only dispatch setup, then return the fast refusal.
+
+        The mixin sits *outside* ``APIView.dispatch`` in the MRO.  Returning a
+        bare DRF ``Response`` there skips both permission checks and renderer
+        negotiation; a bare Django response would preserve rendering but leak
+        a 409 to a caller who should receive 401/403.  This is the relevant
+        non-mutating portion of APIView.dispatch, followed by its normal
+        finalizer.  It deliberately never selects or invokes the handler.
+        """
+        request = self.initialize_request(request, *args, **kwargs)
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.headers = self.default_response_headers
+        try:
+            self.initial(request, *args, **kwargs)
+            response = Response(
+                {'detail': participant_message(
+                    'lifecycle_in_progress', language=get_user_language(request)),
+                 'code': 'lifecycle_in_progress'},
+                status=status.HTTP_409_CONFLICT,
+            )
+        except Exception as exc:
+            response = self.handle_exception(exc)
+        self.response = self.finalize_response(request, response, *args, **kwargs)
+        return self.response
+
     def dispatch(self, request, *args, **kwargs):
         if request.method in permissions.SAFE_METHODS:
             return super().dispatch(request, *args, **kwargs)
@@ -213,9 +241,16 @@ class CompetitionDecisionWriteMixin:
         if not game_id:
             return super().dispatch(request, *args, **kwargs)
         from core.services.competition_locks import (
-            lock_game_for_decision_write, lock_team_for_decision_write)
+            lock_team_for_decision_write, try_lock_game_for_decision_write)
         with transaction.atomic():
-            lock_game_for_decision_write(game_id)
+            # Do not let a synchronous Phase-1 resolution turn a burst of
+            # late submissions into blocked sync workers.  The exclusive
+            # lifecycle holder has already made this mutation unsafe, so an
+            # immediate, explained 409 is more truthful than waiting until
+            # after results are computed.  A successful acquisition retains
+            # the existing shared-lock -> team-lock -> handler order.
+            if not try_lock_game_for_decision_write(game_id):
+                return self._lifecycle_busy_response(request, *args, **kwargs)
             team_id = kwargs.get('team_id')
             if team_id:
                 lock_team_for_decision_write(team_id)
