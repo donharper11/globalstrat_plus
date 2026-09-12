@@ -11,6 +11,8 @@ from core.models.results import EventInstance
 from core.models.scenario import EventResponseDefinition
 from core.engine.utils import get_config
 from core.models import User
+from core.utils.localization import get_user_language
+from core.views.decisions import CompetitionDecisionWriteMixin
 
 
 class IsTeamMember(permissions.BasePermission):
@@ -211,10 +213,15 @@ def enhance_query(raw_query, team_context=None):
     return ' '.join(parts)
 
 
-class ResearchQueryView(APIView):
+class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
     """
     POST /api/games/{game_id}/teams/{team_id}/research/query/
     Query the RAG article collection for market intelligence.
+
+    Asking the analyst now costs money, so it writes a purchase row and may
+    create the round's `DecisionSubmission`. That makes it a student decision
+    write like any other, and it takes the same shared lock so a query cannot
+    race a deadline close.
     """
 
     def post(self, request, game_id, team_id):
@@ -250,6 +257,61 @@ class ResearchQueryView(APIView):
                 {'error': f'Query limit reached ({max_queries} per round).'},
                 status=429,
             )
+
+        # An analyst query costs money every time it is asked: unlike a report,
+        # it is not bought once for the round, because each question does real
+        # marginal work. The charge is written before the answer is produced,
+        # and undone below if the research system cannot answer -- a team is
+        # never charged for an answer it did not get.
+        from decimal import Decimal
+        from django.db import transaction
+        from core.models.core import Round
+        from core.models.decisions import DecisionSubmission
+        from core.models.research import DecisionResearchPurchase
+        from core.services import research_catalogue
+        from core.services.competition_audit import record_decision_event
+        from core.services.rd_costs import budget_assessment
+        from core.utils.participant_messages import (
+            field_label, participant_message)
+
+        language_for_refusal = get_user_language(request)
+        rnd = Round.objects.filter(
+            game=game, round_number=game.current_round).first()
+        if rnd is None or rnd.status != 'open':
+            return Response({'error': participant_message(
+                'round_not_open', language=language_for_refusal)}, status=403)
+
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=team, round=rnd, defaults={'status': 'draft'})
+        price = research_catalogue.price_for(
+            game.scenario, research_catalogue.ANALYST_QUERY)
+
+        class _Unaffordable(Exception):
+            pass
+
+        try:
+            with transaction.atomic():
+                purchase = DecisionResearchPurchase.objects.create(
+                    submission=submission,
+                    report_type=research_catalogue.ANALYST_QUERY,
+                    market=None, scope_key=str(existing_queries), price=price)
+                assessment = budget_assessment(submission, team)
+                if not assessment['within_cash']:
+                    raise _Unaffordable()
+                record_decision_event(
+                    request, game, team, rnd, 'purchase_research_report',
+                    {'report_type': research_catalogue.ANALYST_QUERY,
+                     'market': '', 'price': str(price)})
+        except _Unaffordable:
+            return Response({'error': participant_message(
+                'research_purchase_exceeds_cash',
+                language=language_for_refusal,
+                report=field_label(research_catalogue.ANALYST_QUERY,
+                                   language_for_refusal),
+                price=f'${price:,.2f}',
+                committed=f'${Decimal(assessment["committed_total"]):,.2f}',
+                cash=f'${Decimal(assessment["cash_on_hand"]):,.2f}',
+            )}, status=400)
 
         try:
             # Build team context for query enhancement
@@ -309,6 +371,8 @@ class ResearchQueryView(APIView):
             })
 
         except Exception as e:
+            # No answer was delivered, so nothing is owed for it.
+            DecisionResearchPurchase.objects.filter(pk=purchase.pk).delete()
             return Response(
                 {'error': f'Research system unavailable: {str(e)}'},
                 status=503,

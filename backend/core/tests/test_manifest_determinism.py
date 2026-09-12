@@ -123,7 +123,8 @@ EXPECTED_OUTPUT_SECTIONS = {
     'decision_product_create', 'decision_product_retire', 'decision_marketing',
     'decision_market_entry', 'decision_financing', 'decision_plant',
     'decision_partnership', 'decision_acquisition', 'decision_esg',
-    'decision_event_response', 'decision_research', 'decision_talent',
+    'decision_event_response', 'decision_research',
+    'decision_research_purchase', 'decision_talent',
     'talent_allocation', 'compliance_investment', 'sc_sourcing',
     'sc_sourcing_allocation', 'sc_logistics', 'sc_inventory', 'sc_incoterms',
     'sc_customs', 'sc_trade_finance', 'sc_sinosure', 'sc_fx_hedge',
@@ -256,7 +257,7 @@ SERVICES_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'services'
 RESOLUTION_SERVICES = {
     'competition_backup.py', 'competition_locks.py', 'funding_need.py',
     'product_platform.py', 'product_rebase.py', 'rd_costs.py',
-    'resolution_manifest.py',
+    'research_catalogue.py', 'resolution_manifest.py',
 }
 
 QUERYSET_MARKERS = ('.objects.', '.filter(', '.all()', '.exclude(')

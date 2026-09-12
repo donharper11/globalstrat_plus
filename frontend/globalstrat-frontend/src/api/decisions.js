@@ -86,6 +86,11 @@ export const getResearchReport = (gameId, teamId, reportType, params = {}) => {
   return client.get(`/games/${gameId}/teams/${teamId}/research/reports/${reportType}/${qs ? '?' + qs : ''}`);
 };
 
+// Buying is an explicit POST. Reading a report never charges, so the market
+// list other pages pull from this endpoint stays free.
+export const purchaseResearchReport = (gameId, teamId, reportType, data = {}) =>
+  client.post(`/games/${gameId}/teams/${teamId}/research/reports/${reportType}/purchase/`, data);
+
 // CC-32B: Organizational structure
 export const getOrgStructureContext = (gameId, teamId) =>
   client.get(`/games/${gameId}/teams/${teamId}/context/org-structure/`);

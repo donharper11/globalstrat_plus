@@ -20,6 +20,7 @@ const BudgetBar = ({ budgets }) => {
     { key: 'rd', label: t('budget.rd'), color: '#1E40AF', allocated: budgets.rd_allocated, spent: budgets.rd_spent },
     { key: 'marketing', label: t('budget.marketing'), color: '#059669', allocated: budgets.marketing_allocated, spent: budgets.marketing_spent },
     { key: 'strategy', label: t('budget.strategy'), color: '#7C3AED', allocated: budgets.strategy_allocated, spent: budgets.strategy_spent },
+    { key: 'research', label: t('budget.research'), color: '#0891B2', allocated: budgets.research_allocated, spent: budgets.research_spent },
   ];
 
   return (

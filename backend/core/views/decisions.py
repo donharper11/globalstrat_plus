@@ -1320,6 +1320,9 @@ class DecisionSummaryView(APIView):
             budget_summary = {
                 'rd_allocated': float(budget.rd_budget),
                 'research_allocated': float(Decimal(lines['research_budget'])),
+                # Research actually bought this round. The bucket above is a
+                # declaration; this is the money committed by buying reports.
+                'research_spent': float(Decimal(lines['research_purchases'])),
                 'rd_spent': float(rd_spent),
                 'marketing_allocated': float(budget.marketing_budget),
                 'marketing_spent': float(mkt_spent),
@@ -2341,6 +2344,10 @@ class FinanceContextView(APIView):
                         'strategy_spent': float(strat_spent),
                         'research_allocated': float(
                             Decimal(lines['research_budget'])),
+                        # Research actually bought this round. The bucket above
+                        # is a declaration; this is money committed by buying.
+                        'research_spent': float(
+                            Decimal(lines['research_purchases'])),
                         'total_allocated': float(total_allocated),
                         'platform_development_committed': float(
                             Decimal(lines['platform_development'])),

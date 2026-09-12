@@ -6,8 +6,8 @@
     "core.views.programs.ProgramViewSet": "Writes Program rows. It reaches Round.objects only through DecisionLockedMixin, which reads Round.decisions_locked to gate student writes and never assigns to it.",
     "core.views.scenario_views.GameCreateView": "Creates a new Game and its Rounds. There is no existing lifecycle for the new game to race, and no other game is touched."
   },
-  "guarded": 19,
-  "lifecycle_mutating_routes": 35,
+  "guarded": 21,
+  "lifecycle_mutating_routes": 37,
   "routes": {
     "admin/auth/group/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
@@ -305,6 +305,19 @@
         "put"
       ],
       "route": "admin/core/decisionresearchallocation/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/decisionresearchpurchase/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/decisionresearchpurchase/<path:object_id>/",
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
@@ -2278,13 +2291,23 @@
     },
     "api/games/<int:game_id>/teams/<int:team_id>/research/query/|post": {
       "exempt": false,
-      "lifecycle_mutating": false,
+      "lifecycle_mutating": true,
       "methods": [
         "post"
       ],
       "route": "api/games/<int:game_id>/teams/<int:team_id>/research/query/",
-      "uses_boundary": false,
+      "uses_boundary": true,
       "view": "core.rag.views.ResearchQueryView"
+    },
+    "api/games/<int:game_id>/teams/<int:team_id>/research/reports/<str:report_type>/purchase/|post": {
+      "exempt": false,
+      "lifecycle_mutating": true,
+      "methods": [
+        "post"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/research/reports/<str:report_type>/purchase/",
+      "uses_boundary": true,
+      "view": "core.views.research_reports.ResearchReportPurchaseView"
     },
     "api/games/<int:game_id>/teams/<int:team_id>/sc/round/<int:round_number>/inventory/|post": {
       "exempt": false,
@@ -2480,6 +2503,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 217,
+  "total_mutating_routes": 219,
   "unguarded": 0
 }

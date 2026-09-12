@@ -5,7 +5,7 @@ import {
   Typography, Space, Empty, Alert, Input, Button, message,
 } from 'antd';
 import { useGame } from '../contexts/GameContext';
-import { getResearchReport } from '../api/decisions';
+import { getResearchReport, purchaseResearchReport } from '../api/decisions';
 import client from '../api/client';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -45,6 +45,57 @@ const money = (n) => {
 const pct = (n, decimals = 1) => {
   if (n == null) return '--';
   return `${(n * 100).toFixed(decimals)}%`;
+};
+
+// --------------- Purchase affordance ---------------
+
+// Shown in place of a report the team has not bought for this round. The price
+// is named before the team commits, and the button says what it will cost.
+const ReportPaywall = ({ reportType, price, market, onPurchased }) => {
+  const { t } = useTranslation();
+  const { gameId, teamId, refreshBudgets } = useGame();
+  const [buying, setBuying] = useState(false);
+
+  const buy = async () => {
+    setBuying(true);
+    try {
+      await purchaseResearchReport(
+        gameId, teamId, reportType, market ? { market } : {},
+      );
+      message.success(t('market_research.purchase_success'));
+      // The top bar and Finance read committed spend from the finance context;
+      // without this they would still show the pre-purchase figures.
+      if (refreshBudgets) refreshBudgets();
+      if (onPurchased) onPurchased();
+    } catch (err) {
+      message.error(
+        err.response?.data?.detail
+        || err.response?.data?.error
+        || t('market_research.purchase_failed'),
+      );
+    } finally {
+      setBuying(false);
+    }
+  };
+
+  return (
+    <PanelCard
+      headerColor="market"
+      title={t('market_research.report_locked').toUpperCase()}
+    >
+      <Paragraph type="secondary">
+        {t('market_research.report_locked_desc')}
+      </Paragraph>
+      <Space wrap>
+        <Button type="primary" loading={buying} onClick={buy}>
+          {`${t('market_research.buy_report')} — ${money(price)}`}
+        </Button>
+        <Text type="secondary" style={{ fontSize: 12 }}>
+          {t('market_research.charged_at_resolution')}
+        </Text>
+      </Space>
+    </PanelCard>
+  );
 };
 
 // --------------- Expandable Row Toggle ---------------
@@ -209,7 +260,16 @@ const SegmentsTab = ({ gameId, teamId, round }) => {
       {loading && <LoadingSpinner tip={t("market_research.loading_segments")} />}
       {error && <Alert type="error" message={error} style={{ marginBottom: 16 }} />}
 
-      {!loading && data && (
+      {!loading && data && data.purchased === false && (
+        <ReportPaywall
+          reportType="segments"
+          price={data.price}
+          market={market}
+          onPurchased={fetchData}
+        />
+      )}
+
+      {!loading && data && data.purchased !== false && (
         segments.length === 0 ? (
           <Empty description={t("market_research.no_segment_data")} />
         ) : (
@@ -360,18 +420,30 @@ const ProductsTab = ({ gameId, teamId, round }) => {
   const [error, setError] = useState(null);
   const [expanded, setExpanded] = useState({});
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (!gameId || !teamId) return;
     setLoading(true);
+    setError(null);
     const params = round != null ? { round } : {};
     getResearchReport(gameId, teamId, 'products', params)
       .then((res) => setData(res.data))
       .catch((err) => setError(err.response?.data?.detail || t('market_research.failed_load_products')))
       .finally(() => setLoading(false));
-  }, [gameId, teamId, round]);
+  }, [gameId, teamId, round]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   if (loading) return <LoadingSpinner tip={t("market_research.loading_products")} />;
   if (error) return <Alert type="error" message={error} />;
+  if (data && data.purchased === false) {
+    return (
+      <ReportPaywall
+        reportType="products"
+        price={data.price}
+        onPurchased={fetchData}
+      />
+    );
+  }
   if (!data || !data.products || data.products.length === 0) {
     return <Empty description={t("market_research.no_product_data")} />;
   }
@@ -557,18 +629,33 @@ const MarketsTab = ({ gameId, teamId, round }) => {
   const [error, setError] = useState(null);
   const [expanded, setExpanded] = useState({});
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     if (!gameId || !teamId) return;
     setLoading(true);
+    setError(null);
     const params = round != null ? { round } : {};
     getResearchReport(gameId, teamId, 'markets', params)
       .then((res) => setData(res.data))
       .catch((err) => setError(err.response?.data?.detail || t('market_research.failed_load_markets')))
       .finally(() => setLoading(false));
-  }, [gameId, teamId, round]);
+  }, [gameId, teamId, round]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   if (loading) return <LoadingSpinner tip={t("market_research.loading_markets")} />;
   if (error) return <Alert type="error" message={error} />;
+  // An unbought market report still carries market names and codes, because
+  // other screens populate their market pickers from it. The paid analysis is
+  // what is withheld.
+  if (data && data.purchased === false) {
+    return (
+      <ReportPaywall
+        reportType="markets"
+        price={data.price}
+        onPurchased={fetchData}
+      />
+    );
+  }
   if (!data || !data.markets || data.markets.length === 0) {
     return <Empty description={t("market_research.no_market_data")} />;
   }
@@ -686,7 +773,16 @@ const ChannelsTab = ({ gameId, teamId, round }) => {
       {loading && <LoadingSpinner tip={t("market_research.loading_channels")} />}
       {error && <Alert type="error" message={error} style={{ marginBottom: 16 }} />}
 
-      {!loading && data && (
+      {!loading && data && data.purchased === false && (
+        <ReportPaywall
+          reportType="channels"
+          price={data.price}
+          market={market}
+          onPurchased={fetchData}
+        />
+      )}
+
+      {!loading && data && data.purchased !== false && (
         <>
           {data.is_present_in_market === false && (
             <Alert
@@ -909,14 +1005,34 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
 const StakeholdersTab = ({ gameId, teamId, round }) => {
   const { t } = useTranslation();
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
   const [expanded, setExpanded] = useState({});
 
-  useEffect(() => {
-    if (gameId && teamId && round != null) {
-      getResearchReport(gameId, teamId, 'stakeholders', { round }).then(r => setData(r.data));
-    }
-  }, [gameId, teamId, round]);
+  // This tab previously had no `.catch` at all, so any refusal left it sitting
+  // on "Loading..." for ever. It needs to be able to say what happened before
+  // it can express an unbought state.
+  const fetchData = useCallback(() => {
+    if (!(gameId && teamId && round != null)) return;
+    setError(null);
+    getResearchReport(gameId, teamId, 'stakeholders', { round })
+      .then(r => setData(r.data))
+      .catch((err) => setError(
+        err.response?.data?.detail || t('market_research.failed_load_stakeholders'),
+      ));
+  }, [gameId, teamId, round]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  if (error) return <Alert type="error" message={error} />;
+  if (data && data.purchased === false) {
+    return (
+      <ReportPaywall
+        reportType="stakeholders"
+        price={data.price}
+        onPurchased={fetchData}
+      />
+    );
+  }
   if (!data) return <div style={{ padding: 24, textAlign: 'center' }}><Text type="secondary">{t('market_research.loading_stakeholders')}</Text></div>;
 
   const toggleExpand = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
