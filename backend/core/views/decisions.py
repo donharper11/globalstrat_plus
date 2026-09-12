@@ -43,7 +43,9 @@ from core.models.scenario import (
 )
 from core.models.results_financials import RoundResultFinancials
 from core.utils.localization import get_localized_field, get_user_language
-from core.utils.participant_messages import field_label, participant_message
+from core.utils.participant_messages import (
+    field_label, participant_message, round_status_label,
+)
 from core.serializers.decisions import (
     DecisionSubmissionSerializer,
     DecisionBudgetAllocationSerializer,
@@ -83,11 +85,23 @@ def _get_user_from_header(request):
 
 
 class IsTeamMember(permissions.BasePermission):
-    message = 'You do not have permission to change this team’s decisions.'
+    # Imported from the catalogue rather than restated here. DRF only falls
+    # back to the class attribute when `has_permission` returns without
+    # setting one, but a second copy of the sentence is a second place for it
+    # to drift -- which is the defect the shared catalogue exists to prevent.
+    message = participant_message('permission_denied')
 
     def has_permission(self, request, view):
         language = get_user_language(request)
-        self.message = participant_message('permission_denied', language=language)
+        # Seven of the eleven routes this guard protects are read-only context
+        # endpoints (V2-069.2). Refusing a *read* with "you may not change this
+        # team's decisions" names an action the caller did not attempt, and
+        # tells them to stop doing something they were not doing.
+        self.message = participant_message(
+            'permission_denied_read'
+            if request.method in permissions.SAFE_METHODS
+            else 'permission_denied',
+            language=language)
         team_id = view.kwargs.get('team_id')
         user = _get_user_from_header(request)
         if not user:
@@ -124,7 +138,7 @@ class IsRoundOpen(permissions.BasePermission):
 
     Instructors are exempt so they can still fix a team's decisions.
     """
-    message = 'This round is not open for decision submissions.'
+    message = participant_message('round_not_open')
 
     def has_permission(self, request, view):
         # Read-only methods always allowed
@@ -159,7 +173,8 @@ class IsRoundOpen(permissions.BasePermission):
         if round_obj.status != 'open':
             self.message = participant_message(
                 'round_not_accepting', language=language,
-                round=round_number, status=round_obj.status)
+                round=round_number,
+                status=round_status_label(round_obj.status, language))
             return False
 
         if round_obj.decisions_locked:
@@ -194,9 +209,16 @@ class IsCurrentRoundOpen(IsRoundOpen):
 
 
 class IsInstructor(permissions.BasePermission):
-    message = 'Instructor or Admin access required.'
+    message = participant_message('instructor_access_required')
 
     def has_permission(self, request, view):
+        # A student who reaches an instructor route is refused in their own
+        # language. "Instructor or Admin access required" also named the
+        # platform's role vocabulary rather than telling the reader anything
+        # they can act on.
+        self.message = participant_message(
+            'instructor_access_required',
+            language=get_user_language(request))
         user = _get_user_from_header(request)
         if not user:
             return False
@@ -775,7 +797,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                 if current_level >= ceiling.ceiling_value:
                     errors.append(participant_message(
                         'feature_at_ceiling', language=language,
-                        feature=inv.feature.name))
+                        feature=get_localized_field(
+                            inv.feature, 'name', language)))
 
         # Platform development: validate generation
         for pd in submission.platform_developments.all():
@@ -785,7 +808,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             if pd.platform_generation.unlock_round > game.current_round:
                 errors.append(participant_message(
                     'platform_not_unlocked', language=language,
-                    platform=pd.platform_generation.name,
+                    platform=get_localized_field(
+                        pd.platform_generation, 'name', language),
                     round=pd.platform_generation.unlock_round))
             existing = TeamPlatform.objects.filter(
                 team=team, platform_generation=pd.platform_generation,
@@ -793,7 +817,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             if existing.exists():
                 errors.append(participant_message(
                     'platform_already_owned', language=language,
-                    platform=pd.platform_generation.name))
+                    platform=get_localized_field(
+                        pd.platform_generation, 'name', language)))
 
         # Product creates: validate platform and limits
         active_products = TeamProduct.objects.filter(team=team, status='active').count()
@@ -836,7 +861,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             if abs(ch_sum - Decimal('1.0')) > Decimal('0.001'):
                 errors.append(participant_message(
                     'marketing_channels_invalid', language=language,
-                    product=md.team_product.name, market=md.market.name,
+                    product=md.team_product.name,
+                    market=get_localized_field(md.market, 'name', language),
                     total=f'{ch_sum * 100:g}'))
             # A blank price is legal to SAVE (Ruling 2) and is filled at the
             # band floor when the round closes — but only for a product that
@@ -851,11 +877,14 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                 if _band_rules.blank_price(_band) is None:
                     errors.append(participant_message(
                         'marketing_price_invalid', language=language,
-                        product=md.team_product.name, market=md.market.name))
+                        product=md.team_product.name,
+                        market=get_localized_field(
+                            md.market, 'name', language)))
             elif md.retail_price <= 0:
                 errors.append(participant_message(
                     'marketing_price_invalid', language=language,
-                    product=md.team_product.name, market=md.market.name))
+                    product=md.team_product.name,
+                    market=get_localized_field(md.market, 'name', language)))
             marketing_total += md.promotion_budget + md.distribution_investment
 
         if marketing_total > budget.marketing_budget:
@@ -872,15 +901,15 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             if me.action == 'enter' and presence:
                 errors.append(participant_message(
                     'market_already_entered', language=language,
-                    market=me.market.name))
+                    market=get_localized_field(me.market, 'name', language)))
             if me.action in ('change_mode', 'exit') and not presence:
                 errors.append(participant_message(
                     'market_not_active', language=language,
-                    market=me.market.name))
+                    market=get_localized_field(me.market, 'name', language)))
             if me.action == 'enter' and me.initial_investment < me.entry_mode.capital_requirement:
                 errors.append(participant_message(
                     'entry_investment_low', language=language,
-                    market=me.market.name,
+                    market=get_localized_field(me.market, 'name', language),
                     submitted=f'${me.initial_investment:,.2f}',
                     minimum=f'${me.entry_mode.capital_requirement:,.2f}'))
 
@@ -1107,7 +1136,8 @@ class DecisionSummaryView(APIView):
                 'submission_status': None,
                 'categories': sc_categories,
                 'can_lock': False,
-                'lock_blockers': ['No submission created yet.'],
+                'lock_blockers': [participant_message(
+                    'summary_no_submission', language=language)],
                 'budget_summary': None,
             })
 
@@ -1123,10 +1153,12 @@ class DecisionSummaryView(APIView):
             assessment = budget_assessment(submission, team)
             budget_warnings = []
             budget_errors = list(describe_budget_problems(
-                assessment, language=get_user_language(request)))
+                assessment, language=language))
             for f in ('rd_budget', 'marketing_budget', 'strategy_budget'):
                 if getattr(budget, f) == 0:
-                    budget_warnings.append(f'{f} is 0.')
+                    budget_warnings.append(participant_message(
+                        'zero_budget_warning', language=language,
+                        field=field_label(f, language)))
             if budget_errors:
                 categories['budget'] = {'status': 'error', 'errors': budget_errors, 'warnings': budget_warnings}
                 lock_blockers.extend(budget_errors)
@@ -1134,7 +1166,8 @@ class DecisionSummaryView(APIView):
                 categories['budget'] = {'status': 'configured', 'warnings': budget_warnings}
         except DecisionBudgetAllocation.DoesNotExist:
             categories['budget'] = {'status': 'empty', 'warnings': []}
-            lock_blockers.append('Budget allocation required.')
+            lock_blockers.append(participant_message(
+                'budget_required', language=language))
 
         # R&D
         rd_count = submission.rd_investments.count()
@@ -1142,10 +1175,15 @@ class DecisionSummaryView(APIView):
         if rd_count > 0 or pd_count > 0:
             rd_warnings = []
             if rd_count == 0:
-                rd_warnings.append('No R&D investment this round.')
+                rd_warnings.append(participant_message(
+                    'summary_rd_none', language=language))
             categories['rd'] = {'status': 'configured', 'warnings': rd_warnings}
         else:
-            categories['rd'] = {'status': 'empty', 'warnings': ['No R&D investment this round.']}
+            categories['rd'] = {
+                'status': 'empty',
+                'warnings': [participant_message(
+                    'summary_rd_none', language=language)],
+            }
 
         # Products
         pc_count = submission.product_creates.count()
@@ -1164,7 +1202,9 @@ class DecisionSummaryView(APIView):
             if mkt_count < active_product_markets:
                 categories['marketing'] = {
                     'status': 'partial',
-                    'warnings': [f'{active_product_markets - mkt_count} product-market(s) not configured.'],
+                    'warnings': [participant_message(
+                        'summary_marketing_incomplete', language=language,
+                        count=active_product_markets - mkt_count)],
                     'configured_count': mkt_count,
                     'total_required': active_product_markets,
                 }
@@ -1212,27 +1252,28 @@ class DecisionSummaryView(APIView):
 
         for presence in active_presences:
             mid = presence.market_id
-            mname = presence.market.name
+            # Localised like every other market name in this response. The
+            # entering-market branch below already did this, so one Summary
+            # could name the same market two different ways.
+            mname = get_localized_field(presence.market, 'name', language)
             has_products = mid in product_market_ids
             has_marketing = mid in marketed_market_ids
             if not has_products:
-                strategy_warnings.append(
-                    f"You're operating in {mname} but have no products assigned there. "
-                    f"Go to Product Portfolio to add a target market."
-                )
+                strategy_warnings.append(participant_message(
+                    'summary_market_without_products', language=language,
+                    market=mname))
             elif not has_marketing:
-                strategy_warnings.append(
-                    f"You have products in {mname} but no marketing decisions configured. "
-                    f"Go to Marketing Mix to set pricing, production, and promotion."
-                )
+                strategy_warnings.append(participant_message(
+                    'summary_market_without_marketing', language=language,
+                    market=mname))
 
         for mid in entering_market_ids:
             if mid not in product_market_ids and mid not in set(p.market_id for p in active_presences):
                 mkt = MarketDefinition.objects.filter(pk=mid).first()
                 mname = get_localized_field(mkt, 'name', language) if mkt else f"Market {mid}"
-                strategy_warnings.append(
-                    f"You're entering {mname} this round but have no products assigned there yet."
-                )
+                strategy_warnings.append(participant_message(
+                    'summary_entering_without_products', language=language,
+                    market=mname))
 
         categories['strategy'] = {
             'status': 'configured' if strategy_configured else 'empty',
@@ -1255,10 +1296,11 @@ class DecisionSummaryView(APIView):
                 projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
                 projected_cash -= fin.dividend_per_share * team.shares_outstanding
                 if projected_cash < 0:
-                    fin_errors.append(
-                        f'Projected ending cash is negative (${float(projected_cash):,.0f}). '
-                        f'Increase revenue or raise financing.'
-                    )
+                    # Formatted exactly as the lock refusal formats it: one
+                    # rule, one sentence, one rendering of the money in it.
+                    fin_errors.append(participant_message(
+                        'cash_negative', language=language,
+                        cash=f'${projected_cash:,.2f}'))
             except DecisionBudgetAllocation.DoesNotExist:
                 pass
             # V2-024: a raise larger than the round's funding shortfall blocks
@@ -1269,7 +1311,8 @@ class DecisionSummaryView(APIView):
             assessment = funding_need.assess_submission(submission)
             if not assessment['within_limit']:
                 fin_errors.append(
-                    funding_need.describe(assessment, team.name))
+                    funding_need.describe(assessment, team.name,
+                                          language=language))
 
             if fin_errors:
                 categories['financing'] = {'status': 'error', 'errors': fin_errors}
@@ -1279,18 +1322,23 @@ class DecisionSummaryView(APIView):
         except DecisionFinancing.DoesNotExist:
             categories['financing'] = {
                 'status': 'configured',
-                'warnings': ['No financing changes this round.'],
+                'warnings': [participant_message(
+                    'summary_financing_none', language=language)],
                 'optional': True,
             }
 
+        # The same three sentences the lock refusal uses, taken from the same
+        # catalogue keys rather than restated here — the Summary and the lock
+        # must not describe one requirement two ways.
         required_lock_categories = {
-            'products': 'Product Portfolio is required before locking.',
-            'marketing': 'Marketing Mix is required before locking.',
-            'strategy': 'Strategy Mix is required before locking.',
+            'products': 'product_portfolio_required',
+            'marketing': 'marketing_mix_required',
+            'strategy': 'strategy_mix_required',
         }
-        for key, message in required_lock_categories.items():
+        for key, message_key in required_lock_categories.items():
             if categories.get(key, {}).get('status') != 'configured':
-                lock_blockers.append(message)
+                lock_blockers.append(participant_message(
+                    message_key, language=language))
 
         can_lock = len(lock_blockers) == 0
 
@@ -1396,8 +1444,15 @@ class RDContextView(APIView):
                     feature, platform_generation, current_level, ceiling_value)]
 
     @staticmethod
-    def _check_generation_prerequisites(team, target_gen, game, scenario):
-        """Return (all_met: bool, details: list[dict])."""
+    def _check_generation_prerequisites(team, target_gen, game, scenario,
+                                        language='en'):
+        """Return (all_met: bool, details: list[dict]).
+
+        The rows are copy, not data: `RDPage.js` renders each one as
+        "{requirement} — {detail}" with no `t()` around it, so a Chinese team
+        read these six sentences in English. Wording comes from the shared
+        catalogue for the same reason every other refusal does.
+        """
         details = []
         all_met = True
         prev_gen_order = target_gen.generation_order - 1
@@ -1405,9 +1460,13 @@ class RDContextView(APIView):
         # 1. Round requirement
         round_met = game.current_round >= target_gen.unlock_round
         details.append({
-            'requirement': f'Round {target_gen.unlock_round} or later',
+            'requirement': participant_message(
+                'rd_prereq_round', language=language,
+                round=target_gen.unlock_round),
             'met': round_met,
-            'detail': f'Current round: {game.current_round}',
+            'detail': participant_message(
+                'rd_prereq_round_detail', language=language,
+                current=game.current_round),
         })
         if not round_met:
             all_met = False
@@ -1420,9 +1479,13 @@ class RDContextView(APIView):
                 status='active',
             ).exists()
             details.append({
-                'requirement': f'Gen {prev_gen_order} must be active',
+                'requirement': participant_message(
+                    'rd_prereq_generation', language=language,
+                    generation=prev_gen_order),
                 'met': has_prev,
-                'detail': 'Active' if has_prev else 'Not yet developed',
+                'detail': participant_message(
+                    'rd_prereq_generation_active' if has_prev
+                    else 'rd_prereq_generation_missing', language=language),
             })
             if not has_prev:
                 all_met = False
@@ -1454,9 +1517,13 @@ class RDContextView(APIView):
                         qualifying += 1
             tech_met = qualifying >= min_feats
             details.append({
-                'requirement': f'At least {min_feats} features at level {min_lvl}+',
+                'requirement': participant_message(
+                    'rd_prereq_features', language=language,
+                    count=min_feats, level=min_lvl),
                 'met': tech_met,
-                'detail': f'{qualifying} of {min_feats} features qualify',
+                'detail': participant_message(
+                    'rd_prereq_features_detail', language=language,
+                    qualifying=qualifying, count=min_feats),
             })
             if not tech_met:
                 all_met = False
@@ -1566,7 +1633,7 @@ class RDContextView(APIView):
 
         if next_gen:
             prereqs_met, prereq_details = self._check_generation_prerequisites(
-                team, next_gen, game, scenario
+                team, next_gen, game, scenario, language
             )
 
             # Determine new vs improved features
@@ -1681,7 +1748,7 @@ class RDContextView(APIView):
             prereq_details = []
             if gen_def.generation_order > 1:
                 prereqs_met, prereq_details = self._check_generation_prerequisites(
-                    team, gen_def, game, scenario
+                    team, gen_def, game, scenario, language
                 )
 
             # Features with ceiling > 0 and their cost schedules

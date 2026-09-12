@@ -13,6 +13,7 @@ from collections import Counter
 
 from rest_framework import serializers
 from core.serializers.decision_limits import NonNegativeFieldsMixin, non_negative_message
+from core.utils.localization import get_localized_field
 from core.utils.participant_messages import (
     field_label, participant_message, serializer_language,
 )
@@ -164,7 +165,8 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None,
                 else:
                     errors.append(participant_message(
                         'platform_unlock_required', language=language,
-                        platform=getattr(generation, 'name', ''),
+                        platform=get_localized_field(
+                            generation, 'name', language),
                         unlock_round=getattr(generation, 'unlock_round', ''),
                         round=round_number))
                 continue
@@ -302,7 +304,7 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
                 language = serializer_language(self)
                 raise serializers.ValidationError(participant_message(
                     'feature_unavailable', language=language,
-                    feature=feature.name))
+                    feature=get_localized_field(feature, 'name', language)))
 
         # Validate: max selected features on a platform (non-zero level)
         if feature and team_platform:
@@ -526,7 +528,8 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
                 warnings.append(participant_message(
                     'production_capacity_exceeded', language=language,
                     volume=production_volume, capacity=total_capacity,
-                    market=source_market.name))
+                    market=get_localized_field(
+                        source_market, 'name', language)))
             else:
                 cap = source_market.contract_mfg_capacity_cap or 0
                 effective_cap = total_capacity + cap
@@ -535,7 +538,8 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
                         'production_capacity_with_contract_exceeded',
                         language=language, volume=production_volume,
                         capacity=total_capacity, contract_capacity=cap,
-                        market=source_market.name))
+                        market=get_localized_field(
+                            source_market, 'name', language)))
 
         # Stage 5 price band (Ruling 2). An out-of-band price is ALERTED here
         # and accepted: the team's number is what gets stored while the round
@@ -547,9 +551,12 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
         band = band_rules.price_band(
             obj.submission.team.game.scenario, team, obj.team_product,
             obj.market, obj.submission.round.round_number)
+        # The product name is the team's own and has no translation; the
+        # market name is scenario content and does.
         band_alert = band_rules.alert_for(
             obj.retail_price, band, product_name=obj.team_product.name,
-            market_name=obj.market.name, language=language)
+            market_name=get_localized_field(obj.market, 'name', language),
+            language=language)
         if band_alert:
             warnings.append(band_alert)
 
