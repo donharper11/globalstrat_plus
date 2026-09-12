@@ -132,20 +132,6 @@ class SimulationStateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SimulationState.objects.all()
     serializer_class = SimulationStateSerializer
 
-    @action(detail=True, methods=['post'], permission_classes=[IsInstructor])
-    def advance(self, request, pk=None):
-        """Advance the simulation by one round."""
-        from core.services.round_engine import advance_round
-        state = self.get_object()
-        try:
-            result = advance_round(state.state_id)
-            return Response(result, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
 
 class SimulationSettingsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = SimulationSettings.objects.all()
