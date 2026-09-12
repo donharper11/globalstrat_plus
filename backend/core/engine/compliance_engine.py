@@ -60,6 +60,32 @@ def _trigger_applies(regime, team, rnd, market):
         return (True, mitigated, f'xinjiang exposure {pct:.0f}% > {threshold:.0f}%')
 
     if cond == 'incomplete_or_misclassified_customs_documentation':
+        # Progressive disclosure (CC-04 A1 §4.1) locks
+        # `logistics.customs_classification` until round 5 by default, and
+        # `CustomsClassificationDecisionWriteSerializer._reject_locked_fields`
+        # refuses the field before then — as does the participant UI, which
+        # disables the control and strips customs rows from the payload.
+        #
+        # So below the unlock round the absence of a classification says
+        # nothing about the team's conduct: the rules forbade it to file one.
+        # Firing on that absence is not enforcement, it is a lottery with no
+        # counter-decision — and for a firm whose starter profile puts it in a
+        # single market, one draw removes it from that market for the whole
+        # round, zeroing production, sales and revenue and then attracting the
+        # V2-022 commercial-inactivity controls on top.
+        #
+        # This is the same disposition as the unevaluable triggers below and
+        # is stated in this module's docstring: a trigger with no determinable
+        # signal is skipped, not faked. It reads the *effective* unlock round,
+        # so an instructor who unlocks the field early through
+        # `ClassProgressiveDisclosureOverride` re-arms the regime early too,
+        # and from the unlock round on the regime is unchanged.
+        from core.utils.disclosure import get_effective_unlock_round
+        unlock_round = get_effective_unlock_round(
+            team.game, 'logistics.customs_classification')
+        if rnd.round_number < unlock_round:
+            return None
+
         has_docs = CustomsClassificationDecision.objects.filter(
             team=team, round=rnd, destination_market=market).exists()
         if has_docs:
