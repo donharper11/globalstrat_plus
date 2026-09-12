@@ -316,6 +316,36 @@ class CompetitionOwnershipTests(CohortCapTestBase):
         self.assertIn('Assign an instructor', payload['guidance'])
         self.assertIn(self.game.name, payload['error'])
 
+    def test_the_refusal_is_recorded(self):
+        """A refused competition action must still leave a record.
+
+        `operator_action` audits a refusal in a fresh transaction *after* the
+        one it rolled back, and only when `holder.game` is already set. This
+        precondition is deliberately raised after that assignment, so the
+        attempt stays observable. CRV2-02 established that operator refusals
+        are auditable, and V2-034 was raised precisely because moving an
+        authorization check earlier silently stopped one being recorded -- so
+        the record is pinned here rather than assumed.
+        """
+        from core.models import OperatorAuditEvent
+        self._attach(instructor_id=None, competition=True, tag='AUDIT')
+
+        response = self._close()
+
+        row = OperatorAuditEvent.objects.filter(
+            game=self.game, action='close_round', outcome='rejected',
+        ).first()
+        self.assertIsNotNone(row, 'the refused attempt was not recorded')
+        self.assertEqual(row.conflict.get('code'),
+                         'competition_course_unowned')
+        # The correlation id the operator was handed is the one on the record.
+        self.assertEqual(row.request_id, response.data['request_id'])
+        # The round was never read before the precondition fired, and a
+        # nullable round is what lets the row exist at all.
+        self.assertIsNone(row.round_id)
+        # The refusal changed nothing.
+        self.assertEqual(row.after, {})
+
     def test_a_pilot_game_on_an_unowned_course_still_works(self):
         """The unowned-pilot rule is preserved exactly for non-competition games."""
         self._attach(instructor_id=None, competition=False, tag='PILOT')
