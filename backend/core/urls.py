@@ -119,7 +119,7 @@ from .views import (
     ActiveEventsView, EventHistoryView, ResearchQueryView,
     # Course Management
     CourseViewSet, SectionViewSet,
-    RosterViewSet, TeamManagementView, SimulationControlView,
+    RosterViewSet, TeamManagementView,
     GameRoundScheduleView,
     # Grading
     GradingRubricViewSet, GradingRubricCategoryViewSet,
@@ -259,7 +259,6 @@ urlpatterns = [
     # ---- Course / Section / Roster / Team / Instance Management ----
     path('roster/', RosterViewSet.as_view(), name='roster'),
     path('team-management/', TeamManagementView.as_view(), name='team-management'),
-    path('simulation-control/', SimulationControlView.as_view(), name='simulation-control'),
     # ---- Round Deadline Management ----
     path('rounds/<int:round_id>/decision-status/', DecisionStatusView.as_view(), name='round-decision-status'),
     path('rounds/<int:round_id>/send-reminder/', SendReminderView.as_view(), name='round-send-reminder'),

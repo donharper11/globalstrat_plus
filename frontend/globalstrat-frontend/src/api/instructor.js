@@ -84,10 +84,6 @@ export const updateTeamConfig = (gameId, data) =>
 export const randomizeHomeMarkets = (gameId) =>
   client.post(`/games/${gameId}/instructor/randomize-home-markets/`);
 
-// Simulation control
-export const controlSimulation = (instanceId, action, extra = {}) =>
-  client.post('/simulation-control/', { instance_id: instanceId, action, ...extra });
-
 // Grading
 export const seedRubric = (courseId) =>
   client.post('/grades/seed-rubric/', { course_id: courseId });

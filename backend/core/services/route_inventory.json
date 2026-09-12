@@ -6,8 +6,8 @@
     "core.views.programs.ProgramViewSet": "Writes Program rows. It reaches Round.objects only through DecisionLockedMixin, which reads Round.decisions_locked to gate student writes and never assigns to it.",
     "core.views.scenario_views.GameCreateView": "Creates a new Game and its Rounds. There is no existing lifecycle for the new game to race, and no other game is touched."
   },
-  "guarded": 20,
-  "lifecycle_mutating_routes": 36,
+  "guarded": 19,
+  "lifecycle_mutating_routes": 35,
   "routes": {
     "admin/auth/group/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
@@ -1645,26 +1645,6 @@
       "uses_boundary": false,
       "view": "core.views.course.SectionViewSet"
     },
-    "api/^simulation-state/(?P<pk>[^/.]+)/advance/$|post": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "post"
-      ],
-      "route": "api/^simulation-state/(?P<pk>[^/.]+)/advance/$",
-      "uses_boundary": true,
-      "view": "core.views.core.SimulationStateViewSet"
-    },
-    "api/^simulation-state/(?P<pk>[^/.]+)/advance\\.(?P<format>[a-z0-9]+)/?$|post": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "post"
-      ],
-      "route": "api/^simulation-state/(?P<pk>[^/.]+)/advance\\.(?P<format>[a-z0-9]+)/?$",
-      "uses_boundary": true,
-      "view": "core.views.core.SimulationStateViewSet"
-    },
     "api/^student-grade-adjustments/$|post": {
       "exempt": false,
       "lifecycle_mutating": false,
@@ -2479,16 +2459,6 @@
       "uses_boundary": false,
       "view": "core.views.course.SendReminderView"
     },
-    "api/simulation-control/|post": {
-      "exempt": false,
-      "lifecycle_mutating": true,
-      "methods": [
-        "post"
-      ],
-      "route": "api/simulation-control/",
-      "uses_boundary": true,
-      "view": "core.views.course.SimulationControlView"
-    },
     "api/team-management/|put": {
       "exempt": true,
       "lifecycle_mutating": true,
@@ -2510,6 +2480,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 220,
+  "total_mutating_routes": 217,
   "unguarded": 0
 }

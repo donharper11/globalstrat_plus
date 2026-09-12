@@ -48,7 +48,7 @@ from .auth import LoginView, CurrentUserView, LanguagePreferenceView, LogoutView
 from core.rag.views import ActiveEventsView, EventHistoryView, ResearchQueryView
 from .course import (
     CourseViewSet, SectionViewSet,
-    RosterViewSet, TeamManagementView, SimulationControlView,
+    RosterViewSet, TeamManagementView,
     GameRoundScheduleView,
     DecisionStatusView, SendReminderView,
 )
