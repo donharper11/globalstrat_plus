@@ -323,3 +323,182 @@ class ShippedScenarioRoundZeroTests(TestCase):
                         f'{filename}: {team.name} round-0 adopters do not '
                         f'reconcile to round-0 units sold')
                     self.assertGreater(adopted, D('0'))
+
+
+class EightFirmDistinctStarterTests(TestCase):
+    """R28 (2026-09-12): no two firms in a heat begin from the same position.
+
+    A heat runs at the R12 cap of **8 firms**.  Before this, each shipped
+    scenario authored four profiles and both game-creation paths select
+    ``profiles[i % len(profiles)]``, so teams 5-8 were byte-identical clones of
+    teams 1-4 — same ``FirmStarterProfile`` row, same platform levels, same
+    products, same prices, volumes, cash and debt.
+
+    **R22 still binds and is not relaxed:** every team opens on the scenario's
+    ``performance_index_base`` and joint-first rank.  Profiles differ in
+    strengths, market position, price point, volume, share, debt and strategic
+    problem — never in opening score.  Equal score, unequal position.
+
+    R11's reconciliation must also continue to hold for *every* new profile:
+    round-0 adopters equal round-0 units sold, to the cent.
+    """
+
+    SCENARIOS = (
+        ('consumer_electronics_2026.yaml', 'Consumer Electronics 2026'),
+        ('clean_energy_tech_2026.yaml', 'Clean Energy Technology 2026'),
+        ('media_entertainment_2026.yaml', 'Media & Entertainment 2026'),
+    )
+    HEAT_SIZE = 8
+
+    @staticmethod
+    def _position_signature(team):
+        """Everything a student can read off their own opening dashboard.
+
+        Deliberately built from observable starting state rather than from the
+        profile's primary key: two teams pointed at *different* profile rows
+        that happened to be authored identically would still be a defect.
+        """
+        from core.models.team_state import TeamPlatform, TeamPlatformFeatureLevel
+
+        platform_ids = list(TeamPlatform.objects.filter(
+            team=team).order_by('id').values_list('id', flat=True))
+        levels = tuple(sorted(
+            (row.feature.code, str(row.current_level))
+            for row in TeamPlatformFeatureLevel.objects.filter(
+                team_platform_id__in=platform_ids).select_related('feature')))
+        products = tuple(sorted(
+            (sp.product_name, sp.positioning_label, str(sp.base_price),
+             sp.unit_volume, str(sp.market_share_pct))
+            for sp in FirmStarterProduct.objects.filter(
+                firm_starter_profile=team.firm_starter_profile)))
+        return (
+            team.home_market.code,
+            str(team.cash_on_hand), str(team.total_debt),
+            str(team.firm_starter_profile.starting_revenue),
+            levels, products,
+        )
+
+    def test_eight_firms_begin_distinct_on_equal_score(self):
+        from core.models.results_financials import (
+            LeaderboardEntry, RoundResultPerformanceIndex,
+        )
+
+        get_user_model().objects.create_superuser(
+            'r28-heat', 'r28@example.com', 'x')
+        for filename, _name in self.SCENARIOS:
+            with self.subTest(scenario=filename):
+                call_command('load_scenario', file=str(SCENARIO_DIR / filename),
+                             verbosity=0)
+                scenario = Scenario.objects.order_by('-id').first()
+
+                # The scenario must author enough profiles for a full heat.
+                self.assertGreaterEqual(
+                    FirmStarterProfile.objects.filter(scenario=scenario).count(),
+                    self.HEAT_SIZE,
+                    f'{filename}: fewer than {self.HEAT_SIZE} starter profiles, '
+                    f'so an 8-firm heat must repeat one')
+
+                call_command('initialize_game', scenario=scenario.id,
+                             teams=self.HEAT_SIZE, name=f'R28 {filename}',
+                             verbosity=0)
+                game = Game.objects.order_by('-id').first()
+                teams = list(Team.objects.filter(game=game).order_by('id'))
+                self.assertEqual(len(teams), self.HEAT_SIZE)
+
+                # ── R28: distinct starting positions ──────────────────────
+                profile_ids = [team.firm_starter_profile_id for team in teams]
+                self.assertEqual(
+                    len(set(profile_ids)), self.HEAT_SIZE,
+                    f'{filename}: two firms share a starter profile')
+
+                signatures = [self._position_signature(team) for team in teams]
+                self.assertEqual(
+                    len(set(signatures)), self.HEAT_SIZE,
+                    f'{filename}: two firms begin from an identical position')
+
+                # ── R22: equal opening score, and joint-first rank ────────
+                self.assertEqual(
+                    set(RoundResultPerformanceIndex.objects.filter(
+                        game=game, round_number=0,
+                    ).values_list('index_value', flat=True)),
+                    {scenario.performance_index_base},
+                    f'{filename}: round-0 index is not the scenario base for '
+                    f'every team')
+                self.assertEqual(
+                    set(LeaderboardEntry.objects.filter(
+                        game=game, round_number=0,
+                    ).values_list('rank', flat=True)),
+                    {1},
+                    f'{filename}: round 0 is not joint-first for every team')
+
+                # ── R11: reconciliation holds for every new profile ───────
+                for team in teams:
+                    market = team.home_market
+                    adopted = RoundResultAdoption.objects.filter(
+                        game=game, round_number=0, team=team, market=market,
+                    ).aggregate(total=Sum('new_adopters'))['total']
+                    sold = RoundResultProductMarket.objects.filter(
+                        game=game, round_number=0, team=team, market=market,
+                    ).aggregate(total=Sum('units_sold'))['total']
+                    authored = FirmStarterProduct.objects.filter(
+                        firm_starter_profile=team.firm_starter_profile,
+                    ).aggregate(total=Sum('unit_volume'))['total']
+                    self.assertEqual(
+                        sold, D(str(authored)),
+                        f'{filename}: {team.firm_starter_profile.profile_name} '
+                        f'round-0 units are not the authored starter volumes')
+                    self.assertEqual(
+                        adopted, sold,
+                        f'{filename}: '
+                        f'{team.firm_starter_profile.profile_name} round-0 '
+                        f'adopters do not reconcile to round-0 units sold')
+                    self.assertGreater(adopted, D('0'))
+
+    def test_the_heat_differs_in_position_not_only_in_name(self):
+        """The positions must differ on the axes R28 names, not merely somewhere.
+
+        A field that differed only in, say, starting debt would satisfy a naive
+        distinctness check while still giving every team the same problem to
+        solve.
+        """
+        get_user_model().objects.create_superuser(
+            'r28-axes', 'r28axes@example.com', 'x')
+        call_command('load_scenario',
+                     file=str(SCENARIO_DIR / 'consumer_electronics_2026.yaml'),
+                     verbosity=0)
+        scenario = Scenario.objects.order_by('-id').first()
+        profiles = list(FirmStarterProfile.objects.filter(
+            scenario=scenario).order_by('id')[:self.HEAT_SIZE])
+
+        price_points = set()
+        positioning_mixes = set()
+        debts = set()
+        volumes = set()
+        shares = set()
+        for profile in profiles:
+            starters = list(FirmStarterProduct.objects.filter(
+                firm_starter_profile=profile).order_by('id'))
+            price_points.add(tuple(sorted(str(s.base_price) for s in starters)))
+            positioning_mixes.add(
+                tuple(sorted(s.positioning_label for s in starters)))
+            debts.add(str(profile.starting_debt))
+            volumes.add(sum(s.unit_volume for s in starters))
+            shares.add(sum(s.market_share_pct for s in starters))
+
+        # Every firm has its own price point and its own debt level, and the
+        # field spans several portfolio shapes.
+        self.assertEqual(len(price_points), self.HEAT_SIZE)
+        self.assertEqual(len(debts), self.HEAT_SIZE)
+        self.assertGreaterEqual(len(positioning_mixes), 3)
+
+        # Total starting volume and total starting share are deliberately NOT
+        # required to be unique per firm.  R28 requires that no two firms begin
+        # from the same *position* -- the composite, asserted above -- not that
+        # every axis is injective.  Two firms may legitimately be the same size
+        # while differing in everything else, and the shipped data already does
+        # this: The Innovator and The Workhorse both open on 65,000 units, and
+        # The Brand Builder and The Green Pioneer both on 45,000.  Pinned at
+        # the measured spread so a future edit that collapses the field is
+        # caught, without asserting a uniqueness the ruling never asked for.
+        self.assertGreaterEqual(len(volumes), 6)
+        self.assertGreaterEqual(len(shares), 6)
