@@ -150,6 +150,18 @@ Environment variables (set in systemd service or shell):
 
 Production secrets are loaded from `/etc/globalstrat-plus.env`, not from committed deploy scripts or service files. The file should be owned by root and mode `0600`.
 
+For local or CI test runs, do not copy that production secret into `.env` or a
+shell profile. Run the test suite through the disposable PostgreSQL helper:
+
+```bash
+backend/scripts/test-postgres core.tests.test_leaderboard_tiebreak
+```
+
+It starts a temporary local PostgreSQL container with a newly generated
+password, runs the requested Django tests against it, and removes the container
+on exit. The helper requires Docker, the bundled `postgres:16-alpine` image,
+and `pg_isready`; it never contacts the production database.
+
 Example keys:
 
 ```ini
