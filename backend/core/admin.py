@@ -94,8 +94,33 @@ class AICompetitorFitByRoundInline(admin.TabularInline):
 # Model Admins
 # ---------------------------------------------------------------------------
 
+class CompetitionReadOnlyAdmin(admin.ModelAdmin):
+    """Expose competition records for support and evidence, never mutation.
+
+    The competition lifecycle services are the only supported way to create or
+    change competition-domain state.  Django admin is deliberately retained as
+    a read surface for an authorised Django admin user, but it must not offer a
+    second, unaudited route around locking, validation, and operator events.
+
+    This includes scenario definitions: authoring or repairing those records
+    must use the reviewed import/deployment workflow, not an ad-hoc production
+    browser edit.
+    """
+
+    list_per_page = 50
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 @admin.register(Scenario)
-class ScenarioAdmin(admin.ModelAdmin):
+class ScenarioAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'industry_label', 'num_rounds', 'starting_cash', 'currency_code', 'is_active']
     list_filter = ['is_active', 'currency_code']
     search_fields = ['name', 'industry_label', 'description']
@@ -104,7 +129,7 @@ class ScenarioAdmin(admin.ModelAdmin):
 
 
 @admin.register(ScenarioConfig)
-class ScenarioConfigAdmin(admin.ModelAdmin):
+class ScenarioConfigAdmin(CompetitionReadOnlyAdmin):
     list_display = ['scenario', 'config_key', 'config_value']
     list_filter = ['scenario']
     search_fields = ['config_key', 'config_value', 'description']
@@ -112,7 +137,7 @@ class ScenarioConfigAdmin(admin.ModelAdmin):
 
 
 @admin.register(FeatureDefinition)
-class FeatureDefinitionAdmin(admin.ModelAdmin):
+class FeatureDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'layer', 'category', 'code', 'max_value', 'cost_curve_type']
     list_filter = ['scenario', 'layer', 'category', 'cost_curve_type']
     search_fields = ['name', 'code', 'description']
@@ -121,7 +146,7 @@ class FeatureDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(PlatformGenerationDefinition)
-class PlatformGenerationDefinitionAdmin(admin.ModelAdmin):
+class PlatformGenerationDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'generation_order', 'unlock_round', 'development_cost', 'is_starting_platform']
     list_filter = ['scenario', 'is_starting_platform']
     search_fields = ['name', 'description']
@@ -131,7 +156,7 @@ class PlatformGenerationDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(PlatformFeatureCeiling)
-class PlatformFeatureCeilingAdmin(admin.ModelAdmin):
+class PlatformFeatureCeilingAdmin(CompetitionReadOnlyAdmin):
     list_display = ['platform_generation', 'feature', 'ceiling_value', 'starting_value']
     list_filter = ['platform_generation__scenario']
     search_fields = ['feature__name', 'platform_generation__name']
@@ -139,7 +164,7 @@ class PlatformFeatureCeilingAdmin(admin.ModelAdmin):
 
 
 @admin.register(MarketDefinition)
-class MarketDefinitionAdmin(admin.ModelAdmin):
+class MarketDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'code', 'currency_code', 'base_growth_rate', 'allows_manufacturing']
     list_filter = ['scenario', 'allows_manufacturing', 'contract_mfg_available']
     search_fields = ['name', 'code', 'description']
@@ -149,14 +174,14 @@ class MarketDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(MarketReadiness)
-class MarketReadinessAdmin(admin.ModelAdmin):
+class MarketReadinessAdmin(CompetitionReadOnlyAdmin):
     list_display = ['market', 'platform_generation', 'round_number', 'readiness_pct']
     list_filter = ['market__scenario', 'market']
     list_per_page = 50
 
 
 @admin.register(SegmentDefinition)
-class SegmentDefinitionAdmin(admin.ModelAdmin):
+class SegmentDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'market', 'segment_type', 'population_size', 'performance_index_weight']
     list_filter = ['scenario', 'segment_type', 'market']
     search_fields = ['name', 'description']
@@ -166,7 +191,7 @@ class SegmentDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(SegmentPreference)
-class SegmentPreferenceAdmin(admin.ModelAdmin):
+class SegmentPreferenceAdmin(CompetitionReadOnlyAdmin):
     list_display = ['segment', 'feature', 'ideal_value', 'weight', 'tolerance']
     list_filter = ['segment__scenario', 'feature__layer']
     search_fields = ['segment__name', 'feature__name']
@@ -174,7 +199,7 @@ class SegmentPreferenceAdmin(admin.ModelAdmin):
 
 
 @admin.register(EntryModeDefinition)
-class EntryModeDefinitionAdmin(admin.ModelAdmin):
+class EntryModeDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'code', 'capital_requirement', 'setup_rounds', 'control_level', 'risk_level']
     list_filter = ['scenario', 'tariff_applies']
     search_fields = ['name', 'code', 'description']
@@ -182,7 +207,7 @@ class EntryModeDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(StrategyOptionDefinition)
-class StrategyOptionDefinitionAdmin(admin.ModelAdmin):
+class StrategyOptionDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'category', 'code', 'capital_cost_base', 'is_reversible']
     list_filter = ['scenario', 'category', 'is_reversible']
     search_fields = ['name', 'code', 'description']
@@ -191,7 +216,7 @@ class StrategyOptionDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(StrategyOptionEffect)
-class StrategyOptionEffectAdmin(admin.ModelAdmin):
+class StrategyOptionEffectAdmin(CompetitionReadOnlyAdmin):
     list_display = ['strategy_option', 'feature', 'effect_type', 'effect_value', 'market_specific']
     list_filter = ['effect_type', 'market_specific']
     search_fields = ['strategy_option__name', 'feature__name']
@@ -199,7 +224,7 @@ class StrategyOptionEffectAdmin(admin.ModelAdmin):
 
 
 @admin.register(EventTemplateDefinition)
-class EventTemplateDefinitionAdmin(admin.ModelAdmin):
+class EventTemplateDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'category', 'severity', 'probability_per_round', 'earliest_round']
     list_filter = ['scenario', 'severity', 'category', 'affects_all_markets', 'response_required']
     search_fields = ['name', 'description_template', 'category']
@@ -208,7 +233,7 @@ class EventTemplateDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(EventImpactDefinition)
-class EventImpactDefinitionAdmin(admin.ModelAdmin):
+class EventImpactDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['event_template', 'impact_type', 'target_segment', 'target_feature', 'impact_value', 'duration_rounds']
     list_filter = ['impact_type', 'is_cumulative', 'event_template__scenario']
     search_fields = ['event_template__name']
@@ -216,7 +241,7 @@ class EventImpactDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(EventResponseDefinition)
-class EventResponseDefinitionAdmin(admin.ModelAdmin):
+class EventResponseDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'event_template', 'cost']
     list_filter = ['event_template__scenario']
     search_fields = ['name', 'description']
@@ -224,14 +249,14 @@ class EventResponseDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(MarketConditionByRound)
-class MarketConditionByRoundAdmin(admin.ModelAdmin):
+class MarketConditionByRoundAdmin(CompetitionReadOnlyAdmin):
     list_display = ['market', 'round_number', 'growth_rate_modifier', 'demand_multiplier', 'exchange_rate_modifier']
     list_filter = ['market__scenario', 'market']
     list_per_page = 50
 
 
 @admin.register(FirmStarterProfile)
-class FirmStarterProfileAdmin(admin.ModelAdmin):
+class FirmStarterProfileAdmin(CompetitionReadOnlyAdmin):
     list_display = ['profile_name', 'scenario', 'home_market', 'starting_cash', 'starting_debt']
     list_filter = ['scenario']
     search_fields = ['profile_name', 'description']
@@ -240,7 +265,7 @@ class FirmStarterProfileAdmin(admin.ModelAdmin):
 
 
 @admin.register(FirmStarterPlatformConfig)
-class FirmStarterPlatformConfigAdmin(admin.ModelAdmin):
+class FirmStarterPlatformConfigAdmin(CompetitionReadOnlyAdmin):
     list_display = ['firm_starter_profile', 'platform_generation', 'feature', 'starting_level']
     list_filter = ['firm_starter_profile__scenario']
     search_fields = ['firm_starter_profile__profile_name', 'feature__name']
@@ -248,7 +273,7 @@ class FirmStarterPlatformConfigAdmin(admin.ModelAdmin):
 
 
 @admin.register(FirmStarterProduct)
-class FirmStarterProductAdmin(admin.ModelAdmin):
+class FirmStarterProductAdmin(CompetitionReadOnlyAdmin):
     list_display = ['product_name', 'firm_starter_profile', 'positioning_label', 'base_price', 'market', 'unit_volume']
     list_filter = ['firm_starter_profile__scenario', 'positioning_label']
     search_fields = ['product_name']
@@ -256,7 +281,7 @@ class FirmStarterProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(AICompetitorDefinition)
-class AICompetitorDefinitionAdmin(admin.ModelAdmin):
+class AICompetitorDefinitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario']
     list_filter = ['scenario']
     search_fields = ['name', 'description']
@@ -265,7 +290,7 @@ class AICompetitorDefinitionAdmin(admin.ModelAdmin):
 
 
 @admin.register(AICompetitorFitByRound)
-class AICompetitorFitByRoundAdmin(admin.ModelAdmin):
+class AICompetitorFitByRoundAdmin(CompetitionReadOnlyAdmin):
     list_display = ['ai_competitor', 'segment', 'market', 'round_number', 'fit_score']
     list_filter = ['ai_competitor__scenario', 'market']
     search_fields = ['ai_competitor__name', 'segment__name']
@@ -289,7 +314,7 @@ class RoundInline(admin.TabularInline):
 
 
 @admin.register(Game)
-class GameAdmin(admin.ModelAdmin):
+class GameAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'scenario', 'current_round', 'status', 'created_by', 'created_at']
     list_filter = ['status', 'scenario']
     search_fields = ['name']
@@ -298,7 +323,7 @@ class GameAdmin(admin.ModelAdmin):
 
 
 @admin.register(Team)
-class TeamAdmin(admin.ModelAdmin):
+class TeamAdmin(CompetitionReadOnlyAdmin):
     list_display = ['name', 'game', 'firm_starter_profile', 'performance_index', 'cash_on_hand', 'is_in_distress']
     list_filter = ['game', 'is_in_distress']
     search_fields = ['name']
@@ -307,7 +332,7 @@ class TeamAdmin(admin.ModelAdmin):
 
 
 @admin.register(TeamMember)
-class TeamMemberAdmin(admin.ModelAdmin):
+class TeamMemberAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'user', 'role', 'joined_at']
     list_filter = ['role']
     search_fields = ['team__name']
@@ -315,7 +340,7 @@ class TeamMemberAdmin(admin.ModelAdmin):
 
 
 @admin.register(Round)
-class RoundAdmin(admin.ModelAdmin):
+class RoundAdmin(CompetitionReadOnlyAdmin):
     list_display = ['game', 'round_number', 'status', 'opened_at', 'deadline', 'processed_at']
     list_filter = ['status', 'game']
     list_per_page = 50
@@ -341,7 +366,7 @@ class TeamProductMarketInline(admin.TabularInline):
 
 
 @admin.register(TeamPlatform)
-class TeamPlatformAdmin(admin.ModelAdmin):
+class TeamPlatformAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'platform_generation', 'status', 'development_method', 'activated_round']
     list_filter = ['status', 'development_method']
     search_fields = ['team__name']
@@ -350,21 +375,21 @@ class TeamPlatformAdmin(admin.ModelAdmin):
 
 
 @admin.register(TeamPlatformFeatureLevel)
-class TeamPlatformFeatureLevelAdmin(admin.ModelAdmin):
+class TeamPlatformFeatureLevelAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team_platform', 'feature', 'current_level']
     list_filter = ['feature__layer']
     list_per_page = 50
 
 
 @admin.register(PendingFeatureGain)
-class PendingFeatureGainAdmin(admin.ModelAdmin):
+class PendingFeatureGainAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team_platform', 'feature', 'gain_amount', 'applies_round', 'applied']
     list_filter = ['applied', 'applies_round']
     list_per_page = 50
 
 
 @admin.register(TeamProduct)
-class TeamProductAdmin(admin.ModelAdmin):
+class TeamProductAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'name', 'team_platform', 'positioning', 'status', 'created_round']
     list_filter = ['positioning', 'status']
     search_fields = ['name', 'team__name']
@@ -373,14 +398,14 @@ class TeamProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(TeamProductMarket)
-class TeamProductMarketAdmin(admin.ModelAdmin):
+class TeamProductMarketAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team_product', 'market', 'is_active', 'first_offered_round']
     list_filter = ['is_active']
     list_per_page = 50
 
 
 @admin.register(TeamMarketPresence)
-class TeamMarketPresenceAdmin(admin.ModelAdmin):
+class TeamMarketPresenceAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'market', 'entry_mode', 'status', 'established_round']
     list_filter = ['status', 'entry_mode']
     search_fields = ['team__name']
@@ -388,21 +413,21 @@ class TeamMarketPresenceAdmin(admin.ModelAdmin):
 
 
 @admin.register(TeamPlant)
-class TeamPlantAdmin(admin.ModelAdmin):
+class TeamPlantAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'market', 'status', 'capacity_units', 'completion_round', 'cumulative_production']
     list_filter = ['status', 'market']
     list_per_page = 50
 
 
 @admin.register(TeamPartnership)
-class TeamPartnershipAdmin(admin.ModelAdmin):
+class TeamPartnershipAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'market', 'strategy_option', 'annual_investment', 'status']
     list_filter = ['status', 'market']
     list_per_page = 50
 
 
 @admin.register(TeamStrategyFeatureLevel)
-class TeamStrategyFeatureLevelAdmin(admin.ModelAdmin):
+class TeamStrategyFeatureLevelAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'feature', 'market', 'current_level', 'round_number']
     list_filter = ['feature', 'market', 'round_number']
     list_per_page = 50
@@ -495,7 +520,7 @@ class CC31ComplianceInvestmentInline(admin.TabularInline):
 
 
 @admin.register(DecisionSubmission)
-class DecisionSubmissionAdmin(admin.ModelAdmin):
+class DecisionSubmissionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'round', 'status', 'locked_at']
     list_filter = ['status', 'round__round_number']
     search_fields = ['team__name']
@@ -521,86 +546,86 @@ class DecisionSubmissionAdmin(admin.ModelAdmin):
 
 
 @admin.register(DecisionMarketing)
-class DecisionMarketingAdmin(admin.ModelAdmin):
+class DecisionMarketingAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'team_product', 'market', 'retail_price', 'promotion_budget', 'production_volume']
     list_filter = ['distribution_strategy', 'market']
     list_per_page = 50
 
 
 @admin.register(DecisionRDInvestment)
-class DecisionRDInvestmentAdmin(admin.ModelAdmin):
+class DecisionRDInvestmentAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'team_platform', 'feature', 'method', 'amount']
     list_per_page = 50
 
 
 @admin.register(DecisionMarketEntry)
-class DecisionMarketEntryAdmin(admin.ModelAdmin):
+class DecisionMarketEntryAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'market', 'entry_mode', 'action', 'initial_investment']
     list_per_page = 50
 
 
 @admin.register(DecisionBudgetAllocation)
-class DecisionBudgetAllocationAdmin(admin.ModelAdmin):
+class DecisionBudgetAllocationAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'rd_budget', 'marketing_budget', 'strategy_budget']
     list_per_page = 50
 
 
 @admin.register(DecisionPlatformDevelopment)
-class DecisionPlatformDevelopmentAdmin(admin.ModelAdmin):
+class DecisionPlatformDevelopmentAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'platform_generation', 'method', 'committed_cost']
     list_per_page = 50
 
 
 @admin.register(DecisionProductCreate)
-class DecisionProductCreateAdmin(admin.ModelAdmin):
+class DecisionProductCreateAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'team_platform', 'product_name', 'positioning']
     list_per_page = 50
 
 
 @admin.register(DecisionProductRetire)
-class DecisionProductRetireAdmin(admin.ModelAdmin):
+class DecisionProductRetireAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'team_product', 'timing']
     list_per_page = 50
 
 
 @admin.register(DecisionFinancing)
-class DecisionFinancingAdmin(admin.ModelAdmin):
+class DecisionFinancingAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'new_debt', 'debt_repayment', 'new_equity', 'dividend_per_share']
     list_per_page = 50
 
 
 @admin.register(DecisionPlant)
-class DecisionPlantAdmin(admin.ModelAdmin):
+class DecisionPlantAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'market', 'action', 'capacity_units', 'contract_mfg_volume']
     list_per_page = 50
 
 
 @admin.register(DecisionPartnership)
-class DecisionPartnershipAdmin(admin.ModelAdmin):
+class DecisionPartnershipAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'market', 'strategy_option', 'annual_investment', 'action']
     list_per_page = 50
 
 
 @admin.register(DecisionAcquisition)
-class DecisionAcquisitionAdmin(admin.ModelAdmin):
+class DecisionAcquisitionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'acquisition_target']
     list_per_page = 50
 
 
 @admin.register(DecisionESG)
-class DecisionESGAdmin(admin.ModelAdmin):
+class DecisionESGAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'environmental_investment', 'social_investment']
     list_per_page = 50
 
 
 @admin.register(DecisionEventResponse)
-class DecisionEventResponseAdmin(admin.ModelAdmin):
+class DecisionEventResponseAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'event_instance', 'response']
     list_per_page = 50
 
 
 @admin.register(DecisionResearchAllocation)
-class DecisionResearchAllocationAdmin(admin.ModelAdmin):
+class DecisionResearchAllocationAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'market', 'allocation_amount']
     list_per_page = 50
 
@@ -613,21 +638,21 @@ from core.models.results import EventInstance, ActiveModifier, RoundResultAdopti
 
 
 @admin.register(EventInstance)
-class EventInstanceAdmin(admin.ModelAdmin):
+class EventInstanceAdmin(CompetitionReadOnlyAdmin):
     list_display = ['event_template', 'game', 'round_number', 'target_market', 'created_at']
     list_filter = ['game', 'round_number']
     list_per_page = 50
 
 
 @admin.register(ActiveModifier)
-class ActiveModifierAdmin(admin.ModelAdmin):
+class ActiveModifierAdmin(CompetitionReadOnlyAdmin):
     list_display = ['modifier_type', 'game', 'modifier_value', 'started_round', 'expires_round']
     list_filter = ['modifier_type', 'game']
     list_per_page = 50
 
 
 @admin.register(RoundResultAdoption)
-class RoundResultAdoptionAdmin(admin.ModelAdmin):
+class RoundResultAdoptionAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'segment', 'market', 'round_number', 'fit_score', 'adjusted_fit_score', 'new_adopters', 'cumulative_adopters']
     list_filter = ['game', 'round_number', 'market']
     list_per_page = 50
@@ -645,49 +670,49 @@ from core.models.results_financials import (
 
 
 @admin.register(RoundResultProductMarket)
-class RoundResultProductMarketAdmin(admin.ModelAdmin):
+class RoundResultProductMarketAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'team_product', 'market', 'round_number', 'units_sold', 'home_revenue', 'total_cogs']
     list_filter = ['game', 'round_number', 'market']
     list_per_page = 50
 
 
 @admin.register(RoundResultFinancials)
-class RoundResultFinancialsAdmin(admin.ModelAdmin):
+class RoundResultFinancialsAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'round_number', 'total_revenue', 'net_income', 'cash_closing', 'roe', 'debt_to_equity']
     list_filter = ['game', 'round_number']
     list_per_page = 50
 
 
 @admin.register(RoundResultMarketRevenue)
-class RoundResultMarketRevenueAdmin(admin.ModelAdmin):
+class RoundResultMarketRevenueAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'market', 'round_number', 'home_revenue', 'market_profit', 'market_share_pct']
     list_filter = ['game', 'round_number', 'market']
     list_per_page = 50
 
 
 @admin.register(RoundResultPerformanceIndex)
-class RoundResultPerformanceIndexAdmin(admin.ModelAdmin):
+class RoundResultPerformanceIndexAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'round_number', 'satisfaction_score', 'index_change', 'index_value']
     list_filter = ['game', 'round_number']
     list_per_page = 50
 
 
 @admin.register(RoundResultCoherence)
-class RoundResultCoherenceAdmin(admin.ModelAdmin):
+class RoundResultCoherenceAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'round_number', 'formula_score', 'rag_score', 'blended_score']
     list_filter = ['game', 'round_number']
     list_per_page = 50
 
 
 @admin.register(LeaderboardEntry)
-class LeaderboardEntryAdmin(admin.ModelAdmin):
+class LeaderboardEntryAdmin(CompetitionReadOnlyAdmin):
     list_display = ['rank', 'team', 'round_number', 'performance_index', 'total_revenue', 'net_income']
     list_filter = ['game', 'round_number']
     list_per_page = 50
 
 
 @admin.register(MarketIntelligenceBrief)
-class MarketIntelligenceBriefAdmin(admin.ModelAdmin):
+class MarketIntelligenceBriefAdmin(CompetitionReadOnlyAdmin):
     list_display = ['market', 'round_number', 'team', 'brief_level', 'generated_at']
     list_filter = ['game', 'round_number', 'brief_level']
     list_per_page = 50
@@ -701,7 +726,7 @@ from core.models.rag import ResearchQueryLog
 
 
 @admin.register(ResearchQueryLog)
-class ResearchQueryLogAdmin(admin.ModelAdmin):
+class ResearchQueryLogAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'round_number', 'query_text', 'queried_at']
     list_filter = ['round_number']
     list_per_page = 50
@@ -737,34 +762,34 @@ ScenarioAdmin.inlines = ScenarioAdmin.inlines + [CulturalDistanceMatrixInline, O
 
 
 @admin.register(CulturalDistanceMatrix)
-class CulturalDistanceMatrixAdmin(admin.ModelAdmin):
+class CulturalDistanceMatrixAdmin(CompetitionReadOnlyAdmin):
     list_display = ['scenario', 'from_market', 'to_market', 'distance_level', 'base_effectiveness']
     list_filter = ['scenario', 'distance_level']
     list_per_page = 50
 
 
 @admin.register(OriginTrustModifier)
-class OriginTrustModifierAdmin(admin.ModelAdmin):
+class OriginTrustModifierAdmin(CompetitionReadOnlyAdmin):
     list_display = ['scenario', 'origin_market', 'host_market', 'customer_trust_multiplier', 'regulator_origin_modifier']
     list_filter = ['scenario']
     list_per_page = 50
 
 
 @admin.register(TalentAllocation)
-class TalentAllocationAdmin(admin.ModelAdmin):
+class TalentAllocationAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'talent_pool', 'hq_count']
     list_filter = ['talent_pool']
     list_per_page = 50
 
 
 @admin.register(ComplianceInvestment)
-class ComplianceInvestmentAdmin(admin.ModelAdmin):
+class ComplianceInvestmentAdmin(CompetitionReadOnlyAdmin):
     list_display = ['submission', 'market', 'investment_amount']
     list_per_page = 50
 
 
 @admin.register(TeamMarketCompliance)
-class TeamMarketComplianceAdmin(admin.ModelAdmin):
+class TeamMarketComplianceAdmin(CompetitionReadOnlyAdmin):
     list_display = ['team', 'market', 'compliance_level', 'current_trust_multiplier', 'rounds_present']
     list_filter = ['game']
     list_per_page = 50

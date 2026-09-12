@@ -913,6 +913,54 @@ class AdminTamperingTests(AuditIntegrityBase):
             self.assertFalse(options.has_delete_permission(None), model.__name__)
 
 
+class CompetitionAdminBoundaryTests(AuditIntegrityBase):
+    """Django admin is an evidence reader, not a competition write boundary."""
+
+    def setUp(self):
+        super().setUp()
+        self.superuser = DjangoUser.objects.create_superuser(
+            username=f'competition-admin-{id(self)}', email='a@example.com',
+            password='pw')
+        self.client.force_login(self.superuser)
+
+    def test_every_registered_competition_model_refuses_admin_mutation(self):
+        from django.contrib import admin as django_admin
+
+        registered_models = [
+            model for model in django_admin.site._registry
+            if model._meta.app_label == 'core'
+        ]
+        self.assertTrue(registered_models)
+        for model in registered_models:
+            options = django_admin.site._registry[model]
+            self.assertFalse(options.has_add_permission(None), model.__name__)
+            self.assertFalse(options.has_change_permission(None), model.__name__)
+            self.assertFalse(options.has_delete_permission(None), model.__name__)
+
+    def test_admin_keeps_authorised_read_access_but_rejects_game_writes(self):
+        list_response = self.client.get('/admin/core/game/')
+        detail_response = self.client.get(
+            f'/admin/core/game/{self.game.pk}/change/')
+        self.assertEqual(list_response.status_code, 200)
+        self.assertContains(list_response, self.game.name)
+        self.assertEqual(detail_response.status_code, 200)
+
+        add_response = self.client.post('/admin/core/game/add/', {
+            'name': 'Unaudited game',
+        })
+        change_response = self.client.post(
+            f'/admin/core/game/{self.game.pk}/change/', {'status': 'paused'})
+        delete_response = self.client.post(
+            f'/admin/core/game/{self.game.pk}/delete/', {'post': 'yes'})
+
+        self.assertEqual(add_response.status_code, 403)
+        self.assertEqual(change_response.status_code, 403)
+        self.assertEqual(delete_response.status_code, 403)
+        self.game.refresh_from_db()
+        self.assertEqual(self.game.status, 'active')
+        self.assertFalse(Game.objects.filter(name='Unaudited game').exists())
+
+
 class ApiTamperingTests(TestCase):
     """No registered API route writes an audit record, and that is checked.
 
