@@ -212,17 +212,26 @@ class EquityExceedsFundingNeed(ValueError):
     """A requested raise is larger than the shortfall it claims to finance."""
 
 
-def describe(assessment, team_name):
-    return (
-        f'{team_name}: equity raise of ${D(assessment["requested_new_equity"]):,.2f} '
-        f'exceeds the funding shortfall of '
-        f'${D(assessment["maximum_new_equity"]):,.2f} '
-        f'(eligible uses ${D(assessment["eligible_uses"]):,.2f} '
-        f'less available funding ${D(assessment["available_funding"]):,.2f}: '
-        f'opening cash ${D(assessment["opening_cash"]):,.2f} '
-        f'plus new debt ${D(assessment["new_debt"]):,.2f}). '
-        f'Equity may finance a genuine current-round shortfall; it may not '
-        f'create surplus cash or fund dividends.'
+def describe(assessment, team_name, language='en'):
+    """This refusal, worded once, in the participant's language.
+
+    The sentence moved into the bilingual catalogue in GSP-CRV2-12 so a
+    Chinese team is not refused in English on the Decision Summary. `language`
+    defaults to English and the English rendering is byte-identical to the
+    sentence this function built before, so `advance_round`'s recorded refusal
+    — which has no request to read a language from — is unchanged.
+    """
+    from core.utils.participant_messages import participant_message
+
+    return participant_message(
+        'equity_exceeds_funding_need_detail', language=language,
+        team=team_name,
+        requested=f'${D(assessment["requested_new_equity"]):,.2f}',
+        maximum=f'${D(assessment["maximum_new_equity"]):,.2f}',
+        eligible=f'${D(assessment["eligible_uses"]):,.2f}',
+        available=f'${D(assessment["available_funding"]):,.2f}',
+        opening=f'${D(assessment["opening_cash"]):,.2f}',
+        debt=f'${D(assessment["new_debt"]):,.2f}',
     )
 
 

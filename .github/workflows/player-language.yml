@@ -1,0 +1,48 @@
+# GSP-CRV2-12 Stage 5 — the prevention control.
+#
+# The sweep that precedes this workflow rewrote the participant-facing strings
+# that existed on the day it ran. Without a gate, that is a snapshot: the next
+# feature adds an English-only refusal and the sweep silently decays. This
+# fails the build on a participant-facing string that is untranslated, that
+# interpolates different values in each language, or that names a database
+# column.
+#
+# Deliberately not part of the vendored aide-checks package: its config schema
+# sets additionalProperties:false on the check set and checks/.aide-checks-rev
+# pins the package revision, so a repo-authored check cannot be added there
+# without forking a package whose whole design is that it is never forked.
+name: player-language
+
+on:
+  push:
+    paths:
+      - 'backend/core/**'
+      - 'backend/scripts/check-participant-strings*'
+      - 'frontend/globalstrat-frontend/src/locales/**'
+      - '.github/workflows/player-language.yml'
+  pull_request:
+    paths:
+      - 'backend/core/**'
+      - 'backend/scripts/check-participant-strings*'
+      - 'frontend/globalstrat-frontend/src/locales/**'
+      - '.github/workflows/player-language.yml'
+
+jobs:
+  participant-strings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # AP-R10: a check counts only when the packet proves it can fail. The
+      # selftest plants a violation of every assertion and asserts a non-zero
+      # exit, so a checker that has silently stopped detecting anything fails
+      # here rather than reporting a green build.
+      - name: prove the check can fail
+        run: backend/scripts/check-participant-strings-selftest
+
+      - name: check participant-facing strings
+        run: backend/scripts/check-participant-strings --repo "$GITHUB_WORKSPACE"

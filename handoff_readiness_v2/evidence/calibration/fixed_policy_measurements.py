@@ -43,12 +43,16 @@ def _sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _run_replay(output, *, teams, rounds, policy='baseline'):
+def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None,
+                home_markets='NA'):
     command = [
         sys.executable, str(RUNTIME_REPLAY), '--output', str(output),
-        '--teams', str(teams), '--rounds', str(rounds), '--home-markets', 'NA',
+        '--teams', str(teams), '--rounds', str(rounds),
+        '--home-markets', home_markets,
         '--adaptive-production', '--policy', policy,
     ]
+    if name_seed is not None:
+        command += ['--name-seed', str(name_seed)]
     result = subprocess.run(command, cwd=REPO, text=True, capture_output=True,
                             env=os.environ.copy(), timeout=7200)
     if result.returncode:
@@ -126,6 +130,43 @@ def _delta(observed, baseline):
                         'performance_index', 'units_sold')}
 
 
+def _per_profile_final(payload, rounds):
+    """Every team's final-round outcome, keyed by the starter profile it ran.
+
+    R28 asks whether any authored starting position carries an advantage that
+    play cannot overcome.  Answering that needs the whole field, not the single
+    subject team ``_team_final`` reports, and it must be keyed by profile
+    rather than by team name -- the name is a shuffled label, the profile is
+    the thing under test.
+    """
+    rows = []
+    for row in payload['team_rounds']:
+        if row['round'] != rounds:
+            continue
+        rows.append({
+            'starter_profile': row['starter_profile'],
+            'team': row['team'],
+            'units_sold': round(_float(row['units_sold']), 2),
+            'total_revenue': round(_float(row['total_revenue']), 2),
+            'net_income': round(_float(row['net_income']), 2),
+            'cash_closing': round(_float(row['cash_closing']), 2),
+            'performance_index': round(_float(row['performance_index']), 4),
+            'rank': int(row['rank']),
+        })
+    rows.sort(key=lambda entry: (entry['rank'], entry['starter_profile']))
+    return rows
+
+
+def _profile_trajectory(payload, rounds):
+    """Per-profile performance index at every round, for the same question."""
+    series = {}
+    for row in payload['team_rounds']:
+        series.setdefault(row['starter_profile'], {})[row['round']] = round(
+            _float(row['performance_index']), 4)
+    return {profile: [values[r] for r in range(1, rounds + 1) if r in values]
+            for profile, values in sorted(series.items())}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--rounds', type=int, default=10)
@@ -133,6 +174,17 @@ def main():
     parser.add_argument('--output', type=pathlib.Path, default=DEFAULT_OUTPUT)
     parser.add_argument('--smoke', action='store_true',
                         help='run only the 4-team baseline and one price probe')
+    parser.add_argument('--name-seed', type=int, default=None,
+                        help='pin the shuffled company names so the run is '
+                             'reproducible')
+    parser.add_argument('--baseline-only', action='store_true',
+                        help='run only the field-size baselines, no policy '
+                             'variations (used for the R28 per-profile table)')
+    parser.add_argument('--home-markets', default='NA',
+                        help='comma-separated home-market assignment for the '
+                             'teams, in order (default: NA for every team, '
+                             'which is the measured baseline). Use it to '
+                             'measure what spreading home markets does.')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
@@ -148,7 +200,12 @@ def main():
     field_sizes = tuple(dict.fromkeys(options.field_sizes))
     if options.smoke:
         field_sizes = (4,)
-    policies = ('price_plus_10',) if options.smoke else POLICIES
+    if options.baseline_only:
+        policies = ()
+    elif options.smoke:
+        policies = ('price_plus_10',)
+    else:
+        policies = POLICIES
     baseline_size = 8 if 8 in field_sizes else field_sizes[0]
     commands = []
     field_runs = {}
@@ -158,7 +215,9 @@ def main():
         for size in field_sizes:
             print(f'running {size}-team baseline ({options.rounds} rounds)', flush=True)
             payload, command = _run_replay(tempdir / f'field-{size}.json', teams=size,
-                                           rounds=options.rounds)
+                                           rounds=options.rounds,
+                                           name_seed=options.name_seed,
+                                           home_markets=options.home_markets)
             _assert_integrity(payload, teams=size, rounds=options.rounds)
             field_runs[size] = payload
             commands.append(command)
@@ -174,7 +233,9 @@ def main():
             print(f'running {baseline_size}-team {policy} ({options.rounds} rounds)',
                   flush=True)
             payload, command = _run_replay(tempdir / f'{policy}.json', teams=baseline_size,
-                                           rounds=options.rounds, policy=policy)
+                                           rounds=options.rounds, policy=policy,
+                                           name_seed=options.name_seed,
+                                           home_markets=options.home_markets)
             _assert_integrity(payload, teams=baseline_size, rounds=options.rounds)
             observed = _team_final(payload, 0, options.rounds)
             sensitivity_runs[policy] = {
@@ -186,17 +247,26 @@ def main():
             }
             commands.append(command)
 
+        per_profile = _per_profile_final(baseline, options.rounds)
+        profile_trajectory = _profile_trajectory(baseline, options.rounds)
+        baseline_roster = [
+            {'name': team['name'], 'starter_profile': team['starter_profile']}
+            for team in baseline['teams']
+        ]
+
     revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True,
                               capture_output=True, check=True).stdout.strip()
     report = {
         'method': {
             'scenario': 'Consumer Electronics 2026',
             'rounds': options.rounds,
-            'home_market_assignment': 'NA for every team',
+            'home_market_assignment': options.home_markets,
             'baseline_policy': 'documented competent baseline with 10% adaptive production',
             'ai_diffusion_rule': 'Fix A only: AI take is recorded but is excluded from Bass N',
             'measurement_rule': 'No scenario, profile, market, AI, price, production, or scoring dial is retuned.',
             'sensitivity_rule': 'One decision field changes for team 0; every other team retains baseline policy.',
+            'name_seed': options.name_seed,
+            'per_profile_rule': 'Every team plays the identical competent baseline policy, so a difference in outcome is attributable to the authored starting position and to nothing else.',
         },
         'provenance': {
             'code_revision': revision,
@@ -208,6 +278,18 @@ def main():
             str(size): {'rounds': _by_round(payload, options.rounds)}
             for size, payload in field_runs.items()
         },
+        'per_profile_final': {
+            'field_size': baseline_size,
+            'round': options.rounds,
+            'roster': baseline_roster,
+            'rows': per_profile,
+            'performance_index_by_round': profile_trajectory,
+            # The per-round detail behind the trajectory.  Without it the
+            # aggregated report can show that a profile's index fell without
+            # showing why, and a single-round fall of 13-17 points is exactly
+            # the thing a starting-position audit has to be able to explain.
+            'team_rounds': baseline['team_rounds'],
+        },
         'fixed_policy_sensitivity': {
             'baseline_field_size': baseline_size,
             'baseline_subject_final': baseline_subject,
@@ -217,17 +299,34 @@ def main():
             'all_field_sizes_reconciled': True,
             'all_requested_runs_completed': True,
             'policy_variations': list(policies),
+            'distinct_starter_profiles_in_baseline': len(
+                {team['starter_profile'] for team in baseline['teams']}),
+            'baseline_team_count': len(baseline['teams']),
         },
     }
     options.output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
     print(f'wrote {options.output}')
     print('field sizes:', ', '.join(str(size) for size in field_sizes))
-    print('sensitivity dimensions:', ', '.join(policies))
+    print('sensitivity dimensions:', ', '.join(policies) or '(none)')
     for size, payload in field_runs.items():
         row = _by_round(payload, options.rounds)[-1]
         print('field {size:>2}: round {round} human={human_adopters:,.2f} '
               'AI={ai_adopters:,.2f} unserved={unserved_adopters:,.2f} '
               'HHI={team_sales_hhi:.6f}'.format(size=size, **row))
+    print()
+    print(f'per-profile round-{options.rounds} outcome at {baseline_size} teams '
+          f'({report["checks"]["distinct_starter_profiles_in_baseline"]} distinct '
+          f'profiles across {report["checks"]["baseline_team_count"]} teams):')
+    print('%-28s %6s %12s %14s %14s %10s' % (
+        'starter profile', 'rank', 'units', 'revenue', 'net income', 'index'))
+    for row in per_profile:
+        print('%-28s %6d %12.0f %14.0f %14.0f %10.4f' % (
+            row['starter_profile'][:28], row['rank'], row['units_sold'],
+            row['total_revenue'], row['net_income'], row['performance_index']))
+    if per_profile:
+        indexes = [row['performance_index'] for row in per_profile]
+        print('index spread: %.4f (min %.4f, max %.4f)' % (
+            max(indexes) - min(indexes), min(indexes), max(indexes)))
     for policy, result in sensitivity_runs.items():
         delta = result['delta_from_baseline']
         print(f'{policy}: PI delta={delta["performance_index"]:+.4f}, '

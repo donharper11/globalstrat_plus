@@ -1,0 +1,528 @@
+#!/usr/bin/env python3
+"""Fail the build on a participant-facing string that is untranslated or names a storage field.
+
+GSP-CRV2-12 Stage 5. The sweep that precedes this check is a snapshot: it
+rewrites the strings that exist on the day it runs. This is the control that
+keeps the next feature's strings from regressing it.
+
+It is deliberately NOT the Stage 1 control. `evidence/player-language/
+generate_inventory.py --check` asserts that the checked-in *inventory* still
+describes the tree — it fails when wording changed without refreshing the
+evidence, and it passes happily on a brand-new English-only refusal as long as
+the inventory lists it. This check asserts the *property*: a participant-facing
+sentence exists in both languages, interpolates the same values in both, and
+does not name a database column.
+
+Six assertions, each mapped to a defect this repository actually shipped:
+
+  A1  every catalogue entry carries every shipped language      (V2-061)
+  A2  an entry's placeholders are identical across languages    (Stage 3 —
+      interpolation order is where translated strings break)
+  A3  no catalogue sentence contains a storage/model field name (F-PL-01,
+      "`rd_budget` is 0.")
+  A4  no participant-facing literal in the declared scope
+      bypasses the catalogue                                     (V2-069.3)
+  A5  every `Round.STATUS_CHOICES` value has a participant label (V2-069.1)
+  A6  the frontend locale catalogues agree on keys and on each
+      key's interpolation placeholders
+
+Exit codes follow the aide-checks convention in `checks/README.md`:
+  0 clean · 1 findings · 2 could not run.
+Exit 2 is a failure, never a pass: a check that could not run has not passed.
+Zero findings over zero examined units is exit 2 for the same reason.
+
+Usage:
+    backend/scripts/check-participant-strings [--config PATH] [--repo PATH]
+
+Standard library only, and it reads the tracked source tree — never a
+database, never a running server, never a model response.
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+import json
+import re
+import sys
+from pathlib import Path
+
+CHECK = "participant-string-hygiene"
+
+# Response/dict keys whose value is wording a person reads.
+MESSAGE_KEYS = {
+    "detail", "error", "errors", "message", "messages", "title", "warning",
+    "warnings", "description", "requirement", "help_text", "label",
+    "placeholder", "teaching_note",
+}
+# A literal appended to one of these is participant copy.
+MESSAGE_LIST_SUFFIXES = (
+    "errors", "warnings", "blockers", "problems", "details", "messages",
+)
+# Calls whose string arguments are refusals.
+REFUSAL_CALLS = {"ValidationError", "Response"}
+
+PLACEHOLDER = re.compile(r"\{(\w+)\}")
+JS_PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
+# A storage identifier: two or more lowercase segments joined by underscores.
+# Single words are deliberately not flagged -- "amount" and "market" are also
+# ordinary English, and a check that cries wolf gets switched off.
+SNAKE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
+
+
+def error(message: str) -> int:
+    print(f"{CHECK}: ERROR {message}", file=sys.stderr)
+    return 2
+
+
+# ---------------------------------------------------------------------------
+# configuration
+# ---------------------------------------------------------------------------
+
+def load_config(path: Path) -> dict:
+    try:
+        cfg = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise ValueError(f"invalid config at {path}: {exc}") from exc
+
+    for key in ("languages", "catalogues", "scope", "locales",
+                "model_field_sources", "allow_literals",
+                "participant_payload_dicts", "localised_name_arguments"):
+        if key not in cfg:
+            raise ValueError(f"config is missing {key!r}")
+    for key in ("scope_source", "catalogues_source", "locales_source",
+                "allow_literals_source", "languages_source",
+                "model_field_sources_source",
+                "participant_payload_dicts_source",
+                "localised_name_arguments_source"):
+        if not str(cfg.get(key, "")).strip():
+            raise ValueError(f"{key} is required: a declaration without a "
+                             "recorded source is not reviewable")
+    if not cfg["languages"]:
+        raise ValueError("languages must not be empty: a check that compares "
+                         "nothing cannot fail")
+    if not cfg["scope"]:
+        raise ValueError("scope must name at least one file")
+    for pattern, reason in cfg["scope"].items():
+        if not str(reason).strip():
+            raise ValueError(f"scope entry {pattern!r} has no stated reason")
+    for literal, reason in cfg["allow_literals"].items():
+        if not str(reason).strip():
+            raise ValueError(f"allow_literals entry {literal!r} has no reason. "
+                             "A suppression nobody has to justify grows until "
+                             "the check means nothing.")
+    for rel, reason in cfg["participant_payload_dicts"].items():
+        if not str(reason).strip():
+            raise ValueError(f"participant_payload_dicts entry {rel!r} has no "
+                             "stated reason")
+        if rel not in cfg["scope"]:
+            raise ValueError(f"participant_payload_dicts names {rel!r}, which "
+                             "is not in scope")
+    for argument, reason in cfg["localised_name_arguments"].items():
+        if not str(reason).strip():
+            raise ValueError(f"localised_name_arguments entry {argument!r} "
+                             "has no stated reason")
+    return cfg
+
+
+# ---------------------------------------------------------------------------
+# source loading
+# ---------------------------------------------------------------------------
+
+def module_dict(path: Path, name: str) -> dict:
+    """Read a module-level dict literal without importing Django."""
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(
+                getattr(t, "id", "") == name for t in node.targets):
+            return ast.literal_eval(node.value)
+    raise ValueError(f"{path} defines no module-level {name}")
+
+
+def round_status_values(repo: Path) -> list[str]:
+    path = repo / "backend/core/models/core.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) and node.name == "Round":
+            for body in node.body:
+                if isinstance(body, ast.Assign) and any(
+                        getattr(t, "id", "") == "STATUS_CHOICES"
+                        for t in body.targets):
+                    return [value for value, _label
+                            in ast.literal_eval(body.value)]
+    raise ValueError("core/models/core.py defines no Round.STATUS_CHOICES")
+
+
+def model_field_names(repo: Path, sources: list[str]) -> set[str]:
+    """Every `x = models.Field(...)` attribute name in the model modules."""
+    names: set[str] = set()
+    for source in sources:
+        root = repo / source
+        for path in sorted(root.rglob("*.py")):
+            try:
+                tree = ast.parse(path.read_text(encoding="utf-8"))
+            except (OSError, SyntaxError):
+                continue
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Assign):
+                    continue
+                call = node.value
+                if not (isinstance(call, ast.Call)
+                        and isinstance(call.func, ast.Attribute)
+                        and isinstance(call.func.value, ast.Name)
+                        and call.func.value.id == "models"):
+                    continue
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and "_" in target.id:
+                        names.add(target.id)
+    return names
+
+
+def human_text(text: str) -> bool:
+    """Wording a person reads, as opposed to a key, token or identifier."""
+    stripped = text.strip()
+    if len(stripped) < 3 or not re.search(r"[A-Za-z一-鿿]", stripped):
+        return False
+    # A bare lowercase identifier/path/mime token is never copy.
+    if re.fullmatch(r"[a-z][a-z0-9_./:-]*", stripped):
+        return False
+    if re.fullmatch(r"[A-Z_][A-Z0-9_]*", stripped):
+        return False
+    return True
+
+
+# ---------------------------------------------------------------------------
+# the scope assertion (A4)
+# ---------------------------------------------------------------------------
+
+def raw_localised_names(path: Path, rel: str,
+                        arguments: set[str]) -> list[tuple[str, int, str, str]]:
+    """Scenario-authored names interpolated into a message without localisation.
+
+    `market=me.market.name` puts an English market name inside an otherwise
+    Chinese sentence. `MarketDefinition`, `PlatformGenerationDefinition` and
+    `FeatureDefinition` each carry a `name_zh`, and `get_localized_field` is
+    the helper that reads it with an English fallback.
+
+    Only the arguments the config names are checked. A team's own product name
+    has no translated counterpart and must stay raw, so `product` is not among
+    them -- which is why this is declared rather than inferred from the
+    argument looking like a name.
+    """
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    found: list[tuple[str, int, str, str]] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        called = getattr(node.func, "id", None) or getattr(node.func, "attr", None)
+        if called not in ("participant_message", "cohort_message"):
+            continue
+        for keyword in node.keywords:
+            if keyword.arg not in arguments:
+                continue
+            value = keyword.value
+            raw = None
+            if isinstance(value, ast.Attribute) and value.attr == "name":
+                raw = ast.unparse(value)
+            elif (isinstance(value, ast.Call)
+                    and getattr(value.func, "id", None) == "getattr"
+                    and len(value.args) >= 2
+                    and isinstance(value.args[1], ast.Constant)
+                    and value.args[1].value == "name"):
+                raw = ast.unparse(value)
+            if raw:
+                found.append((rel, value.lineno, keyword.arg, raw))
+    return found
+
+
+def scope_literals(path: Path, rel: str,
+                   scan_plain_dicts: bool) -> list[tuple[str, int, str, str]]:
+    """Participant-facing string literals that did not come from a catalogue.
+
+    A catalogue-backed message is a Call node (`participant_message(...)`), so
+    it is structurally invisible here; only a hard-coded Constant is reported.
+
+    `scan_plain_dicts` separates two things that look identical to the syntax
+    tree. A bare `{'detail': ...}` built in a *view* is a response payload a
+    participant reads — that is how the R&D prerequisite rows reached a
+    Chinese team in English. The same shape built in a *service* is a
+    diagnostic record for an engineer, which is supposed to name the model and
+    the row; `decision_limits.persisted_violations` exists to do exactly that.
+    Which files hold which is a judgment, so it is declared in the config
+    rather than guessed from the path.
+    """
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    found: list[tuple[str, int, str, str]] = []
+
+    def literals_under(node: ast.AST):
+        """Constant strings directly inside a node, through lists/tuples."""
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            yield node
+        elif isinstance(node, (ast.List, ast.Tuple, ast.Set)):
+            for element in node.elts:
+                yield from literals_under(element)
+        elif isinstance(node, ast.IfExp):
+            yield from literals_under(node.body)
+            yield from literals_under(node.orelse)
+        elif isinstance(node, ast.JoinedStr):
+            # An f-string is wording too; report the node itself.
+            if any(isinstance(v, ast.Constant) and isinstance(v.value, str)
+                   and human_text(v.value) for v in node.values):
+                yield node
+
+    def text_of(node: ast.AST) -> str:
+        if isinstance(node, ast.Constant):
+            return node.value
+        parts = []
+        for value in node.values:
+            if isinstance(value, ast.Constant) and isinstance(value.value, str):
+                parts.append(value.value)
+            else:
+                parts.append("{...}")
+        return "".join(parts)
+
+    def record(node: ast.AST, why: str):
+        text = text_of(node)
+        if not human_text(text):
+            return
+        found.append((rel, node.lineno, text, why))
+
+    for node in ast.walk(tree):
+        # 1. refusal constructors
+        if isinstance(node, ast.Call):
+            name = getattr(node.func, "id", None) or getattr(node.func, "attr", None)
+            if name in REFUSAL_CALLS:
+                for arg in list(node.args) + [kw.value for kw in node.keywords]:
+                    if isinstance(arg, ast.Dict):
+                        for key, value in zip(arg.keys, arg.values):
+                            if (isinstance(key, ast.Constant)
+                                    and key.value in MESSAGE_KEYS):
+                                for literal in literals_under(value):
+                                    record(literal, f"{name}[{key.value!r}]")
+                    else:
+                        for literal in literals_under(arg):
+                            record(literal, f"{name}()")
+            # 2. appends onto a message list
+            if (isinstance(node.func, ast.Attribute)
+                    and node.func.attr in ("append", "extend")):
+                target = node.func.value
+                target_name = getattr(target, "id", "") or getattr(target, "attr", "")
+                if target_name.endswith(MESSAGE_LIST_SUFFIXES):
+                    for arg in node.args:
+                        for literal in literals_under(arg):
+                            record(literal, f"{target_name}.{node.func.attr}()")
+
+        # 3. plain dicts carrying a message key (the R&D prerequisite rows)
+        if scan_plain_dicts and isinstance(node, ast.Dict):
+            for key, value in zip(node.keys, node.values):
+                if isinstance(key, ast.Constant) and key.value in MESSAGE_KEYS:
+                    for literal in literals_under(value):
+                        record(literal, f"dict[{key.value!r}]")
+
+        # 4. a permission class's `message` attribute
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                target_name = getattr(target, "id", "") or getattr(target, "attr", "")
+                if target_name == "message":
+                    for literal in literals_under(node.value):
+                        record(literal, "permission message")
+
+    return found
+
+
+# ---------------------------------------------------------------------------
+# main
+# ---------------------------------------------------------------------------
+
+def main(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument("--repo", default=None)
+    parser.add_argument("--config", default=None)
+    args = parser.parse_args(argv[1:])
+
+    here = Path(__file__).resolve()
+    repo = Path(args.repo).resolve() if args.repo else here.parents[2]
+    config_path = (Path(args.config).resolve() if args.config
+                   else here.parent / "participant-strings.config.json")
+
+    try:
+        cfg = load_config(config_path)
+    except ValueError as exc:
+        return error(str(exc))
+
+    languages = cfg["languages"]
+    findings: list[str] = []
+    units = 0
+    suppressions = 0
+
+    # -- catalogues: A1, A2, A3 --------------------------------------------
+    try:
+        fields = model_field_names(repo, cfg["model_field_sources"])
+    except (OSError, ValueError) as exc:
+        return error(f"could not read the model field vocabulary: {exc}")
+    if not fields:
+        return error("read zero model field names; the storage vocabulary "
+                     "would be empty and A3 could not fail")
+
+    for rel, dict_names in cfg["catalogues"].items():
+        path = repo / rel
+        if not path.exists():
+            return error(f"catalogue {rel} does not exist")
+        for dict_name in dict_names:
+            try:
+                catalogue = module_dict(path, dict_name)
+            except (OSError, ValueError, SyntaxError) as exc:
+                return error(f"could not read {rel}:{dict_name}: {exc}")
+            for key, entry in catalogue.items():
+                units += 1
+                if not isinstance(entry, dict):
+                    findings.append(
+                        f"{rel}:{dict_name}[{key!r}] is not a language map")
+                    continue
+                # A1
+                missing = [lang for lang in languages
+                           if not str(entry.get(lang, "")).strip()]
+                if missing:
+                    findings.append(
+                        f"A1 {rel}:{dict_name}[{key!r}] has no "
+                        f"{', '.join(missing)} wording. A participant reading "
+                        f"that language would get English or nothing.")
+                    continue
+                # A2
+                sets = {lang: set(PLACEHOLDER.findall(entry[lang]))
+                        for lang in languages}
+                reference = sets[languages[0]]
+                for lang in languages[1:]:
+                    if sets[lang] != reference:
+                        findings.append(
+                            f"A2 {rel}:{dict_name}[{key!r}] interpolates "
+                            f"{sorted(reference)} in {languages[0]} but "
+                            f"{sorted(sets[lang])} in {lang}. A value would be "
+                            f"dropped or KeyError at render time.")
+                # A3. Placeholder names are masked first: `{unlock_round}` is
+                # substituted before a participant ever sees the sentence, so
+                # the template's variable name is not copy. Scanning it flagged
+                # six correctly-worded messages on this check's first run.
+                for lang in languages:
+                    rendered = PLACEHOLDER.sub(" ", entry[lang])
+                    for token in SNAKE.findall(rendered):
+                        if token in fields:
+                            findings.append(
+                                f"A3 {rel}:{dict_name}[{key!r}] ({lang}) names "
+                                f"the storage field {token!r}. Use the business "
+                                f"object's name, via FIELD_LABELS.")
+
+    # -- A5: round status labels -------------------------------------------
+    try:
+        statuses = round_status_values(repo)
+        labels = module_dict(
+            repo / "backend/core/utils/participant_messages.py",
+            "ROUND_STATUS_LABELS")
+    except (OSError, ValueError, SyntaxError) as exc:
+        return error(f"could not read the round status vocabulary: {exc}")
+    for status in statuses:
+        units += 1
+        if status not in labels:
+            findings.append(
+                f"A5 Round.STATUS_CHOICES has {status!r}, which "
+                f"ROUND_STATUS_LABELS does not label. It would reach a "
+                f"Chinese participant as an English token.")
+
+    # -- A4: the declared participant-facing scope --------------------------
+    allowed = cfg["allow_literals"]
+    used_allowances: set[str] = set()
+    for rel in cfg["scope"]:
+        path = repo / rel
+        if not path.exists():
+            return error(f"scope file {rel} does not exist; the scope no "
+                         f"longer describes the tree")
+        units += 1
+        try:
+            for where, line, text, why in scope_literals(
+                    path, rel, rel in cfg["participant_payload_dicts"]):
+                if text in allowed:
+                    used_allowances.add(text)
+                    suppressions += 1
+                    continue
+                findings.append(
+                    f"A4 {where}:{line} [{why}] hard-codes participant copy "
+                    f"{text!r}. Add it to the bilingual catalogue and call "
+                    f"participant_message().")
+            # A7 -- the same file, asked a different question.
+            for where, line, argument, expr in raw_localised_names(
+                    path, rel, set(cfg["localised_name_arguments"])):
+                findings.append(
+                    f"A7 {where}:{line} interpolates {argument}={expr} into a "
+                    f"participant message. That name is scenario content with "
+                    f"a `name_zh`; read it with "
+                    f"get_localized_field(obj, 'name', language) so a Chinese "
+                    f"sentence does not carry an English name.")
+        except (OSError, SyntaxError) as exc:
+            return error(f"could not scan {rel}: {exc}")
+
+    for text in allowed:
+        if text not in used_allowances:
+            findings.append(
+                f"A4 allow_literals entry {text!r} matched nothing. A stale "
+                f"suppression hides the next literal that reuses its text.")
+
+    # -- A6: the frontend locale catalogues ---------------------------------
+    loaded: dict[str, dict] = {}
+    for rel, lang in cfg["locales"].items():
+        path = repo / rel
+        try:
+            loaded[lang] = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            return error(f"could not read locale {rel}: {exc}")
+
+    def flatten(data, prefix=""):
+        flat = {}
+        for key, value in data.items():
+            name = f"{prefix}.{key}" if prefix else key
+            if isinstance(value, dict):
+                flat.update(flatten(value, name))
+            else:
+                flat[name] = value
+        return flat
+
+    flat = {lang: flatten(data) for lang, data in loaded.items()}
+    reference_lang = languages[0]
+    if reference_lang in flat:
+        reference_keys = set(flat[reference_lang])
+        units += len(reference_keys)
+        for lang, data in flat.items():
+            if lang == reference_lang:
+                continue
+            for key in sorted(reference_keys - set(data)):
+                findings.append(
+                    f"A6 locale key {key!r} exists in {reference_lang} but not "
+                    f"in {lang}; that surface falls back to English.")
+            for key in sorted(set(data) - reference_keys):
+                findings.append(
+                    f"A6 locale key {key!r} exists in {lang} but not in "
+                    f"{reference_lang}.")
+            for key in sorted(reference_keys & set(data)):
+                left = set(JS_PLACEHOLDER.findall(str(flat[reference_lang][key])))
+                right = set(JS_PLACEHOLDER.findall(str(data[key])))
+                if left != right:
+                    findings.append(
+                        f"A6 locale key {key!r} interpolates {sorted(left)} in "
+                        f"{reference_lang} but {sorted(right)} in {lang}.")
+
+    # -- result -------------------------------------------------------------
+    print(f"aide-checks: check-result name={CHECK} units={units} "
+          f"findings={len(findings)} suppressions={suppressions}")
+
+    if units == 0:
+        return error("zero findings over zero examined units — could not run.")
+    if findings:
+        print(f"{CHECK}: FAIL {len(findings)} finding(s)")
+        for finding in findings:
+            print(f"  {finding}")
+        return 1
+    print(f"{CHECK}: PASS {units} unit(s) examined, {suppressions} "
+          f"reviewed suppression(s)")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
