@@ -384,6 +384,239 @@ questions section.
 
 ---
 
+---
+
+## Part C — re-authoring the decorative rows (owner ruling, 2026-09-12)
+
+**The ruling:** *re-author the decorative rows.* Do not exclude unreachable
+weight from scoring, and do not leave it as authored. Scenario data only; the
+`validate_scenario_yaml` contract stays as found; gated segments' own pull is
+not to be touched beyond what the re-authoring requires.
+
+### The fact that shaped the design: "unreachable" has two durations
+
+The Part B measurement treated these features as one class. They are not. In
+**all three** scenarios, two of the three appear on **Gen 2** (unlock round 2)
+and one only on **Gen 3** (unlock round 5, plus 2 development rounds):
+
+| scenario | reachable from round 2 | reachable only from round 5 |
+|---|---|---|
+| consumer_electronics | `ai_features`, `iot_integration` | `connectivity` |
+| clean_energy_tech | `solid_state`, `smart_bms` | `sodium_ion` |
+| media_entertainment | `ai_personalization`, `immersive_media` | `creator_economy` |
+
+So one class is out of reach for a single round and the other for **four rounds
+at best**. That distinction drives the two rules; a single uniform edit would
+have been wrong.
+
+### Rule A — move: the Gen-3-only rows (60 rows)
+
+A demand no team can act on for the first four rounds is a flat tax, not
+pressure. The row is **removed** from segments a Gen-1 team plays in, and its
+weight **moved** to that segment-market's highest-weighted Gen-1-reachable
+platform feature, so the segment's total weight is unchanged and the weight now
+sits on something a team can move.
+
+| scenario | segment | feature removed | weight moved to | fit at level 0 was |
+|---|---|---|---|---:|
+| consumer_electronics | Value Seekers | `connectivity` | `durability` | 0.8007 |
+| consumer_electronics | Enterprise & Institutional Buyers | `connectivity` | `durability` | 0.2780 |
+| consumer_electronics | Premium Consumers | `connectivity` | `product_design` | 0.6065 |
+| consumer_electronics | Sustainability-Conscious Buyers | `connectivity` | `sustainable_materials` | 0.8007 |
+| clean_energy_tech | EV Manufacturers | `sodium_ion` | `charging_speed` | 0.7548 |
+| clean_energy_tech | Grid-Scale Energy Storage | `sodium_ion` | `cycle_life` | 0.7548 |
+| clean_energy_tech | Consumer Electronics OEMs | `sodium_ion` | `energy_density` | 0.7548 |
+| clean_energy_tech | Off-Grid Solar & Residential Storage | `sodium_ion` | `cycle_life` | 0.7548 |
+| media_entertainment | Mass Entertainment Viewers | `creator_economy` | `content_quality` | 0.8825 |
+| media_entertainment | Premium Content Subscribers | `creator_economy` | `content_quality` | 0.8825 |
+| media_entertainment | Cultural Enthusiasts | `creator_economy` | `localization_quality` | 0.8825 |
+| media_entertainment | Enterprise & Institutional | `creator_economy` | `content_safety` | 0.8825 |
+
+Each row above is × 5 markets. The move target is deterministic: highest
+authored weight among Gen-1-reachable platform features, ties broken by feature
+code.
+
+### Rule B — sharpen: the Gen-2 rows (120 rows)
+
+These are the upgrade incentive the scenario intended, authored decoratively: a
+low ideal against a wide tolerance paid 0.61–0.88 of its value to a team
+sitting at level 0, so nobody felt it. The **weight is kept** and the demand is
+made real — the ideal is remapped into the band a Gen-2 platform can actually
+reach and the tolerance tightened. Each segment's authored ordering is
+preserved: the segment that asked for least still asks for least.
+
+| scenario | ideal remap | tolerance | Gen-2 ceiling | fit at level 0 |
+|---|---|---|---|---|
+| consumer_electronics | 4→8, 6→10, 8→12 | 5.0/6.0 → 4.0 | 16 | 0.61–0.80 → **0.011–0.135** |
+| clean_energy_tech | 4→6 | 4.0 → 2.5 | 7 / 8 | 0.6065 → **0.0561** |
+| media_entertainment | 3→5, 4→6, 5→7 | 5.0/6.0 → 2.5 | 8 / 7 | 0.61–0.88 → **0.020–0.135** |
+
+Every remapped ideal is at or below its feature's Gen-2 ceiling — verified as an
+assertion, so the target is genuinely attainable once a team upgrades rather
+than merely harder.
+
+The full per-row record, all 180 rows with before/after values, is committed as
+`evidence/calibration/preference_reauthor_plan.json`; the transformation itself
+is `evidence/calibration/reauthor_unreachable_preferences.py` (`--dry-run` /
+`--apply`), so the edit is reproducible rather than hand-made.
+
+### Rule C — the 0.99 weight sums (2 rows), and what I found first
+
+**Item 5 asked me to confirm nothing divides by an assumed 1.00 before
+tidying. Nothing does — but something worse is true.** Every scorer divides by
+the *observed* sum: `preference_engine.py:177` and `:245-248`,
+`bootstrap.py:98-99`, `capital_markets.py:173-185`,
+`investor_relations.py:57-59`, `alliance_engine.py:49-55`. A 0.99 vector is
+therefore harmless to all of them.
+
+`campaign_engine.py:99` is the exception: it accumulates
+`weight × feature_strength × multiplier` and **never normalises**, so it treats
+the weight vector as already summing to 1.00. A segment authored at 0.99
+yields ~1% less campaign bonus than an identical one at 1.00. Tidying makes
+that path *more* correct, not less — which is why I tidied rather than left it.
+
+Two blocks were genuinely short: `Cultural Enthusiasts/eu` and
+`Gen Z Digital Natives/eu`, both media, both 0.99. Consumer electronics' 13
+"off" sums are float representation artefacts (1.000001, 0.999999) on authored
+6-decimal weights and were **left alone**. The 0.01 was added to a
+Gen-1-**reachable** feature in each case (`localization_quality`,
+`audience_engagement`) so that tidying Gen Z — a gated segment — did not alter
+its upgrade pull, which item 4 puts out of scope.
+
+### What was deliberately not touched (item 4)
+
+The three gated segments — Tech Enthusiasts, Aerospace & Defense, Gen Z Digital
+Natives — keep every preference row exactly as authored. Verified numerically:
+their drag is **identical to four decimal places** before and after (0.2564,
+0.0103, 0.1489). The only gated row that changed at all is Gen Z's tidied
+`audience_engagement` weight, on a reachable feature.
+
+**Options for the separate design question, reported and not decided.** One
+input the owner should have: a gated segment's Gen-2 demand is arguably already
+self-consistent. `preference_engine.py:70-76` zeroes a team's fit for a segment
+it cannot enter, and entering Tech Enthusiasts *requires* Gen 2 — which is the
+same platform that unlocks `ai_features`. A team that can compete for the
+segment can also build what it asks for, so that 25.6-point drag is never
+actually borne by a scoring team. The residual that is **not** self-consistent
+is the Gen-3-only row: a Gen-2 team entering at round 2 still cannot build
+`connectivity` until round 5–7.
+
+- **(a) Leave it.** Defensible on the above: the Gen-2 half is coherent, and
+  only the Gen-3-only row is genuinely stranded.
+- **(b) Apply Rule A to gated segments too** — move only their Gen-3-only
+  weight to a reachable feature, leaving the Gen-2 pull intact. Smallest change
+  that removes the remaining stranded weight.
+- **(c) Drop `min_generation_required`** and let the sharpened preference do
+  the gating, so the segment is enterable but unwinnable without the upgrade.
+  Largest change; would alter who competes for those segments at all.
+
+### The consequence, measured (item 3) — **this is the finding**
+
+Two 8-team, 10-round fixed-policy replays, **`--name-seed 20260912` pinned** so
+the rosters are provably identical (`teams_equal: True`), differing only in the
+scenario data. Both at `4d2169c`.
+
+**Outcomes did shift in rounds 1–10.**
+`per_round_team_summary_identical_rounds_ge1 = False`, with rows differing in
+every table (product_demand 576, adoption 328, product_market 87, leaderboard
+79, performance_index 79, market_revenue 72, financials 70, coherence 69,
+ai_adoption 80, reconciliation 40). `output_sha256` differs in every round —
+this time meaningfully, since names are pinned.
+
+**Magnitude is small and uniform in direction:**
+
+| round | industry units before | after | delta | PI spread before | after |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 205,216 | 203,806 | −0.69% | 8.79 | 8.69 |
+| 5 | 306,340 | 304,612 | −0.56% | 29.96 | 29.73 |
+| 10 | 499,873 | 497,849 | −0.40% | 40.96 | 40.78 |
+
+Per team at round 10: revenue **−1.48% … +0.34%**, performance index down
+**0.74–1.64 points**, competitive dispersion essentially unchanged (spread
+40.96 → 40.78). Divergence **shrinks** across the game rather than compounding,
+because the sharpened demands bite hardest while every team is still on Gen 1.
+
+**The round-10 finishing order is unchanged.** Rank differs in 20 of 80
+team-rounds, but **none of those flips crossed a performance-index gap wider
+than 0.5 points** — the largest gap crossed was 0.22, and most were 0.00–0.11.
+Every flip is between The Innovator and The Green Pioneer (and their
+duplicates), two archetypes that score within a rounding error of each other; a
+change of ~0.5–1.0 PI reshuffles them. That is near-tie churn, not competitive
+movement. **It is still worth the owner's attention**, because a cohort with
+duplicate archetypes will contain such near-ties and their displayed rank is
+not robust to a change of this size.
+
+**One team gained, and it is the right one.** The Brand Builder
+(`product_design` 11) is the only profile whose revenue rose (+0.34%), because
+Premium Consumers' `connectivity` weight moved onto `product_design` — the
+feature it has authored strength in. Weight that previously paid out to
+everyone regardless now rewards the team that actually built the thing. That is
+the ruling working as intended.
+
+**One number to read carefully:** net income swings further than revenue —
+up to −17.90% for The Innovator at round 5 on a −1.48% revenue change. That is
+leverage on a small base (net income is a difference of large numbers
+mid-game), not a 17% economic effect. Revenue, units and PI are the honest
+magnitude measures here.
+
+**Verdict, for the owner rather than absorbed:** the change is *material enough
+to be real* (every result table moves) and *immaterial enough not to alter the
+competition outcome* (finishing order unchanged, dispersion preserved, all rank
+flips inside 0.22 PI). It shifts the early game, which is where the ruling
+intended it to bite.
+
+### Before and after, on the authored data
+
+| scenario | preferences | dead-weight rows | unreachable weight total |
+|---|---|---|---|
+| consumer_electronics | 658 → **638** | 75 → **55** | 2.678 → **2.184** |
+| clean_energy_tech | 670 → **650** | 75 → **55** | 0.750 → **0.550** |
+| media_entertainment | 671 → **651** | 75 → **55** | 1.590 → **1.370** |
+
+Still 0 out-of-range ideals, 0 degenerate segment-markets, and every tolerance
+in the discriminating band in all three scenarios. The 55 remaining rows are
+the 15 gated rows left alone plus the 40 playable Gen-2 rows, which now carry
+real pressure rather than decoration.
+
+Drag per segment, home market shown (gated segments in bold are unchanged):
+
+| scenario | segment | drag before | drag after |
+|---|---|---:|---:|
+| consumer_electronics | Value Seekers | 0.0100 | **0.0259** |
+| consumer_electronics | Sustainability-Conscious Buyers | 0.0120 | **0.0346** |
+| consumer_electronics | Premium Consumers | 0.0451 | **0.0593** |
+| consumer_electronics | Enterprise & Institutional Buyers | 0.0472 | 0.0465 |
+| consumer_electronics | *Tech Enthusiasts (gated)* | 0.2564 | *0.2564* |
+| clean_energy_tech | all four playable segments | 0.0103 | **0.0189** |
+| clean_energy_tech | *Aerospace & Defense (gated)* | 0.0103 | *0.0103* |
+| media_entertainment | Mass Entertainment Viewers | 0.0035 | **0.0173** |
+| media_entertainment | Cultural Enthusiasts | 0.0035 | **0.0173** |
+| media_entertainment | Enterprise & Institutional | 0.0043 | **0.0181** |
+| media_entertainment | Premium Content Subscribers | 0.0110 | **0.0290** |
+| media_entertainment | *Gen Z Digital Natives (gated)* | 0.1489 | *0.1489* |
+
+The loader contract passes on all three (`validate_scenario_yaml` → no errors).
+Its warnings show the change precisely: the Gen-3-only features drop from 25
+preferences to **5** — the gated segment's five markets, all that remain —
+while the Gen-2 features correctly stay at 25, because their weight is retained
+and is now real.
+
+### Part C commands
+
+| command | result | duration |
+|---|---|---|
+| `reauthor_unreachable_preferences.py --dry-run` | 182 row actions planned | <1s |
+| invariant check on throwaway copies | **ALL INVARIANTS HOLD** | <1s |
+| `reauthor_unreachable_preferences.py --apply` | 182 applied | <1s |
+| `test-postgres` × 3 focused modules | **Ran 22 — OK** | 7.43s |
+| 2 × pinned replay (8 teams, 10 rounds) | complete | 89.2s / 86.9s |
+| loader contract on all three scenarios | 0 errors | <1s |
+
+Before applying, the transformation was run against **copies** and asserted to
+preserve every weight sum, keep every ideal in range and at or below its Gen-2
+ceiling, remove exactly one row per playable segment-market, and leave gated
+segments byte-identical. Only then was it applied for real.
+
 ## Commands, counts and durations
 
 All test runs used `backend/scripts/test-postgres`, which starts its own
@@ -430,6 +663,25 @@ action, not a builder's.
 | `backend/core/tests/test_round_zero_adoption.py` | new — 9 test methods pinning the authored source |
 | `handoff_readiness_v2/evidence/calibration/preference_audit.py` | new — Stage 5 items 1–4 audit |
 | `handoff_readiness_v2/evidence/calibration/preference_audit.json` | new — its machine-readable output |
+| `handoff_readiness_v2/evidence/calibration/r11_round_zero_replay.py` | new — the round-zero replay probe |
+| `handoff_readiness_v2/evidence/calibration/r11_round_zero_compare.py` | new — its comparator |
+| `handoff_readiness_v2/evidence/calibration/r11_round_zero_replay_comparison.json` | new — the rounds 1–10 comparison |
+
+Part C (the 2026-09-12 ruling) adds, in a second commit:
+
+| file | change |
+|---|---|
+| `backend/scenarios/consumer_electronics_2026.yaml` | **data** — 20 rows moved/sharpened per Rules A/B |
+| `backend/scenarios/clean_energy_tech_2026.yaml` | **data** — 20 rows moved/sharpened per Rules A/B |
+| `backend/scenarios/media_entertainment_2026.yaml` | **data** — 20 rows moved/sharpened, 2 weight sums tidied to 1.00 |
+| `handoff_readiness_v2/evidence/calibration/reauthor_unreachable_preferences.py` | new — the transformation, `--dry-run` / `--apply` |
+| `handoff_readiness_v2/evidence/calibration/preference_reauthor_plan.json` | new — the per-row record, all 180 rows |
+| `handoff_readiness_v2/evidence/calibration/preference_reauthor_replay_comparison.json` | new — the pinned before/after replay |
+| `handoff_readiness_v2/evidence/calibration/preference_audit.json` | regenerated against the re-authored data |
+
+**No scoring or engine code changed in Part C** — it is scenario data plus
+evidence, exactly as the ruling scoped it. The `validate_scenario_yaml`
+contract is untouched.
 
 I did not touch `core/views/decisions.py`, the serializers,
 `core/views/course.py`, `core/views/core.py`,
@@ -507,7 +759,9 @@ is wrong; my replay reconfirms it.
 
 ## Questions for the rules owner
 
-1. **The Gen-1 unreachable weight — one rule or two?** The data contains both
+1. **RULED 2026-09-12 — re-author the decorative rows; implemented in Part C.
+   This question is closed.** The original framing is kept for the record:
+   The data contains both
    a real upgrade incentive and a decorative term, under one authoring pattern.
    Three coherent answers: (a) leave it, and accept that the mechanic is a
    strong pull in two segments and a rounding artefact in eight; (b) treat
@@ -529,4 +783,15 @@ is wrong; my replay reconfirms it.
 3. **Round-0 `team_share_pct`** — should it carry segment pool share
    consistently with rounds 1–10 (what it now does), or revert to the authored
    firm-level market share?
-4. **Media's 0.99 weight sums** — tidy to 1.00, or leave as authored?
+4. **DONE — Media's 0.99 weight sums** tidied to 1.00 (Part C, Rule C), after
+   confirming no scorer divides by an assumed 1.00 and finding that
+   `campaign_engine.py:99` does not normalise at all.
+5. **NEW, open — should a segment teams cannot enter carry upgrade pressure?**
+   Options (a)/(b)/(c) are set out in Part C with the measurement behind them,
+   including the point that a gated segment's Gen-2 demand may already be
+   self-consistent. Not decided here.
+6. **NEW, for awareness — near-tie rank churn.** The re-authoring reshuffled
+   rank in 20 of 80 team-rounds without any flip crossing a 0.5-point index
+   gap. Duplicate archetypes score within ~0.02 of each other, so displayed
+   mid-table rank is not robust to a change of this size. A tie-break rule, or
+   accepting it, is a rules decision.
