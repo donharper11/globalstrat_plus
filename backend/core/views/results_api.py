@@ -244,6 +244,36 @@ class RoundResultsView(APIView):
                 'max_level': _dec(sfl.feature.max_value),
             })
 
+        # Stage 5: a price the system adjusted at the deadline is shown to the
+        # team it happened to. This is the half of Ruling 2 that makes dispute
+        # 2 -- "our decision was recorded differently from what we entered" --
+        # answerable from the team's own screen. Rendered from the audit
+        # payload rather than recomputed, so the sentence the team reads and
+        # the row an instructor produces are the same fact.
+        from core.models import DecisionAuditEvent
+        from core.models.core import Round as RoundModel
+        from core.services import price_band as band_rules
+        msg_language = 'zh-CN' if language == 'zh-CN' else 'en'
+        price_adjustments = []
+        adjusted_round = RoundModel.objects.filter(
+            game=game, round_number=round_number).first()
+        if adjusted_round:
+            for event in DecisionAuditEvent.objects.filter(
+                game=game, team=team, round=adjusted_round,
+                action__in=(band_rules.ACTION_ADJUSTED,
+                            band_rules.ACTION_BLANK_DEFAULTED,
+                            band_rules.ACTION_NOT_OFFERED),
+            ).order_by('id'):
+                price_adjustments.append({
+                    'product_name': event.payload.get('product_name'),
+                    'market': event.payload.get('market_name'),
+                    'submitted_price': event.payload.get('submitted_price'),
+                    'applied_price': event.payload.get('applied_price'),
+                    'rule': event.payload.get('rule'),
+                    'message': band_rules.adjustment_notice(
+                        event.payload, msg_language),
+                })
+
         return Response({
             'round_number': round_number,
             'performance': performance,
@@ -253,6 +283,7 @@ class RoundResultsView(APIView):
             'events': events,
             'coherence': coherence,
             'strategy_features': strategy_features,
+            'price_adjustments': price_adjustments,
         })
 
 
@@ -1158,7 +1189,8 @@ class InstructorTeamDecisionsView(APIView):
         marketing = [{
             'product': md.team_product.name if md.team_product else '—',
             'market': get_localized_field(md.market, 'name', language) if md.market else '—',
-            'retail_price': float(md.retail_price),
+            'retail_price': (float(md.retail_price)
+                             if md.retail_price is not None else None),
             'production_volume': md.production_volume or 0,
             'promotion_budget': float(md.promotion_budget),
             'sales_team_count': md.sales_team_count or 0,

@@ -130,6 +130,12 @@ def close_round(game_id, reason='manual'):
     round_obj.save(update_fields=['status', 'closed_at', 'close_reason',
                                   'decisions_locked', 'lock_reason'])
 
+    # Ruling 2: the deadline is where an out-of-band or missing price becomes
+    # a legal one. Deliberately before the freeze below, so the submission
+    # snapshot each lock event records already holds the price that will
+    # actually be scored.
+    _apply_price_band(game, round_obj)
+
     # Freeze whatever each team had at the moment of close, so late edits
     # can't slip in and so processing sees a stable snapshot.
     locked = _lock_all_submissions(game, round_obj)
@@ -141,6 +147,117 @@ def close_round(game_id, reason='manual'):
     return {'changed': True, 'round': round_obj.round_number,
             'status': 'closed', 'submissions_locked': locked,
             'reason': reason}
+
+
+def _apply_price_band(game, round_obj, *, scenario=None):
+    """Bring every out-of-band and every missing price inside the legal range.
+
+    Stage 5, Ruling 2. Two cases, and the difference between them is the whole
+    rule:
+
+      * a price OUTSIDE the band is moved to the NEARER edge -- the smallest
+        change that makes the team's own decision legal;
+      * a product-market with NO marketing decision at all is priced at the
+        band FLOOR. In GlobalStrat a missing row is how "blank" manifests: the
+        serializer refuses a price of zero and the pricing screen drops an
+        unpriced row from its payload, so there is no row to correct and one
+        has to be written.
+
+    Every change writes a ``DecisionAuditEvent`` with ``user=None`` -- actor
+    ``system`` on the instructor drill-down -- carrying the submitted value,
+    the applied value and the rule. Without that record the substitution would
+    make dispute 2 unanswerable, which is the objection BECSR avoids by
+    refusing instead of substituting.
+
+    Runs over every active team's submission REGARDLESS of lock state. A team
+    that locked early is still subject to the deadline rule, and
+    ``_lock_all_submissions`` deliberately skips an already-locked submission,
+    so folding this into that loop would exempt precisely the teams that
+    submitted on time.
+    """
+    from decimal import Decimal
+    from core.models import DecisionAuditEvent
+    from core.models.decisions import DecisionMarketing
+    from core.models.team_state import TeamProductMarket
+    from core.services import price_band as band_rules
+
+    scenario = scenario or game.scenario
+    zero = Decimal('0')
+    changed = 0
+
+    for team in Team.objects.filter(
+        game=game, participation_status='active',
+    ).order_by('id'):
+        submission = DecisionSubmission.objects.filter(
+            team=team, round=round_obj,
+        ).first()
+        if not submission:
+            # A team with no submission gets one from _lock_all_submissions;
+            # it has no products priced and nothing to bring into band.
+            continue
+
+        for md in (DecisionMarketing.objects
+                   .filter(submission=submission)
+                   .select_related('team_product', 'market')
+                   .order_by('id')):
+            band = band_rules.price_band(
+                scenario, team, md.team_product, md.market,
+                round_obj.round_number)
+
+            if md.retail_price is None:
+                # The blank branch, and only for a product the team is
+                # actually selling: `blank_price` returns a floor only when
+                # the anchor is a real prior-round price. A blank on a product
+                # that has never sold here is left blank, refused at lock by
+                # `_full_validate` and again by the engine precondition.
+                floor = band_rules.blank_price(band)
+                if floor is None:
+                    # NOT FOR SALE this round (owner's ruling, 2026-09-12).
+                    # Nothing sold here last round, so there is no floor to
+                    # fall back on and no price the system may invent. The
+                    # round must still resolve -- there is no supported
+                    # operator surface that could supply the missing price, so
+                    # refusing would stall a whole heat over one team's
+                    # oversight. The row is left unpriced and is excluded from
+                    # the offer map at source in `bass_engine`, so the product
+                    # takes no demand and displaces no rival. The team's row is
+                    # NOT deleted: it is their decision record, and this
+                    # receipt is what tells them on their results screen why
+                    # the product did not sell.
+                    DecisionAuditEvent.objects.create(
+                        game=game, team=team, round=round_obj, user=None,
+                        action=band_rules.ACTION_NOT_OFFERED,
+                        endpoint='engine:close_round',
+                        payload=band_rules.audit_payload(
+                            team_product=md.team_product, market=md.market,
+                            band=band, submitted=None, applied=None,
+                            rule=band_rules.RULE_NOT_OFFERED))
+                    changed += 1
+                    continue
+                applied, rule, action = (floor, band_rules.RULE_BLANK,
+                                         band_rules.ACTION_BLANK_DEFAULTED)
+            else:
+                applied, status = band_rules.adjusted_price(
+                    md.retail_price, band)
+                if status in (band_rules.IN_BAND, band_rules.NO_ANCHOR):
+                    continue
+                rule, action = (band_rules.RULE_OUT_OF_BAND,
+                                band_rules.ACTION_ADJUSTED)
+
+            payload = band_rules.audit_payload(
+                team_product=md.team_product, market=md.market, band=band,
+                submitted=md.retail_price, applied=applied, rule=rule)
+            md.retail_price = applied
+            md.save(update_fields=['retail_price'])
+            DecisionAuditEvent.objects.create(
+                game=game, team=team, round=round_obj, user=None,
+                action=action, endpoint='engine:close_round', payload=payload)
+            changed += 1
+
+    if changed:
+        logger.info('Price band applied to %s decision(s) in game %s round %s',
+                    changed, game.id, round_obj.round_number)
+    return changed
 
 
 def _lock_all_submissions(game, round_obj):
@@ -571,6 +688,45 @@ def _run_phase_1(game_id):
             f'{len(equity_violations)} equity raise(s) exceed the funding '
             f'shortfall they claim to finance. Correct the row(s) and retry. '
             f'{detail}')
+
+    # Stage 5: a price the deadline could not resolve must never reach the
+    # demand path. `bass_engine` calls float() on `retail_price` when it builds
+    # its price map, so a null would raise partway through a round that had
+    # already moved. Refused here, before the first competitive write, naming
+    # the rows to correct — the fail-closed shape V2-018 uses. Reachable when a
+    # round is processed without ever being closed, and when a team leaves the
+    # price out on a product that has never sold in that market (no prior-round
+    # price, so the blank floor deliberately does not apply).
+    from core.models.decisions import DecisionMarketing as _UnpricedCheck
+    from core.services import price_band as _band_rules
+    unresolved = []
+    for row in (_UnpricedCheck.objects
+                .filter(submission__round=current_round_obj,
+                        retail_price__isnull=True)
+                .select_related('team_product', 'market', 'submission__team')
+                .order_by('submission__team_id', 'team_product_id',
+                          'market_id')):
+        band = _band_rules.price_band(
+            game.scenario, row.submission.team, row.team_product, row.market,
+            current_round)
+        # Only a row the DEADLINE SHOULD HAVE RESOLVED. A row with a
+        # prior-round price that is still null means `close_round` never ran
+        # over this round, which is the skipped-deadline case this guard
+        # exists for. A row with no prior-round price is legitimately unpriced
+        # and not for sale, and must NOT stop the round -- that was the defect
+        # in the first version of this precondition.
+        if _band_rules.blank_price(band) is not None:
+            unresolved.append(row)
+    if unresolved:
+        detail = '; '.join(
+            f'{row.submission.team.name}: {row.team_product.name} in '
+            f'{row.market.name}' for row in unresolved[:10])
+        raise RoundNotReadyError(
+            f'Round {current_round} cannot be scored: {len(unresolved)} '
+            f'product-market decision(s) carry no unit price although a '
+            f'previous price exists to resolve them from, which means the '
+            f'round was never closed. Close the round, or set a price on '
+            f'each, and retry. {detail}')
 
     # Scenario configuration is validated here, before the first competitive
     # write, so a missing or unusable value cannot be discovered halfway

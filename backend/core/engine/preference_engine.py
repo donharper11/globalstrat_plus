@@ -353,7 +353,10 @@ def _derive_price_competitiveness(
     reference_price = scenario_reference_price(
         context.scenario, product.positioning)
 
-    if not mkt_decision:
+    # A decision carrying no price is not an offer, so it scores exactly as no
+    # decision does: neutral. Anything else would let an unpriced product earn
+    # or lose price competitiveness it never competed on.
+    if not mkt_decision or mkt_decision.retail_price is None:
         return (f_max + f_min) / 2
 
     team_price = float(mkt_decision.retail_price)

@@ -266,6 +266,21 @@ const ResultsPage = () => {
     return (
       <div>
         <Collapse items={marketPanels} defaultActiveKey={marketPanels.map(p => p.key)} />
+        {(results.price_adjustments || []).length > 0 && (
+          <Alert
+            type="warning"
+            showIcon
+            style={{ marginTop: 16 }}
+            message={t('results_page.price_adjustments')}
+            description={(
+              <ul style={{ margin: 0, paddingLeft: 18 }}>
+                {results.price_adjustments.map((a, i) => (
+                  <li key={i}>{a.message}</li>
+                ))}
+              </ul>
+            )}
+          />
+        )}
         <Card title={t("results_page.product_performance")} style={{ marginTop: 16 }}>
           <Table dataSource={results.products || []} rowKey={(r, i) => `${r.product_name}-${r.market}-${i}`}
             columns={productCols} pagination={false} size="small" />

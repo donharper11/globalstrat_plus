@@ -60,7 +60,10 @@ const MarketingPage = () => {
             positioning: pm.positioning,
             market: m.market_id,
             market_name: m.market__name || m.market_name,
-            retail_price: Number(ex?.retail_price || 0),
+            // null, not 0: an absent price is a distinct state the server
+            // alerts on and fills at the band floor when the round closes.
+            retail_price: (ex?.retail_price === null || ex?.retail_price === undefined)
+              ? null : Number(ex.retail_price),
             promotion_budget: Number(ex?.promotion_budget || 0),
             campaign_focus_feature_ids: ex?.campaign_focus_feature_ids || [],
             channel_digital_pct: Number(ex?.channel_digital_pct || 0.34),
@@ -95,7 +98,9 @@ const MarketingPage = () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
       try {
-        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0).map(d => ({
+        // A row the team is filling in but has not priced must still be sent,
+        // or "submitted blank" cannot reach the server at all.
+        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0 || d.promotion_budget > 0).map(d => ({
           team_product: d.team_product,
           market: d.market,
           retail_price: d.retail_price,
@@ -253,6 +258,14 @@ const MarketingPage = () => {
     // Previous round data for this product-market
     const prevKey = `${d.team_product}_${d.market}`;
     const prev = context.prev_round_decisions?.[prevKey];
+    // Stage 5 price band. min/max come from the server's one calculator; this
+    // only decides which of those server-supplied numbers to show, so the
+    // screen cannot state a different range from the one enforced.
+    const band = context.price_bands?.[prevKey];
+    const priceEntered = d.retail_price > 0;
+    const priceOutOfBand = !!band && priceEntered
+      && (d.retail_price < band.min || d.retail_price > band.max);
+    const priceBlank = !!band && !priceEntered;
 
     return (
       <div key={`${d.team_product}-${d.market}`}>
@@ -264,10 +277,26 @@ const MarketingPage = () => {
               <InputNumber
                 size="small" prefix="$" min={0} step={10}
                 value={d.retail_price} disabled={locked}
-                onChange={v => updateDecision(d._idx, 'retail_price', v || 0)}
+                onChange={v => updateDecision(d._idx, 'retail_price', v ?? null)}
                 style={{ width: '100%' }}
               />
               {prev && <Text style={prevHint()}>{t('marketing.last')}: ${prev.retail_price}</Text>}
+              {band && (
+                <Text style={prevHint({ color: (priceOutOfBand || priceBlank) ? '#cf1322' : '#8c8c8c' })}>
+                  {t('marketing.price_band_range', {
+                    min: Math.round(band.min).toLocaleString(),
+                    max: Math.round(band.max).toLocaleString(),
+                  })}
+                </Text>
+              )}
+              {priceOutOfBand && (
+                <Text style={prevHint({ color: '#cf1322' })}>{t('marketing.price_out_of_band')}</Text>
+              )}
+              {priceBlank && (
+                <Text style={prevHint({ color: '#cf1322' })}>
+                  {t('marketing.price_blank', { floor: Math.round(band.min).toLocaleString() })}
+                </Text>
+              )}
             </Col>
             <Col>
               <Tag color={d.positioning === 'premium' ? 'purple' : d.positioning === 'budget' ? 'green' : 'blue'}>
@@ -472,7 +501,7 @@ const MarketingPage = () => {
                     formatter={() => fmt(maxRevenue)}
                   />
                   <Text type="secondary" style={{ fontSize: 9 }}>
-                    {fmt(d.retail_price)} x {(d.production_volume || 0).toLocaleString()} units
+                    {fmt(d.retail_price || 0)} x {(d.production_volume || 0).toLocaleString()} units
                   </Text>
                 </Col>
                 <Col span={6}>

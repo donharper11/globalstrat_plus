@@ -838,7 +838,21 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
                     'marketing_channels_invalid', language=language,
                     product=md.team_product.name, market=md.market.name,
                     total=f'{ch_sum * 100:g}'))
-            if md.retail_price <= 0:
+            # A blank price is legal to SAVE (Ruling 2) and is filled at the
+            # band floor when the round closes — but only for a product that
+            # sold in this market last round. With no prior-round price there
+            # is nothing to fall back to, so the team must price it before
+            # locking rather than have one invented for them.
+            if md.retail_price is None:
+                from core.services import price_band as _band_rules
+                _band = _band_rules.price_band(
+                    scenario, team, md.team_product, md.market,
+                    submission.round.round_number)
+                if _band_rules.blank_price(_band) is None:
+                    errors.append(participant_message(
+                        'marketing_price_invalid', language=language,
+                        product=md.team_product.name, market=md.market.name))
+            elif md.retail_price <= 0:
                 errors.append(participant_message(
                     'marketing_price_invalid', language=language,
                     product=md.team_product.name, market=md.market.name))
@@ -1787,6 +1801,9 @@ class ProductContextView(APIView):
             sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
             if sub:
                 for md in sub.marketing_decisions.all():
+                    # A blank price is representable while the round is open.
+                    if md.retail_price is None:
+                        continue
                     current_prices.setdefault(md.team_product_id, {})[md.market_id] = float(md.retail_price)
 
         # Existing products
@@ -2007,7 +2024,9 @@ class MarketingContextView(APIView):
                     for md in prev_sub.marketing_decisions.all():
                         key = f"{md.team_product_id}_{md.market_id}"
                         prev_round_decisions[key] = {
-                            'retail_price': float(md.retail_price),
+                            'retail_price': (float(md.retail_price)
+                                             if md.retail_price is not None
+                                             else None),
                             'promotion_budget': float(md.promotion_budget),
                             'production_volume': md.production_volume or 0,
                             'distribution_strategy': md.distribution_strategy,
@@ -2017,6 +2036,29 @@ class MarketingContextView(APIView):
                             'channel_trade_pct': float(md.channel_trade_pct) if md.channel_trade_pct else 0.33,
                         }
 
+        # Stage 5: the legal price range per product-market, from the one
+        # calculator the write path and the deadline also call. The pricing
+        # screen states the rule with these numbers rather than deriving its
+        # own, so what a team is told is legal is what is enforced.
+        from core.services import price_band as band_rules
+        price_bands = {}
+        for p in TeamProduct.objects.filter(team=team, status='active'):
+            for tpm in TeamProductMarket.objects.filter(
+                team_product=p, is_active=True,
+            ).select_related('market'):
+                band = band_rules.price_band(
+                    game.scenario, team, p, tpm.market, game.current_round)
+                if band['min'] is None:
+                    continue
+                price_bands[f'{p.id}_{tpm.market_id}'] = {
+                    'min': float(band['min']),
+                    'max': float(band['max']),
+                    'band_pct': band['band_pct'],
+                    'anchor': float(band['anchor']),
+                    'anchor_source': band['anchor_source'],
+                    'anchor_round_number': band['anchor_round_number'],
+                }
+
         return Response({
             'product_markets': product_markets,
             'production_capacity': capacity,
@@ -2025,6 +2067,7 @@ class MarketingContextView(APIView):
             'sales_rep_cost_per_round': sales_rep_cost,
             'prev_round_sales': prev_round_sales,
             'prev_round_decisions': prev_round_decisions,
+            'price_bands': price_bands,
         })
 
 

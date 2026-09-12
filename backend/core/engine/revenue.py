@@ -71,6 +71,17 @@ def calculate_revenue(context):
             product = mkt_dec.team_product
             market = mkt_dec.market
 
+            # A product the deadline could not price is NOT FOR SALE this
+            # round (owner's ruling, 2026-09-12): `bass_engine` excludes it
+            # from the offer map, so it is allocated no demand and `units_sold`
+            # below is zero. The row is deliberately still processed rather
+            # than skipped -- the team ordered production and must still pay
+            # its COGS and carry the unsold units as inventory. "Not for sale"
+            # means no revenue, not free manufacturing.
+            retail_price = (mkt_dec.retail_price
+                            if mkt_dec.retail_price is not None
+                            else Decimal('0'))
+
             # Sum new adopters for this product in this market
             units_sold = Decimal('0')
             adoptions = (RoundResultProductDemand.objects.filter(
@@ -99,7 +110,7 @@ def calculate_revenue(context):
             # market frozen), recorded for reporting.
             if (team.id, market.id) in getattr(context, 'compliance_freezes', set()):
                 if units_sold > 0:
-                    lost = units_sold * mkt_dec.retail_price * (Decimal('1') - _get_channel_margin_rate(
+                    lost = units_sold * retail_price * (Decimal('1') - _get_channel_margin_rate(
                         context.scenario, mkt_dec.distribution_strategy or 'hybrid'))
                     context.compliance_lost_revenue = getattr(context, 'compliance_lost_revenue', {})
                     context.compliance_lost_revenue[team.id] = (
@@ -120,7 +131,6 @@ def calculate_revenue(context):
                 )
                 units_sold -= sc_lost_units
 
-            retail_price = mkt_dec.retail_price
             gross_local_revenue = units_sold * retail_price
 
             # Channel/distributor margin deduction

@@ -439,6 +439,13 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
         ]
 
     def validate_retail_price(self, value):
+        # An ABSENT price is a representable state (Ruling 2's blank branch):
+        # accepted, alerted while the round is open, and filled at the band
+        # floor at the deadline. A price that is actually stated must still be
+        # positive — zero is a decision to give the product away, not a blank,
+        # and negatives remain refused outright.
+        if value is None:
+            return value
         if value <= 0:
             raise serializers.ValidationError(participant_message(
                 'positive_price', language=serializer_language(self)))
@@ -529,6 +536,22 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
                         language=language, volume=production_volume,
                         capacity=total_capacity, contract_capacity=cap,
                         market=source_market.name))
+
+        # Stage 5 price band (Ruling 2). An out-of-band price is ALERTED here
+        # and accepted: the team's number is what gets stored while the round
+        # is open, and the deadline is the only place it changes. Both write
+        # surfaces return this serializer, so neither can alert differently
+        # from the other, and the range named here comes from the same
+        # calculator the deadline applies.
+        from core.services import price_band as band_rules
+        band = band_rules.price_band(
+            obj.submission.team.game.scenario, team, obj.team_product,
+            obj.market, obj.submission.round.round_number)
+        band_alert = band_rules.alert_for(
+            obj.retail_price, band, product_name=obj.team_product.name,
+            market_name=obj.market.name, language=language)
+        if band_alert:
+            warnings.append(band_alert)
 
         return warnings
 

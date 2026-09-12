@@ -656,7 +656,10 @@ class SensitiveReadInventoryTests(TestCase):
         self.assertEqual(category, 'decisions')
         # 31 since CRV2-08 added the instructor operator-events endpoint, which
         # serves audit rows and so registers itself as a logged audit read.
-        self.assertEqual(len(middleware._routes), 31)
+        # 32 since GSP-CRV2-10 Stage 5: the team's own round-results endpoint
+        # now reads the price-band adjustment audit events so the team can see
+        # what the deadline changed, which makes it a logged audit read too.
+        self.assertEqual(len(middleware._routes), 32)
 
     def test_a_stale_inventory_falls_back_to_the_live_scan(self):
         """A generated file that no longer describes the URL conf must not be
