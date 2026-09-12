@@ -66,7 +66,7 @@ No dial moves in this stage.
    a ranked ladder from an equal field before anyone has decided anything.
    Report the round-0 `* 10` adoption scale factor (`:175`).
 
-## Stage 2 — starting positions: equal score, unequal position
+## Stage 2 — starting positions: equal score at round zero, unequal position
 
 The requirement is that every team opens on the same performance index and the
 same rank, while genuinely differing in strengths, market position, price point
@@ -78,11 +78,12 @@ strengths, prices, volumes, shares, debt and revenue. What is unmeasured is
 whether they are **balanced** — whether one archetype's strengths happen to sit
 on the segment preferences with the largest populations and heaviest weights.
 
-1. Hold decisions constant across archetypes and run the field. Any spread in
-   round-1..3 outcome is a starting-position advantage, not a decision outcome.
-2. Adjust starter profiles and/or segment preferences until no archetype has a
-   material unearned edge, **without** flattening the differences. Equal
-   expected value, different shape, is the target.
+1. Verify that round zero writes the scenario performance-index base for every
+   team and gives every team the same rank. This is the sole score-parity
+   requirement.
+2. Retain the contrasting starter profiles. From round one, different market
+   positions and decisions may legitimately produce different outcomes and
+   Performance Index values; no later-round spread threshold applies.
 3. Resolve the leaderboard tie-break: either show no rank at round 0, or rank
    every team joint-first. Do not present a revenue ladder as a score ladder.
 4. Consider whether all four profiles sharing `home_market: NA` is intended.
@@ -235,8 +236,7 @@ on.
 
 - A written statement of the intended economy — market size, industry revenue
   and adoption per round for rounds 0–10 — with measured output matching it.
-- Round 0: identical index, identical rank, materially different positions; no
-  archetype holds an unearned edge.
+- Round 0: identical index, identical rank, materially different positions.
 - Population growth accumulates; AI competitor treatment is one coherent rule.
 - A sensitivity table for every exposed decision dimension, labelled flat /
   cliffed / responsive, with the flat and cliffed ones dispositioned.

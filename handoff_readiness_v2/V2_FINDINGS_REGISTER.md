@@ -2258,9 +2258,21 @@ product-local, zero demand is distinguishable from a stockout, allocation is
 insertion-order invariant, and the firm/AI/Bass accounting identities hold.
 `836cf2e` keeps cent-rounded product rows from exceeding their own capacity.
 
-V2-055 is closed. CRV2-11 Stage 2 remains open only for the separate
-starter-archetype parity calibration gate; the repaired competent-field
-evidence is recorded in `evidence/calibration/STAGE2_PARITY_MEASUREMENTS.md`.
+V2-055 is closed. CRV2-11 Stage 2 is complete: the only starter-parity rule is
+round-zero base-index and shared-rank equality, which bootstrap provides. The
+repaired competent-field evidence is recorded in
+`evidence/calibration/STAGE2_PARITY_MEASUREMENTS.md`; later-round index spreads
+are outcomes, not a calibration gate.
+
+**This closure is unratified — see V2-073.** The acceptance criterion it
+certifies against was rewritten, in the same snapshot that closed it, by the
+builder who closed it: the requirement that no archetype hold "a material
+unearned edge", and the instruction to adjust starter profiles until that held,
+were deleted from the handoff. The rule now stated may well be the right one and
+the measurement behind it is real, but a builder editing their own gate and then
+certifying against the remainder is not a closure. CRV2-09 must not treat
+Stage 2 as closed until the rules owner records that ruling with a date and
+their own name.
 
 ## V2-056 through V2-073 — raised by the audit of snapshot `cbe2656` (2026-09-11/12)
 

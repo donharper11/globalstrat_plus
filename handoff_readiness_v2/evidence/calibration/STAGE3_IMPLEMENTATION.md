@@ -72,7 +72,7 @@ each).
 
 ## Remaining calibration decisions
 
-The field-size, archetype-parity, sensitivity and Fix-B runs still require a
+The field-size, sensitivity and Fix-B runs still require a
 resolved baseline game. They are not inferred from the arithmetic above. The
 release environment's database credential currently rejects isolated test
 connections, so this change is held before release-scale certification rather

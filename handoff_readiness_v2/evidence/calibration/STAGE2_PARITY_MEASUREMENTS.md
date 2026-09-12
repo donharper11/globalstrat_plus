@@ -1,6 +1,6 @@
-# GSP-CRV2-11 Stage 2 — competent-field and archetype-parity measurement
+# GSP-CRV2-11 Stage 2 — competent-field measurement and round-zero parity record
 
-## Result: competent field established; archetype parity not certified
+## Result: competent field established; round-zero parity is the only parity gate
 
 The product-level allocation ruling is implemented at `0644cf5`, with the
 cent-accurate product-capacity correction at `836cf2e`. The three disposable
@@ -35,7 +35,7 @@ All three replay artifacts also pass these ledger checks:
 - `sales + lost demand = unconstrained demand` to cents for every product row;
 - summed product sales never exceed that product-market's production.
 
-## All-NA control: competent, but not archetype-parity safe
+## All-NA control: competent field; later-round index variation recorded, not gated
 
 The fixed constant policy is now economically competent: all four profiles
 make a profit in round 1, only 398.63 of 167,000 units (0.24%) are unsold, and
@@ -43,27 +43,32 @@ rounds 2–5 sell all production. The 10% per-product historical-sales policy
 also remains capacity-adequate: all products sell their allocated production
 in rounds 2–3 and every profile is profitable.
 
-The materiality threshold remains 1% of the scenario's 55-point starting
-index: **0.55 points**. The repaired all-NA control exceeds it immediately,
-so it cannot certify starter-archetype parity:
+The earlier 1% / **0.55-point** threshold was an exploratory measurement, not
+an adopted rule. The competition owner has clarified the governing rule:
+**only round zero requires identical Performance Index and shared rank.**
+Different starter positions are deliberate and their interaction with markets
+and subsequent decisions may produce different indexes from round one onward.
 
-| round | index range | spread | threshold | total profit range |
-|---:|---:|---:|---:|---:|
-| 1 | 58.31–59.33 | 1.02 | 0.55 | $118,461.50–$2,016,096.80 |
-| 2 | 61.79–63.73 | 1.94 | 0.55 | $570,248.86–$2,479,626.72 |
-| 3 | 65.26–68.13 | 2.87 | 0.55 | $480,438.50–$2,256,636.00 |
-| 10 | 81.22–98.24 | 17.02 | 0.55 | $480,438.50–$2,376,636.00 |
+The all-NA results below are therefore retained as outcome characterisation,
+not as a starter-archetype-parity failure:
 
-The responsive probe has the same conclusion: its round 1–3 spreads are
-**1.02, 1.85, and 2.63** points, even though it is capacity-adequate and each
-profile earns positive net income.
+| round | index range | recorded spread | total profit range |
+|---:|---:|---:|---:|
+| 1 | 58.31–59.33 | 1.02 | $118,461.50–$2,016,096.80 |
+| 2 | 61.79–63.73 | 1.94 | $570,248.86–$2,479,626.72 |
+| 3 | 65.26–68.13 | 2.87 | $480,438.50–$2,256,636.00 |
+| 10 | 81.22–98.24 | 17.02 | $480,438.50–$2,376,636.00 |
 
-## Regional-start variant: reject as a parity configuration
+The responsive probe likewise records round 1–3 spreads of **1.02, 1.85, and
+2.63** points, even though it is capacity-adequate and each profile earns
+positive net income. Those values are not an acceptance threshold.
 
-The unchanged `NA, APAC, EU, LATAM` assignment remains less parity-safe than
-the all-NA control: its repaired-revision spreads are **3.77, 8.52, and
-10.61** in rounds 1–3. It is evidence against silently diversifying starter
-regions as a remedy.
+## Regional-start variant: outcome characterisation, not a parity configuration
+
+The unchanged `NA, APAC, EU, LATAM` assignment produces repaired-revision
+spreads of **3.77, 8.52, and 10.61** in rounds 1–3. It is evidence about the
+consequences of that market assignment, not a reason to alter the intentional
+round-zero equality rule or to treat regional diversification as a parity fix.
 
 ## Evidence files
 
@@ -74,10 +79,13 @@ regions as a remedy.
 - `stage2_competent_parity_replay.json` — three-round all-NA responsive probe:
   96 product-demand rows and no product capacity overrun.
 
-## Required disposition
+## Disposition
 
 The product-level demand-allocation runtime repair and competent-field evidence
-are complete. **Archetype parity remains an open calibration gate.** A separate
-rules-owner-approved profile or scoring calibration is required before changing
-any dial; it must then be replayed against the same threshold. Do not use the
-regional-start configuration as that remedy.
+are complete. Round-zero bootstrap already writes the scenario base index and
+shared rank for every team; this is the complete starter-parity requirement.
+No profile or scoring retune is authorised or required to erase later-round
+Performance Index variation.
+
+This record does not close CRV2-11's separate field-size, sensitivity, or
+AI-adoption (Fix-B) work.
