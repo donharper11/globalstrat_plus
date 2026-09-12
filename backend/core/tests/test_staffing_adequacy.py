@@ -16,6 +16,14 @@ The optima are scenario-authored and validated positive before competitive
 mutation. `talent.py` read the same three keys with hardcoded 60/40/50
 fallbacks; a silent default is not acceptable for a competition denominator, so
 both consumers now fail closed.
+
+**R10 (2026-09-04) changed the score the factor multiplies, not the rule.**
+`earned_capability` no longer contains an R&D-spend term, so a fixture that
+takes no scored action earns 0.45 rather than 0.67, and R&D spend moves nothing
+at any amount. The V2-025 rule above is untouched: the factor is still the mean
+of the clamped pool ratios and still multiplies. What had to be repaired here
+is the expected earned score, and the class that asserted R&D spend still moved
+it -- see `SpendNoLongerMovesCapability`.
 """
 from decimal import Decimal as D
 
@@ -76,20 +84,20 @@ class StaffingFixture(TestCase):
         self.team = Team.objects.create(
             game=self.game, name='T', firm_starter_profile=profile,
             performance_index=100, cash_on_hand=1000000, total_equity=1000000)
-        generation = PlatformGenerationDefinition.objects.create(
+        self.generation = PlatformGenerationDefinition.objects.create(
             scenario=self.scenario, name='Gen', description='d',
             generation_order=1, unlock_round=1, development_cost=0,
             development_rounds=1, license_cost=0, annual_maintenance_cost=0,
             is_starting_platform=True)
         self.platform = TeamPlatform.objects.create(
-            team=self.team, platform_generation=generation, name='P',
+            team=self.team, platform_generation=self.generation, name='P',
             status='active')
         self.feature = FeatureDefinition.objects.create(
             scenario=self.scenario, name='F', code='F1', description='d',
             layer='core', category='performance', min_value=0, max_value=10,
             default_value=0, cost_curve_type='linear', cost_base=1)
         PlatformFeatureCeiling.objects.create(
-            platform_generation=generation, feature=self.feature,
+            platform_generation=self.generation, feature=self.feature,
             ceiling_value=10, starting_value=0)
         self.submission = DecisionSubmission.objects.create(
             team=self.team, round=self.round, status='draft')
@@ -124,6 +132,14 @@ class StaffingFixture(TestCase):
             setattr(self.talent, f'{pool}_headcount', value)
         self.talent.save()
 
+    def add_platform_development(self):
+        """A scored action: what R10 left in place of the spend term."""
+        from core.models.decisions import DecisionPlatformDevelopment
+        return DecisionPlatformDevelopment.objects.create(
+            submission=self.submission, platform_generation=self.generation,
+            method='in_house', committed_cost=D('0'),
+            platform_name='Sensitivity', feature_levels={})
+
 
 class TheRule(StaffingFixture):
     def test_all_zero_headcount_produces_zero_capability(self):
@@ -147,8 +163,14 @@ class TheRule(StaffingFixture):
         """The factor is exactly 1, so the earned score passes through."""
         self.set_rd_spend(RD_TARGET)
         self.set_headcounts(**{p: OPTIMA[p] for p in OPTIMA})
-        # Earned score with a full R&D ratio and both action bonuses absent.
-        self.assertEqual(self.capability(), D('0.6700'))
+        # Earned score with both action terms absent. This was 0.6700 while a
+        # full R&D ratio contributed to `earned`; R10 retired that term, so the
+        # surviving product and strategy terms keep their authored 0.30:0.30
+        # ratio, each unearned at 0.45, normalised over their own weights:
+        # (0.45*0.30 + 0.45*0.30) / 0.60 = 0.450. The claim under test is
+        # unchanged -- a factor of exactly 1 passes the earned score through
+        # untouched -- and only the earned score itself has moved.
+        self.assertEqual(self.capability(), D('0.450'))
 
     def test_staffing_above_optimum_creates_no_extra_capability(self):
         self.set_rd_spend(RD_TARGET)
@@ -168,9 +190,24 @@ class TheRule(StaffingFixture):
             (0.5 + 1 + 1) / 3)
 
 
-class RDStillMatters(StaffingFixture):
-    def test_actual_rd_spend_still_moves_capability(self):
-        """The staffing factor scales the score; it must not flatten it."""
+class SpendNoLongerMovesCapability(StaffingFixture):
+    """Was `RDStillMatters`; R10 retired the half of that claim it was named for.
+
+    The original class made two claims at once: that R&D spend moved
+    capability, and that the V2-025 staffing factor *scaled* the score rather
+    than flattening it. R10 makes the first false — spend is not read — and
+    leaves the second not merely true but load-bearing, because a factor
+    multiplying a constant would be indistinguishable from a working rule. Both
+    halves are asserted below, the first inverted and the second kept.
+    """
+
+    def test_rd_spend_no_longer_moves_capability(self):
+        """Was `test_actual_rd_spend_still_moves_capability`.
+
+        Same three readings, same fixture, opposite rule: none, half and full
+        must now be identical, because R10 removed the term that separated
+        them.
+        """
         self.set_headcounts(**{p: OPTIMA[p] for p in OPTIMA})
         self.set_rd_spend(0)
         none = self.capability()
@@ -178,8 +215,35 @@ class RDStillMatters(StaffingFixture):
         half = self.capability()
         self.set_rd_spend(RD_TARGET)
         full = self.capability()
-        self.assertLess(none, half)
-        self.assertLess(half, full)
+        self.assertEqual(none, half, 'R10: spend must not move capability')
+        self.assertEqual(half, full, 'R10: spend must not move capability')
+
+    def test_the_factor_still_scales_a_score_that_can_move(self):
+        """The half of the retired claim that survives, and must be kept.
+
+        `capability = earned * staffing_adequacy`. If `earned` were a constant,
+        every equality in this class would hold against a broken rule, and the
+        suite could not tell a working factor from a pinned one. A scored
+        action -- platform development, which is what R10 left standing where
+        spend used to be -- must still move it, and the factor must still
+        govern the larger score.
+        """
+        self.set_headcounts(**{p: OPTIMA[p] for p in OPTIMA})
+        self.set_rd_spend(RD_TARGET)
+        before = self.capability()
+        self.assertGreater(before, D('0'),
+                           'an unstaffed fixture cannot detect anything')
+
+        self.add_platform_development()
+        after = self.capability()
+        self.assertGreater(after, before,
+                           'the component must respond to a scored action, or '
+                           'the equalities above are vacuous')
+
+        # And the factor still multiplies that larger score rather than being
+        # bypassed by it.
+        self.set_headcounts(rd=0, commercial=0, operations=0)
+        self.assertEqual(self.capability(), D('0'))
 
     def test_changing_the_declared_rd_budget_remains_inert(self):
         """V2-021 holds: the denominator is a scenario constant, not a choice."""

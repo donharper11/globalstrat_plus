@@ -591,10 +591,20 @@ class NarrativeStatusEndpointTests(DurableNarrativeBase):
         self.assertEqual(self._get(self.student).status_code, 403)
 
     def test_an_unrelated_instructor_is_refused(self):
+        """The refusal moved ahead of the view, so it is not a DRF response.
+
+        `RoundControlView` still refuses this caller itself, but
+        `GameScopeGuardMiddleware` now answers first, in `process_view` -- the
+        V2-034 repair that stopped cross-cohort attempts reaching no auditing
+        code at all. A middleware refusal is a plain `JsonResponse`, which has
+        no `.data`; the claim is unchanged, so it is read from the body the
+        caller actually receives, the way `test_game_scope_boundary` reads it.
+        """
         self.resolve()
         response = self._get(self.other)
         self.assertEqual(response.status_code, 403)
-        self.assertNotIn('narratives', response.data)
+        self.assertNotIn('narratives', response.json())
+        self.assertNotIn('narratives', str(response.content))
 
     def test_an_unowned_cohort_stays_visible_to_any_instructor(self):
         """Course.instructor_id is genuinely NULL for the live pilot; scoping

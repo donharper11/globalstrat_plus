@@ -1,9 +1,16 @@
 """V2-021 and V2-022 — the adopted scoring rules, and the exploits they close.
 
-**V2-021.** `rd_score = clamp01(rd_spend / scenario_rd_spend_target)`. The
-denominator is a scenario constant the team cannot choose. Deliberately not the
-cohort maximum: that would hand $1 full credit whenever $1 was the largest
-spend in the room.
+**V2-021, superseded by R10.** The repair recorded here scored
+`rd_score = clamp01(rd_spend / scenario_rd_spend_target)`, moving the
+denominator to a scenario constant the team could not choose. R10 (2026-09-04)
+then retired the term outright: after R9 removed the processor that turned a
+`DecisionRDInvestment` into product capability, scoring the amount was paying
+for a receipt rather than for a consequence. The exploit V2-021 was raised for
+is therefore closed by a stronger rule than the one it asserted — the amount is
+not read at all — and `RdSpendTargetTests` below asserts that rule instead.
+`scenario_rd_spend_target` survives as a fail-closed guard with no consumer,
+which V2-053 recorded deliberately; the two tests that cover the guard itself
+are unaffected by R10 and are unchanged.
 
 **V2-022.** A team is commercially inactive when its realised revenue is below
 `max($1, 0.01 x highest positive team revenue this round)`. One classification,
@@ -63,20 +70,20 @@ class ScoringFixture(TestCase):
         self.team = Team.objects.create(
             game=self.game, name='T', firm_starter_profile=profile,
             performance_index=100, cash_on_hand=1000, total_equity=1000)
-        generation = PlatformGenerationDefinition.objects.create(
+        self.generation = PlatformGenerationDefinition.objects.create(
             scenario=self.scenario, name='Gen', description='d',
             generation_order=1, unlock_round=1, development_cost=0,
             development_rounds=1, license_cost=0, annual_maintenance_cost=0,
             is_starting_platform=True)
         self.platform = TeamPlatform.objects.create(
-            team=self.team, platform_generation=generation, name='P',
+            team=self.team, platform_generation=self.generation, name='P',
             status='active')
         self.feature = FeatureDefinition.objects.create(
             scenario=self.scenario, name='F', code='F1', description='d',
             layer='core', category='performance', min_value=0, max_value=10,
             default_value=0, cost_curve_type='linear', cost_base=1)
         PlatformFeatureCeiling.objects.create(
-            platform_generation=generation, feature=self.feature,
+            platform_generation=self.generation, feature=self.feature,
             ceiling_value=10, starting_value=0)
 
     def capability(self, declared_budget, rd_spend):
@@ -113,17 +120,62 @@ class ScoringFixture(TestCase):
         target = scenario_rd_spend_target(self.scenario)
         return _strategic_capability_component(self.team, 1, target, optima)
 
+    def add_platform_development(self):
+        """A scored action, so the component is not pinned at one value.
+
+        R10 removed the spend term and left `has_product_action` as the live
+        product term; platform development is what that reads. Used here only
+        as a sensitivity control.
+        """
+        from core.models.decisions import DecisionPlatformDevelopment
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=self.team, round=self.round, defaults={'status': 'locked'})
+        return DecisionPlatformDevelopment.objects.create(
+            submission=submission, platform_generation=self.generation,
+            method='in_house', committed_cost=D('0'),
+            platform_name='Sensitivity', feature_levels={})
+
 
 class RdSpendTargetTests(ScoringFixture):
+    """R10: the amount is not an input to this component at all.
+
+    These tests were written against V2-021's repair and are repaired to the
+    rule that replaced it. Both still prove an amount buys no advantage; they
+    prove it of a stronger rule, so the assertions are equalities rather than
+    inequalities. An equality is only as good as the fixture's ability to show
+    a difference, which is what the control below exists to establish.
+    """
+
+    def test_the_component_can_still_move(self):
+        """The control: a component pinned at one value proves nothing.
+
+        Without this, the two equalities below would pass just as happily
+        against a `_strategic_capability_component` that returned a constant.
+        """
+        baseline = self.capability(declared_budget='2000000', rd_spend='0')
+        self.assertGreater(baseline, D('0'),
+                           'an unstaffed fixture cannot detect anything')
+        self.add_platform_development()
+        self.assertNotEqual(
+            self.capability(declared_budget='2000000', rd_spend='0'), baseline,
+            'the component must respond to a scored action, or the R&D '
+            'assertions in this class are vacuous')
 
     def test_a_dollar_against_a_dollar_no_longer_earns_full_credit(self):
-        """The V2-021 exploit, run against the adopted rule."""
+        """The V2-021 exploit, run against R10 — the rule now in force.
+
+        This used to prove $1-against-$1 scored *less* than an honest
+        programme. R10 closes the exploit harder than that: the amount is never
+        read, so the exploit earns no advantage over a $2,000,000 programme and
+        none over spending nothing at all.
+        """
         exploit = self.capability(declared_budget='1', rd_spend='1')
         honest = self.capability(declared_budget='2000000', rd_spend='2000000')
-        self.assertLess(exploit, honest)
-        # $1 of $2,000,000 is 0.0000005; the R&D term contributes 0.40 of the
-        # component, so the exploit must sit near the no-spend floor.
-        self.assertLess(exploit, D('0.7'))
+        nothing = self.capability(declared_budget='2000000', rd_spend=None)
+        self.assertEqual(exploit, honest,
+                         'R10: the amount must not change this component')
+        self.assertEqual(exploit, nothing,
+                         'R10: $1 of R&D must not out-score spending nothing')
 
     def test_equal_spend_scores_equally_whatever_budget_was_declared(self):
         """The denominator is no longer the team's to choose."""
@@ -131,11 +183,22 @@ class RdSpendTargetTests(ScoringFixture):
         grand = self.capability(declared_budget='99000000', rd_spend='500000')
         self.assertEqual(modest, grand)
 
-    def test_zero_spend_earns_zero_for_the_rd_term(self):
-        none_spent = self.capability(declared_budget='2000000', rd_spend='0')
-        at_target = self.capability(declared_budget='2000000', rd_spend='2000000')
-        self.assertLess(none_spent, at_target)
-        self.assertEqual(none_spent, self.capability('2000000', None))
+    def test_no_amount_of_spend_earns_capability(self):
+        """Was `test_zero_spend_earns_zero_for_the_rd_term`.
+
+        The retired term is precisely what made zero spend score less than
+        spend at target. With the term gone the surviving claim is the stronger
+        one — no amount earns capability — so every amount, and no row at all,
+        must score alike.
+        """
+        at_target = self.capability(declared_budget='2000000',
+                                    rd_spend='2000000')
+        for amount in ('0', '1', '500000', '50000000', None):
+            with self.subTest(amount=amount):
+                self.assertEqual(
+                    self.capability(declared_budget='2000000',
+                                    rd_spend=amount),
+                    at_target)
 
     def test_spend_at_or_above_the_target_caps_at_one(self):
         at_target = self.capability(declared_budget='2000000', rd_spend='2000000')
