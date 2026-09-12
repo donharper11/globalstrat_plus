@@ -39,12 +39,30 @@ changed about the rows below; nothing changed about which rows exist.
    `0.0` attractiveness, so inventing one would have taken share from every
    rival and booked it all as lost demand. W3 therefore **updates existing
    rows only** and never inserts.
-2. **A new refusal point, which is not a write path.** `_run_phase_1` gains a
-   fail-closed precondition refusing the round if any stored marketing row
-   still carries no price when processing begins. It sets no price and writes
-   no row, so it adds no row to §1; it is recorded here because it is the
-   boundary that keeps a null out of the demand path, which calls `float()` on
-   this column.
+2. **A new refusal point, which is not a write path — and it is deliberately
+   narrow.** `_run_phase_1` gains a precondition, but it fires **only** for a
+   row the deadline *should* have resolved: one whose product sold in this
+   market last round, so a floor existed, yet the price is still null. That
+   combination means `close_round` never ran over this round. It sets no price
+   and writes no row, so it adds no row to §1.
+
+   It must **not** fire for an unpriced product that never sold here. By the
+   owner's ruling of 2026-09-12 such a product is simply **not for sale that
+   round**, and the round must still resolve — there is no supported operator
+   surface that could supply the missing price (`InstructorTeamDecisionsView`
+   is GET-only, and R13 made the Django admin read-only for every competition
+   model), so refusing would stall an entire heat over one team's oversight.
+   An earlier version of this precondition did exactly that and was wrong.
+
+3. **A third deadline outcome, which changes no price.** A row the deadline
+   cannot price is recorded under its own rule (`RULE_NOT_OFFERED`) with actor
+   `system`, and left unpriced. The row is **not** deleted — it is the team's
+   decision record — and the receipt is what tells them on their results
+   screen why the product sold nothing. What keeps it out of the market is
+   `bass_engine`, which now excludes null-priced rows from its offer map at
+   source (§0): a price that does not exist cannot be a valid offer, so the
+   product takes no demand and displaces no rival, exactly as a product with
+   no decision at all already does.
 
 ---
 
