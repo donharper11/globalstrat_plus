@@ -87,18 +87,15 @@ def _development_rounds_for(team, gen):
     # CC-32B: organisational structure speed modifier, never below the
     # minimum -- an org chart cannot make a platform ready in the round it
     # was started.
-    try:
-        from core.models.cc32b_models import TeamOrganizationalStructure
-        org = TeamOrganizationalStructure.objects.filter(
-            game=team.game, team=team,
-        ).select_related('current_structure').first()
-        if org and org.current_structure and org.transition_rounds_remaining <= 0:
-            speed = float(org.current_structure.decision_speed_modifier)
-            if speed > 0 and speed != 1.0 and dev_rounds > 0:
-                dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
-                                 math.floor(dev_rounds / speed))
-    except Exception:
-        pass
+    from core.models.cc32b_models import TeamOrganizationalStructure
+    org = TeamOrganizationalStructure.objects.filter(
+        game=team.game, team=team,
+    ).select_related('current_structure').first()
+    if org and org.current_structure and org.transition_rounds_remaining <= 0:
+        speed = float(org.current_structure.decision_speed_modifier)
+        if speed > 0 and speed != 1.0 and dev_rounds > 0:
+            dev_rounds = max(MIN_DEVELOPMENT_ROUNDS,
+                             math.floor(dev_rounds / speed))
     return dev_rounds
 
 

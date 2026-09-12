@@ -12,6 +12,7 @@ the minimum that a zero-round generation still observes, and the scenario
 maximum that bounds the other end.
 """
 from decimal import Decimal as D
+from unittest.mock import patch
 
 from django.test import TestCase
 
@@ -65,6 +66,17 @@ class LifecycleFixture(TestCase):
             submission, _ = DecisionSubmission.objects.get_or_create(
                 team=self.team, round=rnd, defaults={'status': 'locked'})
         _process_platform_development(self.team, submission, round_number)
+
+    def set_development_round_limit(self, value):
+        ScenarioConfig.objects.update_or_create(
+            scenario=self.scenario,
+            config_key='max_platform_development_rounds',
+            defaults={'config_value': str(value),
+                      'description': 'platform lifecycle test limit'})
+        # `get_config` memoises per scenario. Clear this fixture's value after
+        # changing its configuration so the test measures the stored rule.
+        from core.engine import utils as engine_utils
+        engine_utils._config_cache.pop(self.scenario.id, None)
 
     def run_cost_path(self, round_number, capitalize):
         """Run the real cost path for one round and report what it booked.
@@ -189,6 +201,39 @@ class PlatformTimingTests(LifecycleFixture):
         self.process(3)
         self.assertEqual(self.platform(gen).status, 'active',
                          'a generation authored at 9 was not bounded to 2')
+
+    def test_active_org_structure_applies_its_development_speed_modifier(self):
+        """The org-speed path is applied, rather than failing silently."""
+        from core.engine.rd_processing import _development_rounds_for
+        from core.models.cc32b_models import (
+            OrganizationalStructureType, TeamOrganizationalStructure,
+        )
+
+        self.set_development_round_limit(4)
+        gen = self.generation(5, rounds=4)
+        structure = OrganizationalStructureType.objects.create(
+            scenario=self.scenario, code='fast', name='Fast', description='d',
+            base_overhead_per_round=D('0'),
+            per_market_coordination_cost=D('0'),
+            decision_speed_modifier=D('2.00'),
+        )
+        TeamOrganizationalStructure.objects.create(
+            game=self.game, team=self.team, current_structure=structure,
+            transition_rounds_remaining=0,
+        )
+
+        self.assertEqual(_development_rounds_for(self.team, gen), 2)
+
+    def test_org_structure_lookup_errors_are_not_silently_ignored(self):
+        """A failed modifier lookup must abort resolution, not change the rule."""
+        from core.engine.rd_processing import _development_rounds_for
+        from core.models.cc32b_models import TeamOrganizationalStructure
+
+        gen = self.generation(6, rounds=2)
+        with patch.object(TeamOrganizationalStructure.objects, 'filter',
+                          side_effect=RuntimeError('database unavailable')):
+            with self.assertRaisesRegex(RuntimeError, 'database unavailable'):
+                _development_rounds_for(self.team, gen)
 
     def test_development_rounds_remaining_never_goes_negative(self):
         gen = self.generation(5, rounds=0)
