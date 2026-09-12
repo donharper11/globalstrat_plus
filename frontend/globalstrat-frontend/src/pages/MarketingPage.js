@@ -253,6 +253,14 @@ const MarketingPage = () => {
     // Previous round data for this product-market
     const prevKey = `${d.team_product}_${d.market}`;
     const prev = context.prev_round_decisions?.[prevKey];
+    // Stage 5 price band. min/max come from the server's one calculator; this
+    // only decides which of those server-supplied numbers to show, so the
+    // screen cannot state a different range from the one enforced.
+    const band = context.price_bands?.[prevKey];
+    const priceEntered = d.retail_price > 0;
+    const priceOutOfBand = !!band && priceEntered
+      && (d.retail_price < band.min || d.retail_price > band.max);
+    const priceBlank = !!band && !priceEntered;
 
     return (
       <div key={`${d.team_product}-${d.market}`}>
@@ -268,6 +276,22 @@ const MarketingPage = () => {
                 style={{ width: '100%' }}
               />
               {prev && <Text style={prevHint()}>{t('marketing.last')}: ${prev.retail_price}</Text>}
+              {band && (
+                <Text style={prevHint({ color: (priceOutOfBand || priceBlank) ? '#cf1322' : '#8c8c8c' })}>
+                  {t('marketing.price_band_range', {
+                    min: Math.round(band.min).toLocaleString(),
+                    max: Math.round(band.max).toLocaleString(),
+                  })}
+                </Text>
+              )}
+              {priceOutOfBand && (
+                <Text style={prevHint({ color: '#cf1322' })}>{t('marketing.price_out_of_band')}</Text>
+              )}
+              {priceBlank && (
+                <Text style={prevHint({ color: '#cf1322' })}>
+                  {t('marketing.price_blank', { floor: Math.round(band.min).toLocaleString() })}
+                </Text>
+              )}
             </Col>
             <Col>
               <Tag color={d.positioning === 'premium' ? 'purple' : d.positioning === 'budget' ? 'green' : 'blue'}>

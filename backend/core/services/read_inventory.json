@@ -4,7 +4,7 @@
     "OperatorAuditEvent",
     "ResolutionManifest"
   ],
-  "audit_routes": 3,
+  "audit_routes": 4,
   "decision_models": [
     "CustomsClassificationDecision",
     "Decision",
@@ -34,7 +34,7 @@
   ],
   "decision_routes": 29,
   "exempt": 1,
-  "logged": 31,
+  "logged": 32,
   "routes": [
     {
       "category": "decisions",
@@ -423,6 +423,19 @@
       "view": "research_reports.ResearchReportsView"
     },
     {
+      "category": "audit",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionAuditEvent"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/results/round/<int:round_number>/",
+      "view": "results_api.RoundResultsView"
+    },
+    {
       "category": "decisions",
       "exempt_reason": "",
       "logged": true,
@@ -491,6 +504,6 @@
       "view": "cc31h_views.TickerView"
     }
   ],
-  "total_sensitive_routes": 32,
+  "total_sensitive_routes": 33,
   "url_conf_route_count": 781
 }

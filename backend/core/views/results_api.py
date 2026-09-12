@@ -244,6 +244,35 @@ class RoundResultsView(APIView):
                 'max_level': _dec(sfl.feature.max_value),
             })
 
+        # Stage 5: a price the system adjusted at the deadline is shown to the
+        # team it happened to. This is the half of Ruling 2 that makes dispute
+        # 2 -- "our decision was recorded differently from what we entered" --
+        # answerable from the team's own screen. Rendered from the audit
+        # payload rather than recomputed, so the sentence the team reads and
+        # the row an instructor produces are the same fact.
+        from core.models import DecisionAuditEvent
+        from core.models.core import Round as RoundModel
+        from core.services import price_band as band_rules
+        msg_language = 'zh-CN' if language == 'zh-CN' else 'en'
+        price_adjustments = []
+        adjusted_round = RoundModel.objects.filter(
+            game=game, round_number=round_number).first()
+        if adjusted_round:
+            for event in DecisionAuditEvent.objects.filter(
+                game=game, team=team, round=adjusted_round,
+                action__in=(band_rules.ACTION_ADJUSTED,
+                            band_rules.ACTION_BLANK_DEFAULTED),
+            ).order_by('id'):
+                price_adjustments.append({
+                    'product_name': event.payload.get('product_name'),
+                    'market': event.payload.get('market_name'),
+                    'submitted_price': event.payload.get('submitted_price'),
+                    'applied_price': event.payload.get('applied_price'),
+                    'rule': event.payload.get('rule'),
+                    'message': band_rules.adjustment_notice(
+                        event.payload, msg_language),
+                })
+
         return Response({
             'round_number': round_number,
             'performance': performance,
@@ -253,6 +282,7 @@ class RoundResultsView(APIView):
             'events': events,
             'coherence': coherence,
             'strategy_features': strategy_features,
+            'price_adjustments': price_adjustments,
         })
 
 

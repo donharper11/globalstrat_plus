@@ -130,6 +130,12 @@ def close_round(game_id, reason='manual'):
     round_obj.save(update_fields=['status', 'closed_at', 'close_reason',
                                   'decisions_locked', 'lock_reason'])
 
+    # Ruling 2: the deadline is where an out-of-band or missing price becomes
+    # a legal one. Deliberately before the freeze below, so the submission
+    # snapshot each lock event records already holds the price that will
+    # actually be scored.
+    _apply_price_band(game, round_obj)
+
     # Freeze whatever each team had at the moment of close, so late edits
     # can't slip in and so processing sees a stable snapshot.
     locked = _lock_all_submissions(game, round_obj)
@@ -141,6 +147,117 @@ def close_round(game_id, reason='manual'):
     return {'changed': True, 'round': round_obj.round_number,
             'status': 'closed', 'submissions_locked': locked,
             'reason': reason}
+
+
+def _apply_price_band(game, round_obj, *, scenario=None):
+    """Bring every out-of-band and every missing price inside the legal range.
+
+    Stage 5, Ruling 2. Two cases, and the difference between them is the whole
+    rule:
+
+      * a price OUTSIDE the band is moved to the NEARER edge -- the smallest
+        change that makes the team's own decision legal;
+      * a product-market with NO marketing decision at all is priced at the
+        band FLOOR. In GlobalStrat a missing row is how "blank" manifests: the
+        serializer refuses a price of zero and the pricing screen drops an
+        unpriced row from its payload, so there is no row to correct and one
+        has to be written.
+
+    Every change writes a ``DecisionAuditEvent`` with ``user=None`` -- actor
+    ``system`` on the instructor drill-down -- carrying the submitted value,
+    the applied value and the rule. Without that record the substitution would
+    make dispute 2 unanswerable, which is the objection BECSR avoids by
+    refusing instead of substituting.
+
+    Runs over every active team's submission REGARDLESS of lock state. A team
+    that locked early is still subject to the deadline rule, and
+    ``_lock_all_submissions`` deliberately skips an already-locked submission,
+    so folding this into that loop would exempt precisely the teams that
+    submitted on time.
+    """
+    from decimal import Decimal
+    from core.models import DecisionAuditEvent
+    from core.models.decisions import DecisionMarketing
+    from core.models.team_state import TeamProductMarket
+    from core.services import price_band as band_rules
+
+    scenario = scenario or game.scenario
+    zero = Decimal('0')
+    changed = 0
+
+    for team in Team.objects.filter(
+        game=game, participation_status='active',
+    ).order_by('id'):
+        submission = DecisionSubmission.objects.filter(
+            team=team, round=round_obj,
+        ).first()
+        if not submission:
+            # A team with no submission gets one from _lock_all_submissions;
+            # it has no products priced and nothing to bring into band.
+            continue
+
+        priced = set()
+        for md in (DecisionMarketing.objects
+                   .filter(submission=submission)
+                   .select_related('team_product', 'market')
+                   .order_by('id')):
+            priced.add((md.team_product_id, md.market_id))
+            band = band_rules.price_band(
+                scenario, team, md.team_product, md.market,
+                round_obj.round_number)
+            applied, status = band_rules.adjusted_price(md.retail_price, band)
+            if status in (band_rules.IN_BAND, band_rules.NO_ANCHOR):
+                continue
+            payload = band_rules.audit_payload(
+                team_product=md.team_product, market=md.market, band=band,
+                submitted=md.retail_price, applied=applied,
+                rule=band_rules.RULE_OUT_OF_BAND)
+            md.retail_price = applied
+            md.save(update_fields=['retail_price'])
+            DecisionAuditEvent.objects.create(
+                game=game, team=team, round=round_obj, user=None,
+                action=band_rules.ACTION_ADJUSTED,
+                endpoint='engine:close_round', payload=payload)
+            changed += 1
+
+        for tpm in (TeamProductMarket.objects
+                    .filter(team_product__team=team,
+                            team_product__status='active', is_active=True)
+                    .select_related('team_product', 'market')
+                    .order_by('team_product_id', 'market_id')):
+            if (tpm.team_product_id, tpm.market_id) in priced:
+                continue
+            band = band_rules.price_band(
+                scenario, team, tpm.team_product, tpm.market,
+                round_obj.round_number)
+            floor = band_rules.blank_price(band)
+            if floor is None:
+                # No anchor: nothing authored and nothing ever sold here, so
+                # there is no floor to fall to. Left alone rather than guessed.
+                continue
+            DecisionMarketing.objects.create(
+                submission=submission, team_product=tpm.team_product,
+                market=tpm.market, retail_price=floor,
+                promotion_budget=zero, campaign_focus_feature_ids=[],
+                channel_digital_pct=zero, channel_traditional_pct=zero,
+                channel_trade_pct=zero, distribution_strategy='mass_retail',
+                distribution_investment=zero, sales_team_count=0,
+                distribution_channel_detail={}, production_volume=0,
+                production_source_market=tpm.market, demand_estimate=0,
+            )
+            payload = band_rules.audit_payload(
+                team_product=tpm.team_product, market=tpm.market, band=band,
+                submitted=None, applied=floor, rule=band_rules.RULE_BLANK)
+            DecisionAuditEvent.objects.create(
+                game=game, team=team, round=round_obj, user=None,
+                action=band_rules.ACTION_BLANK_DEFAULTED,
+                endpoint='engine:close_round', payload=payload)
+            changed += 1
+
+    if changed:
+        logger.info('Price band applied to %s decision(s) in game %s round %s',
+                    changed, game.id, round_obj.round_number)
+    return changed
 
 
 def _lock_all_submissions(game, round_obj):

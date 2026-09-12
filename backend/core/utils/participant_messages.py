@@ -55,6 +55,25 @@ MESSAGES = {
         'en': 'Unit price must be greater than zero. Enter a positive amount.',
         'zh-CN': '单价必须大于零。请输入正数金额。',
     },
+    # Stage 5 price band. Wording chosen once here; which message applies to
+    # which state is decided in core/services/price_band.py, so no surface can
+    # describe the band differently by picking a different sentence.
+    'price_band_alert': {
+        'en': 'The price of {submitted} for {product} in {market} is outside this round’s allowed range of {minimum} to {maximum}. Your entry has been saved. If it is still outside the range when the round closes, it will be adjusted to the nearest allowed price.',
+        'zh-CN': '{market} 中 {product} 的价格 {submitted} 超出本回合允许的价格区间 {minimum} 至 {maximum}。您的输入已保存。若回合截止时仍超出该区间，价格将调整为最接近的允许价格。',
+    },
+    'price_blank_alert': {
+        'en': 'No price is set for {product} in {market}. If it is still blank when the round closes, it will be priced at {floor}, the lowest price allowed this round. You may price it anywhere between {minimum} and {maximum}.',
+        'zh-CN': '{market} 中 {product} 尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 {floor} 定价。您可在 {minimum} 至 {maximum} 之间自行定价。',
+    },
+    'price_band_adjusted': {
+        'en': '{product} in {market}: you entered {submitted}, which was outside the allowed range of {minimum} to {maximum} for this round. It was adjusted to {applied} when the round closed.',
+        'zh-CN': '{market} 中的 {product}：您输入的价格为 {submitted}，超出本回合允许的区间 {minimum} 至 {maximum}。回合截止时已调整为 {applied}。',
+    },
+    'price_blank_applied': {
+        'en': '{product} in {market}: no price was entered, so it was priced at {applied} when the round closed — the lowest price allowed this round, whose range was {minimum} to {maximum}.',
+        'zh-CN': '{market} 中的 {product}：未输入价格，回合截止时已按本回合允许的最低价 {applied} 定价（本回合允许区间为 {minimum} 至 {maximum}）。',
+    },
     'target_markets_required': {
         'en': 'Choose at least one target market before creating the product.',
         'zh-CN': '创建产品前，请至少选择一个目标市场。',

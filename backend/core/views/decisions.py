@@ -2017,6 +2017,29 @@ class MarketingContextView(APIView):
                             'channel_trade_pct': float(md.channel_trade_pct) if md.channel_trade_pct else 0.33,
                         }
 
+        # Stage 5: the legal price range per product-market, from the one
+        # calculator the write path and the deadline also call. The pricing
+        # screen states the rule with these numbers rather than deriving its
+        # own, so what a team is told is legal is what is enforced.
+        from core.services import price_band as band_rules
+        price_bands = {}
+        for p in TeamProduct.objects.filter(team=team, status='active'):
+            for tpm in TeamProductMarket.objects.filter(
+                team_product=p, is_active=True,
+            ).select_related('market'):
+                band = band_rules.price_band(
+                    game.scenario, team, p, tpm.market, game.current_round)
+                if band['min'] is None:
+                    continue
+                price_bands[f'{p.id}_{tpm.market_id}'] = {
+                    'min': float(band['min']),
+                    'max': float(band['max']),
+                    'band_pct': band['band_pct'],
+                    'anchor': float(band['anchor']),
+                    'anchor_source': band['anchor_source'],
+                    'anchor_round_number': band['anchor_round_number'],
+                }
+
         return Response({
             'product_markets': product_markets,
             'production_capacity': capacity,
@@ -2025,6 +2048,7 @@ class MarketingContextView(APIView):
             'sales_rep_cost_per_round': sales_rep_cost,
             'prev_round_sales': prev_round_sales,
             'prev_round_decisions': prev_round_decisions,
+            'price_bands': price_bands,
         })
 
 

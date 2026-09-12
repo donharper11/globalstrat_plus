@@ -1,0 +1,558 @@
+Creating test database for alias 'default'...
+2026-09-12 02:13:55,437 INFO engine Price band applied to 1 decision(s) in game 1 round 1
+2026-09-12 02:13:55,457 INFO engine Closed round 1 of game 1 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,472 INFO engine Price band applied to 1 decision(s) in game 2 round 1
+2026-09-12 02:13:55,487 INFO engine Closed round 1 of game 2 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,501 INFO engine Price band applied to 1 decision(s) in game 3 round 1
+2026-09-12 02:13:55,517 INFO engine Closed round 1 of game 3 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,533 INFO engine Price band applied to 1 decision(s) in game 4 round 1
+2026-09-12 02:13:55,541 INFO engine Closed round 1 of game 4 (reason=deadline, 1 submissions locked)
+.2026-09-12 02:13:55,569 INFO engine Closed round 1 of game 5 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,582 INFO engine Price band applied to 1 decision(s) in game 6 round 1
+2026-09-12 02:13:55,597 INFO engine Closed round 1 of game 6 (reason=deadline, 2 submissions locked)
+.....2026-09-12 02:13:55,664 INFO engine Price band applied to 1 decision(s) in game 11 round 1
+2026-09-12 02:13:55,683 INFO engine Closed round 1 of game 11 (reason=deadline, 2 submissions locked)
+.....2026-09-12 02:13:55,746 INFO engine Price band applied to 1 decision(s) in game 16 round 1
+2026-09-12 02:13:55,765 INFO engine Closed round 1 of game 16 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,780 INFO engine Price band applied to 1 decision(s) in game 17 round 1
+2026-09-12 02:13:55,796 INFO engine Closed round 1 of game 17 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,811 INFO engine Price band applied to 1 decision(s) in game 18 round 1
+2026-09-12 02:13:55,827 INFO engine Closed round 1 of game 18 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,842 INFO engine Price band applied to 1 decision(s) in game 19 round 1
+2026-09-12 02:13:55,857 INFO engine Closed round 1 of game 19 (reason=deadline, 2 submissions locked)
+.2026-09-12 02:13:55,871 INFO engine Price band applied to 1 decision(s) in game 20 round 1
+2026-09-12 02:13:55,889 INFO engine Closed round 1 of game 20 (reason=deadline, 2 submissions locked)
+..................2026-09-12 02:13:56,272 ERROR engine [SC-ENGINE-FAILURE] step=test game=38 round=1: engine broke
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-ad91f3ea8e819c583/backend/core/engine/advance_round.py", line 77, in _run_sc_step
+    fn(context)
+  File "/usr/lib/python3.10/unittest/mock.py", line 1114, in __call__
+    return self._mock_call(*args, **kwargs)
+  File "/usr/lib/python3.10/unittest/mock.py", line 1118, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+  File "/usr/lib/python3.10/unittest/mock.py", line 1173, in _execute_mock_call
+    raise effect
+RuntimeError: engine broke
+.......2026-09-12 02:13:56,425 WARNING django.request Bad Request: /api/games/45/teams/77/products/34/rebase/
+.2026-09-12 02:13:56,438 WARNING django.request Forbidden: /api/games/46/teams/79/products/35/rebase/
+.2026-09-12 02:13:56,450 WARNING django.request Forbidden: /api/games/47/teams/81/products/36/rebase/
+..2026-09-12 02:13:56,491 WARNING django.request Bad Request: /api/games/49/teams/85/products/38/rebase/
+.2026-09-12 02:13:56,507 WARNING django.request Bad Request: /api/games/50/teams/87/products/39/rebase/
+...2026-09-12 02:13:56,582 WARNING django.request Not Found: /api/games/53/teams/95/products/43/rebase/
+.2026-09-12 02:13:56,603 WARNING django.request Not Found: /api/games/56/teams/97/products/44/rebase/
+..2026-09-12 02:13:56,653 WARNING django.request Not Found: /api/games/59/teams/107/products/47/rebase/
+.2026-09-12 02:13:56,668 WARNING django.request Forbidden: /api/games/61/teams/99999999/products/48/rebase/
+.2026-09-12 02:13:56,687 WARNING django.request Not Found: /api/games/63/teams/115/products/50/rebase/
+......................2026-09-12 02:13:57,323 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:57,323 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:57,323 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:57,323 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:57,323 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:57,323 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:57,323 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:57,324 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:57,349 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:13:57,741 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:57,741 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:57,741 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:57,741 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:57,741 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:57,741 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:57,741 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:57,742 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:57,767 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:13:58,149 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:13:58,150 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:58,150 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:58,150 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:58,150 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:58,150 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:58,150 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:58,151 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:58,174 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:13:58,576 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:58,576 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:58,576 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:58,576 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:58,576 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:58,576 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:58,576 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:58,577 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:58,601 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:13:58,991 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:58,991 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:58,991 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:58,991 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:58,991 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:58,991 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:58,992 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:58,993 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:59,017 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:13:59,402 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:59,402 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:59,402 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:59,402 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:59,402 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:59,402 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:59,402 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:59,403 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:59,428 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:13:59,823 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:13:59,823 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:13:59,823 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:13:59,823 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:13:59,823 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:13:59,823 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:13:59,823 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:13:59,824 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:13:59,849 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:14:00,257 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:14:00,257 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:00,257 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:00,257 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:00,257 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:00,257 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:00,257 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:00,258 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:00,283 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:14:00,669 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:14:00,669 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:00,669 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:00,669 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:00,669 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:00,669 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:00,669 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:00,670 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:00,694 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:14:01,083 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:14:01,083 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:01,083 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:01,083 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:01,083 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:01,083 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:01,083 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:01,084 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:01,108 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:14:01,483 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:14:01,484 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:01,484 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:01,484 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:01,484 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:01,484 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:01,484 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:01,485 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:01,510 INFO engine Phase 1 complete: 0.2s
+.2026-09-12 02:14:01,897 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:14:01,897 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:01,897 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:01,897 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:01,897 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:01,897 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:01,897 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:01,898 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:01,922 INFO engine Phase 1 complete: 0.2s
+...2026-09-12 02:14:03,380 WARNING django.request Forbidden (Permission denied): /admin/core/decisionauditevent/44/change/
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1867, in _changeform_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+.2026-09-12 02:14:03,773 WARNING django.request Forbidden (Permission denied): /admin/core/decisionauditevent/45/delete/
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2207, in delete_view
+    return self._delete_view(request, object_id, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2222, in _delete_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+.......................competition_decision_audit_event: append-only trigger missing
+..............2026-09-12 02:14:07,461 WARNING django.request Forbidden (Permission denied): /admin/core/game/add/
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1984, in add_view
+    return self.changeform_view(request, None, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1859, in _changeform_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+2026-09-12 02:14:07,463 WARNING django.request Forbidden (Permission denied): /admin/core/game/135/change/
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1843, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1867, in _changeform_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+2026-09-12 02:14:07,465 WARNING django.request Forbidden (Permission denied): /admin/core/game/135/delete/
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2207, in delete_view
+    return self._delete_view(request, object_id, extra_context)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2222, in _delete_view
+    raise PermissionDenied
+django.core.exceptions.PermissionDenied
+...2026-09-12 02:14:07,901 ERROR core.services.audit_chain Audit chain seal failed
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-ad91f3ea8e819c583/backend/core/services/audit_chain.py", line 223, in _seal_after_commit
+    seal_pending()
+  File "/usr/lib/python3.10/unittest/mock.py", line 1114, in __call__
+    return self._mock_call(*args, **kwargs)
+  File "/usr/lib/python3.10/unittest/mock.py", line 1118, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+  File "/usr/lib/python3.10/unittest/mock.py", line 1173, in _execute_mock_call
+    raise effect
+RuntimeError: database is on fire
+........2026-09-12 02:14:21,915 WARNING django.request Forbidden: /api/games/141/teams/226/decisions/round/1/
+.2026-09-12 02:14:21,923 WARNING django.request Forbidden: /api/games/142/teams/227/decisions/round/1/
+..2026-09-12 02:14:21,938 WARNING django.request Forbidden: /api/games/144/teams/231/decisions/round/1/
+...2026-09-12 02:14:21,988 WARNING django.request Forbidden: /api/games/147/teams/238/decisions/round/1/
+.2026-09-12 02:14:22,026 WARNING django.request Bad Request: /api/games/148/teams/239/decisions/round/1/rd/
+.2026-09-12 02:14:22,052 WARNING django.request Bad Request: /api/games/149/teams/240/decisions/round/1/rd/
+.2026-09-12 02:14:22,077 WARNING django.request Bad Request: /api/games/150/teams/241/decisions/round/1/rd/
+.2026-09-12 02:14:22,101 WARNING django.request Bad Request: /api/games/151/teams/242/decisions/round/1/
+.2026-09-12 02:14:22,121 WARNING django.request Bad Request: /api/games/152/teams/243/decisions/round/1/esg/
+.2026-09-12 02:14:22,154 WARNING django.request Bad Request: /api/games/153/teams/244/decisions/round/1/esg/
+..2026-09-12 02:14:22,195 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/esg/
+2026-09-12 02:14:22,202 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/esg/
+2026-09-12 02:14:22,210 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/talent/
+2026-09-12 02:14:22,218 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/talent/
+2026-09-12 02:14:22,225 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/talent/
+2026-09-12 02:14:22,232 WARNING django.request Bad Request: /api/games/155/teams/246/decisions/round/1/talent/
+.2026-09-12 02:14:22,246 WARNING django.request Bad Request: /api/games/156/teams/247/decisions/round/1/
+2026-09-12 02:14:22,255 WARNING django.request Bad Request: /api/games/156/teams/247/decisions/round/1/
+...........2026-09-12 02:14:22,438 WARNING django.request Forbidden: /api/games/164/instructor/operator-events/
+.2026-09-12 02:14:22,448 WARNING django.request Forbidden: /api/games/165/instructor/operator-events/
+....2026-09-12 02:14:22,500 WARNING django.request Method Not Allowed: /api/games/169/instructor/operator-events/
+2026-09-12 02:14:22,502 WARNING django.request Method Not Allowed: /api/games/169/instructor/operator-events/
+2026-09-12 02:14:22,503 WARNING django.request Method Not Allowed: /api/games/169/instructor/operator-events/
+2026-09-12 02:14:22,505 WARNING django.request Method Not Allowed: /api/games/169/instructor/operator-events/
+..2026-09-12 02:14:25,173 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:14:25,173 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:25,173 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:25,173 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:25,173 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:25,173 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:25,173 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:25,174 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:25,199 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:14:25,308 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:14:25,324 INFO engine Game 172 advanced: round 2 -> 3
+2026-09-12 02:14:25,356 INFO core.lifecycle DecisionUnlockView.post refused: Round 2 has already been processed; unlocking now would not change its results.
+2026-09-12 02:14:25,356 WARNING django.request Conflict: /api/games/172/teams/272/decisions/round/2/unlock/
+.2026-09-12 02:14:31,905 INFO engine Closed round 2 of game 173 (reason=manual, 0 submissions locked)
+.2026-09-12 02:14:37,316 INFO engine Closed round 2 of game 174 (reason=manual, 0 submissions locked)
+2026-09-12 02:14:37,338 INFO core.lifecycle RoundReopenView.post refused: Round 2 is already open.
+2026-09-12 02:14:37,338 WARNING django.request Conflict: /api/games/174/round-control/reopen/
+.2026-09-12 02:14:43,954 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:14:43,954 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:43,954 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:43,954 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:43,954 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:43,954 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:43,954 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:43,955 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:43,983 INFO engine Phase 1 complete: 0.3s
+2026-09-12 02:14:44,093 INFO engine Phase 2 dispatched to background thread
+..2026-09-12 02:14:55,989 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:14:55,989 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:14:55,989 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:14:55,989 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:14:55,989 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:14:55,989 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:14:55,989 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:14:55,990 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:14:56,015 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:14:56,129 INFO engine Phase 2 dispatched to background thread
+.......2026-09-12 02:15:02,408 INFO engine Closed round 1 of game 178 (reason=manual, 0 submissions locked)
+2026-09-12 02:15:02,758 INFO agent_orchestrator Agent cycle starting: Round 1, 2 teams, 1 markets
+2026-09-12 02:15:02,758 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:02,758 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:02,758 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:02,758 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:02,758 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:02,758 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:02,760 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:02,790 INFO engine Phase 1 complete: 0.3s
+2026-09-12 02:15:02,902 INFO engine Phase 2 dispatched to background thread
+.2026-09-12 02:15:08,992 WARNING core.views.round_control Round not ready to process for game 179: Team "Team 0" has not locked decisions for round 2. Re-lock the team (or close the round) before processing.
+2026-09-12 02:15:09,012 INFO core.lifecycle RoundProcessView.post refused: Team "Team 0" has not locked decisions for round 2. Re-lock the team (or close the round) before processing.
+2026-09-12 02:15:09,013 WARNING django.request Bad Request: /api/games/179/round-control/process/
+..2026-09-12 02:15:21,548 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:15:21,548 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:21,548 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:21,548 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:21,548 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:21,548 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:21,548 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:21,550 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:21,578 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:15:21,690 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:15:21,698 INFO core.lifecycle RoundProcessView.post refused: Round 2 has already been processed.
+2026-09-12 02:15:21,698 WARNING django.request Conflict: /api/games/181/round-control/process/
+.2026-09-12 02:15:27,840 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:15:27,840 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:27,840 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:27,840 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:27,840 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:27,840 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:27,840 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:27,841 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:27,866 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:15:28,059 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:15:28,067 INFO core.lifecycle RoundProcessView.post refused: Round 2 has already been processed.
+2026-09-12 02:15:28,067 WARNING django.request Conflict: /api/games/182/round-control/process/
+.2026-09-12 02:15:34,895 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:15:34,895 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:34,895 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:34,895 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:34,895 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:34,895 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:34,895 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:34,896 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:34,924 INFO engine Phase 1 complete: 0.3s
+2026-09-12 02:15:35,043 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:15:35,057 INFO core.lifecycle RoundProcessView.post refused: Round 2 has already been processed.
+2026-09-12 02:15:35,057 WARNING django.request Conflict: /api/games/183/round-control/process/
+.2026-09-12 02:15:41,709 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:15:41,709 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:41,709 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:41,709 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:41,709 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:41,709 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:41,709 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:41,711 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:41,740 INFO engine Phase 1 complete: 0.3s
+2026-09-12 02:15:41,860 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:15:41,875 INFO core.lifecycle RoundProcessView.post refused: Round 2 has already been processed.
+2026-09-12 02:15:41,875 WARNING django.request Conflict: /api/games/184/round-control/process/
+.2026-09-12 02:15:48,532 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:15:48,532 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:15:48,532 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:15:48,532 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:15:48,532 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:15:48,532 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:15:48,532 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:15:48,534 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:15:48,565 INFO engine Phase 1 complete: 0.3s
+2026-09-12 02:15:48,687 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:15:48,702 INFO core.lifecycle RoundProcessView.post refused: Round 2 has already been processed.
+2026-09-12 02:15:48,703 WARNING django.request Conflict: /api/games/185/round-control/process/
+.2026-09-12 02:15:55,319 INFO core.lifecycle RoundProcessView.post refused: Round 3 is still open.
+2026-09-12 02:15:55,319 WARNING django.request Bad Request: /api/games/186/round-control/process/
+...F..2026-09-12 02:16:10,690 INFO engine Closed round 2 of game 188 (reason=manual, 0 submissions locked)
+2026-09-12 02:16:10,718 INFO core.lifecycle GameRoundScheduleView.post refused: Round 2 is "closed"; its schedule can no longer change.
+2026-09-12 02:16:10,718 WARNING django.request Bad Request: /api/games/188/round-schedule/
+.2026-09-12 02:16:16,585 INFO core.lifecycle GameRoundScheduleView.post refused: Round 999999 not found in game 189.
+2026-09-12 02:16:16,585 WARNING django.request Bad Request: /api/games/189/round-schedule/
+.2026-09-12 02:16:23,055 INFO agent_orchestrator Agent cycle starting: Round 2, 2 teams, 1 markets
+2026-09-12 02:16:23,055 INFO agent_orchestrator   competitor: proposed 0 actions
+2026-09-12 02:16:23,055 INFO agent_orchestrator   investor: proposed 0 actions
+2026-09-12 02:16:23,055 INFO agent_orchestrator   alliance: proposed 0 actions
+2026-09-12 02:16:23,055 INFO agent_orchestrator   government: proposed 0 actions
+2026-09-12 02:16:23,055 INFO agent_orchestrator   Convergence iteration 1: 0 agents revised
+2026-09-12 02:16:23,055 INFO agent_orchestrator   Converged after 1 iterations
+2026-09-12 02:16:23,056 INFO agent_orchestrator Agent cycle complete: 0 actions, 0 narratives, 1 iterations
+2026-09-12 02:16:23,081 INFO engine Phase 1 complete: 0.2s
+2026-09-12 02:16:23,195 INFO engine Phase 2 dispatched to background thread
+2026-09-12 02:16:23,203 INFO core.lifecycle GameRoundScheduleView.post refused: Round 2 is "processed"; its schedule can no longer change.
+2026-09-12 02:16:23,203 WARNING django.request Bad Request: /api/games/190/round-schedule/
+.2026-09-12 02:16:30,053 INFO engine Closed round 2 of game 191 (reason=deadline, 0 submissions locked)
+2026-09-12 02:16:30,055 INFO core.round_scheduler Deadline closed game 191 ("race-139807597891728") round 2
+.2026-09-12 02:16:36,164 INFO engine Closed round 2 of game 192 (reason=manual, 0 submissions locked)
+2026-09-12 02:16:36,174 INFO core.round_scheduler Deadline close skipped, already closed: game 192 ("race-139807597891872") round 2
+............
+======================================================================
+FAIL: test_inventory_matches_the_checked_in_copy (core.tests.test_operator_concurrency.RouteCoverageTests)
+Route drift is a review event, not a silent change in coverage.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-ad91f3ea8e819c583/backend/core/tests/test_operator_concurrency.py", line 838, in test_inventory_matches_the_checked_in_copy
+    self.fail(
+AssertionError: Route inventory drifted. Added: ['api/games/<int:game_id>/teams/<int:team_id>/products/<int:product_id>/rebase/|post']; removed: []; changed: []. Review the change, then run `manage.py dump_route_inventory`.
+
+----------------------------------------------------------------------
+Ran 213 tests in 167.051s
+
+FAILED (failures=1)
+Destroying test database for alias 'default'...
+Found 213 test(s).
+System check identified no issues (0 silenced).
+Validated recovery plan; durable audit: /tmp/tmpdnd9tccb/recovery-audit.jsonl
+Validated recovery plan; durable audit: /tmp/tmpawczcpvc/recovery-audit.jsonl
+Chain: 1 entries, 0 unsealed, 0 problems.
+Anchor: matches (/tmp/tmphlfysa6t/audit-anchors/latest.json)
+Audit integrity verified.
+Chain: 1 entries, 0 unsealed, 1 problems.
+  #1 row_modified: competition_decision_audit_event:55 no longer hashes to its sealed digest
+Anchor: DOES NOT MATCH (/tmp/tmphlfysa6t/audit-anchors/latest.json)
+  #1: competition_decision_audit_event:55 no longer hashes to its sealed digest
+  the chain rebuilt from live rows does not reach the anchored head
+AUDIT INTEGRITY FAILED.
+Read inventory is current.
+Calibration warning: 5 preference(s) assign zero weight to acquisition_track (deliberately dormant or dead weight).
+Calibration warning: 25 preference(s) assign positive weight to ai_features, unreachable on Gen 1; document it as an upgrade incentive.
+Calibration warning: 25 preference(s) assign positive weight to connectivity, unreachable on Gen 1; document it as an upgrade incentive.
+Calibration warning: 25 preference(s) assign positive weight to iot_integration, unreachable on Gen 1; document it as an upgrade incentive.
+Created scenario: Consumer Electronics 2026 (id=170)
+  Loaded 16 company names
+  Markets loaded: ['AFR', 'APAC', 'EU', 'LATAM', 'NA'] (5-market mode)
+  Normalizing performance_index_weight: raw total=1.5400
+
+=== Scenario Load Complete ===
+  AICompetitorBehavior: 2
+  AICompetitorDefinition: 2
+  AICompetitorFitByRound: 500
+  AIInvestorFund: 3
+  AIInvestorPreference: 17
+  AcquisitionTarget: 5
+  AlliancePartnerProfile: 25
+  CommunicationAssignment: 5
+  ComplianceRegime: 5
+  CulturalDistanceMatrix: 25
+  EntryModeDefinition: 5
+  EventImpactDefinition: 33
+  EventTemplateDefinition: 38
+  FeatureDefinition: 35
+  FeatureLevelCost: 379
+  FirmStarterProfile: 4
+  FreightMarket: 1
+  GovernanceCommitmentType: 5
+  GovernmentProfile: 5
+  LocalStrategicPartner: 5
+  MarketConditionByRound: 40
+  MarketDefinition: 5
+  MarketReadiness: 135
+  OrganizationalStructureType: 4
+  OriginTrustModifier: 25
+  PlatformFeatureCeiling: 27
+  PlatformGenerationDefinition: 3
+  ResilienceParameters: 1
+  Scenario: 1
+  ScenarioConfig: 79
+  SegmentDefinition: 37
+  SegmentPreference: 634
+  ShippingLane: 20
+  StrategyOptionDefinition: 4
+  StrategyOptionEffect: 6
+  Supplier: 25
+  TaxStructureType: 3
+  TradeFinanceInstrument: 6
+  TOTAL RECORDS: 2154
+
+  Performance index weight sum: 1.0000
+  The Innovator [alpha] feature total: 30
+  The Innovator [beta] feature total: 27
+  The Brand Builder [alpha] feature total: 29
+  The Brand Builder [beta] feature total: 26
+  The Workhorse [alpha] feature total: 30
+  The Workhorse [beta] feature total: 25
+  The Green Pioneer [alpha] feature total: 29
+  The Green Pioneer [beta] feature total: 25
+
+  Scenario ID: 170
+Closed game 191 ("race-139807597891728") round 2 — deadline was 2026-09-12 02:15, 0 submission(s) locked.
+Done. 1 round(s) due.
+Skipped game 192 ("race-139807597891872") round 2 — already closed when the scheduler reached it.
+Done. 1 round(s) due.
