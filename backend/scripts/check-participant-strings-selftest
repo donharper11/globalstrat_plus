@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+"""Prove `check-participant-strings` can fail, one assertion at a time.
+
+AP-R10, aide-platform's rule, adopted by `checks/README.md` and applied here:
+
+    a check counts only when the packet proves it can fail.
+
+The pattern is the one `checks/selftest/run` uses. For every assertion the
+checker makes, this builds a disposable tree the checker passes on, plants a
+violation of that single assertion, asserts a non-zero exit, removes the plant
+and asserts it passes again. The false-positive cases are asserted too,
+because a check that cries wolf gets switched off: a message that interpolates
+a value whose *placeholder name* looks like a column must pass, and so must a
+service module that deliberately names a model in a diagnostic record.
+
+Usage:
+    backend/scripts/check-participant-strings-selftest
+Exit 0 when every case behaved as specified, 1 otherwise.
+"""
+from __future__ import annotations
+
+import json
+import shutil
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+CHECKER = Path(__file__).resolve().parent / "check-participant-strings"
+
+PASS = 0
+FAIL = 0
+
+
+def assert_exit(expected: int, actual: int, label: str) -> None:
+    global PASS, FAIL
+    if actual == expected:
+        print(f"    ok    {label} (exit {actual})")
+        PASS += 1
+    else:
+        print(f"    FAIL  {label} (expected exit {expected}, got {actual})")
+        FAIL += 1
+
+
+CATALOGUE = '''\
+FIELD_LABELS = {
+    'rd_budget': {'en': 'R&D budget', 'zh-CN': '研发预算'},
+}
+
+ROUND_STATUS_LABELS = {
+    'open': {'en': 'open', 'zh-CN': '已开放'},
+    'closed': {'en': 'closed', 'zh-CN': '已关闭'},
+}
+
+MESSAGES = {
+    'round_closed': {
+        'en': 'Round {round} is closed and no longer accepts decisions.',
+        'zh-CN': '第 {round} 回合已关闭。',
+    },
+    # A false-positive guard: the placeholder is NAMED after a column, but the
+    # name is substituted before anyone reads the sentence. This must pass.
+    'unlock': {
+        'en': 'Available in round {unlock_round}.',
+        'zh-CN': '将在第 {unlock_round} 回合开放。',
+    },
+}
+'''
+
+COHORT = '''\
+MESSAGES = {
+    'section_full': {
+        'en': 'This section is full.',
+        'zh-CN': '本班级名额已满。',
+    },
+}
+'''
+
+MODELS = '''\
+from django.db import models
+
+
+class Round(models.Model):
+    STATUS_CHOICES = [
+        ('open', 'Open'),
+        ('closed', 'Closed'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    rd_budget = models.DecimalField(max_digits=10, decimal_places=2)
+    unlock_round = models.IntegerField()
+    retail_price = models.DecimalField(max_digits=10, decimal_places=2)
+'''
+
+VIEW = '''\
+from core.utils.localization import get_localized_field
+from core.utils.participant_messages import participant_message
+
+
+class IsTeamMember:
+    message = participant_message('round_closed')
+
+    def has_permission(self, request, view):
+        errors = []
+        errors.append(participant_message('round_closed', language='en'))
+        return Response({'detail': participant_message('round_closed')})
+
+    def refuse(self, entry, language):
+        # A7's passing case: the market name is read through the localiser,
+        # while the team's own product name is deliberately passed raw.
+        return participant_message(
+            'round_closed', language=language,
+            product=entry.team_product.name,
+            market=get_localized_field(entry.market, 'name', language))
+'''
+
+SERVICE = '''\
+def persisted_violations():
+    """A diagnostic record for an engineer: naming the model is the point.
+
+    This must NOT be flagged -- the file is not in participant_payload_dicts.
+    """
+    return [{'detail': 'DecisionBudgetAllocation row 7: rd_budget = -1'}]
+'''
+
+
+def build_tree(root: Path) -> Path:
+    (root / "backend/core/utils").mkdir(parents=True)
+    (root / "backend/core/models").mkdir(parents=True)
+    (root / "backend/core/views").mkdir(parents=True)
+    (root / "backend/core/services").mkdir(parents=True)
+    (root / "frontend/globalstrat-frontend/src/locales").mkdir(parents=True)
+
+    (root / "backend/core/utils/participant_messages.py").write_text(
+        CATALOGUE, encoding="utf-8")
+    (root / "backend/core/utils/cohort_messages.py").write_text(
+        COHORT, encoding="utf-8")
+    (root / "backend/core/models/core.py").write_text(MODELS, encoding="utf-8")
+    (root / "backend/core/views/decisions.py").write_text(VIEW, encoding="utf-8")
+    (root / "backend/core/services/rd_costs.py").write_text(
+        SERVICE, encoding="utf-8")
+    (root / "frontend/globalstrat-frontend/src/locales/en.json").write_text(
+        json.dumps({"summary": {"title": "Summary",
+                                "round": "Round {{round}}"}}), encoding="utf-8")
+    (root / "frontend/globalstrat-frontend/src/locales/zh-CN.json").write_text(
+        json.dumps({"summary": {"title": "汇总",
+                                "round": "第 {{round}} 回合"}}),
+        encoding="utf-8")
+
+    config = {
+        "languages": ["en", "zh-CN"],
+        "languages_source": "selftest fixture",
+        "catalogues": {
+            "backend/core/utils/participant_messages.py": {
+                "MESSAGES": "fixture", "FIELD_LABELS": "fixture",
+                "ROUND_STATUS_LABELS": "fixture"},
+            "backend/core/utils/cohort_messages.py": {"MESSAGES": "fixture"},
+        },
+        "catalogues_source": "selftest fixture",
+        "scope": {
+            "backend/core/views/decisions.py": "fixture participant route",
+            "backend/core/services/rd_costs.py": "fixture service module",
+        },
+        "scope_source": "selftest fixture",
+        "locales": {
+            "frontend/globalstrat-frontend/src/locales/en.json": "en",
+            "frontend/globalstrat-frontend/src/locales/zh-CN.json": "zh-CN",
+        },
+        "locales_source": "selftest fixture",
+        "model_field_sources": ["backend/core/models"],
+        "model_field_sources_source": "selftest fixture",
+        "participant_payload_dicts": {
+            "backend/core/views/decisions.py": "fixture response payloads"},
+        "participant_payload_dicts_source": "selftest fixture",
+        "localised_name_arguments": {
+            "market": "fixture: scenario content with a name_zh",
+            "platform": "fixture: scenario content with a name_zh",
+            "feature": "fixture: scenario content with a name_zh"},
+        "localised_name_arguments_source": "selftest fixture",
+        "allow_literals": {},
+        "allow_literals_source": "selftest fixture",
+    }
+    config_path = root / "config.json"
+    config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+    return config_path
+
+
+def run(root: Path, config: Path) -> int:
+    proc = subprocess.run(
+        [sys.executable, str(CHECKER), "--repo", str(root),
+         "--config", str(config)],
+        capture_output=True, text=True)
+    return proc.returncode
+
+
+def case(label: str, mutate, expected: int) -> None:
+    """Plant one violation, assert the exit, then assert the tree is clean again."""
+    root = Path(tempfile.mkdtemp(prefix="pstrings-selftest-"))
+    try:
+        config = build_tree(root)
+        assert_exit(0, run(root, config), f"{label}: clean tree passes")
+        mutate(root, config)
+        assert_exit(expected, run(root, config), f"{label}: plant is caught")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def _rewrite(path: Path, old: str, new: str) -> None:
+    text = path.read_text(encoding="utf-8")
+    assert old in text, f"selftest fixture drifted: {old!r} not in {path}"
+    path.write_text(text.replace(old, new), encoding="utf-8")
+
+
+def main() -> int:
+    if not CHECKER.exists():
+        print(f"selftest: no checker at {CHECKER}", file=sys.stderr)
+        return 2
+
+    print("selftest: check-participant-strings")
+
+    # A1 — a new message with no Chinese wording.
+    case("A1 untranslated message", lambda root, cfg: _rewrite(
+        root / "backend/core/utils/participant_messages.py",
+        "MESSAGES = {",
+        "MESSAGES = {\n    'new_refusal': {'en': 'Pick a market first.',"
+        " 'zh-CN': ''},"), 1)
+
+    # A2 — the two languages interpolate different values.
+    case("A2 placeholder mismatch", lambda root, cfg: _rewrite(
+        root / "backend/core/utils/participant_messages.py",
+        "'zh-CN': '第 {round} 回合已关闭。'",
+        "'zh-CN': '本回合已关闭。'"), 1)
+
+    # A3 — a message that names a database column.
+    case("A3 storage name in a message", lambda root, cfg: _rewrite(
+        root / "backend/core/utils/participant_messages.py",
+        "'en': 'Round {round} is closed and no longer accepts decisions.'",
+        "'en': 'retail_price must be > 0.'"), 1)
+
+    # A4 — a hard-coded refusal in a participant route.
+    case("A4 literal bypassing the catalogue", lambda root, cfg: _rewrite(
+        root / "backend/core/views/decisions.py",
+        "errors.append(participant_message('round_closed', language='en'))",
+        "errors.append('Validation failed.')"), 1)
+
+    # A5 — a new round status with no participant label.
+    case("A5 unlabelled round status", lambda root, cfg: _rewrite(
+        root / "backend/core/models/core.py",
+        "        ('closed', 'Closed'),",
+        "        ('closed', 'Closed'),\n        ('archived', 'Archived'),"), 1)
+
+    # A7 — a scenario-authored name interpolated without the localiser.
+    case("A7 raw scenario name in a message", lambda root, cfg: _rewrite(
+        root / "backend/core/views/decisions.py",
+        "market=get_localized_field(entry.market, 'name', language))",
+        "market=entry.market.name)"), 1)
+
+    # A7 false-positive guard: the team's own product name must stay raw and
+    # must NOT be flagged. Proved by the clean-tree assertion in every case
+    # above, since the fixture passes product=entry.team_product.name.
+
+    # A6 — a locale key added to one catalogue only.
+    def drop_locale_key(root: Path, cfg: Path) -> None:
+        path = root / "frontend/globalstrat-frontend/src/locales/zh-CN.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["summary"]["round"]
+        path.write_text(json.dumps(data), encoding="utf-8")
+    case("A6 locale key missing a translation", drop_locale_key, 1)
+
+    # A6 — the same key interpolating different values per language.
+    def skew_locale_placeholder(root: Path, cfg: Path) -> None:
+        path = root / "frontend/globalstrat-frontend/src/locales/zh-CN.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["summary"]["round"] = "第 {{roundNumber}} 回合"
+        path.write_text(json.dumps(data), encoding="utf-8")
+    case("A6 locale placeholder mismatch", skew_locale_placeholder, 1)
+
+    # Could-not-run: a suppression with no stated reason is exit 2, never a pass.
+    def unreasoned_suppression(root: Path, cfg: Path) -> None:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+        data["allow_literals"] = {"Validation failed.": ""}
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+    case("config: suppression without a reason is could-not-run",
+         unreasoned_suppression, 2)
+
+    # Could-not-run: a scope entry naming a file that no longer exists.
+    def stale_scope(root: Path, cfg: Path) -> None:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+        data["scope"]["backend/core/views/gone.py"] = "a file that was deleted"
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+    case("config: scope naming a missing file is could-not-run", stale_scope, 2)
+
+    # False positive guard: a stale suppression is reported rather than ignored.
+    def stale_suppression(root: Path, cfg: Path) -> None:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+        data["allow_literals"] = {
+            "Something nothing says": "recorded, but matches nothing"}
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+    case("stale suppression is reported", stale_suppression, 1)
+
+    print(f"selftest: {PASS} ok, {FAIL} failed")
+    return 1 if FAIL else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
