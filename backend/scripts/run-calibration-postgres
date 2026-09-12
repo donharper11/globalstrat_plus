@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Run a CRV2-11 calibration measurement against a fresh local PostgreSQL.
+#
+# The database and credential exist only for this process and its Docker
+# container.  This is intentionally separate from the production systemd
+# environment file, which must never be read by a developer/CI calibration run.
+set -euo pipefail
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo 'Docker is required for the disposable PostgreSQL calibration database.' >&2
+  exit 2
+fi
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+backend_dir="$(cd "$script_dir/.." && pwd)"
+repo_dir="$(cd "$backend_dir/.." && pwd)"
+container_name="globalstrat-plus-calibration-postgres-$$"
+test_password="$(openssl rand -hex 32)"
+
+cleanup() {
+  docker rm -f "$container_name" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT INT TERM
+
+docker run -d --rm --name "$container_name" \
+  -e POSTGRES_DB=globalstrat_plus \
+  -e POSTGRES_USER=globalstrat_test \
+  -e POSTGRES_PASSWORD="$test_password" \
+  -p 127.0.0.1::5432 \
+  postgres:16-alpine >/dev/null
+
+host_port=''
+for _attempt in $(seq 1 30); do
+  host_port="$(docker port "$container_name" 5432/tcp | sed -n 's/.*:\([0-9][0-9]*\)$/\1/p' | head -n 1)"
+  if [ -n "$host_port" ] && pg_isready -h 127.0.0.1 -p "$host_port" -U globalstrat_test >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+
+if [ -z "$host_port" ] || ! pg_isready -h 127.0.0.1 -p "$host_port" -U globalstrat_test >/dev/null 2>&1; then
+  echo 'Disposable PostgreSQL did not become ready.' >&2
+  exit 1
+fi
+
+cd "$repo_dir"
+DB_NAME=globalstrat_plus \
+DB_USER=globalstrat_test \
+DB_PASSWORD="$test_password" \
+DB_HOST=127.0.0.1 \
+DB_PORT="$host_port" \
+python3 handoff_readiness_v2/evidence/calibration/fixed_policy_measurements.py "$@"
