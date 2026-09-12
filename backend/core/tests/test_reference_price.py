@@ -79,11 +79,16 @@ class ReferencePriceFixture(TestCase):
             game=self.game, round_number=1, status='open',
             opened_at=timezone.now())
 
-        self.generation = PlatformGenerationDefinition.objects.create(
-            scenario=self.scenario, name='Gen', description='d',
-            generation_order=1, unlock_round=1, development_cost=0,
-            development_rounds=1, license_cost=0, annual_maintenance_cost=0,
-            is_starting_platform=True)
+        # One generation per platform. A team may not hold two non-retired
+        # platforms of the same generation: the engine refuses the whole round
+        # before it scores anything (V2-046). This fixture shared a single
+        # generation across every platform it built, so `alone` -- which holds
+        # one product per tier plus its own -- ended up holding five, and
+        # `_run_phase_1` refused on that stored state before it could reach the
+        # configuration refusal two tests below actually assert. Price
+        # competitiveness is scored from positioning and the authored reference
+        # alone and never reads the generation, so nothing else here changes.
+        self._generation_order = 0
 
         # `alone` holds 'premium' by itself; `shared` and `rival` both hold
         # 'mainstream'. Under the old rule these two groups scored differently
@@ -105,9 +110,18 @@ class ReferencePriceFixture(TestCase):
             game=self.game, name=name, firm_starter_profile=profile,
             performance_index=100, cash_on_hand=1000, total_equity=1000)
 
+    def _generation(self):
+        self._generation_order += 1
+        return PlatformGenerationDefinition.objects.create(
+            scenario=self.scenario, name=f'Gen {self._generation_order}',
+            description='d', generation_order=self._generation_order,
+            unlock_round=1, development_cost=0, development_rounds=1,
+            license_cost=0, annual_maintenance_cost=0,
+            is_starting_platform=self._generation_order == 1)
+
     def _product(self, team, name, positioning):
         platform = TeamPlatform.objects.create(
-            team=team, platform_generation=self.generation, name='P',
+            team=team, platform_generation=self._generation(), name='P',
             status='active')
         return TeamProduct.objects.create(
             team=team, team_platform=platform, name=name,
