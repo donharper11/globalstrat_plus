@@ -104,18 +104,21 @@ class WriteSurfaceTests(RetiredRDFixture):
     def test_the_per_type_write_refuses_a_new_investment(self):
         response = self.per_type([self.rd_row()])
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_the_whole_submission_write_refuses_it_too(self):
         response = self.whole_submission([self.rd_row()])
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_the_refusal_names_the_route_that_replaced_it(self):
         """A rule a team cannot act on is a bug report addressed to them."""
         message = str(self.per_type([self.rd_row()]).data).lower()
         self.assertIn('new platform', message)
-        self.assertIn('re-base', message)
+        self.assertIn('move the product', message)
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_neither_refusal_persists_a_row(self):
         self.per_type([self.rd_row()])

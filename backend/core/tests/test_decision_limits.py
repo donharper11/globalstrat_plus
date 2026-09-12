@@ -180,7 +180,7 @@ class NegativeInvestmentApiTests(DecisionApiBase):
                 self.assertEqual(response.status_code, 400,
                                  f'{field} was accepted: {response.data}')
                 self.assertIn(field, str(response.data))
-                self.assertIn('>= 0', str(response.data))
+                self.assertIn('cannot be negative', str(response.data))
 
     def test_a_refused_payload_writes_nothing(self):
         """The engine must never see the row. A 400 that still stored the
@@ -196,6 +196,20 @@ class NegativeInvestmentApiTests(DecisionApiBase):
             self.assertFalse(
                 DecisionESG.objects.filter(submission=submission).exists(),
                 'the refused ESG row was written anyway')
+
+    def test_partial_decision_api_honours_the_chinese_request_language(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.user)}',
+            HTTP_ACCEPT_LANGUAGE='zh-CN')
+        response = self.client.patch(
+            self.partial_url('esg'),
+            {'environmental_investment': '-1', 'social_investment': '0'},
+            format='json')
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            str(response.data['environmental_investment'][0]),
+            '环境投入不能为负数。请输入零或正数。')
 
     def test_zero_and_positive_are_still_accepted(self):
         """The control. A guard that refuses everything is not a guard."""
@@ -326,7 +340,7 @@ class DuplicateRdRowApiTests(DecisionApiBase):
             [self.row(self.feature_a), self.row(self.feature_a)],
             format='json')
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('Only one R&D investment per platform feature',
+        self.assertIn('Choose each platform feature only once',
                       str(response.data))
 
     def test_the_whole_submission_api_refuses_it_too(self):
@@ -337,7 +351,7 @@ class DuplicateRdRowApiTests(DecisionApiBase):
                                 self.row(self.feature_a)]},
             format='json')
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('Only one R&D investment per platform feature',
+        self.assertIn('Choose each platform feature only once',
                       str(response.data))
 
     def test_distinct_features_are_now_refused_by_retirement_instead(self):
@@ -355,8 +369,9 @@ class DuplicateRdRowApiTests(DecisionApiBase):
             [self.row(self.feature_a), self.row(self.feature_b)],
             format='json')
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
-        self.assertNotIn('Only one R&D investment', str(response.data))
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertNotIn('Choose each platform feature only once',
+                         str(response.data))
         self.assertEqual(
             DecisionRDInvestment.objects.filter(
                 submission=self.submission()).count(), 0)

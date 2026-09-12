@@ -251,7 +251,7 @@ class UnlockGateTests(TestCase):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
             f'round/2/platforms/', self.payload(), format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('unlocks in round 5', str(response.data))
+        self.assertIn('becomes available in round 5', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_the_whole_submission_surface_refuses_it_too(self):
@@ -259,7 +259,7 @@ class UnlockGateTests(TestCase):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/2/',
             {'platform_developments': self.payload()}, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('unlocks in round 5', str(response.data))
+        self.assertIn('becomes available in round 5', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_a_row_written_behind_the_api_refuses_the_round(self):
@@ -409,7 +409,7 @@ class FeatureCapTests(LifecycleFixture):
               'feature_levels': {str(f.id): 3 for f in self.features(9)}}],
             format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('Maximum 5 features', str(response.data))
+        self.assertIn('at most 5 selected features', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0,
                          'a refused over-cap payload persisted a row')
 
@@ -425,7 +425,7 @@ class FeatureCapTests(LifecycleFixture):
                  'feature_levels': {str(f.id): 3 for f in self.features(9)}}]},
             format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('Maximum 5 features', str(response.data))
+        self.assertIn('at most 5 selected features', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_a_within_cap_payload_is_accepted(self):
@@ -588,7 +588,7 @@ class PlatformOwnershipTests(LifecycleFixture):
         # unchanged and is still enforced at the engine boundary below, which
         # is the surface V2-044 was raised about -- a team that never locks was
         # defaulted at close and reached the engine regardless.
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0,
                          'a refused foreign-platform payload persisted a row')
 
@@ -605,7 +605,7 @@ class PlatformOwnershipTests(LifecycleFixture):
         # unchanged and is still enforced at the engine boundary below, which
         # is the surface V2-044 was raised about -- a team that never locks was
         # defaulted at close and reached the engine regardless.
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_investing_in_your_own_platform_is_now_refused_too(self):
@@ -621,7 +621,7 @@ class PlatformOwnershipTests(LifecycleFixture):
         # owned or not, so the positive control for ownership now lives at the
         # engine boundary rather than on the write surface.
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
         # And nothing persists: a refused row must not be stored, or the
         # engine precondition would be doing the work the write should have.
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
@@ -1008,7 +1008,7 @@ class DuplicateGenerationTests(GenerationRequestMixin, LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
             f'round/1/platforms/', self.pair(), format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('one platform per generation', str(response.data))
+        self.assertIn('only once in this submission', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0,
                          'a refused duplicate pair persisted rows')
 
@@ -1017,7 +1017,7 @@ class DuplicateGenerationTests(GenerationRequestMixin, LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/1/',
             {'platform_developments': self.pair()}, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('one platform per generation', str(response.data))
+        self.assertIn('only once in this submission', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_a_refused_pair_replaces_nothing_already_stored(self):
@@ -1177,7 +1177,7 @@ class HeldGenerationTests(GenerationRequestMixin, LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
             f'round/1/platforms/', self.request_row(), format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('already holds', str(response.data))
+        self.assertIn('already has', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_the_whole_submission_surface_refuses_it_too(self):
@@ -1186,7 +1186,7 @@ class HeldGenerationTests(GenerationRequestMixin, LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/round/1/',
             {'platform_developments': self.request_row()}, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('already holds', str(response.data))
+        self.assertIn('already has', str(response.data))
         self.assertEqual(DecisionPlatformDevelopment.objects.count(), 0)
 
     def test_a_held_generation_is_refused_for_a_draft_too(self):
@@ -1195,7 +1195,7 @@ class HeldGenerationTests(GenerationRequestMixin, LifecycleFixture):
             f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
             f'round/1/platforms/', self.request_row(), format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertIn('already holds', str(response.data))
+        self.assertIn('already has', str(response.data))
 
     def test_a_refusal_leaves_the_previously_accepted_payload_unchanged(self):
         other = self.generation(3, rounds=1)

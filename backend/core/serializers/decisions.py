@@ -12,7 +12,10 @@ from django.db.models import Sum
 from collections import Counter
 
 from rest_framework import serializers
-from core.serializers.decision_limits import NonNegativeFieldsMixin
+from core.serializers.decision_limits import NonNegativeFieldsMixin, non_negative_message
+from core.utils.participant_messages import (
+    field_label, participant_message, serializer_language,
+)
 
 from core.models.decisions import (
     DecisionAcquisition,
@@ -35,22 +38,22 @@ from core.models.scenario import PlatformFeatureCeiling, ScenarioConfig
 from core.models.team_state import TeamPlant
 
 
-def validate_rd_investment_targets(investments):
+def validate_rd_investment_targets(investments, language='en'):
     """Require an unambiguous single operation for each platform feature."""
     targets = [
         (item['team_platform'].pk, item['feature'].pk)
         for item in investments
     ]
     if len(targets) != len(set(targets)):
-        raise serializers.ValidationError(
-            'Only one R&D investment per platform feature is allowed in a round.')
+        raise serializers.ValidationError(participant_message(
+            'one_rd_investment_per_feature', language=language))
 
 
 def _quoted(names):
     return ', '.join(f'"{name}"' for name in names)
 
 
-def validate_product_names(creates, team):
+def validate_product_names(creates, team, language='en'):
     """A product name identifies a product, so it must be unique for the team.
 
     The resolution manifest keys `decision_product_create` on
@@ -72,9 +75,9 @@ def validate_product_names(creates, team):
     counts = Counter(names)
     repeated = sorted(name for name, count in counts.items() if count > 1)
     if repeated:
-        raise serializers.ValidationError({'product_name': [
-            f'Each new product needs its own name. {_quoted(repeated)} '
-            f'appears more than once in this submission.']})
+        raise serializers.ValidationError({'product_name': [participant_message(
+            'product_name_repeated', language=language,
+            names=_quoted(repeated))]})
 
     if team is None:
         return
@@ -85,12 +88,13 @@ def validate_product_names(creates, team):
                    .filter(team=team, name__in=names)
                    .values_list('name', flat=True))
     if taken:
-        raise serializers.ValidationError({'product_name': [
-            f'Your team already has a product named {_quoted(taken)}. '
-            f'Choose a different name.']})
+        raise serializers.ValidationError({'product_name': [participant_message(
+            'product_name_taken', language=language,
+            names=_quoted(taken))]})
 
 
-def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
+def enforce_authoritative_costs(rows, kind, team=None, round_number=None,
+                                language='en'):
     """Replace client-supplied R&D prices with the authored ones.
 
     Two behaviours, and the difference between them is the whole rule:
@@ -124,12 +128,16 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
         # payload.
         duplicate = duplicate_generation_problem(rows)
         if duplicate:
-            raise serializers.ValidationError({'platform_generation': [duplicate]})
+            raise serializers.ValidationError({'platform_generation': [
+                participant_message('platform_request_duplicate',
+                                    language=language)]})
         # V2-047: and against what the team already holds, not only against the
         # other rows in this payload.
         held = held_generation_problem(rows, team)
         if held:
-            raise serializers.ValidationError({'platform_generation': [held]})
+            raise serializers.ValidationError({'platform_generation': [
+                participant_message('platform_already_held', language=language,
+                                    )]})
     if kind == 'rd' and rows:
         # R10 / V2-053. The decision is retired outright, not merely gated to
         # platforms still in development. R9 removed the processor that made it
@@ -139,10 +147,8 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
         #
         # An empty list still succeeds: clearing R&D is how a team removes a
         # draft row, and refusing that would strand anyone who already has one.
-        raise serializers.ValidationError({'rd_investments': [
-            'Feature-level R&D investment is retired. Develop a new platform '
-            'and re-base the product onto it; that is the route to a better '
-            'product (R10).']})
+        raise serializers.ValidationError({'rd_investments': [participant_message(
+            'rd_investment_retired', language=language)]})
     for index, row in enumerate(rows):
         if kind == 'platform':
             # V2-039: the unlock gate belongs on the write, not only on the
@@ -151,23 +157,32 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
             problem = unlock_problem(row.get('platform_generation'),
                                      round_number)
             if problem:
-                errors.append(f'row {index + 1}: {problem}')
+                generation = row.get('platform_generation')
+                if generation is None:
+                    errors.append(participant_message(
+                        'platform_not_available', language=language))
+                else:
+                    errors.append(participant_message(
+                        'platform_unlock_required', language=language,
+                        platform=getattr(generation, 'name', ''),
+                        unlock_round=getattr(generation, 'unlock_round', ''),
+                        round=round_number))
                 continue
         try:
             authoritative = price(row)
         except NotPricedByLevel:
             continue        # dollar-based path: the team's amount is the input
         except UnauthoredCost as problem:
-            errors.append(f'row {index + 1}: {problem}')
+            errors.append(participant_message(
+                'scenario_price_unavailable', language=language,
+                row=index + 1))
             continue
 
         submitted = row.get(field)
         if submitted is not None and Decimal(submitted) != authoritative:
-            errors.append(
-                f'row {index + 1}: {field} was submitted as '
-                f'{Decimal(submitted):,.2f}, but this scenario prices it at '
-                f'{authoritative:,.2f}. The server sets the price; correct the '
-                f'submission or leave the field out.')
+            errors.append(participant_message(
+                'scenario_price_mismatch', language=language,
+                row=index + 1, price=f'${authoritative:,.2f}'))
             continue
         row[field] = authoritative
         if kind == 'rd':
@@ -176,10 +191,9 @@ def enforce_authoritative_costs(rows, kind, team=None, round_number=None):
             submitted_amount = row.get('amount')
             if (submitted_amount is not None
                     and Decimal(submitted_amount) != authoritative):
-                errors.append(
-                    f'row {index + 1}: amount was submitted as '
-                    f'{Decimal(submitted_amount):,.2f}, but this scenario '
-                    f'prices it at {authoritative:,.2f}.')
+                errors.append(participant_message(
+                    'scenario_price_mismatch', language=language,
+                    row=index + 1, price=f'${authoritative:,.2f}'))
                 continue
             row['amount'] = authoritative
 
@@ -205,27 +219,33 @@ class DecisionBudgetAllocationSerializer(serializers.ModelSerializer):
 
     # -- validation ----------------------------------------------------------
 
-    def validate_rd_budget(self, value):
+    def _non_negative(self, field_name, value):
         if value < 0:
-            raise serializers.ValidationError("rd_budget must be >= 0.")
+            language = serializer_language(self)
+            raise serializers.ValidationError(participant_message(
+                'non_negative', language=language,
+                field=field_label(field_name, language),
+            ))
         return value
+
+    def validate_rd_budget(self, value):
+        return self._non_negative('rd_budget', value)
 
     def validate_marketing_budget(self, value):
-        if value < 0:
-            raise serializers.ValidationError("marketing_budget must be >= 0.")
-        return value
+        return self._non_negative('marketing_budget', value)
 
     def validate_strategy_budget(self, value):
-        if value < 0:
-            raise serializers.ValidationError("strategy_budget must be >= 0.")
-        return value
+        return self._non_negative('strategy_budget', value)
 
     def get_warnings(self, obj):
         warnings = []
+        language = serializer_language(self)
         for field in ('rd_budget', 'marketing_budget', 'strategy_budget'):
             val = getattr(obj, field, None)
             if val is not None and val == 0:
-                warnings.append(f"{field} is 0.")
+                warnings.append(participant_message(
+                    'zero_budget_warning', language=language,
+                    field=field_label(field, language)))
         return warnings
 
 
@@ -241,7 +261,7 @@ class DecisionRDInvestmentListSerializer(serializers.ListSerializer):
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
-        validate_rd_investment_targets(attrs)
+        validate_rd_investment_targets(attrs, serializer_language(self))
         return attrs
 
 
@@ -263,7 +283,9 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
 
     def validate_amount(self, value):
         if value < 0:
-            raise serializers.ValidationError("amount must be >= 0.")
+            language = serializer_language(self)
+            raise serializers.ValidationError(non_negative_message(
+                'amount', language))
         return value
 
     def validate(self, attrs):
@@ -277,10 +299,10 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
                 feature=feature,
             ).first()
             if not ceiling or ceiling.ceiling_value == 0:
-                raise serializers.ValidationError(
-                    f"'{feature.name}' is not available on your current platform. "
-                    f"Upgrade to a newer generation to unlock this capability."
-                )
+                language = serializer_language(self)
+                raise serializers.ValidationError(participant_message(
+                    'feature_unavailable', language=language,
+                    feature=feature.name))
 
         # Validate: max selected features on a platform (non-zero level)
         if feature and team_platform:
@@ -302,10 +324,10 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
                 max_features = feature_cap(
                     getattr(team_platform.platform_generation, 'scenario', None))
                 if active_count >= max_features:
-                    raise serializers.ValidationError(
-                        f"Maximum {max_features} features can be selected per platform. "
-                        f"You already have {active_count} active features."
-                    )
+                    raise serializers.ValidationError(participant_message(
+                        'platform_feature_limit',
+                        language=serializer_language(self),
+                        maximum=max_features, current=active_count))
 
         # Validate: slot limit (max features per round)
         submission = attrs.get('submission') or getattr(self, '_submission', None)
@@ -324,10 +346,9 @@ class DecisionRDInvestmentSerializer(NonNegativeFieldsMixin, serializers.ModelSe
             except ScenarioConfig.DoesNotExist:
                 max_slots = 5
             if len(invested_features) > max_slots:
-                raise serializers.ValidationError(
-                    f"Maximum {max_slots} features can be invested in per round. "
-                    f"Remove an investment before adding a new one."
-                )
+                raise serializers.ValidationError(participant_message(
+                    'round_feature_limit', language=serializer_language(self),
+                    maximum=max_slots))
 
         return attrs
 
@@ -366,10 +387,9 @@ class DecisionPlatformDevelopmentSerializer(NonNegativeFieldsMixin, serializers.
             scenario = getattr(row, 'scenario', None)
         max_features = feature_cap(scenario)
         if selected > max_features:
-            raise serializers.ValidationError(
-                f"Maximum {max_features} features can be selected per platform. "
-                f"You have selected {selected}."
-            )
+            raise serializers.ValidationError(participant_message(
+                'platform_feature_limit', language=serializer_language(self),
+                maximum=max_features, current=selected))
         return value
 
 
@@ -382,10 +402,13 @@ class DecisionProductCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_target_market_ids(self, value):
+        language = serializer_language(self)
         if not isinstance(value, list) or len(value) == 0:
-            raise serializers.ValidationError("target_market_ids must be a non-empty list.")
+            raise serializers.ValidationError(participant_message(
+                'target_markets_required', language=language))
         if not all(isinstance(v, int) for v in value):
-            raise serializers.ValidationError("target_market_ids must contain only integers.")
+            raise serializers.ValidationError(participant_message(
+                'target_markets_invalid', language=language))
         return value
 
 
@@ -417,35 +440,44 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
 
     def validate_retail_price(self, value):
         if value <= 0:
-            raise serializers.ValidationError("retail_price must be > 0.")
+            raise serializers.ValidationError(participant_message(
+                'positive_price', language=serializer_language(self)))
         return value
 
     def validate_promotion_budget(self, value):
         if value < 0:
-            raise serializers.ValidationError("promotion_budget must be >= 0.")
+            language = serializer_language(self)
+            raise serializers.ValidationError(participant_message(
+                'non_negative', language=language,
+                field=field_label('promotion_budget', language)))
         return value
 
     def validate_production_volume(self, value):
         if value < 0:
-            raise serializers.ValidationError("production_volume must be >= 0.")
+            language = serializer_language(self)
+            raise serializers.ValidationError(participant_message(
+                'non_negative', language=language,
+                field=field_label('production_volume', language)))
         return value
 
     def validate_demand_estimate(self, value):
         if value < 0:
-            raise serializers.ValidationError("demand_estimate must be >= 0.")
+            language = serializer_language(self)
+            raise serializers.ValidationError(participant_message(
+                'non_negative', language=language,
+                field=field_label('demand_estimate', language)))
         return value
 
     def validate_campaign_focus_feature_ids(self, value):
         if not isinstance(value, list):
-            raise serializers.ValidationError("campaign_focus_feature_ids must be a list.")
+            raise serializers.ValidationError(participant_message(
+                'campaign_features_invalid', language=serializer_language(self)))
         if len(value) < 1 or len(value) > 3:
-            raise serializers.ValidationError(
-                "campaign_focus_feature_ids must contain 1-3 integers."
-            )
+            raise serializers.ValidationError(participant_message(
+                'campaign_features_required', language=serializer_language(self)))
         if not all(isinstance(v, int) for v in value):
-            raise serializers.ValidationError(
-                "campaign_focus_feature_ids must contain only integers."
-            )
+            raise serializers.ValidationError(participant_message(
+                'campaign_features_invalid', language=serializer_language(self)))
         return value
 
     def validate(self, attrs):
@@ -457,10 +489,9 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
             total = digital + traditional + trade
             if abs(total - Decimal('1.0')) > Decimal('0.001'):
                 raise serializers.ValidationError({
-                    'channel_digital_pct': (
-                        "channel_digital_pct + channel_traditional_pct + "
-                        f"channel_trade_pct must sum to 1.0 (got {total})."
-                    ),
+                    'channel_digital_pct': participant_message(
+                        'channel_total', language=serializer_language(self),
+                        total=f'{total * 100:g}'),
                 })
         return attrs
 
@@ -468,6 +499,7 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
         warnings = []
         if obj.pk is None:
             return warnings
+        language = serializer_language(self)
 
         production_volume = obj.production_volume
         source_market = obj.production_source_market
@@ -484,21 +516,19 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
 
         if production_volume > total_capacity:
             if not source_market.contract_mfg_available:
-                warnings.append(
-                    f"production_volume ({production_volume}) exceeds total "
-                    f"plant capacity ({total_capacity}) in "
-                    f"{source_market.name} and contract manufacturing is not "
-                    f"available there."
-                )
+                warnings.append(participant_message(
+                    'production_capacity_exceeded', language=language,
+                    volume=production_volume, capacity=total_capacity,
+                    market=source_market.name))
             else:
                 cap = source_market.contract_mfg_capacity_cap or 0
                 effective_cap = total_capacity + cap
                 if production_volume > effective_cap:
-                    warnings.append(
-                        f"production_volume ({production_volume}) exceeds "
-                        f"plant capacity ({total_capacity}) plus contract "
-                        f"manufacturing cap ({cap}) in {source_market.name}."
-                    )
+                    warnings.append(participant_message(
+                        'production_capacity_with_contract_exceeded',
+                        language=language, volume=production_volume,
+                        capacity=total_capacity, contract_capacity=cap,
+                        market=source_market.name))
 
         return warnings
 
@@ -527,22 +557,26 @@ class DecisionFinancingSerializer(serializers.ModelSerializer):
 
     def validate_new_debt(self, value):
         if value < 0:
-            raise serializers.ValidationError("new_debt must be >= 0.")
+            raise serializers.ValidationError(non_negative_message(
+                'new_debt', serializer_language(self)))
         return value
 
     def validate_debt_repayment(self, value):
         if value < 0:
-            raise serializers.ValidationError("debt_repayment must be >= 0.")
+            raise serializers.ValidationError(non_negative_message(
+                'debt_repayment', serializer_language(self)))
         return value
 
     def validate_new_equity(self, value):
         if value < 0:
-            raise serializers.ValidationError("new_equity must be >= 0.")
+            raise serializers.ValidationError(non_negative_message(
+                'new_equity', serializer_language(self)))
         return value
 
     def validate_dividend_per_share(self, value):
         if value < 0:
-            raise serializers.ValidationError("dividend_per_share must be >= 0.")
+            raise serializers.ValidationError(non_negative_message(
+                'dividend_per_share', serializer_language(self)))
         return value
 
 
@@ -619,7 +653,8 @@ class DecisionResearchAllocationSerializer(serializers.ModelSerializer):
 
     def validate_allocation_amount(self, value):
         if value < 0:
-            raise serializers.ValidationError("allocation_amount must be >= 0.")
+            raise serializers.ValidationError(non_negative_message(
+                'allocation_amount', serializer_language(self)))
         return value
 
 
@@ -642,7 +677,9 @@ class TalentAllocationSerializer(serializers.ModelSerializer):
         try:
             talent_decision = submission.talent
         except DecisionTalent.DoesNotExist:
-            raise serializers.ValidationError("No talent decision found for this submission")
+            raise serializers.ValidationError(participant_message(
+                'talent_decision_required',
+                language=serializer_language(self)))
 
         pool = data.get('talent_pool', '')
         prefix_map = {'rd': 'rd', 'commercial': 'commercial', 'operations': 'operations'}
@@ -652,9 +689,9 @@ class TalentAllocationSerializer(serializers.ModelSerializer):
         # Sum must equal total headcount
         allocated = data.get('hq_count', 0) + sum(data.get('market_allocation', {}).values())
         if allocated != total_headcount:
-            raise serializers.ValidationError(
-                f"Allocation ({allocated}) must equal total headcount ({total_headcount})"
-            )
+            raise serializers.ValidationError(participant_message(
+                'talent_allocation_total', language=serializer_language(self),
+                allocated=allocated, headcount=total_headcount))
 
         # Cannot allocate to markets the team hasn't entered
         from core.models.team_state import TeamMarketPresence
@@ -665,16 +702,15 @@ class TalentAllocationSerializer(serializers.ModelSerializer):
         )
         for code, count in data.get('market_allocation', {}).items():
             if code not in active_codes and count > 0:
-                raise serializers.ValidationError(
-                    f"Cannot allocate staff to {code} — not an active market"
-                )
+                raise serializers.ValidationError(participant_message(
+                    'talent_market_inactive', language=serializer_language(self)))
 
         # HQ minimum: at least 20% of headcount
         min_hq = max(1, int(total_headcount * 0.2))
         if data.get('hq_count', 0) < min_hq:
-            raise serializers.ValidationError(
-                f"Minimum {min_hq} staff must remain at HQ (20% of headcount)"
-            )
+            raise serializers.ValidationError(participant_message(
+                'talent_hq_minimum', language=serializer_language(self),
+                minimum=min_hq))
 
         return data
 
@@ -687,9 +723,11 @@ class ComplianceInvestmentSerializer(serializers.ModelSerializer):
 
     def validate_investment_amount(self, value):
         if value < 0:
-            raise serializers.ValidationError("Investment cannot be negative")
+            raise serializers.ValidationError(non_negative_message(
+                'investment_amount', serializer_language(self)))
         if value > 10000000:
-            raise serializers.ValidationError("Maximum $10M compliance investment per market per round")
+            raise serializers.ValidationError(participant_message(
+                'compliance_maximum', language=serializer_language(self)))
         return value
 
 
@@ -759,7 +797,8 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
         investments = attrs.get('rd_investments')
         if investments is not None:
             try:
-                validate_rd_investment_targets(investments)
+                validate_rd_investment_targets(
+                    investments, serializer_language(self))
             except serializers.ValidationError as error:
                 raise serializers.ValidationError({'rd_investments': error.detail})
         # The same enforcement the per-type surface applies, so a price
@@ -770,7 +809,8 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
             submitting_team = attrs.get('team') or getattr(
                 self.instance, 'team', None)
             enforce_authoritative_costs(
-                investments_for_cost, 'rd', team=submitting_team)
+                investments_for_cost, 'rd', team=submitting_team,
+                language=serializer_language(self))
         developments = attrs.get('platform_developments')
         if developments is not None:
             round_obj = attrs.get('round') or getattr(self.instance, 'round', None)
@@ -778,7 +818,8 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
                 self.instance, 'team', None)
             enforce_authoritative_costs(
                 developments, 'platform', team=submitting_team,
-                round_number=getattr(round_obj, 'round_number', None))
+                round_number=getattr(round_obj, 'round_number', None),
+                language=serializer_language(self))
 
         creates = attrs.get('product_creates')
         if creates is not None:
@@ -786,7 +827,7 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
             # submission being edited.
             team = attrs.get('team') or getattr(self.instance, 'team', None)
             try:
-                validate_product_names(creates, team)
+                validate_product_names(creates, team, serializer_language(self))
             except serializers.ValidationError as error:
                 raise serializers.ValidationError({'product_creates': error.detail})
         return attrs

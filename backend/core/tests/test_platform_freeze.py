@@ -121,15 +121,18 @@ class FreezeWriteSurfaceTests(FreezeFixture):
         self.assertEqual(response.status_code, 400, response.data)
         # R10 subsumed this rule. Every R&D row is refused now, so a row naming
         # a ready platform is refused a fortiori -- and the surface answers
-        # with the retirement, which is the more useful thing to tell a team.
+        # with the retirement, in the participant wording CRV2-12 put in
+        # force: what is no longer available, and what to do instead.
         # The freeze itself is still proved at the engine boundary below.
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_the_whole_submission_write_refuses_it_too(self):
         response = self.whole_submission([self.rd_row(self.ready)])
 
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_a_refused_write_persists_nothing(self):
         self.per_type([self.rd_row(self.ready)])
@@ -142,8 +145,9 @@ class FreezeWriteSurfaceTests(FreezeFixture):
         response = self.per_type([self.rd_row(self.ready)])
 
         message = str(response.data).lower()
-        self.assertIn('re-base', message)
         self.assertIn('new platform', message)
+        self.assertIn('move the product', message)
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_a_row_on_a_platform_in_development_is_refused_too(self):
         """R10 widened this. Ruling 1 froze *ready* platforms and left rows on
@@ -152,7 +156,8 @@ class FreezeWriteSurfaceTests(FreezeFixture):
         response = self.per_type([self.rd_row(self.building)])
 
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('no longer available', str(response.data).lower())
+        self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
 
 class FreezeEngineBoundaryTests(FreezeFixture):

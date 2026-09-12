@@ -190,8 +190,10 @@ class AuthoritativePriceTests(RDCostFixture):
             self.whole_url(), {'rd_investments': [row]}, format='json')
         self.assertEqual(per_type.status_code, 400)
         self.assertEqual(whole.status_code, 400)
-        self.assertIn('retired', str(per_type.data).lower())
-        self.assertIn('retired', str(whole.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(per_type.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(whole.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
     def test_a_correctly_priced_upgrade_is_refused_but_still_priced(self):
@@ -203,7 +205,8 @@ class AuthoritativePriceTests(RDCostFixture):
             [{'team_platform': self.platform.id, 'feature': self.feature.id,
               'method': 'in_house', 'target_level': 14}], format='json')
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertIn('retired', str(response.data).lower())
+        self.assertIn('feature-level r&d investment',
+                      str(response.data).lower())
         self.assertEqual(DecisionRDInvestment.objects.count(), 0)
 
         # The price itself is unchanged and still authoritative -- what is gone
