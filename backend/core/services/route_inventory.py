@@ -14,10 +14,13 @@ go through `core.services.lifecycle.operator_action` (directly, or via an
 engine entry point that takes the same lock) or appear in `EXEMPTIONS` with a
 reason someone has reviewed.
 """
+import ast
 import inspect
 import json
 import pathlib
 import re
+import sys
+import textwrap
 
 from django.urls import get_resolver
 from django.urls.resolvers import URLPattern, URLResolver
@@ -58,13 +61,28 @@ _MODEL_QUERY = re.compile(r'\b(?:%s)\.objects\b' % '|'.join(LIFECYCLE_MODELS))
 
 # Calling one of these is calling the boundary: each takes the lifecycle lock
 # itself, so a view that delegates to one is covered.
-_BOUNDARY_MARKERS = (
-    'operator_action(', 'lifecycle_view', 'lock_game_for_lifecycle(',
-    'close_round(', 'process_round(', 'advance_to_next_round(',
-    'advance_round(',
+#
+# The module is part of the marker, not decoration. Matching the bare name as a
+# substring cannot tell `core.engine.advance_round.advance_round` from
+# `core.services.round_engine.advance_round`: the legacy simulation-control view
+# called the second, matched the marker written for the first, and was recorded
+# `uses_boundary: true` — which is how an unguarded mutating route was counted
+# as guarded. A marker counts only when the name resolves here.
+_BOUNDARY_SYMBOLS = {
+    'operator_action': ('core.services.lifecycle',),
+    'lifecycle_view': ('core.services.lifecycle',),
+    'lock_game_for_lifecycle': ('core.services.competition_locks',),
+    'close_round': ('core.engine.advance_round',),
+    'process_round': ('core.engine.advance_round',),
+    'advance_to_next_round': ('core.engine.advance_round',),
+    'advance_round': ('core.engine.advance_round',),
     # Student decision writes take the same advisory lock, shared.
-    'lock_game_for_decision_write(', 'CompetitionDecisionWriteMixin',
-)
+    'lock_game_for_decision_write': ('core.services.competition_locks',),
+}
+
+# A view inherits the shared-lock guard by subclassing this mixin, so identity
+# in the MRO settles it without reading any source.
+_BOUNDARY_BASES = ('core.views.decisions.CompetitionDecisionWriteMixin',)
 
 
 # Reviewed exemptions, keyed by view class so a route rename does not silently
@@ -122,8 +140,55 @@ def writes_lifecycle_state(source):
     return bool(_SAVE_PATTERN.search(source) and _MODEL_QUERY.search(source))
 
 
-def uses_boundary(source):
-    return any(marker in source for marker in _BOUNDARY_MARKERS)
+def _local_import_bindings(tree):
+    """`name -> module` for every `from X import y` in the parsed source.
+
+    A view that takes the boundary inside a method imports it there, so the
+    binding is in the class body rather than the module header.
+    """
+    bindings = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                bindings[alias.asname or alias.name] = node.module
+    return bindings
+
+
+def _marker_module(klass, name, local_bindings):
+    """The module a marker name actually resolves to in `klass`, or None."""
+    module = local_bindings.get(name)
+    if module is not None:
+        return module
+    # Not imported in the class body: resolve it the way Python would, through
+    # the defining module's globals.
+    target = getattr(sys.modules.get(klass.__module__), name, None)
+    return getattr(target, '__module__', None) if target is not None else None
+
+
+def uses_boundary(view_class):
+    """True when the view reaches the boundary through the symbol it names.
+
+    Resolution, not text. A name counts only when it resolves to a module that
+    takes the lifecycle lock, so a same-named function from another engine no
+    longer certifies a route, and a marker that appears only in a comment or a
+    docstring — where it is never an `ast.Name` — no longer counts at all.
+    """
+    for klass in view_class.__mro__:
+        if f'{klass.__module__}.{klass.__qualname__}' in _BOUNDARY_BASES:
+            return True
+    for klass in view_class.__mro__:
+        if klass.__module__.startswith(('django.', 'rest_framework.')):
+            continue
+        try:
+            tree = ast.parse(textwrap.dedent(inspect.getsource(klass)))
+        except (OSError, TypeError, SyntaxError):
+            continue
+        local = _local_import_bindings(tree)
+        used = {node.id for node in ast.walk(tree) if isinstance(node, ast.Name)}
+        for name in used & set(_BOUNDARY_SYMBOLS):
+            if _marker_module(klass, name, local) in _BOUNDARY_SYMBOLS[name]:
+                return True
+    return False
 
 
 def mutating_routes():
@@ -150,7 +215,7 @@ def mutating_routes():
             'methods': methods,
             'view': f'{view_class.__module__}.{view_class.__qualname__}',
             'lifecycle_mutating': writes_lifecycle_state(source),
-            'uses_boundary': uses_boundary(source),
+            'uses_boundary': uses_boundary(view_class),
             'exempt': f'{view_class.__module__}.{view_class.__qualname__}'
                       in EXEMPTIONS,
         }
