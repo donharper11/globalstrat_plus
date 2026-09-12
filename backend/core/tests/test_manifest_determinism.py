@@ -256,8 +256,8 @@ SERVICES_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'services'
 # `test_the_scanned_service_list_is_what_the_engine_actually_calls`.
 RESOLUTION_SERVICES = {
     'competition_backup.py', 'competition_locks.py', 'funding_need.py',
-    'product_platform.py', 'product_rebase.py', 'rd_costs.py',
-    'research_catalogue.py', 'resolution_manifest.py',
+    'price_band.py', 'product_platform.py', 'product_rebase.py',
+    'rd_costs.py', 'research_catalogue.py', 'resolution_manifest.py',
 }
 
 QUERYSET_MARKERS = ('.objects.', '.filter(', '.all()', '.exclude(')
