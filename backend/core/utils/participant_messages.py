@@ -42,6 +42,14 @@ FIELD_LABELS = {
     'new_equity': {'en': 'new equity funding', 'zh-CN': '新增股权融资'},
     'dividend_per_share': {'en': 'dividend per share', 'zh-CN': '每股股利'},
     'allocation_amount': {'en': 'research allocation', 'zh-CN': '研究分配金额'},
+    # Research report names, so a refusal says "the segment report" rather than
+    # the report type the URL happens to use.
+    'segments': {'en': 'segment', 'zh-CN': '细分市场'},
+    'products': {'en': 'product', 'zh-CN': '产品'},
+    'markets': {'en': 'market', 'zh-CN': '市场'},
+    'channels': {'en': 'channel', 'zh-CN': '渠道'},
+    'stakeholders': {'en': 'stakeholder', 'zh-CN': '利益相关者'},
+    'analyst_query': {'en': 'analyst query', 'zh-CN': '分析师问询'},
     'investment_amount': {'en': 'compliance investment', 'zh-CN': '合规投入'},
 }
 
@@ -377,6 +385,22 @@ MESSAGES = {
     'zero_budget_warning': {
         'en': '{field} is set to zero. Review this before locking.',
         'zh-CN': '{field} 已设为零。锁定前请确认。',
+    },
+    'research_purchase_exceeds_cash': {
+        'en': 'Buying the {report} report costs {price}, which would take committed spend to {committed} against available cash of {cash}. Reduce committed spend or raise financing before buying it.',
+        'zh-CN': '购买{report}报告需 {price}，将使承诺支出达到 {committed}，而可用现金为 {cash}。购买前请减少承诺支出或增加融资。',
+    },
+    'research_report_unknown': {
+        'en': 'That research report is not available. Choose a report from the research catalogue.',
+        'zh-CN': '该研究报告不可用。请从研究目录中选择报告。',
+    },
+    'research_price_changed': {
+        'en': 'The {report} report costs {price}. Refresh the page and buy it at the current price.',
+        'zh-CN': '{report}报告的价格为 {price}。请刷新页面并按当前价格购买。',
+    },
+    'research_purchase_after_lock': {
+        'en': 'Your decisions for this round are locked, so no further research can be bought. Unlock the round to buy it.',
+        'zh-CN': '您本回合的决策已锁定，无法再购买研究报告。如需购买，请先解锁本回合。',
     },
 }
 

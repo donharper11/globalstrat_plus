@@ -19,9 +19,12 @@
       that count rested on one false positive — a boundary marker matched by
       substring against a same-named function in the legacy engine (V2-079).
       The detector is repaired at `d9cbd43` and the offending route is deleted
-      at `a37bb92`; the inventory is now **0 unguarded of 217** mutating routes
-      (35 lifecycle-mutating, 19 guarded, 16 exempt). This is a re-measurement,
-      **not** a re-certification — the removal handoff claims no gate closed and
+      at `a37bb92`; the inventory then read **0 unguarded of 217** mutating
+      routes. Re-measured again after the paid-research merge, which introduced
+      and repaired two genuinely unguarded lifecycle routes (V2-087): **219
+      mutating, 37 lifecycle-mutating, 21 guarded, 16 exempt, 0 unguarded**,
+      both `--check` commands clean. This is a re-measurement, **not** a
+      re-certification — the removal handoff claims no gate closed and
       GSP-CRV2-09 owns re-certification.
 - [x] Phase-2 narratives durable and recoverable — jobs committed with the
       numbers, SIGKILL drill recovers, competitive hash unmoved;
@@ -85,6 +88,13 @@
       round can now legitimately contain null `retail_price` rows under the
       not-for-sale rule, so a rollback below `0085` must price or delete those
       rows first. Added 2026-09-12 (V2-041).
+- [ ] Focused replay regression for the v5 → v6 manifest envelope change. Paid
+      research adds a hashed output section, so the envelope moved and **no
+      replay was run** (V2-086), though R18 requires one for a change inside the
+      CRV2-01 determinism boundary. Note when reading any replay across this
+      point: **every round will differ even where no outcome does**, because the
+      envelope gained a section — a hash diff here is not evidence of an engine
+      change. Added 2026-09-12.
 - [ ] Decision rules and economic legal space certified (GSP-CRV2-10).
 - [ ] Economy, starting-field and stakeholder calibration certified
       (GSP-CRV2-11).
@@ -110,12 +120,18 @@ narrative worker, set `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or production
 environment), and run the application as a non-owner database role so it cannot
 drop its own audit guards.
 
-Added to the register 2026-09-12 from five merged completion reports: V2-075
-through V2-085, of which V2-075 (the legacy `/simulation-control/` cross-cohort
-reset, P0) and V2-079 (the route-inventory false positive, P1) are repaired
-pending closure, and V2-076, V2-078, V2-080 through V2-085 are open. Repaired
-pending closure and awaiting the auditor, not closed here: V2-033, V2-041,
-V2-042, V2-060, V2-071 and V2-074. See
-`completion/REGISTER_BACKLOG_2026-09-12.md`. V2-010 and V2-011 are closed at `8ddd983`; they are no longer a
-rules blocker. v1 GO and evidence from the pre-10–13 ruleset cannot substitute
-for the final integrated verdict.
+Added to the register 2026-09-12 from six merged completion reports: **V2-075
+through V2-094**. Repaired pending closure: V2-075 (the legacy
+`/simulation-control/` cross-cohort reset, P0), V2-079 (the route-inventory
+false positive, P1), V2-085 (preference re-authoring, under R25/R27), V2-087
+(two decision-write routes unguarded by the paid-research change, P1), V2-091
+and V2-092. Ruled and closable by the auditor: V2-084 (R29). Open: V2-076,
+V2-078, V2-080 through V2-083, V2-086 (the v5→v6 envelope with no replay),
+V2-088 (organisational-structure cash charged outside every calculator, P1),
+V2-089, V2-090, V2-093 and V2-094. Also repaired pending closure and awaiting
+the auditor, not closed here: V2-033, V2-041, V2-042, V2-060, V2-071 and
+V2-074. See `completion/REGISTER_BACKLOG_2026-09-12.md`.
+
+V2-010 and V2-011 are closed at `8ddd983`; they are no longer a rules blocker.
+v1 GO and evidence from the pre-10–13 ruleset cannot substitute for the final
+integrated verdict.

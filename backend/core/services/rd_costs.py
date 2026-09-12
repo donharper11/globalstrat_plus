@@ -322,6 +322,16 @@ def committed_outlay(submission):
          for row in submission.rd_investments.order_by('id')), ZERO)
     lines['platform_development'] = platform
     lines['rd_investments'] = rd_rows
+    # Research reports and analyst queries already bought this round. Committed
+    # money the budget lines do not contain, in exactly the position platform
+    # development occupies.
+    #
+    # Deliberately *not* `research_budget`: that line stays a declaration which
+    # feeds coherence scoring, like `marketing_budget` and `strategy_budget`
+    # (A5/R14 -- budgets declare, decisions spend). Wiring purchases to the
+    # bucket would make it a second cash gate and charge the team twice here.
+    from core.services.research_catalogue import purchase_total
+    lines['research_purchases'] = purchase_total(submission)
     return lines
 
 
@@ -338,9 +348,13 @@ def budget_assessment(submission, team=None):
     lines = committed_outlay(submission)
     budget_total = (lines['rd_budget'] + lines['marketing_budget']
                     + lines['strategy_budget'] + lines['research_budget'])
-    # Platform development is committed money that the budget lines do not
-    # contain, so it is added to the total the cash has to cover.
-    committed = budget_total + lines['platform_development']
+    # Platform development and bought research are committed money that the
+    # budget lines do not contain, so they are added to the total the cash has
+    # to cover. A research purchase is refused through this same rule, so the
+    # affordability answer a team gets at the point of buying is the one every
+    # other surface already gives.
+    committed = (budget_total + lines['platform_development']
+                 + lines['research_purchases'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
 
     rd_committed = lines['rd_investments'] + lines['platform_development']

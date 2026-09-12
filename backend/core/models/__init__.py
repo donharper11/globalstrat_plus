@@ -5,6 +5,7 @@ from .decisions import (
     DecisionPlant, DecisionPartnership, DecisionAcquisition,
     DecisionESG, DecisionEventResponse, DecisionResearchAllocation,
 )
+from .research import DecisionResearchPurchase
 from .core import (
     Game, Team, TeamMember, Round,
     User,

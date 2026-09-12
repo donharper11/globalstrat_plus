@@ -63,6 +63,24 @@ config:
   reference_price_ultra_premium:
   - '1000'
   - Ultra-premium reference price (V2-023)
+  research_report_price_segments:
+  - '50000'
+  - Price of the segment report (placeholder, awaiting calibration)
+  research_report_price_products:
+  - '50000'
+  - Price of the product report (placeholder, awaiting calibration)
+  research_report_price_markets:
+  - '50000'
+  - Price of the market report (placeholder, awaiting calibration)
+  research_report_price_channels:
+  - '50000'
+  - Price of the channel report (placeholder, awaiting calibration)
+  research_report_price_stakeholders:
+  - '50000'
+  - Price of the stakeholder report (placeholder, awaiting calibration)
+  research_analyst_query_price:
+  - '50000'
+  - Price of one analyst query, charged per question asked (placeholder, awaiting calibration)
   rd_spend_target:
   - '2000000'
   - R&D spend that earns full strategic-capability credit (V2-021)
@@ -1715,7 +1733,7 @@ segment_preferences:
     na:
     - - content_quality
       - 8.0
-      - 0.08
+      - 0.09
       - 4.0
     - - platform_technology
       - 7.0
@@ -1738,17 +1756,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 16.0
       - 0.25
@@ -1800,7 +1814,7 @@ segment_preferences:
     ea:
     - - content_quality
       - 7.0
-      - 0.06
+      - 0.07
       - 4.0
     - - platform_technology
       - 8.0
@@ -1823,17 +1837,13 @@ segment_preferences:
       - 0.04
       - 4.0
     - - ai_personalization
-      - 5.0
+      - 7.0
       - 0.02
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 16.0
       - 0.22
@@ -1885,7 +1895,7 @@ segment_preferences:
     eu:
     - - content_quality
       - 8.0
-      - 0.07
+      - 0.08
       - 4.0
     - - platform_technology
       - 7.0
@@ -1908,17 +1918,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.23
@@ -1970,7 +1976,7 @@ segment_preferences:
     sa:
     - - content_quality
       - 7.0
-      - 0.07
+      - 0.08
       - 4.0
     - - platform_technology
       - 6.0
@@ -1993,17 +1999,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 16.0
       - 0.24
@@ -2055,7 +2057,7 @@ segment_preferences:
     wa:
     - - content_quality
       - 6.0
-      - 0.06
+      - 0.08
       - 4.0
     - - platform_technology
       - 5.0
@@ -2078,17 +2080,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 4.0
-      - 0.02
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 16.0
       - 0.27
@@ -2141,7 +2139,7 @@ segment_preferences:
     na:
     - - content_quality
       - 12.0
-      - 0.12
+      - 0.13
       - 3.0
     - - ip_portfolio
       - 10.0
@@ -2164,17 +2162,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 5.0
+      - 7.0
       - 0.02
-      - 5.0
+      - 2.5
     - - immersive_media
-      - 4.0
-      - 0.01
       - 6.0
-    - - creator_economy
-      - 3.0
       - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.10
@@ -2226,7 +2220,7 @@ segment_preferences:
     ea:
     - - content_quality
       - 10.0
-      - 0.10
+      - 0.11
       - 3.0
     - - ip_portfolio
       - 8.0
@@ -2249,17 +2243,13 @@ segment_preferences:
       - 0.05
       - 4.0
     - - ai_personalization
-      - 5.0
+      - 7.0
       - 0.02
-      - 5.0
+      - 2.5
     - - immersive_media
-      - 4.0
-      - 0.01
       - 6.0
-    - - creator_economy
-      - 3.0
       - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.10
@@ -2311,7 +2301,7 @@ segment_preferences:
     eu:
     - - content_quality
       - 11.0
-      - 0.12
+      - 0.13
       - 3.0
     - - ip_portfolio
       - 9.0
@@ -2334,17 +2324,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 4.0
-      - 0.01
       - 6.0
-    - - creator_economy
-      - 3.0
       - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.10
@@ -2396,7 +2382,7 @@ segment_preferences:
     sa:
     - - content_quality
       - 10.0
-      - 0.11
+      - 0.12
       - 3.0
     - - ip_portfolio
       - 8.0
@@ -2419,17 +2405,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.12
@@ -2481,7 +2463,7 @@ segment_preferences:
     wa:
     - - content_quality
       - 9.0
-      - 0.10
+      - 0.11
       - 3.0
     - - ip_portfolio
       - 7.0
@@ -2504,17 +2486,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 12.0
       - 0.14
@@ -2741,7 +2719,7 @@ segment_preferences:
       - 4.0
     - - audience_engagement
       - 9.0
-      - 0.09
+      - 0.1
       - 3.0
     - - platform_technology
       - 8.0
@@ -2993,7 +2971,7 @@ segment_preferences:
     na:
     - - content_safety
       - 10.0
-      - 0.12
+      - 0.13
       - 3.0
     - - content_quality
       - 8.0
@@ -3016,17 +2994,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.12
@@ -3078,7 +3052,7 @@ segment_preferences:
     ea:
     - - content_safety
       - 14.0
-      - 0.15
+      - 0.16
       - 3.0
     - - content_quality
       - 8.0
@@ -3101,17 +3075,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.10
@@ -3163,7 +3133,7 @@ segment_preferences:
     eu:
     - - content_safety
       - 10.0
-      - 0.12
+      - 0.13
       - 3.0
     - - content_quality
       - 8.0
@@ -3186,17 +3156,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 8.0
       - 0.10
@@ -3248,7 +3214,7 @@ segment_preferences:
     sa:
     - - content_safety
       - 8.0
-      - 0.10
+      - 0.11
       - 4.0
     - - content_quality
       - 7.0
@@ -3271,17 +3237,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 4.0
-      - 0.01
       - 6.0
+      - 0.01
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.12
@@ -3333,7 +3295,7 @@ segment_preferences:
     wa:
     - - content_safety
       - 8.0
-      - 0.10
+      - 0.11
       - 4.0
     - - content_quality
       - 6.0
@@ -3356,17 +3318,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.12
@@ -3423,7 +3381,7 @@ segment_preferences:
       - 4.0
     - - content_quality
       - 10.0
-      - 0.12
+      - 0.13
       - 3.0
     - - ip_portfolio
       - 8.0
@@ -3442,17 +3400,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.10
@@ -3504,7 +3458,7 @@ segment_preferences:
     ea:
     - - localization_quality
       - 9.0
-      - 0.12
+      - 0.13
       - 3.0
     - - content_quality
       - 9.0
@@ -3527,17 +3481,13 @@ segment_preferences:
       - 0.04
       - 5.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.10
@@ -3589,7 +3539,7 @@ segment_preferences:
     eu:
     - - localization_quality
       - 12.0
-      - 0.15
+      - 0.17
       - 3.0
     - - content_quality
       - 10.0
@@ -3612,17 +3562,13 @@ segment_preferences:
       - 0.02
       - 5.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.10
@@ -3674,7 +3620,7 @@ segment_preferences:
     sa:
     - - localization_quality
       - 10.0
-      - 0.14
+      - 0.15
       - 3.0
     - - content_quality
       - 9.0
@@ -3697,17 +3643,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 3.0
-      - 0.01
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 12.0
       - 0.12
@@ -3759,7 +3701,7 @@ segment_preferences:
     wa:
     - - localization_quality
       - 8.0
-      - 0.12
+      - 0.14
       - 4.0
     - - content_quality
       - 8.0
@@ -3782,17 +3724,13 @@ segment_preferences:
       - 0.01
       - 6.0
     - - ai_personalization
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
+      - 2.5
     - - immersive_media
-      - 3.0
+      - 5.0
       - 0.01
-      - 6.0
-    - - creator_economy
-      - 4.0
-      - 0.02
-      - 6.0
+      - 2.5
     - - price_competitiveness
       - 14.0
       - 0.14

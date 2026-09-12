@@ -63,6 +63,24 @@ config:
   reference_price_ultra_premium:
   - '1000'
   - Ultra-premium reference price (V2-023)
+  research_report_price_segments:
+  - '50000'
+  - Price of the segment report (placeholder, awaiting calibration)
+  research_report_price_products:
+  - '50000'
+  - Price of the product report (placeholder, awaiting calibration)
+  research_report_price_markets:
+  - '50000'
+  - Price of the market report (placeholder, awaiting calibration)
+  research_report_price_channels:
+  - '50000'
+  - Price of the channel report (placeholder, awaiting calibration)
+  research_report_price_stakeholders:
+  - '50000'
+  - Price of the stakeholder report (placeholder, awaiting calibration)
+  research_analyst_query_price:
+  - '50000'
+  - Price of one analyst query, charged per question asked (placeholder, awaiting calibration)
   rd_spend_target:
   - '2000000'
   - R&D spend that earns full strategic-capability credit (V2-021)
@@ -1715,7 +1733,7 @@ segment_preferences:
     na:
     - - energy_density
       - 7.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 7.0
@@ -1738,17 +1756,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.15
@@ -1804,7 +1818,7 @@ segment_preferences:
       - 3.0
     - - charging_speed
       - 7.0
-      - 0.06
+      - 0.07
       - 3.0
     - - cycle_life
       - 6.0
@@ -1823,17 +1837,13 @@ segment_preferences:
       - 0.045
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.15
@@ -1889,7 +1899,7 @@ segment_preferences:
       - 3.0
     - - recyclability
       - 5.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 7.0
@@ -1908,17 +1918,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.15
@@ -1974,7 +1980,7 @@ segment_preferences:
       - 3.0
     - - cycle_life
       - 6.0
-      - 0.06
+      - 0.07
       - 3.0
     - - safety_rating
       - 7.0
@@ -1993,17 +1999,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.15
@@ -2055,7 +2057,7 @@ segment_preferences:
     wa:
     - - cycle_life
       - 6.0
-      - 0.075
+      - 0.085
       - 3.0
     - - thermal_management
       - 6.0
@@ -2078,17 +2080,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.15
@@ -2141,7 +2139,7 @@ segment_preferences:
     na:
     - - cycle_life
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - safety_rating
       - 7.0
@@ -2164,17 +2162,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 13.0
       - 0.18
@@ -2226,7 +2220,7 @@ segment_preferences:
     ea:
     - - cycle_life
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - thermal_management
       - 6.0
@@ -2249,17 +2243,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 13.0
       - 0.18
@@ -2311,7 +2301,7 @@ segment_preferences:
     eu:
     - - cycle_life
       - 8.0
-      - 0.075
+      - 0.085
       - 3.0
     - - recyclability
       - 5.0
@@ -2334,17 +2324,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 13.0
       - 0.18
@@ -2396,7 +2382,7 @@ segment_preferences:
     sa:
     - - cycle_life
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - safety_rating
       - 7.0
@@ -2419,17 +2405,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 13.0
       - 0.18
@@ -2481,7 +2463,7 @@ segment_preferences:
     wa:
     - - cycle_life
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - thermal_management
       - 6.0
@@ -2504,17 +2486,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 13.0
       - 0.18
@@ -2567,7 +2545,7 @@ segment_preferences:
     na:
     - - energy_density
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - safety_rating
       - 7.0
@@ -2590,17 +2568,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.14
@@ -2652,7 +2626,7 @@ segment_preferences:
     ea:
     - - energy_density
       - 8.0
-      - 0.09
+      - 0.1
       - 3.0
     - - charging_speed
       - 7.0
@@ -2675,17 +2649,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.14
@@ -2737,7 +2707,7 @@ segment_preferences:
     eu:
     - - energy_density
       - 8.0
-      - 0.075
+      - 0.085
       - 3.0
     - - recyclability
       - 4.0
@@ -2760,17 +2730,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.14
@@ -2822,7 +2788,7 @@ segment_preferences:
     sa:
     - - energy_density
       - 8.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 7.0
@@ -2845,17 +2811,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.14
@@ -2907,7 +2869,7 @@ segment_preferences:
     wa:
     - - safety_rating
       - 7.0
-      - 0.075
+      - 0.085
       - 3.0
     - - thermal_management
       - 6.0
@@ -2930,17 +2892,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 10.0
       - 0.14
@@ -3423,7 +3381,7 @@ segment_preferences:
       - 3.0
     - - cycle_life
       - 7.0
-      - 0.075
+      - 0.085
       - 3.0
     - - energy_density
       - 5.0
@@ -3442,17 +3400,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.20
@@ -3504,7 +3458,7 @@ segment_preferences:
     ea:
     - - cycle_life
       - 7.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 6.0
@@ -3527,17 +3481,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.20
@@ -3589,7 +3539,7 @@ segment_preferences:
     eu:
     - - recyclability
       - 4.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 6.0
@@ -3612,17 +3562,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.20
@@ -3674,7 +3620,7 @@ segment_preferences:
     sa:
     - - cycle_life
       - 7.0
-      - 0.075
+      - 0.085
       - 3.0
     - - safety_rating
       - 6.0
@@ -3697,17 +3643,13 @@ segment_preferences:
       - 0.03
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.20
@@ -3759,7 +3701,7 @@ segment_preferences:
     wa:
     - - cycle_life
       - 7.0
-      - 0.09
+      - 0.1
       - 3.0
     - - thermal_management
       - 6.0
@@ -3782,17 +3724,13 @@ segment_preferences:
       - 0.015
       - 3.0
     - - solid_state
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
+      - 2.5
     - - smart_bms
-      - 4.0
+      - 6.0
       - 0.01
-      - 4.0
-    - - sodium_ion
-      - 3.0
-      - 0.01
-      - 4.0
+      - 2.5
     - - price_competitiveness
       - 15.0
       - 0.20

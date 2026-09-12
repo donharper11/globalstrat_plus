@@ -92,7 +92,8 @@ def decision_outlays(scenario, team, submission, current_round,
     from core.models.team_state import TeamPartnership
 
     lines = {'rd': D('0'), 'platform_capex': D('0'), 'marketing': D('0'),
-             'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0')}
+             'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0'),
+             'research': D('0')}
     if submission is None:
         return lines
 
@@ -150,6 +151,15 @@ def decision_outlays(scenario, team, submission, current_round,
     for plant in submission.plant_decisions.order_by('id'):
         if plant.action == 'build' and plant.market.plant_build_cost:
             lines['plant_capex'] += plant.market.plant_build_cost
+
+    # Market research is bought during the round and charged at resolution, so
+    # the money is committed the moment the report is delivered. It is an
+    # outlay the team's own decisions determine, which is what this function
+    # totals -- and `costs.calculate_operating_expenses` books the same rows as
+    # `research_expense`. Counting it in one place only is the divergence the
+    # one-calculator rule exists to prevent.
+    from core.services.research_catalogue import purchase_total
+    lines['research'] = purchase_total(submission)
 
     lines['talent'] = talent_cost(team, submission, current_round)
     return lines
