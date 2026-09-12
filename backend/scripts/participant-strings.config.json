@@ -1,0 +1,52 @@
+{
+  "_comment": "Configuration for backend/scripts/check-participant-strings (GSP-CRV2-12 Stage 5). Scope, vocabulary and every suppression carry a stated reason; the checker refuses to run on an entry without one. Derived from the aide-checks discipline in checks/README.md, but deliberately NOT a vendored aide-checks check: checks/config/schema.json sets additionalProperties:false on its check set, and checks/.aide-checks-rev pins the package, so a repo-authored check cannot live there without forking the package.",
+
+  "languages": ["en", "zh-CN"],
+  "languages_source": "The two languages the platform ships. frontend/globalstrat-frontend/src/locales holds exactly en.json and zh-CN.json, and core/utils/localization.py resolves only 'zh-CN' and 'en'.",
+
+  "catalogues": {
+    "backend/core/utils/participant_messages.py": {
+      "MESSAGES": "Every participant-facing decision/validation sentence.",
+      "FIELD_LABELS": "Business label for each decision field; the table that stops a storage name reaching a student.",
+      "ROUND_STATUS_LABELS": "Round status as a participant reads it (V2-069.1)."
+    },
+    "backend/core/utils/cohort_messages.py": {
+      "MESSAGES": "Cohort-cap refusals shown to students and instructors."
+    }
+  },
+  "catalogues_source": "The two shared wording modules introduced by CRV2-12 (V2-061) and CRV2-10 Stage 6. A new participant-facing sentence belongs in one of them; the scope assertion below is what forces that.",
+
+  "scope": {
+    "backend/core/views/decisions.py": "The decision submit, PATCH, lock, summary and context routes. Every refusal a team can hit while playing a round arrives from here; F-PL-01 and V2-069 were both raised against this file.",
+    "backend/core/serializers/decisions.py": "Field- and payload-level refusals on the decision write paths, reached before the view body runs.",
+    "backend/core/serializers/decision_limits.py": "The shared non-negative rule applied to every numeric decision field.",
+    "backend/core/services/price_band.py": "CRV2-10 Stage 5 price-band alerts and adjustment notices, shown on the marketing and results surfaces.",
+    "backend/core/services/rd_costs.py": "Budget refusals rendered into the lock response and the Decision Summary.",
+    "backend/core/services/funding_need.py": "The V2-024 equity refusal, shown on the Decision Summary and recorded by the engine."
+  },
+  "scope_source": "The participant decision path as CRV2-12 swept it, taken from evidence/player-language/README.md's stated implementation sequence (step 1 and step 2) rather than from a tree-wide glob. Files outside this list are inventoried by generate_inventory.py and are not claimed by this check; widening the scope is a deliberate, reviewable edit here.",
+
+  "locales": {
+    "frontend/globalstrat-frontend/src/locales/en.json": "en",
+    "frontend/globalstrat-frontend/src/locales/zh-CN.json": "zh-CN"
+  },
+  "locales_source": "The two i18next catalogues loaded by frontend/globalstrat-frontend/src/i18n.js.",
+
+  "model_field_sources": ["backend/core/models"],
+  "model_field_sources_source": "Django model modules. The storage vocabulary is read from the model definitions themselves rather than typed out here, so a field added tomorrow is watched without anyone remembering to list it.",
+
+  "participant_payload_dicts": {
+    "backend/core/views/decisions.py": "A bare dict literal in this module is an API response payload. The R&D platform-generation prerequisite rows are built this way and RDPage.js renders each as '{requirement} — {detail}' with no t() around it, so their wording is participant copy even though it arrives as structured data. The service modules in scope are deliberately absent: a dict built in decision_limits.persisted_violations or rd_costs is an engineer's diagnostic record, and naming the model, row and field there is the point."
+  },
+  "participant_payload_dicts_source": "Read from the render path: frontend/globalstrat-frontend/src/pages/RDPage.js line 176 for the prerequisite rows, against decision_limits.py's own docstring for the diagnostic records ('an unscannable table is an unchecked table'). Judged per module rather than inferred from the path, because both shapes are the same syntax.",
+
+  "localised_name_arguments": {
+    "market": "MarketDefinition carries name_zh (models/scenario.py:133). Passing market.name raw put an English market name inside an otherwise Chinese refusal.",
+    "platform": "PlatformGenerationDefinition carries name_zh (models/scenario.py:110).",
+    "feature": "FeatureDefinition carries name_zh (models/scenario.py:80)."
+  },
+  "localised_name_arguments_source": "The scenario models that declare a `name_zh` counterpart, read from backend/core/models/scenario.py. `product` and `team` are deliberately absent: TeamProduct.name and Team.name are authored by the team during play and have no translated counterpart to read, so they must stay raw. That distinction is a judgment about who authored the name, which the syntax cannot supply.",
+
+  "allow_literals": {},
+  "allow_literals_source": "Empty, and deliberately so: after the CRV2-12 sweep no literal in the declared scope needed suppressing. Each entry would be a literal the scope assertion flags that is nevertheless not participant copy, suppressed by exact text and only inside the scope; an entry without a reason is exit 2, and an entry that no longer matches anything is reported as stale. The first draft of this file carried four speculative entries and the staleness assertion rejected every one of them."
+}

@@ -54,6 +54,22 @@ FIELD_LABELS = {
 }
 
 
+# ---------------------------------------------------------------------------
+# GSP-CRV2-12 (V2-069.1) — round status, as a participant reads it
+# ---------------------------------------------------------------------------
+# `Round.STATUS_CHOICES` stores English tokens. Interpolating one straight into
+# a translated sentence produced 第 N 回合状态为“closed” for a Chinese
+# participant: a Chinese frame around an English storage token. The label is
+# translated here so the sentence is wholly in one language, and so the four
+# authored statuses are named in one place rather than at each interpolation.
+ROUND_STATUS_LABELS = {
+    'pending': {'en': 'not yet open', 'zh-CN': '尚未开放'},
+    'open': {'en': 'open', 'zh-CN': '已开放'},
+    'closed': {'en': 'closed', 'zh-CN': '已关闭'},
+    'processed': {'en': 'processed', 'zh-CN': '已结算'},
+}
+
+
 MESSAGES = {
     'non_negative': {
         'en': '{field} cannot be negative. Enter zero or a positive value.',
@@ -402,6 +418,90 @@ MESSAGES = {
         'en': 'Your decisions for this round are locked, so no further research can be bought. Unlock the round to buy it.',
         'zh-CN': '您本回合的决策已锁定，无法再购买研究报告。如需购买，请先解锁本回合。',
     },
+    # -----------------------------------------------------------------------
+    # GSP-CRV2-12 — the Decision Summary checklist (V2-069.3)
+    # -----------------------------------------------------------------------
+    # The Summary view returned storage names and English-only advice. The
+    # frontend renders `lock_blockers` and each category's warnings verbatim —
+    # SummaryPage.js passes them through without `t()` — so the wording a
+    # participant reads is decided here and nowhere else.
+    'instructor_access_required': {
+        'en': 'This area is open to instructors only.',
+        'zh-CN': '此区域仅向教师开放。',
+    },
+    'permission_denied_read': {
+        'en': 'You do not have permission to view this team’s decisions.',
+        'zh-CN': '您无权查看该团队的决策。',
+    },
+    'summary_no_submission': {
+        'en': 'No decisions have been started for this round. Open any decision area to begin.',
+        'zh-CN': '本回合尚未开始任何决策。请打开任一决策页面开始填写。',
+    },
+    'summary_rd_none': {
+        'en': 'No R&D investment is planned this round. Open R&D Investment to add one.',
+        'zh-CN': '本回合尚未安排研发投入。请打开“研发投入”页面添加。',
+    },
+    'summary_marketing_incomplete': {
+        'en': '{count} product-market combination(s) still need a marketing mix. Open Marketing Mix to complete them.',
+        'zh-CN': '还有 {count} 个产品—市场组合尚未设置营销组合。请打开“营销组合”页面完成设置。',
+    },
+    'summary_market_without_products': {
+        'en': 'Your team is active in {market} but has no products assigned there. Open Product Portfolio and add {market} as a target market.',
+        'zh-CN': '您的团队已在 {market} 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 {market} 添加为目标市场。',
+    },
+    'summary_market_without_marketing': {
+        'en': 'Your team has products in {market} but no marketing mix set there. Open Marketing Mix to set unit price, production volume and promotion.',
+        'zh-CN': '您的团队在 {market} 已有产品，但尚未设置营销组合。请打开“营销组合”页面设置单价、生产数量和促销。',
+    },
+    'summary_entering_without_products': {
+        'en': 'Your team is entering {market} this round but has no products assigned there yet. Open Product Portfolio and add {market} as a target market.',
+        'zh-CN': '您的团队将在本回合进入 {market}，但尚未在该市场投放产品。请打开“产品组合”页面，将 {market} 添加为目标市场。',
+    },
+    # The platform-generation prerequisite rows on the R&D page. RDPage.js
+    # renders `{requirement} — {detail}` verbatim, so these are participant
+    # copy despite arriving as structured data. "Gen 2" became "Generation 2":
+    # the abbreviation is the schema's, not the business's.
+    'rd_prereq_round': {
+        'en': 'Round {round} or later',
+        'zh-CN': '第 {round} 回合或之后',
+    },
+    'rd_prereq_round_detail': {
+        'en': 'Current round: {current}',
+        'zh-CN': '当前回合：{current}',
+    },
+    'rd_prereq_generation': {
+        'en': 'Generation {generation} must be active',
+        'zh-CN': '第 {generation} 代平台必须处于活跃状态',
+    },
+    'rd_prereq_generation_active': {
+        'en': 'Active',
+        'zh-CN': '已激活',
+    },
+    'rd_prereq_generation_missing': {
+        'en': 'Not yet developed',
+        'zh-CN': '尚未开发',
+    },
+    'rd_prereq_features': {
+        'en': 'At least {count} features at level {level} or higher',
+        'zh-CN': '至少 {count} 项功能达到 {level} 级或以上',
+    },
+    'rd_prereq_features_detail': {
+        'en': '{qualifying} of {count} features qualify',
+        'zh-CN': '{count} 项中已有 {qualifying} 项符合',
+    },
+    'summary_financing_none': {
+        'en': 'No financing changes this round. No action is required.',
+        'zh-CN': '本回合没有融资变动，无需操作。',
+    },
+    # The same rule as `equity_exceeds_funding_need`, in the detailed form the
+    # engine already recorded. The English rendering is byte-identical to the
+    # sentence `funding_need.describe` built before CRV2-12, so the refusal an
+    # instructor can reproduce from an engine record did not change; only a
+    # Chinese rendering was added beside it.
+    'equity_exceeds_funding_need_detail': {
+        'en': '{team}: equity raise of {requested} exceeds the funding shortfall of {maximum} (eligible uses {eligible} less available funding {available}: opening cash {opening} plus new debt {debt}). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.',
+        'zh-CN': '{team}：新增股权融资 {requested} 超过资金缺口 {maximum}（合格用途 {eligible} 减去可用资金 {available}：期初现金 {opening} 加新增借款 {debt}）。股权融资只能用于弥补本回合真实的资金缺口，不能用于创造盈余现金或支付股利。',
+    },
 }
 
 
@@ -424,6 +524,22 @@ def field_label(field_name, language='en'):
     labels = FIELD_LABELS.get(field_name)
     if labels is None:
         return field_name.replace('_', ' ')
+    return labels.get(language, labels['en'])
+
+
+def round_status_label(status, language='en'):
+    """A round's status as a participant reads it, never the stored token.
+
+    An unknown status falls back to the stored value rather than raising: a
+    status this catalogue has not been taught is a wording gap, and refusing
+    the request over it would turn a language defect into an outage. The
+    static check `backend/scripts/check-participant-strings` fails the build
+    when `Round.STATUS_CHOICES` gains a value that is not labelled here, so the
+    fallback cannot quietly become the normal path.
+    """
+    labels = ROUND_STATUS_LABELS.get(status)
+    if labels is None:
+        return status
     return labels.get(language, labels['en'])
 
 
