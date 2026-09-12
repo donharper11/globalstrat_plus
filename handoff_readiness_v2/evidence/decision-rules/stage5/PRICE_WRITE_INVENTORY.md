@@ -19,11 +19,32 @@ a serializer field, a dict key or a local variable.
 
 | Model | Field | File:line | Role |
 |---|---|---|---|
-| `core.DecisionMarketing` | `retail_price` `DecimalField(15,2)` | `core/models/decisions.py:193` | **The decision.** Keyed `unique_together (submission, team_product, market)`. This is the band's subject. |
+| `core.DecisionMarketing` | `retail_price` `DecimalField(15,2)`, **nullable since migration `0085`** | `core/models/decisions.py:193` | **The decision.** Keyed `unique_together (submission, team_product, market)`. This is the band's subject. Nullable so that "submitted with the price left out" is representable at all — see the rework note below. |
 | `core.RoundResultProductMarket` | `retail_price` `DecimalField(15,2)` | `core/models/results_financials.py:19` | **The published result.** Keyed `(game, round_number, team, team_product, market)`. This is the band's *anchor source*, read-only to the band. |
 
 Consequence, and it decides the shape of the rule: both tables are keyed
 **per product-market**, not per product. See the rules-owner question in §6.
+
+### Rework note (owner's clarification of Ruling 2, 2026-09-12)
+
+This inventory was written before the blank branch was narrowed. Two things
+changed about the rows below; nothing changed about which rows exist.
+
+1. **W3, the deadline, no longer creates rows.** An earlier implementation
+   fabricated a floor-priced `DecisionMarketing` row for any active
+   product-market that had none. That is now refused by the rule itself:
+   "blank" means a product the team **is selling** — one with a real
+   prior-round price — and a product-market the team never marketed is
+   absence, not a blank price. `bass_engine` scores a product with no row at
+   `0.0` attractiveness, so inventing one would have taken share from every
+   rival and booked it all as lost demand. W3 therefore **updates existing
+   rows only** and never inserts.
+2. **A new refusal point, which is not a write path.** `_run_phase_1` gains a
+   fail-closed precondition refusing the round if any stored marketing row
+   still carries no price when processing begins. It sets no price and writes
+   no row, so it adds no row to §1; it is recorded here because it is the
+   boundary that keeps a null out of the demand path, which calls `float()` on
+   this column.
 
 ---
 
