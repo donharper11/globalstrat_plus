@@ -275,6 +275,11 @@ def main():
             'roster': baseline_roster,
             'rows': per_profile,
             'performance_index_by_round': profile_trajectory,
+            # The per-round detail behind the trajectory.  Without it the
+            # aggregated report can show that a profile's index fell without
+            # showing why, and a single-round fall of 13-17 points is exactly
+            # the thing a starting-position audit has to be able to explain.
+            'team_rounds': baseline['team_rounds'],
         },
         'fixed_policy_sensitivity': {
             'baseline_field_size': baseline_size,
