@@ -371,12 +371,12 @@ worktree was touched. 25 files changed, 6 added (+650/−39).
   `0085_price_band_blank_price`; mine is `0086_paid_research_reports` and also
   depends on `0084`. Merging produces two leaf nodes and needs a merge
   migration — deliberate and visible, rather than a filename collision.
-- **`PROVENANCE.json` carries `"commit": "PENDING"` and
-  `"canonical_is": "PENDING"` for version 6.** These are stamped with this
-  branch's commit sha in a follow-up commit on the branch; if the branch is
-  rebased or squashed at integration, re-stamp them to the sha that actually
+- **`PROVENANCE.json` records version 6 against commit `c87395c`**, this
+  branch's implementation commit. If the branch is rebased or squashed at
+  integration, re-stamp `commit` and `canonical_is` to the sha that actually
   lands. The recorded `sha256` of `manifest_schema_v6.json` is correct and is
-  what `test_every_recorded_definition_still_hashes_to_its_record` checks.
+  what `test_every_recorded_definition_still_hashes_to_its_record` checks; that
+  digest is independent of the sha, so a re-stamp cannot invalidate it.
 - **Files also touched by other branches** (kept minimal and appended at the end
   of their blocks): `participant_messages.py`, the three scenario YAMLs, both
   locale files, `read_inventory.json`, `route_inventory.json`. Avoided entirely:
