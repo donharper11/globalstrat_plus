@@ -3,8 +3,56 @@ Round 0 Bootstrap — Generate starting-state results from FirmStarterProfile da
 
 Students see these results when they first log in, giving them something to
 analyze before making Round 1 decisions.
+
+Round-zero segment adoption (rule R11, competition owner, 2026-09-11)
+---------------------------------------------------------------------
+
+Round 0 is a briefing state, not a resolved round: no team has decided
+anything, so there is no demand to allocate.  What the scenario *does* author
+is how much each firm was already selling when the students inherited it —
+``starter_profiles[].products[].unit_volume`` — and which customers exist to
+have bought it — ``customer_segments[].populations[market]`` with their
+``bass_p``, plus the ``segment_preferences`` those customers judge a product
+by.
+
+So round-0 adopters are **not generated**; the authored starting unit sales
+are **apportioned** across the customer segments of the firm's home market:
+
+    adopters(team, segment)
+        = the team's authored round-0 unit sales in its home market
+          x  share(segment)
+
+    share(segment) ∝  bass_p(segment) x population(segment, home market)
+                      x  fit(team's starting platform, segment)
+
+In scenario-authoring terms: *a firm's authored starting sales are divided
+between its home market's customer segments in proportion to how many of that
+segment are ready to buy this period (the segment's own first-period Bass
+pool, ``bass_p x population``) weighted by how well the firm's authored
+starting feature levels match that segment's authored ideal preferences.*
+
+Three consequences, all deliberate:
+
+* **It reconciles.** The segment adoption table and the product sales table on
+  the same round-0 screens are now the same number viewed two ways: the
+  adopters for a team sum **exactly**, to the cent, to its round-0 units sold.
+  A residual-settled apportionment is used precisely so the cents agree rather
+  than nearly agree.
+* **No unauthored constant.** The retired form was
+  ``bass_p * population * average_starter_share * 10`` with the comment "Scale
+  for meaningful numbers".  Nothing in any scenario authored that 10, and it
+  is not replaced by another factor — not 1, and not a new scale key.
+* **A segment a team cannot serve gets nothing.** A segment carrying
+  ``min_generation_required`` above the generation the team actually starts on
+  is excluded from the apportionment, exactly as ``preference_engine`` excludes
+  it from round 1 onward.
+
+If a scenario authors starting sales but no customer segment that could have
+bought them, the apportionment has no authored basis and bootstrap **raises**
+rather than inventing a default.  That is a scenario-authoring error and it is
+meant to be loud.
 """
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_DOWN, ROUND_HALF_UP
 
 from core.models.core import Game, Team, Round
 from core.models.scenario import (
@@ -29,6 +77,74 @@ D = Decimal
 def _q(val):
     """Quantize to 2 decimal places."""
     return Decimal(str(val)).quantize(D('0.01'), rounding=ROUND_HALF_UP)
+
+
+def _round_zero_fit(feature_levels, segment):
+    """Preference-weighted fit of a team's starting platform to one segment.
+
+    Reads only authored data: the segment's own ``segment_preferences``
+    (ideal, weight, tolerance) against the team's authored starting feature
+    levels, with the feature's authored default standing in for a feature the
+    starting platform does not carry.
+    """
+    preferences = (SegmentPreference.objects.filter(
+        segment=segment,
+    ).select_related('feature')).order_by('feature__code')
+    total_wscore = 0.0
+    total_weight = 0.0
+    for pref in preferences:
+        actual = feature_levels.get(pref.feature_id, float(pref.feature.default_value))
+        fit = gaussian_fit(actual, float(pref.ideal_value), float(pref.tolerance))
+        total_wscore += fit * float(pref.weight)
+        total_weight += float(pref.weight)
+    return total_wscore / total_weight if total_weight > 0 else 0.0
+
+
+def _apportion_starter_units(total_units, weighted_segments):
+    """Split authored starter unit sales across segments, settling to the cent.
+
+    ``weighted_segments`` is an ordered sequence of ``(segment, weight)``.  That
+    order is the caller's deterministic segment order (primary key), and it is
+    what breaks a tie when the final cents are handed out — so two runs of the
+    same scenario produce identical rows.  This sits inside the CRV2-01
+    determinism boundary and must stay ordered.
+
+    Each segment first takes ``total_units * weight / sum(weight)`` rounded
+    **down** to the cent.  Rounding down always leaves a few cents unassigned;
+    those are then handed out one at a time, largest discarded fraction first.
+    The result is that the allocations sum to ``total_units`` **exactly**, which
+    is the reconciliation R11 requires — the round-0 segment adoption table and
+    the round-0 product sales table are the same number twice.
+    """
+    allocations = {segment.id: D('0.00') for segment, _ in weighted_segments}
+    if total_units <= 0:
+        return allocations
+
+    total_weight = sum((weight for _, weight in weighted_segments), D('0'))
+    if total_weight <= 0:
+        raise ValueError(
+            'Round-0 adoption cannot be apportioned: the authored starter '
+            'sales are positive but every candidate segment carries zero '
+            'weight (population x bass_p x preference fit).'
+        )
+
+    running = D('0.00')
+    remainders = []
+    for segment, weight in weighted_segments:
+        exact = (total_units * weight) / total_weight
+        floored = exact.quantize(D('0.01'), rounding=ROUND_DOWN)
+        allocations[segment.id] = floored
+        running += floored
+        remainders.append((exact - floored, segment.id))
+
+    residue = total_units - running
+    if residue > 0:
+        cents = int((residue / D('0.01')).to_integral_value(rounding=ROUND_HALF_UP))
+        order = sorted(range(len(remainders)),
+                       key=lambda index: (-remainders[index][0], index))
+        for position in range(cents):
+            allocations[remainders[order[position % len(order)]][1]] += D('0.01')
+    return allocations
 
 
 def bootstrap_round_zero(game):
@@ -148,32 +264,53 @@ def bootstrap_round_zero(game):
             )
 
         # ── Segment Adoption ──
+        # R11: the round-0 adoption table is an apportionment of the team's
+        # authored starting unit sales, not a scaled Bass increment.  See the
+        # module docstring for the rule in scenario-authoring terms.
+        team_generation = max(
+            (plat.platform_generation.generation_order for plat in platforms),
+            default=0,
+        )
+        home_customer_segments = [
+            segment for segment in all_segments
+            if segment.segment_type == 'customer'
+            and (segment.market if segment.market else home_market) == home_market
+            # A segment the team cannot serve yet takes no adopters, exactly as
+            # preference_engine excludes it from round 1 onward.
+            and (not segment.min_generation_required
+                 or team_generation >= segment.min_generation_required)
+        ]
+        segment_fit = {segment.id: _round_zero_fit(feature_levels, segment)
+                       for segment in home_customer_segments}
+        weighted_segments = [
+            (segment,
+             D(str(segment.bass_p)) * D(str(segment.population_size))
+             * D(str(segment_fit[segment.id])))
+            for segment in home_customer_segments
+        ]
+        if team_total_units > 0 and not any(
+                weight > 0 for _, weight in weighted_segments):
+            raise ValueError(
+                f'Round-0 adoption has no authored basis for team '
+                f'"{team.name}" ({starter.profile_name}): the scenario authors '
+                f'{team_total_units} starting units in market '
+                f'{home_market.code}, but none of the '
+                f'{len(home_customer_segments)} customer segment(s) available '
+                f'there carries a positive population x bass_p x preference '
+                f'fit. Author a reachable customer segment in that market, or '
+                f'remove the starter product. Round-0 adopters are never '
+                f'defaulted to a constant.'
+            )
+        adopters_by_segment = _apportion_starter_units(
+            D(str(team_total_units)), weighted_segments)
+
         for segment in all_segments:
             seg_market = segment.market if segment.market else home_market
 
-            if segment.segment_type == 'customer' and seg_market == home_market:
-                # Preference-weighted fit score
-                preferences = (SegmentPreference.objects.filter(segment=segment)).order_by('feature__code')
-                total_wscore = 0.0
-                total_weight = 0.0
-                for pref in preferences:
-                    actual = feature_levels.get(pref.feature_id, float(pref.feature.default_value))
-                    fit = gaussian_fit(actual, float(pref.ideal_value), float(pref.tolerance))
-                    total_wscore += fit * float(pref.weight)
-                    total_weight += float(pref.weight)
-
-                fit_score = total_wscore / total_weight if total_weight > 0 else 0.0
-
-                # Use starter share to estimate adoption
-                avg_share = float(
-                    sum(sp.market_share_pct
-                        for sp in starter.starter_products.all().order_by('id'))
-                ) / max(starter.starter_products.count(), 1)
-
-                bass_p = float(segment.bass_p)
-                pop = float(segment.population_size)
-                new_adopters = bass_p * pop * avg_share * 10  # Scale for meaningful numbers
-
+            if segment.id in adopters_by_segment:
+                fit_score = segment_fit[segment.id]
+                pool = float(segment.bass_p) * float(segment.population_size)
+                new_adopters = adopters_by_segment[segment.id]
                 best_product = products[0] if products else None
                 RoundResultAdoption.objects.update_or_create(
                     game=game, round_number=0, team=team,
@@ -183,11 +320,18 @@ def bootstrap_round_zero(game):
                         'fit_score': _q(fit_score),
                         'adjusted_fit_score': _q(fit_score),
                         'market_readiness_pct': D('1.0000'),
-                        'adoption_pool': _q(bass_p * pop),
+                        'adoption_pool': _q(pool),
                         'team_attractiveness': _q(fit_score),
-                        'team_share_pct': _q(avg_share),
-                        'new_adopters': _q(new_adopters),
-                        'cumulative_adopters': _q(new_adopters),
+                        # The quantity this column carries from round 1 onward:
+                        # the team's share of that segment's adoption pool.
+                        # Previously it held the authored firm-level market
+                        # share, a different number in the same column.
+                        'team_share_pct': (
+                            Decimal(str(float(new_adopters) / pool)).quantize(
+                                D('0.0001'), rounding=ROUND_HALF_UP)
+                            if pool > 0 else D('0')),
+                        'new_adopters': new_adopters,
+                        'cumulative_adopters': new_adopters,
                     },
                 )
             else:
