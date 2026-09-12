@@ -1,0 +1,425 @@
+{
+  "language": "zh-CN",
+  "base": "http://127.0.0.1:34965",
+  "game": 1,
+  "team": 1,
+  "steps": [
+    {
+      "name": "login screen renders the requested language",
+      "outcome": "pass",
+      "detail": "Chinese characters in page copy: True"
+    },
+    {
+      "name": "student crv213_t1_m1 signed in",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "marketing context returns price_bands",
+      "outcome": "pass",
+      "detail": "keys: ['1_1', '2_1', '7_1']"
+    },
+    {
+      "name": "ITEM 1 pricing screen states the legal range",
+      "outcome": "pass",
+      "detail": "server band 315-585; screen: 定价 / 价格 / $ / 本回合允许区间：$315 – $585 / 尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 $315 定价。 / mainstream / 生产 / 产量 / 生产量 / \tunits / 来源市场 / 北美 / 北美 / 需求预估 / \tunits / 产能: 30000 台 (4000 alloc.) / 超出自有产能 — 将使用代工（+25%溢价） / 推广 / 推广 / $ / 重点: / ✓ "
+    },
+    {
+      "name": "ITEM 2 out-of-band entry raises the alert naming the range",
+      "outcome": "pass",
+      "detail": "定价 / 价格 / $ / 本回合允许区间：$315 – $585 / 超出允许区间。您的输入已保存；若回合截止时仍超出该区间，价格将调整为最接近的允许价格。 / mainstream / 生产 / 产量 / 生产量 / \tunits / 来源市场 / 北美 / 需求预估 / \tunits / 产能: 30000 台 (4000 alloc.) / 超出自有产能 — 将使用代工（+25%溢价） / 推广 / 推广 / $ / 重点: / ✓ 处理器性能 / 电池续航 / 耐用性 / 应用"
+    },
+    {
+      "name": "ITEM 2 the number is kept in the box",
+      "outcome": "pass",
+      "detail": "input shows '1755'"
+    },
+    {
+      "name": "ITEM 2 the out-of-band price is stored, not refused",
+      "outcome": "pass",
+      "detail": "stored retail_price=1755.00"
+    },
+    {
+      "name": "ITEM 2 the out-of-band price survives a reload",
+      "outcome": "pass",
+      "detail": "input shows '1755'"
+    },
+    {
+      "name": "ITEM 3 clearing the price box alerts that it will be priced at the floor",
+      "outcome": "pass",
+      "detail": "定价 / 价格 / $ / 本回合允许区间：$315 – $585 / 尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 $315 定价。 / mainstream / 生产 / 产量 / 生产量 / \tunits / 来源市场 / 北美 / 需求预估 / \tunits / 产能: 30000 台 (4000 alloc.) / 超出自有产能 — 将使用代工（+25%溢价） / 推广 / 推广 / $ / 重点: / ✓ 处理器性能 / 电池续航 / 耐用性 / 应用生态 / 产品设计 / 可持续性 / 数字 34% / 传统媒体 3"
+    },
+    {
+      "name": "ITEM 3 a blank price is sent to the server",
+      "outcome": "pass",
+      "detail": "1 PATCH(es); a null retail_price was sent: True"
+    },
+    {
+      "name": "ITEM 3 the server holds the row with a blank price",
+      "outcome": "pass",
+      "detail": "row present: True; retail_price=None"
+    },
+    {
+      "name": "ITEM 3 edge: clearing the price of an otherwise-empty row still submits a blank",
+      "outcome": "fail",
+      "detail": "row in PATCH payload: False; row on server after: False"
+    },
+    {
+      "name": "ITEM 5 wording shown for a product with no price history",
+      "outcome": "observed",
+      "detail": "anchor=positioning_reference; floor promised on screen: True; 定价 / 价格 / $ / 本回合允许区间：$490 – $910 / 尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 $490 定价。 / premium / 生产 / 产量 / 生产量 / \tunits / 来源市场 / 北美 / 北美 / 需求预估 / \tunits / 产能: 30000 台 (5000 alloc.) / 超出自有产能 — 将使用代工（+25%溢价） / 推广 / 推广 / $ / 重点: / ✓ 处理器性能 / 电池续航 / 耐用性 / 应用生态 / 产品设"
+    },
+    {
+      "name": "ITEM 5 the unpriced new product is on the server for the close",
+      "outcome": "pass",
+      "detail": "row present: True; retail_price=None"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    }
+  ],
+  "patches": [
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":3000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":154,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":3000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":154,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    }
+  ],
+  "save_responses": [
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    },
+    {
+      "status": 200
+    }
+  ],
+  "screenshots": [
+    "00-login-zh-CN.png",
+    "01-item1-price-band-range-zh-CN.png",
+    "02-item2-out-of-band-alert-zh-CN.png",
+    "03-item3-blank-price-alert-zh-CN.png",
+    "04-item3-edge-empty-row-zh-CN.png",
+    "05-item5-new-product-pricing-screen-zh-CN.png",
+    "06-marketing-final-state-zh-CN.png"
+  ],
+  "server_price_bands": {
+    "1_1": {
+      "min": 315,
+      "max": 585,
+      "band_pct": 0.3,
+      "anchor": 450,
+      "anchor_source": "previous_round",
+      "anchor_round_number": 0
+    },
+    "2_1": {
+      "min": 154,
+      "max": 286,
+      "band_pct": 0.3,
+      "anchor": 220,
+      "anchor_source": "previous_round",
+      "anchor_round_number": 0
+    },
+    "7_1": {
+      "min": 490,
+      "max": 910,
+      "band_pct": 0.3,
+      "anchor": 700,
+      "anchor_source": "positioning_reference",
+      "anchor_round_number": null
+    }
+  },
+  "item1": {
+    "band": {
+      "min": 315,
+      "max": 585,
+      "band_pct": 0.3,
+      "anchor": 450,
+      "anchor_source": "previous_round",
+      "anchor_round_number": 0
+    },
+    "shown": true,
+    "pane_text": "定价\n价格\n$\n本回合允许区间：$315 – $585\n尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 $315 定价。\nmainstream\n生产\n产量\n生产量\n\tunits\n来源市场\n北美\n北美\n需求预估\n\tunits\n产能: 30000 台 (4000 alloc.)\n超出自有产能 — 将使用代工（+25%溢价）\n推广\n推广\n$\n重点:\n✓ 处理器性能\n电池续航\n耐用性\n应用生态\n产品设计\n可持续性\n数字 34%\n传统媒体 33%\n渠道营销 33%\n分销\n分销\n大众零售\n高低\n精选零售\n中中\n独家零售\n低高\n线上直销\n中高\n预期影响\n最大收入\n$0\n$0 x 5,000 units\n上回合销量\n--\n无历史数据\n营销总成本\n$0\n推广 $0 + 分销 $0"
+  },
+  "item2": {
+    "entered": 1755,
+    "input_after": "1755",
+    "server_row": {
+      "id": 26,
+      "team_product": 1,
+      "market": 1,
+      "retail_price": "1755.00",
+      "promotion_budget": "0.00",
+      "campaign_focus_feature_ids": [
+        1
+      ],
+      "channel_digital_pct": "0.3400",
+      "channel_traditional_pct": "0.3300",
+      "channel_trade_pct": "0.3300",
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": "0.00",
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 5000,
+      "production_source_market": 1,
+      "demand_estimate": 0,
+      "warnings": [
+        "The price of $1,755 for Nexus One in North America is outside this round’s allowed range of $315 to $585. Your entry has been saved. If it is still outside the range when the round closes, it will be adjusted to the nearest allowed price."
+      ]
+    },
+    "pane_text": "定价\n价格\n$\n本回合允许区间：$315 – $585\n超出允许区间。您的输入已保存；若回合截止时仍超出该区间，价格将调整为最接近的允许价格。\nmainstream\n生产\n产量\n生产量\n\tunits\n来源市场\n北美\n需求预估\n\tunits\n产能: 30000 台 (4000 alloc.)\n超出自有产能 — 将使用代工（+25%溢价）\n推广\n推广\n$\n重点:\n✓ 处理器性能\n电池续航\n耐用性\n应用生态\n产品设计\n可持续性\n数字 34%\n传统媒体 33%\n渠道营销 33%\n分销\n分销\n大众零售\n高低\n精选零售\n中中\n独家零售\n低高\n线上直销\n中高\n预期影响\n最大收入\n$8.8M\n$2K x 5,000 units\n上回合销量\n--\n无历史数据\n营销总成本\n$0\n推广 $0 + 分销 $0",
+    "input_after_reload": "1755"
+  },
+  "item3": {
+    "alerted": true,
+    "patches": [
+      {
+        "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+        "method": "PATCH",
+        "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+      }
+    ],
+    "server_row_after_clear": {
+      "id": 28,
+      "team_product": 1,
+      "market": 1,
+      "retail_price": null,
+      "promotion_budget": "0.00",
+      "campaign_focus_feature_ids": [
+        1
+      ],
+      "channel_digital_pct": "0.3400",
+      "channel_traditional_pct": "0.3300",
+      "channel_trade_pct": "0.3300",
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": "0.00",
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 5000,
+      "production_source_market": 1,
+      "demand_estimate": 0,
+      "warnings": [
+        "No price is set for Nexus One in North America. If it is still blank when the round closes, it will be priced at $315, the lowest price allowed this round. You may price it anywhere between $315 and $585."
+      ]
+    }
+  },
+  "item3_edge": {
+    "product": "Nexus Lite",
+    "row_before": {
+      "id": 34,
+      "team_product": 2,
+      "market": 1,
+      "retail_price": "154.00",
+      "promotion_budget": "0.00",
+      "campaign_focus_feature_ids": [
+        1
+      ],
+      "channel_digital_pct": "0.3400",
+      "channel_traditional_pct": "0.3300",
+      "channel_trade_pct": "0.3300",
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": "0.00",
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 3000,
+      "production_source_market": 1,
+      "demand_estimate": 0,
+      "warnings": []
+    },
+    "patches": [
+      {
+        "url": "http://127.0.0.1:34965/api/games/1/teams/1/decisions/round/1/marketing/",
+        "method": "PATCH",
+        "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":5000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+      }
+    ],
+    "row_still_on_server": null,
+    "row_present_in_payload": false
+  },
+  "item5_pricing": {
+    "product": "Aurora NX",
+    "band": {
+      "min": 490,
+      "max": 910,
+      "band_pct": 0.3,
+      "anchor": 700,
+      "anchor_source": "positioning_reference",
+      "anchor_round_number": null
+    },
+    "pane_text": "定价\n价格\n$\n本回合允许区间：$490 – $910\n尚未设置价格。若回合截止时仍为空，将按本回合允许的最低价 $490 定价。\npremium\n生产\n产量\n生产量\n\tunits\n来源市场\n北美\n北美\n需求预估\n\tunits\n产能: 30000 台 (5000 alloc.)\n超出自有产能 — 将使用代工（+25%溢价）\n推广\n推广\n$\n重点:\n✓ 处理器性能\n电池续航\n耐用性\n应用生态\n产品设计\n可持续性\n数字 34%\n传统媒体 33%\n渠道营销 33%\n分销\n分销\n大众零售\n高低\n精选零售\n中中\n独家零售\n低高\n线上直销\n中高\n预期影响\n最大收入\n$0\n$0 x 4,000 units\n上回合销量\n--\n无历史数据\n营销总成本\n$0\n推广 $0 + 分销 $0",
+    "promises_floor": true,
+    "server_row": {
+      "id": 42,
+      "team_product": 7,
+      "market": 1,
+      "retail_price": null,
+      "promotion_budget": "0.00",
+      "campaign_focus_feature_ids": [
+        1
+      ],
+      "channel_digital_pct": "0.3400",
+      "channel_traditional_pct": "0.3300",
+      "channel_trade_pct": "0.3300",
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": "0.00",
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 4000,
+      "production_source_market": 1,
+      "demand_estimate": 0,
+      "warnings": [
+        "Set a unit price above zero for Aurora NX in North America."
+      ]
+    }
+  },
+  "summary": {
+    "passed": 12,
+    "failed": 1,
+    "observed": 1,
+    "console_errors": 11,
+    "network_errors": 11,
+    "marketing_saves_refused": 0,
+    "marketing_saves_total": 8
+  }
+}

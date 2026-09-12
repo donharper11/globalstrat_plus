@@ -1,0 +1,146 @@
+{
+  "language": "en",
+  "round": 1,
+  "steps": [
+    {
+      "name": "student signed in",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "results API returns price adjustments",
+      "outcome": "pass",
+      "detail": "HTTP 200, 2 notice(s)"
+    },
+    {
+      "name": "  notice: Nexus One / North America",
+      "outcome": "observed",
+      "detail": "submitted=None applied=315.00 rule=price_band.blank_priced_at_band_floor :: Nexus One in North America: no price was entered, so it was priced at $315 when the round closed — the lowest price allowed this round, whose range was $315 to $585."
+    },
+    {
+      "name": "  notice: Aurora NX / North America",
+      "outcome": "observed",
+      "detail": "submitted=None applied=None rule=price_band.unpriced_not_offered_for_sale :: Aurora NX in North America: no unit price was set and there was no previous price to fall back on, so it was not offered for sale this round and sold nothing. Set a unit price to put it back on the market."
+    },
+    {
+      "name": "ITEM 4 a notice names submitted, applied and the rule",
+      "outcome": "pass",
+      "detail": "rules present: ['price_band.blank_priced_at_band_floor', 'price_band.unpriced_not_offered_for_sale']"
+    },
+    {
+      "name": "ITEM 5 the unpriceable product is reported not-for-sale",
+      "outcome": "pass",
+      "detail": "notice present"
+    },
+    {
+      "name": "ITEM 4/5 a student-reachable screen renders the notice",
+      "outcome": "fail",
+      "detail": "/games/1/teams/1/results -> /games/1/teams/1/results (notice: False); /games/1/teams/1/results/round/1 -> /games/1/teams/1/results/round/1 (notice: False); /results -> /results (notice: False)"
+    },
+    {
+      "name": "ITEM 4 the dashboard shows the adjustment notice",
+      "outcome": "fail",
+      "detail": "not present on the landing dashboard"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "30-results-route_games_1_teams_1_results-en.png",
+    "30-results-route_games_1_teams_1_results_round_1-en.png",
+    "30-results-route_results-en.png",
+    "31-dashboard-after-processing-en.png"
+  ],
+  "price_adjustments": [
+    {
+      "product_name": "Nexus One",
+      "market": "North America",
+      "submitted_price": null,
+      "applied_price": "315.00",
+      "rule": "price_band.blank_priced_at_band_floor",
+      "message": "Nexus One in North America: no price was entered, so it was priced at $315 when the round closed — the lowest price allowed this round, whose range was $315 to $585."
+    },
+    {
+      "product_name": "Aurora NX",
+      "market": "North America",
+      "submitted_price": null,
+      "applied_price": null,
+      "rule": "price_band.unpriced_not_offered_for_sale",
+      "message": "Aurora NX in North America: no unit price was set and there was no previous price to fall back on, so it was not offered for sale this round and sold nothing. Set a unit price to put it back on the market."
+    }
+  ],
+  "results_status": 200,
+  "route_probe": {
+    "/games/1/teams/1/results": {
+      "url_after": "http://127.0.0.1:34965/games/1/teams/1/results",
+      "shows_adjustments": false,
+      "text": "GS / GLOBALSTRAT / Consumer Electronics Sim / R2 of 3DRAFT OPEN / Budget $0/$5.0M / R&D $0/$0 / Mktg $0/$0 / Strat $0/$0 / CT / crv213_t1_m1 · Zenith Hardware / LIVE / 💱 / BRL weakened 2.0% against USD — South America revenue converts to fewer USD / │ / 📈 / East Asia growth accelerating — demand rising / │ / 📈 / Africa growth accelera"
+    },
+    "/games/1/teams/1/results/round/1": {
+      "url_after": "http://127.0.0.1:34965/games/1/teams/1/results/round/1",
+      "shows_adjustments": false,
+      "text": "GS / GLOBALSTRAT / Consumer Electronics Sim / R2 of 3DRAFT OPEN / Budget $0/$5.0M / R&D $0/$0 / Mktg $0/$0 / Strat $0/$0 / CT / crv213_t1_m1 · Zenith Hardware / LIVE / 💱 / BRL weakened 2.0% against USD — South America revenue converts to fewer USD / │ / 📈 / East Asia growth accelerating — demand rising / │ / 📈 / Africa growth accelera"
+    },
+    "/results": {
+      "url_after": "http://127.0.0.1:34965/results",
+      "shows_adjustments": false,
+      "text": "GS / GLOBALSTRAT / Consumer Electronics Sim / R2 of 3DRAFT OPEN / Budget $0/$5.0M / R&D $0/$0 / Mktg $0/$0 / Strat $0/$0 / CT / crv213_t1_m1 · Zenith Hardware / LIVE / 💱 / BRL weakened 2.0% against USD — South America revenue converts to fewer USD / │ / 📈 / East Asia growth accelerating — demand rising / │ / 📈 / Africa growth accelera"
+    }
+  },
+  "dashboard_shows_adjustments": false,
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "console_errors": 12,
+    "network_errors": 0
+  }
+}

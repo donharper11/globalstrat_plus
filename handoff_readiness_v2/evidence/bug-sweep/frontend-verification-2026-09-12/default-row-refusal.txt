@@ -1,0 +1,77 @@
+GSP-CRV2-13 — reproduction for finding F7
+The pricing screen's own default row is refused, and the refusal is silent.
+
+Captured 2026-09-12 against the disposable stack (game 1, team 1,
+round 3).
+
+MarketingPage.js initialises every row with `campaign_focus_feature_ids: []`
+and `production_source_market: null` (lines 68-77), and only sends a row once
+a price, production volume or promotion budget is non-zero (line 103). So a
+student whose first action is to type a price sends exactly REQUEST 1 below.
+
+`autoSave` wraps the call in `catch { /* ignore */ }` (line 123), so the
+refusal is never surfaced. Meanwhile the client-side band alert continues to
+read "Your entry is saved" / "您的输入已保存", because that text is computed
+from local state and not from the response.
+
+REQUEST 1 — the body the screen builds for a fresh row
+PATCH /api/games/1/teams/1/decisions/round/3/marketing/
+{
+  "marketing_decisions": [
+    {
+      "team_product": 1,
+      "market": 1,
+      "retail_price": 400,
+      "promotion_budget": 0,
+      "campaign_focus_feature_ids": [],
+      "channel_digital_pct": 0.34,
+      "channel_traditional_pct": 0.33,
+      "channel_trade_pct": 0.33,
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": 0,
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 0,
+      "production_source_market": null,
+      "demand_estimate": 0
+    }
+  ]
+}
+
+RESPONSE 1
+HTTP 400
+{"campaign_focus_feature_ids":["Choose one to three campaign focus features."],"production_source_market":["This field may not be null."]}
+
+REQUEST 2 — the same row, with the two fields a student is never prompted for
+PATCH /api/games/1/teams/1/decisions/round/3/marketing/
+{
+  "marketing_decisions": [
+    {
+      "team_product": 1,
+      "market": 1,
+      "retail_price": 400,
+      "promotion_budget": 0,
+      "campaign_focus_feature_ids": [
+        1
+      ],
+      "channel_digital_pct": 0.34,
+      "channel_traditional_pct": 0.33,
+      "channel_trade_pct": 0.33,
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": 0,
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 5000,
+      "production_source_market": 1,
+      "demand_estimate": 0
+    }
+  ]
+}
+
+RESPONSE 2
+HTTP 200
+{"id":16,"team":1,"round":4,"status":"draft","locked_at":null,"locked_by":null,"team_notes":null,"budget_allocation":null,"financing":null,"esg":null,"rd_investments":[],"platform_developments":[],"product_creates":[],"product_retires":[],"marketing_decisions":[{"id":43,"team_product":1,"market":1,"retail_price":"400.00","promotion_budget":"0.00","campaign_focus_feature_ids":[1],"channel_digital_pct":"0.3400","channel_traditional_pct":"0.3300","channel_trade_pct":"0.3300","distribution_strategy":"mass_retail","distribution_investment":"0.00","sales_team_count":0,"distribution_channel_detail":{},"production_volume":5000,"production_source_market":1,"demand_estimate":0,"warnings":[]}],"market_
+
+The rule itself is sound: response 2 carries the server's own band warning.
+The defect is that the screen's default state cannot reach it and says nothing
+when it fails.
