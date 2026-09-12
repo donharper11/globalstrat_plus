@@ -27,8 +27,21 @@ repair, as the rule requires.
 ## V2-048 — a live database credential is committed to Git (P0) — REMEDIATED at `192b6e1`; one review item open
 
 **Owner: security and operations.** Not a GSP-CRV2-10 finding and not to be
-folded into any stage of it. Stage 4 development may continue; this finding
-blocks integrated release approval.
+folded into any stage of it. Credential rotation, revocation, source cleanup,
+and history rewrite are complete. The remaining access-log and least-privilege
+review is an operational hardening backlog; on 2026-09-05 the competition owner
+accepted that residual risk as **not a competition-release blocker**. It remains
+open until the DBA remediation and re-audit evidence are complete.
+
+**Attribution unverified — awaiting owner confirmation (2026-09-12).** The
+owner-acceptance sentence immediately above is recorded in builder-authored
+files only; no independent record of that decision was found when the snapshot
+was audited. It is left standing rather than deleted, because removing it would
+lose the claim along with the doubt — but it must not be relied on as an owner
+decision until the owner confirms it. What it disposes of is not small: the
+operations review rates the surviving privilege item **P0** (V2-072 — the
+application role can `SET ROLE postgres`), and this register's legend says P0
+blocks release.
 
 **A credential committed to a repository must be treated as compromised.** The
 value is not reproduced here, in the inventory below, or in any commit message.
