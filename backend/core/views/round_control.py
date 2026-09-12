@@ -195,8 +195,13 @@ class RoundCloseView(APIView):
             after = _round_payload(action.game, round_obj)
             action.commit(before, after)
             return Response({
-                'message': f'Round {result["round"]} closed. '
-                           f'{result["submissions_locked"]} submission(s) locked.',
+                # Every lifecycle confirmation names its game: several heats run
+                # at once on one deployment, and closing the wrong heat is an
+                # unrecoverable competition incident.
+                'message': f'{action.game.name}: round {result["round"]} '
+                           f'closed. {result["submissions_locked"]} '
+                           f'submission(s) locked.',
+                'game_name': action.game.name,
                 'request_id': action.request_id,
                 'round': after,
             })
@@ -270,8 +275,9 @@ class RoundReopenView(APIView):
             after = _round_payload(game, action.require_round())
             action.commit(before, after)
             return Response({
-                'message': f'Round {round_obj.round_number} reopened. '
-                           f'{unlocked} submission(s) unlocked.',
+                'message': f'{game.name}: round {round_obj.round_number} '
+                           f'reopened. {unlocked} submission(s) unlocked.',
+                'game_name': game.name,
                 'request_id': action.request_id,
                 'round': after,
             })
@@ -354,9 +360,11 @@ class RoundProcessView(APIView):
             after = _round_payload(game, action.require_round())
             action.commit(before, after, reason=reason)
             return Response({
-                'message': f'Round {result["processed_round"]} processed in '
-                           f'{result["phase_1_time"]:.1f}s. Results are available; '
-                           f'narratives are generating in the background.',
+                'message': f'{game.name}: round {result["processed_round"]} '
+                           f'processed in {result["phase_1_time"]:.1f}s. '
+                           f'Results are available; narratives are generating '
+                           f'in the background.',
+                'game_name': game.name,
                 'phase_1_time': result['phase_1_time'],
                 'phase_2_status': result['phase_2_status'],
                 'request_id': action.request_id,
@@ -415,13 +423,15 @@ class RoundAdvanceView(APIView):
             action.commit(before, after, reason=reason)
 
             if result['next_round'] is None:
-                msg = (f'Round {result["completed_round"]} was the last round. '
-                       f'Game complete.')
+                msg = (f'{game.name}: round {result["completed_round"]} was '
+                       f'the last round. Game complete.')
             else:
-                msg = f'Advanced to round {result["next_round"]}.'
+                msg = (f'{game.name}: advanced to round '
+                       f'{result["next_round"]}.')
 
             return Response({
                 'message': msg,
+                'game_name': game.name,
                 'completed_round': result['completed_round'],
                 'next_round': result['next_round'],
                 'game_status': game.status,
@@ -492,8 +502,10 @@ class RoundDeadlineView(APIView):
                            'within a minute.')
 
             return Response({
-                'message': 'Deadline updated.'
-                           if round_obj.deadline else 'Deadline cleared.',
+                'message': (f'{game.name}: deadline updated.'
+                            if round_obj.deadline
+                            else f'{game.name}: deadline cleared.'),
+                'game_name': game.name,
                 'warning': warning,
                 'request_id': action.request_id,
                 'round': after,

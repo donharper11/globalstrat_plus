@@ -4,6 +4,7 @@ import {
   Progress, Space, Tag, Typography, message,
 } from 'antd';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 import {
   getRoundControl, closeRound, reopenRound, processRound,
@@ -50,6 +51,7 @@ function formatRemaining(seconds) {
  * apply.
  */
 export default function RoundControlCard({ gameId, onChanged }) {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(null);
@@ -146,7 +148,11 @@ export default function RoundControlCard({ gameId, onChanged }) {
 
   return (
     <Card
-      title={`Round Control — Round ${round.round_number} of ${data.total_rounds ?? '—'}`}
+      title={t('instructor.round_control_title', {
+        game: data.game_name || t('instructor.game'),
+        round: round.round_number,
+        total: data.total_rounds ?? '—',
+      })}
       style={{ marginTop: 16 }}
       extra={<Button size="small" onClick={load} loading={loading}>Refresh</Button>}
     >
@@ -212,7 +218,10 @@ export default function RoundControlCard({ gameId, onChanged }) {
 
         {round.status === 'open' && (
           <Popconfirm
-            title="Close this round now?"
+            title={t('instructor.close_round_confirm', {
+              game: data.game_name || t('instructor.game'),
+              round: round.round_number,
+            })}
             description="Students will be locked out immediately and all decisions submitted as they stand."
             onConfirm={() => run('close', () => closeRound(gameId, round))}
           >
@@ -226,7 +235,10 @@ export default function RoundControlCard({ gameId, onChanged }) {
         {round.status === 'closed' && (
           <>
             <Popconfirm
-              title="Run post-round processing?"
+              title={t('instructor.process_round_confirm', {
+                game: data.game_name || t('instructor.game'),
+                round: round.round_number,
+              })}
               description="Scores events, R&D, adoption, revenue, costs, financial statements, performance index and the leaderboard. Takes a few seconds."
               onConfirm={() => run('process', () => processRound(gameId, false, round))}
             >
@@ -243,8 +255,13 @@ export default function RoundControlCard({ gameId, onChanged }) {
         {round.status === 'processed' && (
           <Popconfirm
             title={data.current_round >= data.total_rounds
-              ? 'Finish the game?'
-              : `Advance to round ${round.round_number + 1}?`}
+              ? t('instructor.finish_game_confirm', {
+                game: data.game_name || t('instructor.game'),
+              })
+              : t('instructor.advance_round_confirm', {
+                game: data.game_name || t('instructor.game'),
+                round: round.round_number + 1,
+              })}
             description="Students will start the next round."
             onConfirm={() => run('advance', () => advanceToNextRound(gameId))}
           >
@@ -264,7 +281,9 @@ export default function RoundControlCard({ gameId, onChanged }) {
       </Space>
 
       <Modal
-        title="Close and process in one step"
+        title={t('instructor.close_and_process_title', {
+          game: data.game_name || t('instructor.game'),
+        })}
         open={forceOpen}
         onCancel={() => setForceOpen(false)}
         okText="Close and process"
@@ -290,7 +309,9 @@ export default function RoundControlCard({ gameId, onChanged }) {
       </Modal>
 
       <Modal
-        title="Set round deadline"
+        title={t('instructor.set_deadline_title', {
+          game: data.game_name || t('instructor.game'),
+        })}
         open={deadlineOpen}
         onCancel={() => setDeadlineOpen(false)}
         onOk={async () => {
@@ -314,7 +335,10 @@ export default function RoundControlCard({ gameId, onChanged }) {
       </Modal>
 
       <Modal
-        title="Reopen round"
+        title={t('instructor.reopen_round_title', {
+          game: data.game_name || t('instructor.game'),
+          round: round.round_number,
+        })}
         open={reopenOpen}
         onCancel={() => setReopenOpen(false)}
         onOk={async () => {

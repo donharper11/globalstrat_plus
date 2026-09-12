@@ -34,8 +34,12 @@ from core.models.financials import (
 )
 from core.models.core import SimulationState
 from core.permissions import IsInstructor
+from core.services.cohort_caps import (
+    enrolment_capacity_error, section_for_id, team_capacity_error,
+    under_minimum_teams)
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action)
+from core.utils.cohort_messages import language_for_request
 from core.serializers.course import (
     CourseSerializer, CourseListSerializer,
     SectionSerializer, SectionDetailSerializer,
@@ -273,6 +277,7 @@ class RosterViewSet(APIView):
 
     def _handle_csv_upload(self, request):
         section_id = request.data.get('section_id')
+        language = language_for_request(request)
 
         if not section_id:
             return Response(
@@ -296,7 +301,7 @@ class RosterViewSet(APIView):
 
         # Validate section exists
         try:
-            Section.objects.get(section_id=section_id)
+            section = Section.objects.get(section_id=section_id)
         except Section.DoesNotExist:
             return Response(
                 {'error': 'Section not found.'},
@@ -324,6 +329,17 @@ class RosterViewSet(APIView):
                 user = self._find_or_create_user(
                     student_id_val, display_name, email,
                 )
+                # The section seats max_teams x team_size_max students. Checked
+                # per row, and only when this row would add someone: re-running
+                # a roster upload must stay idempotent rather than refusing the
+                # students it already enrolled (V2-042).
+                if not Enrollment.objects.filter(
+                    user_id=user.user_id, section_id=section_id,
+                ).exists():
+                    full = enrolment_capacity_error(section, language=language)
+                    if full:
+                        errors.append({'row': row_num, 'error': full})
+                        continue
                 # Create enrollment if not already enrolled in this section
                 _enroll, enroll_created = Enrollment.objects.get_or_create(
                     user_id=user.user_id,
@@ -365,7 +381,7 @@ class RosterViewSet(APIView):
             )
 
         try:
-            Section.objects.get(section_id=section_id)
+            section = Section.objects.get(section_id=section_id)
         except Section.DoesNotExist:
             return Response(
                 {'error': 'Section not found.'},
@@ -376,6 +392,18 @@ class RosterViewSet(APIView):
             user = self._find_or_create_user(
                 student_id_val, display_name, email,
             )
+            # Refused before the enrolment is written, and only when this
+            # student is not already enrolled here (V2-042).
+            if not Enrollment.objects.filter(
+                user_id=user.user_id, section_id=section_id,
+            ).exists():
+                full = enrolment_capacity_error(
+                    section, language=language_for_request(request))
+                if full:
+                    return Response(
+                        {'error': full, 'code': 'section_full'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             enrollment, enroll_created = Enrollment.objects.get_or_create(
                 user_id=user.user_id,
                 section_id=section_id,
@@ -590,8 +618,10 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        language = language_for_request(request)
         updated = 0
         errors = []
+        assigned_section = None
 
         for item in assignments:
             user_id = item.get('user_id')
@@ -620,11 +650,32 @@ class TeamManagementView(APIView):
                     })
                     continue
 
+                # team_size_max, enforced where the assignment is written.
+                # V2-042 put eight students on a team whose maximum is five
+                # through exactly this call, and nothing refused.
+                section = section_for_id(enrollment.section_id)
+                assigned_section = assigned_section or section
+                over = team_capacity_error(
+                    section, team_id, joining_user_id=user_id,
+                    language=language)
+                if over:
+                    errors.append({'item': item, 'error': over})
+                    continue
+            else:
+                assigned_section = assigned_section or section_for_id(
+                    enrollment.section_id)
+
             enrollment.team_id = team_id
             enrollment.save()
             updated += 1
 
-        return Response({'updated': updated, 'errors': errors})
+        # team_size_min is reported, never refused: a team is legitimately
+        # below the minimum for the whole time it is being filled, so refusing
+        # would make ordinary roster building impossible. The console shows it.
+        under_minimum = under_minimum_teams(assigned_section, language=language)
+
+        return Response({'updated': updated, 'errors': errors,
+                         'under_minimum': under_minimum})
 
     # ---- Internal: rename team ------------------------------------------
 

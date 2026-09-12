@@ -232,15 +232,26 @@ class GameCreateView(APIView):
                 {'error': 'num_teams must be an integer.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        if not (2 <= num_teams <= 16):
-            return Response(
-                {'error': 'num_teams must be between 2 and 16.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
         game_name = request.data.get('name') or f"{scenario.name} Game"
         home_markets_arg = request.data.get('home_markets')  # list of market codes
         section_id = request.data.get('section_id')
+
+        # One cap, not two. This used to refuse num_teams outside 2..16 -- a
+        # bound unrelated to the section's authored max_teams of 8, and two
+        # caps that disagree is one cap that does not exist (A6 / V2-042). The
+        # section's authored cap is now the only bound on the size of the
+        # competitive field.
+        from core.services.cohort_caps import (
+            game_team_count_error, section_for_id)
+        from core.utils.cohort_messages import language_for_request
+        cap_error = game_team_count_error(
+            section_for_id(section_id), num_teams,
+            language=language_for_request(request))
+        if cap_error:
+            return Response(
+                {'error': cap_error, 'code': 'team_count_refused'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # ── Resolve created_by ───────────────────────────────────────
         if (
