@@ -344,13 +344,105 @@ be felt where a team can act on it. Scoring code does not change.
 
 ---
 
+## R26 — a product that cannot be sold is still paid for
+
+**Question as asked.** Under R24 an unpriced product with no price history does
+not go on sale. The team may nonetheless have decided to manufacture units for
+it. Are those units charged?
+
+**Ruling.** **Yes. They are charged, and the units sit in inventory.** You built
+stock you then could not sell. The factory ran and the money went out; not
+pricing a product does not refund manufacturing.
+
+**Consequence.** The production decision stands on its own: COGS is incurred and
+the inventory is carried, exactly as for any unsold output. Forgetting a price
+is therefore a real mistake with a real cost, which is the behaviour the
+deadline alert exists to prevent. `revenue.py` processes the row with a zero
+price rather than skipping it, which is the implementation of this rule.
+
+**Dispositions:** GSP-CRV2-10 Stage 5 question 7 — answered; no change required
+to the implementation as built.
+
+---
+
+## R27 — gated segments keep their demands as authored
+
+**Question as asked.** Tech Enthusiasts, Aerospace & Defense and Gen Z Digital
+Natives require a second-generation platform to enter, and also carry the
+authored demand for second-generation features. So the "upgrade to reach them"
+pull is only felt by teams that have already upgraded. Move it earlier, or
+leave it?
+
+**Ruling.** **Leave it as authored.** Entering the segment requires generation
+2, and the features it wants arrive with generation 2, so the demand is
+self-consistent: a team that can enter can also compete there.
+
+**Consequence.** R25's re-authoring is the whole of the change — it fixed the
+segments first-generation teams actually play in. The gated segments' rows are
+untouched, and their measured drag stands as recorded (0.2564 / 0.0103 /
+0.1489). Nothing further is owed here.
+
+**Dispositions:** GSP-CRV2-11 Stage 5 item 4 — closed as deliberately
+unchanged.
+
+---
+
+## R28 — every firm in a heat starts from a distinct position
+
+**Question as asked.** A heat of 8 firms draws on 4 authored starter profiles,
+so two teams begin identical. The rank churn the R25 calibration replay found
+was entirely between these twins.
+
+**Ruling.** **Author more starting profiles, so no two firms in a heat begin
+from the same position.**
+
+**Consequence.**
+
+- Enough distinct profiles for a full heat at the R12 cap of 8 firms, in **all
+  three** shipped scenarios.
+- **R22 still binds and is not relaxed:** every team opens on the same
+  performance index and the same rank. Profiles differ in strengths, market
+  position, price point, volume, debt and strategic problem — never in opening
+  score.
+- Because new profiles are new competitive positions, balance must be
+  **measured**, not asserted: no profile may carry an advantage that play cannot
+  overcome. This is measurement the programme owes anyway — R22 ratified that
+  round-zero parity is the only *gate*, which is not the same as leaving
+  starting balance unmeasured.
+- Mid-table rank becomes meaningful, because a rank difference stops being an
+  artefact of two teams being the same team.
+
+**Dispositions:** GSP-CRV2-11 Stage 2 — a new authoring task, opened
+2026-09-12. Related: the handoff's standing question about all profiles sharing
+`home_market: NA` is to be reported with measurement, not decided by a builder.
+
+---
+
+## R29 — the round-zero per-segment share column keeps its new meaning
+
+**Question as asked.** At round zero the per-segment share column carried each
+team's authored firm-level market share, copied onto every segment row; from
+round one the same column carries the team's share of that segment's adopters.
+R11 made round zero match. Keep it?
+
+**Ruling.** **Keep the change.** The per-segment column answers one question in
+all eleven rounds: what share of this segment's adopters did you win.
+
+**Consequence.** The authored starting market share is unaffected — it still
+sits on the round-zero market row (`bootstrap.py:418-427`), which is where a
+firm-level figure belongs. What ends is a firm-level number standing in for
+segment data: at round zero the Market Research segment view ranked rivals by a
+figure that had nothing to do with the segment being examined, and the
+scorecard's strongest/weakest segment read the same column.
+
+**Dispositions:** GSP-CRV2-11 R11 — the implementation as built is confirmed.
+
+---
+
 ## Open with the owner at the close of 2026-09-12
 
 Recorded here so they are not lost, and explicitly **not** ruled:
 
-1. **Round-0 per-segment share column.** Whether round zero should carry the
-   team's share of that segment's adopters (as the other ten rounds do) or the
-   authored firm-level starting share it carried before. The authored market
-   share is unaffected either way — it still sits on the round-0 market row.
-2. **Manufacturing cost on a not-for-sale product** (see R24).
-3. **`scenario_rd_spend_target`**, orphaned by R10 and still standing.
+1. **`scenario_rd_spend_target`**, orphaned by R10 and still standing.
+2. **Report prices** under R23 — the catalogue ships at a uniform placeholder;
+   the real price list is deferred calibration, not an open defect.
