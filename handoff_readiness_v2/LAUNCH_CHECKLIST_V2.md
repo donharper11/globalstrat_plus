@@ -72,13 +72,33 @@
       gave 4 failures and 3 errors (V2-074). Added 2026-09-12; GSP-CRV2-09 owns
       the run.
 - [ ] Browser pass over the participant and operator surfaces the merged work
-      changed and could not build. `node_modules` was absent in both builders'
-      worktrees, so `MarketingPage.js` / `ResultsPage.js` (the price-band legal
-      range, the blank-price alert, the "clear the price box" interaction and
-      the results-screen not-offered notice) and `RoundControlCard.js` were
-      never built, linted or clicked. Locale key parity was checked; a backend
-      200 is not evidence of frontend completion. Added 2026-09-12 (V2-041,
-      V2-042, V2-080).
+      changed and could not build. **ATTEMPTED 2026-09-12, NOT PASSED — and it
+      is the reason this gate was worth adding.** The pass ran on `46b4bbe`
+      against a disposable stack, in Chromium, in **both** English and
+      Simplified Chinese, and changed no runtime code. The production build
+      itself passes (exit 0, warnings only) and `react-scripts test` passes, so
+      **the build is not a finding**. Seven defects were found and **none is
+      repaired**: V2-101 through V2-107, of which **V2-107 is a P0** — the
+      pricing screen's own default row is refused 400 while the screen reports
+      success. **Coverage, stated so nobody reads this as a full pass:** one
+      firm, one market, one scenario (`consumer_electronics_2026`, Team 1,
+      North America); the other firms, markets and two scenarios were not
+      driven. **Two of the seven intended checks could not be verified at all
+      — the results-screen price-adjustment notice and the not-for-sale notice
+      — because no route reaches that screen (V2-103).** Extend Deadline was
+      inspected but never executed; the cohort-cap path was driven through the
+      API from the signed-in session rather than by clicking the roster
+      widgets, so V2-104's success toast is read from source, not seen on
+      screen. Still outstanding for the same reason it always was: the pass
+      covered the price band, cohort caps and round control, not every surface
+      the merged work touched. Added 2026-09-12 (V2-041, V2-042, V2-080).
+- [ ] GSP-CRV2-12 Stage 4 — the two bilingual walkthroughs. **The code half of
+      the language sweep has landed and is not in question** (V2-069's four
+      residual defects repaired, bilingual parity demonstrated by rendering all
+      99 messages in both languages, and a seven-assertion prevention control
+      running in the suite and in CI). **Stage 4 was explicitly not performed**,
+      so CRV2-12 is not complete — only its code half is. Six named checks are
+      listed in `completion/GSP-CRV2-12-completion.md` §7. Added 2026-09-12.
 - [ ] `reset_simulation` withheld from the competition deployment. Its unscoped
       `TRUNCATE`/`UPDATE` statements are unchanged and reach every instance on
       the host, swallowing failures (V2-076). The routed form was deleted under
@@ -120,8 +140,15 @@ narrative worker, set `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or production
 environment), and run the application as a non-owner database role so it cannot
 drop its own audit guards.
 
-Added to the register 2026-09-12 from six merged completion reports: **V2-075
-through V2-095**. Repaired pending closure: V2-075 (the legacy
+Added to the register 2026-09-12 from eight completion reports: **V2-075
+through V2-108** — including the first browser verification, which found
+**V2-107, a P0**: the pricing screen's default row is refused while the screen
+reports success, so a team can lose a round's decisions believing they are
+saved. That is the silent loss R17 ruled against. Also open from that pass:
+V2-101 through V2-106 and V2-108. The CRV2-12 language sweep contributes
+V2-096–V2-100, renumbered from the V2-075–V2-079 its builder drafted, which
+collided because that branch was cut before this register's block reached
+integration. Repaired pending closure: V2-075 (the legacy
 `/simulation-control/` cross-cohort reset, P0), V2-079 (the route-inventory
 false positive, P1), V2-085 (preference re-authoring, under R25/R27), V2-087
 (two decision-write routes unguarded by the paid-research change, P1), V2-091,
