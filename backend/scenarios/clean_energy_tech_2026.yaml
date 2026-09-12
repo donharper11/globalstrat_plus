@@ -4916,6 +4916,110 @@ starter_profiles:
   products:
   - [EcoCell Home, mainstream, '1200.00', eu, 8000, '0.06', beta]
   - [EcoCell Grid, premium, '9000.00', eu, 1500, '0.03', alpha]
+- profile_name: The Fast-Charge Specialist
+  profile_name_zh: 快充专家
+  description: |-
+    Chemistry and thermal engineers who set out to solve charging time and nothing else. The fastest-charging cell in the market, with the thermal management needed to survive it. The trade-off is real and deliberate: it has the worst cycle life in the field. Its problem is that fast charging wins the demonstration and cycle life wins the contract.
+  description_zh: |-
+    一群化学与热工程师，立志只解决充电时间这一个问题。拥有市场上充电最快的电芯，并配备了承受快充所需的热管理能力。代价真实而有意为之：其循环寿命为全场最差。难题在于——快充赢得演示，循环寿命赢得订单。
+  home_market: na
+  starting_cash: '60000000'
+  starting_debt: '9000000'
+  starting_revenue: '26000000'
+  platforms:
+    alpha:
+      charging_speed: 6
+      thermal_management: 4
+      energy_density: 4
+      safety_rating: 2
+      cycle_life: 1
+    beta:
+      energy_density: 4
+      charging_speed: 4
+      thermal_management: 3
+      cycle_life: 3
+      safety_rating: 2
+  products:
+  - [SurgeCell Pro, premium, '7000.00', na, 2200, '0.04', alpha]
+  - [SurgeCell, mainstream, '4500.00', na, 3600, '0.05', beta]
+- profile_name: The Cost Leader
+  profile_name_zh: 成本领先者
+  description: |-
+    Builds the cheapest cell anyone is willing to buy, in enormous quantities, on mature chemistry nobody else bothers with any more. Decent cycle life, adequate everything else, no technical claim at all. Ships more cells than any rival and earns the least on each. Its problem is that it has no premium customer and no story beyond price.
+  description_zh: |-
+    以别人早已不屑一顾的成熟化学体系，大批量生产市场上最便宜且仍有人愿买的电芯。循环寿命尚可，其余指标够用，毫无技术卖点。出货量高于任何对手，单位利润却最低。其难题在于：没有高端客户，除了价格之外没有别的故事。
+  home_market: ea
+  starting_cash: '60000000'
+  starting_debt: '4000000'
+  starting_revenue: '34000000'
+  platforms:
+    alpha:
+      cycle_life: 5
+      energy_density: 4
+      safety_rating: 3
+      thermal_management: 3
+      charging_speed: 2
+    beta:
+      cycle_life: 4
+      energy_density: 4
+      safety_rating: 3
+      thermal_management: 3
+      charging_speed: 2
+  products:
+  - [BaseCell, mainstream, '2800.00', ea, 7000, '0.07', alpha]
+  - [BaseCell Lite, mainstream, '900.00', ea, 12000, '0.05', beta]
+- profile_name: The Industrial Integrator
+  profile_name_zh: 工业集成商
+  description: |-
+    Does not really sell cells — it sells finished storage systems, installed and maintained. Balanced thermal and endurance engineering, nothing best-in-class, but it is the only firm the utilities will let on site. Long sales cycles and heavy fixed costs. Its problem is that its advantage sits in the integration business, which the scoreboard does not measure directly.
+  description_zh: |-
+    它实际上并不销售电芯，而是销售安装与维护到位的成套储能系统。热管理与耐久性工程均衡，无一项业内最佳，但它是唯一获准进入公用事业现场的厂商。销售周期漫长，固定成本沉重。其难题在于：优势存在于集成业务中，而记分牌并不直接衡量这一项。
+  home_market: eu
+  starting_cash: '60000000'
+  starting_debt: '7000000'
+  starting_revenue: '28000000'
+  platforms:
+    alpha:
+      thermal_management: 5
+      cycle_life: 5
+      safety_rating: 4
+      energy_density: 2
+      recyclability: 1
+    beta:
+      thermal_management: 4
+      cycle_life: 4
+      safety_rating: 3
+      energy_density: 3
+      recyclability: 2
+  products:
+  - [AxisStore Prime, premium, '11000.00', eu, 1600, '0.03', alpha]
+  - [AxisStore, mainstream, '7500.00', eu, 2400, '0.04', beta]
+- profile_name: The Residential Brand
+  profile_name_zh: 家用品牌
+  description: |-
+    The only firm here that sells to households rather than to engineers. Safety and cycle life tuned for a box on the side of a house, with recyclable materials because the buyer cares. Consumer prices and consumer volumes against an industrial cost base. Its problem is that it must run a retail brand on margins set by a commodity cell market.
+  description_zh: |-
+    全场唯一面向家庭而非工程师销售的公司。安全性与循环寿命均针对安装在住宅外墙的储能柜调校，并采用可回收材料，因为买家在意这一点。以消费级价格和消费级销量，对抗工业级成本结构。其难题在于：必须在大宗电芯市场所决定的微薄利润下，经营一个零售品牌。
+  home_market: na
+  starting_cash: '60000000'
+  starting_debt: '3000000'
+  starting_revenue: '24000000'
+  platforms:
+    alpha:
+      safety_rating: 5
+      cycle_life: 4
+      recyclability: 3
+      energy_density: 3
+      thermal_management: 2
+    beta:
+      cycle_life: 4
+      safety_rating: 4
+      energy_density: 3
+      thermal_management: 3
+      recyclability: 2
+  products:
+  - [HomeVolt, mainstream, '1400.00', na, 9000, '0.06', alpha]
+  - [HomeVolt Compact, mainstream, '850.00', na, 13000, '0.05', beta]
 market_conditions:
   na:
   - - 1

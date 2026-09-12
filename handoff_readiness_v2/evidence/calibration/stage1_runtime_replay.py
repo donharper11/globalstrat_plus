@@ -60,6 +60,13 @@ from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
 
 scenario = Scenario.objects.get(name='Consumer Electronics 2026')
+# Company names are drawn by an unseeded random.shuffle, so without this the
+# roster differs between runs.  Names do not affect any outcome -- profiles are
+# assigned by team creation index -- but pinning them makes a run reproducible
+# and lets two runs be compared row for row.
+if {name_seed!r} is not None:
+    import random
+    random.seed({name_seed!r})
 if {home_markets!r} or {teams} != 4:
     call_command('initialize_game', scenario=scenario.id, teams={teams},
                  name='CRV2-11 parity replay', home_markets={home_markets!r})
@@ -263,6 +270,12 @@ def main():
                         help='zero-based team index for a policy variation')
     parser.add_argument('--adaptive-production', action='store_true',
                         help='use a uniform 10%% buffer over prior sales after round 1')
+    parser.add_argument('--name-seed', type=int, default=None,
+                        help='pin the shuffled company names so a run is '
+                             'reproducible; names affect no outcome, because '
+                             'starter profiles are assigned by team creation '
+                             'index, but pinning lets two runs be compared row '
+                             'for row')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
@@ -283,7 +296,7 @@ def main():
             harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
             home_markets=options.home_markets,
             adaptive_production=options.adaptive_production, teams=options.teams,
-            policy=options.policy,
+            policy=options.policy, name_seed=options.name_seed,
             subject_team_index=options.subject_team_index), timeout=3600)
         if result.returncode or MARKER not in result.stdout:
             raise RuntimeError(result.stderr[-5000:] + result.stdout[-5000:])
