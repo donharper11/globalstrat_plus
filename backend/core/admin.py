@@ -630,6 +630,17 @@ class DecisionResearchAllocationAdmin(CompetitionReadOnlyAdmin):
     list_per_page = 50
 
 
+from core.models.research import DecisionResearchPurchase
+
+
+@admin.register(DecisionResearchPurchase)
+class DecisionResearchPurchaseAdmin(CompetitionReadOnlyAdmin):
+    """Read-only, like every competition record (R13)."""
+    list_display = ['submission', 'report_type', 'scope_key', 'price',
+                    'created_at']
+    list_per_page = 50
+
+
 # ---------------------------------------------------------------------------
 # Group 6: Engine Result Admin
 # ---------------------------------------------------------------------------

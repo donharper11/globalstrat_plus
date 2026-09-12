@@ -359,6 +359,11 @@ DECISION_SECTIONS = (
     Section('decision_research', 'core.DecisionResearchAllocation', GAME,
             'submission__team__game_id', key=('submission_id', 'market_id'),
             why='Market research spend.'),
+    Section('decision_research_purchase', 'core.DecisionResearchPurchase', GAME,
+            'submission__team__game_id',
+            key=('submission_id', 'report_type', 'scope_key'),
+            why='Research reports and analyst queries bought, and the price '
+                'charged for each.'),
     Section('decision_talent', 'core.DecisionTalent', GAME, 'submission__team__game_id',
             key=('submission',), why='Headcount, salary and training decisions.'),
     Section('talent_allocation', 'core.TalentAllocation', GAME,

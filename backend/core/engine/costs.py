@@ -396,6 +396,7 @@ def calculate_operating_expenses(context):
         rd_expense = D('0')
         marketing_expense = D('0')
         strategy_expense = D('0')
+        research_expense = D('0')
         platform_capex = D('0')
 
         if submission:
@@ -579,9 +580,18 @@ def calculate_operating_expenses(context):
         # instead of silently letting the funding rule price a different set of
         # costs than the engine charges.
         if submission:
+            # Market research the team bought this round. Read from the
+            # purchase rows rather than recomputed from today's authored price,
+            # so a later calibration of the price cannot restate what an
+            # already-resolved round charged. This is the engine half of the
+            # one-calculator pair: `decision_outlays` totals these same rows.
+            from core.services.research_catalogue import purchase_total
+            research_expense = purchase_total(submission)
+
             _shared = (_outlays['rd'] + _outlays['platform_capex']
-                       + _outlays['marketing'])
-            _engine = rd_expense + platform_capex + marketing_expense
+                       + _outlays['marketing'] + _outlays['research'])
+            _engine = (rd_expense + platform_capex + marketing_expense
+                       + research_expense)
             if _shared != _engine:
                 raise AssertionError(
                     f'funding_need.decision_outlays disagrees with the cost '
@@ -647,7 +657,7 @@ def calculate_operating_expenses(context):
             'platform_switch_write_off': platform_switch_write_off,
             'marketing_expense': marketing_expense,
             'strategy_expense': strategy_expense,
-            'research_expense': D('0'),
+            'research_expense': research_expense,
             'admin_overhead': admin_overhead,
             'total_revenue': total_team_revenue,
             'capex': capex,

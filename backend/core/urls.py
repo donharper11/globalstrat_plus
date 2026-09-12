@@ -19,7 +19,9 @@ from .views.results_api import (
     InstructorTeamDecisionsView,
 )
 from .views.scorecard import BalancedScorecardView
-from .views.research_reports import ResearchReportsView
+from .views.research_reports import (
+    ResearchReportsView, ResearchReportPurchaseView,
+)
 from .views.instructor_alerts import (
     InstructorAlertsView, InstructorAlertAcknowledgeView,
     InstructorAlertSummaryView, TeamChangesView,
@@ -368,6 +370,8 @@ urlpatterns = [
     path('games/<int:game_id>/teams/<int:team_id>/changes/',
          TeamChangesView.as_view(), name='team-changes'),
     # ---- CC-19: Research Reports ----
+    path('games/<int:game_id>/teams/<int:team_id>/research/reports/<str:report_type>/purchase/',
+         ResearchReportPurchaseView.as_view(), name='research-report-purchase'),
     path('games/<int:game_id>/teams/<int:team_id>/research/reports/<str:report_type>/',
          ResearchReportsView.as_view(), name='research-reports'),
     # ---- CC-24: Strategic Investment Impact ----

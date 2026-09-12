@@ -16,6 +16,7 @@ function DSBudgetBar({ budgets }) {
     { key: 'rd', label: t('topbar.rd_label'), color: 'var(--color-header-strategic)' },
     { key: 'marketing', label: t('topbar.mktg_label'), color: 'var(--color-header-decision)' },
     { key: 'strategy', label: t('topbar.strat_label'), color: 'var(--color-header-market)' },
+    { key: 'research', label: t('budget.research'), color: 'var(--color-header-neutral)' },
   ];
 
   if (!budgets) return null;

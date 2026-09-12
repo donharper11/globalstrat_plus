@@ -16,4 +16,8 @@ module having to import the whole manifest machinery.
 #         the `platform_switch_write_off` financial line.
 # 3 -> 4: CRV2-11 -- recorded AI adoption and per-pool demand reconciliation.
 # 4 -> 5: CRV2-11 -- product-grain demand allocation ledger.
-MANIFEST_SCHEMA_VERSION = 5
+# 5 -> 6: paid market research -- the `decision_research_purchase` section, and
+#         a `research_expense` line that is now produced rather than always
+#         zero. Both change the competitive envelope: every round resolved
+#         after this carries a section the previous definition did not have.
+MANIFEST_SCHEMA_VERSION = 6

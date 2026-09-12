@@ -4,10 +4,19 @@ CC-19 Part A: Research Reports endpoints.
 GET /api/games/{game_id}/teams/{team_id}/research/reports/{report_type}/
 Where report_type is: segments, products, markets, channels
 """
+from decimal import Decimal, InvalidOperation
+
+from django.db import IntegrityError, transaction
 from django.db.models import Sum, Q
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from core.services import research_catalogue
+from core.utils.participant_messages import field_label, participant_message
+# The same membership rule and write boundary every other team-scoped decision
+# write uses.
+from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember
 
 from core.models.core import Game, Team
 from core.models.scenario import (
@@ -124,18 +133,82 @@ class ResearchReportsView(APIView):
         else:
             last_round = max(game.current_round - 1, 0)
 
-        if report_type == 'segments':
-            return self._segment_report(request, game, team, scenario, last_round, language)
-        elif report_type == 'products':
-            return self._product_report(game, team, scenario, last_round, language)
-        elif report_type == 'markets':
-            return self._market_report(game, team, scenario, last_round, language)
-        elif report_type == 'channels':
-            return self._channel_report(request, game, team, scenario, last_round)
-        elif report_type == 'stakeholders':
-            return self._stakeholder_report(game, team, scenario, last_round, language)
-        else:
+        if report_type not in research_catalogue.REPORT_TYPES:
             return Response({'error': f'Unknown report type: {report_type}'}, status=400)
+
+        # A report is bought for the round it is bought in, and that round's
+        # report shows the previous round's data. So the purchase that unlocks
+        # the data for `last_round` is the one made in `last_round + 1`, which
+        # for the default view is simply the current round. Checking both keeps
+        # a report bought in round 3 readable when round 3 is viewed again
+        # after close and after the game completes (CRV2-08).
+        market_code = (request.query_params.get('market')
+                       if report_type in research_catalogue.MARKET_SCOPED
+                       else None)
+        if market_code == 'all':
+            market_code = None
+        price = research_catalogue.price_for(scenario, report_type)
+        purchased = research_catalogue.is_readable(
+            team, report_type, market_code,
+            {game.current_round, last_round + 1})
+
+        if not purchased:
+            return Response(self._locked_payload(
+                report_type, scenario, price, market_code, language))
+
+        if report_type == 'segments':
+            response = self._segment_report(request, game, team, scenario, last_round, language)
+        elif report_type == 'products':
+            response = self._product_report(game, team, scenario, last_round, language)
+        elif report_type == 'markets':
+            response = self._market_report(game, team, scenario, last_round, language)
+        elif report_type == 'channels':
+            response = self._channel_report(request, game, team, scenario, last_round)
+        else:
+            response = self._stakeholder_report(game, team, scenario, last_round, language)
+
+        if isinstance(response.data, dict):
+            response.data['purchased'] = True
+            response.data['price'] = str(price)
+        return response
+
+    def _locked_payload(self, report_type, scenario, price, market_code,
+                        language):
+        """What an unbought report returns: the price, and nothing paid for.
+
+        Deliberately still carries the empty collection each tab reads, so a
+        client that has not been taught about purchasing renders an empty
+        report rather than throwing.
+
+        The market report is the exception: it returns market names and codes.
+        Those are the market list four other screens populate their dropdowns
+        from -- `StrategyToolsPage` alone reads it four times -- and they are
+        scenario identity, not the paid intelligence. Withholding them would
+        break navigation for teams who have bought nothing.
+        """
+        payload = {
+            'purchased': False,
+            'report_type': report_type,
+            'price': str(price),
+            'market': market_code,
+        }
+        if report_type == 'segments':
+            payload['segments'] = []
+        elif report_type == 'products':
+            payload['products'] = []
+        elif report_type == 'channels':
+            payload['channel_comparison'] = []
+            payload['is_present_in_market'] = None
+        elif report_type == 'stakeholders':
+            payload['stakeholder_groups'] = []
+        elif report_type == 'markets':
+            payload['markets'] = [
+                {'name': get_localized_field(m, 'name', language),
+                 'code': m.code}
+                for m in MarketDefinition.objects.filter(
+                    scenario=scenario).order_by('display_order')
+            ]
+        return payload
 
     def _segment_report(self, request, game, team, scenario, last_round, language='en'):
         market_code = request.query_params.get('market', 'all')
@@ -606,3 +679,150 @@ class ResearchReportsView(APIView):
         return Response({
             'stakeholder_groups': list(groups.values()),
         })
+
+
+class Unaffordable(Exception):
+    """A purchase that would take committed spend past available cash."""
+
+    def __init__(self, assessment):
+        self.assessment = assessment
+
+
+class ResearchReportPurchaseView(CompetitionDecisionWriteMixin, APIView):
+    """POST /api/games/{game_id}/teams/{team_id}/research/reports/{type}/purchase/
+
+    Buys one report for the current round.
+
+    Delivered immediately and charged at resolution. A report a team cannot
+    read until after the deadline is worth nothing, so delivery cannot wait;
+    but the cash has to move in the engine with every other outlay or
+    resolution stops being deterministic and the audit trail acquires a
+    movement nothing booked. So the row is written now and
+    `engine/costs.py` charges it in the same pass that charges R&D and
+    marketing.
+
+    Buying creates the round's `DecisionSubmission` if the team has not written
+    one yet, which is a lifecycle row. It therefore takes the same shared
+    decision-write lock every other student write takes, rather than racing a
+    deadline close on its own.
+    """
+
+    permission_classes = [IsTeamMember]
+    throttle_scope = 'decision_write'
+
+    def post(self, request, game_id, team_id, report_type):
+        from core.models.core import Round
+        from core.models.research import DecisionResearchPurchase
+        from core.services.competition_audit import record_decision_event
+        from core.services.rd_costs import budget_assessment
+
+        game = get_object_or_404(Game, id=game_id)
+        team = get_object_or_404(Team, id=team_id, game=game)
+        scenario = game.scenario
+        language = get_user_language(request)
+
+        if report_type not in research_catalogue.PURCHASABLE:
+            return Response(
+                {'detail': participant_message('research_report_unknown',
+                                               language=language)},
+                status=400)
+
+        if game.status == 'paused':
+            return Response({'detail': participant_message(
+                'game_paused', language=language)}, status=403)
+        if game.status in ('completed', 'archived'):
+            return Response({'detail': participant_message(
+                'game_finished', language=language)}, status=403)
+
+        # R7: the round an action takes effect in is the game's current round,
+        # never one the client names.
+        rnd = Round.objects.filter(
+            game=game, round_number=game.current_round).first()
+        if rnd is None or rnd.status != 'open':
+            return Response({'detail': participant_message(
+                'round_not_open', language=language)}, status=403)
+
+        market = None
+        market_code = ''
+        if report_type in research_catalogue.MARKET_SCOPED:
+            market_code = str(request.data.get('market') or '').strip()
+            market = MarketDefinition.objects.filter(
+                scenario=scenario, code=market_code).first()
+            if market is None:
+                return Response(
+                    {'detail': participant_message('research_report_unknown',
+                                                   language=language)},
+                    status=400)
+
+        price = research_catalogue.price_for(scenario, report_type)
+        report_name = field_label(report_type, language)
+
+        # V2-037: a client-submitted price that disagrees with the authored one
+        # is refused with the authored figure named, never silently corrected.
+        submitted = request.data.get('price')
+        if submitted is not None:
+            try:
+                if Decimal(str(submitted)) != price:
+                    raise InvalidOperation
+            except (InvalidOperation, ArithmeticError, ValueError):
+                return Response({'detail': participant_message(
+                    'research_price_changed', language=language,
+                    report=report_name, price=f'${price:,.2f}')}, status=400)
+
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=team, round=rnd, defaults={'status': 'draft'})
+        if submission.status == 'locked':
+            return Response({'detail': participant_message(
+                'research_purchase_after_lock', language=language)}, status=403)
+
+        scope_key = research_catalogue.scope_key_for(report_type, market_code)
+
+        # Bought is bought: re-opening or refreshing a report charges nothing.
+        existing = DecisionResearchPurchase.objects.filter(
+            submission=submission, report_type=report_type,
+            scope_key=scope_key).first()
+        if existing is not None:
+            return Response({'purchased': True, 'charged': False,
+                             'report_type': report_type,
+                             'price': str(existing.price)}, status=200)
+
+        try:
+            with transaction.atomic():
+                purchase = DecisionResearchPurchase.objects.create(
+                    submission=submission, report_type=report_type,
+                    market=market, scope_key=scope_key, price=price)
+                # Affordability through the one existing rule rather than a
+                # second copy of the cash arithmetic: write the row, ask
+                # `budget_assessment` whether the team can still afford what it
+                # has committed, and undo the row if it cannot. A delivered
+                # report cannot be un-delivered, so this has to settle before
+                # the response carries anything the team could read.
+                assessment = budget_assessment(submission, team)
+                if not assessment['within_cash']:
+                    raise Unaffordable(assessment)
+                record_decision_event(
+                    request, game, team, rnd, 'purchase_research_report',
+                    {'report_type': report_type, 'market': market_code,
+                     'price': str(price)})
+        except Unaffordable as refusal:
+            assessment = refusal.assessment
+            return Response({'detail': participant_message(
+                'research_purchase_exceeds_cash', language=language,
+                report=report_name, price=f'${price:,.2f}',
+                committed=f'${Decimal(assessment["committed_total"]):,.2f}',
+                cash=f'${Decimal(assessment["cash_on_hand"]):,.2f}',
+            )}, status=400)
+        except IntegrityError:
+            # Two clicks racing. The constraint is the arbiter; the loser reads
+            # the row the winner wrote and is charged nothing.
+            existing = DecisionResearchPurchase.objects.filter(
+                submission=submission, report_type=report_type,
+                scope_key=scope_key).first()
+            return Response({'purchased': True, 'charged': False,
+                             'report_type': report_type,
+                             'price': str(existing.price if existing else price)},
+                            status=200)
+
+        return Response({'purchased': True, 'charged': True,
+                         'report_type': report_type,
+                         'price': str(purchase.price)}, status=201)
