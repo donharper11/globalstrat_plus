@@ -15,7 +15,14 @@
       V2-020 through V2-025 closed; `GSP-CRV2-06_COMPLETION_REPORT.md`.
 - [x] Operator concurrency fail-closed — 0 of 214 registered mutating routes
       unguarded, 1200 races, 0 deadlocks, 0 5xx;
-      `OPERATOR_CONCURRENCY_MATRIX.md`.
+      `OPERATOR_CONCURRENCY_MATRIX.md`. **Amended 2026-09-12, not re-ticked:**
+      that count rested on one false positive — a boundary marker matched by
+      substring against a same-named function in the legacy engine (V2-079).
+      The detector is repaired at `d9cbd43` and the offending route is deleted
+      at `a37bb92`; the inventory is now **0 unguarded of 217** mutating routes
+      (35 lifecycle-mutating, 19 guarded, 16 exempt). This is a re-measurement,
+      **not** a re-certification — the removal handoff claims no gate closed and
+      GSP-CRV2-09 owns re-certification.
 - [x] Phase-2 narratives durable and recoverable — jobs committed with the
       numbers, SIGKILL drill recovers, competitive hash unmoved;
       `NARRATIVE_WORKER_OPERATIONS.md`.
@@ -49,6 +56,35 @@
 - [x] Frontend production build PASS (warnings), 2026-08-28.
 - [x] Frontend clean install, Jest and production build pass on the supported
       toolchain; V2-009 closed by GSP-CRV2-05.
+- [ ] For every competition heat, set `SimulationInstance.settings['is_competition'] = True`
+      and confirm its course has a non-null `instructor_id`; verify all heats with
+      the audit snippet in `completion/GSP-CRV2-10-stage6-completion.md`. An
+      unflagged heat silently loses the V2-033 cross-cohort protection.
+- [ ] Application runs as a non-owner database role that cannot `SET ROLE
+      postgres` (V2-072, open P0 — the 2026-09-05 owner acceptance was
+      withdrawn as never given; see R19).
+- [ ] Full backend suite run and green on the freeze candidate. The seven
+      standing red tests are repaired at `b562c63`, but **no full suite has been
+      run since**, and the suite has never been green: 842 tests at `acee4ea`
+      gave 4 failures and 3 errors (V2-074). Added 2026-09-12; GSP-CRV2-09 owns
+      the run.
+- [ ] Browser pass over the participant and operator surfaces the merged work
+      changed and could not build. `node_modules` was absent in both builders'
+      worktrees, so `MarketingPage.js` / `ResultsPage.js` (the price-band legal
+      range, the blank-price alert, the "clear the price box" interaction and
+      the results-screen not-offered notice) and `RoundControlCard.js` were
+      never built, linted or clicked. Locale key parity was checked; a backend
+      200 is not evidence of frontend completion. Added 2026-09-12 (V2-041,
+      V2-042, V2-080).
+- [ ] `reset_simulation` withheld from the competition deployment. Its unscoped
+      `TRUNCATE`/`UPDATE` statements are unchanged and reach every instance on
+      the host, swallowing failures (V2-076). The routed form was deleted under
+      R16; the CLI form was not. Added 2026-09-12 — operational control, not a
+      code change.
+- [ ] Downgrade guard for migration `0085_price_band_blank_price`: a resolved
+      round can now legitimately contain null `retail_price` rows under the
+      not-for-sale rule, so a rollback below `0085` must price or delete those
+      rows first. Added 2026-09-12 (V2-041).
 - [ ] Decision rules and economic legal space certified (GSP-CRV2-10).
 - [ ] Economy, starting-field and stakeholder calibration certified
       (GSP-CRV2-11).
@@ -68,9 +104,18 @@ through V2-036; V2-033 withdrawn under the shared-pilot rule).
 
 Outstanding: GSP-CRV2-10 through 13, followed by GSP-CRV2-09's final integrated
 re-audit; V2-017, which leaves 216 Django admin write routes outside the audited
-lifecycle boundary; and three deployment actions — supervise the narrative
-worker, set `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or production environment),
-and run the application as a non-owner database role so it cannot drop its own
-audit guards. V2-010 and V2-011 are closed at `8ddd983`; they are no longer a
+lifecycle boundary — its route-inventory blind spot is confirmed still open at
+`route_inventory.py:194-202`; and three deployment actions — supervise the
+narrative worker, set `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or production
+environment), and run the application as a non-owner database role so it cannot
+drop its own audit guards.
+
+Added to the register 2026-09-12 from five merged completion reports: V2-075
+through V2-085, of which V2-075 (the legacy `/simulation-control/` cross-cohort
+reset, P0) and V2-079 (the route-inventory false positive, P1) are repaired
+pending closure, and V2-076, V2-078, V2-080 through V2-085 are open. Repaired
+pending closure and awaiting the auditor, not closed here: V2-033, V2-041,
+V2-042, V2-060, V2-071 and V2-074. See
+`completion/REGISTER_BACKLOG_2026-09-12.md`. V2-010 and V2-011 are closed at `8ddd983`; they are no longer a
 rules blocker. v1 GO and evidence from the pre-10–13 ruleset cannot substitute
 for the final integrated verdict.
