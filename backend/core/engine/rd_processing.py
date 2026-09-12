@@ -356,7 +356,11 @@ def _process_product_retires(team, submission, current_round):
                 is_active=False,
             )
         elif retire_dec.timing == 'end_of_round':
-            # Mark for retirement at end — handled after adoption
+            # The retirement is resolved here; costs preserve the selected
+            # end-of-round recovery treatment.
             product.status = 'retired'
             product.retired_round = current_round
             product.save()
+            TeamProductMarket.objects.filter(team_product=product).update(
+                is_active=False,
+            )
