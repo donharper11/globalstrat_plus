@@ -121,11 +121,12 @@ environment), and run the application as a non-owner database role so it cannot
 drop its own audit guards.
 
 Added to the register 2026-09-12 from six merged completion reports: **V2-075
-through V2-094**. Repaired pending closure: V2-075 (the legacy
+through V2-095**. Repaired pending closure: V2-075 (the legacy
 `/simulation-control/` cross-cohort reset, P0), V2-079 (the route-inventory
 false positive, P1), V2-085 (preference re-authoring, under R25/R27), V2-087
-(two decision-write routes unguarded by the paid-research change, P1), V2-091
-and V2-092. Ruled and closable by the auditor: V2-084 (R29). Open: V2-076,
+(two decision-write routes unguarded by the paid-research change, P1), V2-091,
+V2-092 and V2-095 (`price_band.py` outside the determinism ordering scan —
+found only in the merged tree). Ruled and closable by the auditor: V2-084 (R29). Open: V2-076,
 V2-078, V2-080 through V2-083, V2-086 (the v5→v6 envelope with no replay),
 V2-088 (organisational-structure cash charged outside every calculator, P1),
 V2-089, V2-090, V2-093 and V2-094. Also repaired pending closure and awaiting

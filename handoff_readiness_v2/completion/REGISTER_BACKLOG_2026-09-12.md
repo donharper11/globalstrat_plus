@@ -71,7 +71,7 @@ written**, and all three are corrected rather than left standing:
 
 ## 3. ID assignment table
 
-Continuing from **V2-075**; the ranges V2-075–V2-085 and V2-086–V2-094 were both
+Continuing from **V2-075**; the ranges V2-075–V2-085 and V2-086–V2-095 were both
 unused anywhere in the repository. Assignment order is documented at the head of
 each block in the register, in the form the V2-056 block uses.
 
@@ -104,6 +104,7 @@ each block in the register, in the form the V2-056 block uses.
 | V2-092 | `PAID_RESEARCH` finding 5 | `StakeholdersTab` had no `.catch` | P2 | Repaired |
 | V2-093 | `PAID_RESEARCH` finding 1 | A handoff cited `price_band_pct` as landed precedent when it did not exist | P2 | Open |
 | V2-094 | `PAID_RESEARCH` §9 | A team is charged for an analyst query **without being shown the price** | **P1** | Open |
+| V2-095 | `414d718`, the release-integration owner | `price_band.py` sat outside the determinism ordering scan — never checked for the V2-012 failure mode | P2 | Repaired at `414d718` |
 
 ### Deliberately **not** given an ID
 
@@ -167,7 +168,8 @@ change a published result is never P2.
 
 ### Assigned where the source proposed none
 
-V2-076 **P1**, V2-077 **P2**, V2-078 **P2**, V2-079 **P1**, V2-094 **P1**.
+V2-076 **P1**, V2-077 **P2**, V2-078 **P2**, V2-079 **P1**, V2-094 **P1**,
+V2-095 **P2**.
 
 Two worth restating. **V2-076 is P1, not P0**, because it is a deliberate
 operator action behind shell access rather than an authenticated route, so it
@@ -366,7 +368,7 @@ correct: nothing under `backend/` imports `core.services.scoring`.
 
 ## 10. Commit record
 
-Three commits, in coherent steps rather than one lump:
+Four commits, in coherent steps rather than one lump:
 
 1. the first register block — V2-075–V2-085, the status updates, and the
    owner's rulings table carried over from the main checkout's working copy;
@@ -376,12 +378,15 @@ Three commits, in coherent steps rather than one lump:
    conflict resolution, the second register block (V2-086–V2-094), the
    R23–R29 dispositions, the further status updates that the newly committed
    rulings forced, the checklist's fifth gate and re-measured route counts, and
-   this report.
+   this report;
+4. the merge of `414d718` and the registration of **V2-095**.
 
-The third is a merge commit and therefore also carries the incoming
-paid-research runtime changes, which are the integration branch's, not mine. My
-own changes in it are confined to the three Markdown files under
-`handoff_readiness_v2/`.
+Commits 3 and 4 are merge commits and therefore also carry the integration
+branch's own runtime changes, which are **not mine**. My changes throughout are
+confined to three Markdown files under `handoff_readiness_v2/`:
+`V2_FINDINGS_REGISTER.md`, `LAUNCH_CHECKLIST_V2.md` and this report — verified
+by diffing this branch against the integration head, which shows those three
+files and nothing else.
 
 **All used `--no-verify`, and this says so.** The pre-commit hook refuses on an
 aide-checks revision **mismatch** — `checks/.aide-checks-rev` is present and
@@ -399,4 +404,11 @@ only Markdown under `handoff_readiness_v2/`.
 - **No gate is certified.** The route-inventory figure is re-measured, not
   re-certified, and the manifest envelope moved without the replay R18 asks for.
 - **The remaining builders have handed in nothing that is registered here.**
-  This covers exactly the six reports merged at `17987b3`.
+  This covers exactly the six reports merged at `17987b3`, plus `414d718`
+  (V2-095). Three builders were still running when this was written; whatever
+  they hand in continues the sequence from **V2-096**.
+- **Per-handoff green evidence does not compose.** V2-095 is the proof: it was
+  invisible in every builder's isolated worktree and appeared only in the
+  integrated tree. That is an argument *for* GSP-CRV2-09's single integrated
+  run, and a caution against treating six green focused suites as equivalent to
+  one green integrated one.
