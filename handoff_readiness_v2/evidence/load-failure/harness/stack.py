@@ -11,9 +11,11 @@ to survive; measuring a stack tuned for the measurement would say nothing about
 the deployment.
 """
 import contextlib
+import shutil
 import json
 import os
 import pathlib
+import re
 import signal
 import socket
 import subprocess
@@ -53,12 +55,17 @@ def wait_for(url, timeout=90):
 @contextlib.contextmanager
 def disposable_stack(label, seed=True):
     """Yield (base_url, database, seeded) with everything torn down after."""
-    database = f'gsp_load_{label}_{time.strftime("%H%M%S")}'
+    # PostgreSQL identifiers cannot contain the human-facing profile hyphen.
+    safe_label = re.sub(r'[^A-Za-z0-9_]', '_', label)
+    database = f'gsp_load_{safe_label}_{time.strftime("%H%M%S")}'
     port = free_port()
     print(f'Creating disposable database {database}', flush=True)
-    if R.psql('postgres', f'CREATE DATABASE {database}').returncode != 0:
-        raise SystemExit('could not create the database')
+    created = R.psql('postgres', f'CREATE DATABASE {database}')
+    if created.returncode != 0:
+        raise SystemExit('could not create the database: ' +
+                         (created.stderr or created.stdout).strip())
     process = None
+    backup_dir = pathlib.Path('/tmp') / f'gsp-load-backups-{database}'
     try:
         R.manage(database, 'migrate', '--noinput')
         R.manage(database, 'shell', '-c', R.LEGACY_TABLES)
@@ -96,11 +103,20 @@ def disposable_stack(label, seed=True):
         # guard refuses to boot without explicit secrets, which is the control
         # working, so test-only values are supplied for this disposable stack
         # rather than weakening the environment.
+        # This is deliberately a non-competition process: it uses a generated
+        # local PostgreSQL credential and a temporary backup root.  The product
+        # still boots with production middleware/settings so HTTP behaviour is
+        # representative, but resolution provenance honestly names it as a
+        # disposable run and does not pretend a dirty working tree is a frozen
+        # release candidate.
+        shutil.rmtree(backup_dir, ignore_errors=True)
         env = dict(os.environ, DB_NAME=database, PYTHONUNBUFFERED='1',
                    GLOBALSTRAT_ENV='production',
+                   COMPETITION_BACKUP_DIR=str(backup_dir),
+                   COMPETITION_REQUIRE_CLEAN_BUILD='false',
+                   GIT_REVISION=f'disposable-{database}',
                    DJANGO_SECRET_KEY='crv2-07-load-test-key-' + database,
-                   DB_PASSWORD=os.environ.get('DB_PASSWORD',
-                                              os.environ['DB_PASSWORD']))
+                   DB_PASSWORD=os.environ['DB_PASSWORD'])
         log = open(HERE.parent / f'gunicorn-{label}.log', 'w')
         process = subprocess.Popen(
             ['gunicorn', '-c', 'gunicorn.conf.py',
@@ -125,4 +141,5 @@ def disposable_stack(label, seed=True):
                 os.killpg(os.getpgid(process.pid), signal.SIGTERM)
                 process.wait(timeout=30)
         R.psql('postgres', f'DROP DATABASE IF EXISTS {database} WITH (FORCE)')
+        shutil.rmtree(backup_dir, ignore_errors=True)
         print(f'Dropped {database}', flush=True)

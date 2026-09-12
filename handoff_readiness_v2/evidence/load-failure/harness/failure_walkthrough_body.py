@@ -316,14 +316,19 @@ def stage_6_database_loss(game):
         killer_result['trigger'] = (
             f'first RoundResultFinancials row written '
             f'(team {getattr(instance, "team_id", None)})')
+        # The disposable stack under test, never a named remote host: the
+        # runner injects a generated credential into this process and its own
+        # container only.  `db_name` is that container's database, so the
+        # terminate cannot reach anything the drill did not create.
         out = subprocess.run(
-            ['psql',
-             f"postgresql://donwh:{os.environ['DB_PASSWORD']}"
-             f"@192.168.50.38/postgres",
-             '-tAc',
+            ['psql', '-h', os.environ.get('DB_HOST', '127.0.0.1'),
+             '-p', os.environ.get('DB_PORT', '5432'),
+             '-U', os.environ.get('DB_USER', 'globalstrat_test'),
+             '-d', 'postgres', '-tAc',
              "SELECT pg_terminate_backend(pid) FROM pg_stat_activity "
              f"WHERE datname = '{db_name}' AND pid <> pg_backend_pid()"],
-            capture_output=True, text=True, timeout=60)
+            capture_output=True, text=True, timeout=60,
+            env=dict(os.environ, PGPASSWORD=os.environ['DB_PASSWORD']))
         killer_result['terminated'] = out.stdout.strip().count('t')
 
     error = None
