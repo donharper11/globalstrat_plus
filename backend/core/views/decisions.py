@@ -669,8 +669,8 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         # development at all (V2-038).
         from core.services.rd_costs import (budget_assessment,
                                             describe_budget_problems)
-        errors.extend(describe_budget_problems(
-            budget_assessment(submission, team)))
+        assessment = budget_assessment(submission, team)
+        errors.extend(describe_budget_problems(assessment))
 
         # R&D investments: total <= rd_budget
         rd_total = sum(
@@ -848,7 +848,11 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
             pass
 
         # Projected ending cash check
-        projected_cash = team.cash_on_hand - total_budget
+        # Keep the lock response on the same cash total as the summary and
+        # Finance context.  `budget_total` omits platform development; only
+        # `committed_total` answers what this submission will actually cost.
+        projected_cash = team.cash_on_hand - Decimal(
+            assessment['committed_total'])
         try:
             fin = submission.financing
             projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
@@ -1009,7 +1013,6 @@ class DecisionSummaryView(APIView):
             from core.services.rd_costs import (budget_assessment,
                                                 describe_budget_problems)
             assessment = budget_assessment(submission, team)
-            total_budget = Decimal(assessment['budget_total'])
             budget_warnings = []
             budget_errors = list(describe_budget_problems(assessment))
             for f in ('rd_budget', 'marketing_budget', 'strategy_budget'):
@@ -1199,10 +1202,15 @@ class DecisionSummaryView(APIView):
                 strategy_spent += esg.environmental_investment + esg.social_investment
             except DecisionESG.DoesNotExist:
                 pass
-            total_allocated = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
+            from core.services.rd_costs import budget_assessment
+            assessment = budget_assessment(submission, team)
+            lines = assessment['lines']
+            total_allocated = Decimal(assessment['budget_total'])
+            committed_total = Decimal(assessment['committed_total'])
 
             budget_summary = {
                 'rd_allocated': float(budget.rd_budget),
+                'research_allocated': float(Decimal(lines['research_budget'])),
                 'rd_spent': float(rd_spent),
                 'marketing_allocated': float(budget.marketing_budget),
                 'marketing_spent': float(mkt_spent),
@@ -1210,7 +1218,10 @@ class DecisionSummaryView(APIView):
                 'strategy_spent': float(strategy_spent),
                 'total_available': float(team.cash_on_hand),
                 'total_allocated': float(total_allocated),
-                'unallocated': float(team.cash_on_hand - total_allocated),
+                'platform_development_committed': float(
+                    Decimal(lines['platform_development'])),
+                'committed_total': float(committed_total),
+                'unallocated': float(team.cash_on_hand - committed_total),
             }
         except DecisionBudgetAllocation.DoesNotExist:
             pass
@@ -2161,10 +2172,18 @@ class FinanceContextView(APIView):
                         strat_spent += esg.environmental_investment + esg.social_investment
                     except DecisionESG.DoesNotExist:
                         pass
-                    total_allocated = budget.rd_budget + budget.marketing_budget + budget.strategy_budget
+                    from core.services.rd_costs import budget_assessment
+                    assessment = budget_assessment(sub, team)
+                    lines = assessment['lines']
+                    total_allocated = Decimal(assessment['budget_total'])
+                    committed_total = Decimal(assessment['committed_total'])
 
-                    # Projected cash
-                    projected_cash = team.cash_on_hand - total_allocated
+                    # Projected cash uses the same committed total that the
+                    # lock validator and decision summary use.  In particular,
+                    # this includes the legacy research line and any platform
+                    # development, neither of which may silently disappear on
+                    # the Finance page.
+                    projected_cash = team.cash_on_hand - committed_total
                     try:
                         fin = sub.financing
                         projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
@@ -2182,11 +2201,16 @@ class FinanceContextView(APIView):
                         'marketing_spent': float(mkt_spent),
                         'strategy_allocated': float(budget.strategy_budget),
                         'strategy_spent': float(strat_spent),
+                        'research_allocated': float(
+                            Decimal(lines['research_budget'])),
                         'total_allocated': float(total_allocated),
+                        'platform_development_committed': float(
+                            Decimal(lines['platform_development'])),
+                        'committed_total': float(committed_total),
                         'total_spent': total_spent,
                         'over_budget': over_budget,
                         'remaining': total_budget_available - total_spent,
-                        'unallocated': float(team.cash_on_hand - total_allocated),
+                        'unallocated': float(team.cash_on_hand - committed_total),
                         'projected_ending_cash': float(projected_cash),
                     })
                 except DecisionBudgetAllocation.DoesNotExist:
