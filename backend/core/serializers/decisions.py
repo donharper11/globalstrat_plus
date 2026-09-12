@@ -439,6 +439,13 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
         ]
 
     def validate_retail_price(self, value):
+        # An ABSENT price is a representable state (Ruling 2's blank branch):
+        # accepted, alerted while the round is open, and filled at the band
+        # floor at the deadline. A price that is actually stated must still be
+        # positive — zero is a decision to give the product away, not a blank,
+        # and negatives remain refused outright.
+        if value is None:
+            return value
         if value <= 0:
             raise serializers.ValidationError(participant_message(
                 'positive_price', language=serializer_language(self)))

@@ -190,7 +190,15 @@ class DecisionMarketing(models.Model):
     market = models.ForeignKey(
         'core.MarketDefinition', on_delete=models.PROTECT, related_name='marketing_decisions',
     )
-    retail_price = models.DecimalField(max_digits=15, decimal_places=2)
+    # Nullable so that "the team submitted this product-market and left the
+    # price out" is representable. Before Stage 5 a blank price could not be
+    # stored at all — the serializer refused anything <= 0 and the pricing
+    # screen dropped unpriced rows from its payload — so the blank branch of
+    # Ruling 2 had nothing to act on. A null is filled at the band floor when
+    # the round closes; an engine precondition refuses the round if one ever
+    # survives that far, because the demand path calls float() on this value.
+    retail_price = models.DecimalField(max_digits=15, decimal_places=2,
+                                       null=True, blank=True)
     promotion_budget = models.DecimalField(max_digits=15, decimal_places=2)
     campaign_focus_feature_ids = models.JSONField()
     channel_digital_pct = models.DecimalField(max_digits=5, decimal_places=4)

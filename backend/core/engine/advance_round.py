@@ -196,62 +196,41 @@ def _apply_price_band(game, round_obj, *, scenario=None):
             # it has no products priced and nothing to bring into band.
             continue
 
-        priced = set()
         for md in (DecisionMarketing.objects
                    .filter(submission=submission)
                    .select_related('team_product', 'market')
                    .order_by('id')):
-            priced.add((md.team_product_id, md.market_id))
             band = band_rules.price_band(
                 scenario, team, md.team_product, md.market,
                 round_obj.round_number)
-            applied, status = band_rules.adjusted_price(md.retail_price, band)
-            if status in (band_rules.IN_BAND, band_rules.NO_ANCHOR):
-                continue
+
+            if md.retail_price is None:
+                # The blank branch, and only for a product the team is
+                # actually selling: `blank_price` returns a floor only when
+                # the anchor is a real prior-round price. A blank on a product
+                # that has never sold here is left blank, refused at lock by
+                # `_full_validate` and again by the engine precondition.
+                floor = band_rules.blank_price(band)
+                if floor is None:
+                    continue
+                applied, rule, action = (floor, band_rules.RULE_BLANK,
+                                         band_rules.ACTION_BLANK_DEFAULTED)
+            else:
+                applied, status = band_rules.adjusted_price(
+                    md.retail_price, band)
+                if status in (band_rules.IN_BAND, band_rules.NO_ANCHOR):
+                    continue
+                rule, action = (band_rules.RULE_OUT_OF_BAND,
+                                band_rules.ACTION_ADJUSTED)
+
             payload = band_rules.audit_payload(
                 team_product=md.team_product, market=md.market, band=band,
-                submitted=md.retail_price, applied=applied,
-                rule=band_rules.RULE_OUT_OF_BAND)
+                submitted=md.retail_price, applied=applied, rule=rule)
             md.retail_price = applied
             md.save(update_fields=['retail_price'])
             DecisionAuditEvent.objects.create(
                 game=game, team=team, round=round_obj, user=None,
-                action=band_rules.ACTION_ADJUSTED,
-                endpoint='engine:close_round', payload=payload)
-            changed += 1
-
-        for tpm in (TeamProductMarket.objects
-                    .filter(team_product__team=team,
-                            team_product__status='active', is_active=True)
-                    .select_related('team_product', 'market')
-                    .order_by('team_product_id', 'market_id')):
-            if (tpm.team_product_id, tpm.market_id) in priced:
-                continue
-            band = band_rules.price_band(
-                scenario, team, tpm.team_product, tpm.market,
-                round_obj.round_number)
-            floor = band_rules.blank_price(band)
-            if floor is None:
-                # No anchor: nothing authored and nothing ever sold here, so
-                # there is no floor to fall to. Left alone rather than guessed.
-                continue
-            DecisionMarketing.objects.create(
-                submission=submission, team_product=tpm.team_product,
-                market=tpm.market, retail_price=floor,
-                promotion_budget=zero, campaign_focus_feature_ids=[],
-                channel_digital_pct=zero, channel_traditional_pct=zero,
-                channel_trade_pct=zero, distribution_strategy='mass_retail',
-                distribution_investment=zero, sales_team_count=0,
-                distribution_channel_detail={}, production_volume=0,
-                production_source_market=tpm.market, demand_estimate=0,
-            )
-            payload = band_rules.audit_payload(
-                team_product=tpm.team_product, market=tpm.market, band=band,
-                submitted=None, applied=floor, rule=band_rules.RULE_BLANK)
-            DecisionAuditEvent.objects.create(
-                game=game, team=team, round=round_obj, user=None,
-                action=band_rules.ACTION_BLANK_DEFAULTED,
-                endpoint='engine:close_round', payload=payload)
+                action=action, endpoint='engine:close_round', payload=payload)
             changed += 1
 
     if changed:
@@ -688,6 +667,30 @@ def _run_phase_1(game_id):
             f'{len(equity_violations)} equity raise(s) exceed the funding '
             f'shortfall they claim to finance. Correct the row(s) and retry. '
             f'{detail}')
+
+    # Stage 5: a price the deadline could not resolve must never reach the
+    # demand path. `bass_engine` calls float() on `retail_price` when it builds
+    # its price map, so a null would raise partway through a round that had
+    # already moved. Refused here, before the first competitive write, naming
+    # the rows to correct — the fail-closed shape V2-018 uses. Reachable when a
+    # round is processed without ever being closed, and when a team leaves the
+    # price out on a product that has never sold in that market (no prior-round
+    # price, so the blank floor deliberately does not apply).
+    from core.models.decisions import DecisionMarketing as _UnpricedCheck
+    unpriced = list(
+        _UnpricedCheck.objects
+        .filter(submission__round=current_round_obj, retail_price__isnull=True)
+        .select_related('team_product', 'market', 'submission__team')
+        .order_by('submission__team_id', 'team_product_id', 'market_id'))
+    if unpriced:
+        detail = '; '.join(
+            f'{row.submission.team.name}: {row.team_product.name} in '
+            f'{row.market.name}' for row in unpriced[:10])
+        raise RoundNotReadyError(
+            f'Round {current_round} cannot be scored: {len(unpriced)} '
+            f'product-market decision(s) carry no unit price and have no '
+            f'previous price to fall back on. Set a price on each, or remove '
+            f'the decision, and retry. {detail}')
 
     # Scenario configuration is validated here, before the first competitive
     # write, so a missing or unusable value cannot be discovered halfway

@@ -256,10 +256,29 @@ def blank_price(band):
     screen while the round is open and again on the results screen after. The
     same asymmetry BECSR's RW-53 records, reached from the same argument.
 
-    ``None`` when there is no anchor: with nothing authored and nothing sold,
-    there is no floor to fall to and the row is left alone.
+    NARROWED on the owner's clarification of 2026-09-12, and the narrowing is
+    the whole point of this function returning ``None`` so often. "Blank" means
+    a product the team **is selling**: it had a price last round and this round
+    the number is missing or outside the band. A product-market the team never
+    marketed — "no promotion, no retail channel, no product created to begin
+    with" — is not blank, it is absent, and the floor must not reach it.
+
+    So the floor applies **only** when the anchor is a real prior-round price.
+    A positioning-reference anchor is enough to state a legal range to a team
+    that is pricing, and deliberately not enough to price a product on their
+    behalf.
+
+    Why it matters mechanically, not just definitionally: `bass_engine` builds
+    its `retail_prices` map from `DecisionMarketing` rows alone and gives a
+    product with no entry an attractiveness of 0.0. Pricing an unmarketed
+    product at the floor would put it in the attractiveness denominator at a
+    very competitive price, take share from every rival, and then book the lot
+    as lost demand, because `reported_sold` is capped by available production.
+    That penalises rivals for another team's inaction.
     """
     if band is None or band.get('min') is None:
+        return None
+    if band.get('anchor_source') != ANCHOR_PREVIOUS_ROUND:
         return None
     return band['min']
 
@@ -280,20 +299,30 @@ def _fmt_money(value):
 def alert_for(submitted, band, *, product_name, market_name, language='en'):
     """The alert a team sees while the round is open, or ``None`` if in band.
 
-    ``submitted`` of ``None`` means no price was entered for a product-market
-    the team is active in — the blank case, which warns that the floor will be
-    applied.
+    ``submitted`` of ``None`` is the blank case. It warns that the floor will
+    be applied where a floor exists, and otherwise tells the team to price the
+    product themselves: after the 2026-09-12 narrowing the floor reaches only a
+    product that sold here last round, and promising a floor that will not
+    arrive would be worse than saying nothing.
     """
     from core.utils.participant_messages import participant_message
-    if band is None or band.get('min') is None:
-        return None
 
     if submitted is None:
+        floor = blank_price(band)
+        if floor is None:
+            # Worded with the same sentence the lock refusal uses, so the
+            # alert and the refusal cannot describe one rule two ways.
+            return participant_message(
+                'marketing_price_invalid', language=language,
+                product=product_name, market=market_name)
         return participant_message(
             'price_blank_alert', language=language,
             product=product_name, market=market_name,
-            floor=_fmt_money(band['min']),
+            floor=_fmt_money(floor),
             minimum=_fmt_money(band['min']), maximum=_fmt_money(band['max']))
+
+    if band is None or band.get('min') is None:
+        return None
 
     status = evaluate(submitted, band)
     if status in (IN_BAND, NO_ANCHOR):

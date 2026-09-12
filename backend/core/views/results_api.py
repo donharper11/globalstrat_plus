@@ -1188,7 +1188,8 @@ class InstructorTeamDecisionsView(APIView):
         marketing = [{
             'product': md.team_product.name if md.team_product else '—',
             'market': get_localized_field(md.market, 'name', language) if md.market else '—',
-            'retail_price': float(md.retail_price),
+            'retail_price': (float(md.retail_price)
+                             if md.retail_price is not None else None),
             'production_volume': md.production_volume or 0,
             'promotion_budget': float(md.promotion_budget),
             'sales_team_count': md.sales_team_count or 0,

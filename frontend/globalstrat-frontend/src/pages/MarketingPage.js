@@ -60,7 +60,10 @@ const MarketingPage = () => {
             positioning: pm.positioning,
             market: m.market_id,
             market_name: m.market__name || m.market_name,
-            retail_price: Number(ex?.retail_price || 0),
+            // null, not 0: an absent price is a distinct state the server
+            // alerts on and fills at the band floor when the round closes.
+            retail_price: (ex?.retail_price === null || ex?.retail_price === undefined)
+              ? null : Number(ex.retail_price),
             promotion_budget: Number(ex?.promotion_budget || 0),
             campaign_focus_feature_ids: ex?.campaign_focus_feature_ids || [],
             channel_digital_pct: Number(ex?.channel_digital_pct || 0.34),
@@ -95,7 +98,9 @@ const MarketingPage = () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
       try {
-        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0).map(d => ({
+        // A row the team is filling in but has not priced must still be sent,
+        // or "submitted blank" cannot reach the server at all.
+        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0 || d.promotion_budget > 0).map(d => ({
           team_product: d.team_product,
           market: d.market,
           retail_price: d.retail_price,
@@ -272,7 +277,7 @@ const MarketingPage = () => {
               <InputNumber
                 size="small" prefix="$" min={0} step={10}
                 value={d.retail_price} disabled={locked}
-                onChange={v => updateDecision(d._idx, 'retail_price', v || 0)}
+                onChange={v => updateDecision(d._idx, 'retail_price', v ?? null)}
                 style={{ width: '100%' }}
               />
               {prev && <Text style={prevHint()}>{t('marketing.last')}: ${prev.retail_price}</Text>}
@@ -496,7 +501,7 @@ const MarketingPage = () => {
                     formatter={() => fmt(maxRevenue)}
                   />
                   <Text type="secondary" style={{ fontSize: 9 }}>
-                    {fmt(d.retail_price)} x {(d.production_volume || 0).toLocaleString()} units
+                    {fmt(d.retail_price || 0)} x {(d.production_volume || 0).toLocaleString()} units
                   </Text>
                 </Col>
                 <Col span={6}>

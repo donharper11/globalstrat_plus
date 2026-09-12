@@ -469,7 +469,9 @@ class ForecastView(APIView):
 
         for mktg in DecisionMarketing.objects.filter(submission=submission).select_related('team_product', 'market'):
             units = mktg.demand_estimate
-            price = mktg.retail_price
+            # A blank price is representable while the round is open; it
+            # projects no revenue until the deadline resolves it.
+            price = mktg.retail_price if mktg.retail_price is not None else Decimal('0')
             line_revenue = Decimal(str(units)) * price
             promo = mktg.promotion_budget
             distrib = mktg.distribution_investment
