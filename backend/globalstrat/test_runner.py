@@ -27,6 +27,8 @@ schema has to be installed here too. `core.services.audit_guards` is the single
 source for the append-only trigger DDL, and both this runner and migration
 0070 apply it.
 """
+import contextlib
+
 from django.apps import apps
 from django.conf import settings
 from django.test.runner import DiscoverRunner
@@ -49,13 +51,21 @@ class GlobalStratTestRunner(DiscoverRunner):
             settings, 'MIGRATION_MODULES', {},
         )
         settings.MIGRATION_MODULES = _DisableMigrations()
-        config = super().setup_databases(**kwargs)
         # Skipping migration replay also skips the RunSQL migration that
         # installs the append-only audit triggers, so without this the test
         # database is the one place those guards do not exist — which is
         # exactly where they need to be provable. Installed from the same
         # module the migration uses, so the two cannot drift.
         from core.services.audit_guards import TRUNCATE_SETTING, install
+        # Under --parallel, super().setup_databases() also clones the test
+        # database once per worker, and a clone copies only what the source
+        # holds at that moment. Installing afterwards reached the source alone:
+        # every worker ran on a clone with no guards, and the guard tests failed
+        # there ("function competition_truncate_is_allowed does not exist") only
+        # when the suite ran in parallel. So the guards go into the source just
+        # before its first clone is taken.
+        with _guards_installed_before_cloning(install):
+            config = super().setup_databases(**kwargs)
         # Only the connections Django actually built. `setup_databases` returns
         # them, and for a suite of nothing but SimpleTestCase it returns none —
         # iterating every configured alias instead tried to install the guards
@@ -89,6 +99,41 @@ class GlobalStratTestRunner(DiscoverRunner):
         super().teardown_test_environment(**kwargs)
         for model in self._unmanaged:
             model._meta.managed = False
+
+
+@contextlib.contextmanager
+def _guards_installed_before_cloning(install):
+    """Install the audit guards into a test database before it is cloned.
+
+    Wraps each connection's `creation.clone_test_db` for the duration of
+    `setup_databases`; the first clone of a database installs into the source.
+    The connection is closed afterwards because PostgreSQL refuses
+    `CREATE DATABASE ... TEMPLATE` while any session is attached to the source.
+    """
+    from django.db import connections
+
+    wrapped = []
+    for alias in connections:
+        connection = connections[alias]
+        creation = connection.creation
+        original = creation.clone_test_db
+        installed = []
+
+        def clone_test_db(*args, _connection=connection, _original=original,
+                          _installed=installed, **kwargs):
+            if not _installed:
+                install(_connection)
+                _connection.close()
+                _installed.append(True)
+            return _original(*args, **kwargs)
+
+        creation.clone_test_db = clone_test_db
+        wrapped.append((creation, original))
+    try:
+        yield
+    finally:
+        for creation, original in wrapped:
+            creation.clone_test_db = original
 
 
 def _announce_test_database(connection, setting):
