@@ -114,26 +114,44 @@ class CC18ComplianceTest(TestCase):
         self.assertEqual(_mitigation_reduction_pct(self.uflpa), 70.0)
 
     # -- customs documentation ------------------------------------------
+    # These two were written at round 1. `logistics.customs_classification` is
+    # progressive-disclosure gated to round 5, so at round 1 the team is
+    # *refused* the document this regime punishes it for not holding, and the
+    # regime no longer fires there — see
+    # `test_zero_production_compliance_freeze` for the defect that reached and
+    # the reasoning. Both tests keep their original intent and assertions and
+    # move to round 5, the first round in which the omission is a real choice.
+    # They are reversed rather than deleted, as V2-022's reversal was.
     def test_customs_fires_when_docs_missing(self):
         self.customs.baseline_enforcement_probability_per_round = D('1.0')
         self.customs.save()
         self.uflpa.baseline_enforcement_probability_per_round = D('0')  # isolate customs
         self.uflpa.save()
-        rnd = self._round(1)
+        rnd = self._round(5)
         self._source(rnd, self.tsmc, 100)   # clean sourcing so only customs can fire
-        ctx = _Ctx(self.game, 1, [self.team], self.scenario)
+        ctx = _Ctx(self.game, 5, [self.team], self.scenario)
         enforce_compliance(ctx)
         ev = ComplianceEnforcementEvent.objects.filter(team=self.team, round=rnd, regime=self.customs).first()
         self.assertIsNotNone(ev)
         self.assertEqual(ev.cost_usd, D('120000'))               # reclassification_penalty_usd
-        self.assertEqual(ev.freeze_until_round, 1)               # shipment_hold 1 round
+        self.assertEqual(ev.freeze_until_round, 5)               # shipment_hold 1 round
 
     def test_customs_not_fired_when_docs_present(self):
-        rnd = self._round(1)
+        rnd = self._round(5)
         CustomsClassificationDecision.objects.create(
             team=self.team, round=rnd, destination_market=self.na, classification='general_trade')
         applies, mitigated, _ = _trigger_applies(self.customs, self.team, rnd, self.na)
         self.assertFalse(applies)
+
+    def test_customs_is_unevaluable_while_the_document_is_still_locked(self):
+        """The reversal itself, pinned here as well as in its own module.
+
+        Before round 5 the write path refuses a customs classification, so its
+        absence carries no signal about the team. `_trigger_applies` returns
+        None — skip, don't fake — rather than (True, False, ...).
+        """
+        rnd = self._round(1)
+        self.assertIsNone(_trigger_applies(self.customs, self.team, rnd, self.na))
 
     # -- integration: freeze blocks revenue + cost hits P&L -------------
     def test_freeze_blocks_revenue(self):
