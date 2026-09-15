@@ -13,13 +13,15 @@ set -euo pipefail
 PKG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TARGET="${1:?usage: sync-into-repo <platform repo root>}"
 TARGET="$(cd "$TARGET" && pwd)"
-[ -d "$TARGET/.git" ] || { echo "sync: $TARGET is not a git repository" >&2; exit 2; }
+# -e, not -d: in a linked worktree .git is a file.
+[ -e "$TARGET/.git" ] || { echo "sync: $TARGET is not a git repository" >&2; exit 2; }
 
 echo "sync: running package selftests first"
 "$PKG/selftest/run" >/dev/null || { echo "sync: REFUSED — selftests fail" >&2; exit 1; }
 echo "sync: selftests pass"
 
-REV="$(git --no-optional-locks -C "$PKG" rev-parse --short HEAD 2>/dev/null || echo 'uncommitted')"
+REV="$(env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE -u GIT_COMMON_DIR -u GIT_PREFIX \
+  git --no-optional-locks -C "$PKG" rev-parse --short HEAD 2>/dev/null || echo 'uncommitted')"
 DEST="$TARGET/checks"
 mkdir -p "$DEST"
 # EXISTING.md is the host repo's own inventory of pre-existing machinery (§8).
