@@ -158,11 +158,15 @@ if $DRY_RUN; then
 elif [ -z "$CF_TOKEN" ]; then
   warn "Skipping Cloudflare purge — set CF_TOKEN in the environment to purge cache"
 else
-  CF_RESPONSE=$(curl -s -X POST \
+  # The files are already live by this point, so a network failure here must
+  # not abort the script under `set -e`: that reported a finished deploy as
+  # failed and skipped the rollback instructions (curl exit 7, 2026-09-15).
+  CF_RESPONSE=$(curl -sS --retry 3 --retry-connrefused --retry-delay 5 --max-time 30 \
+    -X POST \
     "https://api.cloudflare.com/client/v4/zones/${CF_ZONE}/purge_cache" \
     -H "Authorization: Bearer ${CF_TOKEN}" \
     -H "Content-Type: application/json" \
-    --data '{"purge_everything":true}')
+    --data '{"purge_everything":true}' 2>&1) || CF_RESPONSE="curl failed: ${CF_RESPONSE}"
 
   CF_SUCCESS=$(echo "$CF_RESPONSE" | grep -o '"success": *true' || true)
   if [ -n "$CF_SUCCESS" ]; then
