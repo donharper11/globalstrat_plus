@@ -121,6 +121,10 @@ class DurableNarrativeBase(TestCase):
         no_key = patch.object(settings, 'DASHSCOPE_API_KEY', '')
         no_key.start()
         self.addCleanup(no_key.stop)
+        for name in ('NARRATIVE_LLM_URL', 'NARRATIVE_LLM_KEY'):
+            no_proxy = patch.object(settings, name, '', create=True)
+            no_proxy.start()
+            self.addCleanup(no_proxy.stop)
         from core.models import DecisionSubmission
         self.game, self.teams = build_game(f'narr-{id(self)}')
         self.round = Round.objects.create(

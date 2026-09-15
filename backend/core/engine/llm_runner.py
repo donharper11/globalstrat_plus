@@ -1,9 +1,15 @@
 """
-CC-32H: Async LLM runner for concurrent DashScope API calls.
+CC-32H: Async LLM runner for concurrent narrative LLM calls.
 
 Provides call_llm_async() for single calls and run_llm_batch_sync() for
 concurrent batches. Used by Phase 2 narrative generation to fire all LLM
 calls simultaneously instead of sequentially.
+
+Endpoint: the local LiteLLM fleet proxy when NARRATIVE_LLM_URL and
+NARRATIVE_LLM_KEY are both set, otherwise DashScope's compatible-mode API as
+before. Only Phase 2 narratives use this runner. Student communication scoring
+(core/rag/communication_eval.py) feeds graded coherence and deliberately still
+calls DashScope directly -- do not route it through here without its own test.
 """
 import asyncio
 import json
@@ -14,18 +20,29 @@ from django.conf import settings
 
 logger = logging.getLogger('llm_runner')
 
-MAX_CONCURRENT = 8
-TIMEOUT_PER_CALL = 30
+# The proxy's GPU is shared with live student chat, so batches are paced.
+MAX_CONCURRENT = 4
+# A thinking model (`analyst`) averages about 70s per narrative call.
+TIMEOUT_PER_CALL = 150
+
+DASHSCOPE_DEFAULT_URL = (
+    'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions')
+
+
+def _proxy_configured():
+    return bool(getattr(settings, 'NARRATIVE_LLM_URL', '')
+                and getattr(settings, 'NARRATIVE_LLM_KEY', ''))
 
 
 def _get_url():
-    return getattr(
-        settings, 'DASHSCOPE_COMPATIBLE_URL',
-        'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
-    )
+    if _proxy_configured():
+        return settings.NARRATIVE_LLM_URL
+    return getattr(settings, 'DASHSCOPE_COMPATIBLE_URL', DASHSCOPE_DEFAULT_URL)
 
 
 def _get_key():
+    if _proxy_configured():
+        return settings.NARRATIVE_LLM_KEY
     return getattr(settings, 'DASHSCOPE_API_KEY', '')
 
 
@@ -33,23 +50,55 @@ def _get_model():
     return getattr(settings, 'DASHSCOPE_MODEL', 'qwen3-max-preview')
 
 
+def resolve_model(model=None):
+    """The model name actually sent for a call.
+
+    A per-call name (`analyst`, `tutor`) is a proxy alias that DashScope does not
+    know, so it applies only when the proxy is configured; the DashScope
+    fallback keeps sending DASHSCOPE_MODEL exactly as before.
+    """
+    if model and _proxy_configured():
+        return model
+    return _get_model()
+
+
+def llm_configured():
+    """Whether narrative calls have an endpoint key to use at all."""
+    return bool(_get_key())
+
+
+def endpoint_url():
+    """The chat-completions URL narrative calls go to. Never includes a key."""
+    return _get_url()
+
+
 async def call_llm_async(prompt, system_prompt=None, max_tokens=1500,
-                          temperature=0.3, enable_thinking=False,
-                          thinking_budget=None):
-    """Single async LLM call via httpx."""
+                          temperature=0.3, enable_thinking=None,
+                          thinking_budget=None, model=None):
+    """Single async LLM call via httpx.
+
+    `enable_thinking=None` leaves thinking to the model: through the proxy the
+    alias decides (`analyst` thinks, `tutor` does not) and the proxy raises
+    max_tokens so thinking cannot consume the answer. Sending an explicit False
+    here would switch `analyst`'s thinking off.
+    """
     messages = []
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": prompt})
 
     body = {
-        "model": _get_model(),
+        "model": resolve_model(model),
         "messages": messages,
         "max_tokens": max_tokens,
         "temperature": temperature,
     }
 
-    if enable_thinking:
+    if _proxy_configured():
+        # vLLM reads Qwen's switch from chat_template_kwargs at the top level.
+        if enable_thinking is not None:
+            body["chat_template_kwargs"] = {"enable_thinking": bool(enable_thinking)}
+    elif enable_thinking:
         body["extra_body"] = {"enable_thinking": True}
         if thinking_budget:
             body["extra_body"]["thinking_budget"] = thinking_budget
@@ -87,13 +136,15 @@ async def run_llm_batch(calls):
     Args:
         calls: list of dicts with keys:
             id, prompt, system_prompt (opt), max_tokens (opt),
-            temperature (opt), enable_thinking (opt), thinking_budget (opt)
+            temperature (opt), enable_thinking (opt), thinking_budget (opt),
+            model (opt; proxy alias, defaults to DASHSCOPE_MODEL)
 
     Returns:
         dict mapping call['id'] -> result dict
     """
     if not _get_key():
-        logger.warning("No DASHSCOPE_API_KEY — skipping LLM batch")
+        logger.warning("No narrative LLM key (NARRATIVE_LLM_KEY or "
+                       "DASHSCOPE_API_KEY) — skipping LLM batch")
         return {c['id']: {"success": False, "error": "no_api_key", "content": ""} for c in calls}
 
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
@@ -106,8 +157,9 @@ async def run_llm_batch(calls):
                 system_prompt=call.get('system_prompt'),
                 max_tokens=call.get('max_tokens', 1500),
                 temperature=call.get('temperature', 0.3),
-                enable_thinking=call.get('enable_thinking', False),
+                enable_thinking=call.get('enable_thinking'),
                 thinking_budget=call.get('thinking_budget'),
+                model=call.get('model'),
             )
             results[call['id']] = result
 

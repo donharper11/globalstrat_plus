@@ -100,7 +100,8 @@ class CC17NarrativeTest(TestCase):
     def test_generate_all_fallbacks_writes_sc_narratives_without_key(self):
         # With no DASHSCOPE_API_KEY, generate_round_narratives -> _generate_all_fallbacks,
         # which must still populate SC/compliance narratives (templates).
-        with self.settings(DASHSCOPE_API_KEY=''):
+        with self.settings(DASHSCOPE_API_KEY='', NARRATIVE_LLM_URL='',
+                           NARRATIVE_LLM_KEY=''):
             N.generate_round_narratives(self.game, self.round)
         self.sc_event.refresh_from_db(); self.comp_event.refresh_from_db()
         self.assertTrue(self.sc_event.narrative)

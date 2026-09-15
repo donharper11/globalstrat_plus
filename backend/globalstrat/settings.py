@@ -289,6 +289,15 @@ DASHSCOPE_BASE_URL = 'https://dashscope-intl.aliyuncs.com/api/v1'
 DASHSCOPE_COMPATIBLE_URL = os.environ.get('DASHSCOPE_COMPATIBLE_URL',
     'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions')
 
+# Phase 2 round narratives (core/engine/llm_runner.py) go to the local LiteLLM
+# fleet proxy when both of these are set, and to DashScope above otherwise.
+# Student communication scoring does not read them: it feeds graded coherence
+# and stays on DASHSCOPE_API_KEY / DASHSCOPE_MODEL.
+NARRATIVE_LLM_URL = os.environ.get('NARRATIVE_LLM_URL', '')  # full .../v1/chat/completions
+NARRATIVE_LLM_KEY = os.environ.get('NARRATIVE_LLM_KEY', '')
+NARRATIVE_MODEL_DEEP = os.environ.get('NARRATIVE_MODEL_DEEP', 'analyst')  # briefing, coherence, coaching
+NARRATIVE_MODEL_FAST = os.environ.get('NARRATIVE_MODEL_FAST', 'tutor')    # outlook, sc_event, compliance
+
 # Set DashScope SDK base URL globally at import time
 try:
     import dashscope as _dashscope

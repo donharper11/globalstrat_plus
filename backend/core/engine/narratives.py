@@ -75,11 +75,35 @@ COMPLIANCE_SYSTEM_PROMPT = (
 
 
 # ---------------------------------------------------------------------------
+# Models
+# ---------------------------------------------------------------------------
+
+# Analysis that benefits from thinking vs short notices that do not. The names
+# are LiteLLM proxy aliases (`analyst` thinks, `tutor` does not); they apply
+# only when the proxy is configured -- see llm_runner.resolve_model.
+MODEL_TIER_BY_TYPE = {
+    'briefing': 'deep',
+    'coherence_rag': 'deep',
+    'coaching': 'deep',
+    'outlook': 'fast',
+    'sc_event': 'fast',
+    'compliance': 'fast',
+}
+
+
+def model_for_type(narrative_type):
+    if MODEL_TIER_BY_TYPE[narrative_type] == 'deep':
+        return getattr(settings, 'NARRATIVE_MODEL_DEEP', 'analyst')
+    return getattr(settings, 'NARRATIVE_MODEL_FAST', 'tutor')
+
+
+# ---------------------------------------------------------------------------
 # Per-type execution, for the durable job worker
 # ---------------------------------------------------------------------------
 
 def _llm_available():
-    return bool(getattr(settings, 'DASHSCOPE_API_KEY', ''))
+    from core.engine import llm_runner
+    return llm_runner.llm_configured()
 
 
 def _run_calls(calls):
@@ -131,7 +155,8 @@ def _run_briefing(game, round_obj):
         if prompt:
             calls.append({'id': f'briefing_{team.id}', 'prompt': prompt,
                           'system_prompt': BRIEFING_SYSTEM_PROMPT,
-                          'max_tokens': 2000})
+                          'max_tokens': 2000,
+                          'model': model_for_type('briefing')})
     results = _run_calls(calls)
     _store_briefing_results(game, round_obj, teams, results)
     return {'teams': len(teams), **_call_outcome(calls, results)}
@@ -146,7 +171,8 @@ def _run_coherence_rag(game, round_obj):
         if prompt:
             calls.append({'id': f'coherence_{team.id}', 'prompt': prompt,
                           'system_prompt': COHERENCE_SYSTEM_PROMPT,
-                          'max_tokens': 800})
+                          'max_tokens': 800,
+                          'model': model_for_type('coherence_rag')})
     results = _run_calls(calls)
     _store_coherence_results(game, round_obj.round_number, teams, results)
     return {'teams': len(teams), **_call_outcome(calls, results)}
@@ -161,7 +187,8 @@ def _run_coaching(game, round_obj):
         if prompt:
             calls.append({'id': f'coaching_{team.id}', 'prompt': prompt,
                           'system_prompt': COACHING_SYSTEM_PROMPT,
-                          'max_tokens': 600})
+                          'max_tokens': 600,
+                          'model': model_for_type('coaching')})
     results = _run_calls(calls)
     _store_coaching_results(game, round_obj.round_number, teams, results)
     return {'teams': len(teams), **_call_outcome(calls, results)}
@@ -213,8 +240,8 @@ def generate_round_narratives(game, round_obj):
     """
     from core.engine.llm_runner import run_llm_batch_sync
 
-    if not getattr(settings, 'DASHSCOPE_API_KEY', ''):
-        logger.info("No DASHSCOPE_API_KEY — using fallbacks only")
+    if not _llm_available():
+        logger.info("No narrative LLM key — using fallbacks only")
         _generate_all_fallbacks(game, round_obj)
         return
 
@@ -232,6 +259,7 @@ def generate_round_narratives(game, round_obj):
                 'prompt': prompt,
                 'system_prompt': BRIEFING_SYSTEM_PROMPT,
                 'max_tokens': 2000,
+                'model': model_for_type('briefing'),
             })
 
     # 2. Coherence RAG evaluation (1 per team)
@@ -243,6 +271,7 @@ def generate_round_narratives(game, round_obj):
                 'prompt': prompt,
                 'system_prompt': COHERENCE_SYSTEM_PROMPT,
                 'max_tokens': 800,
+                'model': model_for_type('coherence_rag'),
             })
 
     # 3. Instructor coaching alerts (1 per team)
@@ -254,6 +283,7 @@ def generate_round_narratives(game, round_obj):
                 'prompt': prompt,
                 'system_prompt': COACHING_SYSTEM_PROMPT,
                 'max_tokens': 600,
+                'model': model_for_type('coaching'),
             })
 
     # 4. Market outlook enhancement (1 per market with base narrative)
@@ -411,6 +441,7 @@ def _build_outlook_calls(game, round_number):
             ),
             'system_prompt': OUTLOOK_SYSTEM_PROMPT,
             'max_tokens': 250,
+            'model': model_for_type('outlook'),
             '_market_code': market.code,
             '_market_id': market.id,
             '_base_narrative': base,
@@ -466,7 +497,8 @@ def _build_sc_event_calls(game, round_obj):
             prompt += f"\n\nReference excerpt:\n{snippet}"
         prompt += "\n\nWrite the disruption briefing." + build_language_instruction(language)
         calls.append({'id': f'sc_event_{inst.id}', 'prompt': prompt,
-                      'system_prompt': SC_EVENT_SYSTEM_PROMPT, 'max_tokens': 500})
+                      'system_prompt': SC_EVENT_SYSTEM_PROMPT, 'max_tokens': 500,
+                      'model': model_for_type('sc_event')})
     return calls
 
 
@@ -496,7 +528,8 @@ def _build_compliance_calls(game, round_obj):
             prompt += f"\n\nReference excerpt:\n{snippet}"
         prompt += "\n\nWrite the enforcement notice." + build_language_instruction(language)
         calls.append({'id': f'compliance_{ev.id}', 'prompt': prompt,
-                      'system_prompt': COMPLIANCE_SYSTEM_PROMPT, 'max_tokens': 350})
+                      'system_prompt': COMPLIANCE_SYSTEM_PROMPT, 'max_tokens': 350,
+                      'model': model_for_type('compliance')})
     return calls
 
 

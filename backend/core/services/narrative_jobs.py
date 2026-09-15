@@ -31,8 +31,12 @@ from core.models.narrative_jobs import NarrativeJob
 logger = logging.getLogger('narrative_jobs')
 
 # How long a worker may hold a job before another may reclaim it. Longer than
-# the LLM batch timeout, so a slow call is not stolen from a live worker.
-CLAIM_LEASE_SECONDS = 300
+# the LLM batch timeout, so a slow call is not stolen from a live worker. A
+# type's batch runs llm_runner.MAX_CONCURRENT (4) calls at a time, each allowed
+# TIMEOUT_PER_CALL (150s): the eight-firm cap is two waves, 300s at worst, and
+# 900s covers up to 24 calls. The Phase 2 thread and the worker both drain, so
+# an expired lease on a live job means the batch runs twice.
+CLAIM_LEASE_SECONDS = 900
 
 # The types enqueued for every resolved round, in the order a worker runs them.
 ENQUEUED_TYPES = ('briefing', 'coherence_rag', 'coaching', 'outlook',
@@ -139,11 +143,15 @@ def claim_next(worker=None, lease_seconds=CLAIM_LEASE_SECONDS, game_id=None):
     return None
 
 
-def _model_provenance():
+def _model_provenance(narrative_type):
+    """The model and endpoint this job's calls actually go to. Never a key."""
+    from core.engine import llm_runner, narratives
+    model = None
+    if narrative_type in narratives.MODEL_TIER_BY_TYPE:
+        model = narratives.model_for_type(narrative_type)
     return {
-        'model_name': str(getattr(settings, 'DASHSCOPE_MODEL', '') or '')[:128],
-        'model_endpoint': str(
-            getattr(settings, 'DASHSCOPE_COMPATIBLE_URL', '') or '')[:255],
+        'model_name': str(llm_runner.resolve_model(model) or '')[:128],
+        'model_endpoint': str(llm_runner.endpoint_url() or '')[:255],
     }
 
 
@@ -156,7 +164,7 @@ def run_job(job):
     """
     from core.engine import narratives
 
-    provenance = _model_provenance()
+    provenance = _model_provenance(job.narrative_type)
     job.attempts += 1
     job.model_name = provenance['model_name']
     job.model_endpoint = provenance['model_endpoint']

@@ -17,7 +17,7 @@ Restart=always
 RestartSec=5
 # A worker completes its claimed job after SIGTERM.  This exceeds the provider
 # call timeout without leaving a shutdown blocked indefinitely.
-TimeoutStopSec=60
+TimeoutStopSec=180
 KillSignal=SIGTERM
 
 [Install]
