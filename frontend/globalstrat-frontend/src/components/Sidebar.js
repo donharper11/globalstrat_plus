@@ -241,6 +241,12 @@ const Sidebar = ({ collapsed, onNavigate }) => {
       label: t('nav.results'),
       children: [
         {
+          key: 'results',
+          icon: icon(faChartBar),
+          label: t('nav.round_results'),
+          onClick: () => go(`${base}/results`),
+        },
+        {
           key: 'leaderboard',
           icon: icon(faTrophy),
           label: t('nav.leaderboard'),

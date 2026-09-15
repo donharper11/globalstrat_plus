@@ -1,0 +1,338 @@
+{
+  "script": "student",
+  "language": "en",
+  "phase": "before",
+  "base": "http://127.0.0.1:50823",
+  "revision": "135508e17114c842b6d818afa39978dc481ec2ca",
+  "game": 1,
+  "game_name": "CRV2-13 Verification Heat",
+  "team": 1,
+  "steps": [
+    {
+      "name": "student signed in",
+      "outcome": "pass",
+      "detail": "crv213_t1_m1"
+    },
+    {
+      "name": "F7a the default row the screen builds is accepted by the API",
+      "outcome": "fail",
+      "detail": "1 save(s), 1 refused; {\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "name": "F7b a refused save is shown to the student, never as success",
+      "outcome": "fail",
+      "detail": "refused=1; screen claims saved=True; screen shows failure=False; server row present=False"
+    },
+    {
+      "name": "F1 an unpriced product with no price history is told it will not be sold, not that it gets the floor",
+      "outcome": "fail",
+      "detail": "anchor=positioning_reference; promises floor=True; says not for sale=False; PRICING\nPRICE\n$\nAllowed this round: $490 – $910\nNo price set. If it is still blank when the round closes, it will be priced at $490, the lowest price allowed this round.\npremium\nPRODUCTION\nPROD.\nProdu"
+    },
+    {
+      "name": "F2 clearing the price of an otherwise-empty row still submits a blank row",
+      "outcome": "fail",
+      "detail": "row in PATCH payload=False; row on server after=False; retail_price=None"
+    },
+    {
+      "name": "F6 a student decision screen raises no 403 against the instructor-only team-changes endpoint",
+      "outcome": "fail",
+      "detail": "2 × 403 on …/changes/"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "status": 400
+    }
+  ],
+  "patches": [
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":3000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":154,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":3000,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":2,\"market\":1,\"retail_price\":154,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":1,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+    }
+  ],
+  "save_responses": [
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+      "method": "PATCH",
+      "status": 400,
+      "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+    }
+  ],
+  "screenshots": [
+    "before-01-f7-default-row-save-en.png",
+    "before-02-f1-no-price-history-en.png",
+    "before-03-f2-cleared-empty-row-en.png",
+    "before-04-marketing-final-state-en.png"
+  ],
+  "server_price_bands": {
+    "1_1": {
+      "min": 315,
+      "max": 585,
+      "band_pct": 0.3,
+      "anchor": 450,
+      "anchor_source": "previous_round",
+      "anchor_round_number": 0
+    },
+    "2_1": {
+      "min": 154,
+      "max": 286,
+      "band_pct": 0.3,
+      "anchor": 220,
+      "anchor_source": "previous_round",
+      "anchor_round_number": 0
+    },
+    "7_1": {
+      "min": 490,
+      "max": 910,
+      "band_pct": 0.3,
+      "anchor": 700,
+      "anchor_source": "positioning_reference",
+      "anchor_round_number": null
+    }
+  },
+  "f7_default_row": {
+    "entered": 1755,
+    "saves": [
+      {
+        "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+        "method": "PATCH",
+        "status": 400,
+        "body": "{\"campaign_focus_feature_ids\":[\"Choose one to three campaign focus features.\"],\"production_source_market\":[\"This field may not be null.\"]}"
+      }
+    ],
+    "pane_at_entry": "PRICING\nPRICE\n$\nAllowed this round: $315 – $585\nOutside the allowed range. Your entry is saved; if it is still outside the range when the round closes, it will be adjusted to the nearest allowed price.\nmainstream\nPRODUCTION\nPROD.\nProduction Volume\n\tunits\nSource Market\nSelect source\nDemand Estimate\n\tunits\nPROMOTION\nPROMO\n$\nFocus:\nProcessing Power\nBattery Life\nDurability\nApp Ecosystem\nProduct Design\nSustainability\nDigital 34%\nTraditional 33%\nTrade 33%\nDISTRIBUTION\nDIST.\nMass Retail\nHighLow\nSelective Retail\nMediumMedium\nExclusive Retail\nLowHigh\nDirect Online\nMediumHigh\nPROJECTED IMPACT\nMAX REVENUE\n$0\n$2K x 0 units\nLAST ROUND SALES\n--\nNo prior data\nTOTAL MKTG COST\n$0\nPromo $0 + Dist. $0",
+    "pane_after": "PRICING\nPRICE\n$\nAllowed this round: $315 – $585\nOutside the allowed range. Your entry is saved; if it is still outside the range when the round closes, it will be adjusted to the nearest allowed price.\nmainstream\nPRODUCTION\nPROD.\nProduction Volume\n\tunits\nSource Market\nSelect source\nDemand Estimate\n\tunits\nPROMOTION\nPROMO\n$\nFocus:\nProcessing Power\nBattery Life\nDurability\nApp Ecosystem\nProduct Design\nSustainability\nDigital 34%\nTraditional 33%\nTrade 33%\nDISTRIBUTION\nDIST.\nMass Retail\nHighLow\nSelective Retail\nMediumMedium\nExclusive Retail\nLowHigh\nDirect Online\nMediumHigh\nPROJECTED IMPACT\nMAX REVENUE\n$0\n$2K x 0 units\nLAST ROUND SALES\n--\nNo prior data\nTOTAL MKTG COST\n$0\nPromo $0 + Dist. $0",
+    "claims_saved": true,
+    "shows_failure": false,
+    "server_row": null
+  },
+  "f1_new_product": {
+    "product": "Aurora NX",
+    "band": {
+      "min": 490,
+      "max": 910,
+      "band_pct": 0.3,
+      "anchor": 700,
+      "anchor_source": "positioning_reference",
+      "anchor_round_number": null
+    },
+    "anchor_source": "positioning_reference",
+    "pane_text": "PRICING\nPRICE\n$\nAllowed this round: $490 – $910\nNo price set. If it is still blank when the round closes, it will be priced at $490, the lowest price allowed this round.\npremium\nPRODUCTION\nPROD.\nProduction Volume\n\tunits\nSource Market\nSelect source\nDemand Estimate\n\tunits\nPROMOTION\nPROMO\n$\nFocus:\nProcessing Power\nBattery Life\nDurability\nApp Ecosystem\nProduct Design\nSustainability\nDigital 34%\nTraditional 33%\nTrade 33%\nDISTRIBUTION\nDIST.\nMass Retail\nHighLow\nSelective Retail\nMediumMedium\nExclusive Retail\nLowHigh\nDirect Online\nMediumHigh\nPROJECTED IMPACT\nMAX REVENUE\n$0\n$0 x 0 units\nLAST ROUND SALES\n--\nNo prior data\nTOTAL MKTG COST\n$0\nPromo $0 + Dist. $0",
+    "promises_floor": true,
+    "says_not_for_sale": false
+  },
+  "f2_cleared_row": {
+    "product": "Nexus Lite",
+    "row_before": null,
+    "patches": [
+      {
+        "url": "http://127.0.0.1:50823/api/games/1/teams/1/decisions/round/1/marketing/",
+        "method": "PATCH",
+        "body": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":1,\"retail_price\":1755,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":0,\"production_source_market\":null,\"demand_estimate\":0},{\"team_product\":7,\"market\":1,\"retail_price\":null,\"promotion_budget\":0,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":0}]}"
+      }
+    ],
+    "row_in_payload": false,
+    "row_after": null
+  },
+  "f6_changes_403": [
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/games/1/teams/1/changes/?exclude_user=2&round_number=1",
+      "status": 403
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 5,
+    "observed": 0,
+    "console_errors": 16,
+    "network_errors": 16,
+    "changes_403": 2
+  }
+}

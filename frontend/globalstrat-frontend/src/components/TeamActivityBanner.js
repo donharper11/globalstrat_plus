@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Typography, Space } from 'antd';
 import { getTeamChanges } from '../api/decisions';
+import { useAuth } from '../AuthContext';
 
 const { Text } = Typography;
 
@@ -9,6 +10,15 @@ const POLL_INTERVAL = 30000;
 
 const TeamActivityBanner = ({ gameId, teamId, currentRound, currentUserId }) => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  // The team-changes endpoint is `IsInstructor` (core/views/instructor_alerts.py)
+  // since the V2-035 hardening, so a student polling it every 30s does nothing
+  // but generate a 403 on every tick. The guard is correct and nothing leaks;
+  // what the poll produced was a permanent stream of console and network
+  // errors on a student's main decision screens -- exactly the noise that
+  // hides a real failure on launch day. Ask only when the answer can come.
+  const role = (user?.role || '').toLowerCase();
+  const mayReadTeamChanges = role === 'instructor' || role === 'admin';
   const [changes, setChanges] = useState([]);
   const [dismissed, setDismissed] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -28,6 +38,7 @@ const TeamActivityBanner = ({ gameId, teamId, currentRound, currentUserId }) => 
   }, [t]);
 
   const fetchChanges = useCallback(async () => {
+    if (!mayReadTeamChanges) return;
     if (!gameId || !teamId || !currentRound || !currentUserId) return;
     try {
       const res = await getTeamChanges(gameId, teamId, {
@@ -47,13 +58,14 @@ const TeamActivityBanner = ({ gameId, teamId, currentRound, currentUserId }) => 
     } catch {
       // ignore fetch errors silently
     }
-  }, [gameId, teamId, currentRound, currentUserId, dismissed]);
+  }, [gameId, teamId, currentRound, currentUserId, dismissed, mayReadTeamChanges]);
 
   useEffect(() => {
+    if (!mayReadTeamChanges) return undefined;
     fetchChanges();
     timerRef.current = setInterval(fetchChanges, POLL_INTERVAL);
     return () => clearInterval(timerRef.current);
-  }, [fetchChanges]);
+  }, [fetchChanges, mayReadTeamChanges]);
 
   const handleDismiss = () => {
     setDismissed(true);

@@ -14,6 +14,7 @@ import { useAuth } from '../AuthContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import { getDecisionSummary } from '../api/decisions';
 import { getBalancedScorecard, getRoundResults, getLeaderboard, getCompetitorIntel, getLatestBriefing, getRoundBriefing, markBriefingRead } from '../api/results';
+import PriceAdjustmentNotice from '../components/PriceAdjustmentNotice';
 import { getFinancialHistory } from '../api/cc15';
 import { PanelCard, MetricRow, PageHeader, StatusBadge } from '../components/design-system';
 import BudgetBar from '../components/BudgetBar';
@@ -1150,6 +1151,10 @@ const GameDashboard = () => {
       </Modal>
 
       <PageHeader title={t('dashboard.title')} />
+      {/* The landing screen a team actually arrives on after a round resolves.
+          Ruling 2 makes this disclosure mandatory, so it is shown here as well
+          as on the results screen rather than only behind a route. */}
+      <PriceAdjustmentNotice adjustments={results?.price_adjustments} />
       <Tabs
         className="ds-colored-tabs"
         items={tabItems}

@@ -1,0 +1,279 @@
+{
+  "script": "instructor",
+  "language": "zh-CN",
+  "phase": "after",
+  "base": "http://127.0.0.1:44817",
+  "revision": "135508e17114c842b6d818afa39978dc481ec2ca",
+  "game": 1,
+  "game_name": "CRV2-13 Verification Heat",
+  "team": 1,
+  "steps": [
+    {
+      "name": "instructor signed in",
+      "outcome": "pass",
+      "detail": "crv213_instructor"
+    },
+    {
+      "name": "F4 a refused sixth member is reported as a refusal, in the cap's own business wording",
+      "outcome": "pass",
+      "detail": "toast=''; refusal wording on screen=True; HTTP=[200, 200]; body={\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Photon Labs 已有 5 名成员，已达本班级允许的上限。请选择其他团队，或提高团队人数上限。\"}],\"under_minimum\":[]}"
+    },
+    {
+      "name": "F5 the Extend Deadline confirmation names the game",
+      "outcome": "pass",
+      "detail": "延长回合截止时间 — CRV2-13 Verification Heat / 延长截止时间: / \thours / Cancel / OK"
+    },
+    {
+      "name": "round closed and processed for the results surfaces",
+      "outcome": "observed",
+      "detail": "200"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    }
+  ],
+  "patches": [
+    {
+      "url": "http://127.0.0.1:44817/api/team-management/",
+      "method": "PUT",
+      "body": "{\"action\":\"assign\",\"assignments\":[{\"user_id\":17,\"team_id\":1}]}"
+    }
+  ],
+  "save_responses": [
+    {
+      "url": "http://127.0.0.1:44817/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Photon Labs\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enrollm"
+    },
+    {
+      "url": "http://127.0.0.1:44817/api/team-management/",
+      "method": "PUT",
+      "status": 200,
+      "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Photon Labs 已有 5 名成员，已达本班级允许的上限。请选择其他团队，或提高团队人数上限。\"}],\"under_minimum\":[]}"
+    },
+    {
+      "url": "http://127.0.0.1:44817/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Photon Labs\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enrollm"
+    }
+  ],
+  "screenshots": [
+    "after-10-instructor-dashboard-zh-CN.png",
+    "after-10b-f4-roster-surface-zh-CN.png",
+    "after-11-f4-team-picked-zh-CN.png",
+    "after-12-f4-sixth-member-result-zh-CN.png",
+    "after-13-f5-extend-deadline-confirm-zh-CN.png",
+    "after-14-round-closed-zh-CN.png",
+    "after-15-round-processed-zh-CN.png"
+  ],
+  "tabs": [
+    "课程与班级",
+    "游戏控制",
+    "Students & Logins",
+    "评分与导出",
+    "团队概览",
+    "Operator Log",
+    "Supply Chain",
+    "事件管理",
+    "简报",
+    "研究监控",
+    "AI 教练"
+  ],
+  "f4_widget_found": true,
+  "f4_sixth_member": {
+    "team": "Photon Labs",
+    "spare": "crv213_spare",
+    "toast": "",
+    "modal": "没有学生被分配\nPhoton Labs 已有 5 名成员，已达本班级允许的上限。请选择其他团队，或提高团队人数上限。\nOK",
+    "put_calls": [
+      {
+        "url": "http://127.0.0.1:44817/api/team-management/",
+        "method": "PUT",
+        "status": 200,
+        "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Photon Labs 已有 5 名成员，已达本班级允许的上限。请选择其他团队，或提高团队人数上限。\"}],\"under_minimum\":[]}"
+      },
+      {
+        "url": "http://127.0.0.1:44817/api/team-management/?section_id=1",
+        "method": "GET",
+        "status": 200,
+        "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Photon Labs\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enrollm"
+      }
+    ],
+    "refusal_shown": true,
+    "claims_success": false
+  },
+  "f5_extend_confirm": "延长回合截止时间 — CRV2-13 Verification Heat\n延长截止时间:\n\thours\nCancel\nOK",
+  "close_confirm": "立即关闭 CRV2-13 Verification Heat 的第 1 回合？\nStudents will be locked out immediately and all decisions submitted as they stand.\nCancel\nOK",
+  "post_process_state": {
+    "game_name": "CRV2-13 Verification Heat",
+    "scenario": "Consumer Electronics 2026",
+    "current_round": 1,
+    "status": "active",
+    "teams": [
+      {
+        "team_id": 1,
+        "team_name": "Photon Labs",
+        "members": [
+          "crv213_t1_m1@example.invalid",
+          "crv213_t1_m2@example.invalid",
+          "crv213_t1_m3@example.invalid",
+          "crv213_t1_m4@example.invalid",
+          "crv213_t1_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "deadline_locked",
+        "coherence_score": 50,
+        "total_revenue": 20050000,
+        "markets_entered": [
+          "NA"
+        ]
+      },
+      {
+        "team_id": 2,
+        "team_name": "Cipher Systems",
+        "members": [
+          "crv213_t2_m1@example.invalid",
+          "crv213_t2_m2@example.invalid",
+          "crv213_t2_m3@example.invalid",
+          "crv213_t2_m4@example.invalid",
+          "crv213_t2_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "defaulted_missing",
+        "coherence_score": 50,
+        "total_revenue": 22650000,
+        "markets_entered": [
+          "NA"
+        ]
+      },
+      {
+        "team_id": 3,
+        "team_name": "Solaris Consumer",
+        "members": [
+          "crv213_t3_m1@example.invalid",
+          "crv213_t3_m2@example.invalid",
+          "crv213_t3_m3@example.invalid",
+          "crv213_t3_m4@example.invalid",
+          "crv213_t3_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "defaulted_missing",
+        "coherence_score": 50,
+        "total_revenue": 20750000,
+        "markets_entered": [
+          "NA"
+        ]
+      }
+    ],
+    "round_status": {
+      "total_teams": 3,
+      "teams_locked": 3,
+      "teams_pending": 0,
+      "deadline": null,
+      "round_state": "closed",
+      "close_reason": "manual",
+      "processing_status": "PENDING"
+    },
+    "events_this_round": []
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "observed": 1,
+    "console_errors": 10,
+    "network_errors": 10,
+    "changes_403": 0
+  }
+}

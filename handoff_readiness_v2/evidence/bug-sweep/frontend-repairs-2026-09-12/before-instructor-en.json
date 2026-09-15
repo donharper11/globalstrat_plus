@@ -1,0 +1,173 @@
+{
+  "script": "instructor",
+  "language": "en",
+  "phase": "before",
+  "base": "http://127.0.0.1:50823",
+  "revision": "135508e17114c842b6d818afa39978dc481ec2ca",
+  "game": 1,
+  "game_name": "CRV2-13 Verification Heat",
+  "team": 1,
+  "steps": [
+    {
+      "name": "instructor signed in",
+      "outcome": "pass",
+      "detail": "crv213_instructor"
+    },
+    {
+      "name": "F4 a refused sixth member is reported as a refusal, in the cap's own business wording",
+      "outcome": "fail",
+      "detail": "toast=''; refusal wording on screen=False; HTTP=[200, 200]; body={\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Quantum Edge already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+    },
+    {
+      "name": "F5 the Extend Deadline confirmation names the game",
+      "outcome": "fail",
+      "detail": "Extend Deadline / Extend deadline by: / \thours / Cancel / OK"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    }
+  ],
+  "patches": [
+    {
+      "url": "http://127.0.0.1:50823/api/team-management/",
+      "method": "PUT",
+      "body": "{\"action\":\"assign\",\"assignments\":[{\"user_id\":17,\"team_id\":1}]}"
+    }
+  ],
+  "save_responses": [
+    {
+      "url": "http://127.0.0.1:50823/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Quantum Edge\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enroll"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/team-management/",
+      "method": "PUT",
+      "status": 200,
+      "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Quantum Edge already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+    },
+    {
+      "url": "http://127.0.0.1:50823/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Quantum Edge\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enroll"
+    }
+  ],
+  "screenshots": [
+    "before-10-instructor-dashboard-en.png",
+    "before-10b-f4-roster-surface-en.png",
+    "before-11-f4-team-picked-en.png",
+    "before-12-f4-sixth-member-result-en.png",
+    "before-13-f5-extend-deadline-confirm-en.png"
+  ],
+  "tabs": [
+    "Courses & Sections",
+    "Game Control",
+    "Students & Logins",
+    "Grading & Export",
+    "Team Overview",
+    "Operator Log",
+    "Supply Chain",
+    "Event Manager",
+    "Briefings",
+    "Research Monitor",
+    "AI Coach"
+  ],
+  "f4_widget_found": true,
+  "f4_sixth_member": {
+    "team": "Quantum Edge",
+    "spare": "crv213_spare",
+    "toast": "",
+    "put_calls": [
+      {
+        "url": "http://127.0.0.1:50823/api/team-management/",
+        "method": "PUT",
+        "status": 200,
+        "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Quantum Edge already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+      },
+      {
+        "url": "http://127.0.0.1:50823/api/team-management/?section_id=1",
+        "method": "GET",
+        "status": 200,
+        "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Quantum Edge\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\"enroll"
+      }
+    ],
+    "refusal_shown": false,
+    "claims_success": false
+  },
+  "f5_extend_confirm": "Extend Deadline\nExtend deadline by:\n\thours\nCancel\nOK",
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "observed": 0,
+    "console_errors": 8,
+    "network_errors": 8,
+    "changes_403": 0
+  }
+}

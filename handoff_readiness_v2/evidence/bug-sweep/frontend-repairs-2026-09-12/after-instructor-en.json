@@ -1,0 +1,279 @@
+{
+  "script": "instructor",
+  "language": "en",
+  "phase": "after",
+  "base": "http://127.0.0.1:57547",
+  "revision": "135508e17114c842b6d818afa39978dc481ec2ca",
+  "game": 1,
+  "game_name": "CRV2-13 Verification Heat",
+  "team": 1,
+  "steps": [
+    {
+      "name": "instructor signed in",
+      "outcome": "pass",
+      "detail": "crv213_instructor"
+    },
+    {
+      "name": "F4 a refused sixth member is reported as a refusal, in the cap's own business wording",
+      "outcome": "pass",
+      "detail": "toast=''; refusal wording on screen=True; HTTP=[200, 200]; body={\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Vertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+    },
+    {
+      "name": "F5 the Extend Deadline confirmation names the game",
+      "outcome": "pass",
+      "detail": "Extend round deadline — CRV2-13 Verification Heat / Extend deadline by: / \thours / Cancel / OK"
+    },
+    {
+      "name": "round closed and processed for the results surfaces",
+      "outcome": "observed",
+      "detail": "200"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap",
+      "failure": "net::ERR_FAILED"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      "failure": "net::ERR_FAILED"
+    }
+  ],
+  "patches": [
+    {
+      "url": "http://127.0.0.1:57547/api/team-management/",
+      "method": "PUT",
+      "body": "{\"action\":\"assign\",\"assignments\":[{\"user_id\":17,\"team_id\":1}]}"
+    }
+  ],
+  "save_responses": [
+    {
+      "url": "http://127.0.0.1:57547/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Vertex Electronics\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\""
+    },
+    {
+      "url": "http://127.0.0.1:57547/api/team-management/",
+      "method": "PUT",
+      "status": 200,
+      "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Vertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+    },
+    {
+      "url": "http://127.0.0.1:57547/api/team-management/?section_id=1",
+      "method": "GET",
+      "status": 200,
+      "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Vertex Electronics\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\""
+    }
+  ],
+  "screenshots": [
+    "after-10-instructor-dashboard-en.png",
+    "after-10b-f4-roster-surface-en.png",
+    "after-11-f4-team-picked-en.png",
+    "after-12-f4-sixth-member-result-en.png",
+    "after-13-f5-extend-deadline-confirm-en.png",
+    "after-14-round-closed-en.png",
+    "after-15-round-processed-en.png"
+  ],
+  "tabs": [
+    "Courses & Sections",
+    "Game Control",
+    "Students & Logins",
+    "Grading & Export",
+    "Team Overview",
+    "Operator Log",
+    "Supply Chain",
+    "Event Manager",
+    "Briefings",
+    "Research Monitor",
+    "AI Coach"
+  ],
+  "f4_widget_found": true,
+  "f4_sixth_member": {
+    "team": "Vertex Electronics",
+    "spare": "crv213_spare",
+    "toast": "",
+    "modal": "No students were assigned\nVertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\nOK",
+    "put_calls": [
+      {
+        "url": "http://127.0.0.1:57547/api/team-management/",
+        "method": "PUT",
+        "status": 200,
+        "body": "{\"updated\":0,\"errors\":[{\"item\":{\"user_id\":17,\"team_id\":1},\"error\":\"Vertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.\"}],\"under_minimum\":[]}"
+      },
+      {
+        "url": "http://127.0.0.1:57547/api/team-management/?section_id=1",
+        "method": "GET",
+        "status": 200,
+        "body": "{\"section_id\":1,\"teams\":[{\"team_id\":1,\"team_name\":\"Vertex Electronics\",\"game_id\":1,\"home_market\":\"NA\",\"member_count\":5,\"members\":[{\"enrollment_id\":1,\"user_id\":2,\"username\":\"crv213_t1_m1\",\"display_name\":null,\"email\":\"crv213_t1_m1@example.invalid\"},{\"enrollment_id\":2,\"user_id\":3,\"username\":\"crv213_t1_m2\",\"display_name\":null,\"email\":\"crv213_t1_m2@example.invalid\"},{\"enrollment_id\":3,\"user_id\":4,\"username\":\"crv213_t1_m3\",\"display_name\":null,\"email\":\"crv213_t1_m3@example.invalid\"},{\"enrollment_id\":4,\"user_id\":5,\"username\":\"crv213_t1_m4\",\"display_name\":null,\"email\":\"crv213_t1_m4@example.invalid\"},{\""
+      }
+    ],
+    "refusal_shown": true,
+    "claims_success": false
+  },
+  "f5_extend_confirm": "Extend round deadline — CRV2-13 Verification Heat\nExtend deadline by:\n\thours\nCancel\nOK",
+  "close_confirm": "Close round 1 of CRV2-13 Verification Heat now?\nStudents will be locked out immediately and all decisions submitted as they stand.\nCancel\nOK",
+  "post_process_state": {
+    "game_name": "CRV2-13 Verification Heat",
+    "scenario": "Consumer Electronics 2026",
+    "current_round": 1,
+    "status": "active",
+    "teams": [
+      {
+        "team_id": 1,
+        "team_name": "Vertex Electronics",
+        "members": [
+          "crv213_t1_m1@example.invalid",
+          "crv213_t1_m2@example.invalid",
+          "crv213_t1_m3@example.invalid",
+          "crv213_t1_m4@example.invalid",
+          "crv213_t1_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "deadline_locked",
+        "coherence_score": 50,
+        "total_revenue": 20050000,
+        "markets_entered": [
+          "NA"
+        ]
+      },
+      {
+        "team_id": 2,
+        "team_name": "Nova Circuit",
+        "members": [
+          "crv213_t2_m1@example.invalid",
+          "crv213_t2_m2@example.invalid",
+          "crv213_t2_m3@example.invalid",
+          "crv213_t2_m4@example.invalid",
+          "crv213_t2_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "defaulted_missing",
+        "coherence_score": 50,
+        "total_revenue": 22650000,
+        "markets_entered": [
+          "NA"
+        ]
+      },
+      {
+        "team_id": 3,
+        "team_name": "Titan Micro",
+        "members": [
+          "crv213_t3_m1@example.invalid",
+          "crv213_t3_m2@example.invalid",
+          "crv213_t3_m3@example.invalid",
+          "crv213_t3_m4@example.invalid",
+          "crv213_t3_m5@example.invalid"
+        ],
+        "performance_index": 55,
+        "cash_on_hand": 50000000,
+        "is_in_distress": false,
+        "decision_status": "locked",
+        "submission_origin": "defaulted_missing",
+        "coherence_score": 50,
+        "total_revenue": 20750000,
+        "markets_entered": [
+          "NA"
+        ]
+      }
+    ],
+    "round_status": {
+      "total_teams": 3,
+      "teams_locked": 3,
+      "teams_pending": 0,
+      "deadline": null,
+      "round_state": "closed",
+      "close_reason": "manual",
+      "processing_status": "PENDING"
+    },
+    "events_this_round": []
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "observed": 1,
+    "console_errors": 10,
+    "network_errors": 10,
+    "changes_403": 0
+  }
+}

@@ -478,10 +478,21 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
         return value
 
     def validate_campaign_focus_feature_ids(self, value):
+        # An EMPTY campaign focus is representable, and deliberately so. R15
+        # and R24 require a marketing row to be storable purely to carry a
+        # price -- including a blank one, which is then filled at the band
+        # floor or marked not-for-sale at the deadline. Demanding one to three
+        # focus features on every row made that row unstorable, so the pricing
+        # screen's own default payload was refused outright (F7) and with it
+        # every other row in the same request.
+        #
+        # A campaign focus is a real decision only when there is a campaign to
+        # aim: the "choose one to three" rule is therefore enforced in
+        # validate() below, against promotion spend, rather than here.
         if not isinstance(value, list):
             raise serializers.ValidationError(participant_message(
                 'campaign_features_invalid', language=serializer_language(self)))
-        if len(value) < 1 or len(value) > 3:
+        if len(value) > 3:
             raise serializers.ValidationError(participant_message(
                 'campaign_features_required', language=serializer_language(self)))
         if not all(isinstance(v, int) for v in value):
@@ -491,6 +502,16 @@ class DecisionMarketingSerializer(NonNegativeFieldsMixin, serializers.ModelSeria
 
     def validate(self, attrs):
         attrs = super().validate(attrs)
+        # Spending on promotion without saying what the campaign is about is
+        # still refused; an unpromoted row simply has no campaign to describe.
+        promotion = attrs.get('promotion_budget')
+        if promotion is not None and promotion > 0 and not attrs.get(
+                'campaign_focus_feature_ids'):
+            raise serializers.ValidationError({
+                'campaign_focus_feature_ids': participant_message(
+                    'campaign_features_required',
+                    language=serializer_language(self)),
+            })
         digital = attrs.get('channel_digital_pct')
         traditional = attrs.get('channel_traditional_pct')
         trade = attrs.get('channel_trade_pct')

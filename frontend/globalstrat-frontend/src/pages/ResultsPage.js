@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Card, Typography, Row, Col, Tabs, Tag, Statistic, Table, Collapse, Progress, Empty, Alert,
@@ -13,7 +13,10 @@ import CoherenceGauge from '../components/CoherenceGauge';
 import RoundSelector from '../components/RoundSelector';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader, PanelCard } from '../components/design-system';
-import { getMarketLocalization, getTalentAllocationContext, getComplianceContext } from '../api/decisions';
+import PriceAdjustmentNotice from '../components/PriceAdjustmentNotice';
+// Nothing routed to this page, so ESLint never reached it and three unused
+// imports sat here unreported. Routing it (F3) surfaced them; they were never
+// called.
 
 const { Title, Text } = Typography;
 
@@ -63,8 +66,20 @@ const ResultsPage = () => {
     setLoading(false);
   }, [gameId, teamId]);
 
+  // `selectedRound` is seeded on the first render, when GameContext has not
+  // resolved yet: `currentRound` is null, so `latestProcessed` is 0 and the
+  // page opens on "Round 0 Results". The old guard (`selectedRound < 0`) could
+  // never fire afterwards, because 0 is not negative, so the round never
+  // caught up once the context arrived. Reaching this page from the sidebar
+  // therefore showed round 0 and none of the round's price adjustments — which
+  // would have left Ruling 2's disclosure unseen on the very route that exists
+  // to carry it. Follow the latest processed round until the team picks one.
+  const roundPickedByUser = useRef(params.roundNumber != null);
   useEffect(() => {
-    if (latestProcessed >= 0 && selectedRound < 0) setSelectedRound(latestProcessed);
+    if (!roundPickedByUser.current
+        && latestProcessed >= 0 && latestProcessed !== selectedRound) {
+      setSelectedRound(latestProcessed);
+    }
   }, [latestProcessed, selectedRound]);
 
   useEffect(() => { loadData(selectedRound); }, [selectedRound, loadData]);
@@ -266,21 +281,9 @@ const ResultsPage = () => {
     return (
       <div>
         <Collapse items={marketPanels} defaultActiveKey={marketPanels.map(p => p.key)} />
-        {(results.price_adjustments || []).length > 0 && (
-          <Alert
-            type="warning"
-            showIcon
-            style={{ marginTop: 16 }}
-            message={t('results_page.price_adjustments')}
-            description={(
-              <ul style={{ margin: 0, paddingLeft: 18 }}>
-                {results.price_adjustments.map((a, i) => (
-                  <li key={i}>{a.message}</li>
-                ))}
-              </ul>
-            )}
-          />
-        )}
+        {/* The adjustment notice was here, inside one tab a team had to think
+            to open. It now sits at page level, above the tabs, so it is on
+            screen when the results are. */}
         <Card title={t("results_page.product_performance")} style={{ marginTop: 16 }}>
           <Table dataSource={results.products || []} rowKey={(r, i) => `${r.product_name}-${r.market}-${i}`}
             columns={productCols} pagination={false} size="small" />
@@ -661,7 +664,7 @@ const ResultsPage = () => {
               currentRound={selectedRound}
               maxRound={latestProcessed}
               minRound={0}
-              onChange={setSelectedRound}
+              onChange={(round) => { roundPickedByUser.current = true; setSelectedRound(round); }}
             />
             <button onClick={exportCSV} style={{
               padding: '4px 12px', cursor: 'pointer', border: '1px solid #d9d9d9', borderRadius: 4, background: '#fff',
@@ -669,6 +672,7 @@ const ResultsPage = () => {
           </div>
         }
       />
+      <PriceAdjustmentNotice adjustments={results.price_adjustments} />
       <Tabs className="ds-colored-tabs" items={tabItems} />
     </div>
   );

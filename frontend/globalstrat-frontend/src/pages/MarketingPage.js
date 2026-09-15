@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Card, Typography, Tabs, InputNumber, Select, Slider, Tag, Space, Row, Col, Progress, Alert, Checkbox, Statistic } from 'antd';
+import { Button, Card, Typography, Tabs, InputNumber, Select, Slider, Tag, Space, Row, Col, Progress, Alert, Checkbox, Statistic } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
@@ -9,6 +9,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
+import { isRowEngaged, blankPriceMessageKey } from './marketingPricingRules';
 
 const { Title, Text } = Typography;
 
@@ -38,8 +39,15 @@ const MarketingPage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+  // R17: a refused save must tell the student, show the edit was NOT saved,
+  // and retry. Previously every failure was swallowed while the screen went on
+  // claiming "Your entry is saved".
+  const [saveError, setSaveError] = useState(null);
   const saveTimer = useRef(null);
   const saveVersion = useRef(0);
+  const retryTimer = useRef(null);
+  const lastDecisions = useRef(null);
+  const retried = useRef(false);
 
   useUnsavedChangesGuard(dirty, t('common.unsaved_changes_prompt'));
 
@@ -50,6 +58,16 @@ const MarketingPage = () => {
       setContext(res.data);
       const existing = draft?.marketing_decisions || [];
       const productMarkets = res.data?.product_markets || [];
+      const capacityRows = res.data?.production_capacity || [];
+      // The API requires a production source market on every row it stores, so
+      // a fresh row that defaults it to null cannot be saved at all (F7). It
+      // defaults to where the product is sold when the team has capacity
+      // there, else to the first plant they have; production volume still
+      // starts at 0, so this commits nothing and the team can change it.
+      const defaultSourceMarket = (marketId) => {
+        if (capacityRows.some(c => c.market_id === marketId)) return marketId;
+        return capacityRows.length ? capacityRows[0].market_id : null;
+      };
       const decs = [];
       productMarkets.forEach(pm => {
         (pm.markets || []).forEach(m => {
@@ -74,8 +92,16 @@ const MarketingPage = () => {
             sales_team_count: Number(ex?.sales_team_count || 0),
             distribution_channel_detail: ex?.distribution_channel_detail || {},
             production_volume: Number(ex?.production_volume || 0),
-            production_source_market: ex?.production_source_market || null,
+            production_source_market: ex?.production_source_market
+              ?? defaultSourceMarket(m.market_id),
             demand_estimate: Number(ex?.demand_estimate || 0),
+            // `persisted` means the server already holds this row, so it must
+            // keep being sent even once every number on it is cleared --
+            // otherwise clearing a price deletes the decision instead of
+            // submitting a blank one (F2). `touched` is the same guarantee for
+            // a row the team has started filling in this session.
+            persisted: !!ex,
+            touched: false,
           });
         });
       });
@@ -90,47 +116,109 @@ const MarketingPage = () => {
   const totalSpend = decisions.reduce((s, d) => s + d.promotion_budget + (d.sales_team_count * repCost), 0);
   const mktgBudget = Number(context?.marketing_budget_remaining || 0) + totalSpend;
 
+  // Built in one place, so what is sent and what is retried cannot drift apart.
+  const buildPayload = useCallback((nextDecisions) => nextDecisions
+    // R15 forbids sending a product-market the team never marketed: the floor
+    // must never reach it, and a fabricated floor-priced row would take share
+    // from every rival and then sell nothing. But a row the team HAS engaged
+    // with must always be sent, even with no price and no spend at all, or
+    // "submitted blank" never reaches the server (R15/R24) and clearing the
+    // price of an otherwise-empty row silently deletes the decision (F2).
+    .filter(isRowEngaged)
+    .map(d => ({
+      team_product: d.team_product,
+      market: d.market,
+      retail_price: d.retail_price,
+      promotion_budget: d.promotion_budget,
+      campaign_focus_feature_ids: d.campaign_focus_feature_ids,
+      channel_digital_pct: d.channel_digital_pct,
+      channel_traditional_pct: d.channel_traditional_pct,
+      channel_trade_pct: d.channel_trade_pct,
+      distribution_strategy: d.distribution_strategy,
+      distribution_investment: d.sales_team_count * repCost,
+      sales_team_count: d.sales_team_count,
+      distribution_channel_detail: d.distribution_channel_detail,
+      production_volume: d.production_volume,
+      production_source_market: d.production_source_market,
+      demand_estimate: d.demand_estimate,
+    })), [repCost]);
+
+  const sendSave = useCallback(async (nextDecisions) => {
+    await patchDecision(gameId, teamId, currentRound, 'marketing',
+      { marketing_decisions: buildPayload(nextDecisions) });
+  }, [gameId, teamId, currentRound, buildPayload]);
+
+  /** The server's own sentences, never its field names. */
+  const describeFailure = useCallback((err) => {
+    const data = err?.response?.data;
+    if (!data) return [t('marketing.save_failed_generic')];
+    if (typeof data === 'string') return [data];
+    if (data.detail) return [String(data.detail)];
+    const out = [];
+    const walk = (value) => {
+      if (Array.isArray(value)) value.forEach(walk);
+      else if (value && typeof value === 'object') Object.values(value).forEach(walk);
+      else if (value != null) out.push(String(value));
+    };
+    walk(data);
+    return out.length ? out : [t('marketing.save_failed_generic')];
+  }, [t]);
+
+  const retrySave = useCallback(async () => {
+    if (!lastDecisions.current || locked) return;
+    setSaving(true);
+    try {
+      await sendSave(lastDecisions.current);
+      setDirty(false);
+      setSaveError(null);
+      refreshBudgets();
+    } catch (err) {
+      setSaveError(describeFailure(err));
+    }
+    setSaving(false);
+  }, [sendSave, refreshBudgets, describeFailure, locked]);
+
   const autoSave = useCallback((nextDecisions) => {
     const version = ++saveVersion.current;
     setDirty(true);
+    lastDecisions.current = nextDecisions;
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
       try {
-        // A row the team is filling in but has not priced must still be sent,
-        // or "submitted blank" cannot reach the server at all.
-        const payload = nextDecisions.filter(d => d.retail_price > 0 || d.production_volume > 0 || d.promotion_budget > 0).map(d => ({
-          team_product: d.team_product,
-          market: d.market,
-          retail_price: d.retail_price,
-          promotion_budget: d.promotion_budget,
-          campaign_focus_feature_ids: d.campaign_focus_feature_ids,
-          channel_digital_pct: d.channel_digital_pct,
-          channel_traditional_pct: d.channel_traditional_pct,
-          channel_trade_pct: d.channel_trade_pct,
-          distribution_strategy: d.distribution_strategy,
-          distribution_investment: d.sales_team_count * repCost,
-          sales_team_count: d.sales_team_count,
-          distribution_channel_detail: d.distribution_channel_detail,
-          production_volume: d.production_volume,
-          production_source_market: d.production_source_market,
-          demand_estimate: d.demand_estimate,
-        }));
-        await patchDecision(gameId, teamId, currentRound, 'marketing', { marketing_decisions: payload });
-        if (version === saveVersion.current) setDirty(false);
+        await sendSave(nextDecisions);
+        if (version === saveVersion.current) {
+          setDirty(false);
+          setSaveError(null);
+        }
         refreshBudgets();
-      } catch { /* ignore */ }
+      } catch (err) {
+        // R17. The edit stays marked unsaved, the student is told what the
+        // server said, and it is retried once automatically; the notice also
+        // carries a Retry control, because a refusal the team can fix (a
+        // missing campaign focus, say) will not succeed on a timer.
+        setSaveError(describeFailure(err));
+        if (!retried.current) {
+          retried.current = true;
+          clearTimeout(retryTimer.current);
+          retryTimer.current = setTimeout(() => { retrySave(); }, 5000);
+        }
+      }
       setSaving(false);
     }, 2000);
-  }, [gameId, teamId, currentRound, locked, repCost, refreshBudgets]);
+  }, [gameId, teamId, currentRound, locked, refreshBudgets, sendSave,
+      describeFailure, retrySave]);
 
-  useEffect(() => () => clearTimeout(saveTimer.current), []);
+  useEffect(() => () => {
+    clearTimeout(saveTimer.current);
+    clearTimeout(retryTimer.current);
+  }, []);
 
   const updateDecision = (idx, field, value) => {
     setDecisions(prev => {
       const next = [...prev];
-      next[idx] = { ...next[idx], [field]: value };
+      next[idx] = { ...next[idx], [field]: value, touched: true };
       if (field === 'channel_digital_pct' || field === 'channel_traditional_pct' || field === 'channel_trade_pct') {
         const d = next[idx];
         const total = d.channel_digital_pct + d.channel_traditional_pct + d.channel_trade_pct;
@@ -149,7 +237,7 @@ const MarketingPage = () => {
   const toggleChannel = (idx, channelKey) => {
     setDecisions(prev => {
       const next = [...prev];
-      const d = { ...next[idx] };
+      const d = { ...next[idx], touched: true };
       const detail = { ...(d.distribution_channel_detail || {}) };
       if (detail[channelKey] != null) {
         delete detail[channelKey];
@@ -177,7 +265,7 @@ const MarketingPage = () => {
   const updateChannelReps = (idx, channelKey, reps) => {
     setDecisions(prev => {
       const next = [...prev];
-      const d = { ...next[idx] };
+      const d = { ...next[idx], touched: true };
       const detail = { ...(d.distribution_channel_detail || {}) };
       detail[channelKey] = reps || 0;
       d.distribution_channel_detail = detail;
@@ -199,7 +287,7 @@ const MarketingPage = () => {
       } else if (ids.length < 3) {
         ids.push(featureId);
       }
-      next[idx] = { ...d, campaign_focus_feature_ids: ids };
+      next[idx] = { ...d, campaign_focus_feature_ids: ids, touched: true };
       autoSave(next);
       return next;
     });
@@ -290,11 +378,26 @@ const MarketingPage = () => {
                 </Text>
               )}
               {priceOutOfBand && (
-                <Text style={prevHint({ color: '#cf1322' })}>{t('marketing.price_out_of_band')}</Text>
+                <Text style={prevHint({ color: '#cf1322' })}>
+                  {/* The standing wording says "Your entry is saved", which is
+                      false while a save is outstanding. */}
+                  {saveError
+                    ? t('marketing.price_out_of_band_unsaved')
+                    : t('marketing.price_out_of_band')}
+                </Text>
               )}
               {priceBlank && (
                 <Text style={prevHint({ color: '#cf1322' })}>
-                  {t('marketing.price_blank', { floor: Math.round(band.min).toLocaleString() })}
+                  {/* Which outcome a blank price gets depends on the anchor, and
+                      the server already says which one applies. The floor
+                      reaches only a product that sold here last round (R15);
+                      with a positioning-reference anchor `blank_price()`
+                      returns None and the product is simply not for sale
+                      (R24). Promising a floor that will never arrive is worse
+                      than saying nothing. */}
+                  {blankPriceMessageKey(band) === 'marketing.price_blank'
+                    ? t('marketing.price_blank', { floor: Math.round(band.min).toLocaleString() })
+                    : t('marketing.price_blank_not_for_sale')}
                 </Text>
               )}
             </Col>
@@ -595,6 +698,27 @@ const MarketingPage = () => {
       <TeamActivityBanner gameId={gameId} teamId={teamId} currentRound={currentRound} currentUserId={user?.user_id} />
       <PageHeader title={t('marketing.title')} subtitle={`${t('common.round')} ${currentRound}`} status={locked ? 'locked' : 'draft'} />
       {saving && <Tag color="processing">{t('marketing.saving')}</Tag>}
+
+      {/* R17: the edit was refused, so say so where the team is working, name
+          what the server objected to, and offer the retry. */}
+      {saveError && (
+        <Alert
+          type="error"
+          showIcon
+          style={{ marginBottom: 16 }}
+          message={t('marketing.save_failed_title')}
+          description={(
+            <div>
+              <ul style={{ margin: '0 0 8px', paddingLeft: 18 }}>
+                {saveError.map((msg, i) => <li key={i}>{msg}</li>)}
+              </ul>
+              <Button size="small" onClick={retrySave} loading={saving}>
+                {t('marketing.save_failed_retry')}
+              </Button>
+            </div>
+          )}
+        />
+      )}
 
       <Card size="small" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

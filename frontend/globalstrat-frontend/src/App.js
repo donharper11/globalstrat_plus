@@ -31,6 +31,7 @@ import InventoryPage from './pages/InventoryPage';
 import FinancePage from './pages/FinancePage';
 import SummaryPage from './pages/SummaryPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import ResultsPage from './pages/ResultsPage';
 import InstructorDashboard from './pages/InstructorDashboard';
 import IndustryNewsPage from './pages/IndustryNewsPage';
 import MarketResearchPage from './pages/MarketResearchPage';
@@ -154,6 +155,12 @@ function App() {
                               <Route path="/games/:gameId/teams/:teamId/decisions/finance" element={<FinancePage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/communications" element={<CommunicationsPage />} />
                               <Route path="/games/:gameId/teams/:teamId/decisions/summary" element={<SummaryPage />} />
+                              {/* Results. ResultsPage existed and rendered the
+                                  round's price adjustments, but nothing routed
+                                  to it, so the disclosure Ruling 2 requires was
+                                  unreachable in the product (F3). */}
+                              <Route path="/games/:gameId/teams/:teamId/results" element={<ResultsPage />} />
+                              <Route path="/games/:gameId/teams/:teamId/results/:roundNumber" element={<ResultsPage />} />
                               <Route path="/games/:gameId/leaderboard" element={<LeaderboardPage />} />
                               <Route path="/leaderboard" element={<LeaderboardPage />} />
                               {/* GSP-R1-01: recover shallow/unknown student routes into the active game/team */}

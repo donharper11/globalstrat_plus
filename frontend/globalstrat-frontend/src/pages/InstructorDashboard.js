@@ -1951,10 +1951,33 @@ const InstructorDashboard = () => {
                                   if (userIds.length === 0) return;
                                   try {
                                     const assignments = userIds.map(uid => ({ user_id: uid, team_id: pickerTeam }));
-                                    await assignStudents(assignments);
-                                    message.success(`${userIds.length} student(s) assigned`);
+                                    // This endpoint answers 200 with a per-item
+                                    // `errors` list, because a batch can be
+                                    // partly refused: the status alone never
+                                    // says what happened. Reporting success
+                                    // without reading `errors` told the
+                                    // instructor that a capped assignment had
+                                    // succeeded, and the cap's own wording was
+                                    // never shown (F4).
+                                    const res = await assignStudents(assignments);
+                                    const errs = res?.data?.errors || [];
+                                    const done = res?.data?.updated ?? 0;
+                                    if (errs.length) {
+                                      Modal.warning({
+                                        title: done > 0
+                                          ? t('instructor.assign_partial', { assigned: done, refused: errs.length })
+                                          : t('instructor.assign_none'),
+                                        content: (
+                                          <ul style={{ margin: 0, paddingLeft: 18 }}>
+                                            {errs.map((e, i) => <li key={i}>{e.error}</li>)}
+                                          </ul>
+                                        ),
+                                      });
+                                    } else {
+                                      message.success(t('instructor.students_assigned', { count: done || userIds.length }));
+                                    }
                                     loadRoster(selectedSection);
-                                  } catch { message.error('Failed to assign students'); }
+                                  } catch { message.error(t('instructor.assign_failed')); }
                                 }}
                                 filterOption={(input, option) =>
                                   (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
@@ -2006,9 +2029,22 @@ const InstructorDashboard = () => {
                                   {pickerTeam && (
                                     <Button type="link" size="small" onClick={async () => {
                                       try {
-                                        await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]);
+                                        // Same refusal, same disclosure: a 200
+                                        // here can still be a refusal (F4).
+                                        const res = await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]);
+                                        const errs = res?.data?.errors || [];
+                                        if (errs.length) {
+                                          Modal.warning({
+                                            title: t('instructor.assign_none'),
+                                            content: (
+                                              <ul style={{ margin: 0, paddingLeft: 18 }}>
+                                                {errs.map((e, i) => <li key={i}>{e.error}</li>)}
+                                              </ul>
+                                            ),
+                                          });
+                                        }
                                         loadRoster(selectedSection);
-                                      } catch { message.error('Failed to assign'); }
+                                      } catch { message.error(t('instructor.assign_failed')); }
                                     }}>
                                       → {createdGameTeams.find(t => t.team_id === pickerTeam)?.team_name}
                                     </Button>
@@ -2081,7 +2117,11 @@ const InstructorDashboard = () => {
       </Modal>
 
       {/* Extend Deadline Modal */}
-      <Modal title={t('instructor.extend_deadline')} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
+      {/* Named, like every other lifecycle confirmation: this control acts on
+          a round, and acting on the wrong heat's deadline is unrecoverable.
+          It sits outside RoundControlCard, which is why the CRV2-10 Stage 6
+          game-identity work did not reach it. */}
+      <Modal title={t('instructor.extend_deadline_title', { game: createGameName || dashboard?.game_name || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
         <Text>{t('instructor.extend_deadline_by')}:</Text>
         <InputNumber min={1} max={168} value={extendHours} onChange={setExtendHours} addonAfter="hours" style={{ width: '100%', marginTop: 8 }} />
       </Modal>
