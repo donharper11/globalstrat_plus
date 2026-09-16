@@ -36,6 +36,27 @@ else
 fi
 # ─── end aide-checks deploy gate ────────────────────────────────────────────
 
+# ─── model-routing guard ────────────────────────────────────────────────────
+# Every model call must go to the LiteLLM fleet gateway through
+# core/engine/llm_runner: no provider SDK, no provider endpoint, no DASHSCOPE_*
+# setting. These tests read source only -- no database, no gateway, well under a
+# second -- so the deploy that reaches students is also the layer that proves a
+# provider call has not crept back in. Same tests run in CI on every push.
+if [ -n "$_AIDE_ROOT" ] && [ -f "$_AIDE_ROOT/backend/manage.py" ]; then
+  if ! ( cd "$_AIDE_ROOT/backend" && \
+         DJANGO_SECRET_KEY="${DJANGO_SECRET_KEY:-deploy-gate-not-a-real-key}" \
+         DB_NAME="${DB_NAME:-unused}" DB_USER="${DB_USER:-unused}" \
+         DB_PASSWORD="${DB_PASSWORD:-}" DB_HOST="${DB_HOST:-127.0.0.1}" \
+         DB_PORT="${DB_PORT:-1}" \
+         python3 manage.py test --noinput core.tests.test_narrative_llm_routing ); then
+    echo "" >&2
+    echo "model-routing guard: DEPLOY REFUSED — a model call does not go through" >&2
+    echo "the gateway. Nothing was deployed." >&2
+    exit 1
+  fi
+fi
+# ─── end model-routing guard ────────────────────────────────────────────────
+
 ECS_HOST="47.86.57.36"
 ECS_USER="root"
 ECS_PATH="/var/www/globalstrat/build"

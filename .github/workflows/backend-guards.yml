@@ -1,0 +1,38 @@
+name: backend-guards
+on: [push, pull_request]
+
+# The guard tests that keep model routing from drifting back: no provider SDK,
+# no provider endpoint outside the runner, no DASHSCOPE_* setting, and every
+# chat call through core/engine/llm_runner. They read source and settings only,
+# so they need no database and no gateway — the whole module is SimpleTestCase
+# and runs in well under a second.
+#
+# They are here, not only in the full suite, because the full suite needs a
+# PostgreSQL service and does not run on every push. A guard nobody runs is not
+# a guard.
+
+jobs:
+  guards:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy values: settings refuses to import without a database password,
+      # and nothing here opens a connection.
+      DJANGO_SECRET_KEY: ci-not-a-real-key
+      DB_NAME: unused
+      DB_USER: unused
+      DB_PASSWORD: ''
+      DB_HOST: 127.0.0.1
+      DB_PORT: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: install django and the http client
+        run: pip install 'Django==5.2.4' djangorestframework httpx PyJWT PyYAML
+
+      - name: no platform code may call a model provider
+        working-directory: backend
+        run: python manage.py test --noinput core.tests.test_narrative_llm_routing
