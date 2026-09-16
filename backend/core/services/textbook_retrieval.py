@@ -1,8 +1,25 @@
 """
-Textbook knowledge-base retrieval via Qdrant.
+Course-material retrieval via Qdrant, for persona prompts and the resources API.
 
-Collection: globalstrat_textbook @ 192.168.50.186:6333
-Embedding model: BAAI/bge-m3 (1024-dim, cosine)
+Carried over from BECSR in the fork and **not wired to anything** until
+2026-09-16: it pointed at a collection, `globalstrat_textbook`, that has never
+existed on the Qdrant host, so every caller silently received nothing. Three
+faults were repaired together, because any one of them alone still left it dead:
+
+* the collection name, host and model were hardcoded, so no deployment could
+  point it anywhere -- they are settings now;
+* the embedder called `SentenceTransformer('BAAI/bge-m3')` with no
+  `local_files_only`, so the first student request would have tried to download
+  ~2.2GB from HuggingFace inside the request. Embedding now goes through the
+  LiteLLM fleet gateway like every other model call this platform makes;
+* a missing collection surfaced as a caught exception per call. It is now
+  checked once and reported once, and callers get an empty result immediately
+  rather than a stack trace per request.
+
+It stays dead until a collection exists to point it at: set
+`TEXTBOOK_COLLECTION` (and ingest one). `PERSONA_TOPICS` below is still BECSR's
+CSR vocabulary — re-authoring it for a global-strategy course is advisory-layer
+work, not this repair.
 
 Provides:
   - search_textbook(query, section_type, limit)  — general semantic search
@@ -10,18 +27,26 @@ Provides:
   - get_context_for_student_query(student_message) — course material for student reply context
 """
 import logging
-from functools import lru_cache
 
+from django.conf import settings
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, MatchValue, MatchAny
 
 logger = logging.getLogger(__name__)
 
-QDRANT_HOST = '192.168.50.186'
-QDRANT_PORT = 6333
-COLLECTION = 'globalstrat_textbook'
-EMBEDDING_MODEL = 'BAAI/bge-m3'
-EMBEDDING_DIM = 1024
+
+def _setting(name, default):
+    return getattr(settings, name, default)
+
+
+def _collection():
+    """The collection to search. Empty (the default) means none is configured."""
+    return _setting('TEXTBOOK_COLLECTION', '')
+
+
+def _embedding_model():
+    """Gateway alias for the embedder. Must match the collection's vectors."""
+    return _setting('TEXTBOOK_EMBEDDING_MODEL', 'bge-m3')
 
 # Persona-to-topic keyword mapping for enriching search queries
 PERSONA_TOPICS = {
@@ -36,23 +61,61 @@ PERSONA_TOPICS = {
 def _get_client():
     """Return a Qdrant client (new instance each call for thread safety)."""
     return QdrantClient(
-        host=QDRANT_HOST, port=QDRANT_PORT,
+        host=_setting('QDRANT_HOST', '192.168.50.186'),
+        port=int(_setting('QDRANT_PORT', 6333)),
         timeout=10, check_compatibility=False,
     )
 
 
-@lru_cache(maxsize=1)
-def _get_encoder():
-    """Lazy-load the sentence-transformers encoder (cached singleton)."""
-    from sentence_transformers import SentenceTransformer
-    return SentenceTransformer(EMBEDDING_MODEL)
+_UNAVAILABLE_REPORTED = set()
+
+
+def _unavailable(reason):
+    """Say why this is dead once, not once per student request."""
+    if reason not in _UNAVAILABLE_REPORTED:
+        _UNAVAILABLE_REPORTED.add(reason)
+        logger.warning('Course-material retrieval unavailable: %s', reason)
+    return False
+
+
+def is_available():
+    """Whether a configured collection actually exists on the host.
+
+    Checked per call but reported once. A missing collection is a deployment
+    state, not an error: the caller shows what it has without the excerpts.
+    """
+    collection = _collection()
+    if not collection:
+        return _unavailable('no TEXTBOOK_COLLECTION configured')
+    try:
+        if not _get_client().collection_exists(collection):
+            return _unavailable(f'collection {collection!r} does not exist')
+    except Exception as error:                        # noqa: BLE001
+        return _unavailable(f'Qdrant unreachable: {error}')
+    return True
 
 
 def _embed(text):
-    """Embed a single text string, return list of floats."""
-    model = _get_encoder()
-    vec = model.encode(text, normalize_embeddings=True)
-    return vec.tolist()
+    """Embed through the fleet gateway. Returns None when it cannot."""
+    from core.engine import llm_runner
+
+    if not llm_runner.llm_configured():
+        _unavailable('no LLM gateway configured for embeddings')
+        return None
+    try:
+        import httpx
+        response = httpx.post(
+            llm_runner.embeddings_url(),
+            headers={'Authorization': f'Bearer {llm_runner._get_key()}',
+                     'Content-Type': 'application/json'},
+            json={'model': _embedding_model(), 'input': text},
+            timeout=30,
+        )
+        response.raise_for_status()
+        return response.json()['data'][0]['embedding']
+    except Exception as error:                        # noqa: BLE001
+        logger.warning('Course-material embedding failed: %s', error)
+        return None
 
 
 def search_textbook(query, section_type=None, chapter_number=None, limit=10):
@@ -70,9 +133,13 @@ def search_textbook(query, section_type=None, chapter_number=None, limit=10):
         list of dicts with keys: chunk_id, chapter_number, chapter_title,
         section_type, section_title, content, score
     """
+    if not is_available():
+        return []
     try:
         client = _get_client()
         vector = _embed(query)
+        if vector is None:
+            return []
 
         # Build optional filter
         conditions = []
@@ -98,7 +165,7 @@ def search_textbook(query, section_type=None, chapter_number=None, limit=10):
         query_filter = Filter(must=conditions) if conditions else None
 
         response = client.query_points(
-            collection_name=COLLECTION,
+            collection_name=_collection(),
             query=vector,
             query_filter=query_filter,
             limit=limit,
@@ -178,6 +245,8 @@ def get_textbook_content(section_type=None, chapter_number=None):
 
     Returns list of dicts sorted by chapter_number, section_title.
     """
+    if not is_available():
+        return []
     try:
         client = _get_client()
 
@@ -207,7 +276,7 @@ def get_textbook_content(section_type=None, chapter_number=None):
         offset = None
         while True:
             points, offset = client.scroll(
-                collection_name=COLLECTION,
+                collection_name=_collection(),
                 scroll_filter=scroll_filter,
                 limit=100,
                 offset=offset,

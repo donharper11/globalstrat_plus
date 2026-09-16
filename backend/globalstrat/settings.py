@@ -283,6 +283,14 @@ QDRANT_COLLECTION = os.environ.get('QDRANT_COLLECTION', 'globalstrat_plus_articl
 EMBEDDING_MODEL = os.environ.get('EMBEDDING_MODEL', '/home/ubuntu/models/all-MiniLM-L6-v2')
 EMBEDDING_DIMENSION = 384  # all-MiniLM-L6-v2 dimension
 
+# Course-material retrieval (core/services/textbook_retrieval.py). Empty by
+# default and therefore inert: the BECSR-inherited collection name it used to
+# carry has never existed on the Qdrant host. Set both once a collection is
+# ingested; the model is a gateway alias and must match the collection's
+# vector size.
+TEXTBOOK_COLLECTION = os.environ.get('TEXTBOOK_COLLECTION', '')
+TEXTBOOK_EMBEDDING_MODEL = os.environ.get('TEXTBOOK_EMBEDDING_MODEL', 'bge-m3')
+
 # Every model call goes to the local LiteLLM fleet gateway
 # (core/engine/llm_runner.py). No third-party provider is called from this
 # platform. With these unset there is no model at all, and each caller uses its
