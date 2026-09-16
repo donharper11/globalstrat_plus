@@ -1,8 +1,14 @@
 # V2-072 — cutover to a least-privilege application role
 
-Status: **prepared and proven on a disposable server; not applied to
-production.** Nothing in this runbook has been run against 192.168.50.38. The
-only thing done there was a read-only privilege inspection, recorded below.
+Status: **applied to production on 2026-09-16**, on owner authorisation,
+following these steps exactly. GlobalStrat+ now connects as
+`globalstrat_plus_app`; the credential is `/root/gsp-app.pw` (root 0600). The
+step-by-step record, including the refusals exercised against 192.168.50.38
+itself, is in the V2-072 entry of `handoff_readiness_v2/V2_FINDINGS_REGISTER.md`.
+
+The runbook is kept in the present tense because it is re-runnable: the role
+script is idempotent, and Drift below says to re-run it after every migration.
+`donwh` was not touched and remains the owner of the database and every table.
 
 ## The finding, restated against what the server actually says
 
