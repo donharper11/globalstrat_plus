@@ -1,0 +1,101 @@
+# V2-072 - read-only inspection of the competition database, 2026-09-16.
+# Produced by harness/inspect-production.sh. Every statement is a SELECT
+# against a catalog view; nothing here changed anything.
+# The digest prefix identifies the credential without disclosing it.
+credential digest12: ce87835d94b0
+=== identity/version ===
+donwh|globalstrat_plus|PostgreSQL 16.13 (Debian 16.13-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+=== role attributes for donwh ===
+donwh|f|t|t|t|t|f|f|-1
+=== direct memberships ===
+accounting_svc|t
+aibstudy|f
+aibstudy|t
+exporter_svc|t
+gateway_svc|t
+keycloak_svc|f
+keycloak_svc|t
+nexus_api_runtime|t
+nexus_sql_studio_readonly|t
+postgres|f
+prism_user|f
+prism_user|t
+rl_app|t
+rl_owner|t
+rl_owner|f
+tenant_svc|t
+=== reachable privileged roles ===
+donwh|t|t
+postgres|t|t
+=== predefined role membership ===
+pg_checkpoint|f
+pg_create_subscription|f
+pg_database_owner|t
+pg_execute_server_program|f
+pg_monitor|f
+pg_read_all_data|f
+pg_read_all_settings|f
+pg_read_all_stats|f
+pg_read_server_files|f
+pg_signal_backend|f
+pg_stat_scan_tables|f
+pg_use_reserved_connections|f
+pg_write_all_data|f
+pg_write_server_files|f
+=== owner of the audit tables ===
+competition_audit_chain|donwh
+competition_authorization_refusal_event|donwh
+competition_decision_audit_event|donwh
+competition_operator_audit_event|donwh
+competition_resolution_manifest|donwh
+competition_sensitive_read_event|donwh
+=== schema public owner + acl ===
+public|pg_database_owner|{pg_database_owner=UC/pg_database_owner,=U/pg_database_owner}
+=== database owner + acl ===
+globalstrat_plus|donwh|
+=== table owners in public ===
+donwh|193
+=== login roles on the server ===
+accounting_svc|f|f|f
+aibstudy|f|f|f
+donwh|f|t|t
+exporter_svc|f|f|f
+gateway_svc|f|f|f
+keycloak_svc|f|f|f
+marketing_sim_ro|f|f|f
+microerp_svc|f|f|f
+nexus_api_runtime|f|f|f
+nexus_replicator|f|f|f
+nexus_sql_studio_readonly|f|f|f
+nexus_workflow_executor|f|f|f
+postgres|t|t|t
+prism_user|f|f|f
+rl_app|f|f|f
+tenant_svc|f|f|f
+=== non-template databases ===
+126
+=== relevant GUCs ===
+listen_addresses|*
+log_connections|off
+log_destination|stderr
+log_disconnections|off
+log_statement|none
+logging_collector|off
+password_encryption|scram-sha-256
+ssl|on
+=== extensions installed ===
+plpgsql
+=== audit guard triggers present ===
+competition_audit_chain|competition_audit_chain_append_only|O
+competition_audit_chain|competition_audit_chain_no_truncate|O
+competition_authorization_refusal_event|competition_authorization_refusal_event_append_only|O
+competition_authorization_refusal_event|competition_authorization_refusal_event_no_truncate|O
+competition_decision_audit_event|competition_decision_audit_event_append_only|O
+competition_decision_audit_event|competition_decision_audit_event_no_truncate|O
+competition_operator_audit_event|competition_operator_audit_event_append_only|O
+competition_operator_audit_event|competition_operator_audit_event_no_truncate|O
+competition_resolution_manifest|competition_resolution_manifest_append_only|O
+competition_resolution_manifest|competition_resolution_manifest_no_truncate|O
+competition_sensitive_read_event|competition_sensitive_read_event_append_only|O
+competition_sensitive_read_event|competition_sensitive_read_event_no_truncate|O
+=== default privileges recorded in public ===

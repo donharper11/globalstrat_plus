@@ -65,7 +65,20 @@
       unflagged heat silently loses the V2-033 cross-cohort protection.
 - [ ] Application runs as a non-owner database role that cannot `SET ROLE
       postgres` (V2-072, open P0 — the 2026-09-05 owner acceptance was
-      withdrawn as never given; see R19).
+      withdrawn as never given; see R19). **Prepared 2026-09-16 and still
+      unticked:** the role, `ops/provision-app-role.sh`, the cutover runbook
+      and the disposable-server proof exist
+      (`handoff_readiness_v2/evidence/v2-072/`), but the production cutover
+      changes `/etc/globalstrat-plus.env` and restarts two services, so it is
+      the owner's to run. Tick this only after
+      `ops/provision-app-role.sh --check` passes against
+      `192.168.50.38/globalstrat_plus` **and** the backend is serving on
+      `DB_USER=globalstrat_plus_app`. Note that this mitigates GlobalStrat+
+      only; `donwh` still reaches `postgres` for GlobalStrat v1 and BECSR.
+- [ ] `ops/provision-app-role.sh --check` is run after every migration, not
+      only at cutover. A default privilege grants the app role DML on each new
+      table, a future audit table included; the re-run is what takes it back
+      off (V2-072).
 - [ ] Full backend suite run and green on the freeze candidate. The seven
       standing red tests are repaired at `b562c63`, but **no full suite has been
       run since**, and the suite has never been green: 842 tests at `acee4ea`
