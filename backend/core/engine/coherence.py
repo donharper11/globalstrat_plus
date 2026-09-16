@@ -141,19 +141,16 @@ def calculate_coherence(context, skip_rag=False):
                 context, team, float(formula_score),
             )
 
-        # CC-32A: Communication coherence contribution
-        comm_score_val = _calculate_communication_coherence(game, team, current_round)
-
+        # R31 (2026-09-16): the communication score does NOT reach this number.
+        # It was scored by a language model at submit time, and this row is
+        # graded (services/grading.py), published, and inside the hashed
+        # `coherence` manifest section -- so blending it in put model output
+        # into a competitive result and contradicted V2-016's closure, which
+        # records that a model cannot reach a graded number. The evaluation
+        # survives on TeamCommunication as feedback for the student and the
+        # instructor; it is not graded, and it is not in this row.
         if rag_score_val is not None:
-            if comm_score_val > 0:
-                # New blend: formula (55%) + rag (35%) + communication (10%)
-                blended_val = (
-                    0.55 * float(formula_score)
-                    + 0.35 * rag_score_val
-                    + 0.10 * comm_score_val
-                )
-            else:
-                blended_val = 0.6 * float(formula_score) + 0.4 * rag_score_val
+            blended_val = 0.6 * float(formula_score) + 0.4 * rag_score_val
             blended_score = D(str(round(blended_val, 2)))
             rag_score = D(str(rag_score_val))
             breakdown['rag_evaluation'] = {
@@ -162,16 +159,7 @@ def calculate_coherence(context, skip_rag=False):
             }
         else:
             rag_score = None
-            if comm_score_val > 0:
-                blended_val = 0.90 * float(formula_score) + 0.10 * comm_score_val
-                blended_score = D(str(round(blended_val, 2)))
-            else:
-                blended_score = formula_score
-
-        if comm_score_val > 0:
-            breakdown['communication_coherence'] = {
-                'score': comm_score_val,
-            }
+            blended_score = formula_score
 
         RoundResultCoherence.objects.update_or_create(
             game=game, round_number=current_round, team=team,
@@ -227,13 +215,7 @@ def update_coherence_with_rag(game, round_number, team, rag_text):
     # What the score *would* have been, shown to instructors as context. It is
     # computed here and stored nowhere near the graded row.
     formula_score = float(coherence_record.formula_score)
-    comm_score = (coherence_record.breakdown or {}).get(
-        'communication_coherence', {},
-    ).get('score', 0)
-    if comm_score > 0:
-        blended_val = 0.55 * formula_score + 0.35 * rag_score_val + 0.10 * comm_score
-    else:
-        blended_val = 0.6 * formula_score + 0.4 * rag_score_val
+    blended_val = 0.6 * formula_score + 0.4 * rag_score_val
 
     _record_rag_commentary(game, round_number, team, rag_score_val, rag_feedback,
                            blended_val)
@@ -263,10 +245,21 @@ def _record_rag_commentary(game, round_number, team, score, feedback, blended):
         logger.exception('Could not record RAG commentary for %s', team)
 
 
-def _calculate_communication_coherence(game, team, current_round):
-    """
-    CC-32A: Calculate communication coherence contribution.
-    Returns a score 0-100 based on submitted communications up to this round.
+def communication_feedback_total(game, team, current_round):
+    """The stored communication contributions, for display only.
+
+    Retained deliberately after R31 severed this from grading, so the figure an
+    instructor sees has one definition. Two things it is not: it is not summed
+    into `blended_score`, and it is not written into the hashed coherence row.
+
+    Its old name said `coherence`, and its old comment claimed the value was
+    "already on a 0-100ish scale". It never was: each contribution is
+    `overall_score` (0-1) x the assignment weight x 100, and the five authored
+    assignments weigh 0.26 in total, so the sum caps near 26 against a formula
+    score that runs to 100. Blending the two therefore *lowered* a team's
+    coherence whenever a student did the assignment -- most for the strongest
+    teams. Recorded here because the arithmetic is the reason the severed path
+    could never have been simply re-weighted.
     """
     try:
         from core.models.cc32_models import TeamCommunication
@@ -276,12 +269,7 @@ def _calculate_communication_coherence(game, team, current_round):
             game=game, team=team, is_draft=False,
             round__round_number__lte=current_round,
         ).aggregate(total=Sum('coherence_contribution'))
-
-        total = float(result['total'] or 0)
-        # Coherence contribution is already on a 0-100ish scale
-        # (overall_score 0-1 * coherence_weight * 100)
-        # Cap at 100
-        return min(total, 100.0)
+        return float(result['total'] or 0)
     except Exception:
         return 0.0
 
