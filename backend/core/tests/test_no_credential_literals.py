@@ -51,6 +51,16 @@ ALLOWED = {
         "127.0.0.1, so the key is never sent anywhere; a real DashScope key is "
         "'sk-' plus 32 hex and this is nine characters. Read and confirmed "
         "2026-09-03.",
+    ('handoff_readiness_v2/evidence/decision-rules/harness/stack.py', 39, 'DB_PASSWORD'):
+        "The literal is '***REMOVED-CREDENTIAL-V2-048***', which is the "
+        "replacement string the V2-048 history rewrite substituted for the "
+        "password -- see V2-048_HISTORY_REWRITE_RECORD.md:35, where the same "
+        "marker is recorded. It is a redaction, not a credential: this CRV2-10 "
+        "Stage 1 harness was written before the rewrite and came in with the "
+        "evidence merge, already scrubbed. Read and confirmed 2026-09-16. Note "
+        "that the same file still names the V2-048 host and role in clear at "
+        "lines 36-38; that is the V2-048/V2-072 access question, not this "
+        "check's, and it is not disposed of here.",
 }
 
 
