@@ -31,6 +31,14 @@ ExecStart=/usr/bin/python3 manage.py export_audit_anchor
 # Then say whether the result verifies, so a failure is visible in the journal
 # rather than waiting to be discovered by an audit.
 ExecStartPost=/usr/bin/python3 manage.py verify_audit_chain
+# And whether the revision this deployment advertises is the code it is running.
+# GIT_REVISION is set by hand, and this deployment is a checkout, so the two
+# drift silently: rounds resolved after a drift are stamped with a commit that
+# did not produce them, and nobody finds out until a dispute asks for a replay.
+# Checked here so drift surfaces within the timer's interval rather than months
+# later. Non-fatal to the anchor itself: `-` keeps a drifted revision from
+# suppressing the sealing this unit exists to do.
+ExecStartPost=-/usr/bin/python3 manage.py check_release_identity
 
 [Install]
 WantedBy=multi-user.target
