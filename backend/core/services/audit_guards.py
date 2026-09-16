@@ -262,30 +262,77 @@ def missing_guards(connection):
     return missing
 
 
-def provision_app_role_sql(role, password_placeholder='<password>'):
-    """SQL that creates a least-privilege application role.
+def provision_app_role_sql(role, owner='<owner>'):
+    """SQL that creates or converges a least-privilege application role.
 
     The application currently connects as the owner of its own tables, which
     means the triggers above protect it from its own bugs but not from its own
     credentials. A non-owner role cannot drop a trigger, so running the
     application as this role turns "the app must not rewrite audit history"
     from a convention into something the database enforces.
+
+    Three corrections against the first version of this function (V2-072):
+
+    * It revoked `UPDATE` on every table in `ALL_TABLES`, the resolution
+      manifest included. The manifest is the one audit row the application
+      updates by design -- `prepare_manifest` writes it before the round is
+      resolved and `complete_manifest` fills in the outputs -- so the role it
+      provisioned could not finish a round. The manifest keeps `UPDATE`; what
+      freezes it at `completed_at` is the trigger above, not the privilege.
+    * `CREATE ROLE` and a password literal made it a one-shot script that
+      printed a secret. This emits no password at all (`ops/provision-app-role.sh`
+      sets one, from a file, on psql's stdin) and converges an existing role
+      instead of failing on it.
+    * `ALTER DEFAULT PRIVILEGES` with no `FOR ROLE` records the default for
+      whoever runs it. Migrations are run by the table owner, so the default
+      has to be pinned to the owner or the next migration produces tables the
+      application cannot read.
+
+    It still does not remove `CREATEROLE`, `CREATEDB` or a membership in a
+    superuser role, because those need an admin connection and a judgement call
+    about the other consumers of a shared login. That is the runbook's job, not
+    this function's; `ops/provision-app-role.sh` does it and verifies it.
     """
-    audit_tables = ALL_TABLES
     statements = [
-        f"-- Run as the database owner. Replace {password_placeholder}.",
-        f"CREATE ROLE {role} LOGIN PASSWORD '{password_placeholder}';",
-        "GRANT USAGE ON SCHEMA public TO %s;" % role,
-        "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public "
-        "TO %s;" % role,
-        "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO %s;" % role,
+        f'-- Run as {owner}, the owner of the tables. Idempotent.',
+        '-- Sets no password: see ops/provision-app-role.sh.',
+        f"DO $$ BEGIN\n"
+        f"  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '{role}') THEN\n"
+        f"    CREATE ROLE {role} LOGIN;\n"
+        f"  END IF;\n"
+        f"END $$;",
+        # The database name is not a literal anywhere in this file, so the
+        # GRANT is built from `current_database()` rather than guessed.
+        f"DO $$ BEGIN\n"
+        f"  EXECUTE format('GRANT CONNECT, TEMPORARY ON DATABASE %I TO {role}',"
+        f" current_database());\n"
+        f"END $$;",
+        f'GRANT USAGE ON SCHEMA public TO {role};',
+        # No CREATE: a role that can create a table in public can create one it
+        # owns, and an owner can drop that table's triggers.
+        f'REVOKE CREATE ON SCHEMA public FROM {role};',
+        f'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public '
+        f'TO {role};',
+        f'GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public '
+        f'TO {role};',
     ]
-    for table in audit_tables:
+    for table in PROTECTED_TABLES:
         statements.append(
-            f'REVOKE UPDATE, DELETE, TRUNCATE ON {table} FROM {role};')
+            f'REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER '
+            f'ON {table} FROM {role};')
     statements.append(
-        "ALTER DEFAULT PRIVILEGES IN SCHEMA public "
-        "GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO %s;" % role)
+        f'REVOKE DELETE, TRUNCATE, REFERENCES, TRIGGER '
+        f'ON {MANIFEST_TABLE} FROM {role};')
+    statements.append(
+        f'ALTER DEFAULT PRIVILEGES FOR ROLE {owner} IN SCHEMA public '
+        f'GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO {role};')
+    statements.append(
+        f'ALTER DEFAULT PRIVILEGES FOR ROLE {owner} IN SCHEMA public '
+        f'GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO {role};')
+    statements.append(
+        '-- A default privilege also covers a *future* audit table, so re-run '
+        'this after every migration; ops/provision-app-role.sh --check fails '
+        'if it was not.')
     return statements
 
 

@@ -27,11 +27,16 @@ class Command(BaseCommand):
         parser.add_argument('--role-sql', default=None, metavar='ROLE',
                             help='Print the SQL that provisions a least-privilege '
                                  'application role, and exit.')
+        parser.add_argument('--role-owner', default=None, metavar='OWNER',
+                            help='Grantor for the default privileges in the '
+                                 '--role-sql output. Defaults to the current '
+                                 "database's owner, read from the server.")
         parser.add_argument('--json', action='store_true')
 
     def handle(self, *args, **options):
         if options['role_sql']:
-            for statement in provision_app_role_sql(options['role_sql']):
+            owner = options['role_owner'] or self._database_owner()
+            for statement in provision_app_role_sql(options['role_sql'], owner):
                 self.stdout.write(statement)
             return
 
@@ -78,3 +83,18 @@ class Command(BaseCommand):
         for table in tables:
             names = sorted(r['trigger'] for r in rows if r['table'] == table)
             self.stdout.write(f"  {table}: {', '.join(names)}")
+
+    @staticmethod
+    def _database_owner():
+        """Who owns this database, so the default privileges name a grantor.
+
+        `ALTER DEFAULT PRIVILEGES` with no `FOR ROLE` records the default for
+        whoever runs the statement. Migrations are run by the owner, so a
+        default recorded against anyone else silently stops applying to the
+        tables the next migration creates.
+        """
+        with connection.cursor() as cursor:
+            cursor.execute('SELECT pg_get_userbyid(datdba) FROM pg_database '
+                           'WHERE datname = current_database()')
+            row = cursor.fetchone()
+        return row[0] if row else '<owner>'

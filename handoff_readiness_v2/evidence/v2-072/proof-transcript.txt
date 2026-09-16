@@ -1,0 +1,254 @@
+
+# V2-072 - the least-privilege application role, proven on a disposable
+# PostgreSQL 16.13 in Docker. 2026-09-16. Produced by harness/prove.sh.
+#
+# Nothing here touched 192.168.50.38. The two credentials are throwaway, were
+# generated into a 0600 file in a scratch directory, and appear below only as
+# 12-hex digest prefixes. The container was destroyed at the end.
+
+═══ A. disposable PostgreSQL ═══
+ready after 2s
+PostgreSQL 16.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+
+═══ A. production's role shape, rebuilt ═══
+donwh created (digest12 a1127d87481a), CREATEDB CREATEROLE, member of postgres
+  Applying core.0087_merge_20260912_0446... OK
+  Applying sessions.0001_initial... OK
+tables in public: 193, owned by donwh: 193
+guard triggers: 12
+
+═══ B. the hazard, as donwh -- the role the application uses today ═══
+B1 SET ROLE postgres                       [expect: it works]
+SET
+now postgres, superuser=true
+B2 role attributes                         [expect: both true]
+createrole=t createdb=t
+B3 read a server file                      [expect: it works]
+SET
+read 29829 bytes of postgresql.conf
+B4 drop the append-only guard              [expect: it works]
+DROP TRIGGER
+append_only triggers left: 5
+B5 restore it
+Installed 12 guards across 6 audit tables (UPDATE/DELETE and TRUNCATE on each):
+guard triggers: 12
+
+═══ C. ops/provision-app-role.sh ═══
+V2-072 application-role provisioning
+  server      : 127.0.0.1:55432/globalstrat_plus
+  admin role  : donwh
+  app role    : globalstrat_plus_app
+  mode        : apply
+
+database owner: donwh
+
+generated a new credential into /tmp/claude-1000/-home-ubuntu-projects-globalstrat-/597ac7c0-693c-46e3-85d2-2c8387818057/scratchpad/prove4/app.pw (0600)
+credential digest : 64ac8ae1ec70  (not printed anywhere else)
+
+NOTICE:  created role globalstrat_plus_app
+grants applied.
+
+NOTE: a default privilege grants DML on every future table, including a
+future audit table. Re-run this script after each migration — that is what
+takes UPDATE/DELETE back off any newly added append-only table. --check
+fails if it was not re-run.
+
+── role attributes ────────────────────────────────────────────────
+globalstrat_plus_app: super=f createrole=f createdb=f login=t replication=f bypassrls=f inherit=t
+── role memberships (must be empty) ───────────────────────────────
+── can it reach a superuser? (must be f) ──────────────────────────
+postgres reachable: inherit=f set_role=f
+── audit-table privileges (update/delete/truncate must be f) ──────
+competition_decision_audit_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_operator_audit_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_sensitive_read_event               owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_authorization_refusal_event        owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_audit_chain                        owner=donwh              select=t insert=t update=f delete=f truncate=f
+competition_resolution_manifest                owner=donwh              select=t insert=t update=t delete=f truncate=f
+── schema public (create must be f) ───────────────────────────────
+usage=t create=f
+── application tables the role cannot write (must be empty) ───────
+── sequences the role cannot use (must be empty) ──────────────────
+
+
+PASS: globalstrat_plus_app is a least-privilege, non-owning application role.
+provision exit: 0
+
+═══ C2. the same grant set, emitted by provision_app_role_sql() and re-applied ═══
+-- Run as donwh, the owner of the tables. Idempotent.
+-- Sets no password: see ops/provision-app-role.sh.
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'globalstrat_plus_app') THEN
+    CREATE ROLE globalstrat_plus_app LOGIN;
+  END IF;
+END $$;
+DO $$ BEGIN
+  EXECUTE format('GRANT CONNECT, TEMPORARY ON DATABASE %I TO globalstrat_plus_app', current_database());
+END $$;
+GRANT USAGE ON SCHEMA public TO globalstrat_plus_app;
+REVOKE CREATE ON SCHEMA public FROM globalstrat_plus_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO globalstrat_plus_app;
+GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO globalstrat_plus_app;
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_decision_audit_event FROM globalstrat_plus_app;
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_operator_audit_event FROM globalstrat_plus_app;
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_sensitive_read_event FROM globalstrat_plus_app;
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_authorization_refusal_event FROM globalstrat_plus_app;
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_audit_chain FROM globalstrat_plus_app;
+REVOKE DELETE, TRUNCATE, REFERENCES, TRIGGER ON competition_resolution_manifest FROM globalstrat_plus_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE donwh IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO globalstrat_plus_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE donwh IN SCHEMA public GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO globalstrat_plus_app;
+-- A default privilege also covers a *future* audit table, so re-run this after every migration; ops/provision-app-role.sh --check fails if it was not.
+REVOKE
+ALTER DEFAULT PRIVILEGES
+ALTER DEFAULT PRIVILEGES
+re-apply exit: 0
+
+═══ D. escalation attempts as globalstrat_plus_app ═══
+connected as: globalstrat_plus_app
+D1  SET ROLE postgres                      [expect: denied]
+ERROR:  permission denied to set role "postgres"
+D2  SET ROLE donwh                         [expect: denied]
+ERROR:  permission denied to set role "donwh"
+D3  role attributes                        [expect: all false]
+super=f createrole=f createdb=f replication=f bypassrls=f
+D4  CREATE ROLE                            [expect: denied]
+ERROR:  permission denied to create role
+DETAIL:  Only roles with the CREATEROLE attribute may create roles.
+D5  CREATE DATABASE                        [expect: denied]
+ERROR:  permission denied to create database
+D6  ALTER ROLE donwh PASSWORD              [expect: denied]
+ERROR:  permission denied to alter role
+DETAIL:  To change another role's password, the current user must have the CREATEROLE attribute and the ADMIN option on the role.
+D7  pg_read_file                           [expect: denied]
+ERROR:  permission denied for function pg_read_file
+D8  COPY TO PROGRAM                        [expect: denied]
+ERROR:  permission denied to COPY to or from an external program
+DETAIL:  Only roles with privileges of the "pg_execute_server_program" role may COPY to or from an external program.
+D9  memberships held                       [expect: 0]
+0
+D10 reachable superusers                   [expect: 0]
+0
+D11 databases it may create objects in     [expect: 0]
+0
+
+═══ D. the audit guards, attacked as globalstrat_plus_app ═══
+D12 DROP TRIGGER on an audit table         [expect: must be owner]
+ERROR:  must be owner of relation competition_decision_audit_event
+D13 ALTER TABLE ... DISABLE TRIGGER        [expect: must be owner]
+ERROR:  must be owner of table competition_decision_audit_event
+D14 DROP the audit table                   [expect: must be owner]
+ERROR:  must be owner of table competition_decision_audit_event
+D15 CREATE OR REPLACE the guard function   [expect: denied]
+ERROR:  permission denied for schema public
+D16 ALTER TABLE ... OWNER TO me            [expect: must be owner]
+ERROR:  must be owner of table competition_decision_audit_event
+D17 CREATE TABLE in public                 [expect: denied]
+ERROR:  permission denied for schema public
+LINE 1: create table attacker_t (id int)
+D18 TRUNCATE an audit table                [expect: denied]
+ERROR:  permission denied for table competition_decision_audit_event
+D19 DELETE from an audit table             [expect: denied]
+ERROR:  permission denied for table competition_decision_audit_event
+D20 UPDATE an audit table                  [expect: denied]
+ERROR:  permission denied for table competition_decision_audit_event
+D21 set allow_truncate then TRUNCATE       [expect: still denied]
+SET
+ERROR:  permission denied for table competition_decision_audit_event
+D22 migration-shaped DDL                   [expect: must be owner]
+ERROR:  must be owner of table game
+ERROR:  must be owner of table game
+ERROR:  must be owner of table django_session
+
+═══ E. what the restricted role must still be able to do ═══
+E1  read every application table
+of 193 public tables, readable=193
+E2  write an ordinary table                [expect: INSERT 1 / DELETE 1]
+INSERT 0 1
+DELETE 1
+E3  append to an audit table               [expect: INSERT 1]
+INSERT 0 1
+E4  then rewrite what it just wrote        [expect: denied]
+ERROR:  permission denied for table competition_audit_chain
+E5  then delete it                         [expect: denied]
+ERROR:  permission denied for table competition_audit_chain
+E6  the row is intact                      [expect: aaaaaaaa]
+row_sha256 starts aaaaaaaa
+E7  UPDATE the manifest                    [expect: UPDATE 0, i.e. authorised]
+UPDATE 0
+E8  the same shape on an audit table       [expect: denied]
+ERROR:  permission denied for table competition_decision_audit_event
+E9  DELETE the manifest                    [expect: denied]
+ERROR:  permission denied for table competition_resolution_manifest
+E10 use a sequence                         [expect: a number]
+2
+E11 the restore path                       [expect: refused -- V2-072a]
+ERROR:  must be owner of schema public
+ERROR:  permission denied for database globalstrat_plus
+tables in public after the attempt: 193
+E12 pg_dump -- the pre-resolution backup the round resolver takes
+    exit=0 size=883760 bytes
+E13 the platform's own commands, as globalstrat_plus_app
+System check identified no issues (0 silenced).
+All append-only audit guards are installed and enabled.
+2026-09-16 12:30:45 — no rounds due to close.
+     succeeded: 0
+        failed: 0
+      degraded: 0
+Narrative worker ai-react:1879309:87030c24 stopped after 0 job(s).
+
+═══ F. default privileges, and the drift --check exists to catch ═══
+F1  the owner creates a table, as a migration would
+CREATE TABLE
+app role: select=t insert=t update=t delete=t, owner=donwh
+its sequence usable=t
+DROP TABLE
+F2  someone grants UPDATE on an audit table. --check must fail.
+GRANT
+FAIL: globalstrat_plus_app can rewrite or own the audit table competition_decision_audit_event
+
+FAILED: globalstrat_plus_app does not meet the V2-072 least-privilege contract.
+    --check exit: 1
+F3  re-running the provisioner repairs it
+PASS: globalstrat_plus_app is a least-privilege, non-owning application role.
+PASS: globalstrat_plus_app is a least-privilege, non-owning application role.
+    --check exit: 0
+
+═══ G. the full backend suite, as globalstrat_plus_app ═══
+NOTICE:  database "test_globalstrat_plus" does not exist, skipping
+test database pre-created by the owner; globalstrat_plus_app granted CREATE on its public schema
+suite exit: 0
+Using existing test database for alias 'default'...
+Ran 1016 tests in 161.766s
+OK
+Preserving test database for alias 'default'...
+
+═══ H. the rollback path ═══
+H1  --revoke
+
+ROLLBACK COMPLETE. GlobalStrat+ must be pointed back at donwh
+(DB_USER in /etc/globalstrat-plus.env) and restarted.
+H2  the role can still log in, and can now read nothing [expect: denied]
+ERROR:  permission denied for table game
+schema usage (granted to PUBLIC, not to this role)=true
+H3  the application on the old role is unaffected     [expect: a count]
+game rows=0
+H4  --revoke --drop-role, while the test database's objects still exist
+    [expect: refused, and the role kept]
+ERROR:  role "globalstrat_plus_app" cannot be dropped because some objects depend on it
+DETAIL:  388 objects in database test_globalstrat_plus
+ERROR: DROP ROLE failed — globalstrat_plus_app still owns objects or holds grants in another database on this server (named in the DETAIL above). Revoke there first; the role is kept and the grants in globalstrat_plus are already gone.
+roles named globalstrat_plus_app: 1
+H5  the same, once nothing depends on the role [expect: dropped]
+
+ROLLBACK COMPLETE. GlobalStrat+ must be pointed back at donwh
+(DB_USER in /etc/globalstrat-plus.env) and restarted.
+roles named globalstrat_plus_app: 0
+H6  and the audit guards are exactly where they were  [expect: 12]
+guard triggers: 12
+
+═══ done ═══
+credentials generated in /tmp/claude-1000/-home-ubuntu-projects-globalstrat-/597ac7c0-693c-46e3-85d2-2c8387818057/scratchpad/prove4 (0600). Digest prefixes only:
+  donwh (owner stand-in): a1127d87481a
+  globalstrat_plus_app: 64ac8ae1ec70
+removing the container
+container removed

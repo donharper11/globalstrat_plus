@@ -200,11 +200,45 @@ class AuditGuardInstallationTests(AuditIntegrityBase):
                               str(caught.exception))
 
     def test_the_provisioned_role_is_denied_update_and_delete(self):
-        statements = audit_guards.provision_app_role_sql('globalstrat_app')
+        statements = audit_guards.provision_app_role_sql(
+            'globalstrat_app', 'globalstrat_owner')
         joined = '\n'.join(statements)
-        for table in audit_guards.PROTECTED_TABLES + (audit_guards.MANIFEST_TABLE,):
-            self.assertIn(f'REVOKE UPDATE, DELETE, TRUNCATE ON {table}', joined)
+        for table in audit_guards.PROTECTED_TABLES:
+            self.assertIn(
+                'REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER '
+                f'ON {table} FROM globalstrat_app', joined)
         self.assertIn('GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES', joined)
+
+    def test_the_provisioned_role_keeps_update_on_the_manifest(self):
+        """The manifest is written twice by design (V2-072).
+
+        The first version of `provision_app_role_sql` revoked UPDATE on every
+        table in `ALL_TABLES`, so the role it provisioned could write the
+        pre-resolution manifest and then fail in `complete_manifest` -- at the
+        end of a round, after the scoring had already happened. What freezes
+        the manifest is the trigger, at `completed_at`, not the privilege.
+        """
+        joined = '\n'.join(audit_guards.provision_app_role_sql(
+            'globalstrat_app', 'globalstrat_owner'))
+        self.assertIn(
+            'REVOKE DELETE, TRUNCATE, REFERENCES, TRIGGER '
+            f'ON {audit_guards.MANIFEST_TABLE} FROM globalstrat_app', joined)
+        self.assertNotIn('REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER '
+                         f'ON {audit_guards.MANIFEST_TABLE}', joined)
+
+    def test_the_provisioned_role_cannot_create_objects_or_own_them(self):
+        joined = '\n'.join(audit_guards.provision_app_role_sql(
+            'globalstrat_app', 'globalstrat_owner'))
+        self.assertIn('REVOKE CREATE ON SCHEMA public FROM globalstrat_app',
+                      joined)
+        self.assertNotIn('PASSWORD', joined)
+
+    def test_default_privileges_name_the_owner_as_grantor(self):
+        """Pinned to the owner, because the owner is who runs the migrations."""
+        joined = '\n'.join(audit_guards.provision_app_role_sql(
+            'globalstrat_app', 'globalstrat_owner'))
+        self.assertIn('ALTER DEFAULT PRIVILEGES FOR ROLE globalstrat_owner '
+                      'IN SCHEMA public', joined)
 
 
 class AuditRejectionTests(AuditIntegrityBase):
