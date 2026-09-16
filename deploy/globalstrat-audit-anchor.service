@@ -1,0 +1,36 @@
+[Unit]
+# Seal any unsealed audit rows into the forward hash chain and write the chain
+# head outside the database.
+#
+# Sealing also happens on its own, in an on_commit hook after every audit write
+# (core/services/audit_chain.schedule_seal). This unit exists for the rows that
+# hook cannot reach and for the anchor, which nothing else writes: rows inserted
+# by raw SQL or a data migration, rows written while a process was killed, and
+# read events between audit writes.
+#
+# Why it matters that this runs on a schedule: the append-only triggers refuse a
+# change, and the chain plus its external anchor *detect* a change made by
+# someone who could drop those triggers first. An anchor taken after a tampering
+# event proves nothing, so the interval is the guarantee. Found unscheduled on
+# 2026-09-16 with 1,076 events unsealed and no anchor at all.
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+UMask=0077
+WorkingDirectory=/home/ubuntu/projects/globalstrat+/backend
+Environment=GLOBALSTRAT_ENV=production
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/etc/globalstrat-plus.env
+# Seals first, then anchors: `export_audit_anchor` runs seal_pending() itself
+# unless --no-seal is given, so one command covers both and cannot anchor a head
+# that is already behind the unsealed rows.
+ExecStart=/usr/bin/python3 manage.py export_audit_anchor
+# Then say whether the result verifies, so a failure is visible in the journal
+# rather than waiting to be discovered by an audit.
+ExecStartPost=/usr/bin/python3 manage.py verify_audit_chain
+
+[Install]
+WantedBy=multi-user.target

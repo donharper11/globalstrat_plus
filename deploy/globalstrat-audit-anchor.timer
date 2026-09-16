@@ -1,0 +1,18 @@
+[Unit]
+Description=Seal and anchor the GlobalStrat+ audit chain every 15 minutes
+
+[Timer]
+# Fifteen minutes is the window an undetected tampering event could hide in, so
+# it is chosen rather than inherited: the backup monitor's daily cadence would
+# leave a competition day's worth of rounds anchored only at the end of it.
+# The pass is cheap — it seals what is pending and writes one small file.
+OnBootSec=5min
+OnUnitActiveSec=15min
+Persistent=true
+# Small jitter only. A long randomised delay is the wrong trade here: it widens
+# the same window the interval exists to close.
+RandomizedDelaySec=60
+Unit=globalstrat-audit-anchor.service
+
+[Install]
+WantedBy=timers.target
