@@ -2690,3 +2690,48 @@ builder flagged as needing an owner's decision and left untouched — and the
 paid-research **report prices**, which ship at a uniform placeholder and are
 deferred calibration, **not** an open defect. Recorded so that neither is
 mistaken for an unregistered gap at re-audit.
+
+## V2-117 — open question for the PI: the communication-scoring scale after the model change (2026-09-16)
+
+**Not a finding and not a ruling.** Nothing here is defective and no decision has
+been taken. It is registered so the choice is made deliberately, by the person
+whose call it is, rather than settling itself by default.
+
+**ID note.** Numbered V2-117, not V2-096: `crv2-register-backlog-2026-09-12`
+already registers V2-109 through V2-116 and is not yet merged, so the next free
+id across every branch is this one.
+
+**What changed.** Student communication scoring
+(`core/rag/communication_eval.py`) called the cloud model `qwen-max` through
+DashScope. At `da8631e` every model call in the platform moved to the local
+LiteLLM fleet gateway, and this path now uses `tutor`. Its score is
+`overall_score × assignment.coherence_weight × 100`, stored as
+`coherence_contribution` and worth 10% of `RoundResultCoherence.blended_score`;
+the other 90% is the deterministic Phase-1 formula, which this does not touch.
+
+**What was measured** (8 prompts built by the platform's own prompt code, each
+scored twice by each model, 2026-09-16; method and per-prompt numbers in the
+`da8631e` commit message, summary in the `_call_llm_evaluation` docstring):
+
+| | mean score (0–1) | self-consistency | latency |
+|---|---:|---:|---:|
+| `qwen-max` (retired) | 0.218 | ±0.036 | 11.4s |
+| `tutor` (in force) | 0.129 | ±0.014 | 7.2s |
+
+So `tutor` marks about **0.09 lower on a 0–1 scale** — at most ~0.75 points of
+the communication component — while being **more self-consistent** and faster.
+The shift is uniform: it applies to every team equally, and it is a change of
+scale, not of ranking. Caveat on the sample: the eight test texts run ~50 words
+against a 300–400 word limit, so all three models scored low; the gap between
+models is the evidence, not the absolute values.
+
+**Why it can be decided cleanly now.** `TeamCommunication` is empty — no
+submission has ever been scored and stored — so no published mark becomes
+inconsistent whichever way it goes. That stops being true the first time a
+cohort submits.
+
+**The open question, for the PI.** Restore the previous strictness by adjusting
+the rubric or `coherence_weight`, or accept the new scale as the baseline? The
+model choice itself is settled — no platform calls a third-party provider — so
+this is a marking-scale question, not a routing one. It is the PI's to answer;
+no builder and no operator should resolve it by choosing a different model.

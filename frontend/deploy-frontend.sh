@@ -42,6 +42,14 @@ fi
 # setting. These tests read source only -- no database, no gateway, well under a
 # second -- so the deploy that reaches students is also the layer that proves a
 # provider call has not crept back in. Same tests run in CI on every push.
+#
+# Emergency override: MODEL_GUARD_OVERRIDE="<who>: <why>". A gate that can stop a
+# deploy to students needs a way past it in a real emergency, or the first urgent
+# deploy at a bad moment gets fixed by commenting the check out and the guard is
+# gone for good. So the way past is named in the refusal itself, demands a person
+# and a reason, and writes both to the deploy record below -- a deliberate,
+# attributable, visible act, which editing this file is not.
+MODEL_GUARD_STATUS="passed"
 if [ -n "$_AIDE_ROOT" ] && [ -f "$_AIDE_ROOT/backend/manage.py" ]; then
   if ! ( cd "$_AIDE_ROOT/backend" && \
          DJANGO_SECRET_KEY="${DJANGO_SECRET_KEY:-deploy-gate-not-a-real-key}" \
@@ -49,10 +57,31 @@ if [ -n "$_AIDE_ROOT" ] && [ -f "$_AIDE_ROOT/backend/manage.py" ]; then
          DB_PASSWORD="${DB_PASSWORD:-}" DB_HOST="${DB_HOST:-127.0.0.1}" \
          DB_PORT="${DB_PORT:-1}" \
          python3 manage.py test --noinput core.tests.test_narrative_llm_routing ); then
+    # A bare or anonymous override is not an override: name yourself and say why.
+    if [ -z "${MODEL_GUARD_OVERRIDE:-}" ]; then
+      echo "" >&2
+      echo "model-routing guard: DEPLOY REFUSED — a model call does not go through" >&2
+      echo "the gateway. Nothing was deployed." >&2
+      echo "" >&2
+      echo "  To override in an emergency, re-run with a person and a reason:" >&2
+      echo "    MODEL_GUARD_OVERRIDE=\"<your name>: <why this cannot wait>\" $0 $*" >&2
+      echo "  It is recorded in the deploy record and in this run's output." >&2
+      exit 1
+    fi
+    case "$MODEL_GUARD_OVERRIDE" in
+      *:*[!\ ]*) ;;
+      *)
+        echo "" >&2
+        echo "model-routing guard: DEPLOY REFUSED — MODEL_GUARD_OVERRIDE must read" >&2
+        echo "\"<who>: <why>\", e.g. \"Dana Okafor: gateway outage, narratives already" >&2
+        echo "degrade to templates\". Got: ${MODEL_GUARD_OVERRIDE}" >&2
+        exit 1 ;;
+    esac
+    MODEL_GUARD_STATUS="OVERRIDDEN by ${MODEL_GUARD_OVERRIDE}"
     echo "" >&2
-    echo "model-routing guard: DEPLOY REFUSED — a model call does not go through" >&2
-    echo "the gateway. Nothing was deployed." >&2
-    exit 1
+    echo "model-routing guard: OVERRIDDEN — ${MODEL_GUARD_OVERRIDE}" >&2
+    echo "model-routing guard: the guard FAILED and this deploy is proceeding anyway." >&2
+    echo "model-routing guard: recorded in the deploy record on the ECS host." >&2
   fi
 fi
 # ─── end model-routing guard ────────────────────────────────────────────────
@@ -145,6 +174,30 @@ else
     -e "ssh -i $SSH_KEY" \
     "$FRONTEND_DIR/build/" "$ECS_USER@$ECS_HOST:$ECS_PATH/" 2>&1 | tail -3
   ok "Files deployed"
+fi
+echo ""
+
+# ── Step 3b: Deploy record ───────────────────────────────────────────────
+# One line per deploy on the host that serves it: when, which revision, who ran
+# it, which backup it can be rolled back to, and whether any gate was overridden.
+# An override that lives only in someone's terminal scrollback is not recorded.
+
+DEPLOY_RECORD="/var/www/globalstrat-deploys.log"
+RECORD_LINE="$(date -u +%Y-%m-%dT%H:%M:%SZ) rev=$(git -C "$_AIDE_ROOT" rev-parse --short HEAD 2>/dev/null || echo unknown) by=$(whoami)@$(hostname) backup=${BACKUP_NAME} model-routing-guard=${MODEL_GUARD_STATUS}"
+log "Recording the deploy..."
+if $DRY_RUN; then
+  echo "   Would append to $ECS_USER@$ECS_HOST:$DEPLOY_RECORD"
+  echo "   $RECORD_LINE"
+else
+  if ssh -i "$SSH_KEY" "$ECS_USER@$ECS_HOST" \
+       "umask 022; printf '%s\n' \"$RECORD_LINE\" >> $DEPLOY_RECORD"; then
+    ok "Deploy record: $DEPLOY_RECORD"
+  else
+    # Never fail a finished deploy over its own bookkeeping, but never let the
+    # line disappear either.
+    warn "Could not write the deploy record — record this by hand:"
+    echo "   $RECORD_LINE" >&2
+  fi
 fi
 echo ""
 
