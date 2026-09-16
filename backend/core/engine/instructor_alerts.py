@@ -290,13 +290,9 @@ def enhance_teaching_note_with_rag(alert):
             return
 
         from django.conf import settings
-        api_key = getattr(settings, 'DASHSCOPE_API_KEY', None)
-        if not api_key:
+        from core.engine import llm_runner
+        if not llm_runner.llm_configured():
             return
-
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = api_key
 
         context_text = '\n'.join([r['text'][:300] for r in results])
 
@@ -304,8 +300,8 @@ def enhance_teaching_note_with_rag(alert):
         language = get_instructor_language(alert.game) if alert.game else 'en'
         lang_instruction = build_language_instruction(language)
 
-        response = Generation.call(
-            model=getattr(settings, 'DASHSCOPE_MODEL', 'qwen3-max-preview'),
+        text = llm_runner.chat_completion(
+            model=llm_runner.model_for_purpose('teaching_note'),
             messages=[
                 {
                     'role': 'system',
@@ -332,7 +328,9 @@ def enhance_teaching_note_with_rag(alert):
             temperature=0.3,
         )
 
-        alert.teaching_note = (alert.teaching_note + '\n\n' + response.output.text).strip()
+        if not text:
+            return
+        alert.teaching_note = (alert.teaching_note + '\n\n' + text).strip()
         alert.save()
 
     except Exception as e:

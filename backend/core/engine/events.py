@@ -598,7 +598,8 @@ def _rag_enhance_event(template, target_market, base_narrative, scenario,
         from core.rag.client import search_articles
         from django.conf import settings
 
-        if not settings.DASHSCOPE_API_KEY:
+        from core.engine import llm_runner
+        if not llm_runner.llm_configured():
             return ""
 
         tags = [t.strip() for t in template.rag_source_tags.split(',')]
@@ -610,10 +611,6 @@ def _rag_enhance_event(template, target_market, base_narrative, scenario,
         if not results:
             return ""
 
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = settings.DASHSCOPE_API_KEY
-
         research_text = '\n'.join([r['text'][:300] for r in results])
 
         # Event narratives are game-wide; use instructor language
@@ -621,8 +618,8 @@ def _rag_enhance_event(template, target_market, base_narrative, scenario,
         lang_instruction = build_language_instruction(language)
 
         time.sleep(0.5)  # Rate limit
-        response = Generation.call(
-            model=settings.DASHSCOPE_MODEL,
+        text = llm_runner.chat_completion(
+            model=llm_runner.model_for_purpose('event_narrative'),
             messages=[
                 {
                     'role': 'system',
@@ -645,7 +642,7 @@ def _rag_enhance_event(template, target_market, base_narrative, scenario,
             temperature=0.3,
         )
 
-        return response.output.text
+        return text or ""
 
     except Exception:
         return ""

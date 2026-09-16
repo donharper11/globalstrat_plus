@@ -21,6 +21,8 @@ import json
 import pathlib
 
 from django.conf import settings
+
+from core.engine import llm_runner
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
@@ -361,9 +363,9 @@ class Command(BaseCommand):
             'narrative_error': round_obj.narrative_error,
             'narrative_sha256': canonical_sha256(narrative),
             'section_digests': narrative.get('section_digests', {}),
-            'llm_endpoint': getattr(settings, 'DASHSCOPE_COMPATIBLE_URL', ''),
-            'llm_model': getattr(settings, 'DASHSCOPE_MODEL', ''),
-            'llm_key_configured': bool(getattr(settings, 'DASHSCOPE_API_KEY', '')),
+            'llm_endpoint': llm_runner.endpoint_url(),
+            'llm_model': llm_runner.model_for_purpose('narrative_deep'),
+            'llm_key_configured': llm_runner.llm_configured(),
         }, narrative
 
     def _print_diffs(self, section_diffs, scalar_diffs):

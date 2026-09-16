@@ -78,9 +78,8 @@ COMPLIANCE_SYSTEM_PROMPT = (
 # Models
 # ---------------------------------------------------------------------------
 
-# Analysis that benefits from thinking vs short notices that do not. The names
-# are LiteLLM proxy aliases (`analyst` thinks, `tutor` does not); they apply
-# only when the proxy is configured -- see llm_runner.resolve_model.
+# Analysis that benefits from thinking vs short notices that do not; the
+# gateway aliases themselves live in llm_runner.MODEL_BY_PURPOSE.
 MODEL_TIER_BY_TYPE = {
     'briefing': 'deep',
     'coherence_rag': 'deep',
@@ -92,9 +91,10 @@ MODEL_TIER_BY_TYPE = {
 
 
 def model_for_type(narrative_type):
-    if MODEL_TIER_BY_TYPE[narrative_type] == 'deep':
-        return getattr(settings, 'NARRATIVE_MODEL_DEEP', 'analyst')
-    return getattr(settings, 'NARRATIVE_MODEL_FAST', 'tutor')
+    from core.engine import llm_runner
+    tier = MODEL_TIER_BY_TYPE[narrative_type]
+    return llm_runner.model_for_purpose(
+        'narrative_deep' if tier == 'deep' else 'narrative_fast')
 
 
 # ---------------------------------------------------------------------------

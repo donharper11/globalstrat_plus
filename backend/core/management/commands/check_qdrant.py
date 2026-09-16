@@ -63,7 +63,9 @@ class Command(BaseCommand):
                     '  pip install sentence-transformers --break-system-packages'
                 )
         else:
-            if settings.DASHSCOPE_API_KEY:
-                self.stdout.write(self.style.SUCCESS('DashScope API key: CONFIGURED'))
+            from core.engine import llm_runner
+            if llm_runner.llm_configured():
+                self.stdout.write(self.style.SUCCESS(
+                    f'LLM gateway: CONFIGURED ({llm_runner.endpoint_url()})'))
             else:
-                self.stdout.write(self.style.WARNING('DashScope API key: NOT SET'))
+                self.stdout.write(self.style.WARNING('LLM gateway: NOT SET'))

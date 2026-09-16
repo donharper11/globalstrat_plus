@@ -555,7 +555,8 @@ def _calculate_rag_coherence(context, team, formula_score):
         return None, None
 
     from django.conf import settings
-    if not settings.DASHSCOPE_API_KEY:
+    from core.engine import llm_runner
+    if not llm_runner.llm_configured():
         return None, None
 
     try:
@@ -602,14 +603,10 @@ def _calculate_rag_coherence(context, team, formula_score):
         ])
 
         # LLM evaluation
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = settings.DASHSCOPE_API_KEY
-
         time.sleep(0.5)  # Rate limit delay
 
-        response = Generation.call(
-            model=settings.DASHSCOPE_MODEL,
+        result_text = llm_runner.chat_completion(
+            model=llm_runner.model_for_purpose('coherence_rag'),
             messages=[
                 {
                     'role': 'system',
@@ -643,9 +640,11 @@ def _calculate_rag_coherence(context, team, formula_score):
             max_tokens=200,
             temperature=0.2,
         )
+        if result_text is None:
+            return None, None
 
         import json
-        result_text = response.output.text.strip()
+        result_text = result_text.strip()
         # Clean potential markdown wrapping
         if result_text.startswith('```'):
             result_text = result_text.split('\n', 1)[1].rsplit('```', 1)[0].strip()

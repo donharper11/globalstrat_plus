@@ -712,16 +712,13 @@ def _rag_enhance_recommendation(recommendation, scenario):
         embedding = get_embedding(query)
         results = search_articles(embedding, limit=1)
 
-        if not results or not getattr(settings, 'DASHSCOPE_API_KEY', None):
+        from core.engine import llm_runner
+        if not results or not llm_runner.llm_configured():
             return None
 
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = settings.DASHSCOPE_API_KEY
-
         time.sleep(0.3)
-        response = Generation.call(
-            model=settings.DASHSCOPE_MODEL,
+        return llm_runner.chat_completion(
+            model=llm_runner.model_for_purpose('briefing_framework'),
             messages=[
                 {
                     'role': 'system',
@@ -742,9 +739,8 @@ def _rag_enhance_recommendation(recommendation, scenario):
             ],
             max_tokens=60,
             temperature=0.3,
-            request_timeout=5,
+            timeout=5,
         )
-        return response.output.text
     except Exception:
         return None
 

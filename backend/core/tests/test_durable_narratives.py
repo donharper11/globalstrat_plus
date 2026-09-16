@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User as DjangoUser
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from core.models import Game, Round, Scenario, Team
@@ -81,9 +81,9 @@ class StubLLM:
     """A provider that answers exactly as a test asks it to.
 
     These tests must never reach a real endpoint: a shell that happens to have
-    DASHSCOPE_API_KEY set would otherwise make them slow, costly and dependent
-    on someone else's uptime — which is how the first run of this suite
-    accidentally behaved.
+    LLM_GATEWAY_KEY set would otherwise make them slow and dependent on someone
+    else's uptime — which is how the first run of this suite accidentally
+    behaved.
     """
 
     def __init__(self, content='Stubbed narrative.', error=None,
@@ -110,21 +110,19 @@ class DurableNarrativeBase(TestCase):
         patcher = patch('core.engine.llm_runner.run_llm_batch_sync', stub)
         patcher.start()
         self.addCleanup(patcher.stop)
-        key = patch.object(settings, 'DASHSCOPE_API_KEY', 'test-key-not-real')
-        key.start()
-        self.addCleanup(key.stop)
+        gateway = override_settings(
+            LLM_GATEWAY_URL='http://gateway.invalid/v1/chat/completions',
+            LLM_GATEWAY_KEY='test-key-not-real')
+        gateway.enable()
+        self.addCleanup(gateway.disable)
         return stub
 
     def setUp(self):
         # No test in this module may reach a real provider, whatever the shell
         # has configured.
-        no_key = patch.object(settings, 'DASHSCOPE_API_KEY', '')
-        no_key.start()
-        self.addCleanup(no_key.stop)
-        for name in ('NARRATIVE_LLM_URL', 'NARRATIVE_LLM_KEY'):
-            no_proxy = patch.object(settings, name, '', create=True)
-            no_proxy.start()
-            self.addCleanup(no_proxy.stop)
+        no_gateway = override_settings(LLM_GATEWAY_URL='', LLM_GATEWAY_KEY='')
+        no_gateway.enable()
+        self.addCleanup(no_gateway.disable)
         from core.models import DecisionSubmission
         self.game, self.teams = build_game(f'narr-{id(self)}')
         self.round = Round.objects.create(
@@ -462,7 +460,9 @@ class OperatorVisibilityTests(DurableNarrativeBase):
         self.stub_llm(content='Narrative.')
         processed = narrative_jobs.drain(game_id=self.game.id)
         job = processed[0]
-        self.assertEqual(job.model_name, settings.DASHSCOPE_MODEL)
+        from core.engine import llm_runner
+        self.assertEqual(job.model_name,
+                         llm_runner.model_for_purpose('narrative_deep'))
         self.assertTrue(job.result_sha256)
         for value in (job.model_name, job.model_endpoint, job.last_error):
             self.assertNotIn('test-key-not-real', value)

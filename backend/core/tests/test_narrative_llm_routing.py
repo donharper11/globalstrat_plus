@@ -1,15 +1,12 @@
-"""Where Phase 2 narrative calls go, and with which model.
+"""Where model calls go, and which model answers.
 
-Round narratives moved from DashScope to the local LiteLLM fleet proxy. These
-tests pin the routing rules without reaching any provider: the HTTP client is
-replaced by a recorder.
+Every model call this platform makes goes to the local LiteLLM fleet gateway.
+No third-party provider is called from here and no provider SDK is imported
+(2026-09-16). These tests pin that without reaching any endpoint: the HTTP
+client is replaced by a recorder.
 
-* Both NARRATIVE_LLM_URL and NARRATIVE_LLM_KEY set: calls go to the proxy with
-  the per-call alias (`analyst` / `tutor`).
-* Either unset: calls go to DashScope exactly as before, with DASHSCOPE_MODEL --
-  a proxy alias is not a DashScope model.
-* The thinking switch is left to the alias unless a call sets it, because an
-  explicit `enable_thinking: false` would turn `analyst`'s thinking off.
+The model is chosen by purpose (llm_runner.MODEL_BY_PURPOSE), so the choice is
+stated in one place and can be overridden per purpose from the environment.
 """
 from unittest.mock import patch
 
@@ -18,17 +15,12 @@ from django.test import SimpleTestCase, override_settings
 from core.engine import llm_runner, narratives
 from core.services import narrative_jobs
 
-PROXY_URL = 'http://proxy.test:4100/v1/chat/completions'
-DASHSCOPE_URL = 'https://dashscope.test/compatible-mode/v1/chat/completions'
+GATEWAY_URL = 'http://gateway.test:4100/v1/chat/completions'
 
 BASE = dict(
-    DASHSCOPE_API_KEY='dashscope-test-key',
-    DASHSCOPE_MODEL='qwen-max',
-    DASHSCOPE_COMPATIBLE_URL=DASHSCOPE_URL,
-    NARRATIVE_LLM_URL=PROXY_URL,
-    NARRATIVE_LLM_KEY='proxy-test-key',
-    NARRATIVE_MODEL_DEEP='analyst',
-    NARRATIVE_MODEL_FAST='tutor',
+    LLM_GATEWAY_URL=GATEWAY_URL,
+    LLM_GATEWAY_KEY='gateway-test-key',
+    LLM_PURPOSE_MODELS={},
 )
 
 
@@ -68,19 +60,32 @@ class RoutingBase(SimpleTestCase):
             results = llm_runner.run_llm_batch_sync(calls)
         return results, list(_RecordingClient.requests)
 
+    def send_one(self, **kwargs):
+        captured = {}
+
+        def recorder(url, json=None, headers=None, timeout=None):
+            captured.update({'url': url, 'body': json, 'headers': headers,
+                             'timeout': timeout})
+            return _Response()
+
+        with patch.object(llm_runner.httpx, 'post', recorder):
+            text = llm_runner.chat_completion(
+                messages=[{'role': 'user', 'content': 'hi'}], **kwargs)
+        return text, captured
+
 
 @override_settings(**BASE)
-class ProxyRoutingTests(RoutingBase):
+class GatewayRoutingTests(RoutingBase):
 
-    def test_calls_go_to_the_proxy_with_its_key_and_the_call_model(self):
+    def test_batch_calls_go_to_the_gateway_with_its_key_and_model(self):
         results, sent = self.send([
             {'id': 'a', 'prompt': 'p', 'model': 'analyst'},
             {'id': 'b', 'prompt': 'p', 'model': 'tutor'},
         ])
         self.assertTrue(all(r['success'] for r in results.values()))
-        self.assertEqual({r['url'] for r in sent}, {PROXY_URL})
+        self.assertEqual({r['url'] for r in sent}, {GATEWAY_URL})
         self.assertEqual({r['headers']['Authorization'] for r in sent},
-                         {'Bearer proxy-test-key'})
+                         {'Bearer gateway-test-key'})
         self.assertEqual(sorted(r['body']['model'] for r in sent),
                          ['analyst', 'tutor'])
 
@@ -92,16 +97,16 @@ class ProxyRoutingTests(RoutingBase):
         ])
         bodies = [r['body'] for r in sent]
         with_switch = [b for b in bodies if 'chat_template_kwargs' in b]
-        without = [b for b in bodies if 'chat_template_kwargs' not in b]
         self.assertEqual(len(with_switch), 1)
         self.assertEqual(with_switch[0]['chat_template_kwargs'],
                          {'enable_thinking': False})
-        self.assertEqual(len(without), 1)
-        self.assertTrue(all('extra_body' not in r['body'] for r in sent))
+        self.assertEqual(len([b for b in bodies if 'chat_template_kwargs' not in b]), 1)
+        self.assertTrue(all('extra_body' not in b for b in bodies))
 
-    def test_a_call_without_a_model_uses_dashscope_model(self):
+    def test_a_call_without_a_model_uses_the_default_purpose(self):
         _results, sent = self.send([{'id': 'a', 'prompt': 'p'}])
-        self.assertEqual(sent[0]['body']['model'], 'qwen-max')
+        self.assertEqual(sent[0]['body']['model'],
+                         llm_runner.model_for_purpose(llm_runner.DEFAULT_PURPOSE))
 
     def test_pacing_for_a_shared_gpu(self):
         self.assertEqual(llm_runner.TIMEOUT_PER_CALL, 150)
@@ -109,66 +114,132 @@ class ProxyRoutingTests(RoutingBase):
         _results, sent = self.send([{'id': 'a', 'prompt': 'p', 'model': 'tutor'}])
         self.assertEqual(sent[0]['timeout'], 150)
 
-    def test_job_provenance_names_the_alias_and_proxy_but_never_the_key(self):
+    def test_single_calls_go_to_the_gateway_with_the_given_model(self):
+        text, sent = self.send_one(model='tutor', max_tokens=400, temperature=0.3)
+        self.assertEqual(text, 'ok')
+        self.assertEqual(sent['url'], GATEWAY_URL)
+        self.assertEqual(sent['headers']['Authorization'], 'Bearer gateway-test-key')
+        self.assertEqual(sent['body']['model'], 'tutor')
+        self.assertEqual(sent['body']['max_tokens'], 400)
+        self.assertEqual(sent['body']['temperature'], 0.3)
+
+    def test_a_caller_timeout_is_honoured(self):
+        _text, sent = self.send_one(model='tutor', timeout=5)
+        self.assertEqual(sent['timeout'], 5)
+
+    def test_a_failed_call_returns_none_so_callers_fall_back(self):
+        def boom(*args, **kwargs):
+            raise RuntimeError('gateway down')
+
+        with patch.object(llm_runner.httpx, 'post', boom):
+            self.assertIsNone(llm_runner.chat_completion(
+                messages=[{'role': 'user', 'content': 'hi'}], model='tutor'))
+
+    def test_the_embeddings_url_sits_beside_the_chat_url(self):
+        self.assertEqual(llm_runner.embeddings_url(),
+                         'http://gateway.test:4100/v1/embeddings')
+
+    def test_job_provenance_names_the_model_and_gateway_but_never_the_key(self):
         deep = narrative_jobs._model_provenance('briefing')
         fast = narrative_jobs._model_provenance('compliance')
-        self.assertEqual(deep, {'model_name': 'analyst', 'model_endpoint': PROXY_URL})
+        self.assertEqual(deep, {'model_name': 'analyst', 'model_endpoint': GATEWAY_URL})
         self.assertEqual(fast['model_name'], 'tutor')
-        self.assertNotIn('proxy-test-key', repr((deep, fast)))
+        self.assertNotIn('gateway-test-key', repr((deep, fast)))
 
 
-class DashScopeFallbackTests(RoutingBase):
+class NoGatewayTests(RoutingBase):
+    """With nothing configured there is no model, and callers fall back."""
 
-    def assert_dashscope(self, sent):
-        self.assertEqual(sent[0]['url'], DASHSCOPE_URL)
-        self.assertEqual(sent[0]['headers']['Authorization'],
-                         'Bearer dashscope-test-key')
-        # `analyst` means nothing to DashScope.
-        self.assertEqual(sent[0]['body']['model'], 'qwen-max')
-        self.assertNotIn('chat_template_kwargs', sent[0]['body'])
-
-    @override_settings(**{**BASE, 'NARRATIVE_LLM_KEY': ''})
-    def test_without_a_proxy_key_calls_stay_on_dashscope(self):
-        _results, sent = self.send([{'id': 'a', 'prompt': 'p', 'model': 'analyst'}])
-        self.assert_dashscope(sent)
-
-    @override_settings(**{**BASE, 'NARRATIVE_LLM_URL': ''})
-    def test_without_a_proxy_url_calls_stay_on_dashscope(self):
-        _results, sent = self.send([{'id': 'a', 'prompt': 'p', 'model': 'analyst'}])
-        self.assert_dashscope(sent)
-
-    @override_settings(**{**BASE, 'NARRATIVE_LLM_URL': '', 'DASHSCOPE_API_KEY': ''})
-    def test_no_key_anywhere_means_no_calls(self):
-        results, sent = self.send([{'id': 'a', 'prompt': 'p', 'model': 'analyst'}])
+    @override_settings(**{**BASE, 'LLM_GATEWAY_KEY': ''})
+    def test_without_a_key_nothing_is_called(self):
+        results, sent = self.send([{'id': 'a', 'prompt': 'p', 'model': 'tutor'}])
         self.assertEqual(sent, [])
         self.assertEqual(results['a']['error'], 'no_api_key')
         self.assertFalse(narratives._llm_available())
 
-    @override_settings(**{**BASE, 'DASHSCOPE_API_KEY': ''})
-    def test_the_proxy_alone_is_enough_for_narratives(self):
+    @override_settings(**{**BASE, 'LLM_GATEWAY_URL': ''})
+    def test_without_a_url_nothing_is_called(self):
+        text, sent = self.send_one(model='tutor')
+        self.assertIsNone(text)
+        self.assertEqual(sent, {})
+        self.assertFalse(llm_runner.llm_configured())
+
+    @override_settings(**BASE)
+    def test_a_configured_gateway_is_all_that_is_needed(self):
         self.assertTrue(narratives._llm_available())
 
 
 @override_settings(**BASE)
-class NarrativeModelTests(SimpleTestCase):
+class PurposeModelTests(SimpleTestCase):
 
-    def test_analysis_types_use_the_deep_model_and_notices_the_fast_one(self):
+    def test_every_purpose_names_a_local_fleet_alias(self):
+        local_aliases = {'analyst', 'tutor', 'reasoner', 'fast', 'classify',
+                         'qwen36', 'qwen38', 'gpt-oss-120b', 'qwen2.5-14b'}
+        for purpose, model in llm_runner.MODEL_BY_PURPOSE.items():
+            with self.subTest(purpose=purpose):
+                self.assertIn(model, local_aliases)
+
+    def test_narrative_types_map_to_their_tier(self):
         self.assertEqual(
             {t: narratives.model_for_type(t) for t in narrative_jobs.ENQUEUED_TYPES},
             {'briefing': 'analyst', 'coherence_rag': 'analyst',
              'coaching': 'analyst', 'outlook': 'tutor',
              'sc_event': 'tutor', 'compliance': 'tutor'})
 
-    @override_settings(NARRATIVE_MODEL_DEEP='qwen3.7-max', NARRATIVE_MODEL_FAST='fast')
-    def test_model_names_come_from_settings(self):
-        self.assertEqual(narratives.model_for_type('briefing'), 'qwen3.7-max')
-        self.assertEqual(narratives.model_for_type('outlook'), 'fast')
+    def test_work_a_person_waits_on_does_not_use_a_thinking_model(self):
+        """`analyst` thinks for ~45s; nobody waits that long on a screen."""
+        for purpose in ('research_brief', 'persona_reply', 'query_translation',
+                        'communication_eval'):
+            with self.subTest(purpose=purpose):
+                self.assertEqual(llm_runner.model_for_purpose(purpose), 'tutor')
 
-    def test_communication_scoring_is_not_routed_through_the_proxy(self):
-        """It feeds graded coherence; moving it needs its own comparison."""
+    @override_settings(LLM_PURPOSE_MODELS={'communication_eval': 'analyst'})
+    def test_a_purpose_can_be_overridden_from_the_environment(self):
+        self.assertEqual(llm_runner.model_for_purpose('communication_eval'), 'analyst')
+        self.assertEqual(llm_runner.model_for_purpose('research_brief'), 'tutor')
+
+    def test_communication_scoring_pins_its_own_purpose(self):
+        """It feeds a grade, so it must not borrow another caller's model."""
         import inspect
         from core.rag import communication_eval
-        source = inspect.getsource(communication_eval)
-        self.assertNotIn('NARRATIVE_LLM', source)
-        self.assertNotIn('run_llm_batch', source)
-        self.assertIn('DASHSCOPE_API_KEY', source)
+        source = inspect.getsource(communication_eval._call_llm_evaluation)
+        self.assertIn("model_for_purpose('communication_eval')", source)
+
+
+class NoDirectProviderCallTests(SimpleTestCase):
+    """No platform code may call a model provider directly (2026-09-16)."""
+
+    def _sources(self):
+        import pathlib
+        root = pathlib.Path(__file__).resolve().parents[2]
+        for path in sorted((root / 'core').rglob('*.py')):
+            if 'tests' in path.parts or 'migrations' in path.parts:
+                continue
+            yield path.relative_to(root).as_posix(), path.read_text()
+        yield ('globalstrat/settings.py',
+               (root / 'globalstrat' / 'settings.py').read_text())
+
+    def test_no_module_imports_a_provider_sdk(self):
+        offenders = [name for name, source in self._sources()
+                     if 'import dashscope' in source
+                     or 'from dashscope import' in source
+                     or 'import openai' in source]
+        self.assertEqual(offenders, [])
+
+    def test_no_module_names_a_provider_endpoint(self):
+        offenders = [name for name, source in self._sources()
+                     if 'aliyuncs.com' in source or 'api.openai.com' in source
+                     or 'api.anthropic.com' in source]
+        self.assertEqual(offenders, [])
+
+    def test_every_chat_call_goes_through_the_runner(self):
+        """A POST to a chat endpoint anywhere else is a direct provider call."""
+        offenders = [name for name, source in self._sources()
+                     if "'/chat/completions'" in source
+                     and name != 'core/engine/llm_runner.py']
+        self.assertEqual(offenders, [])
+
+    def test_no_module_reads_a_provider_setting(self):
+        offenders = [name for name, source in self._sources()
+                     if 'DASHSCOPE' in source]
+        self.assertEqual(offenders, [])

@@ -5,14 +5,12 @@ After each round advances, evaluates outcomes and generates contextual messages
 from 5 AI personas via the DashScope (Qwen) LLM API.
 """
 import logging
-import os
 import re
 import time
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Optional
 
-import requests
 from django.utils import timezone
 
 from core.models import (
@@ -38,12 +36,12 @@ from core.engine.llm_runner import build_language_instruction
 from core.utils.localization import get_team_language
 
 from django.conf import settings
-DASHSCOPE_MODEL = getattr(settings, 'DASHSCOPE_MODEL', 'qwen3-max-preview')
-DASHSCOPE_BASE_URL = getattr(settings, 'DASHSCOPE_COMPATIBLE_URL',
-    'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions')
 MAX_TOKENS = 500
 TEMPERATURE = 0.8
-LLM_TIMEOUT = 10  # seconds
+# A student waits on a reply, and `tutor` answers in about 7s; a post-round
+# reaction is batch work on `analyst`, which thinks for roughly a minute.
+REPLY_TIMEOUT = 30       # seconds
+REACTION_TIMEOUT = 150   # seconds
 INTER_CALL_DELAY = 0.5  # seconds between LLM calls
 MAX_MESSAGES_PER_TEAM = 3
 
@@ -727,44 +725,37 @@ def build_prompt(persona_key, team_id, round_number, reaction):
     ]
 
 
-def call_llm(messages):
-    """Call DashScope API (OpenAI-compatible) and return the response text."""
-    api_key = os.environ.get('DASHSCOPE_API_KEY', '')
-    if not api_key:
-        logger.warning("DASHSCOPE_API_KEY not set — skipping LLM call")
+def call_llm(messages, purpose='persona_reply'):
+    """Ask the gateway for a persona message and return the text.
+
+    `purpose` picks the model: 'persona_reply' for a student waiting on an
+    answer, 'persona_reaction' for the post-round batch.
+    """
+    from core.engine import llm_runner
+
+    if not llm_runner.llm_configured():
+        logger.warning("No LLM gateway configured — skipping LLM call")
         return None
 
     try:
-        response = requests.post(
-            DASHSCOPE_BASE_URL,
-            headers={
-                'Authorization': f'Bearer {api_key}',
-                'Content-Type': 'application/json',
-            },
-            json={
-                'model': DASHSCOPE_MODEL,
-                'messages': messages,
-                'max_tokens': MAX_TOKENS,
-                'temperature': TEMPERATURE,
-            },
-            timeout=LLM_TIMEOUT,
+        text = llm_runner.chat_completion(
+            messages=messages,
+            model=llm_runner.model_for_purpose(purpose),
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+            timeout=(REACTION_TIMEOUT if purpose == 'persona_reaction'
+                     else REPLY_TIMEOUT),
         )
-        response.raise_for_status()
-        data = response.json()
-        text = data['choices'][0]['message']['content'].strip()
+        if text is None:
+            return None
+        text = text.strip()
         # Strip any markdown formatting that slipped through
         text = re.sub(r'\*{1,3}(.+?)\*{1,3}', r'\1', text)  # *italic*, **bold**, ***both***
         text = re.sub(r'_{1,3}(.+?)_{1,3}', r'\1', text)     # _italic_, __bold__
         text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)  # # headers
         return text
-    except requests.exceptions.Timeout:
-        logger.warning("DashScope API timed out")
-        return None
-    except requests.exceptions.RequestException as e:
-        logger.warning(f"DashScope API error: {e}")
-        return None
-    except (KeyError, IndexError) as e:
-        logger.warning(f"Unexpected DashScope response format: {e}")
+    except (KeyError, IndexError, AttributeError) as e:
+        logger.warning(f"Unexpected LLM response format: {e}")
         return None
 
 
@@ -986,7 +977,7 @@ def generate_persona_reactions(team_id, round_number):
         reaction = _should_react_board_chair(team_id, round_number)
         if reaction.severity != SEVERITY_NONE:
             prompt = build_prompt('board_chair', team_id, round_number, reaction)
-            body = call_llm(prompt)
+            body = call_llm(prompt, purpose='persona_reaction')
             if body:
                 msg = _save_persona_message(
                     'board_chair', team_id, round_number,
@@ -1024,7 +1015,7 @@ def generate_persona_reactions(team_id, round_number):
 
     def _generate_one(persona_key, reaction):
         prompt = build_prompt(persona_key, team_id, round_number, reaction)
-        body = call_llm(prompt)
+        body = call_llm(prompt, purpose='persona_reaction')
         return (persona_key, reaction, body)
 
     with ThreadPoolExecutor(max_workers=MAX_MESSAGES_PER_TEAM) as executor:

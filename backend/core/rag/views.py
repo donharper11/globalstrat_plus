@@ -392,14 +392,12 @@ def synthesize_research_brief(query, search_results, team_context=None,
     """
     from django.conf import settings
 
-    if not settings.DASHSCOPE_API_KEY:
+    from core.engine import llm_runner
+
+    if not llm_runner.llm_configured():
         return _fallback_brief(search_results)
 
     try:
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = settings.DASHSCOPE_API_KEY
-
         # Build context from search results
         context_parts = []
         for i, result in enumerate(search_results[:5]):
@@ -441,17 +439,18 @@ def synthesize_research_brief(query, search_results, team_context=None,
             + lang_instruction
         )
 
-        response = Generation.call(
-            model=settings.DASHSCOPE_MODEL,
+        text = llm_runner.chat_completion(
             messages=[
                 {'role': 'system', 'content': system_prompt},
                 {'role': 'user', 'content': user_prompt},
             ],
+            model=llm_runner.model_for_purpose('research_brief'),
             max_tokens=400,
             temperature=0.3,
         )
-
-        return response.output.text
+        if text is None:
+            return _fallback_brief(search_results)
+        return text
 
     except Exception:
         return _fallback_brief(search_results)

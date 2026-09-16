@@ -176,17 +176,26 @@ def get_rag_context_for_evaluation(team_comm):
 
 
 def _call_llm_evaluation(prompt):
-    """Call DashScope/Qwen for communication evaluation."""
-    if not getattr(settings, 'DASHSCOPE_API_KEY', None):
+    """Score a communication through the gateway.
+
+    This score reaches a grade (10% of RoundResultCoherence.blended_score), so
+    the model is pinned by its own purpose rather than borrowed from another
+    caller. Measured 2026-09-16 against the cloud model this used to call:
+    `tutor` was the most self-consistent candidate (+-0.014 on repeat scoring)
+    and answers in about 7s, which matters because a student waits on submit. It
+    marks about 0.09 lower on a 0-1 scale, uniformly across teams.
+
+    Returning None means the caller falls back to the word-count heuristic,
+    which changes marks -- so a failure here must stay visible.
+    """
+    from core.engine import llm_runner
+
+    if not llm_runner.llm_configured():
         return None
 
     try:
-        import dashscope
-        from dashscope import Generation
-        dashscope.api_key = settings.DASHSCOPE_API_KEY
-
-        response = Generation.call(
-            model=settings.DASHSCOPE_MODEL,
+        text = llm_runner.chat_completion(
+            model=llm_runner.model_for_purpose('communication_eval'),
             messages=[
                 {'role': 'system', 'content': (
                     'You are an expert evaluator of executive communications in a global '
@@ -198,8 +207,10 @@ def _call_llm_evaluation(prompt):
             max_tokens=1500,
             temperature=0.2,
         )
+        if text is None:
+            return None
 
-        text = response.output.text.strip()
+        text = text.strip()
         # Strip markdown code fences if present
         if text.startswith('```'):
             text = text.split('\n', 1)[1] if '\n' in text else text[3:]

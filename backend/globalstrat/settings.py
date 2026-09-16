@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -17,7 +18,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load backend/.env (gitignored) into os.environ, if present, so secrets like
-# DASHSCOPE_API_KEY survive process restarts without a systemd unit. Existing
+# LLM_GATEWAY_KEY survive process restarts without a systemd unit. Existing
 # environment variables always win (does not override a real env). Best-effort.
 try:
     from dotenv import load_dotenv
@@ -282,28 +283,22 @@ QDRANT_COLLECTION = os.environ.get('QDRANT_COLLECTION', 'globalstrat_plus_articl
 EMBEDDING_MODEL = os.environ.get('EMBEDDING_MODEL', '/home/ubuntu/models/all-MiniLM-L6-v2')
 EMBEDDING_DIMENSION = 384  # all-MiniLM-L6-v2 dimension
 
-# DashScope (for LLM calls — brief generation, coherence evaluation)
-DASHSCOPE_API_KEY = os.environ.get('DASHSCOPE_API_KEY', '')
-DASHSCOPE_MODEL = os.environ.get('DASHSCOPE_MODEL', 'qwen3-max-preview')
-DASHSCOPE_BASE_URL = 'https://dashscope-intl.aliyuncs.com/api/v1'
-DASHSCOPE_COMPATIBLE_URL = os.environ.get('DASHSCOPE_COMPATIBLE_URL',
-    'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions')
+# Every model call goes to the local LiteLLM fleet gateway
+# (core/engine/llm_runner.py). No third-party provider is called from this
+# platform. With these unset there is no model at all, and each caller uses its
+# template or heuristic fallback. NARRATIVE_LLM_* are the previous names for the
+# same two values, still read so an older environment file keeps working.
+LLM_GATEWAY_URL = (os.environ.get('LLM_GATEWAY_URL')
+                   or os.environ.get('NARRATIVE_LLM_URL', ''))  # .../v1/chat/completions
+LLM_GATEWAY_KEY = (os.environ.get('LLM_GATEWAY_KEY')
+                   or os.environ.get('NARRATIVE_LLM_KEY', ''))
 
-# Phase 2 round narratives (core/engine/llm_runner.py) go to the local LiteLLM
-# fleet proxy when both of these are set, and to DashScope above otherwise.
-# Student communication scoring does not read them: it feeds graded coherence
-# and stays on DASHSCOPE_API_KEY / DASHSCOPE_MODEL.
-NARRATIVE_LLM_URL = os.environ.get('NARRATIVE_LLM_URL', '')  # full .../v1/chat/completions
-NARRATIVE_LLM_KEY = os.environ.get('NARRATIVE_LLM_KEY', '')
-NARRATIVE_MODEL_DEEP = os.environ.get('NARRATIVE_MODEL_DEEP', 'analyst')  # briefing, coherence, coaching
-NARRATIVE_MODEL_FAST = os.environ.get('NARRATIVE_MODEL_FAST', 'tutor')    # outlook, sc_event, compliance
-
-# Set DashScope SDK base URL globally at import time
+# Optional per-purpose model overrides as JSON, e.g. {"communication_eval":
+# "analyst"}. The defaults live in llm_runner.MODEL_BY_PURPOSE.
 try:
-    import dashscope as _dashscope
-    _dashscope.base_http_api_url = DASHSCOPE_BASE_URL
-except ImportError:
-    pass
+    LLM_PURPOSE_MODELS = json.loads(os.environ.get('LLM_PURPOSE_MODELS', '') or '{}')
+except ValueError:
+    LLM_PURPOSE_MODELS = {}
 
 # Legacy compatibility flag. Resolution is now unconditionally fail-closed;
 # this value remains temporarily for older integrations that import it.
