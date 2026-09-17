@@ -209,8 +209,8 @@ MESSAGES = {
         'zh-CN': '第 {round} 回合已关闭，不能再提交决策。',
     },
     'lifecycle_in_progress': {
-        'en': 'This round is being processed. Refresh shortly to see the results.',
-        'zh-CN': '本回合正在处理。请稍后刷新查看结果。',
+        'en': 'An instructor is changing this round right now, so nothing was saved. Your entries are unchanged, and your edit will be sent again in a moment.',
+        'zh-CN': '教师正在调整本回合，因此未保存任何内容。您的输入未被更改，稍后将自动重新提交。',
     },
     'submission_locked': {
         'en': 'This submission is locked. Unlock it before making changes.',
