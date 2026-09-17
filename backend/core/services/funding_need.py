@@ -77,6 +77,47 @@ def talent_cost(team, submission, current_round):
     return total
 
 
+def org_transition_charge(team, current_round):
+    """The organisational-structure switch this team owes for this round.
+
+    R36 / V2-088: the charge used to leave `team.cash_on_hand` in
+    `views/cc32b_views.py` at request time, where **no calculator could see
+    it** -- not `decision_outlays`, not `rd_costs.budget_assessment`, not the
+    engine. The team's committed spend, projected cash and Finance figures all
+    ignored money that had already gone, the equity funding rule never counted
+    it, and no path gave it back, so reopening a round left the cash spent
+    while the decision it paid for could be changed again.
+
+    Derived from the switch the team's stored structure row already records --
+    `adopted_round` is this round and `transitioning_from` names the structure
+    it left -- rather than from a new field. Three things follow, deliberately:
+
+    * the charge and the decision that caused it cannot disagree, because
+      there is only one row and it is the decision;
+    * a round with no switch costs nothing, and a switch made in an earlier
+      round is not charged again;
+    * **no hashed field is added**, so the manifest envelope is unchanged and
+      `MANIFEST_SCHEMA_VERSION` stays where it is. R34's principle: the
+      explanation belongs in the audit trail, which `cc32b_views` already
+      writes, not in a new column inside the certified envelope.
+
+    Re-resolving the round recomputes the same figure from the same row, so
+    the charge is idempotent rather than cumulative.
+    """
+    from core.models.cc32b_models import TeamOrganizationalStructure
+
+    row = (TeamOrganizationalStructure.objects
+           .filter(game_id=team.game_id, team=team,
+                   adopted_round=current_round,
+                   transitioning_from__isnull=False)
+           .select_related('current_structure')
+           .order_by('id')
+           .first())
+    if row is None or row.current_structure is None:
+        return D('0')
+    return D(str(row.current_structure.transition_cost or 0))
+
+
 def decision_outlays(scenario, team, submission, current_round,
                      capitalize_platform=False):
     """Every cash outlay this round that the team's own decisions determine.
@@ -93,7 +134,15 @@ def decision_outlays(scenario, team, submission, current_round,
 
     lines = {'rd': D('0'), 'platform_capex': D('0'), 'marketing': D('0'),
              'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0'),
-             'research': D('0')}
+             'research': D('0'), 'org_structure': D('0')}
+    # R36: computed *before* the submission guard below, because a structure
+    # switch writes no decision row of its own -- a team can switch in a round
+    # it never otherwise submitted in, and the charge is owed either way.
+    # `engine/costs.calculate_operating_expenses` books this same figure from
+    # this same function, outside its own submission guard, for exactly that
+    # reason; counting it on one side only is the divergence the one-calculator
+    # rule exists to prevent (V2-037/V2-038).
+    lines['org_structure'] = org_transition_charge(team, current_round)
     if submission is None:
         return lines
 

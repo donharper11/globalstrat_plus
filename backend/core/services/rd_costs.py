@@ -299,7 +299,7 @@ def describe_cost_violations(violations, limit=5):
 # One budget-versus-cash rule
 # ---------------------------------------------------------------------------
 
-def committed_outlay(submission):
+def committed_outlay(submission, team=None):
     """Everything a submission commits, including platform development.
 
     Platform development was outside every budget check: `total_budget` summed
@@ -332,6 +332,15 @@ def committed_outlay(submission):
     # bucket would make it a second cash gate and charge the team twice here.
     from core.services.research_catalogue import purchase_total
     lines['research_purchases'] = purchase_total(submission)
+    # R36 / V2-088: an organisational-structure switch made this round. Money
+    # the team has committed that the budget lines do not contain, in exactly
+    # the position platform development and bought research occupy. Read
+    # through `funding_need.org_transition_charge` -- the same function the
+    # engine books from -- so a team is not told it can afford something on one
+    # screen and charged differently by the engine on another.
+    from core.services.funding_need import org_transition_charge
+    lines['org_transition'] = org_transition_charge(
+        team or submission.team, submission.round.round_number)
     return lines
 
 
@@ -345,7 +354,7 @@ def budget_assessment(submission, team=None):
     does not exist.
     """
     team = team or submission.team
-    lines = committed_outlay(submission)
+    lines = committed_outlay(submission, team)
     budget_total = (lines['rd_budget'] + lines['marketing_budget']
                     + lines['strategy_budget'] + lines['research_budget'])
     # Platform development and bought research are committed money that the
@@ -354,7 +363,7 @@ def budget_assessment(submission, team=None):
     # affordability answer a team gets at the point of buying is the one every
     # other surface already gives.
     committed = (budget_total + lines['platform_development']
-                 + lines['research_purchases'])
+                 + lines['research_purchases'] + lines['org_transition'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
 
     rd_committed = lines['rd_investments'] + lines['platform_development']

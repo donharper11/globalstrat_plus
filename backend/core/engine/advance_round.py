@@ -902,6 +902,23 @@ def _run_phase_1(game_id):
     alert_count = generate_post_round_alerts(game, current_round)
     context.log.append(f'Generated {alert_count} instructor alerts')
 
+    # Step 16.5: R18 — a product retired `end_of_round` sold through this
+    # round and retires now that the round has resolved. Deliberately the last
+    # deterministic mutation of Phase 1: everything above -- adoption, revenue,
+    # costs, financials, the performance index, coherence and the leaderboard
+    # -- saw the product as it was all round, which is what "sells through that
+    # round" means. From the next round it is retired and off sale.
+    #
+    # `immediate` is unaffected: it is applied in `process_rd`, before
+    # adoption, and stops sales at once. The two timings now differ in market
+    # timing as well as in fire-sale recovery, so neither dominates (V2-070).
+    #
+    # Inside the hashed envelope: `complete_manifest` runs after this returns,
+    # so the round's snapshot carries the retired state. No manifest section
+    # and no field changes, so MANIFEST_SCHEMA_VERSION does not move.
+    from core.engine.rd_processing import apply_end_of_round_retirements
+    apply_end_of_round_retirements(context)
+
     # Step 17: Mark the round processed. Opening the next round is a separate,
     # instructor-triggered step — see advance_to_next_round().
     current_round_obj.status = 'processed'

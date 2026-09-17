@@ -574,6 +574,22 @@ def calculate_operating_expenses(context):
                     context.talent_savings[team.id] = {}
                 context.talent_savings[team.id]['talent_cost'] = talent_cost
 
+        # R36 / V2-088: the organisational-structure switch charge, booked here
+        # with every other decision-driven outlay instead of leaving cash in
+        # the view at request time. Read from the same rows
+        # `funding_need.decision_outlays` totals, through the same function, so
+        # the affordability check, the equity funding rule and the engine
+        # cannot price different things.
+        #
+        # Outside the `if submission:` guard above on purpose: a switch writes
+        # no decision row, so a team can switch in a round it never otherwise
+        # submitted in. `decision_outlays` computes this line before its own
+        # submission guard for the same reason, so the two agree in that case
+        # as well as in the asserted one below.
+        from core.services.funding_need import org_transition_charge
+        org_transition = org_transition_charge(team, current_round)
+        strategy_expense += org_transition
+
         # The shared calculator must agree with the lines this function just
         # built. It is the same arithmetic by construction; asserting it means
         # a future edit to either side that breaks the equality stops the round
@@ -588,10 +604,17 @@ def calculate_operating_expenses(context):
             from core.services.research_catalogue import purchase_total
             research_expense = purchase_total(submission)
 
+            # R36 widens this pair rather than leaving the new line merely
+            # satisfied. `org_structure` is a decision-driven outlay, so the
+            # invariant has to be *enforced* over it: without it here, a later
+            # edit could charge the switch on one side only and the round would
+            # still resolve, which is the V2-037/V2-038 divergence this
+            # assertion exists to stop.
             _shared = (_outlays['rd'] + _outlays['platform_capex']
-                       + _outlays['marketing'] + _outlays['research'])
+                       + _outlays['marketing'] + _outlays['research']
+                       + _outlays['org_structure'])
             _engine = (rd_expense + platform_capex + marketing_expense
-                       + research_expense)
+                       + research_expense + org_transition)
             if _shared != _engine:
                 raise AssertionError(
                     f'funding_need.decision_outlays disagrees with the cost '
