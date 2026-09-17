@@ -262,24 +262,36 @@ class MaterialRevenueFloorTests(TestCase):
 
 
 class SharedClassificationTests(ScoringFixture):
-    """Both controls must consume the same classification."""
+    """Both controls must consume the same classification.
 
-    def test_the_ranking_guard_uses_the_same_classification(self):
-        from core.engine.performance import _enforce_inactive_revenue_invariant
-        inactive = {'new_index': D('90'), 'commercially_inactive': True,
-                    'guard_applied': False}
-        active = {'new_index': D('60'), 'commercially_inactive': False,
-                  'guard_applied': False}
-        _enforce_inactive_revenue_invariant([inactive, active])
-        self.assertTrue(inactive['guard_applied'])
-        self.assertLess(inactive['new_index'], active['new_index'])
+    R32 (2026-09-17) moved the second control out of this module: an inactive
+    firm is held below every firm that competed by the standings in
+    `leaderboard.py`, not by overwriting its carried index. The classification
+    itself did not move and did not change, and V2-022's point still stands --
+    there is one answer to "who was competing", computed once and shared, so
+    the two controls cannot disagree. The behavioural proof that they agree is
+    in `test_inactivity_rank_guard.py`; these two hold the structure.
+    """
 
-    def test_the_guard_reads_no_revenue_field_of_its_own(self):
+    def test_the_carried_index_overwrite_is_gone(self):
+        """R32: the control that replaced a carried index no longer exists."""
+        from core.engine import performance
+        self.assertFalse(
+            hasattr(performance, '_enforce_inactive_revenue_invariant'),
+            'the carried-index overwrite is back; R32 enforces on the '
+            'standings, where a finishing order is actually decided')
+
+    def test_the_standings_read_the_classification_rather_than_redoing_it(self):
         """The two controls disagreed because they tested different things."""
         import inspect
-        from core.engine import performance
-        source = inspect.getsource(
-            performance._enforce_inactive_revenue_invariant)
-        self.assertNotIn("item['revenue']", source,
-                         'the ranking guard is testing revenue directly again')
-        self.assertIn('commercially_inactive', source)
+        from core.engine import leaderboard
+        source = inspect.getsource(leaderboard.update_leaderboard)
+        self.assertIn('commercially_inactive_team_ids', source,
+                      'the standings no longer consume the shared '
+                      'classification')
+        for redone in ('material_revenue_floor', 'is_commercially_inactive',
+                       'total_revenue', 'revenue'):
+            self.assertNotIn(
+                f'{redone}(', source,
+                'the standings are classifying teams themselves again; that '
+                'is the second, disagreeing test V2-022 removed')

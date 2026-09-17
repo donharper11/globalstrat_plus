@@ -315,6 +315,12 @@ class RoundContext:
         self.events_fired = []     # list of EventInstance
         self.production_remaining = {}  # (team_id, product_id, market_id) → units remaining
         self.org_modifiers = {}    # team_id → dict of org structure modifiers
+        # R32 / V2-022. One classification of who was commercially inactive
+        # this round: written by the performance step, read by the standings,
+        # so the composite cap and the ranking rule cannot disagree about who
+        # was competing. Empty until the performance step runs, which is why a
+        # round-zero bootstrap ranks nobody as inactive.
+        self.commercially_inactive_team_ids = frozenset()
         self.log = []              # human-readable log entries
 
 

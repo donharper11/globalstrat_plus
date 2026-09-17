@@ -290,7 +290,10 @@ class CC18ComplianceTest(TestCase):
 
     def test_zero_revenue_high_fit_team_cannot_outrank_positive_revenue_team(self):
         """GSP-R1-13: directly prevent the Game 17 leaderboard anomaly."""
-        from core.models.results_financials import RoundResultPerformanceIndex
+        from core.engine.leaderboard import update_leaderboard
+        from core.models.results_financials import (
+            LeaderboardEntry, RoundResultPerformanceIndex,
+        )
 
         self._round(4)
         selling_team = Team.objects.create(
@@ -338,14 +341,35 @@ class CC18ComplianceTest(TestCase):
             ctx.adjusted_fit_scores[seller_key] = 0.0
 
         calculate_performance_index(ctx)
+        update_leaderboard(ctx)
 
+        # R32 (2026-09-17). The property this test exists for is unchanged: a
+        # firm that did not compete must not finish above one that did. What
+        # changed is where it is enforced. It used to be enforced by replacing
+        # the inactive firm's carried index with `min(active) - 0.01`, so the
+        # assertion could be made on `index_value`; that made one event cost a
+        # leader 17.81 index points and a mid-table firm 5.00, and the ruling
+        # kept the property while moving it to the standings. The Game 17
+        # anomaly this test was written for was a *leaderboard* anomaly, so the
+        # finishing order is the assertion it always wanted.
+        zero_entry = LeaderboardEntry.objects.get(
+            game=self.game, round_number=4, team=self.team,
+        )
+        selling_entry = LeaderboardEntry.objects.get(
+            game=self.game, round_number=4, team=selling_team,
+        )
+        self.assertLess(
+            selling_entry.rank, zero_entry.rank,
+            'the zero-revenue team finished above the team that sold')
+
+        # And the round-level cost is the bounded composite cap, not a rewrite
+        # of the carried index scaled to how far ahead the firm had climbed.
         zero_result = RoundResultPerformanceIndex.objects.get(
             game=self.game, round_number=4, team=self.team,
         )
-        selling_result = RoundResultPerformanceIndex.objects.get(
-            game=self.game, round_number=4, team=selling_team,
-        )
-        self.assertLess(zero_result.index_value, selling_result.index_value)
+        self.assertEqual(zero_result.satisfaction_score,
+                         COMMERCIAL_INACTIVITY_COMPOSITE_CAP)
+        self.assertEqual(zero_result.index_change, D('-5.00'))
 
     def test_zero_floor_uses_revenue_aware_leaderboard_tie_break(self):
         """GSP-R1-14: preserve the invariant at the nonnegative PI floor."""
