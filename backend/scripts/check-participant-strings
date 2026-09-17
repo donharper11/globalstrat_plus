@@ -26,7 +26,8 @@ Nine assertions, each mapped to a defect this repository actually shipped:
   A6  the frontend locale catalogues agree on keys, on plural
       categories and on each key's interpolation placeholders
   A7  a scenario-authored name is localised, not interpolated raw
-  A8  every `t()` key the frontend calls exists in the catalogues
+  A8  every `t()` key the frontend calls exists in the catalogues --
+      whether written as a literal or reached through a label map
   A9  no `t()` call carries a hard-coded fallback string instead
 
 A6 AND A8 ARE DIFFERENT QUESTIONS, and the difference is why A8 exists. A6
@@ -112,6 +113,16 @@ JS_T_LITERAL = re.compile(
 # `t(variable)` or a template literal: the key is decided at run time, so
 # reading the source cannot resolve it. Counted and reported, never guessed.
 JS_T_COMPUTED = re.compile(r"""\bt\(\s*[`A-Za-z_$({]""")
+
+# A key-like string used as an object VALUE -- `retired: 'common.retired'` or
+# `{ labelKey: 'strategy_tools.entry_cost' }`. This is the label-map pattern:
+# the map is defined at module level and consumed as `t(map[k])`, so the key
+# never appears inside a t() call and the literal scan above cannot see it.
+# Two conditions, both required: it must sit in value position, which excludes
+# ordinary prose; and its first segment must be a real catalogue namespace,
+# which excludes paths and mime types that merely contain a dot.
+JS_KEY_VALUE = re.compile(
+    r"""[:=]\s*(['"])([a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+)\1""")
 
 
 def error(message: str) -> int:
@@ -457,6 +468,42 @@ def frontend_key_references(repo: Path, sources: dict):
     return references, computed
 
 
+def frontend_label_map_references(repo: Path, sources: dict,
+                                  namespaces: set) -> list:
+    """Keys the frontend reaches through a label map rather than a literal.
+
+    `StatusBadge` renders `t(textKeys[status])`, where `textKeys` is a
+    module-level `{retired: 'common.retired'}` map; the Strategy Tools page
+    does the same for Porter's forces, PESTLE and the entry-matrix columns,
+    and the login page for its demo accounts. The key never appears inside a
+    `t()` call, so `frontend_key_references` structurally cannot see it -- which
+    is how eleven participant-visible `common.*` keys stayed missing from both
+    catalogues while this check passed.
+
+    Resolved structurally rather than guessed: a literal counts only when it is
+    an object value AND its first segment is a real top-level namespace in the
+    reference catalogue. Returns ``(key, 'path:line')`` pairs.
+    """
+    references = []
+    for source in sources:
+        root = repo / source
+        paths = sorted(root.rglob("*.js")) + sorted(root.rglob("*.jsx"))
+        for path in sorted(paths):
+            if "node_modules" in path.parts:
+                continue
+            rel = path.relative_to(repo)
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            for number, line in enumerate(text.splitlines(), 1):
+                for match in JS_KEY_VALUE.finditer(line):
+                    key = match.group(2)
+                    if key.split(".")[0] in namespaces:
+                        references.append((key, f"{rel}:{number}"))
+    return references
+
+
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
@@ -689,6 +736,30 @@ def main(argv: list[str]) -> int:
                 f"A8 {where} calls t({key!r}), which is in no catalogue. "
                 f"i18next renders the key itself, so a user reads "
                 f"{key!r} on screen in every language.")
+
+    # A8, extended reach: the same question asked of keys that arrive through a
+    # module-level label map. Eleven `common.*` StatusBadge labels were missing
+    # from BOTH catalogues and rendering as raw key text on ordinary
+    # participant screens while this check passed, because the literal scan
+    # above can only see a key written inside a t() call.
+    namespaces = {key.split(".")[0] for key in known}
+    seen_indirect: set = set()
+    for key, where in frontend_label_map_references(
+            repo, cfg["frontend_sources"], namespaces):
+        units += 1
+        if key in known:
+            continue
+        if key in allowed_keys:
+            used_key_allowances.add(key)
+            suppressions += 1
+            continue
+        if key in seen_indirect:
+            continue
+        seen_indirect.add(key)
+        findings.append(
+            f"A8 {where} reaches t({key!r}) through a label map, and the key "
+            f"is in no catalogue. i18next renders the key itself, so a user "
+            f"reads {key!r} on screen in every language.")
 
     for key in sorted(allowed_keys):
         if key not in used_key_allowances:

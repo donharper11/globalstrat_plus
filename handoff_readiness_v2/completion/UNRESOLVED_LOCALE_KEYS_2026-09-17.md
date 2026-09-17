@@ -55,10 +55,14 @@ widening an exemption. The list is the honest record of that: each entry was
 pinned to an exact key and the checker **reports any entry that stops
 matching**, so a suppression cannot outlive the thing it excused.
 
-An empty list means the **statically visible** surface is clean. It does not
-mean every key in the product resolves — 34 keys reached through label maps and
-template literals remain outside what A8 can see, and are with the owner
-(§3a).
+**The 34 keys hidden behind label maps are fixed too**, in part 4, and A8 was
+extended to reach that whole pattern rather than leave it to the next reader to
+notice. The suppression list stayed at **0** throughout: nothing in this work
+was closed by suppressing it.
+
+What remains outside A8 is narrower and named: keys assembled at run time from
+a template literal — `t(\`sc.state.${k}.label\`)` and 25 others — which reading
+the source cannot resolve. The checker prints that count on every run.
 
 ---
 
@@ -394,6 +398,121 @@ mounting — was wrong, and the wait I added for it fixed nothing.
 
 ---
 
+## 3c. Part 4 — the 34 label-map keys, and A8's extended reach
+
+The owner verified the `common.*` sample independently before deciding, and
+ruled to fix all 34 and extend the assertion to reach them.
+
+### A8 now resolves label maps
+
+`StatusBadge` renders `t(textKeys[status])`, where `textKeys` is a module-level
+`{retired: 'common.retired'}` map. The key never appears inside a `t()` call,
+so the literal scan could not see it. A8 now also resolves that pattern, under
+**two conditions, both required**: the literal must sit in **value position**
+(`key: 'ns.key'`), which excludes ordinary prose; and its first segment must be
+a **real catalogue namespace**, which excludes paths and mime types that merely
+contain a dot.
+
+**Proved the same way A8 and A9 were.** A plant in the selftest — a label map
+pointing at a key no catalogue answers — takes it from 32 to **34 ok, 0
+failed**, with the clean-tree half re-proving that a *resolving* map and a
+computed `t(variable)` are not flagged. And on the real repository, **before**
+any key was authored, the extended check exited **1 with exactly 34 findings**,
+each naming the map, the file and the line:
+
+```
+A8 .../StatusBadge.jsx:25 reaches t('common.developing') through a label map,
+and the key is in no catalogue. i18next renders the key itself, so a user
+reads 'common.developing' on screen in every language.
+```
+
+Transcript: `evidence/unresolved-locale-keys/a8-label-maps-catches-the-shipped-defect.txt`.
+
+### All 34 authored; the suppression list stayed at zero
+
+11 `common.*` (StatusBadge), 5 `login.team_*`, 18 `strategy_tools.*` (five
+forces, six PESTLE, seven entry-matrix columns). `allow_unresolved_keys`
+remained `{}` throughout — nothing here was closed by suppressing it.
+`check-participant-strings`: **PASS, 4544 units, 0 findings, 0 suppressions.**
+
+### Two things I checked rather than took
+
+**The duplicated namespaces are not duplicates.** The premise for this batch
+was that `common` and `dashboard` are each declared twice with the later block
+winning. They are not. In both catalogues `"common"` appears at line 2 at
+**two-space** indent — one top-level block, 40 keys — and again at line 1904 at
+**four-space** indent, nested inside `"sc"`. That second block is `sc.common`,
+a different key path, not a shadowed duplicate; likewise `sc.dashboard`.
+**Nothing is discarded at parse time.** `sc.common` holds exactly **19 keys**,
+which is almost certainly where the "19 then 40" reading came from. The keys
+were authored into the top-level blocks and re-parsed to confirm all 34 resolve.
+
+**The authoring script refused its own first run**, and was right to. The
+anchor `  "common": {` is a *substring* of the nested `    "common": {`, so it
+matched both and the assertion stopped at 2. Line-anchoring it (leading
+newline + exactly two spaces) fixed it. That is the same substring artifact
+that makes `common.save` appear to match `common.save_draft` — it would have
+written eleven keys into `sc.common`.
+
+### Which surfaces were checked, and which were not
+
+**Checked, in both languages, 12/12 assertions each, 0 network errors:**
+
+| Surface | What it proves |
+|---|---|
+| `/demo` | all five `login.team_*` labels |
+| Products page — retired-product badge | `common.retired`, the **one** new `common.*` key with a live call site |
+| Products page — page-header badge | StatusBadge on a second call site; renders `common.in_progress`, a **pre-existing** key, recorded as observed rather than claimed as fixed |
+| Strategy Tools — Porter's tab | all five `force_*` |
+| Strategy Tools — PESTLE tab | all six `pestle_*` |
+| Strategy Tools — entry matrix | all seven `entry_*` |
+| every one of the above | **no raw key text** anywhere on the page |
+
+**Not checked, and why — this matters more than the list above.** Of the 11
+`common.*` keys, **only `common.retired` has a live call site today.**
+`StatusBadge` renders `{label || text}`, and only two call sites omit `label`:
+`PageHeader.jsx:13`, which all seven calling pages feed
+`locked ? 'locked' : 'draft'` (both pre-existing keys), and
+`ProductsPage.js:185`, hard-coded to `retired`. `ProductsPage.js:193` and
+`GameDashboard.js:577` both pass `label`, which overrides the `common.*` text
+entirely. So `developing`, `distress`, `budget_tier`, `mainstream`, `premium`,
+`ultra_premium`, `open`, `pending`, `processed` and `operational` are declared
+in the map with **no caller that reaches them**, and are **not** claimed as
+observed. They are fixed as defence in depth: the map declares them, so a
+future `status="premium"` must not render a raw key. **This narrows the
+premise** — the class is real and `common.retired` proves it, but ten of the
+eleven are latent rather than currently on screen.
+
+Also not driven: the `GameDashboard` StatusBadge (label-overridden), the other
+six pages that feed `PageHeader`, and the SWOT tab (covered in part 2).
+
+> **No visual claim.** No CJK font in this sandbox; the standard is string
+> equality against the rendered DOM, via `textContent`.
+
+### Three harness errors, and the product was right every time
+
+Worth recording, because each looked at first like a defect:
+
+1. **Wrong route.** The five demo labels rendered nothing at `/login`. They are
+   guarded by `isDemo`, which `LoginPage` defines as
+   `location.pathname === '/demo'`. Driving `/demo` passed immediately.
+2. **`innerText` vs `textContent`, again.** English entry-matrix columns failed
+   while Chinese passed — the design system uppercases headers via CSS
+   `text-transform`, which `innerText` reflects and Chinese has no case for.
+   The same trap as the operator panel; all assertions now read `textContent`.
+3. **An unsatisfied precondition.** Porter's and PESTLE mount their label cards
+   only inside `{market && (…)}`. With no market chosen the cards never exist,
+   so both languages returned empty **with no raw key on screen** — which is
+   what an unmounted panel looks like, not an untranslated one. Selecting a
+   market fixed it; scoping the select to `.ant-tabs-tabpane-active` fixed the
+   follow-on timeout, since AntD keeps opened panes mounted and the stale
+   hidden select was being clicked.
+
+In each case the "no raw key text" assertion passing alongside the failure was
+the signal that the content was absent rather than broken.
+
+---
+
 ## 4. Constraints
 
 | | |
@@ -460,6 +579,21 @@ and the two locale catalogues.
 | 30 | `browser_classB.py en` — operator panel | **8 passed / 0 failed**, 0 network errors | 22s |
 | 31 | `browser_classB.py zh-CN` — operator panel | **8 passed / 0 failed**, 0 network errors | 22s |
 
+**Part 4 — the 34 label-map keys, and A8's extended reach:**
+
+| # | Command | Result | Duration |
+|---|---|---|---|
+| 32 | `check-participant-strings` — extended A8, **before** authoring the keys | **exit 1, 34 findings**, each naming the label map and file:line | 0.5s |
+| 33 | `check-participant-strings-selftest` — with the label-map plant | **34 ok, 0 failed** (was 32) | 4s |
+| 34 | author the 34 keys — first run | **refused**: anchor matched 2 blocks (substring artifact) | <1s |
+| 35 | author the 34 keys — line-anchored | +34 in each catalogue, all present after parse | <1s |
+| 36 | `check-participant-strings` — after | **PASS, 4544 units, 0 findings, 0 suppressions** | 0.5s |
+| 37 | jest | 8 suites, **36 tests**, OK | 3s |
+| 38 | `test-postgres` × 3 protected modules | **54 tests, OK** | 30s |
+| 39 | `npm run build` | **exit 0** | ~90s |
+| 40 | `browser_class34.py en` — login, StatusBadge ×2 pages, three tool tabs | **12 passed / 0 failed**, 0 network errors | 45s |
+| 41 | `browser_class34.py zh-CN` — same | **12 passed / 0 failed**, 0 network errors | 45s |
+
 The seed's first run **failed and refused to continue**: `advance_round` calls
 `process_round`, which will not run while any team is unlocked, so the fixture
 raised `RoundNotReadyError` rather than producing a half-built round. Fixed by
@@ -525,10 +659,22 @@ gate that could not see it. Fixing the first would not have found the rest.
 > in both languages** (8/8 assertions each, 0 network errors). The suppression
 > list shrank **17 → 14**, exactly the three fixed keys, leaving only Class B.
 > **A further 34 missing keys were found while doing this**, hidden behind
-> label maps and template literals where A8 cannot see them — 18 more in
-> `strategy_tools` (Porter's forces, PESTLE, entry matrix), 11 in `common`
-> (`StatusBadge`, used across many pages) and 5 in `login`. **Not fixed**, and
-> listed in `evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt`.
+> label maps where A8 could not see them — 18 in `strategy_tools` (Porter's
+> forces, PESTLE, entry matrix), 11 in `common` (`StatusBadge`) and 5 in
+> `login`. **All 34 are now fixed**, on the owner's ruling and after the owner
+> independently verified the `common.*` sample, and **A8 was extended** to
+> resolve the label-map pattern so the class cannot recur silently. The
+> suppression list stayed at **0** throughout: nothing in this work was closed
+> by suppressing it. **One honest narrowing of the premise:** of the 11
+> `common.*` keys only **`common.retired`** has a live call site today —
+> `StatusBadge` renders `{label || text}`, and the only two label-less call
+> sites are `PageHeader.jsx:13` (fed `locked`/`draft`, both pre-existing) and
+> `ProductsPage.js:185` (hard-coded `retired`), while `ProductsPage.js:193` and
+> `GameDashboard.js:577` pass `label`, which overrides. The other ten are
+> declared in the map with no caller that reaches them and are fixed as
+> defence in depth, not claimed as observed. Sample driven on screen in both
+> languages, 12/12 assertions each: `/demo` login labels, the retired-product
+> badge, and all three Strategy Tools label-map tabs.
 > Participant- and instructor-facing; rated as a
 > wording defect on a live screen, per GSP-CRV2-12's standard. **The other half
 > is also now fixed:** 14 `instructor.*` keys in CRV2-08's
@@ -551,20 +697,27 @@ gate that could not see it. Fixing the first would not have found the rest.
 > each other, so a key absent from BOTH was symmetric and invisible to it.**
 > `results_page.of_teams` shipped and rendered as its own name on the results
 > screen in both languages with the check green throughout — the gate was not
-> bypassed, it was never asked the question. **Closed 2026-09-17** by three
+> bypassed, it was never asked the question. **Closed 2026-09-17** by four
 > changes: **A8** fails when a `t()` key the frontend calls is in no catalogue;
 > **A9** fails when a call carries a hard-coded fallback string instead (A4's
-> frontend twin); and **A6 was taught plurals** — forms are collapsed onto
-> their base key before comparison and each language is then asked for exactly
-> the CLDR categories it needs, without which the correct fix to finding 1
-> would itself have failed the check. Proved two ways: the selftest grew from
-> **22 to 32 ok / 0 failed** with plants for A8, A9, a missing plural category
-> and both suppression failure modes, plus two false-positive guards asserted
-> by every clean-tree run (plural resolution with zh-CN holding only `_other`,
-> and a computed `t(variable)` key); and **on the real repository**, where
-> restoring the shipped defect makes the check exit 1 naming
-> `ResultsPage.js:134` and passing again when restored. The check **states its
-> blind spot on every run** — 26 computed keys it cannot resolve. Scope: 2242
-> references across 97 files, 4432 units, 17 reviewed suppressions carrying the
-> pre-existing backlog, each pinned to an exact key and reported if it stops
-> matching. **Development-grade evidence. No gate closed.**
+> frontend twin); **A6 was taught plurals** — forms are collapsed onto their
+> base key before comparison and each language is then asked for exactly the
+> CLDR categories it needs, without which the correct fix to finding 1 would
+> itself have failed the check; and **A8 was extended to resolve label maps**,
+> the `t(textKeys[status])` pattern, which is how eleven participant-facing
+> `common.*` keys stayed missing from both catalogues while the check passed.
+> That extension resolves a literal only when it sits in object-value position
+> **and** its first segment is a real catalogue namespace, so paths and mime
+> types are not mistaken for keys. Proved two ways: the selftest grew from
+> **22 to 34 ok / 0 failed** with plants for A8 (literal and label-map), A9, a
+> missing plural category and both suppression failure modes, plus three
+> false-positive guards asserted by every clean-tree run (plural resolution
+> with zh-CN holding only `_other`, a resolving label map, and a computed
+> `t(variable)` key); and **on the real repository**, where restoring the
+> shipped defect makes the check exit 1 naming `ResultsPage.js:134`, and where
+> the label-map extension exited **1 with exactly 34 findings** before those
+> keys were authored. The check **states its blind spot on every run** — 26
+> computed keys, assembled at run time from template literals, which reading
+> the source cannot resolve. Scope: 4544 units across 97 files, and
+> **0 suppressions**: every key this check can see now resolves, and nothing
+> was closed by suppressing it. **Development-grade evidence. No gate closed.**
