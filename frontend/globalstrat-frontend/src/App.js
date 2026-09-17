@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import ShallowRouteRecovery from './components/ShallowRouteRecovery';
 import { DSTopBar } from './components/design-system';
 import BudgetAlert from './components/BudgetAlert';
+import DecisionSaveAlert from './components/DecisionSaveAlert';
 import DemoBanner from './components/DemoBanner';
 import NewsTicker from './components/NewsTicker';
 import themeConfig from './theme/themeConfig';
@@ -131,6 +132,12 @@ function App() {
                           )}
                           <Content className="ds-content-area">
                             <BudgetAlert />
+                            {/* R17: an autosave refused while an instructor
+                                holds the round must be visible on whichever
+                                decision screen the team is on, so it is
+                                mounted beside BudgetAlert rather than on any
+                                one page. */}
+                            <DecisionSaveAlert />
                             <Routes>
                               <Route path="/" element={<GameDashboard />} />
                               {/* Information pages */}

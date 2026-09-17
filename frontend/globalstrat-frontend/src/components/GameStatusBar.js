@@ -26,7 +26,7 @@ const roundStatusLabel = (roundStatus, locked, t) => {
 const GameStatusBar = () => {
   const { t } = useTranslation();
   const { team, currentRound, totalRounds, roundStatus, budgets } = useGame();
-  const { locked, saving, lastSaved } = useDecisions();
+  const { locked, saving, lastSaved, saveError } = useDecisions();
 
   const status = roundStatusLabel(roundStatus, locked, t);
 
@@ -56,7 +56,17 @@ const GameStatusBar = () => {
           </>
         )}
         {saving && <Text type="warning">{t('game_status.saving')}</Text>}
-        {!saving && lastSaved && (
+        {/* R17: `lastSaved` records the last save that SUCCEEDED and is never
+            cleared, so after one good save and then a refusal this went on
+            reporting "Saved 14:32" while the edit on screen was unsaved. The
+            outstanding refusal now takes precedence over the stale timestamp.
+            (This component is currently imported by nothing -- see
+            DecisionSaveAlert, which is the mounted surface -- but the
+            indicator must not be left stating something false.) */}
+        {!saving && saveError && (
+          <Text type="danger">{t('game_status.not_saved')}</Text>
+        )}
+        {!saving && !saveError && lastSaved && (
           <Text type="secondary">{t('game_status.saved', { time: lastSaved.toLocaleTimeString() })}</Text>
         )}
       </Space>
