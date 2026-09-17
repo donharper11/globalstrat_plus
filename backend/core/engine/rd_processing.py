@@ -344,23 +344,70 @@ def _process_product_creates(team, submission, current_round):
                 pass
 
 
+def _retire_now(product, current_round):
+    """Retire one product and take its markets off sale."""
+    product.status = 'retired'
+    product.retired_round = current_round
+    product.save()
+    TeamProductMarket.objects.filter(team_product=product).update(
+        is_active=False,
+    )
+
+
 def _process_product_retires(team, submission, current_round):
-    """Process DecisionProductRetire records."""
-    for retire_dec in submission.product_retires.all().order_by('team_product__name'):
-        product = retire_dec.team_product
-        if retire_dec.timing == 'immediate':
-            product.status = 'retired'
-            product.retired_round = current_round
-            product.save()
-            TeamProductMarket.objects.filter(team_product=product).update(
-                is_active=False,
-            )
-        elif retire_dec.timing == 'end_of_round':
-            # The retirement is resolved here; costs preserve the selected
-            # end-of-round recovery treatment.
-            product.status = 'retired'
-            product.retired_round = current_round
-            product.save()
-            TeamProductMarket.objects.filter(team_product=product).update(
-                is_active=False,
-            )
+    """Process DecisionProductRetire records — the `immediate` timing only.
+
+    R18: the two timings mean different things and are applied at different
+    points in the round. `immediate` stops sales now, which is what this step
+    does. `end_of_round` **sells through the round it was chosen in** and
+    retires once the round has resolved, so it is deliberately not applied
+    here -- see `apply_end_of_round_retirements`, which runs as the last
+    deterministic mutation of Phase 1.
+
+    Before R18 both branches ran here and were byte-for-byte identical, so the
+    two timings had the same market timing and differed only in fire-sale
+    recovery -- 50% for `end_of_round` against 25% for `immediate`
+    (`costs.calculate_retirement_costs`). That made `immediate` strictly
+    dominated: worse recovery, no compensating benefit. Splitting the timing
+    is what makes the authored rates a real trade-off (V2-070).
+    """
+    for retire_dec in submission.product_retires.filter(
+            timing='immediate').order_by('team_product__name'):
+        _retire_now(retire_dec.team_product, current_round)
+
+
+def apply_end_of_round_retirements(context):
+    """R18: retire `end_of_round` products once the round has resolved.
+
+    Called as the last deterministic step of Phase 1, after revenue, costs,
+    financials, the performance index and the leaderboard. That placement is
+    the ruling: a product retired `end_of_round` is active for the whole of
+    the round it was retired in -- it is offered, it is scored, it sells --
+    and is retired at that round's end. The round after, it is gone.
+
+    Retirement is still inside the round's hashed output envelope: the
+    manifest is completed after Phase 1 returns, so `team_product` and
+    `team_product_market` are snapshotted in their retired end-of-round state
+    (V2-043's point, preserved). `MANIFEST_SCHEMA_VERSION` does not move --
+    no section and no field changes, only the values inside existing ones.
+    """
+    game = context.game
+    current_round = context.round_number
+    retired = 0
+
+    for team in context.teams:
+        submission = DecisionSubmission.objects.filter(
+            team=team, round__round_number=current_round, round__game=game,
+        ).first()
+        if not submission:
+            continue
+        for retire_dec in submission.product_retires.filter(
+                timing='end_of_round').select_related(
+                'team_product').order_by('team_product__name'):
+            _retire_now(retire_dec.team_product, current_round)
+            retired += 1
+
+    context.log.append(
+        f'R18: {retired} end-of-round product retirement(s) applied after the '
+        f'round resolved'
+    )

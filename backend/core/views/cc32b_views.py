@@ -2,6 +2,8 @@
 CC-32B: Organizational Design API Views.
 """
 from decimal import Decimal
+
+from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -14,6 +16,18 @@ from core.views.decisions import (
     CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
 
 D = Decimal
+
+
+class _SwitchUnaffordable(Exception):
+    """A structure switch the team's cash cannot cover, carrying the figures.
+
+    Raised inside the switch transaction so the switch is rolled back with it
+    (R36): a refusal must leave no trace of the structure change it refused.
+    """
+
+    def __init__(self, assessment):
+        super().__init__('organisational structure switch exceeds cash')
+        self.assessment = assessment
 
 
 class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
@@ -138,27 +152,71 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Deduct transition cost
-        if new_structure.transition_cost > 0:
-            if team.cash_on_hand < new_structure.transition_cost:
-                return Response(
-                    {'error': f'Insufficient cash. Need ${float(new_structure.transition_cost):,.0f}, have ${float(team.cash_on_hand):,.0f}'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            team.cash_on_hand -= new_structure.transition_cost
-            team.save()
-
-        # Execute switch
-        old_structure = org.current_structure
-        org.transitioning_from = old_structure
-        org.current_structure = new_structure
-        org.adopted_round = game.current_round
-        org.transition_rounds_remaining = new_structure.transition_disruption_rounds
-        org.save()
-        rnd = game.rounds.filter(round_number=game.current_round).first()
+        # R36 / V2-088: the transition cost is NOT deducted here.
+        #
+        # This view used to do `team.cash_on_hand -= transition_cost` at
+        # request time. The money left the business at click time while every
+        # committed-spend, projected-cash and Finance figure the team is shown
+        # ignored it, the equity funding rule never counted it, and nothing
+        # restored it -- reopening a round left the cash gone while the
+        # decision it paid for could still be changed. That is the "cost shown
+        # is not the cost charged" defect V2-037/V2-038 consolidated the budget
+        # rule to end, on a different surface.
+        #
+        # The charge is now booked at resolution by
+        # `engine/costs.calculate_operating_expenses`, from the switch this
+        # view records, through `funding_need.org_transition_charge` -- the one
+        # function both the engine and the funding rule read. Nothing is
+        # written here but the switch itself, so a reopened round has nothing
+        # to unwind: the money never moved.
+        #
+        # Affordability goes through the one existing rule rather than a second
+        # copy of the cash arithmetic, exactly as a research purchase does:
+        # record the switch, ask `budget_assessment` whether the team can still
+        # afford what it has committed, and undo the switch if it cannot.
+        from core.models.decisions import DecisionSubmission
         from core.services.competition_audit import record_decision_event
-        record_decision_event(request, game, team, rnd, 'change_org_structure',
-                              request.data)
+        from core.services.rd_costs import budget_assessment
+
+        rnd = game.rounds.filter(round_number=game.current_round).first()
+        if rnd is None:
+            return Response({'error': 'No current round for this game.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # The switch is a decision, so it needs the round's submission to hang
+        # its committed spend on -- the same reason a research purchase creates
+        # one. Without it the affordability rule has nothing to assess.
+        submission, _ = DecisionSubmission.objects.get_or_create(
+            team=team, round=rnd, defaults={'status': 'draft'})
+
+        old_structure = org.current_structure
+        try:
+            with transaction.atomic():
+                org.transitioning_from = old_structure
+                org.current_structure = new_structure
+                org.adopted_round = game.current_round
+                org.transition_rounds_remaining = new_structure.transition_disruption_rounds
+                org.save()
+
+                assessment = budget_assessment(submission, team)
+                if not assessment['within_cash']:
+                    raise _SwitchUnaffordable(assessment)
+
+                # The audit record stays exactly as it was: R34's principle --
+                # the explanation lives in the audit trail, and this needs no
+                # new hashed field.
+                record_decision_event(request, game, team, rnd,
+                                      'change_org_structure', request.data)
+        except _SwitchUnaffordable as refusal:
+            found = refusal.assessment
+            return Response(
+                {'error': (
+                    f'Insufficient cash. This switch would take committed '
+                    f'spend to ${Decimal(found["committed_total"]):,.0f}, '
+                    f'against ${Decimal(found["cash_on_hand"]):,.0f} of cash.'
+                )},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         return Response({
             'success': True,
