@@ -274,6 +274,42 @@ class RoundResultsView(APIView):
                         event.payload, msg_language),
                 })
 
+        # R35, the owner's ruling of 2026-09-17: the demoted team is told on
+        # its own results screen. Under R32 the standings place a commercially
+        # inactive firm below every firm that competed, whatever its score, so
+        # a team can hold a HIGHER performance index than the team above it and
+        # still finish below it. R34 recorded that firing as an audit event and
+        # CRV2-08's instructor drill-down already surfaces it -- but this view
+        # filtered audit events to the price-band actions above, so the team
+        # read its own standing with no explanation.
+        #
+        # Rendered from the stored payload, exactly as the price-band notices
+        # are, so the sentence the team reads and the row an instructor
+        # produces in a dispute are the same fact.
+        from core.engine import leaderboard as rank_rules
+        inactivity_notices = []
+        if adjusted_round:
+            for event in DecisionAuditEvent.objects.filter(
+                game=game, team=team, round=adjusted_round,
+                action=rank_rules.ACTION_INACTIVITY_DEMOTION,
+            ).order_by('id'):
+                inactivity_notices.append({
+                    'rule': event.payload.get('rule'),
+                    'rank': event.payload.get('rank'),
+                    'performance_index': event.payload.get(
+                        'performance_index'),
+                    # The inversion as the record states it, so the screen can
+                    # lead with it without recomputing who outscored whom. The
+                    # rival's name and index that the payload carries are
+                    # deliberately NOT passed on: the record names them so a
+                    # dispute can be answered, and a team's own results screen
+                    # is not the place to publish another firm's score.
+                    'outscored_a_firm_ranked_above': event.payload.get(
+                        'outscored_a_firm_ranked_above'),
+                    'message': rank_rules.demotion_notice(
+                        event.payload, msg_language),
+                })
+
         return Response({
             'round_number': round_number,
             'performance': performance,
@@ -284,6 +320,7 @@ class RoundResultsView(APIView):
             'coherence': coherence,
             'strategy_features': strategy_features,
             'price_adjustments': price_adjustments,
+            'inactivity_notices': inactivity_notices,
         })
 
 

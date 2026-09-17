@@ -1,0 +1,13 @@
+--- a rival (a firm that COMPETED) reaching the demoted team ---
+  status=403 body={"detail": "You do not have access to this team."}
+  REFUSED: True
+--- the owning team reading its own ---
+  status=200 notices=1
+  message=Your firm sold nothing in round 1, so it did not compete this round. A firm that does not compete is placed below every firm that did, whate
+--- the rival reading ITS OWN results (it competed: expect empty) ---
+  status=200 key_present=True notices=0
+--- the OTHER demoted firm, which outscored nobody above it ---
+  status=200 notices=1 outscored=False
+  price_adjustments=2
+  message=Your firm sold nothing in round 1, so it did not compete this round. A firm that does not compete is placed below every firm that did, whatever its score — so your firm was ranked 4 in this round’s standings, carrying a performance index of 48.69. The index itself was not reduced; only the placing. Sell in at least one market next round to be ranked on your score again.
+  claims no lost place: True

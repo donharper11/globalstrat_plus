@@ -70,6 +70,46 @@ def demotion_audit_payload(*, team, rank, round_number, lowest_active,
     }
 
 
+# ---------------------------------------------------------------------------
+# Participant-facing wording, chosen in ONE place
+# ---------------------------------------------------------------------------
+#
+# R35, the owner's ruling of 2026-09-17: **the demoted team is told on its own
+# results screen.** R34 made the firing visible in stored data and CRV2-08's
+# instructor drill-down surfaces it; this is the half the team itself reads.
+#
+# Rendered FROM THE STORED PAYLOAD, exactly as
+# `price_band.adjustment_notice` renders a price adjustment from its receipt --
+# so the sentence a team is shown and the row an instructor produces in a
+# dispute are the same fact, not two computations that can drift apart. It
+# lives beside `demotion_audit_payload` for the same reason: the record and its
+# rendering are read, reviewed and changed together.
+#
+# The sentences live in the bilingual catalogue
+# (`core/utils/participant_messages.py`); which one applies to which state is
+# decided here, so no surface can describe the rule differently by choosing a
+# different sentence.
+
+def demotion_notice(event_payload, language='en'):
+    """How a recorded demotion reads to the team on its own results screen.
+
+    The key is chosen on `outscored_a_firm_ranked_above`, the same field R34
+    records so the row does not claim an inversion that did not happen. A firm
+    that would have finished last regardless is still told the rule and still
+    told the guard fired; it is simply not told it lost a place it never held.
+    """
+    from core.utils.participant_messages import participant_message
+
+    key = ('inactivity_demotion_outscored'
+           if event_payload.get('outscored_a_firm_ranked_above')
+           else 'inactivity_demotion')
+    return participant_message(
+        key, language=language,
+        round=event_payload.get('round_number'),
+        rank=event_payload.get('rank'),
+        index=event_payload.get('performance_index'))
+
+
 def _record_demotions(game, round_number, ranked_pairs, inactive_team_ids):
     """R34. Write one audit event per demoted team per round.
 

@@ -14,6 +14,7 @@ import RoundSelector from '../components/RoundSelector';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader, PanelCard } from '../components/design-system';
 import PriceAdjustmentNotice from '../components/PriceAdjustmentNotice';
+import InactivityDemotionNotice from '../components/InactivityDemotionNotice';
 // Nothing routed to this page, so ESLint never reached it and three unused
 // imports sat here unreported. Routing it (F3) surfaced them; they were never
 // called.
@@ -673,6 +674,9 @@ const ResultsPage = () => {
         }
       />
       <PriceAdjustmentNotice adjustments={results.price_adjustments} />
+      {/* R35: a team placed below firms it outscored is told why, here,
+          on its own results screen. */}
+      <InactivityDemotionNotice notices={results.inactivity_notices} />
       <Tabs className="ds-colored-tabs" items={tabItems} />
     </div>
   );

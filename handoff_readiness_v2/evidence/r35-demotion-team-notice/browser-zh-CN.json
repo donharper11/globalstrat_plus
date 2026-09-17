@@ -1,0 +1,134 @@
+{
+  "language": "zh-CN",
+  "round": 1,
+  "steps": [
+    {
+      "name": "the demoted team signs in",
+      "outcome": "pass",
+      "detail": "r35_t4_m1"
+    },
+    {
+      "name": "the results API carries a demotion notice",
+      "outcome": "pass",
+      "detail": "HTTP 200, 1 notice(s)"
+    },
+    {
+      "name": "  notice rank=3 index=89.96",
+      "outcome": "observed",
+      "detail": "第 1 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 3 位，绩效指数为 89.96，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。"
+    },
+    {
+      "name": "the key is present even when reading it as a list",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "R35 a reachable results screen renders the demotion notice",
+      "outcome": "pass",
+      "detail": "/games/1/teams/4/results -> heading=True sentence=True; /games/1/teams/4/results/1 -> heading=True sentence=True"
+    },
+    {
+      "name": "the landing dashboard shows it too",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "the sentence on screen is quoted from the DOM",
+      "outcome": "pass",
+      "detail": "贵公司在本回合的排名 第 1 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 3 位，绩效指数为 89.96，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "40-results_games_1_teams_4_results-zh-CN.png",
+    "40-results_games_1_teams_4_results_1-zh-CN.png",
+    "41-dashboard-zh-CN.png"
+  ],
+  "inactivity_notices": [
+    {
+      "rule": "inactivity.ranked_below_every_active_firm",
+      "rank": 3,
+      "performance_index": "89.96",
+      "outscored_a_firm_ranked_above": true,
+      "message": "第 1 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 3 位，绩效指数为 89.96，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。"
+    }
+  ],
+  "price_adjustments": [],
+  "route_probe": {
+    "/games/1/teams/4/results": {
+      "url_after": "http://127.0.0.1:46705/games/1/teams/4/results",
+      "heading_on_screen": true,
+      "server_sentence_on_screen": true,
+      "band_notice_on_screen": false
+    },
+    "/games/1/teams/4/results/1": {
+      "url_after": "http://127.0.0.1:46705/games/1/teams/4/results/1",
+      "heading_on_screen": true,
+      "server_sentence_on_screen": true,
+      "band_notice_on_screen": false
+    }
+  },
+  "dashboard": {
+    "heading_on_screen": true,
+    "server_sentence_on_screen": true
+  },
+  "alerts_on_screen": [
+    "贵公司在本回合的排名 第 1 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 3 位，绩效指数为 89.96，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。"
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "console_errors": 12,
+    "network_errors": 0
+  }
+}
