@@ -1,0 +1,90 @@
+# Competition owner rulings — 2026-09-17
+
+Two rulings, recorded in the form the programme record requires: the question
+as asked, the ruling, the consequence, and what each dispositions. They follow
+R30–R31 in `OWNER_RULINGS_2026-09-16.md`.
+
+A ruling exists here, dated, or it does not exist (R19). Nothing below was
+inferred from a recommendation.
+
+---
+
+## R32 — the inactivity guard enforces on rank, not by rewriting the carried index
+
+**Question as asked.** V2-119: `performance.py::_enforce_inactive_revenue_invariant`
+does not cap a commercially inactive firm's *change* for the round — it
+**replaces its carried performance index** with `min(active indexes) − 0.01`.
+The drop is therefore bounded only by how far above the lowest active rival the
+team had climbed: on one identical event a leading firm lost **17.81** points
+where a mid-table firm lost **5.00**. For scale, the strongest single decision
+lever measured anywhere in this programme is worth about **12.40**. Is replacing
+a carried index the intended severity?
+
+**Ruling.** **No. Keep the classification and keep the rule that an inactive
+firm must not outrank one that competed — but enforce it on the standings,
+not by overwriting the team's carried score.**
+
+**Consequence.**
+
+- The anti-free-rider property the rule exists for (V2-021, V2-022) is preserved
+  exactly: a firm that did not compete still cannot finish above one that did.
+- The unbounded, success-scaling penalty goes. A control whose severity grows
+  with how well a team had been playing is capable of deciding a competition on
+  one round, which is the V2-024 class of defect — an outcome play cannot
+  overcome.
+- The **composite cap stays as authored**: bounded at 5.00, proportionate, and
+  applied to the round. That remains the round-level consequence of not
+  competing.
+- This is an engine change inside the CRV2-01 determinism boundary. It needs a
+  focused test that fails without it, and it changes stored index values, so
+  earlier replay evidence covers its own commit and not the new one.
+- **Prophylactic, and known to be so.** The 2026-09-16 measurement found the
+  ceiling has **never fired** in stored play — 448 index rows, worst observed
+  `index_change` −5.82, none at or below −10. This is being ruled before a
+  competition rather than discovered during one.
+
+**Deliberately NOT ruled here — V2-119's second question.** Whether a firing
+must be **visible in the stored row** rather than only in the resolution log is
+untouched by this ruling and stays open against the rules owner. Today a team
+cannot be told why its index moved and a dispute cannot see it in the data.
+
+**Also still open — V2-110's remaining question.** Whether a team frozen out of
+a market by **its own** compliance failure should be treated as not competing at
+all is a separate rules judgement and is not answered here.
+
+**Dispositions:** V2-119 — question 1 ruled; question 2 open. Implementation
+open against the engine owner.
+
+---
+
+## R33 — V2-072 is mitigated for GlobalStrat+; the estate is a separate item
+
+**Question as asked.** GlobalStrat+ was cut over on 2026-09-16 to
+`globalstrat_plus_app`, a non-owner role that cannot become `postgres`, create
+roles or databases, or drop an audit trigger — each refusal exercised against
+`192.168.50.38` itself rather than inferred from a container. But the old shared
+credential `donwh` still exists, still inherits `postgres`, is still shared with
+GlobalStrat v1 and BECSR, and is still the credential V2-048 exposed in Git
+history. How should the finding be rated for this competition?
+
+**Ruling.** **Mitigated for GlobalStrat+, recorded as closed on evidence. The
+remaining shared-credential exposure is carried as its own operations item,
+outside this competition's launch gate.**
+
+**Consequence.**
+
+- V2-072 **no longer blocks this competition's launch**. The checklist gate for
+  the non-owner database role is satisfied by the cutover evidence, not by
+  assertion.
+- The estate exposure — `donwh` inheriting `postgres` across three applications,
+  and the unreviewable access history — becomes a distinct operations finding
+  with its own owner. It is not closed, not excepted, and not folded into a
+  competition gate it does not belong to.
+- **This is a re-rating by the owner, dated.** It is not the 2026-09-05
+  acceptance R19 withdrew as never given, and it does not revive it. The earlier
+  claim stays withdrawn; this ruling stands on the cutover that has since been
+  performed and proven.
+
+**Dispositions:** V2-072 — mitigated for GlobalStrat+ on evidence; estate
+exposure re-opened as a separate operations finding. The launch-checklist entry
+added 2026-09-12 may be ticked against the cutover record.

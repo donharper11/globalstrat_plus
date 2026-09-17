@@ -2592,6 +2592,29 @@ change made by someone able to drop them — which is the layer V2-007's closure
 rests on. Not registered as its own finding here, because registering it is not
 this entry's to do.
 
+**Remediated, and verified on this host 2026-09-17 rather than taken from a
+report.** The condition above no longer holds: `globalstrat-audit-anchor.timer`
+is installed and active on a 15-minute cadence, backed by
+`deploy/globalstrat-audit-anchor.service`, which runs `export_audit_anchor`
+(sealing first, so it cannot anchor a head that is already behind the unsealed
+rows), then `verify_audit_chain`, then `check_release_identity`. The run at
+**08:21:16 UTC on 2026-09-17 succeeded end to end** — `export_audit_anchor` exit
+0, **anchored head #1076** (`7b4a70d80a1be2f6…`) to
+`competition_backups/audit-anchors/anchor-000000001076.json`; `verify_audit_chain`
+exit 0, so integrity now verifies where it previously reported **AUDIT INTEGRITY
+FAILED**; `check_release_identity` exit 0. The 1,076 events this entry recorded
+as unsealed are the 1,076 now sealed into that head. The service unit shows
+`disabled` in `systemctl status`, which is **correct** for a oneshot triggered by
+a timer (`TriggeredBy: globalstrat-audit-anchor.timer`) and is not a defect.
+
+**No finding is opened for it, deliberately.** It was found unregistered and
+unowned, which is why it was nearly registered as one — but the layer V2-007's
+closure rests on is running and verifying, so there is nothing open to record.
+What is worth carrying forward is the near miss: this paragraph described a live
+integrity failure and explicitly declined to register it, so for a day it sat in
+no one's queue. A condition that belongs to nobody is the one that reaches a
+competition.
+
 **Proof, on PostgreSQL 16.13 in Docker with production's role shape rebuilt**
 (`donwh` owning the database and all 193 tables, member of `postgres`, 12 guard
 triggers): as `donwh`, `SET ROLE postgres` succeeds, `pg_read_file` succeeds and
@@ -2998,3 +3021,16 @@ V2-119 and V2-120 are registered unrepaired.
 | V2-118 | Grading / coherence blend | **P1** | **Submitting a communication *lowered* a team's graded coherence, always — and lowered it most for the strongest teams.** `coherence.py` blended `0.9 x formula + 0.1 x communication`, treating the communication component as a 0–100 figure; the code comment said it was "already on a 0-100ish scale". It never was. Each contribution is `overall_score` (0–1) × the assignment's `coherence_weight` × 100, and the five authored assignments weigh **0.26** in total, so the component caps near 26 against a formula score running to 100. At the live median formula score a submission cost roughly 4.7 points, and a team scoring 95 lost more than one scoring 50. A team that ignored the assignment entirely was never penalised. | Arithmetic is in `coherence.py` at the pre-repair revision; weights: `select sum(coherence_weight) from communication_assignment` = 0.26 across 5 rows. No student was ever affected — `team_communication` holds 0 rows and no coherence row carries a `communication_coherence` key (448 rows checked). | **Repaired by removal at `3bf0d18`, under R31.** The path it lived on no longer exists: the communication score is feedback and is not graded, so there is no longer a scale to get wrong. Six tests pin the sever, including an end-to-end one that resolves a round and asserts a perfect communication leaves `blended_score` equal to `formula_score`. Registered after the fact; see the chronology note above. |
 | V2-119 | Engine / commercial-inactivity controls | **P2** | **An unregistered control that can decide a finishing order.** `performance.py::_enforce_inactive_revenue_invariant` overwrites a commercially inactive firm's performance index with `min(active indexes) − 0.01`, floored at zero. It is not a cap on the round's *change*: it replaces the carried index outright, so the drop is bounded only by how far the team was above the lowest active rival. The firing is recorded in `context.log` and nowhere in the stored row, so a team cannot be told why its index moved and a dispute cannot see it in the data. | `performance.py`, `_enforce_inactive_revenue_invariant`. Live data: 448 `round_result_performance_index` rows, minimum `index_change` −5.82, none at or below −10 — **the guard has never fired in stored play**. | **Open — rules owner.** Two questions, neither a builder's: whether replacing a carried index (rather than capping the round's change) is the intended severity, and whether the firing must be visible in the stored row rather than only in a resolution log. Related to V2-110's remaining half, which is the most likely way this control would ever fire. |
 | V2-120 | Determinism / reconstructability | **P2** | **Nine stored resolution manifests record no code revision at all.** `code_revision` is empty on nine rows, so the round cannot be tied to the code that produced it and `recover_competition_round` cannot honour RD-03 for them. Distinct from the revision problem repaired the same day: the other six stored revisions were pre-rewrite hashes and **do** translate through the V2-048 commit map, which is now committed as evidence. An empty field translates to nothing. | `manage.py resolve_stored_revision --all-stored` against production, 2026-09-16: six revisions translated, one bucket `(empty)` with 9 manifests; the command exits non-zero while any remain. | **Open, and not repairable retroactively.** Production now refuses to resolve without an explicit `GIT_REVISION` (`resolve_code_revision`), and `check_release_identity` — run by the audit-anchor timer every fifteen minutes — fails if the advertised revision drifts from the running code, so no new manifest can join this set. The nine existing rows stay as they are; what the owner may need to decide is whether any competition result depends on one of them. |
+
+## Owner rulings landed 2026-09-17 — dispositions
+
+Two rulings were issued by the competition owner on 2026-09-17 and are recorded
+in full, with the question as asked and the consequence, in
+`OWNER_RULINGS_2026-09-17.md` (R32–R33). Their effect on the entries above:
+
+| Ruling | Finding | Disposition |
+|---|---|---|
+| R32 | V2-119 | **Question 1 ruled.** The classification stays and an inactive firm still must not outrank one that competed — but enforcement moves to the **standings**, not to overwriting the carried performance index. The composite cap stays as authored at a bounded 5.00. The unbounded, success-scaling drop goes: a control whose severity grows with how well a team had played is the V2-024 class, an outcome play cannot overcome (17.81 for a leader against 5.00 mid-table on the identical event, where the strongest decision lever is worth about 12.40). Engine change inside the CRV2-01 determinism boundary — it moves stored index values, so earlier replay evidence covers its own commit and not the new one. **Prophylactic and known to be so:** the 2026-09-16 measurement found the ceiling has never fired in stored play (448 rows, worst `index_change` −5.82). Implementation open against the engine owner. |
+| R32 | V2-119 **question 2 — NOT ruled** | Whether a firing must be **visible in the stored row** rather than only in the resolution log is untouched and **stays open** against the rules owner. Today a team cannot be told why its index moved, and a dispute cannot see it in the data. The implementing builder is instructed not to ship it as a side effect even if its design makes it trivially available. |
+| R32 | V2-110 **remaining question — NOT ruled** | Whether a team frozen out of a market by **its own** compliance failure should be treated as not competing is a separate rules judgement and is **not** answered by R32. It stays open. V2-110's repair (the customs trigger gated on the effective unlock round, merged at `1b6ef85`) is unaffected. |
+| R33 | V2-072 | **Mitigated for GlobalStrat+ and re-rated: it no longer blocks this competition's launch.** The 2026-09-16 cutover to `globalstrat_plus_app` is the evidence — a non-owner role that cannot become `postgres`, create roles or databases, or drop an audit trigger, with each refusal exercised against `192.168.50.38` itself rather than inferred from a container. **The estate exposure is not closed and not excepted:** `donwh` still inherits `postgres`, is still shared with GlobalStrat v1 and BECSR, is still the credential V2-048 exposed, and its access history remains unreviewable. That is carried as its own operations finding with its own owner, outside a competition gate it does not belong to. **This is a dated owner re-rating.** It is not the 2026-09-05 acceptance R19 withdrew as never given, and it does not revive it. |
