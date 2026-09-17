@@ -64,9 +64,25 @@ class DecisionLifecycleLockTests(TransactionTestCase):
 
             self.assertEqual(response.status_code, 409)
             self.assertEqual(response.data['code'], 'lifecycle_in_progress')
-            self.assertEqual(
-                response.data['detail'],
-                'This round is being processed. Refresh shortly to see the results.')
+            # R17: the refusal must carry a message, and the message must
+            # describe what actually happened. This boundary fires for EVERY
+            # exclusive operator action -- a deadline change, an event
+            # injection, a team edit -- not only Phase-1 resolution, so a
+            # sentence claiming the round is being processed is false for most
+            # of them. Asserted by meaning rather than by exact text: the
+            # wording is participant copy and may be retuned, while "names an
+            # instructor action, and says nothing was saved" is the ruling.
+            detail = response.data['detail']
+            self.assertTrue(
+                detail.strip(), 'a refused write must tell the student why')
+            self.assertIn('instructor', detail.lower(),
+                          'the refusal must name the instructor action that '
+                          'caused it')
+            self.assertIn('nothing was saved', detail.lower(),
+                          'a refusal must say the edit was not saved')
+            self.assertNotIn('being processed', detail.lower(),
+                             'the round is not being processed for a deadline '
+                             'change, an event injection or a team edit')
             self.assertEqual(_MutationProbe.calls, 0,
                              'a refused request must not execute its mutation handler')
             self.assertLess(elapsed, 0.5,
