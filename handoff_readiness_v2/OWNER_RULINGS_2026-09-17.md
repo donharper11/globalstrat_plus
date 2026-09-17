@@ -198,3 +198,41 @@ counts it, and reopening a round does not give the money back.
   a new hashed field.
 
 **Dispositions:** V2-088 — ruled; implementation open against the engine owner.
+
+---
+
+## R37 — the fire sale is priced off the stock that is actually left
+
+**Question as asked.** R18 made a product retired `end_of_round` sell through
+its retirement round. `calculate_retirement_costs` still prices the fire-sale
+recovery off the **previous** round's unsold units — the position before that
+final round of selling. The builder left it as authored and raised it rather
+than changing a basis it had not been asked to change.
+
+**Ruling.** **Price the recovery off the stock remaining after the product's
+final round of selling.**
+
+**Consequence.**
+
+- The number a team gets back corresponds to the inventory it actually still
+  held. Under the previous basis a team could sell most of its remaining stock
+  in the final round and still be paid out as though none of it had moved, or
+  the reverse — either way the figure describes a position that no longer
+  existed.
+- The recovery step must therefore run **after** that round's sales are known,
+  which is the same ordering R18 established for the retirement itself
+  (`advance_round` Step 16.5, after revenue, costs, financials, the index and
+  the leaderboard).
+- The authored rates are untouched: 50% for `end_of_round`, 25% for
+  `immediate`. R18 gave the two timings genuinely different market access, and
+  this makes the recovery each earns describe the same reality.
+- `immediate` is unaffected in basis — it never sells in its retirement round,
+  so "what is left" and "the previous round's unsold units" are the same stock.
+- Inside the CRV2-01 determinism boundary: it changes a charged amount, so it
+  needs a focused test that fails without it, and it invalidates replay evidence
+  for rounds containing an `end_of_round` retirement — evidence R18 had already
+  invalidated, so nothing new is lost.
+
+**Dispositions:** V2-070 — the timing was ruled by R18 and is implemented; this
+settles the basis question that repair exposed. Implementation open against the
+engine owner.
