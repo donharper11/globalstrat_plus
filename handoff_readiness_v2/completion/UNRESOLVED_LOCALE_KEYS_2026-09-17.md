@@ -44,16 +44,21 @@ bypassed, which is the defect A4 forbids on the backend; this is its frontend
 twin. Labels like "Actor", "Action", "Outcome", "Reason", "Request ID",
 "Time (server)", "Operator Log", "Supply Chain".
 
-**Class A's remaining three were subsequently authorised and are fixed in part
-2 below.** Class B's 14 are untouched: the wording belongs to CRV2-08's owner
-and is with them as a scope decision.
+**Both classes were subsequently authorised and are fixed** — Class A in part
+2, Class B in part 3, each after the count above had been reported and a
+decision taken on it.
 
-The suppression list is therefore now **14**, all `instructor.*`. Every entry
-carries a per-key reason, is pinned to the exact key, and the checker **reports
-any entry that stops matching**, so the list cannot quietly outlive its defect —
-it has already shrunk from 17 to 14 by exactly the three keys part 2 fixed.
-That keeps the gate meaningful today — it fails on the **next** unresolved key —
-without silently absorbing a backlog it did not cause.
+**The suppression list is now empty.** It went 17 → 14 when part 2 authored the
+three Class A strings, and 14 → **0** when part 3 translated the fourteen
+`instructor.*` keys. Every entry was removed by fixing its defect, not by
+widening an exemption. The list is the honest record of that: each entry was
+pinned to an exact key and the checker **reports any entry that stops
+matching**, so a suppression cannot outlive the thing it excused.
+
+An empty list means the **statically visible** surface is clean. It does not
+mean every key in the product resolves — 34 keys reached through label maps and
+template literals remain outside what A8 can see, and are with the owner
+(§3a).
 
 ---
 
@@ -293,6 +298,102 @@ mechanism, outside this change.
 
 ---
 
+## 3b. Part 3 — Class B, the fourteen operator keys
+
+The competition owner ruled that the operator tooling should be bilingual like
+the rest of the product, so all 14 were translated rather than suppressed.
+
+**Why they were invisible.** `t('instructor.actor', 'Actor')` renders "Actor"
+whether or not the key exists anywhere, because the second argument is
+i18next's `defaultValue`. Nothing looks broken in English — which is precisely
+why this class survived: the only symptom is that **every other language
+renders that same English**. The wording lived in the component, not the
+catalogue, which is the defect A4 forbids on the backend.
+
+**English is unchanged.** Each old fallback string became the `en` catalogue
+entry verbatim, so the English panel renders exactly what it rendered before.
+Only the Chinese is new.
+
+| Key | EN (unchanged) | zh-CN (new) |
+|---|---|---|
+| `operator_events` | Operator actions | 操作记录 |
+| `operator_events_failed` | Operator events unavailable | 无法加载操作记录 |
+| `operator_log` | Operator Log | 操作日志 |
+| `supply_chain` | Supply Chain | 供应链 |
+| `all_outcomes` | All outcomes | 全部结果 |
+| `committed` | Committed | 已执行 |
+| `rejected` | Refused | 已拒绝 |
+| `time_server` | Time (server) | 时间（服务器） |
+| `actor` | Actor | 操作人 |
+| `action` | Action | 操作 |
+| `outcome` | Outcome | 结果 |
+| `round` | Round | 回合 *(already in the catalogue)* |
+| `reason` | Reason | 原因 |
+| `before_after` | Before → after | 变更前 → 变更后 |
+| `request_id` | Request ID | 请求 ID |
+
+**These are operator words, translated as audit vocabulary rather than polish.**
+`actor` is 操作人 — *the person who acted* — not a generic 用户; `committed` is
+已执行 against `rejected` 已拒绝, so a row's outcome reads as *did it take
+effect* rather than as a status adjective; `before_after` keeps the arrow an
+instructor scans for. `request_id` keeps "ID" in Latin, which is what Chinese
+technical interfaces do and what an instructor will be copying into a dispute.
+
+**A fifteenth call site was cleaned up too.** `t('instructor.round', 'Round')`
+carried the same hard-coded fallback, but its key already existed, so A9 never
+flagged it. The fallback is removed for consistency; rendering is unchanged
+because the key resolves in both languages.
+
+### Suppression list: 14 → 0
+
+`allow_unresolved_keys` is now `{}`. Its `_source` records the whole arc —
+seventeen, then fourteen, then zero — and states plainly what an empty list
+does **not** mean: the 34 keys hidden behind label maps are still outside A8's
+reach. `check-participant-strings`: **PASS, 4454 units, 0 findings, 0
+suppressions.**
+
+### Driven in the running panel, both languages
+
+Signed in as an instructor at `/instructor/login`, opened the Operator Log tab,
+and read the rendered labels. **8/8 assertions each language, 0 network
+errors.**
+
+| Assertion | EN | zh-CN |
+|---|---|---|
+| Operator Log / Supply Chain tab labels | **pass** | **pass** — 操作日志 / 供应链 |
+| Panel card title | **pass** — Operator actions | **pass** — 操作记录 |
+| Outcome filter label | **pass** — All outcomes | **pass** — 全部结果 |
+| All eight column headers | **pass** | **pass** — 时间（服务器）, 操作人, 操作, 结果, 回合, 原因, 变更前 → 变更后, 请求 ID |
+| Both filter options (select opened) | **pass** — Committed, Refused | **pass** — 已执行, 已拒绝 |
+| No `instructor.*` key text on screen | **pass** | **pass** |
+
+> **No visual claim is made, and that is deliberate.** This sandbox has no CJK
+> font, so the zh-CN screenshot shows missing-glyph boxes. The standard here is
+> **string equality against the rendered DOM** — each label pulled out of the
+> live page and compared to the authored catalogue string. The screenshots
+> (`70-operator-log-{en,zh-CN}.png`) are a record of layout, not evidence of
+> glyphs.
+
+### Two honest notes on this batch
+
+**One key was authored but never rendered.** `operator_events_failed` is the
+panel's error-path alert, reachable only when the events request fails. I could
+not force that against a healthy stack, so it is proven present in both
+catalogues and **not** proven on screen. It is the one of the fourteen without
+a browser observation.
+
+**A failing assertion here was mine, not the product's.** The first English run
+reported all eight column headers missing while Chinese passed. The headers
+were in fact rendering correctly: the design system uppercases them with CSS
+`text-transform`, and Chromium's `innerText` reflects that, so it returned
+`TIME (SERVER)` where the catalogue says `Time (server)`. Chinese has no case,
+so only English tripped it. Fixed by asserting against `textContent`, which is
+the authored string; the record keeps both, under `column_headers` and
+`column_headers_as_rendered`. My first hypothesis — a race with the table
+mounting — was wrong, and the wait I added for it fixed nothing.
+
+---
+
 ## 4. Constraints
 
 | | |
@@ -345,6 +446,19 @@ and the two locale catalogues.
 | 21 | `browser_classA.py zh-CN` — all three screens | **8 passed / 0 failed**, 0 network errors | ~20s |
 | 22 | `test-postgres` × 3 protected modules `--parallel 8` | **54 tests, OK** | 30s |
 | 23 | jest after the locale additions | 8 suites, **36 tests**, OK | 3s |
+
+**Part 3 — Class B, the fourteen operator keys:**
+
+| # | Command | Result | Duration |
+|---|---|---|---|
+| 24 | `check-participant-strings` — after translating Class B | **PASS, 4454 units, 0 findings, 0 suppressions** | 0.4s |
+| 25 | `check-participant-strings-selftest` | **32 ok, 0 failed** | 4s |
+| 26 | jest after the component and catalogue changes | 8 suites, **36 tests**, OK | 4s |
+| 27 | `test-postgres` × 3 protected modules `--parallel 8` | **54 tests, OK** | 31s |
+| 28 | `npm run build` with the translated operator keys | **exit 0** | ~90s |
+| 29 | disposable PG + migrate + load_scenario + seed | instructor login available | ~60s |
+| 30 | `browser_classB.py en` — operator panel | **8 passed / 0 failed**, 0 network errors | 22s |
+| 31 | `browser_classB.py zh-CN` — operator panel | **8 passed / 0 failed**, 0 network errors | 22s |
 
 The seed's first run **failed and refused to continue**: `advance_round` calls
 `process_round`, which will not run while any team is unlocked, so the fixture
@@ -416,11 +530,18 @@ gate that could not see it. Fixing the first would not have found the rest.
 > (`StatusBadge`, used across many pages) and 5 in `login`. **Not fixed**, and
 > listed in `evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt`.
 > Participant- and instructor-facing; rated as a
-> wording defect on a live screen, per GSP-CRV2-12's standard. **Separately, 14
-> `instructor.*` keys in CRV2-08's `OperatorEventsPanel.js` and
-> `InstructorDashboard.js` hard-code their English as a `t()` defaultValue:
-> English is correct and a Chinese instructor reads English.** That is the
-> bilingual-parity half and belongs to CRV2-08's owner. Evidence:
+> wording defect on a live screen, per GSP-CRV2-12's standard. **The other half
+> is also now fixed:** 14 `instructor.*` keys in CRV2-08's
+> `OperatorEventsPanel.js` and `InstructorDashboard.js` hard-coded their English
+> as a `t()` defaultValue, so English rendered correctly and a Chinese
+> instructor read English. On the competition owner's ruling that the operator
+> tooling should be bilingual like the rest, all 14 were translated into both
+> catalogues and the inline fallbacks removed, so A9 no longer has anything to
+> suppress. **The suppression list is now empty (17 → 14 → 0), every entry
+> closed by fixing its defect rather than by widening an exemption.** Verified
+> in the running operator panel in both languages by string equality against
+> the rendered DOM — **no visual claim**, because this sandbox has no CJK font.
+> Evidence:
 > `completion/UNRESOLVED_LOCALE_KEYS_2026-09-17.md`,
 > `evidence/unresolved-locale-keys/`.
 

@@ -38,23 +38,8 @@
   },
   "frontend_sources_source": "The single React source root loaded by frontend/globalstrat-frontend/src/i18n.js; there is no second frontend. Scanned for .js and .jsx, excluding node_modules. Keys built at run time — t(variable) or a template literal — cannot be resolved by reading the source, so the checker counts them and prints the count rather than guessing; that blind spot is stated on every run.",
 
-  "allow_unresolved_keys": {
-    "instructor.operator_events_failed": "PRE-EXISTING A9, CRV2-08's OperatorEventsPanel.js:43. The English wording is hard-coded as a t() defaultValue, so English renders correctly and a Chinese instructor reads English. Wording belongs to CRV2-08's owner; held for the owner's decision.",
-    "instructor.operator_events": "PRE-EXISTING A9, OperatorEventsPanel.js:48 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.all_outcomes": "PRE-EXISTING A9, OperatorEventsPanel.js:54 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.committed": "PRE-EXISTING A9, OperatorEventsPanel.js:55 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.rejected": "PRE-EXISTING A9, OperatorEventsPanel.js:56 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.time_server": "PRE-EXISTING A9, OperatorEventsPanel.js:69 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.actor": "PRE-EXISTING A9, OperatorEventsPanel.js:73 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.action": "PRE-EXISTING A9, OperatorEventsPanel.js:74 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.outcome": "PRE-EXISTING A9, OperatorEventsPanel.js:76 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.reason": "PRE-EXISTING A9, OperatorEventsPanel.js:86 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.before_after": "PRE-EXISTING A9, OperatorEventsPanel.js:91 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.request_id": "PRE-EXISTING A9, OperatorEventsPanel.js:100 — English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.operator_log": "PRE-EXISTING A9, InstructorDashboard.js:2091 — the Operator Log tab label, English hard-coded as a defaultValue; zh-CN renders English.",
-    "instructor.supply_chain": "PRE-EXISTING A9, InstructorDashboard.js:2092 — the Supply Chain tab label, English hard-coded as a defaultValue; zh-CN renders English."
-  },
-  "allow_unresolved_keys_source": "The remaining A8/A9 backlog, recorded key by key rather than as a blanket exemption. FOURTEEN entries, all of one kind: instructor-facing keys in CRV2-08's OperatorEventsPanel.js and InstructorDashboard.js whose English is hard-coded as a t() defaultValue, so English renders correctly and Simplified Chinese renders that same English. They are with the owner as a scope decision. The list has shrunk twice and must keep shrinking rather than becoming a parking lot: it began at seventeen on 2026-09-17; results_page.of_teams was never on it because it was fixed in the same change that added the assertion, and topbar.over, communications_page.max_words and strategy_tools.swot_placeholder were removed when they were fixed. Every entry is pinned to an exact key and the checker reports any that stops matching, so an entry cannot outlive its defect. The list exists so the gate fails on the NEXT unresolved key instead of being disabled by a backlog it did not cause.",
+  "allow_unresolved_keys": {},
+  "allow_unresolved_keys_source": "Empty, and deliberately so: every unresolved key this check can see has been fixed rather than suppressed. The list began at seventeen on 2026-09-17, fell to fourteen when the three Class A strings were authored, and reached zero when the competition owner ruled that the operator tooling should be bilingual and the fourteen instructor.* keys were translated and their hard-coded English fallbacks removed. An entry here would be a key the frontend calls that no catalogue answers, suppressed by exact key with a stated reason; an entry without a reason is exit 2, and an entry that stops matching is reported as stale. Note what this list does NOT cover: a key reached through a label map or a template literal is invisible to A8, and 34 such keys are inventoried in handoff_readiness_v2/evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt and are with the owner. An empty list here means the statically visible surface is clean, not that every key in the product resolves.",
 
   "model_field_sources": ["backend/core/models"],
   "model_field_sources_source": "Django model modules. The storage vocabulary is read from the model definitions themselves rather than typed out here, so a field added tomorrow is watched without anyone remembering to list it.",

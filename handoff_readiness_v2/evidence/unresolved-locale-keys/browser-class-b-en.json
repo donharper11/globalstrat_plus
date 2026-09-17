@@ -1,0 +1,112 @@
+{
+  "language": "en",
+  "steps": [
+    {
+      "name": "instructor signs in",
+      "outcome": "pass",
+      "detail": "classa_instructor (http://127.0.0.1:47957/instructor)"
+    },
+    {
+      "name": "the Operator Log tab label is translated",
+      "outcome": "pass",
+      "detail": "Operator Log"
+    },
+    {
+      "name": "the Supply Chain tab label is translated",
+      "outcome": "pass",
+      "detail": "Supply Chain"
+    },
+    {
+      "name": "the panel card title is translated",
+      "outcome": "pass",
+      "detail": "Operator actions"
+    },
+    {
+      "name": "the outcome filter label is translated",
+      "outcome": "pass",
+      "detail": "All outcomes"
+    },
+    {
+      "name": "every column header is translated",
+      "outcome": "pass",
+      "detail": "Time (server), Actor, Action, Outcome, Round, Reason, Before → after, Request ID"
+    },
+    {
+      "name": "both outcome options are translated",
+      "outcome": "pass",
+      "detail": "['All outcomes', 'Committed', 'Refused']"
+    },
+    {
+      "name": "no instructor.* key text on screen",
+      "outcome": "pass",
+      "detail": "[]"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "70-operator-log-en.png"
+  ],
+  "observed": {
+    "tab_present": true,
+    "card_title": true,
+    "column_headers": [
+      "Time (server)",
+      "Actor",
+      "Action",
+      "Outcome",
+      "Round",
+      "Reason",
+      "Before → after",
+      "Request ID"
+    ],
+    "column_headers_as_rendered": [
+      "TIME (SERVER)",
+      "ACTOR",
+      "ACTION",
+      "OUTCOME",
+      "ROUND",
+      "REASON",
+      "BEFORE → AFTER",
+      "REQUEST ID"
+    ],
+    "filter_options": [
+      "All outcomes",
+      "Committed",
+      "Refused"
+    ],
+    "leaked_keys": []
+  },
+  "visual_claim": "none - no CJK font in this sandbox; the standard here is string equality against the rendered DOM",
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "console_errors": 6,
+    "network_errors": 0
+  }
+}
