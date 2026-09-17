@@ -3123,3 +3123,45 @@ tests; participant-string gate PASS 4,544 units / 0 suppressions; selftest 34 ok
 production build compiled and emitted a bundle. `MANIFEST_SCHEMA_VERSION`
 remains **6**, no `backend/core` file was changed by any of this work, and the
 R32, R34 and R35 test modules pass **unmodified**. No gate is closed here.
+
+## Dispositions at the close of 2026-09-17 — rulings R18, R36, R37, and the interface defects
+
+Every line here was verified against the tree, not taken from a builder's
+report. Closure remains GSP-CRV2-09's; nothing below claims a gate.
+
+| ID | Sev | Disposition |
+|---|---|---|
+| **V2-070** | P1 | **Ruled and implemented.** R18: a product retired `end_of_round` now sells through its retirement round, so `immediate` is no longer strictly dominated by a timing that behaved identically but recovered 50% against 25%. `_process_product_retires` applies `immediate` only; `apply_end_of_round_retirements` runs as **Step 16.5** in `advance_round.py:919-920` — verified by me to sit after revenue (`:817`), operating expenses (`:833`), financials (`:856`), the performance index (`:876`) and the leaderboard (`:898`), which is what makes the product sell through the round that scored it. **R37 then settled the basis question the repair exposed:** both write-off and recovery are priced off the stock remaining after the final selling round, not off the previous round's unsold units. `immediate` was proven not to move, and that mattered — `revenue.py:69-71` builds revenue from marketing rows with **no filter on product status**, so a shared basis would have shifted `immediate` by a whole round's production. Falsification was targeted rather than wholesale: reverting `costs.py` alone fails **exactly 2 of 14**, and they are exactly the two asserting R37. Merged at `021c483` and `c5584fd`; 205 tests OK; `MANIFEST_SCHEMA_VERSION` still **6**; no migration. |
+| **V2-088** | P1 | **Ruled and implemented.** R36: the organisational-structure charge no longer leaves cash in the view at click time. One function, `funding_need.org_transition_charge`, is called by `decision_outlays`, by `costs.calculate_operating_expenses` and by `rd_costs.committed_outlay` — the one-calculator path V2-037/V2-038 exist to protect — so the figure a team is shown is the figure it is charged, and reopening a round unwinds it like any other outlay. The parity assertion was **widened** to cover the new line, with a test that patches `decision_outlays` to drop it and asserts the round stops. Both calculators compute it before their submission guard, which is load-bearing: a switch writes no decision row. I verified the view's charge is genuinely gone — the `cash_on_hand -=` a naive grep still matches there is inside a comment explaining what the view used to do. |
+| **V2-064** | P1 | **Repaired, both halves, and it was worse than this register recorded.** The entry named `DecisionContext.js:49-61`, but `updateDraft` is called by **no page**, so that autosave never armed in the product at all — real saves go through each page's `patchDecision`, and **eight pages ended in `catch { /* ignore */ }`**. A repair aimed at the named file would have fixed unreachable code. The refusal is now caught at the one point all ten pages share (the axios interceptor), surfaced by a mounted alert, and retried on the response **`code`** rather than the sentence — `409` + `lifecycle_in_progress` retries at 2s/5s/10s, anything else is treated as validation, and a `409` without the code is pinned as validation by test. Safe to re-send because the boundary refuses before any handler runs. Browser-proven in both languages: **before, one refusal and zero retries with the edit dropped; after, 20/0**. **Backend half completed the same day (R17's first consequence):** `lifecycle_in_progress` no longer claims the round is being processed — it now names the instructor action and says nothing was saved, sharing its first sentence verbatim with the client string, and `test_competition_locks` pins the ruling instead of the old text. |
+| **V2-105** | P1 | **Half was already done; the real remainder is repaired.** The game-naming requirement had landed at `1855b25` and passed in the before-image in both languages. Genuinely open and now fixed: the pause confirmation emitted a hardcoded English `Game paused` — the Chinese before-image rendered it in English — and `handleExtend` had an empty `catch`, so a refused Extend left the modal open saying nothing. **A claim in the original finding could not be reproduced** and was withdrawn by the builder rather than left to stand: Extend does not name the wrong heat. |
+| **V2-080** | P1 | **Withdrawn — never a defect, and the error was mine.** I reported "one hardcoded fallback remains" in `OperatorEventsPanel.js`. My grep matched a **JSDoc comment at lines 18-19** that quotes the old `t('instructor.actor', 'Actor')` pattern while explaining why it was removed. The panel has 13 real `t()` calls, **zero** fallbacks, and all 13 keys in both catalogues; the gate never flagged it because there was nothing to flag. Recorded rather than quietly dropped, because a withdrawn finding that leaves no trace is how the same false lead gets chased twice. |
+
+### Verification apparatus repaired the same day
+
+Two generated artefacts were found stale **by their own freshness gates**, both from
+today's churn rather than from the change that found them, and both re-cut on
+their own commits rather than folded into unrelated work: the CRV2-12 static
+string inventory (1,663/1,289 lines of drift, now 2,234 rows and `--check`
+clean) and `read_inventory.json`. The second was caught by the **full suite**,
+which is the first time this programme's full suite has been close enough to
+green for a single stale artefact to be the thing standing in the way.
+
+### Full-suite status — the gate the freeze waits on
+
+**1,110 tests, one error, zero failures** at `82d363e`, and the error is the
+read-inventory freshness guard rather than a product defect. For comparison the
+last full run on record was **842 tests with four failures and three errors**,
+and the suite had been red since about 2026-09-02. It has still never been
+recorded green; that remains the gate.
+
+### An incident, recorded because it touched a live service
+
+While tearing down its browser harness, a builder ran
+`pkill -f 'globalstrat.wsgi:application'`, which matched and killed the host's
+live `globalstrat-backend.service`. systemd restarted it; I verified recovery
+independently — `NRestarts=1`, active since 18:00:56, the login route answering
+a live HTTP response rather than a dead socket, narratives and the tunnel
+unaffected, production database never contacted. Brief, self-healed, and
+disclosed by the builder against its own interest. The standing lesson, now
+written down: **on this host, kill by explicit PID, never by pattern.**

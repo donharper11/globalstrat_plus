@@ -33,9 +33,9 @@
     "SourcingDecision",
     "TradeFinanceDecision"
   ],
-  "decision_routes": 29,
+  "decision_routes": 30,
   "exempt": 1,
-  "logged": 32,
+  "logged": 33,
   "routes": [
     {
       "category": "decisions",
@@ -234,6 +234,19 @@
       ],
       "route": "api/games/<int:game_id>/teams/<int:team_id>/context/marketing/",
       "view": "decisions.MarketingContextView"
+    },
+    {
+      "category": "decisions",
+      "exempt_reason": "",
+      "logged": true,
+      "methods": [
+        "get"
+      ],
+      "models": [
+        "DecisionSubmission"
+      ],
+      "route": "api/games/<int:game_id>/teams/<int:team_id>/context/org-structure/",
+      "view": "cc32b_views.OrgStructureContextView"
     },
     {
       "category": "decisions",
@@ -505,6 +518,6 @@
       "view": "cc31h_views.TickerView"
     }
   ],
-  "total_sensitive_routes": 33,
+  "total_sensitive_routes": 34,
   "url_conf_route_count": 785
 }
