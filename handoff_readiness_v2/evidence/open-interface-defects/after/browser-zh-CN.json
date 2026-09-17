@@ -1,0 +1,218 @@
+{
+  "language": "zh-CN",
+  "game": "CRV2-13 Interface Defects Heat",
+  "steps": [
+    {
+      "name": "V2-064 student signs in",
+      "outcome": "pass",
+      "detail": "id_t1_m1"
+    },
+    {
+      "name": "V2-064 no refusal notice before the operator acts",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "V2-064 an operator action holds the game lock",
+      "outcome": "pass",
+      "detail": "HELD game 1 for 6s"
+    },
+    {
+      "name": "V2-064 the student edits a decision field",
+      "outcome": "pass",
+      "detail": "ant-input css-121triw ant-input-outlined"
+    },
+    {
+      "name": "V2-064 no raw translation key on screen",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "V2-064 the student is told the edit was NOT saved",
+      "outcome": "pass",
+      "detail": "您的最近一次修改未能保存教师正在调整本回合，因此未保存任何内容。您的修改仍在屏幕上，稍后将自动重新提交。正在重试...立即重试"
+    },
+    {
+      "name": "V2-064 the notice names the operator action, in this language",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "V2-064 a retry control is offered",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "V2-064 the status indicator does not claim a save",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "V2-064 the edit is retried and the notice clears",
+      "outcome": "pass",
+      "detail": "本回合正在处理。请稍后刷新查看结果。"
+    },
+    {
+      "name": "V2-064 the refused write was re-sent, not dropped",
+      "outcome": "pass",
+      "detail": "2 refusals on the decision route: one first attempt and 1 automatic retries"
+    },
+    {
+      "name": "V2-105 instructor signs in",
+      "outcome": "pass",
+      "detail": "defects_instructor"
+    },
+    {
+      "name": "V2-105 reach the Game Control tab",
+      "outcome": "pass",
+      "detail": "游戏控制"
+    },
+    {
+      "name": "V2-105 reach the Extend Deadline control",
+      "outcome": "pass",
+      "detail": "1 button(s)"
+    },
+    {
+      "name": "V2-105 the Extend Deadline confirmation names the game",
+      "outcome": "pass",
+      "detail": "got '延长回合截止时间 — CRV2-13 Interface Defects Heat', wanted '延长回合截止时间 — CRV2-13 Interface Defects Heat'"
+    },
+    {
+      "name": "V2-105 the modal title is not a raw key",
+      "outcome": "pass",
+      "detail": "延长回合截止时间 — CRV2-13 Interface Defects Heat"
+    },
+    {
+      "name": "V2-105 the pause toast comes from the catalogue",
+      "outcome": "pass",
+      "detail": "got '游戏已暂停', wanted '游戏已暂停'"
+    },
+    {
+      "name": "V2-080 the panel card title is the catalogued wording",
+      "outcome": "pass",
+      "detail": "操作记录"
+    },
+    {
+      "name": "V2-080 every operator column header is the catalogued wording",
+      "outcome": "pass",
+      "detail": "missing: []; got ['时间（服务器）', '操作人', '操作', '结果', '回合', '原因', '变更前 → 变更后', '请求 ID']"
+    },
+    {
+      "name": "V2-080 no instructor.* key rendered in the panel",
+      "outcome": "pass",
+      "detail": "['时间（服务器）', '操作人', '操作', '结果', '回合', '原因', '变更前 → 变更后', '请求 ID']"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 409 (Conflict)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:34115/api/games/1/teams/1/decisions/round/1/budget/",
+      "status": 409
+    },
+    {
+      "url": "http://127.0.0.1:34115/api/games/1/teams/1/decisions/round/1/budget/",
+      "status": 409
+    }
+  ],
+  "screenshots": [
+    "10-finance-before-refusal-zh-CN.png",
+    "11-finance-refusal-shown-zh-CN.png",
+    "12-finance-after-retry-zh-CN.png",
+    "20-instructor-dashboard-zh-CN.png",
+    "20b-game-control-tab-zh-CN.png",
+    "21-extend-deadline-modal-zh-CN.png",
+    "22-pause-toast-zh-CN.png",
+    "23-operator-actions-panel-zh-CN.png"
+  ],
+  "observed": {
+    "alert_during_lock": "您的最近一次修改未能保存教师正在调整本回合，因此未保存任何内容。您的修改仍在屏幕上，稍后将自动重新提交。正在重试...立即重试",
+    "alert_after_release": "本回合正在处理。请稍后刷新查看结果。",
+    "decision_refusals": 2,
+    "extend_modal_title": "延长回合截止时间 — CRV2-13 Interface Defects Heat",
+    "pause_toast": "游戏已暂停",
+    "operator_headers": [
+      "时间（服务器）",
+      "操作人",
+      "操作",
+      "结果",
+      "回合",
+      "原因",
+      "变更前 → 变更后",
+      "请求 ID"
+    ],
+    "operator_headers_as_rendered": [
+      "时间（服务器）",
+      "操作人",
+      "操作",
+      "结果",
+      "回合",
+      "原因",
+      "变更前 → 变更后",
+      "请求 ID"
+    ]
+  },
+  "visual_claim": "none - no CJK font in this sandbox; the standard here is string equality against the rendered DOM (textContent, not innerText)",
+  "summary": {
+    "passed": 20,
+    "failed": 0,
+    "console_errors": 14,
+    "network_errors": 2
+  }
+}
