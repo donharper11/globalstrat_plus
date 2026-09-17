@@ -1,0 +1,120 @@
+{
+  "language": "zh-CN",
+  "steps": [
+    {
+      "name": "sign in",
+      "outcome": "pass",
+      "detail": "ca_t1_m1"
+    },
+    {
+      "name": "1 topbar.over: raw key absent",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "1 topbar.over: chip reads the sentence",
+      "outcome": "pass",
+      "detail": "预算 $60.0M/$5.0M 超出预算"
+    },
+    {
+      "name": "2 max_words: raw key absent",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "2 max_words: tag reads the sentence",
+      "outcome": "pass",
+      "detail": "['必修', 'Board of Directors', '最多 300 字']"
+    },
+    {
+      "name": "3 swot: no strategy_tools.swot* key on screen",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "3 swot: all four quadrant labels render",
+      "outcome": "pass",
+      "detail": "优势, 劣势, 机会, 威胁"
+    },
+    {
+      "name": "3 swot: placeholder reads the sentence with the quadrant",
+      "outcome": "pass",
+      "detail": "['在此列出贵公司的优势，每行一项。', '在此列出贵公司的劣势，每行一项。', '在此列出贵公司的机会，每行一项。', '在此列出贵公司的威胁，每行一项。']"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "60-topbar-over-budget-zh-CN.png",
+    "61-communications-word-limit-zh-CN.png",
+    "62-swot-placeholder-zh-CN.png"
+  ],
+  "observed": {
+    "topbar_chip": "预算 $60.0M/$5.0M 超出预算",
+    "word_limit_tag": [
+      "必修",
+      "Board of Directors",
+      "最多 300 字"
+    ],
+    "swot_placeholders": [
+      "在此列出贵公司的优势，每行一项。",
+      "在此列出贵公司的劣势，每行一项。",
+      "在此列出贵公司的机会，每行一项。",
+      "在此列出贵公司的威胁，每行一项。",
+      ""
+    ],
+    "swot_titles": [
+      "优势",
+      "劣势",
+      "机会",
+      "威胁"
+    ]
+  },
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "console_errors": 10,
+    "network_errors": 0
+  }
+}

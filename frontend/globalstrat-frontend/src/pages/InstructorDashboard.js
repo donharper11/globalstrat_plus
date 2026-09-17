@@ -2088,8 +2088,8 @@ const InstructorDashboard = () => {
     // --- Game-specific (only when game is active/paused with dashboard data) ---
     ...(hasGame ? [
       { key: 'teams', label: t('instructor.team_overview'), children: teamOverviewTab },
-      { key: 'operator_log', label: t('instructor.operator_log', 'Operator Log'), children: <OperatorEventsPanel gameId={gameId} /> },
-      { key: 'supply_chain', label: t('instructor.supply_chain', 'Supply Chain'), children: <InstructorSCPanel gameId={gameId} /> },
+      { key: 'operator_log', label: t('instructor.operator_log'), children: <OperatorEventsPanel gameId={gameId} /> },
+      { key: 'supply_chain', label: t('instructor.supply_chain'), children: <InstructorSCPanel gameId={gameId} /> },
       { key: 'events', label: t('instructor.event_manager'), children: eventManagerTab },
       { key: 'briefings', label: t('instructor.briefings'), children: briefingsTab },
       { key: 'research', label: t('instructor.research_monitor'), children: researchMonitorTab },

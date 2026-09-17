@@ -33,6 +33,14 @@
   },
   "locales_source": "The two i18next catalogues loaded by frontend/globalstrat-frontend/src/i18n.js.",
 
+  "frontend_sources": {
+    "frontend/globalstrat-frontend/src": "Every React source that can call t(). A8 and A9 read this tree and ask whether each key the interface actually calls exists in the catalogues at all — the question A6 cannot ask, because A6 compares the two catalogues against each other and a key missing from BOTH is symmetric to it."
+  },
+  "frontend_sources_source": "The single React source root loaded by frontend/globalstrat-frontend/src/i18n.js; there is no second frontend. Scanned for .js and .jsx, excluding node_modules. Keys built at run time — t(variable) or a template literal — cannot be resolved by reading the source, so the checker counts them and prints the count rather than guessing; that blind spot is stated on every run.",
+
+  "allow_unresolved_keys": {},
+  "allow_unresolved_keys_source": "Empty, and deliberately so: every unresolved key this check can see has been fixed rather than suppressed. The list began at seventeen on 2026-09-17, fell to fourteen when the three Class A strings were authored, and reached zero when the competition owner ruled that the operator tooling should be bilingual and the fourteen instructor.* keys were translated and their hard-coded English fallbacks removed. An entry here would be a key the frontend calls that no catalogue answers, suppressed by exact key with a stated reason; an entry without a reason is exit 2, and an entry that stops matching is reported as stale. Note what this list does NOT cover: a key reached through a label map or a template literal is invisible to A8, and 34 such keys are inventoried in handoff_readiness_v2/evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt and are with the owner. An empty list here means the statically visible surface is clean, not that every key in the product resolves.",
+
   "model_field_sources": ["backend/core/models"],
   "model_field_sources_source": "Django model modules. The storage vocabulary is read from the model definitions themselves rather than typed out here, so a field added tomorrow is watched without anyone remembering to list it.",
 

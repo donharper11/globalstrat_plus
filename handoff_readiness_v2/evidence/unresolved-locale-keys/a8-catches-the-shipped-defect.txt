@@ -1,0 +1,11 @@
+1. the tree as it stands, with the fix     -> exit 0
+     aide-checks: check-result name=participant-string-hygiene units=4432 findings=0 suppressions=17
+     participant-string-hygiene: note 26 computed t() key(s) are decided at run time and were not resolved.
+     participant-string-hygiene: PASS 4432 unit(s) examined, 17 reviewed suppression(s)
+2. with the shipped defect put back        -> exit 1
+     aide-checks: check-result name=participant-string-hygiene units=4431 findings=1 suppressions=17
+     participant-string-hygiene: FAIL 1 finding(s)
+     A8 frontend/globalstrat-frontend/src/pages/ResultsPage.js:134 calls t('results_page.of_teams'), which is in no catalogue. i18next renders the key itself, so a user reads 'results_page.of_teams' on screen in every language.
+
+A8 catches the defect that shipped, and names it.
+The working tree was never modified: this ran on a copy.

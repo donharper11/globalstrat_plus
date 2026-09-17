@@ -121,6 +121,29 @@ def persisted_violations():
     return [{'detail': 'DecisionBudgetAllocation row 7: rd_budget = -1'}]
 '''
 
+# The frontend fixture carries A8/A9's two false-positive guards inline, so
+# every `clean tree passes` assertion below re-proves them:
+#   * `t('summary.teams', { count: 3 })` resolves through the PLURAL forms, and
+#     zh-CN supplies only `_other` because Chinese does not inflect. A checker
+#     comparing raw keys would call that correct catalogue incomplete.
+#   * `t(labelKey)` is computed at run time. It cannot be resolved by reading
+#     the source and must be counted, never guessed at.
+FRONTEND = '''\
+import { useTranslation } from 'react-i18next';
+
+export default function Panel({ labelKey }) {
+  const { t } = useTranslation();
+  return (
+    <div>
+      <span>{t('summary.title')}</span>
+      <span>{t('summary.round', { round: 1 })}</span>
+      <span>{t('summary.teams', { count: 3 })}</span>
+      <span>{t(labelKey)}</span>
+    </div>
+  );
+}
+'''
+
 
 def build_tree(root: Path) -> Path:
     (root / "backend/core/utils").mkdir(parents=True)
@@ -139,11 +162,18 @@ def build_tree(root: Path) -> Path:
         SERVICE, encoding="utf-8")
     (root / "frontend/globalstrat-frontend/src/locales/en.json").write_text(
         json.dumps({"summary": {"title": "Summary",
-                                "round": "Round {{round}}"}}), encoding="utf-8")
+                                "round": "Round {{round}}",
+                                "teams_one": "{{count}} team",
+                                "teams_other": "{{count}} teams"}}),
+        encoding="utf-8")
     (root / "frontend/globalstrat-frontend/src/locales/zh-CN.json").write_text(
         json.dumps({"summary": {"title": "汇总",
-                                "round": "第 {{round}} 回合"}}),
+                                "round": "第 {{round}} 回合",
+                                "teams_other": "{{count}} 支队伍"}},
+                   ensure_ascii=False),
         encoding="utf-8")
+    (root / "frontend/globalstrat-frontend/src/Panel.js").write_text(
+        FRONTEND, encoding="utf-8")
 
     config = {
         "languages": ["en", "zh-CN"],
@@ -177,6 +207,11 @@ def build_tree(root: Path) -> Path:
         "localised_name_arguments_source": "selftest fixture",
         "allow_literals": {},
         "allow_literals_source": "selftest fixture",
+        "frontend_sources": {
+            "frontend/globalstrat-frontend/src": "fixture React sources"},
+        "frontend_sources_source": "selftest fixture",
+        "allow_unresolved_keys": {},
+        "allow_unresolved_keys_source": "selftest fixture",
     }
     config_path = root / "config.json"
     config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
@@ -295,6 +330,55 @@ def main() -> int:
             "Something nothing says": "recorded, but matches nothing"}
         cfg.write_text(json.dumps(data), encoding="utf-8")
     case("stale suppression is reported", stale_suppression, 1)
+
+    # A8 — a key the frontend calls that exists in NO catalogue. This is the
+    # `results_page.of_teams` defect exactly: A6 stayed green because the key
+    # was missing from BOTH catalogues, and users read the key on screen.
+    case("A8 t() key in no catalogue", lambda root, cfg: _rewrite(
+        root / "frontend/globalstrat-frontend/src/Panel.js",
+        "<span>{t('summary.title')}</span>",
+        "<span>{t('summary.title')}</span>\n"
+        "      <span>{t('summary.missing')}</span>"), 1)
+
+    # A9 — English hard-coded as a t() fallback instead of a catalogue entry.
+    # Nothing looks broken in English; every other language renders English.
+    case("A9 t() with a hard-coded fallback", lambda root, cfg: _rewrite(
+        root / "frontend/globalstrat-frontend/src/Panel.js",
+        "<span>{t('summary.title')}</span>",
+        "<span>{t('summary.title')}</span>\n"
+        "      <span>{t('summary.absent', 'Hard-coded English')}</span>"), 1)
+
+    # A6 — a pluralised key missing a category its OWN language needs. English
+    # needs one+other; dropping `_one` means a count of 1 renders the key.
+    def drop_plural_form(root: Path, cfg: Path) -> None:
+        path = root / "frontend/globalstrat-frontend/src/locales/en.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["summary"]["teams_one"]
+        path.write_text(json.dumps(data), encoding="utf-8")
+    case("A6 English plural missing its 'one' form", drop_plural_form, 1)
+
+    # A8 false-positive guards. Both are asserted by the `clean tree passes`
+    # half of every case above, which is the stronger form: the fixture calls
+    # `t('summary.teams', {count})` against `_one`/`_other` with zh-CN holding
+    # only `_other`, and calls `t(labelKey)` with a computed key. If either
+    # were flagged, no case in this file could reach its plant.
+
+    # allow_unresolved_keys: a suppression with no reason is could-not-run.
+    def unreasoned_key(root: Path, cfg: Path) -> None:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+        data["allow_unresolved_keys"] = {"summary.missing": ""}
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+    case("config: unresolved-key suppression without a reason is could-not-run",
+         unreasoned_key, 2)
+
+    # allow_unresolved_keys: a stale entry is reported, never ignored -- a
+    # suppression that outlives its defect hides the next one.
+    def stale_key(root: Path, cfg: Path) -> None:
+        data = json.loads(cfg.read_text(encoding="utf-8"))
+        data["allow_unresolved_keys"] = {
+            "summary.never_called": "recorded, but matches nothing"}
+        cfg.write_text(json.dumps(data), encoding="utf-8")
+    case("stale unresolved-key suppression is reported", stale_key, 1)
 
     print(f"selftest: {PASS} ok, {FAIL} failed")
     return 1 if FAIL else 0

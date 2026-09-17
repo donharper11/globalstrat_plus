@@ -13,7 +13,7 @@ the inventory lists it. This check asserts the *property*: a participant-facing
 sentence exists in both languages, interpolates the same values in both, and
 does not name a database column.
 
-Six assertions, each mapped to a defect this repository actually shipped:
+Nine assertions, each mapped to a defect this repository actually shipped:
 
   A1  every catalogue entry carries every shipped language      (V2-061)
   A2  an entry's placeholders are identical across languages    (Stage 3 —
@@ -23,8 +23,30 @@ Six assertions, each mapped to a defect this repository actually shipped:
   A4  no participant-facing literal in the declared scope
       bypasses the catalogue                                     (V2-069.3)
   A5  every `Round.STATUS_CHOICES` value has a participant label (V2-069.1)
-  A6  the frontend locale catalogues agree on keys and on each
-      key's interpolation placeholders
+  A6  the frontend locale catalogues agree on keys, on plural
+      categories and on each key's interpolation placeholders
+  A7  a scenario-authored name is localised, not interpolated raw
+  A8  every `t()` key the frontend calls exists in the catalogues
+  A9  no `t()` call carries a hard-coded fallback string instead
+
+A6 AND A8 ARE DIFFERENT QUESTIONS, and the difference is why A8 exists. A6
+compares the two catalogues against **each other**, so a key missing from
+**both** is symmetric and invisible to it by construction. That is exactly how
+`results_page.of_teams` shipped: referenced by `ResultsPage.js`, absent from
+both catalogues, and rendered on the results screen as the literal text
+`results_page.of_teams` in English *and* Chinese, with A6 passing throughout.
+A8 asks the other question — does the key exist at all?
+
+A9 is A4's frontend twin. `t('instructor.actor', 'Actor')` resolves in English
+because the fallback is hard-coded in the component, so nothing looks broken;
+every other language renders that English string. The catalogue has been
+bypassed, which is the defect A4 forbids on the backend.
+
+PLURALS ARE NOT A GAP. `of_teams_one`/`of_teams_other` is one logical key, and
+English inflects where Simplified Chinese does not, so a Chinese catalogue
+supplying `_other` alone is correct. Comparing raw keys would report that
+correct catalogue as missing `_one`, so A6 collapses plural forms onto their
+base key and then asks each language for exactly the CLDR categories it needs.
 
 Exit codes follow the aide-checks convention in `checks/README.md`:
   0 clean · 1 findings · 2 could not run.
@@ -68,6 +90,29 @@ JS_PLACEHOLDER = re.compile(r"\{\{(\w+)\}\}")
 # ordinary English, and a check that cries wolf gets switched off.
 SNAKE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
 
+# CLDR plural categories per shipped language, read from
+# `Intl.PluralRules(<lang>).resolvedOptions().pluralCategories` on the Node the
+# frontend is built with (22.17.1). English inflects; Simplified Chinese does
+# not. Hard-coded rather than computed because this check is standard-library
+# Python and must not shell out to Node to decide whether a catalogue is
+# complete.
+PLURAL_CATEGORIES = {
+    "en": ("one", "other"),
+    "zh-CN": ("other",),
+}
+# i18next still accepts the JSON v3 suffix. A key carrying it is treated as
+# deliberately pluralised and is not asked for CLDR categories it predates.
+LEGACY_PLURAL = "plural"
+
+# A `t('literal', ...)` call. Group 3 is the comma, group 4 the first character
+# of the second argument -- a quote means a hard-coded fallback string, a brace
+# means an options object.
+JS_T_LITERAL = re.compile(
+    r"""\bt\(\s*(['"])([A-Za-z0-9_.:\-]+)\1\s*(,)?\s*(['"{])?""")
+# `t(variable)` or a template literal: the key is decided at run time, so
+# reading the source cannot resolve it. Counted and reported, never guessed.
+JS_T_COMPUTED = re.compile(r"""\bt\(\s*[`A-Za-z_$({]""")
+
 
 def error(message: str) -> int:
     print(f"{CHECK}: ERROR {message}", file=sys.stderr)
@@ -86,14 +131,16 @@ def load_config(path: Path) -> dict:
 
     for key in ("languages", "catalogues", "scope", "locales",
                 "model_field_sources", "allow_literals",
-                "participant_payload_dicts", "localised_name_arguments"):
+                "participant_payload_dicts", "localised_name_arguments",
+                "frontend_sources", "allow_unresolved_keys"):
         if key not in cfg:
             raise ValueError(f"config is missing {key!r}")
     for key in ("scope_source", "catalogues_source", "locales_source",
                 "allow_literals_source", "languages_source",
                 "model_field_sources_source",
                 "participant_payload_dicts_source",
-                "localised_name_arguments_source"):
+                "localised_name_arguments_source",
+                "frontend_sources_source", "allow_unresolved_keys_source"):
         if not str(cfg.get(key, "")).strip():
             raise ValueError(f"{key} is required: a declaration without a "
                              "recorded source is not reviewable")
@@ -121,6 +168,18 @@ def load_config(path: Path) -> dict:
         if not str(reason).strip():
             raise ValueError(f"localised_name_arguments entry {argument!r} "
                              "has no stated reason")
+    if not cfg["frontend_sources"]:
+        raise ValueError("frontend_sources must name at least one directory: "
+                         "with none, A8 examines nothing and cannot fail")
+    for source, reason in cfg["frontend_sources"].items():
+        if not str(reason).strip():
+            raise ValueError(f"frontend_sources entry {source!r} has no "
+                             "stated reason")
+    for key, reason in cfg["allow_unresolved_keys"].items():
+        if not str(reason).strip():
+            raise ValueError(
+                f"allow_unresolved_keys entry {key!r} has no reason. A key "
+                "nobody has to justify stays broken on screen forever.")
     return cfg
 
 
@@ -329,6 +388,75 @@ def scope_literals(path: Path, rel: str,
     return found
 
 
+def logical_keys(flat_catalogue: dict, language: str) -> dict:
+    """Catalogue keys with plural forms collapsed onto their base key.
+
+    Returns ``{base_key: (categories, placeholders)}`` -- the CLDR categories
+    that language supplies for the key, and the union of the ``{{value}}``
+    placeholders across its forms. A non-plural key has an empty category set.
+
+    This is what makes A6 correct across languages that inflect differently:
+    `of_teams_one` and `of_teams_other` are one key, not two, so a Chinese
+    catalogue holding only `of_teams_other` is complete rather than short.
+    """
+    suffixes = tuple(PLURAL_CATEGORIES.get(language, ())) + (LEGACY_PLURAL,)
+    logical: dict = {}
+    for key, value in flat_catalogue.items():
+        base, category = key, None
+        for candidate in suffixes:
+            suffix = "_" + candidate
+            if key.endswith(suffix) and len(key) > len(suffix):
+                base, category = key[: -len(suffix)], candidate
+                break
+        categories, placeholders = logical.setdefault(base, (set(), set()))
+        if category:
+            categories.add(category)
+        placeholders |= set(JS_PLACEHOLDER.findall(str(value)))
+    return logical
+
+
+def frontend_key_references(repo: Path, sources: dict):
+    """Every `t('literal')` call in the frontend, and how it was called.
+
+    Returns ``(references, computed)``. A reference is
+    ``(key, 'path:line', kind)`` where ``kind`` is:
+
+      ``bare``     no second argument -- i18next renders the key itself;
+      ``options``  an options object and no fallback -- same outcome;
+      ``default``  a hard-coded fallback string -- English renders from the
+                   component and every other language renders English too.
+
+    ``computed`` counts `t(variable)` and template-literal calls. Those cannot
+    be resolved by reading the source, so they are reported as a stated blind
+    spot rather than guessed at or silently dropped.
+    """
+    references = []
+    computed = 0
+    for source in sources:
+        root = repo / source
+        paths = sorted(root.rglob("*.js")) + sorted(root.rglob("*.jsx"))
+        for path in sorted(paths):
+            if "node_modules" in path.parts:
+                continue
+            rel = path.relative_to(repo)
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            for number, line in enumerate(text.splitlines(), 1):
+                for match in JS_T_LITERAL.finditer(line):
+                    following = match.group(4)
+                    if match.group(3) != ",":
+                        kind = "bare"
+                    elif following in ("'", '"'):
+                        kind = "default"
+                    else:
+                        kind = "options"
+                    references.append((match.group(2), f"{rel}:{number}", kind))
+                computed += len(JS_T_COMPUTED.findall(line))
+    return references, computed
+
+
 # ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
@@ -485,32 +613,96 @@ def main(argv: list[str]) -> int:
         return flat
 
     flat = {lang: flatten(data) for lang, data in loaded.items()}
+    logical = {lang: logical_keys(values, lang) for lang, values in flat.items()}
     reference_lang = languages[0]
+    computed = 0
     if reference_lang in flat:
-        reference_keys = set(flat[reference_lang])
+        reference_keys = set(logical[reference_lang])
         units += len(reference_keys)
-        for lang, data in flat.items():
+        for lang, forms in logical.items():
             if lang == reference_lang:
                 continue
-            for key in sorted(reference_keys - set(data)):
+            for key in sorted(reference_keys - set(forms)):
                 findings.append(
                     f"A6 locale key {key!r} exists in {reference_lang} but not "
                     f"in {lang}; that surface falls back to English.")
-            for key in sorted(set(data) - reference_keys):
+            for key in sorted(set(forms) - reference_keys):
                 findings.append(
                     f"A6 locale key {key!r} exists in {lang} but not in "
                     f"{reference_lang}.")
-            for key in sorted(reference_keys & set(data)):
-                left = set(JS_PLACEHOLDER.findall(str(flat[reference_lang][key])))
-                right = set(JS_PLACEHOLDER.findall(str(data[key])))
+            for key in sorted(reference_keys & set(forms)):
+                left = logical[reference_lang][key][1]
+                right = forms[key][1]
                 if left != right:
                     findings.append(
                         f"A6 locale key {key!r} interpolates {sorted(left)} in "
                         f"{reference_lang} but {sorted(right)} in {lang}.")
 
+        # A6 -- a pluralised key supplies every CLDR category ITS OWN language
+        # needs. Asked per language rather than by comparison, because English
+        # and Simplified Chinese legitimately need different sets.
+        for lang, forms in logical.items():
+            required = set(PLURAL_CATEGORIES.get(lang, ()))
+            for key, (categories, _places) in sorted(forms.items()):
+                if not categories or LEGACY_PLURAL in categories:
+                    continue
+                missing = required - categories
+                if missing:
+                    findings.append(
+                        f"A6 locale key {key!r} is pluralised in {lang} but "
+                        f"supplies no {', '.join(sorted(missing))} form. "
+                        f"i18next selects by CLDR category, so a count in the "
+                        f"missing category renders the key itself.")
+
+    # -- A8/A9: a key the frontend calls that no catalogue can answer --------
+    # A6 compares the catalogues against EACH OTHER, so a key absent from BOTH
+    # is symmetric and invisible to it. `results_page.of_teams` shipped exactly
+    # that way and rendered as its own name on the results screen in both
+    # languages while A6 stayed green.
+    allowed_keys = cfg["allow_unresolved_keys"]
+    used_key_allowances: set[str] = set()
+    try:
+        references, computed = frontend_key_references(
+            repo, cfg["frontend_sources"])
+    except OSError as exc:
+        return error(f"could not scan the frontend sources: {exc}")
+    if not references:
+        return error("read zero frontend t() references; the frontend "
+                     "vocabulary would be empty and A8 could not fail")
+    units += len(references)
+    known = logical.get(reference_lang, {})
+    for key, where, kind in references:
+        if key in known:
+            continue
+        if key in allowed_keys:
+            used_key_allowances.add(key)
+            suppressions += 1
+            continue
+        if kind == "default":
+            findings.append(
+                f"A9 {where} calls t({key!r}) with a hard-coded fallback "
+                f"string. The key is in no catalogue, so English is rendered "
+                f"from the component and every other language renders that "
+                f"same English. Put the wording in both catalogues.")
+        else:
+            findings.append(
+                f"A8 {where} calls t({key!r}), which is in no catalogue. "
+                f"i18next renders the key itself, so a user reads "
+                f"{key!r} on screen in every language.")
+
+    for key in sorted(allowed_keys):
+        if key not in used_key_allowances:
+            findings.append(
+                f"A8 allow_unresolved_keys entry {key!r} matched nothing. "
+                f"Either it was added to the catalogues or its call was "
+                f"removed; drop the entry so the next broken key is seen.")
+
     # -- result -------------------------------------------------------------
     print(f"aide-checks: check-result name={CHECK} units={units} "
           f"findings={len(findings)} suppressions={suppressions}")
+    # Stated, not hidden: a computed key is one this check cannot see.
+    print(f"{CHECK}: note {computed} computed t() key(s) are decided at run "
+          f"time and were not resolved.")
 
     if units == 0:
         return error("zero findings over zero examined units — could not run.")
