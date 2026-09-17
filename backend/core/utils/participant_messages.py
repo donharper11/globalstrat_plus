@@ -102,6 +102,36 @@ MESSAGES = {
         'en': '{product} in {market}: no price was entered, so it was priced at {applied} when the round closed — the lowest price allowed this round, whose range was {minimum} to {maximum}.',
         'zh-CN': '{market} 中的 {product}：未输入价格，回合截止时已按本回合允许的最低价 {applied} 定价（本回合允许区间为 {minimum} 至 {maximum}）。',
     },
+    # -----------------------------------------------------------------------
+    # R35 (2026-09-17) — the demoted team is told on its own results screen
+    # -----------------------------------------------------------------------
+    # Under R32 the standings place a commercially inactive firm below every
+    # firm that competed, whatever its score, so a team can hold a HIGHER
+    # performance index than the team above it and still finish below it. R34
+    # recorded that firing as an audit event; these are the sentences the team
+    # itself reads. Which one applies is decided in
+    # `core/engine/leaderboard.py::demotion_notice`, beside the payload that
+    # decides it, so no surface can describe the rule differently by picking a
+    # different sentence.
+    #
+    # Two keys rather than one, because R34's payload is deliberately honest
+    # about what the guard cost: `outscored_a_firm_ranked_above` is false when
+    # the firm would have finished last regardless. That firm is still told the
+    # rule and still told it fired — it is simply not told it lost a place it
+    # never held.
+    #
+    # Both sentences say the index itself was not reduced. That is R32's whole
+    # point: the standing moved, the carried score did not. A team told only
+    # "you were placed last" would reasonably read it as a scoring penalty,
+    # which is precisely the control R32 removed.
+    'inactivity_demotion': {
+        'en': 'Your firm sold nothing in round {round}, so it did not compete this round. A firm that does not compete is placed below every firm that did, whatever its score — so your firm was ranked {rank} in this round’s standings, carrying a performance index of {index}. The index itself was not reduced; only the placing. Sell in at least one market next round to be ranked on your score again.',
+        'zh-CN': '第 {round} 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 {rank} 位，绩效指数为 {index}。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。',
+    },
+    'inactivity_demotion_outscored': {
+        'en': 'Your firm sold nothing in round {round}, so it did not compete this round. A firm that does not compete is placed below every firm that did, whatever its score — so your firm was ranked {rank} in this round’s standings with a performance index of {index}, below firms whose index was lower than yours. The index itself was not reduced; only the placing. Sell in at least one market next round to be ranked on your score again.',
+        'zh-CN': '第 {round} 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 {rank} 位，绩效指数为 {index}，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。',
+    },
     'target_markets_required': {
         'en': 'Choose at least one target market before creating the product.',
         'zh-CN': '创建产品前，请至少选择一个目标市场。',

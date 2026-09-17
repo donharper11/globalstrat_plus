@@ -21,6 +21,7 @@
     "backend/core/serializers/decisions.py": "Field- and payload-level refusals on the decision write paths, reached before the view body runs.",
     "backend/core/serializers/decision_limits.py": "The shared non-negative rule applied to every numeric decision field.",
     "backend/core/services/price_band.py": "CRV2-10 Stage 5 price-band alerts and adjustment notices, shown on the marketing and results surfaces.",
+    "backend/core/engine/leaderboard.py": "R35 (2026-09-17) — the inactivity-demotion notice a demoted team reads on its own results screen. The sentence is chosen and rendered here, from the stored R34 audit payload and beside the payload builder, so the wording and the recorded fact cannot drift apart. That puts a participant-facing renderer in this module, so the module belongs in this check's scope; its `context.log` lines are operator/log copy and stay technical.",
     "backend/core/services/rd_costs.py": "Budget refusals rendered into the lock response and the Decision Summary.",
     "backend/core/services/funding_need.py": "The V2-024 equity refusal, shown on the Decision Summary and recorded by the engine."
   },

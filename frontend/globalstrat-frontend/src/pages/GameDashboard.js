@@ -15,6 +15,7 @@ import { useDecisions } from '../contexts/DecisionContext';
 import { getDecisionSummary } from '../api/decisions';
 import { getBalancedScorecard, getRoundResults, getLeaderboard, getCompetitorIntel, getLatestBriefing, getRoundBriefing, markBriefingRead } from '../api/results';
 import PriceAdjustmentNotice from '../components/PriceAdjustmentNotice';
+import InactivityDemotionNotice from '../components/InactivityDemotionNotice';
 import { getFinancialHistory } from '../api/cc15';
 import { PanelCard, MetricRow, PageHeader, StatusBadge } from '../components/design-system';
 import BudgetBar from '../components/BudgetBar';
@@ -1155,6 +1156,10 @@ const GameDashboard = () => {
           Ruling 2 makes this disclosure mandatory, so it is shown here as well
           as on the results screen rather than only behind a route. */}
       <PriceAdjustmentNotice adjustments={results?.price_adjustments} />
+      {/* R35, shown here as well as on the results screen for the same
+          reason the price-band notice is: this is the screen a team
+          lands on after a round resolves. */}
+      <InactivityDemotionNotice notices={results?.inactivity_notices} />
       <Tabs
         className="ds-colored-tabs"
         items={tabItems}
