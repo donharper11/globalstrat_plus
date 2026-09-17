@@ -3047,3 +3047,79 @@ because my counter-hypothesis was the one that turned out to be wrong.
 |---|---|---:|---|---|---|
 | V2-121 | Player-facing language / results surface | P2 | **A participant reads a raw translation key on the results screen, in both languages.** `ResultsPage.js:133` calls `t("results_page.of_teams", { count: rankings.length })`, and the key exists in **neither** catalogue, so i18next renders the key itself: the leaderboard card reads "#3 results_page.of_teams". Pre-existing since the baseline snapshot, not introduced by recent work. | Open the results screen as a participant in either language. **Verified 2026-09-17:** the only `of_teams` match in each catalogue is `number_of_teams`, a different key matched on the substring, and there are **no** `of_teams_one`/`of_teams_other` plural siblings — so my own hypothesis, that the key existed and i18next pluralisation was the mechanism, is **refuted**; the builder's reading was right. | **Open** — fix commissioned 2026-09-17 with the builder that found it. |
 | V2-122 | Verification / player-language checks | P2 | **The parity check cannot see this class of defect by construction.** It compares the English and Simplified Chinese catalogues **against each other**, so a key missing from *both* is invisible to it — which is exactly how V2-121 survived a language sweep that produced a 2,189-unit clean gate. The gate is not wrong; its question is. Same class as V2-079 and the route-inventory drift: the check works and cannot answer the question that was actually needed. | The V2-121 reproduction, against a `check-participant-strings` run reporting PASS, 2,189 units, 0 findings on the same tree. | **Open** — a check that fails when a `t("…")` key referenced in the frontend is absent from the catalogues is commissioned alongside V2-121, with instructions to **report the count before fixing beyond `of_teams`**: a sweep of every unresolved key is a separate decision, and its size should be known before it is taken rather than absorbed silently. |
+
+### V2-121 and V2-122 — status at the close of 2026-09-17
+
+**V2-121 — repaired, pending closure.** Every unresolved key on the statically
+visible surface is fixed and `allow_unresolved_keys` went **17 → 14 → 0**, each
+entry closed by repairing its defect rather than by widening an exemption.
+Fixed: `results_page.of_teams`; `topbar.over`; `communications_page.max_words`;
+`strategy_tools.swot_placeholder` — which was **five** keys, not one, because
+the placeholder interpolates four quadrant labels that were also missing, so
+fixing it alone would have rendered *"List your **strategy_tools.swot_strengths**
+here"*; the 14 `instructor.*` keys, translated under **R35's sibling ruling that
+the operator tooling is bilingual**, as audit vocabulary rather than polish
+(`actor` → 操作人, the person who acted); and the **34** reached through
+module-level label maps (11 `common.*`, 5 `login.team_*`, 18 `strategy_tools.*`).
+English wording is unchanged throughout — each hard-coded fallback became the
+`en` entry verbatim. Plural forms are authored to CLDR: English `_one`/`_other`,
+Chinese `_other` alone, which is **complete, not short** — a naive key-parity
+check reports that as a 2-key gap, and mine did until I looked.
+
+**Two claims narrowed, one of them the reason to record this at all.**
+`topbar.over` is a genuinely missing string and **not** a rename: `topbar.of`
+already serves the round counter, so the obvious fix would have rendered
+"Budget $60.0M/$5.0M **of**". And of the 11 `common.*` keys, **only
+`common.retired` has a live call site today** — `StatusBadge` renders
+`{label || text}` and the remaining call sites pass a label that overrides, so
+the other ten are declared in the map with no caller reaching them. They are
+fixed as defence in depth and are **not** claimed as observed; my earlier
+"participant-visible raw keys on ordinary screens" overstated it.
+
+**V2-122 — repaired, pending closure.** The gate that could not see this class
+now can, through four changes: **A8** fails when a `t()` key is in no catalogue;
+**A8 extended** to resolve module-level label maps (`const X = {a:'ns.key'}`
+consumed as `t(X[k])`) under two required conditions — object-value position and
+a first segment that is a real catalogue namespace — which excludes prose, paths
+and mime types; **A9** fails on a hard-coded fallback; and **A6 was taught
+plurals**, without which the correct fix to V2-121 would itself have failed the
+check. Proved twice over: selftest **22 → 34 ok, 0 failed**, including
+false-positive guards asserted by every clean-tree run; and on the real
+repository, where the extended check exited **1 with exactly 34 findings naming
+map, file and line before any key was authored**. Now **PASS, 4,544 units, 0
+suppressions**, and it **states its own blind spot on every run**: 26 keys
+assembled from template literals remain outside its reach.
+
+**Verification standard, corrected — and this correction is the record's.** The
+sandbox running these browser passes has **no CJK font**, so Chinese screenshots
+render as missing-glyph boxes. Earlier wording in this register and in the R35
+disposition said the Chinese screens were seen to render correctly; that
+**over-claimed the pixels**. The standard in force is exact string equality
+against the rendered DOM (`textContent`, not `innerText` — CSS `text-transform`
+uppercases headers, which failed English while Chinese passed for want of case).
+Screenshots are a record of layout, not evidence of glyphs. The builder
+disclosed this against its own earlier report, which is why it is here.
+
+**Still open, and deliberately not fixed:** the 26 template-literal keys; and
+`audience_display`, a Django `get_..._display()` value that reaches a Chinese
+participant in English — the same parity class, a different mechanism, belonging
+to the backend language sweep rather than to the frontend work.
+
+**A finding I recorded in conversation and did not register, because it was
+mine and it was wrong.** I read both catalogues as declaring `common` and
+`dashboard` twice — "19 then 40", "43 then 125" — and concluded a later block
+silently discarded an earlier one. It does not: those second blocks sit at
+four-space indent **nested inside `sc`**, so they are `sc.common` (19 keys) and
+`sc.dashboard` (43), distinct paths, nothing shadowed and nothing discarded. My
+duplicate detector fired on every object in the document rather than on
+top-level ones, so it manufactured the duplication it then found. An earlier
+count of mine — "15 and 39 of those keys are referenced in code" — was likewise a
+substring artefact, `common.save` matching `common.save_draft`; exact
+quote-delimited matching finds **0 of 18 and 0 of 41**. Recorded here so no
+future reader spends an hour on a defect that does not exist.
+
+**Merged-head evidence (`331c7aa`):** backend 63 tests OK; jest 8 suites / 36
+tests; participant-string gate PASS 4,544 units / 0 suppressions; selftest 34 ok;
+production build compiled and emitted a bundle. `MANIFEST_SCHEMA_VERSION`
+remains **6**, no `backend/core` file was changed by any of this work, and the
+R32, R34 and R35 test modules pass **unmodified**. No gate is closed here.
