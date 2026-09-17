@@ -1,0 +1,158 @@
+{
+  "language": "zh-CN",
+  "steps": [
+    {
+      "name": "1 login: all five demo labels render",
+      "outcome": "pass",
+      "detail": "团队 1, 团队 2, 团队 3, 团队 4, 团队 5"
+    },
+    {
+      "name": "1 login: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "sign in",
+      "outcome": "pass",
+      "detail": "ca_t1_m1"
+    },
+    {
+      "name": "2a StatusBadge page 1: the NEW key common.retired renders",
+      "outcome": "pass",
+      "detail": "badges: ['进行中', '主流', '已停产', '经济型']"
+    },
+    {
+      "name": "2b StatusBadge page 1: page-header badge renders (PRE-EXISTING key, recorded not claimed)",
+      "outcome": "pass",
+      "detail": "['进行中']"
+    },
+    {
+      "name": "2c products page: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 the tools page shows its tabs",
+      "outcome": "observed",
+      "detail": "['波特五力分析', 'PESTLE分析', 'SWOT分析', '市场进入矩阵']"
+    },
+    {
+      "name": "3 strategy_tools forces: every label renders",
+      "outcome": "pass",
+      "detail": "新进入者威胁, 供应商议价能力, 买方议价能力, 替代品威胁, 现有竞争者竞争"
+    },
+    {
+      "name": "3 strategy_tools forces: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 strategy_tools pestle: every label renders",
+      "outcome": "pass",
+      "detail": "政治, 经济, 社会, 技术, 法律, 环境"
+    },
+    {
+      "name": "3 strategy_tools pestle: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 strategy_tools entry: every label renders",
+      "outcome": "pass",
+      "detail": "市场规模, 增长率, 进入成本, 关税税率, 监管难度, 竞争强度, 汇率风险"
+    },
+    {
+      "name": "3 strategy_tools entry: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "80-login-demo-labels-zh-CN.png",
+    "81-products-retired-badge-zh-CN.png",
+    "82-strategy-forces-zh-CN.png",
+    "82-strategy-pestle-zh-CN.png",
+    "82-strategy-entry-zh-CN.png"
+  ],
+  "observed": {
+    "login_buttons": [
+      "团队 1demo_student1 / demo1",
+      "团队 2demo_student2 / demo2",
+      "团队 3demo_student3 / demo3",
+      "团队 4demo_student4 / demo4",
+      "团队 5demo_student5 / demo5",
+      "登 录",
+      "EN"
+    ],
+    "login_labels_missing": [],
+    "products_route": "/games/1/teams/1/decisions/products",
+    "product_page_badges": [
+      "进行中",
+      "主流",
+      "已停产",
+      "经济型"
+    ],
+    "tabs_present": [
+      "波特五力分析",
+      "PESTLE分析",
+      "SWOT分析",
+      "市场进入矩阵"
+    ],
+    "forces_market_selected": true,
+    "forces_missing": [],
+    "pestle_market_selected": true,
+    "pestle_missing": [],
+    "entry_missing": []
+  },
+  "visual_claim": "none - no CJK font in this sandbox; the standard is string equality against the rendered DOM",
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "observed_only": 1,
+    "console_errors": 10,
+    "network_errors": 0
+  }
+}

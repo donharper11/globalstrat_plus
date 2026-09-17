@@ -1,0 +1,158 @@
+{
+  "language": "en",
+  "steps": [
+    {
+      "name": "1 login: all five demo labels render",
+      "outcome": "pass",
+      "detail": "Team 1, Team 2, Team 3, Team 4, Team 5"
+    },
+    {
+      "name": "1 login: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "sign in",
+      "outcome": "pass",
+      "detail": "ca_t1_m1"
+    },
+    {
+      "name": "2a StatusBadge page 1: the NEW key common.retired renders",
+      "outcome": "pass",
+      "detail": "badges: ['In Progress', 'Mainstream', 'Retired', 'Budget']"
+    },
+    {
+      "name": "2b StatusBadge page 1: page-header badge renders (PRE-EXISTING key, recorded not claimed)",
+      "outcome": "pass",
+      "detail": "['In Progress']"
+    },
+    {
+      "name": "2c products page: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 the tools page shows its tabs",
+      "outcome": "observed",
+      "detail": "[\"Porter's Five Forces\", 'PESTLE Analysis', 'SWOT Analysis', 'Market Entry Matrix']"
+    },
+    {
+      "name": "3 strategy_tools forces: every label renders",
+      "outcome": "pass",
+      "detail": "Threat of New Entrants, Supplier Power, Buyer Power, Threat of Substitutes, Competitive Rivalry"
+    },
+    {
+      "name": "3 strategy_tools forces: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 strategy_tools pestle: every label renders",
+      "outcome": "pass",
+      "detail": "Political, Economic, Social, Technological, Legal, Environmental"
+    },
+    {
+      "name": "3 strategy_tools pestle: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    },
+    {
+      "name": "3 strategy_tools entry: every label renders",
+      "outcome": "pass",
+      "detail": "Market Size, Growth Rate, Entry Cost, Tariff Rate, Regulatory Difficulty, Competitive Intensity, Currency Risk"
+    },
+    {
+      "name": "3 strategy_tools entry: no raw key text",
+      "outcome": "pass",
+      "detail": "[]"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "80-login-demo-labels-en.png",
+    "81-products-retired-badge-en.png",
+    "82-strategy-forces-en.png",
+    "82-strategy-pestle-en.png",
+    "82-strategy-entry-en.png"
+  ],
+  "observed": {
+    "login_buttons": [
+      "Team 1demo_student1 / demo1",
+      "Team 2demo_student2 / demo2",
+      "Team 3demo_student3 / demo3",
+      "Team 4demo_student4 / demo4",
+      "Team 5demo_student5 / demo5",
+      "Log In",
+      "中文"
+    ],
+    "login_labels_missing": [],
+    "products_route": "/games/1/teams/1/decisions/products",
+    "product_page_badges": [
+      "In Progress",
+      "Mainstream",
+      "Retired",
+      "Budget"
+    ],
+    "tabs_present": [
+      "Porter's Five Forces",
+      "PESTLE Analysis",
+      "SWOT Analysis",
+      "Market Entry Matrix"
+    ],
+    "forces_market_selected": true,
+    "forces_missing": [],
+    "pestle_market_selected": true,
+    "pestle_missing": [],
+    "entry_missing": []
+  },
+  "visual_claim": "none - no CJK font in this sandbox; the standard is string equality against the rendered DOM",
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "observed_only": 1,
+    "console_errors": 10,
+    "network_errors": 0
+  }
+}

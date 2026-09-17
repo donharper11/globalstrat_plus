@@ -131,13 +131,19 @@ def persisted_violations():
 FRONTEND = '''\
 import { useTranslation } from 'react-i18next';
 
-export default function Panel({ labelKey }) {
+// The label-map pattern A8 must resolve. The key is never written inside a
+// t() call, so the literal scan cannot see it -- this is how eleven
+// participant-visible `common.*` keys stayed missing while the check passed.
+const LABELS = { ok: 'summary.mapped' };
+
+export default function Panel({ labelKey, kind }) {
   const { t } = useTranslation();
   return (
     <div>
       <span>{t('summary.title')}</span>
       <span>{t('summary.round', { round: 1 })}</span>
       <span>{t('summary.teams', { count: 3 })}</span>
+      <span>{t(LABELS[kind])}</span>
       <span>{t(labelKey)}</span>
     </div>
   );
@@ -164,12 +170,14 @@ def build_tree(root: Path) -> Path:
         json.dumps({"summary": {"title": "Summary",
                                 "round": "Round {{round}}",
                                 "teams_one": "{{count}} team",
-                                "teams_other": "{{count}} teams"}}),
+                                "teams_other": "{{count}} teams",
+                                "mapped": "Mapped"}}),
         encoding="utf-8")
     (root / "frontend/globalstrat-frontend/src/locales/zh-CN.json").write_text(
         json.dumps({"summary": {"title": "汇总",
                                 "round": "第 {{round}} 回合",
-                                "teams_other": "{{count}} 支队伍"}},
+                                "teams_other": "{{count}} 支队伍",
+                                "mapped": "已映射"}},
                    ensure_ascii=False),
         encoding="utf-8")
     (root / "frontend/globalstrat-frontend/src/Panel.js").write_text(
@@ -347,6 +355,14 @@ def main() -> int:
         "<span>{t('summary.title')}</span>",
         "<span>{t('summary.title')}</span>\n"
         "      <span>{t('summary.absent', 'Hard-coded English')}</span>"), 1)
+
+    # A8 through a LABEL MAP -- the StatusBadge pattern, and the reason the
+    # assertion had to be extended. The key is reached as `t(LABELS[kind])`,
+    # so it never appears inside a t() call; only resolving the map catches it.
+    case("A8 label-map key in no catalogue", lambda root, cfg: _rewrite(
+        root / "frontend/globalstrat-frontend/src/Panel.js",
+        "const LABELS = { ok: 'summary.mapped' };",
+        "const LABELS = { ok: 'summary.mapped_gone' };"), 1)
 
     # A6 — a pluralised key missing a category its OWN language needs. English
     # needs one+other; dropping `_one` means a count of 1 renders the key.
