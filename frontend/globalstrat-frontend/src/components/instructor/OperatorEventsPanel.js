@@ -15,11 +15,16 @@ const { Text } = Typography;
  * whatever any screen does.
  *
  * Every label here comes from the catalogue, in both shipped languages. They
- * used to be written `t('instructor.actor', 'Actor')` -- a hard-coded English
- * fallback -- which rendered correctly in English and left a Chinese
- * instructor reading English, because a fallback string satisfies i18next
- * without the key existing anywhere. These are operator words read under time
- * pressure mid-round, so they are translated for precision rather than polish.
+ * used to be written with a hard-coded English fallback as the second argument
+ * to t(), which rendered correctly in English and left a Chinese instructor
+ * reading English, because a fallback string satisfies i18next without the key
+ * existing anywhere. These are operator words read under time pressure
+ * mid-round, so they are translated for precision rather than polish.
+ *
+ * The old shape is described here rather than quoted. Spelling it out as a
+ * literal call left a string in this file that matches a search for the very
+ * defect it records, and two separate review passes reported this panel as
+ * still carrying a fallback on the strength of this comment alone.
  */
 export default function OperatorEventsPanel({ gameId }) {
   const { t } = useTranslation();

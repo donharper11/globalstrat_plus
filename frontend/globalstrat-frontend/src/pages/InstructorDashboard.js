@@ -324,7 +324,16 @@ const InstructorDashboard = () => {
       await extendDeadline(gameId, { hours: extendHours });
       setExtendModalOpen(false);
       loadData();
-    } catch { /* empty */ }
+    } catch (err) {
+      // A refused extend used to close nothing and say nothing: the modal sat
+      // open with no explanation and loadData() never ran, so a judge could
+      // not tell a rejected change from a slow one. Handled like the sibling
+      // handleAdvance on the same card.
+      Modal.error({
+        title: t('instructor.error'),
+        content: err.response?.data?.error || t('instructor.failed_extend_deadline'),
+      });
+    }
     setActionLoading(false);
   };
 
@@ -464,8 +473,8 @@ const InstructorDashboard = () => {
                   try {
                     const res = await pauseGame(gameId);
                     setGameStatus(res.data?.status || 'paused');
-                    message.success('Game paused');
-                  } catch (err) { message.error(err.response?.data?.error || 'Failed to pause'); }
+                    message.success(t('instructor.game_paused'));
+                  } catch (err) { message.error(err.response?.data?.error || t('instructor.failed_pause')); }
                 }}>
                   <Button>{t('instructor.pause_game')}</Button>
                 </Popconfirm>
@@ -1608,8 +1617,8 @@ const InstructorDashboard = () => {
                       try {
                         const res = await pauseGame(gameId);
                         setGameStatus(res.data.status);
-                        message.info('Game paused');
-                      } catch (err) { message.error(err.response?.data?.error || 'Failed to pause'); }
+                        message.info(t('instructor.game_paused'));
+                      } catch (err) { message.error(err.response?.data?.error || t('instructor.failed_pause')); }
                     }}>{t('instructor.pause_game')}</Button>
                   )}
                   {displayGameStatus === 'paused' && (
@@ -2120,8 +2129,15 @@ const InstructorDashboard = () => {
       {/* Named, like every other lifecycle confirmation: this control acts on
           a round, and acting on the wrong heat's deadline is unrecoverable.
           It sits outside RoundControlCard, which is why the CRV2-10 Stage 6
-          game-identity work did not reach it. */}
-      <Modal title={t('instructor.extend_deadline_title', { game: createGameName || dashboard?.game_name || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
+          game-identity work did not reach it.
+
+          `dashboard.game_name` is asked FIRST. `createGameName` is the text
+          in the create-a-game form on another tab of this same screen, so
+          while a judge is typing a new heat's name it took precedence here
+          and this modal named a game that is not the one being extended.
+          Naming the wrong heat is worse than naming none, which is the
+          hazard the requirement exists to prevent. */}
+      <Modal title={t('instructor.extend_deadline_title', { game: dashboard?.game_name || createGameName || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
         <Text>{t('instructor.extend_deadline_by')}:</Text>
         <InputNumber min={1} max={168} value={extendHours} onChange={setExtendHours} addonAfter="hours" style={{ width: '100%', marginTop: 8 }} />
       </Modal>

@@ -1,4 +1,7 @@
 import axios from 'axios';
+import {
+  isDecisionWrite, publishSaveFailure, publishSaveSuccess,
+} from './saveFailures';
 
 const API_BASE = process.env.REACT_APP_API_URL || '/api';
 
@@ -36,13 +39,23 @@ client.interceptors.request.use((config) => {
 
 // Handle 401 — redirect to login
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (isDecisionWrite(response.config)) publishSaveSuccess();
+    return response;
+  },
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('gs_user');
       localStorage.removeItem('gs_session_id');
       window.location.href = '/login';
+    } else if (isDecisionWrite(error.config)) {
+      // R17. Announced here rather than at each call site because the pages
+      // that save decisions swallow their own errors, and this is the one
+      // point every one of them passes through. The rejection is still
+      // re-thrown, so a page that DOES handle its own failure -- MarketingPage
+      // does, from V2-107 -- keeps doing so.
+      publishSaveFailure(error);
     }
     return Promise.reject(error);
   }
