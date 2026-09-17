@@ -163,3 +163,38 @@ screen**. Should the team be told directly?
 **Dispositions:** V2-119 — the finding's user-facing remainder. Implementation
 open; V2-119 is closable by the auditor once this lands, R32 and R34 having
 answered its two recorded questions.
+
+---
+
+## R36 — the organisational-structure charge moves into the engine
+
+**Question as asked.** V2-088: switching organisational structure charges the
+team's cash **in the view, at the moment of the click** (`cc32b_views.py:145-149`,
+`team.cash_on_hand -= new_structure.transition_cost`). The write is audited,
+lock-guarded, permissioned, and inside the hashed envelope — but the amount
+appears in **no calculator**. It is absent from `rd_costs.budget_assessment`,
+from `funding_need.decision_outlays` and from every engine module, so the team's
+committed-spend and Finance figures never show it, the equity funding rule never
+counts it, and reopening a round does not give the money back.
+
+**Ruling.** **Charge it at resolution, in the engine, with every other outlay.**
+
+**Consequence.**
+
+- The cost joins the one-calculator path the programme already enforces:
+  `funding_need.decision_outlays` totals it and `costs.py` books it, so the
+  figure a team is shown and the figure it is charged are the same number.
+  V2-037/V2-038 exist because that invariant drifted once already.
+- The team's committed spend, projected cash and Finance screens include it, so
+  a team's own numbers stop disagreeing with its cash.
+- Reopening or re-processing a round unwinds it exactly as it unwinds every
+  other decision-driven outlay, instead of leaving money gone against a decision
+  that can still be changed.
+- This is an engine change inside the CRV2-01 determinism boundary: it moves
+  when cash moves, so it needs a focused test that fails without it, and earlier
+  replay evidence covers its own commit.
+- The audit record stays as it is. R34's principle holds here too — the
+  explanation belongs in the audit trail, and nothing about this ruling requires
+  a new hashed field.
+
+**Dispositions:** V2-088 — ruled; implementation open against the engine owner.
