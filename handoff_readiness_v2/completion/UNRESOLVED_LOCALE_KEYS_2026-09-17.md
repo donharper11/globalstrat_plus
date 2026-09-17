@@ -26,10 +26,10 @@ No fallback, so i18next renders the key itself, in every language.
 
 | Key | Call site | State |
 |---|---|---|
-| `results_page.of_teams` | `ResultsPage.js:134` | **fixed here** |
-| `topbar.over` | `TopBar.jsx:102` | pre-existing |
-| `communications_page.max_words` | `CommunicationsPage.js:293` | pre-existing |
-| `strategy_tools.swot_placeholder` | `StrategyToolsPage.js:807` | pre-existing |
+| `results_page.of_teams` | `ResultsPage.js:134` | **fixed** — part 1 |
+| `topbar.over` | `TopBar.jsx:102` | **fixed** — part 2 |
+| `communications_page.max_words` | `CommunicationsPage.js:293` | **fixed** — part 2 |
+| `strategy_tools.swot_placeholder` | `StrategyToolsPage.js:807` | **fixed** — part 2 |
 
 `topbar.over` is the sharpest of the three: it renders in the **over-budget**
 chip, in red, at the moment a team has overspent. The catalogue holds
@@ -44,17 +44,16 @@ bypassed, which is the defect A4 forbids on the backend; this is its frontend
 twin. Labels like "Actor", "Action", "Outcome", "Reason", "Request ID",
 "Time (server)", "Operator Log", "Supply Chain".
 
-**My recommendation, and it is yours to take or refuse.** Class A is three
-short strings and is genuinely cheap — I would fix those next. Class B is 14
-instructor-facing labels × 2 languages; the wording belongs to CRV2-08's owner
-and I would not author Chinese for a panel I have not driven. Either way,
-**say the word and Class A is a ten-minute change.**
+**Class A's remaining three were subsequently authorised and are fixed in part
+2 below.** Class B's 14 are untouched: the wording belongs to CRV2-08's owner
+and is with them as a scope decision.
 
-All 17 are registered in `allow_unresolved_keys` with a per-key reason, pinned
-to the exact key, and the checker **reports any entry that stops matching**, so
-the list cannot quietly outlive the defect. That keeps the gate meaningful
-today — it fails on the **next** unresolved key — without silently absorbing a
-backlog it did not cause.
+The suppression list is therefore now **14**, all `instructor.*`. Every entry
+carries a per-key reason, is pinned to the exact key, and the checker **reports
+any entry that stops matching**, so the list cannot quietly outlive its defect —
+it has already shrunk from 17 to 14 by exactly the three keys part 2 fixed.
+That keeps the gate meaningful today — it fails on the **next** unresolved key —
+without silently absorbing a backlog it did not cause.
 
 ---
 
@@ -96,10 +95,23 @@ same way — same harness as R35, against a seeded stack in real Chromium.
 | Network errors ≥400 | 0 | 0 |
 
 Screenshots: `evidence/unresolved-locale-keys/screenshots/50-results-of-teams-{en,zh-CN}.png`.
-I opened both rather than trusting the DOM string: `innerText` concatenates the
-AntD `Statistic` value and suffix without whitespace, so the quoted text reads
-`#3of 4 teams` while the screen shows **`#3 of 4 teams`**. That is markup, not
-a spacing defect — stated because the quoted string alone would look wrong.
+I opened the English capture rather than trusting the DOM string: `innerText`
+concatenates the AntD `Statistic` value and suffix without whitespace, so the
+quoted text reads `#3of 4 teams` while the screen shows **`#3 of 4 teams`**.
+That is markup, not a spacing defect — stated because the quoted string alone
+would look wrong.
+
+> **Correction, and it applies to every zh-CN capture in this document and in
+> the R35 completion report.** This sandbox has **no CJK font installed**
+> (`fc-list`: 32 families, none CJK), so Chinese renders in the screenshots as
+> missing-glyph boxes. **The English screens are visually confirmed; the
+> Chinese ones are not.** The Chinese evidence is exact string equality against
+> the *rendered DOM* — `inner_text('body')`, and for the SWOT case the textarea
+> `placeholder` attribute compared verbatim to the authored sentence with its
+> interpolation resolved. That is strong evidence the right string reached the
+> page, and it is **not** evidence about glyphs. I earlier said I had opened
+> the Chinese screenshot and seen it render correctly; that over-claimed the
+> pixels and is corrected here.
 
 The third assertion is deliberate: a fix that quietly breaks the neighbouring
 feature is not a fix, so each run re-proves R35's notice on the same screen.
@@ -171,6 +183,116 @@ because the fix is not committed at that point.
 
 ---
 
+## 3a. Part 2 — the remaining three Class A strings
+
+Authorised after the count in §1 was reported. Fixed on the same branch so the
+whole thing lands as one reviewed change.
+
+### The two questions asked directly
+
+**Does the suppression list go 17 → 14?** **Yes.** Exactly the three fixed keys
+were removed; the remaining 14 are all `instructor.*` Class B. The list shrank
+rather than becoming a parking lot, and `allow_unresolved_keys_source` now
+records the shrink history so a future reader can see it must keep shrinking.
+
+**Was any of the three a wrong-key call site rather than a missing string?**
+**No — all three are genuinely missing strings.** This was checked rather than
+assumed, and `topbar.over` is the one that looked most like a rename:
+
+> `topbar.of` **is already in use, correctly**, at `TopBar.jsx:86` —
+> `R{currentRound} {t('topbar.of')} {totalRounds}`, rendering "R2 of 4" in
+> English and "R2 / 4" in Chinese. It is the round counter, not the budget
+> chip. Line 102 appends a *different* marker after
+> `Budget $spent/$available` when `over_budget` is true. Renaming the call to
+> `topbar.of` would have rendered "Budget $60.0M/$5.0M of" — so a rename would
+> indeed have been the wrong fix, and the intent was a new string.
+
+### The wording
+
+| Key | EN | zh-CN |
+|---|---|---|
+| `topbar.over` | `over budget` | `超出预算` |
+| `communications_page.max_words` | `_one` "Maximum {{count}} word", `_other` "Maximum {{count}} words" | `_other` `最多 {{count}} 字` |
+| `strategy_tools.swot_placeholder` | `List your {{quadrant}} here, one per line.` | `在此列出贵公司的{{quadrant}}，每行一项。` |
+| `strategy_tools.swot_strengths` … `_threats` | Strengths / Weaknesses / Opportunities / Threats | 优势 / 劣势 / 机会 / 威胁 |
+
+`max_words` is authored as real CLDR plural forms, not a padded catalogue:
+English supplies `one` and `other`, Simplified Chinese supplies `other` alone,
+which is complete for a language that does not inflect. A6's plural handling
+passes it on that basis.
+
+### Why the SWOT fix is five keys, not one
+
+**The placeholder interpolates the quadrant label**, and those four labels were
+missing too, so fixing `swot_placeholder` alone would have rendered
+*"List your strategy_tools.swot_strengths here, one per line."* — trading one
+raw key for another. The four labels are `SWOT_LABEL_KEYS[key]` resolved
+through `t(SWOT_LABEL_KEYS[key])`, a **computed key**, which is precisely the
+blind spot §3 records: **A8 cannot see them, and never could.** They were found
+by going to drive the screen, not by the checker. That is the honest reading of
+this fix — the assertion caught three of these four defects, and the fourth was
+caught by the browser.
+
+### Driven on screen — all three, both languages
+
+One fixture serves all three screens: round 2 open (the communication
+assignment is a `ROUND_MILESTONE` at round 2), a round-2 submission spending
+$60.0M against a $5.0M formula budget (the chip renders only when
+`budget_status.over_budget` is true), and SWOT reachable at any round. Every
+precondition is asserted by the seed, so a screen that silently failed to show
+the thing under test could not photograph a pass.
+
+| Assertion | EN | zh-CN |
+|---|---|---|
+| `topbar.over` raw key absent / chip reads the sentence | **pass** — `Budget $60.0M/$5.0M over budget` | **pass** — `预算 $60.0M/$5.0M 超出预算` |
+| `max_words` raw key absent / tag reads the sentence | **pass** — `Maximum 300 words` | **pass** — `最多 300 字` |
+| SWOT: no `strategy_tools.swot*` key on screen | **pass** | **pass** |
+| SWOT: all four quadrant labels render | **pass** | **pass** |
+| SWOT: placeholder reads the sentence with the quadrant | **pass** — `List your strengths here, one per line.` | **pass** — `在此列出贵公司的优势，每行一项。` |
+| Steps passed / failed | **8 / 0** | **8 / 0** |
+| Network errors ≥400 | 0 | 0 |
+
+Screenshots `60-topbar-over-budget-*`, `61-communications-word-limit-*`,
+`62-swot-placeholder-*`. The English top-bar capture also shows the dashboard
+banner *"Over budget by $55.0M — total spending $60.0M exceeds available budget
+$5.0M"*, which was already correct and is unrelated to this fix. **The zh-CN
+captures render CJK as boxes** — see the correction in §2; the Chinese proof is
+DOM string equality, including the placeholder attribute compared verbatim.
+
+### A new finding this turned up — 34 more keys, hidden the same way
+
+Driving the SWOT screen showed the computed-key blind spot is not theoretical.
+Enumerating literals that look like keys and sit in a real namespace but never
+appear inside a `t('literal')` call finds **34 more missing keys**, none of
+which A8 can see:
+
+| Namespace | Count | What it is |
+|---|---:|---|
+| `strategy_tools` | **18** | the rest of the Strategy Tools page — Porter's five forces (5), PESTLE (6), entry-matrix column labels (7) |
+| `common` | **11** | `StatusBadge` labels — developing, retired, distress, mainstream, premium, ultra_premium, open, pending, processed, operational, budget_tier |
+| `login` | **5** | the demo team labels on the login page |
+
+`common.*` is the widest: `StatusBadge` is used across many pages. **Not
+fixed** — that is another "many, not a handful", and the same scope decision
+belongs to the owner. Inventory:
+`evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt`.
+
+**A8 could be extended to resolve module-level label maps** (`const X = { a:
+'ns.key' }` consumed as `t(X[k])`), which would catch all 34. I did not do it
+here: it would add 34 findings at once and that is the owner's call, not mine.
+Say the word and it is a contained change to the checker plus a reasoned
+suppression entry per key.
+
+### Incidental, seen while driving and not fixed
+
+On the Chinese communications screen the audience tag renders **"Board of
+Directors"** in English. It is `audience_display`, a Django
+`get_..._display()` value from `cc32a_views.py`, so the enum label is
+English-only server-side. Same bilingual-parity class as Class B, different
+mechanism, outside this change.
+
+---
+
 ## 4. Constraints
 
 | | |
@@ -209,6 +331,26 @@ and the two locale catalogues.
 | 12 | disposable PG + migrate + load_scenario + seed | guard fired, 4 teams | ~50s |
 | 13 | `browser_of_teams.py en` | **5 passed / 0 failed**, 0 network errors | 12s |
 | 14 | `browser_of_teams.py zh-CN` | **5 passed / 0 failed**, 0 network errors | 13s |
+
+**Part 2 — the remaining three Class A strings:**
+
+| # | Command | Result | Duration |
+|---|---|---|---|
+| 15 | inventory of keys hidden behind label maps / template literals | **38 missing**, of which 4 were the SWOT labels this change authored → **34 remain** | <1s |
+| 16 | `check-participant-strings` — three fixed, suppressions 17 → 14 | **PASS, 4439 units, 0 findings, 14 suppressions** | 0.4s |
+| 17 | `check-participant-strings-selftest` | **32 ok, 0 failed** | 4s |
+| 18 | `npm run build` with the seven new strings | **exit 0** | ~90s |
+| 19 | disposable PG + migrate + load_scenario + Class A seed (round 2 open, over budget, assignment triggered) | every precondition **asserted** | ~60s |
+| 20 | `browser_classA.py en` — all three screens | **8 passed / 0 failed**, 0 network errors | ~20s |
+| 21 | `browser_classA.py zh-CN` — all three screens | **8 passed / 0 failed**, 0 network errors | ~20s |
+| 22 | `test-postgres` × 3 protected modules `--parallel 8` | **54 tests, OK** | 30s |
+| 23 | jest after the locale additions | 8 suites, **36 tests**, OK | 3s |
+
+The seed's first run **failed and refused to continue**: `advance_round` calls
+`process_round`, which will not run while any team is unlocked, so the fixture
+raised `RoundNotReadyError` rather than producing a half-built round. Fixed by
+closing the round before advancing, which is what locks and defaults every
+team's submission.
 
 Own disposable `postgres:16-alpine` container under
 `flock -w 1800 /tmp/globalstrat-backend-test.lock`; the production database at
@@ -253,14 +395,27 @@ gate that could not see it. Fixing the first would not have found the rest.
 > is **fixed** — authored as i18next plural forms, `_one`/`_other` in English
 > and `_other` alone in Simplified Chinese, which CLDR makes complete rather
 > than short — and proved on screen in both languages, quoted from the live
-> DOM, with screenshots. **Three remain open:** `topbar.over`
-> (`TopBar.jsx:102`, the over-budget chip, so it shows in red at the moment a
-> team overspends; the catalogue has `topbar.of` but not `topbar.over`),
-> `communications_page.max_words` (`CommunicationsPage.js:293`, needs plural
-> forms) and `strategy_tools.swot_placeholder` (`StrategyToolsPage.js:807`,
-> every SWOT textarea placeholder). All three are registered in
-> `allow_unresolved_keys` with per-key reasons and are caught the moment the
-> suppression is removed. Participant- and instructor-facing; rated as a
+> DOM, with screenshots. **The other three are now fixed too**, authorised
+> after the count was reported: `topbar.over` (`TopBar.jsx:102`, the
+> over-budget chip, which renders in red at the moment a team overspends —
+> **not** a wrong-key call site, because `topbar.of` is legitimately in use at
+> `TopBar.jsx:86` for the round counter and renaming to it would have rendered
+> "Budget $60.0M/$5.0M of"), `communications_page.max_words`
+> (`CommunicationsPage.js:293`, authored as CLDR plural forms: English
+> `one`/`other`, Simplified Chinese `other` alone) and
+> `strategy_tools.swot_placeholder` (`StrategyToolsPage.js:807`) — **which
+> required four further keys**, `swot_strengths`/`_weaknesses`/
+> `_opportunities`/`_threats`, because the placeholder interpolates the
+> quadrant label and those were missing too, so fixing the placeholder alone
+> would have traded one raw key for another. All three were **driven on screen
+> in both languages** (8/8 assertions each, 0 network errors). The suppression
+> list shrank **17 → 14**, exactly the three fixed keys, leaving only Class B.
+> **A further 34 missing keys were found while doing this**, hidden behind
+> label maps and template literals where A8 cannot see them — 18 more in
+> `strategy_tools` (Porter's forces, PESTLE, entry matrix), 11 in `common`
+> (`StatusBadge`, used across many pages) and 5 in `login`. **Not fixed**, and
+> listed in `evidence/unresolved-locale-keys/keys-hidden-behind-label-maps.txt`.
+> Participant- and instructor-facing; rated as a
 > wording defect on a live screen, per GSP-CRV2-12's standard. **Separately, 14
 > `instructor.*` keys in CRV2-08's `OperatorEventsPanel.js` and
 > `InstructorDashboard.js` hard-code their English as a `t()` defaultValue:

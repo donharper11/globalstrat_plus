@@ -1,0 +1,120 @@
+{
+  "language": "en",
+  "steps": [
+    {
+      "name": "sign in",
+      "outcome": "pass",
+      "detail": "ca_t1_m1"
+    },
+    {
+      "name": "1 topbar.over: raw key absent",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "1 topbar.over: chip reads the sentence",
+      "outcome": "pass",
+      "detail": "Budget $60.0M/$5.0M over budget"
+    },
+    {
+      "name": "2 max_words: raw key absent",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "2 max_words: tag reads the sentence",
+      "outcome": "pass",
+      "detail": "['Mandatory', 'Board of Directors', 'Maximum 300 words']"
+    },
+    {
+      "name": "3 swot: no strategy_tools.swot* key on screen",
+      "outcome": "pass",
+      "detail": ""
+    },
+    {
+      "name": "3 swot: all four quadrant labels render",
+      "outcome": "pass",
+      "detail": "Strengths, Weaknesses, Opportunities, Threats"
+    },
+    {
+      "name": "3 swot: placeholder reads the sentence with the quadrant",
+      "outcome": "pass",
+      "detail": "['List your strengths here, one per line.', 'List your weaknesses here, one per line.', 'List your opportunities here, one per line.', 'List your threats here, one per line.']"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "network": [],
+  "screenshots": [
+    "60-topbar-over-budget-en.png",
+    "61-communications-word-limit-en.png",
+    "62-swot-placeholder-en.png"
+  ],
+  "observed": {
+    "topbar_chip": "Budget $60.0M/$5.0M over budget",
+    "word_limit_tag": [
+      "Mandatory",
+      "Board of Directors",
+      "Maximum 300 words"
+    ],
+    "swot_placeholders": [
+      "List your strengths here, one per line.",
+      "List your weaknesses here, one per line.",
+      "List your opportunities here, one per line.",
+      "List your threats here, one per line.",
+      ""
+    ],
+    "swot_titles": [
+      "Strengths",
+      "Weaknesses",
+      "Opportunities",
+      "Threats"
+    ]
+  },
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "console_errors": 10,
+    "network_errors": 0
+  }
+}
