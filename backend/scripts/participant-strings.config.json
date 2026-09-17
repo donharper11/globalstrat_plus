@@ -33,6 +33,32 @@
   },
   "locales_source": "The two i18next catalogues loaded by frontend/globalstrat-frontend/src/i18n.js.",
 
+  "frontend_sources": {
+    "frontend/globalstrat-frontend/src": "Every React source that can call t(). A8 and A9 read this tree and ask whether each key the interface actually calls exists in the catalogues at all — the question A6 cannot ask, because A6 compares the two catalogues against each other and a key missing from BOTH is symmetric to it."
+  },
+  "frontend_sources_source": "The single React source root loaded by frontend/globalstrat-frontend/src/i18n.js; there is no second frontend. Scanned for .js and .jsx, excluding node_modules. Keys built at run time — t(variable) or a template literal — cannot be resolved by reading the source, so the checker counts them and prints the count rather than guessing; that blind spot is stated on every run.",
+
+  "allow_unresolved_keys": {
+    "topbar.over": "PRE-EXISTING, found by A8 on its first run (2026-09-17). TopBar.jsx:102 renders the over-budget chip as `${t('topbar.over')}` with no fallback, so a team over budget reads the literal text 'topbar.over' in red. The catalogue has topbar.of but not topbar.over. Not fixed here: the R35 follow-up was scoped to results_page.of_teams and the owner asked for the count before any wider sweep.",
+    "communications_page.max_words": "PRE-EXISTING, found by A8 on its first run (2026-09-17). CommunicationsPage.js:293 calls it with {count} and no fallback, so the word-limit tag renders the literal key. Needs plural forms (en one/other, zh-CN other). Held for the owner's decision on the wider sweep.",
+    "strategy_tools.swot_placeholder": "PRE-EXISTING, found by A8 on its first run (2026-09-17). StrategyToolsPage.js:807 uses it as a textarea placeholder with {quadrant} and no fallback, so every SWOT box shows the literal key. Held for the owner's decision on the wider sweep.",
+    "instructor.operator_events_failed": "PRE-EXISTING A9, CRV2-08's OperatorEventsPanel.js:43. The English wording is hard-coded as a t() defaultValue, so English renders correctly and a Chinese instructor reads English. Wording belongs to CRV2-08's owner; held for the owner's decision.",
+    "instructor.operator_events": "PRE-EXISTING A9, OperatorEventsPanel.js:48 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.all_outcomes": "PRE-EXISTING A9, OperatorEventsPanel.js:54 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.committed": "PRE-EXISTING A9, OperatorEventsPanel.js:55 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.rejected": "PRE-EXISTING A9, OperatorEventsPanel.js:56 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.time_server": "PRE-EXISTING A9, OperatorEventsPanel.js:69 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.actor": "PRE-EXISTING A9, OperatorEventsPanel.js:73 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.action": "PRE-EXISTING A9, OperatorEventsPanel.js:74 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.outcome": "PRE-EXISTING A9, OperatorEventsPanel.js:76 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.reason": "PRE-EXISTING A9, OperatorEventsPanel.js:86 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.before_after": "PRE-EXISTING A9, OperatorEventsPanel.js:91 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.request_id": "PRE-EXISTING A9, OperatorEventsPanel.js:100 — English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.operator_log": "PRE-EXISTING A9, InstructorDashboard.js:2091 — the Operator Log tab label, English hard-coded as a defaultValue; zh-CN renders English.",
+    "instructor.supply_chain": "PRE-EXISTING A9, InstructorDashboard.js:2092 — the Supply Chain tab label, English hard-coded as a defaultValue; zh-CN renders English."
+  },
+  "allow_unresolved_keys_source": "The complete A8/A9 backlog as the assertions first reported it on 2026-09-17, recorded key by key rather than as a blanket exemption. Seventeen entries: three render a raw key to a user (topbar.over, communications_page.max_words, strategy_tools.swot_placeholder) and fourteen are instructor-facing keys whose English is hard-coded as a t() defaultValue, so English is correct and Simplified Chinese is not. results_page.of_teams is deliberately NOT here — it was fixed, which is why this list is seventeen and not eighteen. Each entry is pinned to an exact key and the checker reports any that stops matching, so the list cannot quietly outlive the defect. It exists so the gate fails on the NEXT unresolved key instead of being disabled by a backlog it did not cause; burning it down is a separate decision for the register owner.",
+
   "model_field_sources": ["backend/core/models"],
   "model_field_sources_source": "Django model modules. The storage vocabulary is read from the model definitions themselves rather than typed out here, so a field added tomorrow is watched without anyone remembering to list it.",
 
