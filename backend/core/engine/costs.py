@@ -884,6 +884,49 @@ def calculate_inventory_costs(context):
     context.log.append('Inventory costs calculated')
 
 
+def _stock_left_after_final_sale(context, team, product):
+    """What the product still holds after the round it has just sold in.
+
+    R37. Read from `context.revenue` and `context.cogs` -- **this** round's own
+    figures, already computed by `calculate_revenue` (Step 10) and
+    `calculate_cogs`, both of which run before this step. No stored result row
+    is involved, and none could be: `generate_financial_statements` does not
+    write this round's `RoundResultProductMarket` rows until later in the
+    pipeline.
+
+    Returned as `(unsold, unit_cost)` per market, in market order, so the sum
+    is reproducible. An empty list means the product was not offered this
+    round; the caller then falls back to the round it last sold in.
+    """
+    revenue = getattr(context, 'revenue', {}) or {}
+    cogs = getattr(context, 'cogs', {}) or {}
+    rows = []
+    for key in sorted(k for k in revenue
+                      if k[0] == team.id and k[1] == product.id):
+        unsold = D(str(revenue[key].get('units_unsold') or 0))
+        unit_cost = D(str((cogs.get(key) or {}).get('unit_cost') or 0))
+        rows.append((unsold, unit_cost))
+    return rows
+
+
+def _stock_left_before_this_round(context, team, product, current_round):
+    """What the product held going into this round: last round's unsold units.
+
+    The basis for `immediate`, and deliberately unchanged by R37 -- still the
+    previous round's stored result rows, read exactly as before.
+    """
+    from core.models.results_financials import RoundResultProductMarket
+
+    prev_round = current_round - 1
+    if prev_round < 0:
+        return []
+    return [(D(str(pr.units_unsold or 0)), D(str(pr.unit_cost or 0)))
+            for pr in RoundResultProductMarket.objects.filter(
+                game=context.game, team=team, team_product=product,
+                round_number=prev_round,
+            ).order_by('pk')]
+
+
 def calculate_retirement_costs(context):
     """
     Products retired this round incur costs for remaining inventory.
@@ -893,8 +936,14 @@ def calculate_retirement_costs(context):
       - End-of-round retirement: recover 50% of cost → 50% loss
 
     Fire-sale recovery offsets part of the write-off but never eliminates it.
+
+    **R37: the stock is the stock that is actually left.** Both the write-off
+    and the recovery are computed from the inventory remaining after the
+    product's *final round of selling*, which differs by timing because the two
+    timings sell in different rounds (R18). The write-off and the recovery move
+    together by necessity: pricing the recovery off one position and writing
+    off another would describe two different inventories in one P&L.
     """
-    from core.models.results_financials import RoundResultProductMarket
 
     context.retirement_costs = {}     # team_id → gross inventory write-off (always positive)
     context.retirement_revenue = {}   # team_id → fire-sale recovery
@@ -918,29 +967,41 @@ def calculate_retirement_costs(context):
                 'team_product').all().order_by('team_product__name'):
             product = retire_dec.team_product
 
-            prev_round = current_round - 1
-            if prev_round < 0:
-                continue
+            # R37. `end_of_round` sells through this round (R18), so what
+            # remains is THIS round's unsold units at this round's unit cost.
+            # Under the previous basis a team could sell most of its remaining
+            # stock in that final round and still be paid out as though none of
+            # it had moved -- a figure describing a position that no longer
+            # existed, which is the class of defect R18 removed one level up.
+            #
+            # `immediate` stops selling before adoption, so its final round of
+            # selling was the previous one and its remaining stock is the
+            # previous round's unsold units. That is the basis it always had:
+            # this branch reads exactly what it read before, and a test pins
+            # that it does not move by a cent.
+            if retire_dec.timing == 'immediate':
+                recovery_pct = immediate_recovery
+                stock = _stock_left_before_this_round(
+                    context, team, product, current_round)
+            else:
+                recovery_pct = endofround_recovery
+                stock = _stock_left_after_final_sale(context, team, product)
+                if not stock:
+                    # Not offered this round -- no marketing row, so nothing
+                    # was produced or sold -- means its final round of selling
+                    # was the previous one, and that round's leftover is what
+                    # remains.
+                    stock = _stock_left_before_this_round(
+                        context, team, product, current_round)
 
-            prior_results = (RoundResultProductMarket.objects.filter(
-                game=context.game, team=team, team_product=product,
-                round_number=prev_round,
-            )).order_by('pk')
-
-            for pr in prior_results:
-                unsold = D(str(pr.units_unsold or 0))
+            for unsold, unit_cost in stock:
                 if unsold <= 0:
                     continue
 
-                unit_cost = D(str(pr.unit_cost or 0))
-                inventory_value = (unsold * unit_cost).quantize(D('0.01'), rounding=ROUND_HALF_UP)
-
-                if retire_dec.timing == 'immediate':
-                    recovery_pct = immediate_recovery
-                else:
-                    recovery_pct = endofround_recovery
-
-                recovery = (inventory_value * recovery_pct).quantize(D('0.01'), rounding=ROUND_HALF_UP)
+                inventory_value = (unsold * unit_cost).quantize(
+                    D('0.01'), rounding=ROUND_HALF_UP)
+                recovery = (inventory_value * recovery_pct).quantize(
+                    D('0.01'), rounding=ROUND_HALF_UP)
 
                 # Write the inventory off in full and book the fire-sale
                 # proceeds as revenue. Netting the recovery out of the expense

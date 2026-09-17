@@ -13,10 +13,16 @@ no compensating benefit, and no reason for any team ever to choose it. Giving
 `end_of_round` its own market timing is what turns the authored rates into a
 real trade-off: sell through at 50%, or exit now at 25%.
 
-Each test below fails against the pre-R18 engine. The load-bearing one is
-`test_end_of_round_retirement_keeps_selling_in_its_round`: before the change
+Each timing test below fails against the pre-R18 engine. The load-bearing one
+is `test_end_of_round_retirement_keeps_selling_in_its_round`: before the change
 `_process_product_retires` deactivated every market row for both timings, so
 the product was off sale the moment retirement was processed.
+
+**R37** then makes the money follow the timing. The fire sale is priced off the
+stock **actually left** after the product's final round of selling -- this
+round for `end_of_round`, the previous round for `immediate`, which never sells
+in its retirement round. `RetirementRecoveryRateTests` covers that, and pins
+that `immediate` does not move.
 """
 from decimal import Decimal as D
 
@@ -45,6 +51,12 @@ class _RetirementContext:
         self.teams = list(teams)
         self.round_number = round_number
         self.log = []
+        # R37: the retirement cost step now reads this round's own figures for
+        # the `end_of_round` basis. Seeded empty rather than stubbed away, so
+        # the branch under test runs inside the real function; the recovery
+        # tests fill them in.
+        self.revenue = {}
+        self.cogs = {}
 
 
 class ProductRetirementBase(TestCase):
@@ -208,58 +220,130 @@ class EndOfRoundRetirementTests(ProductRetirementBase):
 
 
 class RetirementRecoveryRateTests(ProductRetirementBase):
-    """The authored rates stand, and each applies to its own branch.
+    """R37: the fire sale is priced off the stock that is actually left.
 
-    R18 leaves `retirement_endofround_recovery_pct` (0.50) and
-    `retirement_immediate_recovery_pct` (0.25) as authored. What changes is
-    that they are no longer the *only* difference between the two timings, so
-    neither option dominates. These tests pin the rates to their branches so a
-    later edit cannot quietly swap them.
+    R18 gave `end_of_round` its own market timing; R37 makes the money follow
+    it. Both the write-off and the recovery are computed from the inventory
+    remaining after the product's **final round of selling** -- this round for
+    `end_of_round`, because it sold through it; the previous round for
+    `immediate`, because it never sells in its retirement round.
+
+    The authored rates are untouched: 50% and 25%. This changes the basis, not
+    the rate.
+
+    The fixture keeps the two positions **deliberately different** -- 100 units
+    held going into the round, 40 still held after selling through it -- so a
+    test cannot pass by reading the wrong one.
     """
 
-    UNSOLD = 100
-    UNIT_COST = D('10.00')          # $1,000.00 of stranded inventory
+    PRIOR_UNSOLD = 100              # $1,000.00 held going into the round
+    LEFT_AFTER_SELLING = 40         # $400.00 still held after selling through
+    UNIT_COST = D('10.00')
 
-    def seed_prior_inventory(self):
+    def seed_prior_round(self):
+        """What the product held going INTO this round."""
         from core.models.results_financials import RoundResultProductMarket
         RoundResultProductMarket.objects.create(
             game=self.game, team=self.team, team_product=self.product,
-            market=self.market, round_number=0, units_produced=self.UNSOLD,
-            units_sold=0, units_unsold=self.UNSOLD, retail_price=D('100.00'),
+            market=self.market, round_number=0,
+            units_produced=self.PRIOR_UNSOLD, units_sold=0,
+            units_unsold=self.PRIOR_UNSOLD, retail_price=D('100.00'),
             unit_cost=self.UNIT_COST,
-            total_cogs=self.UNIT_COST * self.UNSOLD)
+            total_cogs=self.UNIT_COST * self.PRIOR_UNSOLD)
 
-    def recovery_for(self, timing):
+    def seed_this_round(self, context):
+        """What it still holds after selling through THIS round."""
+        key = (self.team.id, self.product.id, self.market.id)
+        context.revenue[key] = {
+            'units_produced': D(str(self.PRIOR_UNSOLD)),
+            'units_sold': D(str(self.PRIOR_UNSOLD - self.LEFT_AFTER_SELLING)),
+            'units_unsold': D(str(self.LEFT_AFTER_SELLING)),
+        }
+        context.cogs[key] = {'unit_cost': self.UNIT_COST}
+
+    def resolve(self, timing, *, this_round=True):
         from core.engine.costs import calculate_retirement_costs
-        self.seed_prior_inventory()
+        self.seed_prior_round()
         self.retire(timing)
         context = self.context(round_number=1)
+        if this_round:
+            self.seed_this_round(context)
         calculate_retirement_costs(context)
         return (context.retirement_revenue.get(self.team.id, D('0')),
                 context.retirement_costs.get(self.team.id, D('0')))
 
-    def test_end_of_round_recovers_half_the_stranded_inventory(self):
-        recovery, write_off = self.recovery_for('end_of_round')
+    # -- end_of_round: priced off what is left -----------------------------
+
+    def test_end_of_round_is_priced_off_the_stock_left_after_selling(self):
+        """R37's load-bearing case.
+
+        40 units remain at $10, so $400 is written off and half of it comes
+        back. Before the change this read the position *before* the final round
+        of selling -- 100 units, $1,000 written off and $500 recovered -- and
+        paid the team out as though none of its stock had moved.
+        """
+        recovery, write_off = self.resolve('end_of_round')
+        self.assertEqual(write_off, D('400.00'))
+        self.assertEqual(recovery, D('200.00'))
+
+    def test_end_of_round_does_not_read_the_position_before_its_final_round(self):
+        """Stated as its own property, because it is the whole ruling."""
+        _recovery, write_off = self.resolve('end_of_round')
+        prior_value = D(str(self.PRIOR_UNSOLD)) * self.UNIT_COST
+        self.assertNotEqual(write_off, prior_value)
+
+    def test_end_of_round_falls_back_when_it_was_not_offered_this_round(self):
+        """No marketing row means nothing was produced or sold this round.
+
+        Its final round of selling was then the previous one, so that round's
+        leftover is what remains -- the full 100 units.
+        """
+        recovery, write_off = self.resolve('end_of_round', this_round=False)
         self.assertEqual(write_off, D('1000.00'))
         self.assertEqual(recovery, D('500.00'))
 
-    def test_immediate_recovers_a_quarter_of_it(self):
-        recovery, write_off = self.recovery_for('immediate')
+    # -- immediate: unchanged, to the cent ---------------------------------
+
+    def test_immediate_is_priced_off_the_previous_round(self):
+        recovery, write_off = self.resolve('immediate', this_round=False)
         self.assertEqual(write_off, D('1000.00'))
         self.assertEqual(recovery, D('250.00'))
 
-    def test_end_of_round_recovers_strictly_more_than_immediate(self):
-        """The trade-off R18 creates, stated as the property it has to hold.
+    def test_immediate_does_not_move_when_this_round_has_figures(self):
+        """The pin R37 requires: `immediate` must not move by a cent.
 
-        Selling through is worth more per stranded unit than exiting now. That
-        is the compensating benefit `immediate` did not have while the two
-        timings shared one market timing -- and the reason `immediate` is now a
-        real choice (exit this round) rather than a dominated one.
+        `revenue.py` builds its rows from `DecisionMarketing` **without**
+        filtering on product status, so a product retired `immediate` that
+        still carries a marketing row does get a current-round entry -- selling
+        nothing, but carrying whatever it produced. If the new basis leaked
+        across the timing branch, this is where it would show.
         """
-        end_of_round, _ = self.recovery_for('end_of_round')
+        with_figures, write_off_with = self.resolve('immediate')
+        self.assertEqual(write_off_with, D('1000.00'))
+        self.assertEqual(with_figures, D('250.00'))
+
+    # -- the authored rates ------------------------------------------------
+
+    def test_the_authored_rates_are_unchanged_on_identical_stock(self):
+        """Same stock, both timings: 50% against 25%.
+
+        Measured on the fallback case, where the two bases are the same 100
+        units, so this compares the *rates* rather than two different
+        positions. It is also the R18 property restated: selling through is
+        worth more per stranded unit than exiting now.
+        """
+        end_recovery, end_write_off = self.resolve(
+            'end_of_round', this_round=False)
+
         DecisionProductRetire.objects.all().delete()
         from core.models.results_financials import RoundResultProductMarket
         RoundResultProductMarket.objects.all().delete()
         self.product.refresh_from_db()
-        immediate, _ = self.recovery_for('immediate')
-        self.assertGreater(end_of_round, immediate)
+
+        imm_recovery, imm_write_off = self.resolve(
+            'immediate', this_round=False)
+
+        self.assertEqual(end_write_off, imm_write_off)
+        self.assertEqual(end_recovery, D('500.00'))
+        self.assertEqual(imm_recovery, D('250.00'))
+        self.assertGreater(end_recovery, imm_recovery)
