@@ -88,3 +88,42 @@ outside this competition's launch gate.**
 **Dispositions:** V2-072 — mitigated for GlobalStrat+ on evidence; estate
 exposure re-opened as a separate operations finding. The launch-checklist entry
 added 2026-09-12 may be ticked against the cutover record.
+
+---
+
+## R34 — a guard firing is recorded as an audit event, not as a hashed field
+
+**Question as asked.** V2-119's second question, left open by R32. Under R32 the
+standings place a commercially inactive firm below every firm that competed,
+whatever its score — so a team can hold a **higher** performance index than the
+team above it and still finish below them. Today that firing is written only to
+the resolution log. Nothing in stored data explains the inversion: the rows read
+"index 90.00, rank 8" beside "index 60.00, rank 3" and say nothing about why.
+Must the firing be visible in the stored row?
+
+**Ruling.** **It must be visible in stored data — recorded as an audit event,
+not by adding a field to the hashed performance or leaderboard rows.**
+
+**Consequence.**
+
+- A round in which the guard fires becomes **answerable from stored data**,
+  which is the standard the whole programme is built to: dispute 6 ("the result
+  is wrong — prove the calculation") has an answer for that round, and an
+  instructor can say why a team finished below one it outscored.
+- **The determinism envelope does not move.** `performance` and `leaderboard`
+  are hashed output sections; adding a field to either would take the manifest
+  from v6 to v7, exactly as the paid-research section did, and every hash
+  comparison across that point would differ while no outcome had changed. The
+  audit trail sits deliberately outside the hashed output, so recording the
+  reason there costs no envelope bump and no re-run of the replay evidence.
+- CRV2-08's dispute tooling already reads audit events, so the answer lands
+  where a disputing instructor already looks.
+- **Ranking behaviour does not change.** R32's enforcement stands exactly as
+  merged; this ruling adds the explanation, not a new effect.
+- Recorded honestly: the control has **never fired** in 448 stored rounds, so
+  this is again prophylactic. It is being built because the one time it fires it
+  reorders a competition, and that is the worst moment to discover the reason
+  exists only in a log.
+
+**Dispositions:** V2-119 — **question 2 ruled.** Both of its questions are now
+answered; implementation open against the engine owner.
