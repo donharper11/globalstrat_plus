@@ -693,7 +693,13 @@ class SensitiveReadInventoryTests(TestCase):
         # 32 since GSP-CRV2-10 Stage 5: the team's own round-results endpoint
         # now reads the price-band adjustment audit events so the team can see
         # what the deadline changed, which makes it a logged audit read too.
-        self.assertEqual(len(middleware._routes), 32)
+        # 33 since R36 (2026-09-17): the organisational-structure charge moved
+        # out of the view and into resolution, so the org-structure context
+        # endpoint now reads `DecisionSubmission` and is a logged decision
+        # read. The count rose because a charge stopped happening at click
+        # time, which is the repair working, not a surface being widened
+        # carelessly -- and this assertion is what made anyone look.
+        self.assertEqual(len(middleware._routes), 33)
 
     def test_a_stale_inventory_falls_back_to_the_live_scan(self):
         """A generated file that no longer describes the URL conf must not be
