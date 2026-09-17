@@ -100,11 +100,25 @@
       only at cutover. A default privilege grants the app role DML on each new
       table, a future audit table included; the re-run is what takes it back
       off (V2-072).
-- [ ] Full backend suite run and green on the freeze candidate. The seven
-      standing red tests are repaired at `b562c63`, but **no full suite has been
-      run since**, and the suite has never been green: 842 tests at `acee4ea`
-      gave 4 failures and 3 errors (V2-074). Added 2026-09-12; GSP-CRV2-09 owns
-      the run.
+- [ ] Full backend suite run and green **on the freeze candidate**. Added
+      2026-09-12; GSP-CRV2-09 owns the run.
+      **2026-09-17 — the suite is green for the first time: `Ran 1110 tests`,
+      0 failures, 0 errors, rc=0, 89.7s, at `6831c48`.** Left unticked
+      deliberately: no freeze has been cut, so this is a green run at a named
+      commit and not yet the candidate run this gate asks for. Tick it when the
+      candidate is frozen and the suite is re-run against exactly that commit.
+      **For comparison:** the suite had been red since about 2026-09-02, and
+      the last recorded full run — 842 tests at `acee4ea` — gave 4 failures and
+      3 errors (V2-074). The rise from 842 to 1,110 is the day's added
+      coverage, not a different selection.
+      **Both obstacles on the way were real consequences of today's work, not
+      noise, and each was caught by its own freshness guard:** `read_inventory.json`
+      was stale because R36 moved the organisational-structure charge out of the
+      view into resolution, making that endpoint a logged decision read (33 → 34
+      routes); and the middleware's hardcoded route count then had to follow
+      (32 → 33), an assertion deliberately written against the middleware's live
+      lookup so that a growing sensitive-read surface forces a human to look.
+      It did.
 - [ ] Browser pass over the participant and operator surfaces the merged work
       changed and could not build. **ATTEMPTED 2026-09-12, NOT PASSED — and it
       is the reason this gate was worth adding.** The pass ran on `46b4bbe`
