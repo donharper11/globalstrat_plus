@@ -48,8 +48,31 @@ def update_leaderboard(context):
     resilience = dict(ResilienceScoreHistory.objects.filter(
         team__game=game, round__round_number=current_round,
     ).values_list('team_id', 'score'))
+    # R32 / V2-021 / V2-022. A commercially inactive firm must not finish above
+    # one that competed. That property is enforced here, on the standings, and
+    # no longer by overwriting the firm's carried index in `performance.py`:
+    # replacing a carried score made the penalty grow with how far the firm had
+    # climbed, so one event cost a leader 17.81 index points where it cost a
+    # mid-table firm 5.00 (V2-119). The round-level consequence of not
+    # competing stays the composite cap, bounded at 5.00.
+    #
+    # The classification is computed once, by the performance step, and only
+    # read here, so the two controls cannot disagree about who was competing.
+    # A context that never ran the performance step carries no classification
+    # and demotes nobody -- that is the round-zero bootstrap, which ranks
+    # before any round is played and where R22 requires a shared opening rank.
+    inactive_team_ids = frozenset(
+        getattr(context, 'commercially_inactive_team_ids', ()) or ())
+
     def published_key(team):
         return (
+            # Leads the key, so no index and no tie-break can lift a firm that
+            # did not compete above one that did, however far ahead it was
+            # carrying. Because the shared-rank test below compares whole keys,
+            # an inactive firm cannot even finish level with an active one.
+            # Membership only: nothing here iterates, so the standings cannot
+            # depend on the order teams or the classification arrive in.
+            D('0') if team.id in inactive_team_ids else D('1'),
             D(str(team.performance_index)),
             D(str(cumulative.get(team.id, {}).get('operating_cash_flow', 0) or 0)),
             D(str(cumulative.get(team.id, {}).get('total_revenue', 0) or 0)),
@@ -107,3 +130,11 @@ def update_leaderboard(context):
             for rank, team in ranked_pairs
         )
     )
+
+    demoted = [team.name for _rank, team in ranked_pairs
+               if team.id in inactive_team_ids]
+    if demoted:
+        context.log.append(
+            'Leaderboard: ranked below every firm that competed this round '
+            '(commercially inactive): ' + ', '.join(demoted)
+        )

@@ -258,25 +258,26 @@ def is_commercially_inactive(revenue, floor):
     return D(str(revenue or 0)) < floor
 
 
-def _enforce_inactive_revenue_invariant(candidates):
-    """Keep a commercially inactive firm from outranking one that competed.
-
-    Written against zero revenue until V2-022; it now uses the same
-    `commercially_inactive` classification the composite cap uses, so the two
-    controls cannot disagree about who was competing.
-    """
-    active_indexes = [
-        item['new_index'] for item in candidates
-        if not item['commercially_inactive']
-    ]
-    if not active_indexes:
-        return
-
-    ceiling = max(D('0'), min(active_indexes) - D('0.01'))
-    for item in candidates:
-        if item['commercially_inactive'] and item['new_index'] >= min(active_indexes):
-            item['new_index'] = ceiling
-            item['guard_applied'] = True
+# R32 (2026-09-17) removed `_enforce_inactive_revenue_invariant` from this
+# module. The rule it carried is unchanged and is not weakened: a commercially
+# inactive firm must not finish above a firm that competed. It is now enforced
+# on the standings, in `leaderboard.py`, where a finishing order is actually
+# decided.
+#
+# What it used to do was replace the firm's *carried* performance index with
+# `min(active indexes) - 0.01`. That is not a cap on the round's change: the
+# drop was bounded only by how far the firm had climbed above the weakest rival
+# still competing. On one identical event a leader lost 17.81 index points
+# where a mid-table firm lost 5.00 (V2-110 Part D, registered as V2-119), and
+# because it wrote to carried state it cost the game rather than the round --
+# the rewritten index is the base every later round accumulates from. The
+# strongest single decision lever measured anywhere in this programme is worth
+# about 12.40, so a control whose severity grew with how well a team had been
+# playing could decide a competition on one round. That is the V2-024 class of
+# defect: an outcome play cannot overcome.
+#
+# The round-level consequence of not competing is the composite cap above --
+# bounded at 5.00, proportionate, and applied to the round. It is unchanged.
 
 
 def calculate_performance_index(context):
@@ -355,11 +356,19 @@ def calculate_performance_index(context):
             'financial_score': financial_score,
             'stakeholder_score': stakeholder_score,
             'resilience_score': resilience_score,
-            'guard_applied': False,
             'commercially_inactive': commercially_inactive,
         })
 
-    _enforce_inactive_revenue_invariant(candidates)
+    # R32. Publish the classification for the standings to enforce on, rather
+    # than acting on the carried index here. Computing it once and sharing it
+    # is what V2-022 adopted: the composite cap and the ranking rule consume
+    # one answer to "who was competing", so they cannot disagree. A frozenset
+    # because the standings only ever ask whether a team is in it -- nothing
+    # iterates it, so no insertion order can reach a published result (V2-012).
+    context.commercially_inactive_team_ids = frozenset(
+        item['team'].id for item in candidates
+        if item['commercially_inactive']
+    )
 
     for item in candidates:
         team = item['team']
@@ -395,5 +404,4 @@ def calculate_performance_index(context):
             f'resilience={item["resilience_score"]:.3f}'
             + ('; commercial-inactivity cap applied'
                if item['commercially_inactive'] else '')
-            + ('; zero-revenue ranking guard applied' if item['guard_applied'] else '')
         )
