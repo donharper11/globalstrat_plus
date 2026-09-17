@@ -127,3 +127,39 @@ not by adding a field to the hashed performance or leaderboard rows.**
 
 **Dispositions:** V2-119 — **question 2 ruled.** Both of its questions are now
 answered; implementation open against the engine owner.
+
+---
+
+## R35 — the demoted team is told on its own results screen
+
+**Question as asked.** R34 records a guard firing as an audit event, and
+CRV2-08's instructor drill-down surfaces it without change — so an instructor
+can answer "why are we below a firm we outscored". But the **team's own** results
+screen filters to the three price-band actions, so the team sees itself ranked
+below firms it outscored by some 37 index points with **no explanation on
+screen**. Should the team be told directly?
+
+**Ruling.** **Yes. Tell the team on its own results screen.**
+
+**Consequence.**
+
+- The team's results view must surface the demotion alongside the price-band
+  adjustments it already shows — the same receipt principle Ruling 2 established
+  for a substituted price, applied to a substituted finishing position.
+- The wording is participant-facing and therefore bound by GSP-CRV2-12's
+  standard: state the rule and what it means — placed below every firm that
+  competed, because the team sold nothing that round — in **English and
+  Simplified Chinese**, naming no column, code or internal identifier. The
+  static participant-string gate must pass.
+- **Nothing else moves.** Ranking behaviour is R32's and is unchanged; the audit
+  payload is R34's and is unchanged; and because the results view reads audit
+  events, which sit outside the hashed output envelope, the manifest stays at
+  **v6** and no replay evidence is invalidated.
+- Prophylactic, as R32 and R34 were: the control has never fired in 448 stored
+  rounds. It is being finished now because the one time it fires it reorders a
+  competition, and a team reading an unexplained standing is how a dispute
+  starts.
+
+**Dispositions:** V2-119 — the finding's user-facing remainder. Implementation
+open; V2-119 is closable by the auditor once this lands, R32 and R34 having
+answered its two recorded questions.
