@@ -1147,8 +1147,18 @@ const InstructorDashboard = () => {
                   try {
                     const res = await calculateGrades(gradingInstanceId, gradingCourse);
                     setGradeResults(res.data || []);
-                    message.success('Grades calculated');
-                  } catch { message.error('Failed to calculate grades'); }
+                    message.success(t('instructor.grades_calculated'));
+                  } catch (err) {
+                    // R40: a competition heat refuses a rubric that uses a
+                    // model-scored component. Say so, rather than "failed".
+                    const refused = err?.response?.data?.code
+                      === 'model_derived_component_in_competition';
+                    if (refused) {
+                      message.error(t('instructor.grades_refused_model_component'), 10);
+                    } else {
+                      message.error(t('instructor.calculate_grades_failed'));
+                    }
+                  }
                 }}
               >
                 {t('instructor.calculate_grades')}

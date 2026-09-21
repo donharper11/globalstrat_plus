@@ -920,7 +920,7 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
     try {
       const res = await client.post(
         `/games/${gameId}/teams/${teamId}/research/query/`,
-        { query_text: queryText.trim() }
+        { query: queryText.trim() }
       );
       setQueries((prev) => [
         {

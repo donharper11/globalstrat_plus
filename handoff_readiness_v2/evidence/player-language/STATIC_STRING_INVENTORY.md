@@ -4,24 +4,24 @@ This is a reproducible Stage 1 candidate inventory, not a claim that every
 candidate is reachable. Reviewers must classify each candidate before changing
 wording; `operator-or-log-only` rows require an explicit exemption rationale.
 
-Source fingerprint: `5b4197a73cef640c85a7728ee5b6cb9e57ecb7279208077a2effb337e0d727a1`
-Candidate strings: **2260**
+Source fingerprint: `bf5d48540bbfcd87a9371ed26d7277f1b8b167e011b80feba5ebb96b14846502`
+Candidate strings: **2259**
 
 | Audience | Candidate count |
 | --- | ---: |
-| instructor-facing | 332 |
+| instructor-facing | 330 |
 | operator-or-log-only | 243 |
-| participant-facing | 1685 |
+| participant-facing | 1686 |
 
 | Workstream | Candidate count |
 | --- | ---: |
 | API response review | 623 |
 | account and access | 7 |
 | decision validation and submission | 28 |
-| instructor UI | 209 |
+| instructor UI | 207 |
 | instructor coaching alerts | 29 |
 | participant decision UI | 245 |
-| participant supporting UI | 686 |
+| participant supporting UI | 687 |
 | service-to-route boundary review | 245 |
 | templated/player generated content | 188 |
 
@@ -102,16 +102,16 @@ Candidate strings: **2260**
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/course.py:936` | Submitted | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/course.py:964` | Round not found. | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/course.py:968` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:111` | course_id is required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:131` | instance_id and course_id are required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:156` | instance_id, team_id, and override_score are required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:176` | instance_id and team_id are required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:187` | Grade not found. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:201` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:252` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:299` | f'{team_data[tid].get(cn, 0):.1f}' | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:300` | f"{team_data[tid].get('overall', 0):.1f}" | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:315` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:112` | course_id is required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:132` | instance_id and course_id are required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:164` | instance_id, team_id, and override_score are required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:184` | instance_id and team_id are required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:195` | Grade not found. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:209` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:260` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:307` | f'{team_data[tid].get(cn, 0):.1f}' | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:308` | f"{team_data[tid].get('overall', 0):.1f}" | review EN/ZH wording and route through shared catalogue |
+| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/grading.py:323` | instance_id is required. | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/instructor_accounts.py:139` | Student not found, or not in one of your courses. | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/instructor_accounts.py:147` | Only an admin can reset an instructor password. | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/instructor_accounts.py:157` | This account has no student_id or username to derive a default password from. Set one explicitly. | review EN/ZH wording and route through shared catalogue |
@@ -302,58 +302,56 @@ Candidate strings: **2260**
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1128` | Rubric | move to en.json and zh-CN.json, then call t() |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1142` | No simulation linked to this section | move to en.json and zh-CN.json, then call t() |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1142` | Select a section first | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1150` | Grades calculated | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1151` | Failed to calculate grades | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1208` | No grades to export — calculate grades first | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1216` | No student grades to export | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1248` | Category name (e.g. Strategic Coherence) | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1265` | Description | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1275` | s + Number(c.weight \|\| 0), 0) - 100) | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1303` | : (alerts \|\| []).length === 0 ? | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1311` | Unknown | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1451` | loadRoster failed: | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1463` | #FAFAFA | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1474` | Course created | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1475` | Failed to create course | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1488` | #1E40AF | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1490` | #EFF6FF | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1520` | #FAFAFA | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1531` | Section created | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1532` | Failed to create section | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1545` | #1E40AF | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1547` | #EFF6FF | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1575` | #1E40AF | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1586` | Game | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1603` | Game activated! Round 1 is now open. | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1606` | Failed to activate | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1630` | Game resumed | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1631` | Failed to resume | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1642` | Game reset to setup | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1644` | Failed to reset | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1658` | #D97706 | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1659` | 4px solid #D97706 | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1680` | #F8FAFC | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1693` | e.g. Spring 2026 Simulation | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1702` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1719` | #F8FAFC | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1743` | Student added | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1746` | Failed to add student | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1764` | .csv,.txt | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1774` | Upload failed | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1781` | student_id,display_name,email\n12345,John Doe,john@university.edu | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1790` | Upload failed | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1826` | v \|\| | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1832` | 0 4px | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1839` | Student updated | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1842` | Failed to update | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1844` | 0 4px | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1848` | 0 4px | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1857` | 0 4px | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1874` | Game | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1993` | 2px 0 | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2025` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2025` | 4px 8px | move to en.json and zh-CN.json, then call t() |
-| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2079` | Students & Logins | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1218` | No grades to export — calculate grades first | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1226` | No student grades to export | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1258` | Category name (e.g. Strategic Coherence) | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1275` | Description | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1285` | s + Number(c.weight \|\| 0), 0) - 100) | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1313` | : (alerts \|\| []).length === 0 ? | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1321` | Unknown | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1461` | loadRoster failed: | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1473` | #FAFAFA | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1484` | Course created | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1485` | Failed to create course | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1498` | #1E40AF | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1500` | #EFF6FF | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1530` | #FAFAFA | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1541` | Section created | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1542` | Failed to create section | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1555` | #1E40AF | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1557` | #EFF6FF | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1585` | #1E40AF | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1596` | Game | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1613` | Game activated! Round 1 is now open. | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1616` | Failed to activate | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1640` | Game resumed | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1641` | Failed to resume | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1652` | Game reset to setup | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1654` | Failed to reset | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1668` | #D97706 | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1669` | 4px solid #D97706 | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1690` | #F8FAFC | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1703` | e.g. Spring 2026 Simulation | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1712` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1729` | #F8FAFC | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1753` | Student added | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1756` | Failed to add student | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1774` | .csv,.txt | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1784` | Upload failed | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1791` | student_id,display_name,email\n12345,John Doe,john@university.edu | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1800` | Upload failed | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1836` | v \|\| | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1842` | 0 4px | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1849` | Student updated | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1852` | Failed to update | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1854` | 0 4px | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1858` | 0 4px | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1867` | 0 4px | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:1884` | Game | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2003` | 2px 0 | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2035` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2035` | 4px 8px | move to en.json and zh-CN.json, then call t() |
+| instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorDashboard.js:2089` | Students & Logins | move to en.json and zh-CN.json, then call t() |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorLoginPage.js:54` | linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%) | move to en.json and zh-CN.json, then call t() |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorLoginPage.js:59` | 0 8px 32px rgba(0,0,0,0.3) | move to en.json and zh-CN.json, then call t() |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/InstructorLoginPage.js:62` | #1E40AF | move to en.json and zh-CN.json, then call t() |
@@ -2025,6 +2023,7 @@ Candidate strings: **2260**
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:99` | asking spends money, so the committed-spend figures are refreshed | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:101` | An answer. | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:105` | How large is the market? | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:112` | How large is the market? | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:24` | very weak | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:122` | 12px 16px 12px 36px | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:122` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |

@@ -106,6 +106,10 @@ test('asking spends money, so the committed-spend figures are refreshed', async 
   fireEvent.click(screen.getByRole('button', { name: /\$12,345/ }));
 
   await waitFor(() => expect(client.post).toHaveBeenCalledTimes(1));
+  // The server reads `query` (rag/views.py). The tab used to send
+  // `query_text`, so every question was refused 400 "Query text is required"
+  // and the analyst could not be asked from the screen at all.
+  expect(client.post.mock.calls[0][1]).toEqual({ query: 'How large is the market?' });
   await waitFor(() => expect(mockRefreshBudgets).toHaveBeenCalled());
   expect(await screen.findByText(/1 \/ 3/)).toBeInTheDocument();
 });
