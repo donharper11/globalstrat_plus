@@ -6,6 +6,7 @@ CC-11: RAG-grounded coherence evaluation.
 import logging
 import time
 from decimal import Decimal, ROUND_HALF_UP
+from fractions import Fraction
 
 from django.conf import settings
 
@@ -16,7 +17,10 @@ from core.models.decisions import (
 from core.models.team_state import TeamMarketPresence, TeamProduct, TeamProductMarket
 from core.models.scenario import SegmentPreference
 from core.models.results_financials import RoundResultCoherence
-from core.engine.utils import get_config
+from core.engine.utils import (
+    InvalidScenarioConfiguration, REFERENCE_PRICE_CONFIG_KEYS, get_config,
+    scenario_reference_prices,
+)
 from core.engine.llm_runner import build_language_instruction
 from core.utils.localization import get_team_language
 
@@ -26,12 +30,73 @@ D = Decimal
 
 # ── Alignment matrices (from spec Section 13) ──
 
+# The positioning-price ladder as the spec wrote it: dollar bounds that fit the
+# Consumer Electronics scenario and nothing else. It is no longer what a price
+# is scored against -- `scenario_price_ranges()` is. It stays as the BASIS of
+# that derivation, because every bound below is read as a ratio of the Consumer
+# Electronics reference price for its tier (`PRICE_RANGE_BASIS_REFERENCES`).
 PRICE_RANGES = {
     'budget': (100, 300),
     'mainstream': (250, 550),
     'premium': (500, 900),
     'ultra_premium': (800, 1500),
 }
+
+# The Consumer Electronics reference prices (V2-023, migration 0077, and
+# `scenarios/consumer_electronics_2026.yaml`). Not new numbers: they are the
+# denominators that turn the ladder above into ratios. A test pins them to the
+# shipped Consumer Electronics scenario so the two cannot drift apart.
+PRICE_RANGE_BASIS_REFERENCES = {
+    'budget': 250,
+    'mainstream': 420,
+    'premium': 700,
+    'ultra_premium': 1000,
+}
+
+
+def scenario_price_ranges(scenario):
+    """The positioning-price range of every tier, in the scenario's own prices.
+
+    N3 (2026-09-21). `PRICE_RANGES` was scored against directly, so the
+    component was 0.0 for every Clean Energy product ($850 and up) and most
+    Media products (mainstream below $200) whatever the team decided: V2-114's
+    defect in a second place.
+
+    Each bound is `basis_bound * scenario_reference / basis_reference` for its
+    tier -- the same ratio of the tier's reference price that the bound is in
+    Consumer Electronics. No number is introduced. The arithmetic is exact
+    (`Fraction`, multiply before divide, from the authored string rather than
+    its float), so for Consumer Electronics the result is the integers of
+    `PRICE_RANGES` themselves, not a float that merely compares equal: the
+    range is written into `RoundResultCoherence.breakdown`, which is hashed.
+    A bound that is not a whole number becomes the nearest float.
+
+    Refuses, through `scenario_reference_prices`, when any tier's reference is
+    missing or unusable. Falling back to the Consumer Electronics dollars is
+    exactly the defect being repaired.
+    """
+    scenario_reference_prices(scenario)  # validates every tier, or refuses
+    ranges = {}
+    for positioning, (basis_low, basis_high) in PRICE_RANGES.items():
+        reference = Fraction(get_config(
+            scenario, REFERENCE_PRICE_CONFIG_KEYS[positioning],
+            cast_type=str).strip())
+        basis_reference = PRICE_RANGE_BASIS_REFERENCES[positioning]
+        ranges[positioning] = tuple(
+            _range_bound(Fraction(bound) * reference / basis_reference)
+            for bound in (basis_low, basis_high))
+    return ranges
+
+
+def _range_bound(value):
+    return value.numerator if value.denominator == 1 else float(value)
+
+
+def _format_range_bound(bound):
+    """Whole bounds print as they always did; others to the cent (display only:
+    the comparison uses the unrounded bound)."""
+    return str(bound) if isinstance(bound, int) else f'{bound:.2f}'
+
 
 DISTRIBUTION_ALIGNMENT = {
     ('budget', 'mass_retail'): 1.0,
@@ -95,7 +160,8 @@ def calculate_coherence(context, skip_rag=True):
         breakdown = {}
 
         # 1. Positioning-Price Alignment
-        pp_score, pp_max, pp_details = _score_positioning_price(team, submission)
+        pp_score, pp_max, pp_details = _score_positioning_price(
+            team, submission, context.scenario)
         coherence_score += pp_score
         max_possible += pp_max
         breakdown['positioning_price'] = {'score': pp_score / max(pp_max, 1), 'details': pp_details}
@@ -273,14 +339,19 @@ def communication_feedback_total(game, team, current_round):
         return 0.0
 
 
-def _score_positioning_price(team, submission):
-    """Score 1.0 if within range, 0.5 if within 20% outside, 0.0 if further."""
+def _score_positioning_price(team, submission, scenario):
+    """Score 1.0 if within range, 0.5 if within 20% outside, 0.0 if further.
+
+    The range is the scenario's own (`scenario_price_ranges`).
+    """
     score = 0.0
     max_possible = 0.0
     details = []
 
     if not submission:
         return score, max_possible, details
+
+    price_ranges = scenario_price_ranges(scenario)
 
     for md in (submission.marketing_decisions.all()
                .select_related('team_product', 'market')
@@ -292,8 +363,14 @@ def _score_positioning_price(team, submission):
             continue
         positioning = md.team_product.positioning
         price = float(md.retail_price)
-        price_range = PRICE_RANGES.get(positioning, (0, 9999))
-        min_p, max_p = price_range
+        if positioning not in price_ranges:
+            # Was `(0, 9999)`: full marks for any price under $9,999.
+            raise InvalidScenarioConfiguration(
+                f'product {md.team_product.name!r} has positioning '
+                f'{positioning!r}, which has no positioning-price range; '
+                f'coherence refuses rather than scoring it against a '
+                f'made-up range')
+        min_p, max_p = price_ranges[positioning]
 
         if min_p <= price <= max_p:
             s = 1.0
@@ -311,7 +388,7 @@ def _score_positioning_price(team, submission):
             'product': md.team_product.name,
             'market': md.market.name,
             'price': price,
-            'range': f'{min_p}-{max_p}',
+            'range': f'{_format_range_bound(min_p)}-{_format_range_bound(max_p)}',
             'aligned': aligned,
         })
 
