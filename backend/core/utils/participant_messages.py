@@ -51,6 +51,25 @@ FIELD_LABELS = {
     'stakeholders': {'en': 'stakeholder', 'zh-CN': '利益相关者'},
     'analyst_query': {'en': 'analyst query', 'zh-CN': '分析师问询'},
     'investment_amount': {'en': 'compliance investment', 'zh-CN': '合规投入'},
+    # Every other number a student can write (2026-09-21), so that a refusal
+    # of one always has a business name to use. zh-CN follows the label the
+    # page itself shows for the input (`sc.*` and `corporate_strategy.*` in the
+    # frontend catalogue). `test_numeric_refusal_language` fails when a
+    # writable numeric decision field is missing from this table.
+    'allocation_pct': {'en': 'supplier share', 'zh-CN': '供应商份额'},
+    'mode_sea_pct': {'en': 'sea share of shipments', 'zh-CN': '海运比例'},
+    'mode_air_pct': {'en': 'air share of shipments', 'zh-CN': '空运比例'},
+    'mode_rail_pct': {'en': 'rail share of shipments', 'zh-CN': '铁路比例'},
+    'mode_road_pct': {'en': 'road share of shipments', 'zh-CN': '公路比例'},
+    'volume_commitment_teu': {'en': 'shipping volume commitment (TEU)', 'zh-CN': '承诺运量（TEU）'},
+    'insurance_coverage_pct': {'en': 'insurance percentage', 'zh-CN': '保险比例'},
+    'reverse_logistics_capacity_pct': {'en': 'returns capacity', 'zh-CN': '退货处理能力'},
+    'coverage_pct': {'en': 'export-credit coverage', 'zh-CN': '出口信用保险覆盖比例'},
+    'hedge_ratio': {'en': 'hedge ratio', 'zh-CN': '对冲比例'},
+    'tenor_days': {'en': 'hedge tenor in days', 'zh-CN': '对冲期限（天）'},
+    'buffer_days': {'en': 'inventory buffer in days', 'zh-CN': '库存缓冲天数'},
+    'safety_stock_trigger_pct': {'en': 'reorder point', 'zh-CN': '补货触发点'},
+    'hq_count': {'en': 'headquarters staff', 'zh-CN': '总部人数'},
 }
 
 
@@ -74,6 +93,37 @@ MESSAGES = {
     'non_negative': {
         'en': '{field} cannot be negative. Enter zero or a positive value.',
         'zh-CN': '{field}不能为负数。请输入零或正数。',
+    },
+    # Django REST Framework's own numeric refusals, re-said (2026-09-21). Which
+    # DRF error code maps to which of these is decided once, in
+    # core/utils/numeric_refusals.py. None states the limit itself: the
+    # response carries DRF's code and sentence but not the number, and reading
+    # it back out of the English sentence is what this replaces.
+    'number_too_large': {
+        'en': '{field} is larger than the simulation can record. Enter a smaller number.',
+        'zh-CN': '{field}超出了系统可记录的上限。请输入较小的数值。',
+    },
+    'number_too_small': {
+        'en': '{field} is below the lowest value allowed. Enter a larger number.',
+        'zh-CN': '{field}低于允许的最小值。请输入较大的数值。',
+    },
+    'number_too_many_decimals': {
+        'en': '{field} has more decimal places than can be recorded. Round it and try again.',
+        'zh-CN': '{field}的小数位数过多。请四舍五入后重试。',
+    },
+    'number_required': {
+        'en': '{field} must be a number.',
+        'zh-CN': '{field}必须是数字。',
+    },
+    'whole_number_required': {
+        'en': '{field} must be a whole number.',
+        'zh-CN': '{field}必须是整数。',
+    },
+    # Stands in for {field} above when a field has no business label yet, so a
+    # storage name is never what fills the gap.
+    'this_number': {
+        'en': 'This number',
+        'zh-CN': '该数值',
     },
     'positive_price': {
         'en': 'Unit price must be greater than zero. Enter a positive amount.',

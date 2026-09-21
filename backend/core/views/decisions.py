@@ -256,6 +256,24 @@ class CompetitionDecisionWriteMixin:
         self.response = self.finalize_response(request, response, *args, **kwargs)
         return self.response
 
+    def handle_exception(self, exc):
+        """Re-say DRF's own numeric refusals before they leave the boundary.
+
+        A number DRF will not store is refused in DRF's words ("Ensure that
+        there are no more than 15 digits in total."), which are English for
+        every reader and name no field. Every decision write passes through
+        this mixin, so this is the one place that covers all of them -- the
+        per-type route, the whole-submission route and the supply-chain views
+        alike -- whichever serializer raised. Shape, keys, status and codes
+        are unchanged; see `core.utils.numeric_refusals`.
+        """
+        if isinstance(exc, serializers.ValidationError):
+            from core.utils.numeric_refusals import localise_numeric_refusals
+            from core.utils.participant_messages import language_for_request
+            exc.detail = localise_numeric_refusals(
+                exc.detail, language_for_request(getattr(self, 'request', None)))
+        return super().handle_exception(exc)
+
     def dispatch(self, request, *args, **kwargs):
         if request.method in permissions.SAFE_METHODS:
             return super().dispatch(request, *args, **kwargs)
