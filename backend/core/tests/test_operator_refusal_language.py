@@ -777,4 +777,3 @@ class OperatorRefusalLanguageTests(TestCase):
         done = [key for key in MESSAGES if key.startswith('done_')]
         self.assertGreaterEqual(len(done), 10)
         self.assertEqual([key for key in done if key in bilingual_codes()], [])
-
