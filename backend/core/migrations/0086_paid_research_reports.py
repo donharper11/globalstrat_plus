@@ -61,6 +61,43 @@ def remove_prices(apps, schema_editor):
             config_key=key, config_value=value).delete()
 
 
+class ResearchPurchasesBlockDowngrade(Exception):
+    """Reversing 0086 would drop what teams bought and were charged for."""
+
+
+def refuse_downgrade_while_purchases_exist(apps, schema_editor):
+    """Refuse to reverse while any research purchase is stored.
+
+    Reversing `CreateModel` drops `decision_research_purchase`. Each row is a
+    charge a team paid (R23) and a hashed section of the competitive manifest,
+    so dropping the table silently destroys money already spent and makes every
+    round that carried a purchase unreplayable. Added 2026-09-21: the 0085
+    guard's builder noticed this reversal had none. Nothing is modified.
+    """
+    Purchase = apps.get_model('core', 'DecisionResearchPurchase')
+    total = Purchase.objects.count()
+    if not total:
+        return
+    rows = (Purchase.objects.select_related('submission__round', 'submission__team')
+            .order_by('pk')[:10])
+    sample = [
+        f'#{row.pk} (game {row.submission.round.game_id}, round '
+        f'{row.submission.round.round_number} [{row.submission.round.status}], '
+        f'team "{row.submission.team.name}", {row.report_type})'
+        for row in rows]
+    more = f' ... and {total - len(sample)} more' if total > len(sample) else ''
+    raise ResearchPurchasesBlockDowngrade(
+        f'REFUSED: cannot reverse core.0086_paid_research_reports. Reversing '
+        f'drops decision_research_purchase, and {total} purchase(s) are stored: '
+        f'each is a charge a team paid and a hashed manifest section. Nothing '
+        f'was changed by this migration. Rows: {"; ".join(sample)}{more}. '
+        f'Before retrying: take a competition backup and decide deliberately '
+        f'what happens to those purchases; a round that carried one will no '
+        f'longer replay to its recorded manifest. NOTE: migrations unapplied '
+        f'earlier in the same command stay unapplied; run `manage.py migrate '
+        f'core` to return to head.')
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -109,4 +146,10 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(add_prices, remove_prices),
+        # Reverse-only guard. Operations reverse last-to-first, so placing it
+        # LAST makes it run FIRST, before prices are removed or the table drops.
+        migrations.RunPython(
+            migrations.RunPython.noop,
+            refuse_downgrade_while_purchases_exist,
+        ),
     ]

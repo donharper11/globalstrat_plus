@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+"""Reverse the real migrations against a disposable database and prove the
+downgrade guards on 0085 and 0086 by execution.
+
+The test runner disables migrations, so the suite can only test the guard
+functions. This drives `manage.py migrate` itself. It needs a database that
+already holds a resolved game with marketing decisions (run
+`handoff_readiness_v2/determinism_fixture.py` first) and it REFUSES the
+production host. Exit 0 only if every step behaves as stated.
+"""
+import os
+import subprocess
+import sys
+
+BACKEND = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BACKEND)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'globalstrat.settings')
+
+if os.environ.get('DB_HOST', '') in ('', '192.168.50.38') or \
+        os.environ.get('GLOBALSTRAT_ENV') == 'production':
+    raise SystemExit('REFUSED: point DB_* at a disposable database.')
+
+import django  # noqa: E402
+django.setup()
+from django.db import connection  # noqa: E402
+
+failures = []
+
+
+def migrate(target=None):
+    cmd = [sys.executable, 'manage.py', 'migrate', 'core', '--noinput']
+    if target:
+        cmd.insert(4, target)
+    run = subprocess.run(cmd, cwd=BACKEND, capture_output=True, text=True)
+    return run.returncode, run.stdout + run.stderr
+
+
+def sql(statement, params=None):
+    with connection.cursor() as cursor:
+        cursor.execute(statement, params or [])
+        return cursor.fetchall() if cursor.description else None
+
+
+def applied():
+    return {row[0] for row in sql(
+        "select name from django_migrations where app='core' and name >= '0084'")}
+
+
+def nullable():
+    return sql("select is_nullable from information_schema.columns where "
+               "table_name='decision_marketing' and column_name='retail_price'")[0][0]
+
+
+def check(label, condition, detail=''):
+    print(('PASS ' if condition else 'FAIL ') + label + (f' -- {detail}' if detail else ''))
+    if not condition:
+        failures.append(label)
+
+
+HEAD = {'0084_product_level_demand', '0085_price_band_blank_price',
+        '0086_paid_research_reports', '0087_merge_20260912_0446'}
+migrate()
+check('starts at head', applied() == HEAD, str(sorted(applied())))
+
+# 1. 0085: twelve null prices, so the "... and N more" branch runs too.
+ids = [r[0] for r in sql('select id from decision_marketing order by id limit 12')]
+check('fixture supplies 12 marketing rows', len(ids) == 12)
+saved = sql('select id, retail_price from decision_marketing where id = any(%s)', [ids])
+sql('update decision_marketing set retail_price = null where id = any(%s)', [ids])
+code, out = migrate('0084')
+check('0085 reversal refused with null prices', code != 0 and 'cannot reverse core.0085' in out)
+check('refusal names rows and counts the rest', f'#{ids[0]} ' in out and '... and 2 more' in out)
+check('column still nullable after refusal', nullable() == 'YES')
+check('null rows untouched', sql(
+    'select count(*) from decision_marketing where retail_price is null')[0][0] == 12)
+code, _ = migrate()
+check('migrate returns to head after refusal', code == 0 and applied() == HEAD)
+for row_id, price in saved:
+    sql('update decision_marketing set retail_price = %s where id = %s', [price, row_id])
+
+# 2. 0086: one stored purchase.
+submission = sql('select submission_id from decision_marketing order by id limit 1')[0][0]
+sql("insert into decision_research_purchase (submission_id, report_type, scope_key, "
+    "price, created_at) values (%s, 'analyst_query', 'guard-check', 1000, now())",
+    [submission])
+code, out = migrate('0084')
+check('0086 reversal refused with a stored purchase',
+      code != 0 and 'cannot reverse core.0086' in out)
+check('purchase table and row survive', sql(
+    "select count(*) from decision_research_purchase where scope_key='guard-check'")[0][0] == 1)
+code, _ = migrate()
+check('migrate returns to head after refusal', code == 0 and applied() == HEAD)
+sql("delete from decision_research_purchase where scope_key='guard-check'")
+
+# 3. With neither present the downgrade is allowed, and comes back.
+blocking = sql('select (select count(*) from decision_marketing where retail_price is null)'
+               ' + (select count(*) from decision_research_purchase)')[0][0]
+check('nothing left that should block', blocking == 0)
+code, out = migrate('0084')
+check('clean downgrade to 0084 succeeds', code == 0 and applied() == {'0084_product_level_demand'},
+      out[-300:] if code else '')
+check('column is NOT NULL again below 0085', nullable() == 'NO')
+code, _ = migrate()
+check('forward to head succeeds', code == 0 and applied() == HEAD)
+check('column nullable again at head', nullable() == 'YES')
+
+print(f'\n{"FAILED: " + ", ".join(failures) if failures else "ALL CHECKS PASSED"}')
+sys.exit(1 if failures else 0)

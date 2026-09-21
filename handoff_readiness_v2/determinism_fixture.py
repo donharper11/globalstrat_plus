@@ -200,6 +200,38 @@ def ensure_game_owner():
     owner.save()
 
 
+def wait_for_phase_2(round_obj, seconds):
+    """Let this round's narrative step finish before anything else happens.
+
+    Phase 2 writes prose onto rows of the round it belongs to (supply-chain and
+    compliance event narratives among them) from a background thread, after
+    Phase 1 has returned. The narrative envelope of the NEXT round covers those
+    rows too. Resolving rounds back to back therefore took round N+1's
+    pre-resolution backup before round N's prose existed and hashed its
+    narrative envelope after: a replay restored the earlier state, nothing
+    re-ran round N's Phase 2, and the narrative hash differed on rows that had
+    nothing to do with the replayed round. Found 2026-09-21 by diffing the two
+    envelopes; the competitive hash was never affected. Real play leaves hours
+    between rounds, so this is the harness's race and it is closed here.
+    """
+    import time
+    deadline = time.monotonic() + seconds
+    while True:
+        round_obj.refresh_from_db()
+        if round_obj.processing_status == 'FULLY_COMPLETE':
+            return 'complete'
+        if round_obj.narrative_error:
+            return 'narrative_error'
+        if time.monotonic() >= deadline:
+            raise SystemExit(
+                f'Round {round_obj.round_number} Phase 2 did not finish in '
+                f'{seconds}s (status {round_obj.processing_status}). Refusing '
+                f'to resolve the next round over an unfinished narrative step: '
+                f'the replay evidence would carry a narrative-hash difference '
+                f'that says nothing about the engine.')
+        time.sleep(0.5)
+
+
 def main():
     # V2-128: never write a pre-resolution dump into the live backup root.
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -210,6 +242,8 @@ def main():
     parser.add_argument('--scenario', type=int)
     parser.add_argument('--teams', type=int, default=4)
     parser.add_argument('--rounds', type=int, default=1)
+    parser.add_argument('--phase2-timeout', type=int, default=180,
+                        help='Seconds to wait for each round\'s narrative step.')
     parser.add_argument('--name', default='DETERMINISM-FIXTURE')
     parser.add_argument('--section-id', type=int, default=90001)
     parser.add_argument('--require-platform-development', action='store_true',
@@ -247,8 +281,9 @@ def main():
         round_obj.save(update_fields=['deadline'])
         close_round(game.id, reason='determinism-fixture')
         process_round(game.id)
+        phase_2 = wait_for_phase_2(round_obj, args.phase2_timeout)
         manifest = Round.objects.get(pk=round_obj.pk).resolution_manifest
-        print(f'round={round_obj.round_number} '
+        print(f'round={round_obj.round_number} phase_2={phase_2} '
               f'platform_developments={developments} '
               f'schema_version={manifest.schema_version} '
               f'input_sha256={manifest.input_sha256} '

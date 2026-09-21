@@ -3226,3 +3226,15 @@ can be read to opposite conclusions. These rows were flagged by the re-audit
 | V2-128 | **Repaired, pending closure.** `handoff_readiness_v2/harness_isolation.py` refuses a harness whose backup directory is unset or inside the live root; the three fixtures call it first in `main()`. `test_harness_backup_isolation.py`, 4 tests, including a source check that every fixture calls it. |
 | V2-127 | **Repaired**: the v6 transcript now states the two omitted steps, as a dated correction beside the run as recorded. |
 
+### The second builder's three caveats, resolved 2026-09-21
+
+Listed by the builder as things to distrust, reported to the owner as such, and
+then left — for no reason: none needed a decision. The owner asked why. Resolved
+the same day.
+
+| Caveat | State |
+|---|---|
+| The narrative hash did not match on the fixture's replay, and nobody knew why. | **Explained, reproduced and closed — a harness race, not an engine difference.** Reproduced on a disposable stack (competitive hash matched, narrative differed). The two envelopes were diffed field by field: every briefing and brief matched; the difference was `inline_narrative/sc_event_instance[0..1].narrative`, present in the recording and empty in the replay. Both rows belong to **round 1**. Phase 2 writes that prose from a background thread after Phase 1 returns, and a round's narrative envelope covers the game's earlier rows too. The fixture resolved round 2 milliseconds after round 1, so round 2's pre-resolution backup predates round 1's prose while the recorded hash postdates it. **My first hypothesis named the wrong rows** (the briefings); the diff corrected it. `determinism_fixture.py` now waits for each round's Phase 2 (`--phase2-timeout`, default 180 s) and refuses to go on if it does not finish. Re-run on a fresh stack: competitive `b905c322…` and narrative `4bc5f5d4…` both expected == actual. Real play leaves hours between rounds. |
+| A downgrade below `0086` drops paid-research purchases with no guard. | **Repaired.** `0086_paid_research_reports` gained a reverse-only `RunPython`, last in `operations` so it runs first on reversal, which names the stored purchases and refuses. Forward operations, name and dependencies untouched; `makemigrations --check` reports no changes. `test_paid_research_downgrade_guard.py`, 3 tests. |
+| The `0085` refusal was exercised once, by hand, and its "more than ten rows" branch never ran; the suite cannot reverse a migration because the runner disables them. | **Closed by execution.** `backend/scripts/check-downgrade-guards` drives the real `manage.py migrate` against a disposable database and refuses the production host: twelve null prices (so the "... and 2 more" branch runs) — refused, column still nullable, rows untouched, head restored; one stored purchase — refused, table and row intact, head restored; neither present — downgrade to `0084` succeeds, NOT NULL restored, forward to head succeeds. **15 of 15 checks pass.** |
+
