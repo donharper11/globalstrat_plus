@@ -39,7 +39,7 @@ from core.services.cohort_caps import (
     under_minimum_teams)
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action)
-from core.utils.cohort_messages import language_for_request
+from core.utils.cohort_messages import cohort_message, language_for_request
 from core.serializers.course import (
     CourseSerializer, CourseListSerializer,
     SectionSerializer, SectionDetailSerializer,
@@ -628,26 +628,23 @@ class TeamManagementView(APIView):
             team_id = item.get('team_id')
 
             if user_id is None:
-                errors.append({'item': item, 'error': 'Missing user_id.'})
+                errors.append({'item': item, 'error': cohort_message(
+                    'assignment_student_missing', language=language)})
                 continue
 
             enrollment = Enrollment.objects.filter(
                 user_id=user_id, is_active=True,
             ).first()
             if not enrollment:
-                errors.append({
-                    'item': item,
-                    'error': f'No active enrollment for user_id={user_id}.',
-                })
+                errors.append({'item': item, 'error': cohort_message(
+                    'assignment_student_not_enrolled', language=language)})
                 continue
 
             # Validate team exists (team_id can be None to un-assign)
             if team_id is not None:
                 if not Team.objects.filter(id=team_id).exists():
-                    errors.append({
-                        'item': item,
-                        'error': f'Team {team_id} not found.',
-                    })
+                    errors.append({'item': item, 'error': cohort_message(
+                        'assignment_team_not_found', language=language)})
                     continue
 
                 # team_size_max, enforced where the assignment is written.

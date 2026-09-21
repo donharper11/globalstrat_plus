@@ -38,6 +38,26 @@ MESSAGES = {
         'zh-CN': ('{team} 目前有 {current} 名成员；本班级要求至少 {minimum} 名。'
                   '请在比赛开始前补充成员。'),
     },
+    # V2-104. The other ways one item of a team assignment can be refused. They
+    # reach the instructor in the same list as `team_full`, so they are written
+    # for the same reader: what happened, and what to do, with no column name.
+    'assignment_student_not_enrolled': {
+        'en': ('This student is no longer on an active roster, so they were '
+               'not assigned. Reload the roster and check that they are still '
+               'in the section.'),
+        'zh-CN': ('该学生已不在有效名单中，因此未被分配。'
+                  '请刷新名单，确认该学生仍在本班级。'),
+    },
+    'assignment_team_not_found': {
+        'en': ('That team no longer exists, so the student was not assigned. '
+               'Reload the roster and choose another team.'),
+        'zh-CN': ('该团队已不存在，因此学生未被分配。请刷新名单并选择其他团队。'),
+    },
+    'assignment_student_missing': {
+        'en': ('One assignment did not say which student it was for, so it '
+               'was skipped. Reload the roster and try again.'),
+        'zh-CN': ('有一项分配未指明学生，已被跳过。请刷新名单后重试。'),
+    },
     'game_exceeds_section_cap': {
         'en': ('This section runs at most {maximum} teams, and {requested} were '
                'requested. Reduce the number of teams, or raise the section '

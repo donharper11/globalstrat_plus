@@ -32,6 +32,7 @@ import {
   updateEnrollment,
 } from '../api/instructor';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { assignmentOutcome, announceAssignment } from './assignmentOutcome';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -1968,23 +1969,10 @@ const InstructorDashboard = () => {
                                     // instructor that a capped assignment had
                                     // succeeded, and the cap's own wording was
                                     // never shown (F4).
-                                    const res = await assignStudents(assignments);
-                                    const errs = res?.data?.errors || [];
-                                    const done = res?.data?.updated ?? 0;
-                                    if (errs.length) {
-                                      Modal.warning({
-                                        title: done > 0
-                                          ? t('instructor.assign_partial', { assigned: done, refused: errs.length })
-                                          : t('instructor.assign_none'),
-                                        content: (
-                                          <ul style={{ margin: 0, paddingLeft: 18 }}>
-                                            {errs.map((e, i) => <li key={i}>{e.error}</li>)}
-                                          </ul>
-                                        ),
-                                      });
-                                    } else {
-                                      message.success(t('instructor.students_assigned', { count: done || userIds.length }));
-                                    }
+                                    // Read in one place: assignmentOutcome.js.
+                                    announceAssignment(
+                                      assignmentOutcome((await assignStudents(assignments))?.data),
+                                      { t, message, Modal });
                                     loadRoster(selectedSection);
                                   } catch { message.error(t('instructor.assign_failed')); }
                                 }}
@@ -2006,9 +1994,14 @@ const InstructorDashboard = () => {
                                         <Text style={{ fontSize: 12 }}>{r.display_name || r.username}</Text>
                                         <Button type="text" size="small" danger onClick={async () => {
                                           try {
-                                            await assignStudents([{ user_id: r.user_id, team_id: null }]);
+                                            // Removing a student answers 200 with the
+                                            // same `errors` list; it was the one call
+                                            // site still discarding it (V2-104).
+                                            announceAssignment(
+                                              assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: null }]))?.data),
+                                              { t, message, Modal, mode: 'unassign' });
                                             loadRoster(selectedSection);
-                                          } catch { message.error('Failed to unassign'); }
+                                          } catch { message.error(t('instructor.unassign_failed')); }
                                         }}>{t('instructor.remove')}</Button>
                                       </div>
                                     ))
@@ -2040,18 +2033,9 @@ const InstructorDashboard = () => {
                                       try {
                                         // Same refusal, same disclosure: a 200
                                         // here can still be a refusal (F4).
-                                        const res = await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]);
-                                        const errs = res?.data?.errors || [];
-                                        if (errs.length) {
-                                          Modal.warning({
-                                            title: t('instructor.assign_none'),
-                                            content: (
-                                              <ul style={{ margin: 0, paddingLeft: 18 }}>
-                                                {errs.map((e, i) => <li key={i}>{e.error}</li>)}
-                                              </ul>
-                                            ),
-                                          });
-                                        }
+                                        announceAssignment(
+                                          assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]))?.data),
+                                          { t, message, Modal });
                                         loadRoster(selectedSection);
                                       } catch { message.error(t('instructor.assign_failed')); }
                                     }}>
