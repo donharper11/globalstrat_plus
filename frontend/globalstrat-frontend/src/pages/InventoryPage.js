@@ -15,6 +15,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
 import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Text, Paragraph } = Typography;
 const UNLOCK = { buffer_days: 3, safety_stock_trigger_pct: 3, contingency_plans: 5 };
@@ -182,7 +183,7 @@ const InventoryPage = () => {
             columns={[
               { title: t('sc.inventory.product'), key: 'p', width: 240, render: (_, r) => (<Select style={{ width: 220 }} placeholder={t('sc.inventory.product')} value={r.product} disabled={!editable || invLocked} options={products.map((p) => ({ value: p.id, label: p.name }))} onChange={(v) => updRow(r.key, { product: v })} />) },
               { title: t('sc.inventory.market'), key: 'm', width: 200, render: (_, r) => (<Select style={{ width: 180 }} placeholder={t('sc.inventory.market')} value={r.market} disabled={!editable || invLocked} options={markets.map((m) => ({ value: m.id, label: `${m.name} (${m.code})` }))} onChange={(v) => updRow(r.key, { market: v })} />) },
-              { title: t('sc.inventory.buffer_days'), key: 'bd', width: 130, render: (_, r) => (<InputNumber min={0} value={r.buffer_days} disabled={!editable || invLocked} onChange={(v) => updRow(r.key, { buffer_days: v ?? 0 })} />) },
+              { title: t('sc.inventory.buffer_days'), key: 'bd', width: 130, render: (_, r) => (<InputNumber min={0} max={DECISION_INPUT_LIMITS.buffer_days} value={r.buffer_days} disabled={!editable || invLocked} onChange={(v) => updRow(r.key, { buffer_days: v ?? 0 })} />) },
               { title: t('sc.inventory.reorder_pct'), key: 'ss', width: 140, render: (_, r) => (<InputNumber min={0} max={100} value={r.safety_stock_trigger_pct} disabled={!editable || invLocked} onChange={(v) => updRow(r.key, { safety_stock_trigger_pct: v ?? 0 })} />) },
               { title: '', key: 'x', width: 40, render: (_, r) => <Button type="text" danger icon={<DeleteOutlined />} disabled={!editable} onClick={() => delRow(r.key)} /> },
             ]} />
@@ -199,7 +200,7 @@ const InventoryPage = () => {
             columns={[
               { title: t('sc.inventory.input'), key: 'c', width: 170, render: (_, r) => (<Select style={{ width: 150 }} placeholder={t('sc.inventory.input')} value={r.input_category} disabled={dis(false)} options={categories.map((c) => ({ value: c, label: prettyCategory(c) }))} onChange={(v) => updAlt(r.key, { input_category: v, backup_supplier_id: null })} />) },
               { title: t('sc.inventory.when_it'), key: 't', width: 190, render: (_, r) => (<Select style={{ width: 170 }} value={r.trigger} disabled={dis(false)} options={supplierTriggers} onChange={(v) => updAlt(r.key, { trigger: v })} />) },
-              { title: t('sc.inventory.amount'), key: 'th', width: 100, render: (_, r) => (r.trigger === 'disruption' ? <Text type="secondary">—</Text> : <InputNumber min={0} value={r.threshold} disabled={dis(false)} onChange={(v) => updAlt(r.key, { threshold: v ?? 0 })} />) },
+              { title: t('sc.inventory.amount'), key: 'th', width: 100, render: (_, r) => (r.trigger === 'disruption' ? <Text type="secondary">—</Text> : <InputNumber min={0} max={DECISION_INPUT_LIMITS.contingency_threshold} value={r.threshold} disabled={dis(false)} onChange={(v) => updAlt(r.key, { threshold: v ?? 0 })} />) },
               { title: t('sc.inventory.shift_to_backup'), key: 'b', width: 220, render: (_, r) => (<Select style={{ width: 200 }} placeholder={t('sc.inventory.backup_supplier')} value={r.backup_supplier_id} disabled={dis(!r.input_category)} showSearch optionFilterProp="label" options={suppliersFor(r.input_category).map((s) => ({ value: s.id, label: `${s.name} (${s.country})` }))} onChange={(v) => updAlt(r.key, { backup_supplier_id: v })} />) },
               { title: t('sc.inventory.shift_pct'), key: 's', width: 90, render: (_, r) => (<InputNumber min={0} max={100} value={r.shift_pct} disabled={dis(false)} onChange={(v) => updAlt(r.key, { shift_pct: v ?? 0 })} />) },
               { title: '', key: 'x', width: 40, render: (_, r) => <Button type="text" danger icon={<DeleteOutlined />} disabled={!editable} onClick={() => delAlt(r.key)} /> },
@@ -216,7 +217,7 @@ const InventoryPage = () => {
               { title: t('sc.inventory.route'), key: 'l', width: 250, render: (_, r) => (<Select style={{ width: 230 }} showSearch optionFilterProp="label" placeholder={t('sc.inventory.route')} value={r.lane_id} disabled={dis(false)} options={lanes.map((l) => ({ value: l.id, label: laneLabel(l) }))} onChange={(v) => updMode(r.key, { lane_id: v })} />) },
               { title: t('sc.inventory.when'), key: 't', width: 210, render: (_, r) => (<Select style={{ width: 190 }} value={r.trigger} disabled={dis(false)} options={laneTriggers} onChange={(v) => updMode(r.key, { trigger: v })} />) },
               { title: t('sc.inventory.detail'), key: 'th', width: 180, render: (_, r) => (r.trigger === 'lead_time_exceeds'
-                ? <InputNumber min={0} value={r.threshold_days} disabled={dis(false)} onChange={(v) => updMode(r.key, { threshold_days: v ?? 0 })} />
+                ? <InputNumber min={0} max={DECISION_INPUT_LIMITS.contingency_threshold_days} value={r.threshold_days} disabled={dis(false)} onChange={(v) => updMode(r.key, { threshold_days: v ?? 0 })} />
                 : <Select style={{ width: 160 }} value={r.event_type} disabled={dis(false)} options={eventTypes} onChange={(v) => updMode(r.key, { event_type: v })} />) },
               { title: t('sc.inventory.from_to'), key: 'ft', width: 200, render: (_, r) => { const lane = laneById[r.lane_id]; const opts = MODES.map((m) => ({ value: m, label: t(`sc.logistics.mode_${m}`), disabled: lane ? !modeAvailable(lane, m) : false })); return (<Space>
                 <Select style={{ width: 80 }} value={r.from_mode} disabled={dis(false)} options={opts} onChange={(v) => updMode(r.key, { from_mode: v })} />

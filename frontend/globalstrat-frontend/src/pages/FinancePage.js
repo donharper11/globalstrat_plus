@@ -10,6 +10,7 @@ import BudgetBar from '../components/BudgetBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import WarningBanner from '../components/WarningBanner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
+import { DECISION_INPUT_LIMITS, boundTo } from '../decisionInputLimits';
 
 const { Title, Text } = Typography;
 
@@ -180,7 +181,7 @@ const FinancePage = () => {
   }, [gameId, teamId, currentRound, locked, refreshBudgets]);
 
   const updateBudget = (field, value) => {
-    const next = { ...budgetAllocation, [field]: normalizeMoneyInput(value) };
+    const next = { ...budgetAllocation, [field]: boundTo(field, normalizeMoneyInput(value)) };
     setBudgetAllocation(next);
     autoSaveBudget(next);
   };
@@ -366,7 +367,7 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.loan_amount')}</Text>
             <InputNumber
-              min={0} step={1000000}
+              min={0} max={DECISION_INPUT_LIMITS.new_debt} step={1000000}
               value={financing.new_debt} disabled={locked}
               formatter={formatMoneyInput}
               parser={parseMoneyInput}
@@ -443,7 +444,7 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.amount_to_raise')}</Text>
             <InputNumber
-              min={0} step={1000000}
+              min={0} max={DECISION_INPUT_LIMITS.new_equity} step={1000000}
               value={financing.new_equity} disabled={locked}
               formatter={formatMoneyInput}
               parser={parseMoneyInput}
@@ -481,7 +482,7 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.dividend_per_share')}</Text>
             <InputNumber
-              min={0} step={0.50}
+              min={0} max={DECISION_INPUT_LIMITS.dividend_per_share} step={0.50}
               value={financing.dividend_per_share} disabled={locked}
               formatter={formatMoneyInput}
               parser={parseMoneyInput}

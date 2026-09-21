@@ -7,6 +7,7 @@ import { useDecisions } from '../contexts/DecisionContext';
 import { getStrategyContext, getComplianceContext, getMarketLocalization, getAllianceState, patchDecision } from '../api/decisions';
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Title, Text } = Typography;
 
@@ -174,7 +175,7 @@ const MarketOperationsSection = ({ market, complianceCtx, localizationData, load
             <div style={{ marginBottom: 8 }}>
               <Text style={{ fontSize: 11, display: 'block', marginBottom: 4 }}>{t('market_strategy.this_rounds_investment')}:</Text>
               <InputNumber
-                size="small" prefix="$" min={0} step={100000}
+                size="small" prefix="$" min={0} max={DECISION_INPUT_LIMITS.investment_amount} step={100000}
                 value={complianceInvestment}
                 disabled={locked}
                 onChange={v => onComplianceChange(marketCode, v)}

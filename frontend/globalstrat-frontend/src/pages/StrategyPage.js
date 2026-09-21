@@ -8,6 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader } from '../components/design-system';
 // eslint-disable-next-line no-unused-vars
 import WarningBanner from '../components/WarningBanner';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Title, Text } = Typography;
 
@@ -161,7 +162,7 @@ const StrategyPage = () => {
             <Col xs={12} md={6}>
               <Text>{t("strategy_page.raise_debt")}</Text>
               <InputNumber
-                prefix="$" min={0} step={100000}
+                prefix="$" min={0} max={DECISION_INPUT_LIMITS.new_debt} step={100000}
                 value={financing.new_debt} disabled={locked}
                 onChange={v => {
                   const f = { ...financing, new_debt: v || 0 };
@@ -187,7 +188,7 @@ const StrategyPage = () => {
             <Col xs={12} md={6}>
               <Text>{t("strategy_page.issue_equity")}</Text>
               <InputNumber
-                prefix="$" min={0} step={100000}
+                prefix="$" min={0} max={DECISION_INPUT_LIMITS.new_equity} step={100000}
                 value={financing.new_equity} disabled={locked}
                 onChange={v => {
                   const f = { ...financing, new_equity: v || 0 };
@@ -200,7 +201,7 @@ const StrategyPage = () => {
             <Col xs={12} md={6}>
               <Text>{t("strategy_page.dividend_share")}</Text>
               <InputNumber
-                prefix="$" min={0} step={0.1}
+                prefix="$" min={0} max={DECISION_INPUT_LIMITS.dividend_per_share} step={0.1}
                 value={financing.dividend_per_share} disabled={locked}
                 onChange={v => {
                   const f = { ...financing, dividend_per_share: v || 0 };
@@ -329,7 +330,7 @@ const StrategyPage = () => {
           <Col xs={24} md={8}>
             <Card size="small" title={t("strategy_page.environmental")}>
               <InputNumber
-                prefix="$" min={0} step={50000}
+                prefix="$" min={0} max={DECISION_INPUT_LIMITS.environmental_investment} step={50000}
                 value={esg.environmental_investment} disabled={locked}
                 onChange={v => {
                   const e = { ...esg, environmental_investment: v || 0 };
@@ -343,7 +344,7 @@ const StrategyPage = () => {
           <Col xs={24} md={8}>
             <Card size="small" title={t("strategy_page.social_programs")}>
               <InputNumber
-                prefix="$" min={0} step={50000}
+                prefix="$" min={0} max={DECISION_INPUT_LIMITS.social_investment} step={50000}
                 value={esg.social_investment} disabled={locked}
                 onChange={v => {
                   const e = { ...esg, social_investment: v || 0 };

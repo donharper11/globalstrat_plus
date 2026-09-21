@@ -14,6 +14,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
 import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Text, Paragraph } = Typography;
 
@@ -225,7 +226,7 @@ const LogisticsPage = () => {
               })}
               <div>
                 <div style={{ fontSize: 12 }}>{t('sc.logistics.volume_teu')} {round < UNLOCK.volume_commitment_teu && lockTag(UNLOCK.volume_commitment_teu, t)}</div>
-                <InputNumber min={0} value={em.volume_commitment_teu} disabled={!editable || round < UNLOCK.volume_commitment_teu} onChange={(v) => setMix((p) => ({ ...p, [editLane]: { ...laneMix(editLane), volume_commitment_teu: v } }))} />
+                <InputNumber min={0} max={DECISION_INPUT_LIMITS.volume_commitment_teu} value={em.volume_commitment_teu} disabled={!editable || round < UNLOCK.volume_commitment_teu} onChange={(v) => setMix((p) => ({ ...p, [editLane]: { ...laneMix(editLane), volume_commitment_teu: v } }))} />
               </div>
             </Space>
           </>

@@ -10,6 +10,7 @@ import TeamActivityBanner from '../components/TeamActivityBanner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
 import { isRowEngaged, blankPriceMessageKey } from './marketingPricingRules';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Title, Text } = Typography;
 
@@ -363,7 +364,7 @@ const MarketingPage = () => {
             <Col flex="60px"><Text strong style={{ fontSize: 11, textTransform: 'uppercase', color: '#888' }}>{t('marketing.price')}</Text></Col>
             <Col flex="160px">
               <InputNumber
-                size="small" prefix="$" min={0} step={10}
+                size="small" prefix="$" min={0} max={DECISION_INPUT_LIMITS.retail_price} step={10}
                 value={d.retail_price} disabled={locked}
                 onChange={v => updateDecision(d._idx, 'retail_price', v ?? null)}
                 style={{ width: '100%' }}
@@ -416,7 +417,7 @@ const MarketingPage = () => {
             <Col flex="1">
               <Text style={{ fontSize: 10, color: '#888', display: 'block', marginBottom: 2 }}>{t('marketing.production_volume')}</Text>
               <InputNumber
-                size="small" min={0} step={1000}
+                size="small" min={0} max={DECISION_INPUT_LIMITS.production_volume} step={1000}
                 value={d.production_volume} disabled={locked}
                 onChange={v => updateDecision(d._idx, 'production_volume', v || 0)}
                 style={{ width: '100%' }}
@@ -442,7 +443,7 @@ const MarketingPage = () => {
             <Col flex="1">
               <Text style={{ fontSize: 10, color: '#888', display: 'block', marginBottom: 2 }}>{t('marketing.demand_estimate')}</Text>
               <InputNumber
-                size="small" min={0} step={1000}
+                size="small" min={0} max={DECISION_INPUT_LIMITS.demand_estimate} step={1000}
                 value={d.demand_estimate} disabled={locked}
                 onChange={v => updateDecision(d._idx, 'demand_estimate', v || 0)}
                 style={{ width: '100%' }}
@@ -469,7 +470,7 @@ const MarketingPage = () => {
             <Col flex="60px" style={{ paddingTop: 4 }}><Text strong style={{ fontSize: 11, textTransform: 'uppercase', color: '#888' }}>{t('marketing.promo')}</Text></Col>
             <Col flex="160px">
               <InputNumber
-                size="small" prefix="$" min={0} step={10000}
+                size="small" prefix="$" min={0} max={DECISION_INPUT_LIMITS.promotion_budget} step={10000}
                 value={d.promotion_budget} disabled={locked}
                 onChange={v => updateDecision(d._idx, 'promotion_budget', v || 0)}
                 style={{ width: '100%' }}
