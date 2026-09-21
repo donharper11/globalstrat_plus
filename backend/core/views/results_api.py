@@ -30,7 +30,8 @@ from core.models.decisions import DecisionSubmission
 from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
 from core.utils.operator_messages import (
-    language_for_request, lifecycle_refusal, operator_message)
+    language_for_request, lifecycle_refusal, operator_message,
+    operator_refusal)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
@@ -631,7 +632,7 @@ class InstructorSessionReadinessView(APIView):
         # pilot -- and is deliberately not restated here.
         if not instructor_can_access_game(request, game):
             return Response(
-                {'error': 'This game belongs to another instructor.'},
+                operator_refusal(request, 'game_belongs_to_another_instructor'),
                 status=status.HTTP_403_FORBIDDEN)
         teams = request.query_params.get('teams')
         cohort = ([int(t) for t in teams.split(',') if t.strip().isdigit()]
@@ -1078,7 +1079,7 @@ class InstructorOperatorEventsView(APIView):
         # game id in the URL.
         if not instructor_can_access_game(request, game):
             return Response(
-                {'error': 'This game belongs to another instructor.'},
+                operator_refusal(request, 'game_belongs_to_another_instructor'),
                 status=status.HTTP_403_FORBIDDEN)
 
         events = (OperatorAuditEvent.objects
@@ -1149,7 +1150,8 @@ class InstructorTeamDecisionsView(APIView):
 
         rnd = Round.objects.filter(game=game, round_number=round_number).first()
         if not rnd:
-            return Response({'error': 'Round not found'}, status=404)
+            return Response(operator_refusal(request, 'round_not_found'),
+                            status=404)
 
         sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
         if not sub:

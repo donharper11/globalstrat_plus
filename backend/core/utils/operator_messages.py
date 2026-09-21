@@ -28,6 +28,11 @@ from core.utils.participant_messages import ROUND_STATUS_LABELS
 
 LANGUAGES = ('en', 'zh-CN')
 
+PARTICIPATION_STATUS_LABELS = {
+    'active': {'en': 'active', 'zh-CN': '处于参与状态'},
+    'withdrawn': {'en': 'withdrawn', 'zh-CN': '已停用'},
+}
+
 GAME_STATUS_LABELS = {
     'setup': {'en': 'in setup', 'zh-CN': '设置中'},
     'active': {'en': 'active', 'zh-CN': '进行中'},
@@ -265,6 +270,68 @@ MESSAGES = {
         'zh-CN': '请刷新——另一位操作者已将其归档。',
     },
 
+    # -- game creation and the read-only console panels -----------------------
+    'scenario_required': {
+        'en': 'Choose a scenario before creating the game.',
+        'zh-CN': '创建游戏前，请先选择情景。',
+    },
+    'scenario_not_found': {
+        'en': 'That scenario could not be found. Reload the console and choose the scenario again.',
+        'zh-CN': '未找到该情景。请刷新控制台后重新选择情景。',
+    },
+    'team_count_required': {
+        'en': 'Enter the number of teams before creating the game.',
+        'zh-CN': '创建游戏前，请先输入团队数量。',
+    },
+    'team_count_not_a_number': {
+        'en': 'The number of teams must be a whole number.',
+        'zh-CN': '团队数量必须为整数。',
+    },
+    'game_creator_missing': {
+        'en': 'The game could not be recorded against an account, so it was not created. Contact support.',
+        'zh-CN': '无法将该游戏记录到任何账户名下，因此未创建。请联系技术支持。',
+    },
+    'round_not_found': {
+        'en': 'That round could not be found. Reload the console.',
+        'zh-CN': '未找到该回合。请刷新控制台。',
+    },
+
+    # -- team participation ----------------------------------------------------
+    'participation_action_invalid': {
+        'en': 'Choose whether to deactivate or reactivate the team.',
+        'zh-CN': '请选择停用或重新启用该团队。',
+    },
+    'confirmation_required': {
+        'en': 'To confirm, type exactly: {expected}',
+        'zh-CN': '如需确认，请准确输入：{expected}',
+    },
+    'participation_unchanged': {
+        'en': 'This team is already {status}.',
+        'zh-CN': '该团队当前{status}。',
+    },
+    'participation_unchanged_guidance': {
+        'en': 'Refresh — another operator may have changed it.',
+        'zh-CN': '请刷新——可能已有另一位操作者更改了该团队的状态。',
+    },
+
+    # -- student accounts ------------------------------------------------------
+    'account_not_visible': {
+        'en': 'That student could not be found, or is not in one of your courses.',
+        'zh-CN': '未找到该学生，或该学生不在您的任何课程中。',
+    },
+    'account_instructor_reset_refused': {
+        'en': 'Only an administrator can reset an instructor password.',
+        'zh-CN': '只有管理员可以重置教师密码。',
+    },
+    'account_no_default_password': {
+        'en': 'This account has neither a student number nor a username to derive a default password from. Set a password explicitly.',
+        'zh-CN': '该账户既没有学号也没有用户名，无法生成默认密码。请直接设置一个密码。',
+    },
+    'account_bulk_selection_required': {
+        'en': 'Choose the students to reset, or choose to reset only those with no password.',
+        'zh-CN': '请选择要重置的学生，或选择仅重置尚未设置密码的学生。',
+    },
+
     # -- team configuration --------------------------------------------------
     'round_1_started': {
         'en': 'Home markets cannot be changed after round 1 decisions have been submitted.',
@@ -453,6 +520,10 @@ def round_status(status):
 
 def game_status(status):
     return lambda language: _label(GAME_STATUS_LABELS, status, language)
+
+
+def participation_status(status):
+    return lambda language: _label(PARTICIPATION_STATUS_LABELS, status, language)
 
 
 def _label(table, status, language):

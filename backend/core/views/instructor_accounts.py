@@ -14,6 +14,7 @@ from core.models import User
 from core.models.auth_models import UserSession
 from core.models.course import Enrollment, Section
 from core.permissions import IsInstructor
+from core.utils.operator_messages import operator_refusal
 from core.utils.passwords import (
     default_password_for, hash_password, validate_password,
 )
@@ -136,7 +137,7 @@ class StudentPasswordResetView(APIView):
         user = _visible_users_qs(request).filter(user_id=user_id).first()
         if not user:
             return Response(
-                {'error': 'Student not found, or not in one of your courses.'},
+                operator_refusal(request, 'account_not_visible'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -144,7 +145,8 @@ class StudentPasswordResetView(APIView):
             # Guard against an instructor resetting a peer's password.
             if (getattr(request.user, 'role', '') or '').lower() != 'admin':
                 return Response(
-                    {'error': 'Only an admin can reset an instructor password.'},
+                    operator_refusal(
+                        request, 'account_instructor_reset_refused'),
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -154,8 +156,7 @@ class StudentPasswordResetView(APIView):
             new_password = default_password_for(user)
             if not new_password:
                 return Response(
-                    {'error': 'This account has no student_id or username to '
-                              'derive a default password from. Set one explicitly.'},
+                    operator_refusal(request, 'account_no_default_password'),
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         else:
@@ -200,7 +201,7 @@ class BulkPasswordResetView(APIView):
             qs = qs.filter(Q(password_hash='') | Q(password_hash__isnull=True))
         else:
             return Response(
-                {'error': 'Provide user_ids, or only_missing=true.'},
+                operator_refusal(request, 'account_bulk_selection_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

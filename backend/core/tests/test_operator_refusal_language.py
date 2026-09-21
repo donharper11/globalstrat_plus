@@ -102,14 +102,17 @@ CONVERTED = [
     ('core/views/round_control.py', None),
     ('core/views/grading.py', None),
     ('core/views/team_config.py', None),
+    ('core/views/team_control.py', None),
+    ('core/views/instructor_accounts.py', None),
     ('core/views/course.py',
      {'RosterViewSet', 'TeamManagementView', 'GameRoundScheduleView'}),
     ('core/views/scenario_views.py',
      {'GameActivateView', 'GamePauseView', 'GameResumeView', 'GameResetView',
-      'GameArchiveView'}),
+      'GameArchiveView', 'GameCreateView', 'GameTeamsView', 'GameDeleteView'}),
     ('core/views/results_api.py',
      {'InstructorAdvanceRoundView', 'InstructorInjectEventView',
-      'InstructorExtendDeadlineView'}),
+      'InstructorExtendDeadlineView', 'InstructorSessionReadinessView',
+      'InstructorOperatorEventsView', 'InstructorTeamDecisionsView'}),
 ]
 LIFECYCLE_ERRORS = {'LifecycleError', 'LifecycleConflict',
                     'LifecyclePrecondition'}
@@ -398,6 +401,26 @@ class OperatorRefusalLanguageTests(TestCase):
         self.both(lambda language: self.call(
             'post', '/api/grades/calculate/', language=language),
             400, 'grading_game_and_course_required')
+
+    # -- game creation, participation, accounts ------------------------------
+
+    def test_creating_a_game_with_no_scenario(self):
+        self.both(lambda language: self.call(
+            'post', '/api/games/create/', {'num_teams': 4}, language=language),
+            400, 'scenario_required')
+
+    def test_a_participation_change_that_names_no_action(self):
+        from core.models import Team
+        team = Team.objects.filter(game=self.game).first()
+        url = (f'/api/games/{self.game.id}/instructor/teams/{team.id}'
+               f'/participation/')
+        self.both(lambda language: self.call('post', url, language=language),
+                  400, 'participation_action_invalid')
+
+    def test_resetting_the_password_of_a_student_you_cannot_see(self):
+        self.both(lambda language: self.call(
+            'post', '/api/instructor/student-accounts/99999999/password/',
+            language=language), 404, 'account_not_visible')
 
     # -- team configuration --------------------------------------------------
 

@@ -11,7 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
-from core.utils.operator_messages import game_status, lifecycle_refusal
+from core.utils.operator_messages import (
+    game_status, lifecycle_refusal, operator_refusal)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 import json
@@ -183,7 +184,7 @@ class GameCreateView(APIView):
         scenario_id = request.data.get('scenario_id')
         if not scenario_id:
             return Response(
-                {'error': 'scenario_id is required.'},
+                operator_refusal(request, 'scenario_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -191,21 +192,21 @@ class GameCreateView(APIView):
             scenario = Scenario.objects.get(pk=scenario_id)
         except Scenario.DoesNotExist:
             return Response(
-                {'error': f'Scenario with ID {scenario_id} not found.'},
+                operator_refusal(request, 'scenario_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         num_teams = request.data.get('num_teams')
         if num_teams is None:
             return Response(
-                {'error': 'num_teams is required.'},
+                operator_refusal(request, 'team_count_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
             num_teams = int(num_teams)
         except (ValueError, TypeError):
             return Response(
-                {'error': 'num_teams must be an integer.'},
+                operator_refusal(request, 'team_count_not_a_number'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         game_name = request.data.get('name') or f"{scenario.name} Game"
@@ -243,7 +244,7 @@ class GameCreateView(APIView):
                 is_superuser=True).order_by('id').first()
             if not created_by:
                 return Response(
-                    {'error': 'No authenticated user and no superuser found.'},
+                    operator_refusal(request, 'game_creator_missing'),
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -291,7 +292,8 @@ class GameTeamsView(APIView):
         try:
             game = Game.objects.get(pk=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(operator_refusal(request, 'game_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         teams = Team.objects.filter(game=game).select_related(
             'home_market', 'firm_starter_profile',
@@ -571,7 +573,8 @@ class GameDeleteView(APIView):
         try:
             game = Game.objects.get(pk=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(operator_refusal(request, 'game_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         game_name = game.name
         _delete_game_cascade(game)
