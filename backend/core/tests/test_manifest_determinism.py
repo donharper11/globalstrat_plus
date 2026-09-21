@@ -507,6 +507,9 @@ class ManifestSnapshotIntegrationTests(TestCase):
                                             'fixture@example.com', 'x')
 
     def setUp(self):
+        self._build_fixture_game()
+
+    def _build_fixture_game(self):
         import io
         from django.core.management import call_command
         from core.models import Game, Round, Team
@@ -548,8 +551,22 @@ class ManifestSnapshotIntegrationTests(TestCase):
             scenario=self.scenario).order_by('code')[:3])
         entry_mode = EntryModeDefinition.objects.filter(
             scenario=self.scenario).order_by('code').first()
-        suppliers = list(Supplier.objects.filter(
-            scenario=self.scenario).order_by('supplier_id')[:2])
+        # N4: never a Xinjiang-adjacent supplier. The first two by id used to
+        # include one, which put every team at 50% exposure and armed the UFLPA
+        # enforcement draw -- seeded, deliberately, on ``Team.id`` (V2-011;
+        # DETERMINISM_BOUNDARY residual condition 1). Whether the fixture then
+        # had any ``product_demand`` row depended on which ids the teams got:
+        # at 135-137 all three were frozen out of NA and the ledger was empty.
+        # The section id pinned in setUp cannot cover that, because the team id
+        # is inside the operation id. It is the only evaluable trigger in round
+        # 1 (customs is locked until round 5), and
+        # test_fixture_arms_no_enforcement_draw_keyed_on_a_team_id holds it.
+        suppliers = [
+            supplier for supplier in Supplier.objects.filter(
+                scenario=self.scenario).order_by('supplier_id')
+            if not ((supplier.tier_2_3_profile or {}).get('risk_flags') or {})
+            .get('xinjiang_adjacent')][:2]
+        assert len(suppliers) == 2, 'fixture needs two unflagged suppliers'
         rows = []
         for index, team in enumerate(self.teams):
             submission, _ = DecisionSubmission.objects.get_or_create(
@@ -811,6 +828,65 @@ class ManifestSnapshotIntegrationTests(TestCase):
             after, _narrative = build_output_manifest(self.round)
             self.assertNotEqual(cj.canonical_sha256(before),
                                 cj.canonical_sha256(after))
+            transaction.set_rollback(True)
+
+    def test_fixture_arms_no_enforcement_draw_keyed_on_a_team_id(self):
+        """N4: the fixture must not owe its ledger rows to a lucky Team id.
+
+        Every enforcement draw is forced to fire. A fixture that arms one then
+        has every team frozen out of its only selling market, and a frozen
+        team-market writes no ``product_demand`` row at all.
+        """
+        from unittest import mock
+        from django.db import transaction
+        from core.engine import compliance_engine
+        from core.engine.advance_round import _run_phase_1
+        from core.models import RoundResultProductDemand
+        from core.models.sc_state import ComplianceEnforcementEvent
+
+        class _AlwaysFires:
+            def random(self):
+                return 0.0
+
+        self._write_decisions()
+        with transaction.atomic():
+            with mock.patch.object(compliance_engine, 'get_rng',
+                                   return_value=_AlwaysFires()) as draws:
+                _run_phase_1(self.game.id)
+            self.assertEqual(
+                draws.call_count, 0,
+                'the fixture armed a compliance enforcement draw, which is '
+                'seeded on Team.id')
+            self.assertFalse(ComplianceEnforcementEvent.objects.filter(
+                team__game=self.game).exists())
+            self.assertTrue(RoundResultProductDemand.objects.filter(
+                game=self.game, round_number=self.round.round_number).exists())
+            transaction.set_rollback(True)
+
+    def test_ledger_rows_exist_at_the_team_ids_that_used_to_freeze_them(self):
+        """N4 as reported: teams 135-137 all drew a UFLPA detention in round 1.
+
+        ``get_rng(4242, 1, 'compliance_enforcement:uflpa:<team id>:NA')`` is
+        below the regime's 0.15 for 135, 136 and 137 alike (0.0478, 0.1370,
+        0.0070), so a fixture game that happened to receive those ids -- after
+        any module that creates 134 teams first -- produced no ledger row.
+        """
+        from django.db import connection, transaction
+        from core.engine.advance_round import _run_phase_1
+        from core.models import Game, RoundResultProductDemand
+
+        Game.objects.filter(pk=self.game.pk).update(name='superseded fixture')
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT setval(pg_get_serial_sequence('team', 'id'), 135, false)")
+        self._build_fixture_game()
+        self.assertEqual([team.id for team in self.teams], [135, 136, 137])
+
+        self._write_decisions()
+        with transaction.atomic():
+            _run_phase_1(self.game.id)
+            self.assertTrue(RoundResultProductDemand.objects.filter(
+                game=self.game, round_number=self.round.round_number).exists())
             transaction.set_rollback(True)
 
     def test_narrative_envelope_carries_the_prose_itself(self):
