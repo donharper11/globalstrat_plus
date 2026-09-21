@@ -194,18 +194,21 @@ class SectionViewSet(viewsets.ModelViewSet):
         if refused:
             raise CohortOwnershipRefused(refused)
 
-    @transaction.atomic
     def perform_create(self, serializer):
         """Create the section, then auto-create its SimulationInstance."""
+        # Refused *before* the atomic block opens. The refusal writes an
+        # AuthorizationRefusalEvent and then raises; raised inside the block,
+        # it would roll back the record of itself.
         self._refuse_foreign_course(serializer.validated_data.get('course'))
-        section = serializer.save()
-        SimulationInstance.objects.create(
-            section_id=section.section_id,
-            current_round=0,
-            total_rounds=10,
-            status='setup',
-            created_at=timezone.now(),
-        )
+        with transaction.atomic():
+            section = serializer.save()
+            SimulationInstance.objects.create(
+                section_id=section.section_id,
+                current_round=0,
+                total_rounds=10,
+                status='setup',
+                created_at=timezone.now(),
+            )
 
 
 # ===================================================================

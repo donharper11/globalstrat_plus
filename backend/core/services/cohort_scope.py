@@ -63,6 +63,25 @@ def _game_id_for(section):
         return None
 
 
+def record_refused_mutation(request, reason, *, game_id=None):
+    """One `AuthorizationRefusalEvent` for a refused write; returns the request id.
+
+    Reads are not recorded (see the module docstring). The write goes through
+    the game-scope boundary's own recorder so that the row has one shape
+    whichever boundary refused.
+    """
+    from core.services.lifecycle import request_id_for
+    request_id = request_id_for(request)
+    method = (request.method or '').upper()
+    if method in _MUTATING:
+        from core.middleware import GameScopeGuardMiddleware
+        match = getattr(request, 'resolver_match', None)
+        GameScopeGuardMiddleware._record_refusal(
+            request, game_id, method, getattr(match, 'route', '') or '',
+            request_id, reason)
+    return request_id
+
+
 def ownership_refusal_payload(request, *, section=None, course=None):
     """None when the caller may act on this cohort; otherwise the 403 body.
 
@@ -82,16 +101,9 @@ def ownership_refusal_payload(request, *, section=None, course=None):
     if allowed:
         return None
 
-    from core.services.lifecycle import request_id_for
-    request_id = request_id_for(request)
-    method = (request.method or '').upper()
-    if method in _MUTATING:
-        from core.middleware import GameScopeGuardMiddleware
-        match = getattr(request, 'resolver_match', None)
-        GameScopeGuardMiddleware._record_refusal(
-            request, _game_id_for(section), method,
-            getattr(match, 'route', '') or '', request_id,
-            'Course or section belongs to another instructor')
+    request_id = record_refused_mutation(
+        request, 'Course or section belongs to another instructor',
+        game_id=_game_id_for(section))
     return {
         'error': cohort_message(REFUSAL_CODE,
                                 language=language_for_request(request)),

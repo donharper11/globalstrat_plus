@@ -363,6 +363,21 @@ class CourseAndSectionOwnershipTests(OwnershipBase):
         self.assertFalse(Section.objects.filter(
             section_code='PLANTED').exists())
 
+    def test_every_refused_course_or_section_write_leaves_a_record(self):
+        """The viewsets refuse by raising, so the record must not be written
+        inside a block that the raise itself unwinds."""
+        client = self._client(self.rival)
+        client.post('/api/sections/', {
+            'course': self.course.course_id, 'section_code': 'PLANTED',
+            'section_name': 'Planted', 'is_active': True}, format='json')
+        client.patch(f'/api/sections/{self.section.section_id}/',
+                     {'max_teams': 1}, format='json')
+        client.delete(f'/api/courses/{self.course.course_id}/')
+
+        recorded = list(AuthorizationRefusalEvent.objects.filter(
+            actor_user_id=self.rival.user_id).values_list('method', flat=True))
+        self.assertEqual(sorted(recorded), ['DELETE', 'PATCH', 'POST'])
+
     def test_the_lists_show_a_rival_only_what_they_may_open(self):
         _pilot_course, pilot_section = self._cohort('PILOT', None)
         client = self._client(self.rival)
@@ -593,6 +608,22 @@ class GameDeleteBoundaryTests(OwnershipBase):
         self.assertTrue(Game.objects.filter(pk=self.game.pk).exists())
         self.assertEqual(Team.objects.filter(game=self.game).count(), 2)
 
+    def test_a_protected_row_the_precheck_missed_undoes_the_whole_cascade(self):
+        """The pre-check names three tables. If a fourth ever PROTECTs a game,
+        the cascade must not stop halfway with the teams already gone."""
+        self._client(self.owner).post(
+            f'/api/games/{self.game.pk}/activate/', {}, format='json')
+        with mock.patch('core.views.scenario_views._has_permanent_record',
+                        return_value=False), \
+                self.assertLogs('core.lifecycle', 'ERROR'):
+            response = self._delete(self.owner)
+
+        self.assertEqual(response.status_code, 409, say(response))
+        self.assertEqual(response.data.get('code'), 'game_has_record')
+        self.assertTrue(Game.objects.filter(pk=self.game.pk).exists())
+        self.assertEqual(Team.objects.filter(game=self.game).count(), 2)
+        self.assertEqual(Round.objects.filter(game=self.game).count(), 1)
+
     def test_a_never_operated_game_is_deleted_and_the_deletion_is_recorded(self):
         game_id = self.game.pk
         with self.assertLogs('core.lifecycle', 'WARNING') as logs:
@@ -730,6 +761,10 @@ class AlternateEntryPointTests(OwnershipBase):
         self.assertEqual(response.data.get('code'), 'staff_account_admin_only')
         self.rival_student.refresh_from_db()
         self.assertEqual(self.rival_student.role, 'Student')
+        event = AuthorizationRefusalEvent.objects.get(
+            actor_user_id=self.rival.user_id)
+        self.assertIn('staff account', event.reason)
+        self.assertEqual(event.request_id, response.data['request_id'])
 
     def test_an_instructor_cannot_set_another_instructors_password(self):
         response = self._client(self.rival).patch(

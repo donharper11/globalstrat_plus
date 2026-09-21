@@ -12,7 +12,8 @@ from core.permissions import IsInstructor, IsInstructorOrReadOnly
 from core.services.cohort_caps import (
     section_for_team, section_for_user, team_capacity_error)
 from core.services.cohort_scope import (
-    CohortOwnershipRefused, ownership_refusal, ownership_refusal_payload)
+    CohortOwnershipRefused, ownership_refusal, ownership_refusal_payload,
+    record_refused_mutation)
 from core.services.lifecycle import request_id_for
 from core.utils.auth_context import get_request_role
 from core.utils.cohort_messages import cohort_message, language_for_request
@@ -85,11 +86,16 @@ class UserViewSet(viewsets.ModelViewSet):
         return (get_request_role(self.request) or '').lower() == 'admin'
 
     def _staff_only_payload(self):
+        """The refusal, recorded: an instructor reaching for a staff role is
+        exactly the attempt an investigator will want to find."""
+        request_id = record_refused_mutation(
+            self.request,
+            'Instructor attempted to create or change a staff account')
         return {
             'error': cohort_message(
                 STAFF_ONLY_CODE, language=language_for_request(self.request)),
             'code': STAFF_ONLY_CODE,
-            'request_id': request_id_for(self.request),
+            'request_id': request_id,
         }
 
     def _refuse_unsafe_write(self, validated_data):
