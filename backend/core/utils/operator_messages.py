@@ -535,6 +535,14 @@ MESSAGES = {
         'en': 'Events could not be fired: {detail}',
         'zh-CN': '无法触发事件。系统给出的原因（英文）：{detail}',
     },
+    'password_blank': {
+        'en': 'Password cannot be blank.',
+        'zh-CN': '密码不能为空。',
+    },
+    'password_too_short': {
+        'en': 'Password must be at least {minimum} characters.',
+        'zh-CN': '密码至少需要 {minimum} 个字符。',
+    },
     'fire_events_incomplete': {
         'en': 'Choose a game and a round before firing events.',
         'zh-CN': '请先选择游戏和回合，然后再触发事件。',

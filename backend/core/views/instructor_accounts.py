@@ -17,7 +17,7 @@ from core.permissions import IsInstructor
 from core.utils.operator_messages import (
     language_for_request, operator_message, operator_refusal)
 from core.utils.passwords import (
-    default_password_for, hash_password, validate_password,
+    default_password_for, hash_password, password_problem,
 )
 
 
@@ -162,9 +162,10 @@ class StudentPasswordResetView(APIView):
                 )
         else:
             new_password = request.data.get('password') or ''
-            err = validate_password(new_password)
-            if err:
-                return Response({'error': err},
+            problem = password_problem(new_password)
+            if problem:
+                key, values = problem
+                return Response(operator_refusal(request, key, **values),
                                 status=status.HTTP_400_BAD_REQUEST)
 
         user.password_hash = hash_password(new_password)

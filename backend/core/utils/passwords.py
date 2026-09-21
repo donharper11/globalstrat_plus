@@ -83,14 +83,27 @@ def default_password_for(user):
     return (user.username or '').strip()
 
 
-def validate_password(plain):
+def password_problem(plain):
     """
-    Return an error string if the password is unacceptable, else None.
-    Deliberately permissive: this is a classroom sim, and the default
-    passwords are student IDs, which must remain valid.
+    `(key, values)` naming what is wrong with the password, else None.
+
+    The key is a sentence in `core.utils.operator_messages`, so the route can
+    say it in the instructor's language. Deliberately permissive: this is a
+    classroom sim, and the default passwords are student IDs, which must
+    remain valid.
     """
     if not plain or not plain.strip():
-        return 'Password cannot be blank.'
+        return 'password_blank', {}
     if len(plain) < MIN_PASSWORD_LENGTH:
-        return f'Password must be at least {MIN_PASSWORD_LENGTH} characters.'
+        return 'password_too_short', {'minimum': MIN_PASSWORD_LENGTH}
     return None
+
+
+def validate_password(plain):
+    """The same rule as `password_problem`, as an English sentence or None."""
+    problem = password_problem(plain)
+    if problem is None:
+        return None
+    from core.utils.operator_messages import operator_message
+    key, values = problem
+    return operator_message(key, language='en', **values)

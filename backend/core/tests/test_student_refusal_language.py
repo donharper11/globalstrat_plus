@@ -263,6 +263,26 @@ class StudentRouteRefusalLanguageTests(StudentRefusalBase):
         self.both(lambda language: self.call('get', url, language=language),
                   403, 'team_access_denied', field='detail')
 
+    # -- the pause guard (middleware): every student write while paused -------
+
+    def test_a_write_to_a_paused_game_is_refused_in_the_students_language(self):
+        url = self.team_url('decisions/round/1/financing/')
+        for status, key in (('paused', 'game_paused'),
+                            ('completed', 'game_finished'),
+                            ('archived', 'game_finished')):
+            self.game.status = status
+            self.game.save(update_fields=['status'])
+            for language in LANGUAGES:
+                with self.subTest(status=status, language=language):
+                    refused = self.call('patch', url, {'new_debt': 0}, language)
+                    self.assertEqual(refused.status_code, 403)
+                    body = refused.json()
+                    self.assertEqual(body['detail'], participant_message(
+                        key, language=language))
+                    self.assertEqual(body['code'], key)
+                    # The page reads this to tell paused from finished.
+                    self.assertEqual(body['game_status'], status)
+
     # -- advisors: refusals raised below the view ----------------------------
 
     def test_a_blank_advisor_question(self):

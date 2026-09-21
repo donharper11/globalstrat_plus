@@ -62,6 +62,8 @@ export const BILINGUAL_REFUSAL_CODES = Object.freeze([
   'no_active_round',
   'participation_action_invalid',
   'participation_unchanged',
+  'password_blank',
+  'password_too_short',
   'processing_failed',
   'reason_required',
   'reminder_game_required',

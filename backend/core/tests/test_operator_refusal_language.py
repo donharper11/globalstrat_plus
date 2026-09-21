@@ -549,6 +549,29 @@ class OperatorRefusalLanguageTests(TestCase):
         self.both(lambda language: self.call('post', url, language=language),
                   400, 'participation_action_invalid')
 
+    def test_setting_a_password_that_is_too_short(self):
+        student = User.objects.create(
+            username=f'pw-{id(self)}', role='student', password_hash='x')
+        Enrollment.objects.create(
+            user_id=student.user_id, section_id=self.section.section_id,
+            is_active=True, enrolled_at=timezone.now())
+        url = f'/api/instructor/student-accounts/{student.user_id}/password/'
+        self.both(lambda language: self.call(
+            'post', url, {'password': 'abc'}, language=language),
+            400, 'password_too_short')
+        self.both(lambda language: self.call(
+            'post', url, {'password': '   '}, language=language),
+            400, 'password_blank')
+        student.refresh_from_db()
+        self.assertEqual(student.password_hash, 'x')
+
+    def test_the_two_password_checks_cannot_disagree(self):
+        from core.utils.passwords import password_problem, validate_password
+        for candidate in ('', '   ', 'abc', 'long-enough', None):
+            with self.subTest(candidate=candidate):
+                self.assertEqual(password_problem(candidate) is None,
+                                 validate_password(candidate) is None)
+
     def test_resetting_the_password_of_a_student_you_cannot_see(self):
         self.both(lambda language: self.call(
             'post', '/api/instructor/student-accounts/99999999/password/',
