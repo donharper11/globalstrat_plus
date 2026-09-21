@@ -4,7 +4,7 @@ import path from 'path';
 /**
  * The instructor console announces in the instructor's language.
  *
- * `InstructorDashboard.js` had 42 `message.success/error/warning/info(...)`
+ * `InstructorDashboard.js` had 46 `message.success/error/warning/info(...)`
  * calls whose text was an English literal -- `'Failed to create game'`,
  * `'Round schedule saved'`, `err.response?.data?.error || 'Failed to reset'` --
  * so an instructor working in Chinese was told in English. The string gate
@@ -15,7 +15,7 @@ import path from 'path';
  * argument list, the keys handed to `t()` are set aside, and whatever
  * string or template literal is left must carry no letters. That catches a
  * call that OPENS on a literal and one that falls back to a literal after
- * `||`, which is how most of the 42 were written.
+ * `||` (31 and 15 of the 46 respectively).
  */
 
 const SOURCE = fs.readFileSync(
