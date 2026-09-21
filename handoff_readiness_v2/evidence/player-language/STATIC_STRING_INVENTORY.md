@@ -4,18 +4,18 @@ This is a reproducible Stage 1 candidate inventory, not a claim that every
 candidate is reachable. Reviewers must classify each candidate before changing
 wording; `operator-or-log-only` rows require an explicit exemption rationale.
 
-Source fingerprint: `e8431be242bbdc39eb27d3c61c37e342cefb9c5a71f4297fd8ca8b41a10bf540`
-Candidate strings: **2278**
+Source fingerprint: `cca894b0be2bd6fbaf03c9aba798f6fa6ef81f255fea73010b64f9fcd34d8aa4`
+Candidate strings: **2277**
 
 | Audience | Candidate count |
 | --- | ---: |
-| instructor-facing | 235 |
+| instructor-facing | 234 |
 | operator-or-log-only | 243 |
 | participant-facing | 1800 |
 
 | Workstream | Candidate count |
 | --- | ---: |
-| API response review | 578 |
+| API response review | 577 |
 | account and access | 7 |
 | decision validation and submission | 28 |
 | instructor UI | 165 |
@@ -96,7 +96,6 @@ Candidate strings: **2278**
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/round_control.py:351` | f"{game.name}: round {result['processed_round']} processed in {result['phase_1_time']:.1f}s. Results are available; narratives are generating in the background." | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/round_control.py:491` | f'{game.name}: deadline updated.' | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/round_control.py:493` | f'{game.name}: deadline cleared.' | review EN/ZH wording and route through shared catalogue |
-| instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/scenario_views.py:97` | f'Scenario {scenario_id} not found.' | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/scenario_views.py:486` | Game archived. Section is now free for a new game. | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | API response review | backend-response-or-generated-content | `backend/core/views/scenario_views.py:583` | f'Game "{game_name}" and all related data permanently deleted.' | review EN/ZH wording and route through shared catalogue |
 | instructor-facing | instructor UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/components/instructor/AuditEvidenceTable.js:22` | Submission audit evidence | move to en.json and zh-CN.json, then call t() |

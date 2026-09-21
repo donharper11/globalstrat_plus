@@ -94,7 +94,7 @@ class ScenarioDetailView(APIView):
             scenario = Scenario.objects.get(pk=scenario_id)
         except Scenario.DoesNotExist:
             return Response(
-                {'error': f'Scenario {scenario_id} not found.'},
+                operator_refusal(request, 'scenario_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
