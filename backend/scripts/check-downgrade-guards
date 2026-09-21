@@ -58,7 +58,8 @@ def check(label, condition, detail=''):
 
 
 HEAD = {'0084_product_level_demand', '0085_price_band_blank_price',
-        '0086_paid_research_reports', '0087_merge_20260912_0446'}
+        '0086_paid_research_reports', '0087_merge_20260912_0446',
+        '0088_game_deletion_audit_event'}
 migrate()
 check('starts at head', applied() == HEAD, str(sorted(applied())))
 
@@ -103,6 +104,19 @@ check('column is NOT NULL again below 0085', nullable() == 'NO')
 code, _ = migrate()
 check('forward to head succeeds', code == 0 and applied() == HEAD)
 check('column nullable again at head', nullable() == 'YES')
+
+# 4. 0088, LAST: the table is append-only, so the row cannot be removed again
+# and would block every downgrade above. Disposable database only.
+sql("insert into competition_game_deletion_audit_event (game_id_deleted, "
+    "game_name, scenario_id_value, scenario_name, actor_user_id, username, action, "
+    "reason, before, request_id, created_at) values (999001, 'guard-check', 1, 's', "
+    "1, 'op', 'delete_game', 'guard check', '{}', 'guard-check', now())")
+code, out = migrate('0087')
+check('0088 reversal refused with a stored deletion record',
+      code != 0 and 'cannot reverse core.0088' in out, out[-400:] if code == 0 else '')
+check('deletion record survives the refusal', sql(
+    "select count(*) from competition_game_deletion_audit_event")[0][0] == 1)
+check('still at head after the refusal', applied() == HEAD)
 
 print(f'\n{"FAILED: " + ", ".join(failures) if failures else "ALL CHECKS PASSED"}')
 sys.exit(1 if failures else 0)

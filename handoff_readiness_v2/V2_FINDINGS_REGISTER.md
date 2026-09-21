@@ -3295,3 +3295,12 @@ An unverified read-only sweep made three claims about operator routes. Each was 
 
 Full backend suite at this commit: `Ran 1339 tests`, OK. Jest 142.
 
+### R45 and R46 implemented and merged 2026-09-21
+
+| Ruling | State |
+|---|---|
+| R45 — durable record of a game deletion | **Implemented, pending closure.** `GameDeletionAuditEvent` (`competition_game_deletion_audit_event`), no foreign keys, English only (R44), written inside the deleting transaction after the cascade; both directions tested through the route, including an injected failure after the row is written. Migration `0088` creates the table and installs its append-only triggers together. Registered in `PROTECTED_TABLES`, the audit chain (all 12 columns, sealed on commit), the read-only admin, `provision_app_role_sql` and `ops/provision-app-role.sh`. Counts moved deliberately: admin audit models 5 → 7, mutating routes 215 → 217, lifecycle counts unchanged. **Two defects fixed on the way:** the provisioning script excluded audit tables from its "must be empty" report by fixed index, so a sixth table would have raised a false alarm on every `--check`; and `AuthorizationRefusalEvent` had never been registered in the admin. **Added by the integrator:** `0088`'s reversal now refuses while any deletion record is stored — each is the only durable record of a game that no longer exists — proven by real reversal in `scripts/check-downgrade-guards` (18 of 18). **Not done: the production step.** Until `ops/provision-app-role.sh` is re-run after `0088`, the application role on production holds UPDATE and DELETE on the new table; the triggers still refuse both. **Open against the owner:** retention for the new table is the builder's derivation ("same as the operator audit row it stands in for"), not a ruling. |
+| R46 — a course's creator owns it | **Implemented, pending closure.** `CourseViewSet.perform_create` sets the acting instructor as instructor of record regardless of the body; an admin may name one or leave the course shared; no stored course is reassigned. Driven through the routes: the creator and an admin succeed on the course, its sections, roster and team management; another instructor is refused on each. At the base commit the second instructor read the new course and changed its section's team cap, both 200. |
+
+Full backend suite on the merged tree: `Ran 1377 tests`, OK.
+

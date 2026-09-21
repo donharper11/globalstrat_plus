@@ -91,6 +91,8 @@ every assertion about the inventory passing and nothing at all being logged.
 | `competition_resolution_manifest` two-phase write | Covered by a rule specific to it: mutable until `completed_at`, frozen after |
 | `competition_audit_chain` (new) | Covered: same append-only trigger as the records it protects |
 | `competition_sensitive_read_event` (new) | Covered: same trigger, and chained |
+| `competition_authorization_refusal_event` (CRV2-08) | Covered: same trigger (migration `0079`), chained, sealed on commit |
+| `competition_game_deletion_audit_event` (R45, migration `0088`) | Covered: append-only and truncate triggers installed by the migration that creates it; every column chained; sealed on commit; read-only admin; application role holds `INSERT` and `SELECT` only once `ops/provision-app-role.sh` is re-run. No read route serves it, so the read inventory is unchanged |
 | 30 logged read routes | Covered by middleware, proven by resolver-format and end-to-end tests |
 | 1 exempt read route | Exempt with the reason above |
 | Application role = table owner | **Not closed by code.** Deployment action; SQL provided and tested, switch recorded as an open item |

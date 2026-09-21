@@ -14,7 +14,21 @@ from core.models.scenario import FirmStarterProfile, MarketDefinition
 
 class TeamParticipationControlTests(TestCase):
     def setUp(self):
-        owner = DjangoUser.objects.create(username='participation-owner')
+        self.instructor = User.objects.create(
+            username='participation-instructor', role='instructor', password_hash='x',
+        )
+        self.student = User.objects.create(
+            username='participation-student', role='student', password_hash='x',
+        )
+        django_student = DjangoUser.objects.create(
+            id=self.student.user_id, username='participation-student-auth',
+        )
+        # An explicit id as well, clear of both sequences: the student's auth
+        # row carries the id of their `users` row, and an owner id drawn from
+        # the `auth_user` sequence can be that same number (see
+        # `FixtureSequenceAlignmentTests`).
+        owner = DjangoUser.objects.create(
+            id=self.student.user_id + 1_000_000, username='participation-owner')
         scenario = Scenario.objects.create(
             name='Participation', industry_label='Test', description='d',
             starting_cash=1000, num_rounds=2,
@@ -40,15 +54,6 @@ class TeamParticipationControlTests(TestCase):
         self.team = Team.objects.create(
             game=self.game, name='Team One', firm_starter_profile=profile,
             performance_index=100, cash_on_hand=1000, total_equity=1000,
-        )
-        self.instructor = User.objects.create(
-            username='participation-instructor', role='instructor', password_hash='x',
-        )
-        self.student = User.objects.create(
-            username='participation-student', role='student', password_hash='x',
-        )
-        django_student = DjangoUser.objects.create(
-            id=self.student.user_id, username='participation-student-auth',
         )
         TeamMember.objects.create(team=self.team, user=django_student)
         self.url = (
@@ -136,3 +141,33 @@ class TeamParticipationControlTests(TestCase):
         self.assertFalse(DecisionSubmission.objects.filter(
             team=self.team, round=self.round,
         ).exists())
+
+
+class FixtureSequenceAlignmentTests(TestCase):
+    """The fixture above must not depend on where two sequences happen to be.
+
+    It gives the student's auth row the explicit id of their `users` row, and
+    used to take the owner's auth id from the `auth_user` sequence. Sequences
+    are not rolled back between tests, so whenever earlier tests on the same
+    worker had left the two aligned, the owner took the very id the student
+    was about to be given and one test of the class died in `setUp` with
+    `auth_user_pkey` -- which is how the full suite first failed after two new
+    test modules moved the counts. This forces the alignment.
+    """
+
+    def test_the_fixture_survives_aligned_sequences(self):
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
+            users_at = cursor.fetchone()[0]
+            # setUp takes two `users` ids (instructor, then student). Leave
+            # the `auth_user` sequence so that its next value is the student's
+            # id, which is what the owner used to be given.
+            cursor.execute(
+                "SELECT setval(pg_get_serial_sequence('auth_user', 'id'), %s)",
+                [users_at + 1])
+
+        TeamParticipationControlTests.setUp(self)
+
+        self.assertTrue(DjangoUser.objects.filter(
+            id=self.student.user_id).exists())

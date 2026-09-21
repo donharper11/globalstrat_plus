@@ -600,10 +600,14 @@ class GameDeleteView(APIView):
     Both refusals point at archiving, which keeps every record and frees the
     section. What remains deletable is a game created by mistake and never
     touched. Its deletion cannot be written to `OperatorAuditEvent`, because
-    that row would PROTECT the game it says was deleted; it is written to the
-    `core.lifecycle` log with the actor, the reason, the prior state and the
-    request id the operator was shown. Every *refused* delete is an ordinary
-    rejected `OperatorAuditEvent`, since the game is still there to point at.
+    that row would PROTECT the game it says was deleted; it is written to
+    `GameDeletionAuditEvent` (R45), an append-only, hash-chained table with no
+    key to the game, inside the transaction that deletes it -- so there is
+    never a deletion without its record or a record without its deletion. The
+    `core.lifecycle` log line with the actor, the reason, the prior state and
+    the request id the operator was shown is kept as well. Every *refused*
+    delete is an ordinary rejected `OperatorAuditEvent`, since the game is
+    still there to point at.
     """
 
     permission_classes = [IsInstructor]
@@ -612,6 +616,7 @@ class GameDeleteView(APIView):
     def delete(self, request, game_id):
         import logging
         from django.db.models.deletion import ProtectedError
+        from core.services import competition_audit
         from core.services.cohort_caps import is_competition_game
         from core.utils.auth_context import get_request_user
         from core.utils.cohort_messages import (cohort_message,
@@ -636,6 +641,8 @@ class GameDeleteView(APIView):
                                    game=game.name),
                     guidance=archive_instead, code='game_has_record')
             reason = action.require_reason()
+            # Read now: once the cascade has run there is no game to ask.
+            scenario = game.scenario
 
             try:
                 # A savepoint, so that a protected row found halfway through
@@ -652,6 +659,14 @@ class GameDeleteView(APIView):
                     cohort_message('game_has_record', language=language,
                                    game=before['name']),
                     guidance=archive_instead, code='game_has_record')
+
+            # Still inside `operator_action`'s transaction, and deliberately
+            # so: if this write fails the deletion above is rolled back with
+            # it, and if anything below fails this row is rolled back with the
+            # deletion. Called through the module so the failure-injection
+            # tests patch the name this line actually resolves.
+            competition_audit.record_game_deletion(
+                request, before, scenario, reason, action.request_id)
 
             actor = get_request_user(request)
             logging.getLogger('core.lifecycle').warning(

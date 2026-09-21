@@ -11,7 +11,10 @@ from core.models.scenario import (
     FirmStarterProfile, FirmStarterPlatformConfig, FirmStarterProduct,
     AICompetitorDefinition, AICompetitorFitByRound,
 )
-from core.models.audit_integrity import AuditChainEntry, SensitiveReadEvent
+from core.models.audit_integrity import (
+    AuditChainEntry, AuthorizationRefusalEvent, GameDeletionAuditEvent,
+    SensitiveReadEvent,
+)
 from core.models.competition_audit import (
     DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
 )
@@ -876,4 +879,26 @@ class SensitiveReadEventAdmin(AppendOnlyAdmin):
                     'endpoint', 'request_id']
     list_filter = ['outcome', 'category']
     search_fields = ['username', 'endpoint', 'request_id']
+    date_hierarchy = 'created_at'
+
+
+@admin.register(AuthorizationRefusalEvent)
+class AuthorizationRefusalEventAdmin(AppendOnlyAdmin):
+    list_display = ['id', 'created_at', 'username', 'outcome', 'method',
+                    'game_id_attempted', 'endpoint', 'reason', 'request_id']
+    list_filter = ['outcome', 'method']
+    search_fields = ['username', 'endpoint', 'request_id']
+    date_hierarchy = 'created_at'
+
+
+@admin.register(GameDeletionAuditEvent)
+class GameDeletionAuditEventAdmin(AppendOnlyAdmin):
+    """Where an operator reads a committed deletion back (R45).
+
+    The game is gone, so there is no game page to reach this from; search by
+    the request id the operator was shown, the game's name, or the actor.
+    """
+    list_display = ['id', 'created_at', 'game_id_deleted', 'game_name',
+                    'scenario_name', 'username', 'reason', 'request_id']
+    search_fields = ['request_id', 'game_name', 'username', 'reason']
     date_hierarchy = 'created_at'

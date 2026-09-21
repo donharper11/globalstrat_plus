@@ -203,18 +203,23 @@ creates from now on. That is what keeps migrations working without a manual
 grant (proven: a table created by the owner is immediately readable and
 writable by the app role, its sequence included). It also means a **future
 audit table arrives with UPDATE and DELETE granted** — migration 0079 added
-`competition_authorization_refusal_event` exactly this way.
+`competition_authorization_refusal_event` exactly this way, and migration 0088
+(R45) adds `competition_game_deletion_audit_event` the same way.
 
 So: **re-run `ops/provision-app-role.sh` after every migration**, and run
 `--check` in the release gate. `--check` fails if the app role can update,
-delete, truncate or own any of the six audit tables, if it is a member of any
+delete, truncate or own any of the append-only audit tables (six, since 0088;
+the manifest is checked separately), if it is a member of any
 role, if it can reach a superuser, or if it can create in `public`. Proven:
 granting `UPDATE` on one audit table by hand makes `--check` exit 1, and
 re-running the provisioner repairs it.
 
-If a migration adds a seventh audit table, add it to `PROTECTED_TABLES` in
+If a migration adds another audit table, add it to `PROTECTED_TABLES` in
 `core/services/audit_guards.py` **and** to `APPEND_ONLY_TABLES` in
-`ops/provision-app-role.sh`. The two lists are not derived from one another.
+`ops/provision-app-role.sh`. The two lists are not derived from one another,
+but they can no longer drift silently:
+`test_the_provisioning_script_names_every_append_only_table` reads the script
+and fails if the two disagree.
 
 ## What the app role cannot do, by design
 

@@ -109,6 +109,15 @@
       CREATEDB, still the credential V2-048 exposed, still owner of the
       database and all 193 tables, and still shared with GlobalStrat v1 and
       BECSR, whose access history remains unreviewable.
+- [ ] Migration `0088_game_deletion_audit_event` applied on production and the
+      application role re-provisioned, in this order, as the database owner:
+      `manage.py migrate core 0088`; `ops/provision-app-role.sh`;
+      `ops/provision-app-role.sh --check` (must PASS); `manage.py
+      install_audit_guards --check`. Running `--check` before the re-run fails
+      by design. Until done, the application role holds UPDATE and DELETE on
+      the new audit table, though its triggers refuse both. Added 2026-09-21
+      (R45). Belongs in the same maintenance action as the release-identity
+      procedure (V2-124).
 - [ ] `ops/provision-app-role.sh --check` is run after every migration, not
       only at cutover. A default privilege grants the app role DML on each new
       table, a future audit table included; the re-run is what takes it back
