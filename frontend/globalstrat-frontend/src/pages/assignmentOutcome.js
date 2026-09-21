@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'antd';
 
 /**
  * What a team-assignment request actually did (V2-104).
@@ -12,6 +13,10 @@ import React from 'react';
  *
  * `assigned` is the number the SERVER wrote, never the number that was asked
  * for. A response that confirms nothing is `unconfirmed`, not a success.
+ *
+ * `underMinimum` is the server's `under_minimum` report (R12: teams of 3-5),
+ * one sentence per short team, already in the instructor's language. It is
+ * advice, never a refusal, so it does not change `kind`.
  */
 export const assignmentOutcome = (data) => {
   const refusals = (Array.isArray(data?.errors) ? data.errors : [])
@@ -21,10 +26,14 @@ export const assignmentOutcome = (data) => {
   const assigned = Number.isInteger(data?.updated) && data.updated > 0
     ? data.updated : 0;
 
+  const underMinimum = (Array.isArray(data?.under_minimum) ? data.under_minimum : [])
+    .map((entry) => entry?.detail)
+    .filter((text) => typeof text === 'string' && text.length > 0);
+
   let kind;
   if (refusedCount > 0) kind = assigned > 0 ? 'partial' : 'refused';
   else kind = assigned > 0 ? 'assigned' : 'unconfirmed';
-  return { kind, assigned, refusals };
+  return { kind, assigned, refusals, underMinimum };
 };
 
 /**
@@ -34,9 +43,22 @@ export const assignmentOutcome = (data) => {
  *
  * `mode: 'unassign'` is removing a student from a team: it is quiet on success
  * (the roster redraws) and uses the removal wording when refused.
+ *
+ * `onUnderMinimum` receives the short-team sentences for `UnderMinimumNotice`.
+ * It is deliberately not a toast or a modal: a team is short for the whole time
+ * it is being filled, so an interruption on every click would be noise, and a
+ * toast would be gone before the roster was finished.
  */
-export const announceAssignment = (outcome, { t, message, Modal, mode = 'assign' }) => {
+export const announceAssignment = (
+  outcome, { t, message, Modal, mode = 'assign', onUnderMinimum },
+) => {
   const removing = mode === 'unassign';
+  // The short-team report replaces the standing notice on every response the
+  // server actually gave -- including an empty one, which withdraws it. A
+  // response that confirmed nothing says nothing about team sizes either.
+  if (typeof onUnderMinimum === 'function' && outcome.kind !== 'unconfirmed') {
+    onUnderMinimum(outcome.underMinimum || []);
+  }
   if (outcome.kind === 'assigned') {
     if (!removing) {
       message.success(t('instructor.students_assigned', { count: outcome.assigned }));
@@ -64,4 +86,29 @@ export const announceAssignment = (outcome, { t, message, Modal, mode = 'assign'
       </ul>
     ),
   });
+};
+
+/**
+ * The standing, non-blocking notice on the roster: which teams are still below
+ * the section's minimum size. The sentences are the server's
+ * (`cohort_messages.team_under_minimum`), shown verbatim.
+ */
+export const UnderMinimumNotice = ({ notices, t }) => {
+  if (!Array.isArray(notices) || notices.length === 0) return null;
+  return (
+    <Alert
+      type="warning"
+      showIcon
+      style={{ marginBottom: 12 }}
+      message={t('instructor.teams_under_minimum', { count: notices.length })}
+      description={(
+        <>
+          <ul style={{ margin: 0, paddingLeft: 18 }}>
+            {notices.map((text, index) => <li key={index}>{text}</li>)}
+          </ul>
+          <div style={{ marginTop: 6 }}>{t('instructor.teams_under_minimum_note')}</div>
+        </>
+      )}
+    />
+  );
 };

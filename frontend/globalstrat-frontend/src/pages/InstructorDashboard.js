@@ -32,7 +32,9 @@ import {
   updateEnrollment,
 } from '../api/instructor';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { assignmentOutcome, announceAssignment } from './assignmentOutcome';
+import {
+  assignmentOutcome, announceAssignment, UnderMinimumNotice,
+} from './assignmentOutcome';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -133,6 +135,9 @@ const InstructorDashboard = () => {
   const [showCreateGame, setShowCreateGame] = useState(false);
   const [createdGameTeams, setCreatedGameTeams] = useState([]); // teams from game creation response
   const [pickerTeam, setPickerTeam] = useState(null); // selected team in student assignment picker
+  // Teams the server last reported as below the section's minimum size
+  // (R12). Set from every assignment response; see assignmentOutcome.js.
+  const [underMinimum, setUnderMinimum] = useState([]);
   // Round schedule state
   const [roundSchedule, setRoundSchedule] = useState(null); // { rounds: [...], game_name, ... }
   const [roundScheduleEdits, setRoundScheduleEdits] = useState({}); // { roundId: { deadline: '...' } }
@@ -1407,11 +1412,14 @@ const InstructorDashboard = () => {
     setSelectedCourse(courseId);
     setSelectedSection(null);
     setRoster([]);
+    setUnderMinimum([]);
     setTeamMgmt(null);
     try { const res = await getSections(courseId); setSections(res.data || []); } catch { /* empty */ }
   };
 
   const loadRoster = async (sectionId) => {
+    // The short-team notice belongs to the section it was reported for.
+    if (sectionId !== selectedSection) setUnderMinimum([]);
     setSelectedSection(sectionId);
     try {
       const [rosterRes, teamRes, gamesRes] = await Promise.all([
@@ -1931,6 +1939,7 @@ const InstructorDashboard = () => {
                 const assignedCount = roster.filter(r => isAssignedToGame(r)).length;
                 return (
                   <div>
+                    <UnderMinimumNotice notices={underMinimum} t={t} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                       <Text strong>
                         {t('instructor.assign_students')} ({assignedCount} / {roster.length} {t('instructor.assigned')})
@@ -1982,7 +1991,7 @@ const InstructorDashboard = () => {
                                     // Read in one place: assignmentOutcome.js.
                                     announceAssignment(
                                       assignmentOutcome((await assignStudents(assignments))?.data),
-                                      { t, message, Modal });
+                                      { t, message, Modal, onUnderMinimum: setUnderMinimum });
                                     loadRoster(selectedSection);
                                   } catch { message.error(t('instructor.assign_failed')); }
                                 }}
@@ -2009,7 +2018,7 @@ const InstructorDashboard = () => {
                                             // site still discarding it (V2-104).
                                             announceAssignment(
                                               assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: null }]))?.data),
-                                              { t, message, Modal, mode: 'unassign' });
+                                              { t, message, Modal, mode: 'unassign', onUnderMinimum: setUnderMinimum });
                                             loadRoster(selectedSection);
                                           } catch { message.error(t('instructor.unassign_failed')); }
                                         }}>{t('instructor.remove')}</Button>
@@ -2045,7 +2054,7 @@ const InstructorDashboard = () => {
                                         // here can still be a refusal (F4).
                                         announceAssignment(
                                           assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]))?.data),
-                                          { t, message, Modal });
+                                          { t, message, Modal, onUnderMinimum: setUnderMinimum });
                                         loadRoster(selectedSection);
                                       } catch { message.error(t('instructor.assign_failed')); }
                                     }}>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { assignmentOutcome, announceAssignment } from './assignmentOutcome';
+import {
+  assignmentOutcome, announceAssignment, UnderMinimumNotice,
+} from './assignmentOutcome';
 
 /**
  * V2-104. `PUT /api/team-management/` answers 200 with a per-item `errors`
@@ -23,7 +25,9 @@ describe('assignmentOutcome', () => {
   test('a wholly refused batch is a refusal, whatever the status said', () => {
     const outcome = assignmentOutcome(
       { updated: 0, errors: [{ item: {}, error: REFUSAL_EN }] });
-    expect(outcome).toEqual({ kind: 'refused', assigned: 0, refusals: [REFUSAL_EN] });
+    expect(outcome).toEqual({
+      kind: 'refused', assigned: 0, refusals: [REFUSAL_EN], underMinimum: [],
+    });
   });
 
   test('a partly refused batch reports both halves accurately', () => {
@@ -38,7 +42,7 @@ describe('assignmentOutcome', () => {
 
   test('a clean batch is a success for exactly the number the server wrote', () => {
     expect(assignmentOutcome({ updated: 3, errors: [], under_minimum: [] }))
-      .toEqual({ kind: 'assigned', assigned: 3, refusals: [] });
+      .toEqual({ kind: 'assigned', assigned: 3, refusals: [], underMinimum: [] });
   });
 
   test('a response that confirms nothing is not reported as a success', () => {
@@ -108,5 +112,86 @@ describe('announceAssignment', () => {
     announceAssignment(assignmentOutcome({}), io);
     expect(io.message.success).not.toHaveBeenCalled();
     expect(io.message.warning).toHaveBeenCalledWith('instructor.assign_unconfirmed');
+  });
+});
+
+/**
+ * R12 / V2-042: teams are 3-5 members. The maximum is refused; the minimum is
+ * only reported, because a team is legitimately short for the whole time it is
+ * being filled. The server has returned `under_minimum` since the cap was
+ * enforced and its comment said the console showed it. Nothing read it.
+ */
+const SHORT_EN = 'Zenith Hardware has 1 member(s); this section expects at '
+  + 'least 3. Add members before the game starts.';
+const SHORT_ZH = 'Apex Devices 目前有 2 名成员；本班级要求至少 3 名。请在比赛开始前补充成员。';
+const underMinimum = [
+  { team_id: 7, team_name: 'Zenith Hardware', member_count: 1, minimum: 3, detail: SHORT_EN },
+  { team_id: 8, team_name: 'Apex Devices', member_count: 2, minimum: 3, detail: SHORT_ZH },
+];
+
+describe('teams below the minimum size', () => {
+  const ui = () => ({
+    t: (key, values) => (values ? `${key} ${JSON.stringify(values)}` : key),
+    message: { success: jest.fn(), warning: jest.fn(), error: jest.fn() },
+    Modal: { warning: jest.fn() },
+    onUnderMinimum: jest.fn(),
+  });
+
+  test('the server’s sentences are read from the response, verbatim', () => {
+    const outcome = assignmentOutcome({ updated: 1, errors: [], under_minimum: underMinimum });
+    expect(outcome.kind).toBe('assigned');
+    expect(outcome.underMinimum).toEqual([SHORT_EN, SHORT_ZH]);
+  });
+
+  test('a malformed list is no notice, not a crash', () => {
+    for (const value of [undefined, null, 'x', [{}], [{ detail: '' }], [null]]) {
+      expect(assignmentOutcome({ updated: 1, errors: [], under_minimum: value })
+        .underMinimum).toEqual([]);
+    }
+  });
+
+  test('it does not block: the assignment is still announced as a success', () => {
+    const io = ui();
+    announceAssignment(
+      assignmentOutcome({ updated: 1, errors: [], under_minimum: underMinimum }), io);
+    expect(io.message.success).toHaveBeenCalledTimes(1);
+    expect(io.Modal.warning).not.toHaveBeenCalled();
+    expect(io.onUnderMinimum).toHaveBeenCalledWith([SHORT_EN, SHORT_ZH]);
+  });
+
+  test('the notice is withdrawn when the server stops reporting the team', () => {
+    const io = ui();
+    announceAssignment(
+      assignmentOutcome({ updated: 1, errors: [], under_minimum: [] }), io);
+    expect(io.onUnderMinimum).toHaveBeenCalledWith([]);
+  });
+
+  test('a refused batch still reports the short teams', () => {
+    const io = ui();
+    announceAssignment(assignmentOutcome({
+      updated: 0, errors: [{ item: {}, error: REFUSAL_EN }], under_minimum: underMinimum,
+    }), io);
+    expect(io.Modal.warning).toHaveBeenCalledTimes(1);
+    expect(io.onUnderMinimum).toHaveBeenCalledWith([SHORT_EN, SHORT_ZH]);
+  });
+
+  test('a response that confirms nothing leaves the standing notice alone', () => {
+    const io = ui();
+    announceAssignment(assignmentOutcome(undefined), io);
+    expect(io.onUnderMinimum).not.toHaveBeenCalled();
+  });
+
+  test('the notice shows each sentence as a warning, and nothing when there is none', () => {
+    const t = (key, values) => (values ? `${key} ${JSON.stringify(values)}` : key);
+    const { container, rerender } = render(
+      <UnderMinimumNotice notices={[SHORT_EN, SHORT_ZH]} t={t} />);
+    expect(container).toHaveTextContent('instructor.teams_under_minimum {"count":2}');
+    expect(container).toHaveTextContent('instructor.teams_under_minimum_note');
+    expect(container).toHaveTextContent(SHORT_EN);
+    expect(container).toHaveTextContent(SHORT_ZH);
+    expect(container.querySelector('.ant-alert-warning')).not.toBeNull();
+
+    rerender(<UnderMinimumNotice notices={[]} t={t} />);
+    expect(container).toBeEmptyDOMElement();
   });
 });

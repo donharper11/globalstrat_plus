@@ -21,6 +21,16 @@ describe('the dashboard’s call sites', () => {
     expect(read.length).toBe(calls.length);
   });
 
+  test('every call site hands the short-team report to the roster notice', () => {
+    // `under_minimum` was returned by the server and read by nobody. A call
+    // site that omits `onUnderMinimum` silently drops it again.
+    const announced = source.match(/announceAssignment\(/g) || [];
+    const handed = source.match(/onUnderMinimum: setUnderMinimum/g) || [];
+    expect(announced.length).toBeGreaterThan(0);
+    expect(handed.length).toBe(announced.length);
+    expect(source).toMatch(/<UnderMinimumNotice notices=\{underMinimum\} t=\{t\} \/>/);
+  });
+
   test('no assignment failure is announced in hard-coded English', () => {
     expect(source).not.toMatch(/Failed to unassign/);
   });
