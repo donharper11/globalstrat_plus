@@ -122,6 +122,10 @@ MESSAGES = {
         'zh-CN': ('{game} 已存在教师操作或团队决策记录。'
                   '该记录为永久保存，因此无法删除此场次。'),
     },
+    'game_deleted': {
+        'en': '{game} and all of its data were permanently deleted.',
+        'zh-CN': '{game} 及其全部数据已被永久删除。',
+    },
     'archive_instead': {
         'en': ('Archive the game instead: it keeps every record, stops play, '
                'and frees the section for a new game.'),

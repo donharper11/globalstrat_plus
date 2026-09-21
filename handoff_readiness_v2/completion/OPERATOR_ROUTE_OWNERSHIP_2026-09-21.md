@@ -93,3 +93,31 @@ Nothing was logged on either path (`assertLogs('core.views.course','ERROR')`:
   submissions and events was recorded as not touching lifecycle state — the same
   blind spot V2-112 recorded for `create_game`. It was therefore never an
   "unguarded" offender and no test could have caught it.
+
+### 1b. Found by the auditor-preflight question "is there an alternate entry point?" — **not in the sweep, verified before repair**
+
+After the roster was closed I asked whether the same writes could still be made
+some other way. Two generic DRF viewsets, registered on the router, name no
+game and declare only a role: `teams/` (`TeamViewSet`, `IsInstructorOrReadOnly`,
+`TeamSerializer fields='__all__'`) and `users/` (`UserViewSet`, `IsInstructor`,
+`UserWriteSerializer` writing `username`, `password`, `role`, `team_id`). Neither
+is called for a write by the console, by a test, or by any script in the
+repository. Driven at the head that already had the roster repair
+(`AlternateEntryPointTests`, 12 tests, **9 failures**):
+
+| Request by an **instructor** account | Response |
+|---|---|
+| `PATCH /api/users/<own id>/ {role:"admin"}` | **200** `{'role': 'admin'}` — an instructor makes themselves an administrator, after which every ownership rule in the product answers "admin: allowed" |
+| `POST /api/users/ {username:"backdoor", role:"admin", password:…}` | **201** `{'role': 'admin'}` — or mints a fresh admin with a password they chose |
+| `PATCH /api/users/<another instructor>/ {password:…}` | **200** — takes over a rival instructor's account |
+| `PATCH /api/users/<another cohort's student>/ {password:…, username:"defaced"}` | **200** `{'username': 'defaced'}` — and can then log in as that student and submit their team's decisions |
+| `POST /api/users/<another cohort's student>/assign-team/` | **200** |
+| `POST /api/users/<own student>/assign-team/ {team_id:<rival's team>}` | **200** |
+| `PATCH /api/teams/<any team>/ {cash_on_hand:"1.00", name:"Defaced"}` | **200** `{'name': 'Defaced', 'cash_on_hand': '1.00', …}` — a competitor's cash, equity, performance index and `participation_status` are writable by any instructor account, with no lock, no reason and no audit row |
+| `POST /api/users/bulk-upload/` with a failing row | the row error is `str(e)` again, unlogged |
+
+The first and the seventh are, in my judgement, **P0 for a multi-institution
+competition**: one PATCH defeats every cohort boundary, and one PATCH rewrites a
+rival firm's balance sheet. The route inventory did not flag `teams/` because
+its detector reads a view's own source and a bare `ModelViewSet` has none.
+

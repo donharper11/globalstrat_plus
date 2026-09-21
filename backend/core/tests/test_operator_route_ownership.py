@@ -602,6 +602,7 @@ class GameDeleteBoundaryTests(OwnershipBase):
         self.assertFalse(Game.objects.filter(pk=game_id).exists())
         self.assertFalse(Team.objects.filter(game_id=game_id).exists())
         self.assertTrue(response.data.get('request_id'))
+        self.assertIn('permanently deleted', response.data['message'])
         line = '\n'.join(logs.output)
         self.assertIn(f'game {game_id}', line)
         self.assertIn(self.owner.username, line)
@@ -661,3 +662,171 @@ class ConsoleReasonContractTests(OwnershipBase):
             '/api/games/987654/delete/', {'reason': REASON}, format='json')
 
         self.assertEqual(response.status_code, 400, say(response))
+
+
+# ---------------------------------------------------------------------------
+# Auditor preflight: "is there an active legacy or alternate entry point?"
+# ---------------------------------------------------------------------------
+
+class AlternateEntryPointTests(OwnershipBase):
+    """The same writes, reached through the generic `teams/` and `users/`
+    viewsets, which also name no game and also declared only a role.
+
+    Closing `roster/` while `PATCH /api/users/<id>/` still rewrites any account
+    -- including its role and its password -- would have closed nothing.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.game, self.teams = build_minimal_game(f'alt-{id(self)}')
+        Game.objects.filter(pk=self.game.pk).update(
+            section_id=self.section.section_id)
+        self.team = self.teams[0]
+        self.rival_course, self.rival_section = self._cohort(
+            'RIV', self.rival.user_id)
+        self.rival_student, _ = self._student('rival-student',
+                                              self.rival_section)
+
+    # ---- teams/ -----------------------------------------------------------
+
+    def test_no_one_rewrites_a_team_through_the_generic_team_route(self):
+        """`TeamSerializer` is `fields = '__all__'`: cash, equity, the
+        performance index and participation status, with no lock and no audit
+        row. The console never calls it; every sanctioned team write has its
+        own guarded route."""
+        for user in (self.rival, self.owner, self.admin):
+            response = self._client(user).patch(
+                f'/api/teams/{self.team.pk}/',
+                {'cash_on_hand': '1.00', 'name': 'Defaced'}, format='json')
+            self.assertEqual(response.status_code, 405, say(response))
+        deleted = self._client(self.rival).delete(f'/api/teams/{self.team.pk}/')
+        self.assertEqual(deleted.status_code, 405, say(deleted))
+        self.team.refresh_from_db()
+        self.assertEqual(str(self.team.cash_on_hand), '1000000.00')
+        self.assertNotEqual(self.team.name, 'Defaced')
+
+    def test_the_team_route_still_reads(self):
+        response = self._client(self.owner).get(f'/api/teams/{self.team.pk}/')
+
+        self.assertEqual(response.status_code, 200, say(response))
+
+    # ---- users/ -----------------------------------------------------------
+
+    def test_an_instructor_cannot_make_themselves_an_admin(self):
+        response = self._client(self.rival).patch(
+            f'/api/users/{self.rival.user_id}/', {'role': 'admin'},
+            format='json')
+
+        self.assertIn(response.status_code, (403, 404), say(response))
+        self.rival.refresh_from_db()
+        self.assertEqual(self.rival.role, 'instructor')
+
+    def test_an_instructor_cannot_promote_a_student_of_their_own(self):
+        response = self._client(self.rival).patch(
+            f'/api/users/{self.rival_student.user_id}/', {'role': 'admin'},
+            format='json')
+
+        self.assertEqual(response.status_code, 403, say(response))
+        self.assertEqual(response.data.get('code'), 'staff_account_admin_only')
+        self.rival_student.refresh_from_db()
+        self.assertEqual(self.rival_student.role, 'Student')
+
+    def test_an_instructor_cannot_set_another_instructors_password(self):
+        response = self._client(self.rival).patch(
+            f'/api/users/{self.owner.user_id}/',
+            {'password': 'taken-over-123'}, format='json')
+
+        self.assertIn(response.status_code, (403, 404), say(response))
+        self.owner.refresh_from_db()
+        self.assertEqual(self.owner.password_hash, 'x')
+
+    def test_an_instructor_cannot_rewrite_another_cohorts_student(self):
+        client = self._client(self.rival)
+        patched = client.patch(
+            f'/api/users/{self.student.user_id}/',
+            {'password': 'taken-over-123', 'username': 'defaced'},
+            format='json')
+        deleted = client.delete(f'/api/users/{self.student.user_id}/')
+
+        self.assertEqual(patched.status_code, 404, say(patched))
+        self.assertEqual(deleted.status_code, 404, say(deleted))
+        self.student.refresh_from_db()
+        self.assertEqual(self.student.password_hash, '')
+        self.assertNotEqual(self.student.username, 'defaced')
+
+    def test_an_instructor_cannot_create_a_staff_account(self):
+        client = self._client(self.rival)
+        created = client.post('/api/users/', {
+            'username': 'backdoor', 'role': 'admin',
+            'password': 'known-to-me-123'}, format='json')
+        uploaded = client.post('/api/users/bulk-upload/', {
+            'csv': 'username,role,team_id,password\n'
+                   'backdoor2,Admin,,known-to-me-123\n'}, format='json')
+
+        self.assertEqual(created.status_code, 403, say(created))
+        self.assertEqual(created.data.get('code'), 'staff_account_admin_only')
+        self.assertEqual(uploaded.data.get('created'), 0, say(uploaded))
+        self.assertEqual(uploaded.data['errors'][0].get('code'),
+                         'staff_account_admin_only', say(uploaded))
+        self.assertFalse(User.objects.filter(
+            username__startswith='backdoor').exists())
+
+    def test_an_instructor_cannot_move_another_cohorts_student_by_the_user_route(self):
+        response = self._client(self.rival).post(
+            f'/api/users/{self.student.user_id}/assign-team/',
+            {'team_id': self.team.pk}, format='json')
+
+        self.assertEqual(response.status_code, 404, say(response))
+        self.student.refresh_from_db()
+        self.assertIsNone(self.student.team_id)
+
+    def test_an_instructor_cannot_plant_a_student_on_another_cohorts_team(self):
+        client = self._client(self.rival)
+        assigned = client.post(
+            f'/api/users/{self.rival_student.user_id}/assign-team/',
+            {'team_id': self.team.pk}, format='json')
+        uploaded = client.post('/api/users/bulk-upload/', {
+            'csv': 'username,role,team_id,password\n'
+                   f'planted,Student,{self.team.pk},pw-123456\n'},
+            format='json')
+
+        self.assertRefused(assigned)
+        self.assertRefused(uploaded)
+        self.rival_student.refresh_from_db()
+        self.assertIsNone(self.rival_student.team_id)
+        self.assertFalse(User.objects.filter(username='planted').exists())
+
+    def test_the_owner_still_administers_their_own_student(self):
+        client = self._client(self.owner)
+        patched = client.patch(
+            f'/api/users/{self.student.user_id}/',
+            {'password': 'a-new-password-1'}, format='json')
+        assigned = client.post(
+            f'/api/users/{self.student.user_id}/assign-team/',
+            {'team_id': self.team.pk}, format='json')
+        created = client.post('/api/users/', {
+            'username': f'fresh-{id(self)}', 'role': 'Student'}, format='json')
+
+        self.assertEqual(patched.status_code, 200, say(patched))
+        self.assertEqual(assigned.status_code, 200, say(assigned))
+        self.assertEqual(created.status_code, 201, say(created))
+
+    def test_an_admin_still_changes_a_role(self):
+        response = self._client(self.admin).patch(
+            f'/api/users/{self.rival.user_id}/', {'role': 'admin'},
+            format='json')
+
+        self.assertEqual(response.status_code, 200, say(response))
+
+    def test_a_failed_bulk_row_does_not_return_the_exception_text(self):
+        with mock.patch('core.views.core.User.objects.create',
+                        side_effect=RuntimeError(SECRET)), \
+                self.assertLogs('core.views.core', 'ERROR') as logs:
+            response = self._client(self.owner).post('/api/users/bulk-upload/', {
+                'csv': 'username,role,team_id,password\nrow1,Student,,\n'},
+                format='json')
+
+        self.assertNotIn('users_email_key', str(response.data), say(response))
+        self.assertEqual(response.data['errors'][0].get('code'),
+                         'account_row_failed')
+        self.assertIn('users_email_key', '\n'.join(logs.output))

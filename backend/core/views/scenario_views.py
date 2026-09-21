@@ -665,8 +665,8 @@ class GameDeleteView(APIView):
                 getattr(actor, 'user_id', '?'), reason, before,
                 action.request_id)
             return Response({
-                'message': f'Game "{before["name"]}" and all related data '
-                           f'permanently deleted.',
+                'message': cohort_message('game_deleted', language=language,
+                                          game=before['name']),
                 'game_id': before['game_id'],
                 'request_id': action.request_id,
             })
