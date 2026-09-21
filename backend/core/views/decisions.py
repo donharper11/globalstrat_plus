@@ -1054,6 +1054,7 @@ class DecisionUnlockView(APIView):
         from core.services.lifecycle import (
             LifecycleConflict, LifecyclePrecondition, operator_action)
         from core.services.competition_locks import lock_team_for_decision_write
+        from core.utils.operator_messages import lifecycle_refusal
 
         with operator_action(request, game_id, 'unlock_submission_for_correction') as action:
             rnd = get_object_or_404(
@@ -1066,18 +1067,13 @@ class DecisionUnlockView(APIView):
             before = action.before = DecisionSubmissionSerializer(submission).data
 
             if rnd.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_number} has already been processed; '
-                    f'unlocking now would not change its results.',
-                    guidance='Use the recovery workflow if a processed round '
-                             'must be corrected.',
-                    code='round_already_processed')
+                error = lifecycle_refusal(
+                    LifecycleConflict, 'unlock_already_processed',
+                    round=round_number)
                 raise error
             if submission.status != 'locked':
-                error = LifecycleConflict(
-                    'Submission is not locked.',
-                    guidance='Refresh — it may already have been unlocked.',
-                    code='submission_not_locked')
+                error = lifecycle_refusal(
+                    LifecycleConflict, 'submission_not_locked')
                 raise error
 
             reason = action.require_reason()

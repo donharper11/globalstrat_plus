@@ -1,6 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from core.utils.participant_messages import (
+    localise_refusal, participant_refusal)
 
 from core.views.mixins import InstanceScopedMixin, DecisionLockedMixin
 from core.models import (
@@ -101,13 +103,14 @@ class ProgramViewSet(DecisionLockedMixin, InstanceScopedMixin, viewsets.ModelVie
         team_id = platform.team_id
         if not team_id:
             return Response(
-                {'error': 'Platform has no team_id.'},
+                participant_refusal(request, 'platform_without_team'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         from core.services.r_and_d import accelerate_development
         result = accelerate_development(platform, team_id)
         if 'error' in result:
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            return Response(localise_refusal(request, result),
+                            status=status.HTTP_400_BAD_REQUEST)
         # Return updated platform data
         platform.refresh_from_db()
         result['platform'] = ProgramSerializer(
@@ -120,7 +123,8 @@ class ProgramViewSet(DecisionLockedMixin, InstanceScopedMixin, viewsets.ModelVie
         """Return CSR budget, committed costs, program cap, and loan status."""
         team_id = request.query_params.get('team_id')
         if not team_id:
-            return Response({'error': 'team_id is required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(participant_refusal(request, 'request_incomplete'),
+                            status=status.HTTP_400_BAD_REQUEST)
         from core.services.budget import get_budget_status
         from core.models import SimulationState
         state = SimulationState.objects.filter(status='active').first()
@@ -148,10 +152,9 @@ class ProgramPortfolioViewSet(viewsets.ModelViewSet):
             if platform and getattr(platform, 'development_status', 'ready') == 'developing':
                 remaining = platform.development_rounds_remaining or 0
                 return Response(
-                    {'error': (
-                        f'Platform "{platform.program_name}" is still in '
-                        f'development. {remaining} round(s) remaining.'
-                    )},
+                    participant_refusal(
+                        request, 'platform_in_development',
+                        platform=platform.program_name, remaining=remaining),
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         return super().create(request, *args, **kwargs)

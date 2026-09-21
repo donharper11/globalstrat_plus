@@ -2,6 +2,7 @@
 from decimal import Decimal
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework.views import APIView
 
 from core.models.core import Game, Team
@@ -116,7 +117,8 @@ class TaxStructureContextView(CompetitionDecisionWriteMixin, APIView):
 
         structure_code = request.data.get('structure_code')
         if not structure_code:
-            return Response({'error': 'structure_code required'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
 
         if structure_code == 'direct':
             # Switch to direct = no structure

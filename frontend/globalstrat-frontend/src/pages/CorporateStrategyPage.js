@@ -828,7 +828,10 @@ const CorporateStrategyPage = () => {
             }
           }
           if (activeCommitments.includes('anti_corruption') && warnings.anti_corruption?.active) {
-            const jvCount = (warnings.anti_corruption.message.match(/,/g) || []).length + 1;
+            // The server says how many JV markets there are. Counting the
+            // commas in its sentence only ever worked for the English one.
+            const jvCount = warnings.anti_corruption.count
+              ?? ((warnings.anti_corruption.message.match(/,/g) || []).length + 1);
             interactionCost += 100000 * jvCount;
           }
         } else {

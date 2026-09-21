@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from core.utils.operator_messages import operator_refusal
 
 from core.permissions import IsInstructor
 from core.views.mixins import InstanceScopedMixin
@@ -40,7 +41,7 @@ class FireEventsViewSet(viewsets.ViewSet):
 
         if not round_number or not game_id:
             return Response(
-                {'error': 'round_number and game_id are required'},
+                operator_refusal(request, 'fire_events_incomplete'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -49,7 +50,7 @@ class FireEventsViewSet(viewsets.ViewSet):
             game_id = int(game_id)
         except (ValueError, TypeError):
             return Response(
-                {'error': 'round_number and game_id must be integers'},
+                operator_refusal(request, 'fire_events_not_numbers'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

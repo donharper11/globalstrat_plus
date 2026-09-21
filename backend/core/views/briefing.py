@@ -1,6 +1,7 @@
 """CC-27: Strategic Briefing API endpoints."""
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework.views import APIView
 
 from core.models.core import Game, Team, User
@@ -70,7 +71,8 @@ class BriefingReadView(APIView):
         briefing = get_object_or_404(StrategicBriefing, pk=briefing_id)
         user_id = request.data.get('user_id')
         if not user_id:
-            return Response({'error': 'user_id required'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
 
         user = get_object_or_404(User, pk=user_id)
         BriefingReadStatus.objects.get_or_create(

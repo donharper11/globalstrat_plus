@@ -14,6 +14,7 @@ from core.models import (
     Program, ProgramType, ProgramFeature, ProgramPortfolio,
     SimulationParameters, SimulationState,
 )
+from core.utils.participant_messages import service_refusal
 
 logger = logging.getLogger(__name__)
 
@@ -136,9 +137,9 @@ def accelerate_development(platform, team_id):
     Returns dict with result or error.
     """
     if platform.development_status != 'developing':
-        return {'error': 'Platform is not in development.'}
+        return service_refusal('platform_not_developing')
     if (platform.development_rounds_remaining or 0) <= 0:
-        return {'error': 'Platform is already ready.'}
+        return service_refusal('platform_already_ready')
 
     cost = Decimal(_get_param('r_and_d_acceleration_cost', '30000'))
 
@@ -150,10 +151,9 @@ def accelerate_development(platform, team_id):
     remaining = Decimal(str(budget_info.get('remaining', 0)))
 
     if remaining < cost:
-        return {
-            'error': f'Insufficient budget. Need ${cost:,.0f}, '
-                     f'have ${remaining:,.0f}.',
-        }
+        return service_refusal('acceleration_unaffordable',
+                               cost=f'${cost:,.0f}',
+                               remaining=f'${remaining:,.0f}')
 
     # Apply acceleration
     platform.development_rounds_remaining -= 1

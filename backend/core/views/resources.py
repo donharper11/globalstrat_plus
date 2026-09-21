@@ -5,6 +5,7 @@ import re
 
 from rest_framework import status
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework.views import APIView
 
 from core.services.textbook_retrieval import search_textbook, get_textbook_content
@@ -60,7 +61,7 @@ class ResourceSearchView(APIView):
         query = request.data.get('query', '').strip()
         if not query:
             return Response(
-                {'error': 'query is required'},
+                participant_refusal(request, 'resource_query_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

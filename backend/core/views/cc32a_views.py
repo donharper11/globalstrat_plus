@@ -12,6 +12,7 @@ Endpoints:
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework.views import APIView
 from core.views.decisions import (
     CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
@@ -120,7 +121,8 @@ class CommunicationDraftView(CompetitionDecisionWriteMixin, APIView):
         team = get_object_or_404(Team, id=team_id, game=game)
         rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
         if not rnd:
-            return Response({'detail': 'No active round.'}, status=400)
+            return Response(participant_refusal(
+                request, 'no_active_round', field='detail'), status=400)
 
         ca = get_object_or_404(CommunicationAssignment, id=assignment_id)
         content = request.data.get('content', '')
@@ -156,7 +158,8 @@ class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
         team = get_object_or_404(Team, id=team_id, game=game)
         rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
         if not rnd:
-            return Response({'detail': 'No active round.'}, status=400)
+            return Response(participant_refusal(
+                request, 'no_active_round', field='detail'), status=400)
 
         ca = get_object_or_404(CommunicationAssignment, id=assignment_id)
 
@@ -174,7 +177,9 @@ class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
             )
 
         if not tc.is_draft:
-            return Response({'detail': 'Already submitted. Cannot resubmit.'}, status=400)
+            return Response(participant_refusal(
+                request, 'communication_already_submitted', field='detail'),
+                status=400)
 
         # Update content if provided in submit request
         content = request.data.get('content')
@@ -184,12 +189,13 @@ class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
             tc.save()
 
         if tc.word_count == 0:
-            return Response({'detail': 'Cannot submit empty communication.'}, status=400)
+            return Response(participant_refusal(
+                request, 'communication_empty', field='detail'), status=400)
 
         if tc.word_count > ca.word_limit * 1.1:  # 10% grace
-            return Response({
-                'detail': f'Exceeds word limit. Maximum {ca.word_limit} words, you have {tc.word_count}.',
-            }, status=400)
+            return Response(participant_refusal(
+                request, 'communication_over_word_limit', field='detail',
+                limit=ca.word_limit, count=tc.word_count), status=400)
 
         # Trigger LLM evaluation
         from core.rag.communication_eval import evaluate_communication

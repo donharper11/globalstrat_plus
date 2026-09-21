@@ -198,9 +198,11 @@ class RoundCloseView(APIView):
                 # Every lifecycle confirmation names its game: several heats run
                 # at once on one deployment, and closing the wrong heat is an
                 # unrecoverable competition incident.
-                'message': f'{action.game.name}: round {result["round"]} '
-                           f'closed. {result["submissions_locked"]} '
-                           f'submission(s) locked.',
+                'message': operator_message(
+                    'done_round_closed',
+                    language=language_for_request(request),
+                    game=action.game.name, round=result['round'],
+                    count=result['submissions_locked']),
                 'game_name': action.game.name,
                 'request_id': action.request_id,
                 'round': after,
@@ -267,8 +269,11 @@ class RoundReopenView(APIView):
             after = _round_payload(game, action.require_round())
             action.commit(before, after)
             return Response({
-                'message': f'{game.name}: round {round_obj.round_number} '
-                           f'reopened. {unlocked} submission(s) unlocked.',
+                'message': operator_message(
+                    'done_round_reopened',
+                    language=language_for_request(request),
+                    game=game.name, round=round_obj.round_number,
+                    count=unlocked),
                 'game_name': game.name,
                 'request_id': action.request_id,
                 'round': after,
@@ -348,10 +353,11 @@ class RoundProcessView(APIView):
             after = _round_payload(game, action.require_round())
             action.commit(before, after, reason=reason)
             return Response({
-                'message': f'{game.name}: round {result["processed_round"]} '
-                           f'processed in {result["phase_1_time"]:.1f}s. '
-                           f'Results are available; narratives are generating '
-                           f'in the background.',
+                'message': operator_message(
+                    'done_round_processed',
+                    language=language_for_request(request),
+                    game=game.name, round=result['processed_round'],
+                    seconds=f'{result["phase_1_time"]:.1f}'),
                 'game_name': game.name,
                 'phase_1_time': result['phase_1_time'],
                 'phase_2_status': result['phase_2_status'],
@@ -409,12 +415,15 @@ class RoundAdvanceView(APIView):
             after = _round_payload(game, action.require_round())
             action.commit(before, after, reason=reason)
 
+            language = language_for_request(request)
             if result['next_round'] is None:
-                msg = (f'{game.name}: round {result["completed_round"]} was '
-                       f'the last round. Game complete.')
+                msg = operator_message(
+                    'done_game_complete', language=language, game=game.name,
+                    round=result['completed_round'])
             else:
-                msg = (f'{game.name}: advanced to round '
-                       f'{result["next_round"]}.')
+                msg = operator_message(
+                    'done_advanced', language=language, game=game.name,
+                    round=result['next_round'])
 
             return Response({
                 'message': msg,
@@ -484,13 +493,15 @@ class RoundDeadlineView(APIView):
 
             warning = None
             if round_obj.deadline and round_obj.deadline <= timezone.now():
-                warning = ('That deadline is in the past — the round will close '
-                           'within a minute.')
+                warning = operator_message(
+                    'done_deadline_in_past_warning',
+                    language=language_for_request(request))
 
             return Response({
-                'message': (f'{game.name}: deadline updated.'
-                            if round_obj.deadline
-                            else f'{game.name}: deadline cleared.'),
+                'message': operator_message(
+                    'done_deadline_updated' if round_obj.deadline
+                    else 'done_deadline_cleared',
+                    language=language_for_request(request), game=game.name),
                 'game_name': game.name,
                 'warning': warning,
                 'request_id': action.request_id,

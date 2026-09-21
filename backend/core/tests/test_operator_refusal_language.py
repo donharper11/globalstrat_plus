@@ -105,7 +105,8 @@ CONVERTED = [
     ('core/views/team_control.py', None),
     ('core/views/instructor_accounts.py', None),
     ('core/views/course.py',
-     {'RosterViewSet', 'TeamManagementView', 'GameRoundScheduleView'}),
+     {'RosterViewSet', 'TeamManagementView', 'GameRoundScheduleView',
+      'DecisionStatusView', 'SendReminderView'}),
     ('core/views/scenario_views.py',
      {'GameActivateView', 'GamePauseView', 'GameResumeView', 'GameResetView',
       'GameArchiveView', 'GameCreateView', 'GameTeamsView', 'GameDeleteView',
@@ -114,22 +115,54 @@ CONVERTED = [
      {'InstructorAdvanceRoundView', 'InstructorInjectEventView',
       'InstructorExtendDeadlineView', 'InstructorSessionReadinessView',
       'InstructorOperatorEventsView', 'InstructorTeamDecisionsView'}),
+    # The 2026-09-21 remainder.
+    ('core/views/decisions.py', {'DecisionUnlockView'}),
+    ('core/views/instructor_sc.py', None),
+    ('core/views/events.py', None),
+    ('core/views/core.py', {'UserViewSet', 'DashboardViewSet'}),
+    ('core/middleware.py', None),
 ]
 LIFECYCLE_ERRORS = {'LifecycleError', 'LifecycleConflict',
                     'LifecyclePrecondition'}
 
 
-def _is_literal_text(node):
+# Every key whose value a person reads: a refusal (`error`, `detail`), and what
+# the console shows when an action succeeded (`message`, `warning`, `reason`).
+SHOWN_KEYS = ('error', 'detail', 'message', 'warning', 'reason')
+
+
+def _is_literal_text(node, bound=None):
+    """Whether `node` is text written in the source rather than rendered.
+
+    `bound` maps a local name to the values assigned to it, so
+    `msg = f'...'` followed by `{'message': msg}` is found too.
+    """
     if isinstance(node, ast.JoinedStr):
         return True
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
         return bool(re.search(r'[A-Za-z]', node.value))
     if isinstance(node, ast.BinOp):
-        return _is_literal_text(node.left) or _is_literal_text(node.right)
+        return (_is_literal_text(node.left, bound)
+                or _is_literal_text(node.right, bound))
+    if isinstance(node, ast.IfExp):
+        return (_is_literal_text(node.body, bound)
+                or _is_literal_text(node.orelse, bound))
+    if isinstance(node, ast.Name) and bound:
+        return any(_is_literal_text(value) for value in bound.get(node.id, ()))
     return False
 
 
-def english_refusal_literals(source, classes=None):
+def _bound_names(scope):
+    bound = {}
+    for node in ast.walk(scope):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    bound.setdefault(target.id, []).append(node.value)
+    return bound
+
+
+def english_refusal_literals(source, classes=None, keys=SHOWN_KEYS):
     """`{'error': '<literal>'}` and `LifecycleX('<literal>')` in `source`."""
     tree = ast.parse(source)
     scopes = [tree] if classes is None else [
@@ -137,16 +170,17 @@ def english_refusal_literals(source, classes=None):
         if isinstance(node, ast.ClassDef) and node.name in classes]
     found = []
     for scope in scopes:
+        bound = _bound_names(scope)
         for node in ast.walk(scope):
             if isinstance(node, ast.Dict):
                 for key, value in zip(node.keys, node.values):
-                    if (isinstance(key, ast.Constant) and key.value == 'error'
-                            and _is_literal_text(value)):
-                        found.append((node.lineno, 'error literal'))
+                    if (isinstance(key, ast.Constant) and key.value in keys
+                            and _is_literal_text(value, bound)):
+                        found.append((node.lineno, f'{key.value} literal'))
             elif isinstance(node, ast.Call):
                 name = getattr(node.func, 'id', getattr(node.func, 'attr', ''))
                 if (name in LIFECYCLE_ERRORS and node.args
-                        and _is_literal_text(node.args[0])):
+                        and _is_literal_text(node.args[0], bound)):
                     found.append((node.lineno, f'{name} literal'))
     return found
 
@@ -171,6 +205,27 @@ class OperatorRefusalSourceScanTests(TestCase):
         self.assertEqual(len(english_refusal_literals(sample, {'A'})), 3)
         self.assertEqual(english_refusal_literals(sample, {'Missing'}), [])
 
+    def test_the_scanner_finds_a_confirmation_however_it_is_spelled(self):
+        """`message`/`warning`, a conditional, and a name bound to a literal."""
+        sample = (
+            "class A:\n"
+            "    def post(self):\n"
+            "        msg = f'{game}: advanced.' if more else 'Game complete.'\n"
+            "        warning = None\n"
+            "        if late:\n"
+            "            warning = ('That deadline ' 'is in the past.')\n"
+            "        return Response({'message': msg, 'warning': warning,\n"
+            "                         'detail': 'Removed.' if x else y,\n"
+            "                         'round': after, 'code': 'a_code'})\n"
+            "    def ok(self):\n"
+            "        text = operator_message('done_x', language=language)\n"
+            "        return Response({'message': text, 'warning': None})\n")
+        self.assertEqual(
+            [kind for _, kind in english_refusal_literals(sample)],
+            ['message literal', 'warning literal', 'detail literal'])
+        self.assertEqual(
+            english_refusal_literals(sample, keys=('error',)), [])
+
     def test_the_live_round_routes_carry_no_english_refusal_literal(self):
         for relative, classes in CONVERTED:
             with self.subTest(file=relative):
@@ -184,6 +239,58 @@ class OperatorRefusalSourceScanTests(TestCase):
                     english_refusal_literals(source, classes), [],
                     f'{relative}: an operator refusal bypasses '
                     f'core.utils.operator_messages')
+
+
+# Text a person is shown that is deliberately still a literal: (file, text on
+# or beside the line). Empty now, and kept so that an exemption is a reviewed
+# line in this file rather than a quiet hole in the scan; the guard fails on
+# anything not listed, and on a listed entry that no longer matches.
+WHOLE_TREE_EXEMPT = set()
+
+
+def every_view_module():
+    modules = sorted((BACKEND / 'core/views').glob('*.py'))
+    modules += [BACKEND / 'core/rag/views.py', BACKEND / 'core/middleware.py',
+                BACKEND / 'core/services/lifecycle.py',
+                BACKEND / 'core/services/persona_engine.py',
+                BACKEND / 'core/services/r_and_d.py']
+    return modules
+
+
+class WholeTreeRefusalScanTests(TestCase):
+    """No view module answers a person in a sentence written in the source.
+
+    `CONVERTED` above names the operator routes; this is the wider net asked
+    for once the remainder was converted: every view module, the scope
+    middleware, and the two services whose refusals a view passes straight on.
+    A new English refusal anywhere in them fails here, whichever catalogue it
+    should have come from.
+    """
+
+    def test_every_view_module_is_scanned(self):
+        names = {path.name for path in every_view_module()}
+        self.assertGreater(len(names), 40)
+        for expected in ('auth.py', 'cc32a_views.py', 'cc32b_views.py',
+                         'onboarding.py', 'mixins.py', 'middleware.py'):
+            self.assertIn(expected, names)
+
+    def test_no_view_module_carries_an_english_sentence_for_a_person(self):
+        offenders, exempt_seen = [], set()
+        for path in every_view_module():
+            relative = path.relative_to(BACKEND).as_posix()
+            source = path.read_text(encoding='utf-8')
+            lines = source.splitlines()
+            for lineno, kind in english_refusal_literals(source):
+                context = ' '.join(lines[max(0, lineno - 2):lineno + 1])
+                matched = [entry for entry in WHOLE_TREE_EXEMPT
+                           if entry[0] == relative and entry[1] in context]
+                if matched:
+                    exempt_seen.update(matched)
+                else:
+                    offenders.append(f'{relative}:{lineno} {kind}')
+        self.assertEqual(offenders, [])
+        self.assertEqual(exempt_seen, WHOLE_TREE_EXEMPT,
+                         'an exemption no longer matches anything')
 
 
 # ---------------------------------------------------------------------------
@@ -431,3 +538,163 @@ class OperatorRefusalLanguageTests(TestCase):
         url = f'/api/games/{self.game.id}/instructor/team-config/'
         self.both(lambda language: self.call('put', url, language=language),
                   400, 'team_config_no_teams')
+
+
+    # -- the 2026-09-21 remainder --------------------------------------------
+
+    def _unlock_url(self, team):
+        return (f'/api/games/{self.game.id}/teams/{team.id}/decisions/round/1'
+                f'/unlock/')
+
+    def _submission(self, status):
+        from core.models import DecisionSubmission, Team
+        team = Team.objects.filter(game=self.game).first()
+        DecisionSubmission.objects.create(team=team, round=self.round,
+                                          status=status)
+        return team
+
+    def test_unlocking_a_submission_that_is_not_locked(self):
+        team = self._submission('draft')
+        self.both(lambda language: self.call(
+            'post', self._unlock_url(team), language=language),
+            409, 'submission_not_locked')
+        row = OperatorAuditEvent.objects.filter(outcome='rejected').first()
+        self.assertEqual(row.conflict['detail'], 'Submission is not locked.')
+        en = self.call('post', self._unlock_url(team), language='en')
+        self.assertEqual(en.data['guidance'],
+                         'Refresh — it may already have been unlocked.')
+
+    def test_unlocking_in_a_round_that_is_already_processed(self):
+        team = self._submission('locked')
+        self.round.status = 'processed'
+        self.round.save(update_fields=['status'])
+        self.both(lambda language: self.call(
+            'post', self._unlock_url(team), language=language),
+            409, 'round_already_processed')
+        row = OperatorAuditEvent.objects.filter(outcome='rejected').first()
+        self.assertEqual(
+            row.conflict['detail'],
+            'Round 1 has already been processed; unlocking now would not '
+            'change its results.')
+
+    def test_staging_a_supply_chain_event_in_a_round_that_is_not_open(self):
+        from decimal import Decimal
+        from core.models.scenario import EventTemplateDefinition
+        template = EventTemplateDefinition.objects.create(
+            scenario=self.game.scenario, name='Probe shock',
+            description_template='A shock.', category='supply_chain',
+            severity='moderate', probability_per_round=Decimal('0'),
+            earliest_round=1, max_occurrences=1)
+        self.round.status = 'closed'
+        self.round.save(update_fields=['status'])
+        url = f'/api/games/{self.game.id}/instructor/inject-sc-event/'
+        self.both(lambda language: self.call(
+            'post', url, {'event_template_id': template.id},
+            language=language), 409, 'round_not_open')
+        zh = self.call('post', url, {'event_template_id': template.id})
+        self.assertNotIn('closed', zh.data['error'])
+        # The audit row is byte-for-byte what it was before the conversion.
+        row = OperatorAuditEvent.objects.filter(outcome='rejected').first()
+        self.assertEqual(
+            row.conflict['detail'],
+            'Round 1 is "closed"; an event staged now would not fire in it.')
+
+    # `rounds/<id>/send-reminder/` and `rounds/<id>/decision-status/` are not
+    # driven here: both look a round up by a column the model does not have and
+    # answer 500 before any refusal is reached (reported as a finding). Their
+    # literals are converted and held by the source scan.
+
+    def test_firing_events_without_saying_where(self):
+        self.both(lambda language: self.call(
+            'post', '/api/fire-events/', language=language),
+            400, 'fire_events_incomplete')
+
+    def test_an_account_upload_with_nothing_in_it(self):
+        self.both(lambda language: self.call(
+            'post', '/api/users/bulk-upload/', language=language),
+            400, 'accounts_csv_empty')
+
+    def test_an_account_row_with_no_username(self):
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                answered = self.call(
+                    'post', '/api/users/bulk-upload/',
+                    {'csv': 'username,role,team_id\n,Student,\n'},
+                    language=language)
+                row = answered.data['errors'][0]
+                self.assertEqual(row['code'], 'accounts_row_missing_username')
+                self.assertEqual(has_cjk(row['error']), language == 'zh-CN')
+
+    def test_another_instructors_game_is_refused_by_the_guard_in_chinese(self):
+        other = User.objects.create(
+            username=f'op2-{id(self)}', role='instructor', password_hash='x')
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(other)}')
+        url = f'/api/games/{self.game.id}/round-control/close/'
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                refused = client.post(url, {}, format='json',
+                                      HTTP_ACCEPT_LANGUAGE=language)
+                self.assertEqual(refused.status_code, 403)
+                body = refused.json()
+                self.assertEqual(body['code'],
+                                 'game_belongs_to_another_instructor')
+                self.assertEqual(has_cjk(body['error']), language == 'zh-CN')
+                self.assertIn('request_id', body)
+
+
+    # -- confirmations: what the console shows when an action SUCCEEDED ------
+    # `RoundControlCard` shows `message` (and `warning`) verbatim, so an
+    # instructor working in Chinese read English after every close, reopen,
+    # process, advance and deadline change. English is unchanged to the byte.
+
+    def confirmed(self, response, language, english):
+        self.assertEqual(response.status_code, 200, response.data)
+        text = response.data['message']
+        self.assertEqual(has_cjk(text), language == 'zh-CN', text)
+        self.assertIn(self.game.name, text)
+        if language == 'en':
+            # `\d+`: closing locks the submissions an earlier close created.
+            self.assertRegex(text, '^' + re.escape(english).replace(
+                'COUNT', r'\d+') + '$')
+
+    def test_close_then_reopen(self):
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                closed = self.call(
+                    'post', f'/api/games/{self.game.id}/round-control/close/',
+                    language=language)
+                self.confirmed(closed, language,
+                               f'{self.game.name}: round 1 closed. '
+                               f'COUNT submission(s) locked.')
+                reopened = self.call(
+                    'post', f'/api/games/{self.game.id}/round-control/reopen/',
+                    {'deadline': '2099-01-01T00:00:00Z'}, language=language)
+                self.confirmed(reopened, language,
+                               f'{self.game.name}: round 1 reopened. '
+                               f'COUNT submission(s) unlocked.')
+
+    def test_setting_and_clearing_a_deadline(self):
+        url = f'/api/games/{self.game.id}/round-control/deadline/'
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                self.confirmed(
+                    self.call('post', url, {'deadline': '2099-01-01T00:00:00Z'},
+                              language=language),
+                    language, f'{self.game.name}: deadline updated.')
+                self.confirmed(
+                    self.call('post', url, {'deadline': None},
+                              language=language),
+                    language, f'{self.game.name}: deadline cleared.')
+                late = self.call('post', url,
+                                 {'deadline': '2000-01-01T00:00:00Z'},
+                                 language=language)
+                self.assertEqual(has_cjk(late.data['warning']),
+                                 language == 'zh-CN', late.data['warning'])
+
+    def test_a_confirmation_is_never_a_refusal_code(self):
+        done = [key for key in MESSAGES if key.startswith('done_')]
+        self.assertGreaterEqual(len(done), 10)
+        self.assertEqual([key for key in done if key in bilingual_codes()], [])
+

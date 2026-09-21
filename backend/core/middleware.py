@@ -252,8 +252,9 @@ class TeamScopeGuardMiddleware:
         if _is_team_member(user_id, team_id):
             return None
 
+        from core.utils.participant_messages import participant_refusal
         return JsonResponse(
-            {'detail': 'You do not have access to this team.'},
+            participant_refusal(request, 'team_access_denied', field='detail'),
             status=403,
         )
 
@@ -352,8 +353,11 @@ class GameScopeGuardMiddleware:
             self._record_refusal(request, game_id, method, route, request_id,
                                  reason)
 
+        # The record above keeps its English reason; only the answer is in
+        # the instructor's language.
+        from core.utils.operator_messages import operator_refusal
         return JsonResponse(
-            {'error': 'This game belongs to another instructor.',
+            {**operator_refusal(request, 'game_belongs_to_another_instructor'),
              'request_id': request_id}, status=403)
 
     @staticmethod

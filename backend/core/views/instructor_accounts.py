@@ -14,7 +14,8 @@ from core.models import User
 from core.models.auth_models import UserSession
 from core.models.course import Enrollment, Section
 from core.permissions import IsInstructor
-from core.utils.operator_messages import operator_refusal
+from core.utils.operator_messages import (
+    language_for_request, operator_message, operator_refusal)
 from core.utils.passwords import (
     default_password_for, hash_password, validate_password,
 )
@@ -170,7 +171,10 @@ class StudentPasswordResetView(APIView):
         user.save(update_fields=['password_hash'])
 
         return Response({
-            'message': f'Password updated for {user.username}.',
+            'message': operator_message(
+                'done_password_updated',
+                language=language_for_request(request),
+                username=user.username),
             'user_id': user.user_id,
             'username': user.username,
             # Echoed so the instructor can read it out to the student. This is
@@ -211,7 +215,9 @@ class BulkPasswordResetView(APIView):
             if not pw:
                 skipped.append({'user_id': user.user_id,
                                 'username': user.username,
-                                'reason': 'no student_id or username'})
+                                'reason': operator_message(
+                                    'done_password_skipped_no_identity',
+                                    language=language_for_request(request))})
                 continue
             user.password_hash = hash_password(pw)
             user.save(update_fields=['password_hash'])
@@ -220,7 +226,9 @@ class BulkPasswordResetView(APIView):
                             'password': pw})
 
         return Response({
-            'message': f'Reset {len(updated)} password(s) to the student ID default.',
+            'message': operator_message(
+                'done_passwords_reset', language=language_for_request(request),
+                count=len(updated)),
             'updated_count': len(updated),
             'skipped_count': len(skipped),
             'updated': updated,

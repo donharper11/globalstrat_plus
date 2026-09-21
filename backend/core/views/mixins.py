@@ -6,6 +6,7 @@ instance_id query parameter. This ensures section isolation.
 """
 
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 
 
 def _get_instance_id_from_request(request):
@@ -41,7 +42,7 @@ class DecisionLockedMixin:
         if current_round and current_round.decisions_locked:
             return Response(
                 {
-                    'error': 'Decisions are locked for this round.',
+                    **participant_refusal(request, 'decisions_locked'),
                     'reason': current_round.lock_reason,
                     'deadline': current_round.deadline.isoformat() if current_round.deadline else None,
                 },

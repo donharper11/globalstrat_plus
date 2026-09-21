@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from core.models import User, Enrollment, Section, SimulationInstance, Course
@@ -187,13 +188,14 @@ class LoginView(APIView):
 
         if not username:
             return Response(
-                {'error': 'Username is required.'},
+                participant_refusal(request, 'login_username_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         if not password:
             return Response(
-                {'error': 'Password is required.', 'requires_password': True},
+                {**participant_refusal(request, 'login_password_required'),
+                 'requires_password': True},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -212,7 +214,7 @@ class LoginView(APIView):
 
         # Generic message so login can't be used to enumerate valid usernames.
         invalid = Response(
-            {'error': 'Invalid username or password.'},
+            participant_refusal(request, 'login_invalid'),
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
@@ -226,8 +228,7 @@ class LoginView(APIView):
             # No password on file: the account cannot be logged into until an
             # instructor sets one. Never fall through to an unauthenticated login.
             return Response(
-                {'error': 'No password is set for this account. '
-                          'Please ask your instructor to reset it.'},
+                participant_refusal(request, 'login_no_password'),
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -244,7 +245,7 @@ class LoginView(APIView):
             ).exclude(team_id__isnull=True).exists()
             if not has_team:
                 return Response(
-                    {'error': 'Your account has not been assigned to a team yet. Please contact your instructor.'},
+                    participant_refusal(request, 'login_no_team'),
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
@@ -326,7 +327,7 @@ class CurrentUserView(APIView):
         user = User.objects.filter(user_id=request.user.user_id).first()
         if not user:
             return Response(
-                {'error': 'User not found.'},
+                participant_refusal(request, 'account_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -352,7 +353,8 @@ class LanguagePreferenceView(APIView):
     def put(self, request):
         language = request.data.get('language', 'en')
         if language not in ('en', 'zh-CN'):
-            return Response({'error': 'Unsupported language'}, status=400)
+            return Response(
+                participant_refusal(request, 'language_unsupported'), status=400)
         enrollment = self._get_enrollment(request)
         if enrollment:
             enrollment.language = language

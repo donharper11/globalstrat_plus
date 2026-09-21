@@ -9,6 +9,8 @@ from decimal import Decimal
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
+from core.utils.participant_messages import (
+    language_for_request, participant_message, participant_refusal)
 from rest_framework.views import APIView
 
 from core.models.core import Game, Team, Round
@@ -216,7 +218,7 @@ class FrameworkAnalysisView(APIView):
 
         if not framework_type:
             return Response(
-                {'error': 'framework_type is required'},
+                participant_refusal(request, 'framework_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -247,7 +249,8 @@ class FrameworkAnalysisView(APIView):
 
         return Response({
             'id': obj.id,
-            'message': 'Analysis saved.',
+            'message': participant_message(
+                'analysis_saved', language=language_for_request(request)),
         }, status=status.HTTP_201_CREATED)
 
 
@@ -462,14 +465,19 @@ class ForecastView(APIView):
         current_round = game.current_round
         rnd = Round.objects.filter(game=game, round_number=current_round).first()
         if not rnd:
-            return Response({'message': 'No round found.'})
+            return Response({'message': participant_message(
+                'forecast_no_round', language=language_for_request(request))})
 
         submission = DecisionSubmission.objects.filter(
             team=team, round=rnd,
         ).first()
 
         if not submission:
-            return Response({'message': 'No draft decisions yet.', 'has_draft': False})
+            return Response({
+                'message': participant_message(
+                    'forecast_no_draft',
+                    language=language_for_request(request)),
+                'has_draft': False})
 
         # Revenue projection from marketing decisions
         revenue_lines = []
@@ -608,5 +616,7 @@ class ForecastScenarioView(APIView):
 
         return Response({
             'id': scenario.id,
-            'message': 'Scenario saved.',
+            'message': participant_message(
+                'forecast_scenario_saved',
+                language=language_for_request(request)),
         }, status=status.HTTP_201_CREATED)
