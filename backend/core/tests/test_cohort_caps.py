@@ -196,6 +196,95 @@ class TeamAssignmentCapTests(CohortCapTestBase):
         self.assertEqual(reported[0]['minimum'], 3)
         self.assertIn('at least 3', reported[0]['detail'])
 
+    # ---- V2-104: what the response says when an assignment is refused ----
+    #
+    # The endpoint is a batch, so it answers 200 with a per-item `errors` list
+    # and the status never says what happened. That contract is kept -- a batch
+    # can be partly refused, and one status cannot describe it -- and it is
+    # pinned here because the instructor console's reading of it
+    # (frontend `assignmentOutcome.js`) depends on exactly these three shapes.
+
+    def test_a_wholly_refused_batch_says_nothing_was_written(self):
+        for index in range(5):
+            self._enrol(f'whole{index}', team_id=self.team.id)
+        sixth, seventh = self._enrol('whole-six'), self._enrol('whole-seven')
+
+        response = self.client_.put('/api/team-management/', {
+            'action': 'assign',
+            'assignments': [
+                {'user_id': sixth.user_id, 'team_id': self.team.id},
+                {'user_id': seventh.user_id, 'team_id': self.team.id}],
+        }, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['updated'], 0)
+        self.assertEqual(len(response.data['errors']), 2)
+        self.assertEqual(team_member_count(self.team.id), 5)
+
+    def test_a_partly_refused_batch_reports_both_halves(self):
+        for index in range(4):
+            self._enrol(f'part{index}', team_id=self.team.id)
+        fifth, sixth = self._enrol('part-five'), self._enrol('part-six')
+
+        response = self.client_.put('/api/team-management/', {
+            'action': 'assign',
+            'assignments': [
+                {'user_id': fifth.user_id, 'team_id': self.team.id},
+                {'user_id': sixth.user_id, 'team_id': self.team.id}],
+        }, format='json')
+
+        self.assertEqual(response.data['updated'], 1)
+        self.assertEqual(len(response.data['errors']), 1)
+        self.assertEqual(response.data['errors'][0]['item']['user_id'],
+                         sixth.user_id)
+        self.assertEqual(team_member_count(self.team.id), 5)
+        self.assertIsNone(Enrollment.objects.get(
+            user_id=sixth.user_id).team_id)
+
+    def test_the_cap_refusal_is_localised_for_a_zh_instructor(self):
+        for index in range(5):
+            self._enrol(f'zhcap{index}', team_id=self.team.id)
+        sixth = self._enrol('zhcap-six')
+        zh_client = self._client(self.instructor, language='zh-CN')
+
+        response = zh_client.put('/api/team-management/', {
+            'action': 'assign',
+            'assignments': [{'user_id': sixth.user_id,
+                             'team_id': self.team.id}],
+        }, format='json')
+
+        self.assertIn('已达本班级允许的上限',
+                      response.data['errors'][0]['error'])
+
+    def test_every_other_refusal_is_localised_and_names_no_storage_field(self):
+        """The cap was the only refusal in the list written for an instructor.
+
+        A student removed by a second operator, or a team deleted since the
+        roster loaded, was refused as `No active enrollment for user_id=41.` --
+        English for every instructor, and a column name.
+        """
+        enrolled = self._enrol('still-here')
+        cases = {
+            'gone-student': {'user_id': 987654321, 'team_id': self.team.id},
+            'gone-team': {'user_id': enrolled.user_id, 'team_id': 987654321},
+            'no-student': {'team_id': self.team.id},
+        }
+        for language in ("en", "zh-CN"):
+            client = self._client(self.instructor, language=language)
+            for name, item in cases.items():
+                with self.subTest(language=language, case=name):
+                    response = client.put('/api/team-management/', {
+                        'action': 'assign', 'assignments': [item],
+                    }, format='json')
+                    self.assertEqual(response.data['updated'], 0)
+                    detail = response.data['errors'][0]['error']
+                    for storage_name in ('user_id', 'team_id', 'enrollment'):
+                        self.assertNotIn(storage_name, detail)
+                    has_cjk = any('\u4e00' <= ch <= '\u9fff' for ch in detail)
+                    self.assertEqual(has_cjk, language == 'zh-CN', detail)
+        self.assertIsNone(Enrollment.objects.get(
+            user_id=enrolled.user_id).team_id)
+
     def test_the_user_route_respects_the_same_cap(self):
         """User.team_id is a second membership record; one uncapped route is
         enough to make the cap meaningless (see cohort_caps)."""
