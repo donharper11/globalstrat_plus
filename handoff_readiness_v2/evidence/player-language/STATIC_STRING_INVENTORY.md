@@ -4,7 +4,7 @@ This is a reproducible Stage 1 candidate inventory, not a claim that every
 candidate is reachable. Reviewers must classify each candidate before changing
 wording; `operator-or-log-only` rows require an explicit exemption rationale.
 
-Source fingerprint: `e3d913a78fb1ca3767a0ad2b218bc4061d168562124ec21d204ac944527d33af`
+Source fingerprint: `420d82d72b24c21f2e59e1c931c8efc1a2a35e6d782247ff6008bbf429bdbbb7`
 Candidate strings: **2278**
 
 | Audience | Candidate count |
