@@ -22,6 +22,7 @@ from core.serializers.grading import (
 )
 from core.services.grading import (
     calculate_team_grades, override_team_category_score,
+    ModelDerivedComponentInCompetition,
     clear_override, seed_default_rubric, get_student_grades,
     COMPONENT_LABELS,
 )
@@ -132,10 +133,17 @@ class CalculateGradesView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         user_id = request.data.get('user_id')
-        results = calculate_team_grades(
-            int(instance_id), int(course_id),
-            graded_by=int(user_id) if user_id else None,
-        )
+        try:
+            results = calculate_team_grades(
+                int(instance_id), int(course_id),
+                graded_by=int(user_id) if user_id else None,
+            )
+        except ModelDerivedComponentInCompetition as exc:
+            return Response(
+                {'error': str(exc),
+                 'code': 'model_derived_component_in_competition'},
+                status=status.HTTP_409_CONFLICT,
+            )
         return Response(results)
 
 

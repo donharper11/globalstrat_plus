@@ -279,6 +279,50 @@ COMPONENT_LABELS = {
 }
 
 
+# ── R40: model-derived components stay out of competition heats ─────
+
+# Components whose value comes from a language model's judgement. R31 ruled
+# that a model must not reach a graded competition score; R40 (2026-09-21)
+# keeps `communication_quality` as an instructor option for ordinary teaching
+# and bars it from a competition heat. Add any future model-scored component
+# here: the guard below reads only this set.
+MODEL_DERIVED_COMPONENTS = frozenset({'communication_quality'})
+
+
+class ModelDerivedComponentInCompetition(Exception):
+    """A competition heat's rubric selects a component a model scored."""
+
+
+def _instance_is_competition(instance_id):
+    # Read strictly, not through `is_competition_game`, which swallows errors
+    # and answers "not a competition": right for a page render, wrong for a
+    # guard, where an unreadable flag must not open the gate.
+    instance = SimulationInstance.objects.filter(
+        instance_id=instance_id).first()
+    settings_blob = (instance.settings if instance else None) or {}
+    return (isinstance(settings_blob, dict)
+            and bool(settings_blob.get('is_competition', False)))
+
+
+def refuse_model_derived_components_in_competition(instance_id, categories):
+    """Raise before any grade row is written, naming what to change."""
+    if not _instance_is_competition(instance_id):
+        return
+    offending = sorted(set(
+        GradingComponentMapping.objects.filter(
+            category_id__in=[c.category_id for c in categories],
+            component_key__in=MODEL_DERIVED_COMPONENTS,
+        ).values_list('component_key', flat=True)))
+    if offending:
+        labels = ', '.join(COMPONENT_LABELS.get(k, k) for k in offending)
+        raise ModelDerivedComponentInCompetition(
+            f'This is a competition heat, and its grading rubric uses a '
+            f'component scored by a language model ({labels}). A model\'s '
+            f'judgement may not reach a competition grade. Remove the '
+            f'component from the rubric and calculate again; it remains '
+            f'available for non-competition classes.')
+
+
 # ── Normalization helpers ───────────────────────────────────────────
 
 def _normalize_across_teams(component_key, team_ids, instance_id):
@@ -397,6 +441,8 @@ def calculate_team_grades(instance_id, course_id, graded_by=None,
     categories = GradingRubricCategory.objects.filter(
         rubric_id=rubric.rubric_id,
     ).order_by('sort_order')
+
+    refuse_model_derived_components_in_competition(instance_id, categories)
 
     # Resolve instance_id → game_id to find teams in the new engine
     game_id = _resolve_game_id(instance_id)

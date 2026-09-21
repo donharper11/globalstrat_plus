@@ -3205,3 +3205,12 @@ can be read to opposite conclusions. These rows were flagged by the re-audit
 | V2-068 | **Half open.** The `globalstrat-narratives` unit is active and enabled; `NARRATIVE_WORKER_OPERATIONS.md` still describes the wrong unit, and no real job has been proven end to end on the production stack. | The checklist tick covers supervision only. |
 | V2-107 | **Repaired at `1855b25`; browser proof at a containing revision is still missing** — all eight stamps under `evidence/bug-sweep` read `135508e`. | Record is right, evidence is stale. To be re-driven on the freeze commit. |
 | Calibration evidence | **Invalidated and unmarked.** R18, R32, R36 and R37 each change stored competitive values by their own commit messages; nothing in `evidence/calibration/` says so. Re-measure after the freeze (the R28 balance gate). | No marker exists. |
+
+### Rulings R39–R41, 2026-09-21
+
+| Ruling | Finding | State |
+|---|---|---|
+| R39 | V2-130 | **Ruled: the relaxation is confirmed** — at most three campaign focus features, at least one only when the row carries a promotion budget. No code change; `1855b25` stands. Closable by the auditor. |
+| R40 | V2-123 residual (2) | **Ruled and implemented.** `communication_quality` stays as an instructor option; a heat flagged `is_competition` refuses to calculate grades from a rubric that maps it (409, before any row is written). `test_r40_model_component_not_in_competition.py`, 5 tests, falsified. Console still discards the reason (`InstructorDashboard.js:1150`) — open. |
+| R41 | V2-120 | **Ruled: test play, no result depends on the nine manifests** — nothing has been live on GlobalStrat+ (same ground as R20). Closable once the nine rows are confirmed against the production database to sit in test games; that check has not been run. |
+
