@@ -44,6 +44,8 @@ from core.services.cohort_scope import (
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action, request_id_for)
 from core.utils.cohort_messages import cohort_message, language_for_request
+from core.utils.participant_messages import (
+    participant_message, participant_refusal)
 from core.utils.operator_messages import (
     composed_lifecycle_refusal, lifecycle_refusal, operator_code,
     operator_message, operator_refusal, round_status)
@@ -362,7 +364,9 @@ class RosterViewSet(APIView):
             return refused
         enrollment.delete()
         return Response(
-            {'detail': 'Enrollment removed.'},
+            {'detail': operator_message(
+                'done_enrollment_removed',
+                language=language_for_request(request))},
             status=status.HTTP_204_NO_CONTENT,
         )
 
@@ -1011,15 +1015,19 @@ class DecisionStatusView(APIView):
             # Get current round from SimulationState
             state = SimulationState.objects.filter(instance_id=instance_id).first() if instance_id else None
             if not state or not state.current_round_id:
-                return Response({'error': 'No active round.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(participant_refusal(request, 'no_active_round'),
+                                status=status.HTTP_400_BAD_REQUEST)
             round_id = state.current_round_id
 
         try:
             r = Round.objects.get(round_id=round_id)
         except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(participant_refusal(request, 'round_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         inst_filter = {'instance_id': int(instance_id)} if instance_id else {}
+        # The checklist labels are read by whoever asked, in their language.
+        self._language = language_for_request(request)
 
         if team_id:
             # Single team status
@@ -1071,28 +1079,36 @@ class DecisionStatusView(APIView):
         dilemmas_available = 0
         ethics_submitted = 0
 
+        def label(key, **values):
+            return participant_message(
+                key, language=getattr(self, '_language', 'en'), **values)
+
         all_done = True
         items = []
         items.append({
-            'item': 'CSR Programs',
+            'item': label('status_item_programs'),
             'done': programs_modified,
-            'detail': 'Modified' if programs_modified else 'No changes',
+            'detail': label('status_detail_modified' if programs_modified
+                            else 'status_detail_no_changes'),
         })
         if challenges_available > 0:
             done = challenges_submitted >= challenges_available
             items.append({
-                'item': 'Challenge Responses',
+                'item': label('status_item_challenges'),
                 'done': done,
-                'detail': f'{challenges_submitted}/{challenges_available} submitted',
+                'detail': label('status_detail_submitted_count',
+                                submitted=challenges_submitted,
+                                available=challenges_available),
             })
             if not done:
                 all_done = False
         if dilemmas_available > 0:
             done = ethics_submitted > 0
             items.append({
-                'item': 'Ethical Dilemma',
+                'item': label('status_item_dilemma'),
                 'done': done,
-                'detail': 'Submitted' if done else 'Pending',
+                'detail': label('status_detail_submitted' if done
+                                else 'status_detail_pending'),
             })
             if not done:
                 all_done = False
@@ -1120,11 +1136,13 @@ class SendReminderView(APIView):
         try:
             r = Round.objects.get(round_id=round_id)
         except Round.DoesNotExist:
-            return Response({'error': 'Round not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(operator_refusal(request, 'round_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         instance_id = request.data.get('instance_id')
         if not instance_id:
-            return Response({'error': 'instance_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(operator_refusal(request, 'reminder_game_required'),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         inst_filter = {'instance_id': int(instance_id)}
         teams = Team.objects.filter(**inst_filter)

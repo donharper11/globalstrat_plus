@@ -469,6 +469,165 @@ MESSAGES = {
         'en': 'There is no grade for that team yet. Calculate grades first.',
         'zh-CN': '该团队尚无成绩。请先计算成绩。',
     },
+
+    # -- the 2026-09-21 remainder: unlock, supply-chain inject, legacy routes --
+    'unlock_already_processed': {
+        'en': 'Round {round} has already been processed; unlocking now would not change its results.',
+        'zh-CN': '第 {round} 回合已结算；此时解锁不会改变其结果。',
+    },
+    'unlock_already_processed_guidance': {
+        'en': 'Use the recovery workflow if a processed round must be corrected.',
+        'zh-CN': '如需更正已结算的回合，请使用恢复流程。',
+    },
+    'submission_not_locked': {
+        'en': 'Submission is not locked.',
+        'zh-CN': '该提交未处于锁定状态。',
+    },
+    'submission_not_locked_guidance': {
+        'en': 'Refresh — it may already have been unlocked.',
+        'zh-CN': '请刷新——它可能已被解锁。',
+    },
+    'sc_inject_round_not_open': {
+        'en': 'Round {round} is "{status}"; an event staged now would not fire in it.',
+        'zh-CN': '第 {round} 回合{status}；此时安排的事件不会在该回合触发。',
+    },
+    'sc_inject_round_not_open_guidance': {
+        'en': 'Inject into an open round, or advance first.',
+        'zh-CN': '请在已开放的回合中注入事件，或先推进到下一回合。',
+    },
+    'no_active_round': {
+        'en': 'No active round.',
+        'zh-CN': '当前没有进行中的回合。',
+    },
+    'reminder_game_required': {
+        'en': 'The request did not say which game session to remind, so no reminder was sent. Reload the console and try again.',
+        'zh-CN': '本次请求未指明要提醒哪个游戏场次，因此未发送提醒。请刷新控制台后重试。',
+    },
+    'accounts_csv_empty': {
+        'en': 'No account data was provided. Paste the account list, then upload again.',
+        'zh-CN': '未提供账号数据。请粘贴账号列表后重新上传。',
+    },
+    'accounts_row_missing_username': {
+        'en': 'This row has no username, so no account was created from it.',
+        'zh-CN': '此行没有用户名，因此未据此创建账号。',
+    },
+    'accounts_row_invalid_team': {
+        'en': 'This row names a team, "{value}", that is not a number, so no account was created from it.',
+        'zh-CN': '此行填写的团队“{value}”不是数字，因此未据此创建账号。',
+    },
+    'game_creation_market_unknown': {
+        'en': 'Market code "{code}" is not a market in scenario "{scenario}".',
+        'zh-CN': '场景“{scenario}”中没有代码为“{code}”的市场。',
+    },
+    'game_creation_no_starter_profiles': {
+        'en': 'Scenario "{scenario}" has no starter profiles, so no game can be created from it.',
+        'zh-CN': '场景“{scenario}”没有初始企业档案，因此无法据此创建游戏。',
+    },
+    'game_creation_no_starting_platform': {
+        'en': 'Scenario "{scenario}" has no starting platform generation, so no game can be created from it.',
+        'zh-CN': '场景“{scenario}”没有初始平台代次，因此无法据此创建游戏。',
+    },
+    'game_creation_failed': {
+        'en': 'The game could not be created: {detail}',
+        'zh-CN': '无法创建游戏。系统给出的原因（英文）：{detail}',
+    },
+    'fire_events_failed': {
+        'en': 'Events could not be fired: {detail}',
+        'zh-CN': '无法触发事件。系统给出的原因（英文）：{detail}',
+    },
+    'password_blank': {
+        'en': 'Password cannot be blank.',
+        'zh-CN': '密码不能为空。',
+    },
+    'password_too_short': {
+        'en': 'Password must be at least {minimum} characters.',
+        'zh-CN': '密码至少需要 {minimum} 个字符。',
+    },
+    'fire_events_incomplete': {
+        'en': 'Choose a game and a round before firing events.',
+        'zh-CN': '请先选择游戏和回合，然后再触发事件。',
+    },
+    'fire_events_not_numbers': {
+        'en': 'The game and the round must each be given as a whole number.',
+        'zh-CN': '游戏和回合都必须以整数表示。',
+    },
+
+    # -- confirmations: what the console shows when an action SUCCEEDED -------
+    # `done_` keys are never refusals and never travel as a code. Every
+    # lifecycle confirmation names its game: several heats run at once on one
+    # deployment, and acting on the wrong heat is unrecoverable.
+    'done_round_closed': {
+        'en': '{game}: round {round} closed. {count} submission(s) locked.',
+        'zh-CN': '{game}：第 {round} 回合已关闭。已锁定 {count} 份提交。',
+    },
+    'done_round_reopened': {
+        'en': '{game}: round {round} reopened. {count} submission(s) unlocked.',
+        'zh-CN': '{game}：第 {round} 回合已重新开放。已解锁 {count} 份提交。',
+    },
+    'done_round_processed': {
+        'en': '{game}: round {round} processed in {seconds}s. Results are available; narratives are generating in the background.',
+        'zh-CN': '{game}：第 {round} 回合已结算，用时 {seconds} 秒。结果已可查看；叙述内容正在后台生成。',
+    },
+    'done_game_complete': {
+        'en': '{game}: round {round} was the last round. Game complete.',
+        'zh-CN': '{game}：第 {round} 回合是最后一个回合。游戏已结束。',
+    },
+    'done_advanced': {
+        'en': '{game}: advanced to round {round}.',
+        'zh-CN': '{game}：已进入第 {round} 回合。',
+    },
+    'done_deadline_updated': {
+        'en': '{game}: deadline updated.',
+        'zh-CN': '{game}：截止时间已更新。',
+    },
+    'done_deadline_cleared': {
+        'en': '{game}: deadline cleared.',
+        'zh-CN': '{game}：截止时间已清除。',
+    },
+    'done_deadline_in_past_warning': {
+        'en': 'That deadline is in the past — the round will close within a minute.',
+        'zh-CN': '该截止时间已过——回合将在一分钟内关闭。',
+    },
+    'done_deadline_extended': {
+        'en': '{game}: deadline extended by {hours} hour(s).',
+        'zh-CN': '{game}：截止时间已延长 {hours} 小时。',
+    },
+    'done_deadline_extended_and_reopened': {
+        'en': '{game}: deadline extended by {hours} hour(s). The round was closed, so it has been reopened and {count} submission(s) unlocked.',
+        'zh-CN': '{game}：截止时间已延长 {hours} 小时。该回合此前已关闭，现已重新开放，并已解锁 {count} 份提交。',
+    },
+    'done_legacy_advanced': {
+        'en': '{game}: round advanced to {round}.',
+        'zh-CN': '{game}：已推进到第 {round} 回合。',
+    },
+    'done_event_injected': {
+        'en': 'Event "{event}" injected.',
+        'zh-CN': '事件“{event}”已注入。',
+    },
+    'done_sc_event_queued': {
+        'en': '"{event}" queued — fires when round {round} is advanced.',
+        'zh-CN': '“{event}”已排入队列——将在第 {round} 回合推进时触发。',
+    },
+    'done_game_archived': {
+        'en': 'Game archived. Section is now free for a new game.',
+        'zh-CN': '游戏已归档。该班级现在可以开设新的游戏。',
+    },
+    'done_password_updated': {
+        'en': 'Password updated for {username}.',
+        'zh-CN': '已更新 {username} 的密码。',
+    },
+    'done_passwords_reset': {
+        'en': 'Reset {count} password(s) to the student ID default.',
+        'zh-CN': '已将 {count} 个密码重置为默认的学号密码。',
+    },
+    'done_password_skipped_no_identity': {
+        'en': 'no student ID or username',
+        'zh-CN': '没有学号或用户名',
+    },
+    'done_enrollment_removed': {
+        'en': 'Enrollment removed.',
+        'zh-CN': '已移除该注册记录。',
+    },
 }
 
 # Codes that shipped before this catalogue and cover more than one sentence.
@@ -482,6 +641,8 @@ CODES = {
     'inject_already_processed': 'round_already_processed',
     'extend_already_processed': 'round_already_processed',
     'legacy_advance_failed': 'advance_failed',
+    'unlock_already_processed': 'round_already_processed',
+    'sc_inject_round_not_open': 'round_not_open',
 }
 
 # Refusals rendered by OTHER catalogues through `language_for_request`, which
@@ -502,6 +663,8 @@ COMPOSED_PARTS = ('schedule_round_not_in_game', 'schedule_round_frozen',
                   'schedule_invalid_time')
 
 _GUIDANCE = '_guidance'
+# A confirmation of something that succeeded. Not a refusal, so never a code.
+_DONE = 'done_'
 
 
 def operator_code(key):
@@ -512,13 +675,26 @@ def operator_code(key):
 def bilingual_codes():
     """Every code whose sentence reaches the console in the reader's language."""
     own = {operator_code(key) for key in MESSAGES
-           if not key.endswith(_GUIDANCE) and key not in COMPOSED_PARTS}
+           if not key.endswith(_GUIDANCE) and not key.startswith(_DONE)
+           and key not in COMPOSED_PARTS}
     return sorted(own | set(COHORT_BILINGUAL_CODES) | set(COMPOSED_CODES))
 
 
 def round_status(status):
     """A round status as a value that renders in whichever language is asked."""
     return lambda language: _label(ROUND_STATUS_LABELS, status, language)
+
+
+def stored_round_status(status):
+    """The stored token in English, the label in any other language.
+
+    For a refusal whose English sentence has always quoted the stored status
+    (`Round 2 is "closed"; ...`): the operator audit row records the English
+    rendering and must not change, while a Chinese sentence must not frame an
+    English storage token.
+    """
+    return lambda language: (str(status) if language == 'en' else
+                             _label(ROUND_STATUS_LABELS, status, language))
 
 
 def game_status(status):

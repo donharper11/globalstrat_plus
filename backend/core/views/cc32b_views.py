@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework import status
 
 from core.models.core import Game, Team
@@ -42,7 +43,9 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
             game = Game.objects.get(id=game_id)
             team = Team.objects.get(id=team_id, game=game)
         except (Game.DoesNotExist, Team.DoesNotExist):
-            return Response({'error': 'Game or team not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                participant_refusal(request, 'game_or_team_not_found'),
+                status=status.HTTP_404_NOT_FOUND)
 
         scenario = game.scenario
         structures = OrganizationalStructureType.objects.filter(scenario=scenario).order_by('display_order')
@@ -120,18 +123,24 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
             game = Game.objects.get(id=game_id)
             team = Team.objects.get(id=team_id, game=game)
         except (Game.DoesNotExist, Team.DoesNotExist):
-            return Response({'error': 'Game or team not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                participant_refusal(request, 'game_or_team_not_found'),
+                status=status.HTTP_404_NOT_FOUND)
 
         structure_id = request.data.get('structure_id')
         if not structure_id:
-            return Response({'error': 'structure_id required'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                participant_refusal(request, 'request_incomplete'),
+                status=status.HTTP_400_BAD_REQUEST)
 
         try:
             new_structure = OrganizationalStructureType.objects.get(
                 id=structure_id, scenario=game.scenario,
             )
         except OrganizationalStructureType.DoesNotExist:
-            return Response({'error': 'Structure not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                participant_refusal(request, 'org_structure_not_found'),
+                status=status.HTTP_404_NOT_FOUND)
 
         org, _ = TeamOrganizationalStructure.objects.get_or_create(
             game=game, team=team,
@@ -143,12 +152,14 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
 
         # Check if already this structure
         if org.current_structure_id == new_structure.id:
-            return Response({'error': 'Already using this structure'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                participant_refusal(request, 'org_structure_same'),
+                status=status.HTTP_400_BAD_REQUEST)
 
         # Check if already transitioning
         if org.transition_rounds_remaining > 0:
             return Response(
-                {'error': 'Cannot switch during an active transition'},
+                participant_refusal(request, 'org_structure_transition_active'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -180,7 +191,7 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
 
         rnd = game.rounds.filter(round_number=game.current_round).first()
         if rnd is None:
-            return Response({'error': 'No current round for this game.'},
+            return Response(participant_refusal(request, 'no_active_round'),
                             status=status.HTTP_400_BAD_REQUEST)
 
         # The switch is a decision, so it needs the round's submission to hang
@@ -210,11 +221,10 @@ class OrgStructureContextView(CompetitionDecisionWriteMixin, APIView):
         except _SwitchUnaffordable as refusal:
             found = refusal.assessment
             return Response(
-                {'error': (
-                    f'Insufficient cash. This switch would take committed '
-                    f'spend to ${Decimal(found["committed_total"]):,.0f}, '
-                    f'against ${Decimal(found["cash_on_hand"]):,.0f} of cash.'
-                )},
+                participant_refusal(
+                    request, 'org_structure_unaffordable',
+                    committed=f'${Decimal(found["committed_total"]):,.0f}',
+                    cash=f'${Decimal(found["cash_on_hand"]):,.0f}'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

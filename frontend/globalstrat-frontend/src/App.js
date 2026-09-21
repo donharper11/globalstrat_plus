@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, Layout, Drawer } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { AuthProvider } from './AuthContext';
 import { GameProvider } from './contexts/GameContext';
 import { DecisionProvider } from './contexts/DecisionContext';
@@ -13,6 +14,7 @@ import DecisionSaveAlert from './components/DecisionSaveAlert';
 import DemoBanner from './components/DemoBanner';
 import NewsTicker from './components/NewsTicker';
 import themeConfig from './theme/themeConfig';
+import { antdLocaleFor, applyDateLocale } from './antdLocale';
 
 import './components/design-system/theme.css';
 import './components/design-system/design-system.css';
@@ -51,6 +53,10 @@ const InstructorP = ({ children }) => <ProtectedRoute redirectTo="/instructor/lo
 const MOBILE_BREAKPOINT = 768;
 
 function App() {
+  // antd's own words (OK / Cancel, the date picker, pagination) follow the
+  // interface language; `useTranslation` re-renders this when it changes.
+  const { i18n } = useTranslation();
+  useEffect(() => { applyDateLocale(i18n.language); }, [i18n.language]);
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -77,7 +83,7 @@ function App() {
   const handleDrawerClose = () => setDrawerOpen(false);
 
   return (
-    <ConfigProvider theme={themeConfig}>
+    <ConfigProvider theme={themeConfig} locale={antdLocaleFor(i18n.language)}>
       <Router>
         <AuthProvider>
           <Routes>

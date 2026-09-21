@@ -120,11 +120,14 @@ PAUSE_EXEMPT_PREFIXES = (
     '/api/user/preferences/',
 )
 
+# Game status -> the `participant_messages` sentence a student is refused with.
+# These were English sentences held here, so every write a student made while
+# the instructor had the game paused was refused in English whatever language
+# they worked in -- the commonest refusal in a live session.
 BLOCKING_GAME_STATUSES = {
-    'paused': ('The game is paused by your instructor. '
-               'No changes can be made right now.'),
-    'completed': 'This game is complete. No further changes can be made.',
-    'archived': 'This game has been archived. No further changes can be made.',
+    'paused': 'game_paused',
+    'completed': 'game_finished',
+    'archived': 'game_finished',
 }
 
 
@@ -176,12 +179,14 @@ class GamePauseGuardMiddleware:
         if not game:
             return None
 
-        message = BLOCKING_GAME_STATUSES.get(game.status)
-        if not message:
+        key = BLOCKING_GAME_STATUSES.get(game.status)
+        if not key:
             return None
 
+        from core.utils.participant_messages import participant_refusal
         return JsonResponse(
-            {'detail': message, 'game_status': game.status},
+            {**participant_refusal(request, key, field='detail'),
+             'game_status': game.status},
             status=403,
         )
 
@@ -252,8 +257,9 @@ class TeamScopeGuardMiddleware:
         if _is_team_member(user_id, team_id):
             return None
 
+        from core.utils.participant_messages import participant_refusal
         return JsonResponse(
-            {'detail': 'You do not have access to this team.'},
+            participant_refusal(request, 'team_access_denied', field='detail'),
             status=403,
         )
 
@@ -352,8 +358,11 @@ class GameScopeGuardMiddleware:
             self._record_refusal(request, game_id, method, route, request_id,
                                  reason)
 
+        # The record above keeps its English reason; only the answer is in
+        # the instructor's language.
+        from core.utils.operator_messages import operator_refusal
         return JsonResponse(
-            {'error': 'This game belongs to another instructor.',
+            {**operator_refusal(request, 'game_belongs_to_another_instructor'),
              'request_id': request_id}, status=403)
 
     @staticmethod

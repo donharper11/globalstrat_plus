@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 from core.engine.llm_runner import build_language_instruction
 from core.utils.localization import get_team_language
+from core.utils.participant_messages import service_refusal
 
 from django.conf import settings
 MAX_TOKENS = 500
@@ -1052,10 +1053,10 @@ def reply_to_thread(team_id, message_id, reply_text):
     # Find the target message
     target_msg = Message.objects.filter(message_id=message_id).first()
     if not target_msg:
-        return {'error': 'Message not found'}
+        return service_refusal('persona_message_not_found')
 
     if target_msg.recipient_id != team_id:
-        return {'error': 'Message does not belong to this team'}
+        return service_refusal('persona_message_wrong_team')
 
     # Determine thread root
     thread_root_id = target_msg.thread_root_id or target_msg.message_id
@@ -1063,19 +1064,21 @@ def reply_to_thread(team_id, message_id, reply_text):
     # Check reply cap (3 student replies per thread)
     student_replies = _count_student_replies_in_thread(thread_root_id)
     if student_replies >= MAX_REPLIES_PER_THREAD:
-        return {'error': f'Maximum {MAX_REPLIES_PER_THREAD} replies per conversation reached'}
+        return service_refusal('persona_reply_limit',
+                               maximum=MAX_REPLIES_PER_THREAD)
 
     # Check consultation limit (10 per round)
     round_number = _get_current_round()
     consultations_used = _count_consultations_this_round(team_id, round_number)
     if consultations_used >= MAX_CONSULTATIONS_PER_ROUND:
-        return {'error': f'Consultation limit reached ({MAX_CONSULTATIONS_PER_ROUND} per round)'}
+        return service_refusal('persona_consultation_limit',
+                               maximum=MAX_CONSULTATIONS_PER_ROUND)
 
     # Determine persona from the thread root
     root_msg = Message.objects.filter(message_id=thread_root_id).first()
     persona_key = root_msg.persona_key if root_msg else target_msg.persona_key
     if not persona_key or persona_key not in PERSONAS:
-        return {'error': 'Cannot determine persona for this thread'}
+        return service_refusal('persona_thread_unknown')
 
     # Save student reply
     student_msg = _save_student_message(
@@ -1096,7 +1099,7 @@ def reply_to_thread(team_id, message_id, reply_text):
     body = call_llm(llm_messages)
     if not body:
         return {
-            'error': 'Advisor is temporarily unavailable',
+            **service_refusal('persona_unavailable'),
             'student_message': {
                 'message_id': student_msg.message_id,
                 'message_body': student_msg.message_body,
@@ -1140,14 +1143,15 @@ def start_consultation(team_id, persona_key, question):
     Returns dict with student_message and persona_response, or error.
     """
     if persona_key not in PERSONAS:
-        return {'error': f'Invalid persona. Valid: {list(PERSONAS.keys())}'}
+        return service_refusal('persona_invalid')
 
     round_number = _get_current_round()
 
     # Check consultation limit
     consultations_used = _count_consultations_this_round(team_id, round_number)
     if consultations_used >= MAX_CONSULTATIONS_PER_ROUND:
-        return {'error': f'Consultation limit reached ({MAX_CONSULTATIONS_PER_ROUND} per round)'}
+        return service_refusal('persona_consultation_limit',
+                               maximum=MAX_CONSULTATIONS_PER_ROUND)
 
     persona = PERSONAS[persona_key]
     team_name = _get_team_name(team_id)
@@ -1216,7 +1220,7 @@ def start_consultation(team_id, persona_key, question):
     body = call_llm(llm_messages)
     if not body:
         return {
-            'error': 'Advisor is temporarily unavailable',
+            **service_refusal('persona_unavailable'),
             'student_message': {
                 'message_id': student_msg.message_id,
                 'message_body': student_msg.message_body,

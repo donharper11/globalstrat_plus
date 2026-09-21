@@ -12,7 +12,8 @@ from rest_framework.views import APIView
 
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
 from core.utils.operator_messages import (
-    game_status, lifecycle_refusal, operator_refusal)
+    game_status, language_for_request, lifecycle_refusal, operator_message,
+    operator_refusal)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 import json
@@ -257,8 +258,13 @@ class GameCreateView(APIView):
                 home_market_overrides=home_market_overrides,
                 section_id=section_id)
         except GameCreationError as exc:
-            return Response(
-                {'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+            # The sentence the builder named, in the instructor's language; a
+            # cause it did not name is framed and says its detail is English.
+            refusal = (operator_refusal(request, exc.key, **exc.values)
+                       if exc.key else
+                       operator_refusal(request, 'game_creation_failed',
+                                        detail=exc))
+            return Response(refusal, status=status.HTTP_400_BAD_REQUEST)
 
         # Game stays in 'setup' — instructor activates explicitly
         # after assigning students and setting round schedule
@@ -483,7 +489,9 @@ class GameArchiveView(APIView):
             return Response({
                 'game_id': game.id,
                 'status': game.status,
-                'message': 'Game archived. Section is now free for a new game.',
+                'message': operator_message(
+                    'done_game_archived',
+                    language=language_for_request(request)),
                 'request_id': action.request_id,
             })
 

@@ -27,6 +27,9 @@ from core.models.sc_state import (
     ComplianceEnforcementEvent,
 )
 from core.permissions import IsInstructor
+from core.utils.operator_messages import (
+    language_for_request, lifecycle_refusal, operator_message,
+    stored_round_status)
 from core.services.lifecycle import (
     LifecycleConflict, lifecycle_view, operator_action)
 
@@ -234,11 +237,10 @@ class InstructorInjectSCEventView(APIView):
                 scenario=game.scenario, category='supply_chain')
 
             if rnd.status != 'open':
-                raise LifecycleConflict(
-                    f'Round {rnd.round_number} is "{rnd.status}"; an event '
-                    f'staged now would not fire in it.',
-                    guidance='Inject into an open round, or advance first.',
-                    code='round_not_open')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'sc_inject_round_not_open',
+                    round=rnd.round_number,
+                    status=stored_round_status(rnd.status))
 
             inst = SCEventInstance.objects.create(
                 round=rnd, event_template=template, affects_all_teams=True,
@@ -248,8 +250,10 @@ class InstructorInjectSCEventView(APIView):
             action.commit(before, {'event_template': template.name,
                                    'round_number': rnd.round_number})
             return Response({
-                'message': f'"{template.name}" queued — fires when round '
-                           f'{rnd.round_number} is advanced.',
+                'message': operator_message(
+                    'done_sc_event_queued',
+                    language=language_for_request(request),
+                    event=template.name, round=rnd.round_number),
                 'sc_event_instance_id': inst.id,
                 'round_number': rnd.round_number,
                 'effect_summary': _event_effect_summary(template),

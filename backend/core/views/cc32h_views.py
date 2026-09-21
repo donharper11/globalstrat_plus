@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from core.models.core import Game, Round
@@ -16,7 +17,8 @@ class RoundStatusView(APIView):
         ).first()
 
         if not round_obj:
-            return Response({'error': 'No rounds found'}, status=404)
+            return Response(
+                participant_refusal(request, 'no_active_round'), status=404)
 
         return Response({
             'round': round_obj.round_number,

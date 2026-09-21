@@ -824,8 +824,10 @@ class InstructorAdvanceRoundView(APIView):
             return Response({
                 # The game is named because several heats run at once and a
                 # judge who advanced the wrong one cannot undo it.
-                'message': f'{game.name}: round advanced to '
-                           f'{game.current_round}.',
+                'message': operator_message(
+                    'done_legacy_advanced',
+                    language=language_for_request(request),
+                    game=game.name, round=game.current_round),
                 'current_round': game.current_round,
                 'game_name': game.name,
                 'request_id': action.request_id,
@@ -884,7 +886,10 @@ class InstructorInjectEventView(APIView):
             })
 
             return Response({
-                'message': f'Event "{template.name}" injected.',
+                'message': operator_message(
+                    'done_event_injected',
+                    language=language_for_request(request),
+                    event=template.name),
                 'event_id': event.id,
                 'request_id': action.request_id,
             }, status=status.HTTP_201_CREATED)
@@ -955,10 +960,11 @@ class InstructorExtendDeadlineView(APIView):
                 'reopened': reopened, 'submissions_unlocked': unlocked,
             }, reason=reason)
 
-            msg = f'{game.name}: deadline extended by {hours} hour(s).'
-            if reopened:
-                msg += (' The round was closed, so it has been reopened and '
-                        f'{unlocked} submission(s) unlocked.')
+            msg = operator_message(
+                'done_deadline_extended_and_reopened' if reopened
+                else 'done_deadline_extended',
+                language=language_for_request(request),
+                game=game.name, hours=hours, count=unlocked)
 
             return Response({
                 'message': msg,

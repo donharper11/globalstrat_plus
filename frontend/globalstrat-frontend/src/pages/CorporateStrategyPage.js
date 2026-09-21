@@ -218,7 +218,7 @@ const TalentPoolCard = ({ pool, poolKey, talent, locked, onChange, prev, markets
               <Select.Option key={s.level} value={s.level}>{s.label}</Select.Option>
             ))}
           </Select>
-          {prev && <Text style={prevStyle}>{t('corporate_strategy.last')}: {SALARY_OPTIONS.find(s => s.level === prev.salary_level)?.label || `Level ${prev.salary_level}`}</Text>}
+          {prev && <Text style={prevStyle}>{t('corporate_strategy.last')}: {SALARY_OPTIONS.find(s => s.level === prev.salary_level)?.label || t('corporate_strategy.salary_level_n', { level: prev.salary_level })}</Text>}
         </Col>
         <Col flex="160px">
           <Text style={{ fontSize: 11, display: 'block', marginBottom: 2 }}>{t('corporate_strategy.training_investment')}</Text>
@@ -828,7 +828,10 @@ const CorporateStrategyPage = () => {
             }
           }
           if (activeCommitments.includes('anti_corruption') && warnings.anti_corruption?.active) {
-            const jvCount = (warnings.anti_corruption.message.match(/,/g) || []).length + 1;
+            // The server says how many JV markets there are. Counting the
+            // commas in its sentence only ever worked for the English one.
+            const jvCount = warnings.anti_corruption.count
+              ?? ((warnings.anti_corruption.message.match(/,/g) || []).length + 1);
             interactionCost += 100000 * jvCount;
           }
         } else {

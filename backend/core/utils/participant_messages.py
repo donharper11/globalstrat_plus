@@ -562,12 +562,312 @@ MESSAGES = {
         'en': '{team}: equity raise of {requested} exceeds the funding shortfall of {maximum} (eligible uses {eligible} less available funding {available}: opening cash {opening} plus new debt {debt}). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.',
         'zh-CN': '{team}：新增股权融资 {requested} 超过资金缺口 {maximum}（合格用途 {eligible} 减去可用资金 {available}：期初现金 {opening} 加新增借款 {debt}）。股权融资只能用于弥补本回合真实的资金缺口，不能用于创造盈余现金或支付股利。',
     },
+    # -- Refusals outside the decision forms (the 2026-09-21 remainder) -------
+    # Login, communications, organisation structure, onboarding, advisors and
+    # the legacy team routes refused in English only, several by naming a
+    # storage field. A sentence here never names one: where the page, not the
+    # student, left something out, the student is told to reload, which is the
+    # only thing they can do about it.
+    'login_username_required': {
+        'en': 'Username is required.',
+        'zh-CN': '请输入用户名。',
+    },
+    'login_password_required': {
+        'en': 'Password is required.',
+        'zh-CN': '请输入密码。',
+    },
+    'login_invalid': {
+        'en': 'Invalid username or password.',
+        'zh-CN': '用户名或密码不正确。',
+    },
+    'login_no_password': {
+        'en': 'No password is set for this account. Please ask your instructor to reset it.',
+        'zh-CN': '该账号尚未设置密码。请联系教师为您重置密码。',
+    },
+    'login_no_team': {
+        'en': 'Your account has not been assigned to a team yet. Please contact your instructor.',
+        'zh-CN': '您的账号尚未分配到团队。请联系教师。',
+    },
+    'account_not_found': {
+        'en': 'Your account could not be found. Sign in again.',
+        'zh-CN': '未找到您的账号。请重新登录。',
+    },
+    'language_unsupported': {
+        'en': 'That language is not available. Choose English or Chinese.',
+        'zh-CN': '不支持该语言。请选择英文或中文。',
+    },
+    'request_incomplete': {
+        'en': 'The page sent an incomplete request, so nothing was done. Reload the page and try again.',
+        'zh-CN': '页面发送的请求不完整，因此未执行任何操作。请刷新页面后重试。',
+    },
+    'game_not_found': {
+        'en': 'This game could not be found. Reload the page and try again.',
+        'zh-CN': '未找到该游戏。请刷新页面后重试。',
+    },
+    'team_not_found': {
+        'en': 'This team could not be found. Reload the page and try again.',
+        'zh-CN': '未找到该团队。请刷新页面后重试。',
+    },
+    'game_or_team_not_found': {
+        'en': 'This game or team could not be found. Reload the page and try again.',
+        'zh-CN': '未找到该游戏或团队。请刷新页面后重试。',
+    },
+    'instructor_write_required': {
+        'en': 'Only an instructor can make this change.',
+        'zh-CN': '只有教师可以进行此更改。',
+    },
+    'team_access_denied': {
+        'en': 'You do not have access to this team.',
+        'zh-CN': '您无权访问该团队。',
+    },
+    'no_active_round': {
+        'en': 'This game has no round in progress yet.',
+        'zh-CN': '该游戏目前没有进行中的回合。',
+    },
+    'round_not_found': {
+        'en': 'That round could not be found. Reload the page and try again.',
+        'zh-CN': '未找到该回合。请刷新页面后重试。',
+    },
+    'decisions_locked': {
+        'en': 'Decisions are locked for this round.',
+        'zh-CN': '本回合的决策已锁定。',
+    },
+    'communication_already_submitted': {
+        'en': 'This communication has already been submitted and cannot be submitted again.',
+        'zh-CN': '该沟通已提交，不能再次提交。',
+    },
+    'communication_empty': {
+        'en': 'Write the communication before submitting it.',
+        'zh-CN': '请先撰写沟通内容，然后再提交。',
+    },
+    'communication_over_word_limit': {
+        'en': 'This communication is over the word limit. The maximum is {limit} words and yours has {count}.',
+        'zh-CN': '该沟通超出字数上限。上限为 {limit} 词，您的内容为 {count} 词。',
+    },
+    'org_structure_not_found': {
+        'en': 'That structure is not available in this game. Reload the page and choose again.',
+        'zh-CN': '该架构在本游戏中不可用。请刷新页面后重新选择。',
+    },
+    'org_structure_same': {
+        'en': 'Your team already uses this structure.',
+        'zh-CN': '您的团队已在使用该架构。',
+    },
+    'org_structure_transition_active': {
+        'en': 'Your team is still in transition to its current structure, so it cannot switch again yet.',
+        'zh-CN': '您的团队仍处于向当前架构过渡的阶段，暂时无法再次切换。',
+    },
+    'org_structure_unaffordable': {
+        'en': 'Insufficient cash. This switch would take committed spend to {committed}, against {cash} of cash.',
+        'zh-CN': '现金不足。此次切换会使承诺支出达到 {committed}，而可用现金为 {cash}。',
+    },
+    'framework_required': {
+        'en': 'Choose a framework before saving the analysis.',
+        'zh-CN': '请先选择分析框架，然后再保存。',
+    },
+    'analysis_saved': {
+        'en': 'Analysis saved.',
+        'zh-CN': '分析已保存。',
+    },
+    'forecast_scenario_saved': {
+        'en': 'Scenario saved.',
+        'zh-CN': '情景已保存。',
+    },
+    'forecast_no_round': {
+        'en': 'No round found.',
+        'zh-CN': '未找到回合。',
+    },
+    'forecast_no_draft': {
+        'en': 'No draft decisions yet.',
+        'zh-CN': '尚无决策草稿。',
+    },
+    'enrollment_not_found': {
+        'en': 'No active enrollment was found for your account. Please contact your instructor.',
+        'zh-CN': '未找到您的有效注册记录。请联系教师。',
+    },
+    'persona_reply_required': {
+        'en': 'Type your reply before sending it.',
+        'zh-CN': '请先输入回复内容，然后再发送。',
+    },
+    'persona_question_required': {
+        'en': 'Type your question before sending it.',
+        'zh-CN': '请先输入问题，然后再发送。',
+    },
+    'persona_message_not_found': {
+        'en': 'That message could not be found. Reload the page and try again.',
+        'zh-CN': '未找到该消息。请刷新页面后重试。',
+    },
+    'persona_message_wrong_team': {
+        'en': 'That message does not belong to your team.',
+        'zh-CN': '该消息不属于您的团队。',
+    },
+    'persona_reply_limit': {
+        'en': 'This conversation has reached its maximum of {maximum} replies.',
+        'zh-CN': '本次对话已达到 {maximum} 条回复的上限。',
+    },
+    'persona_consultation_limit': {
+        'en': 'Your team has used all {maximum} advisor consultations for this round.',
+        'zh-CN': '您的团队已用完本回合的 {maximum} 次顾问咨询。',
+    },
+    'persona_thread_unknown': {
+        'en': 'The advisor for this conversation could not be identified, so your reply was not sent.',
+        'zh-CN': '无法确定本次对话的顾问，因此您的回复未发送。',
+    },
+    'persona_unavailable': {
+        'en': 'The advisor is temporarily unavailable. Try again shortly.',
+        'zh-CN': '顾问暂时无法回复。请稍后重试。',
+    },
+    'persona_invalid': {
+        'en': 'That advisor is not available. Choose an advisor from the list.',
+        'zh-CN': '该顾问不可用。请从列表中选择一位顾问。',
+    },
+    'platform_without_team': {
+        'en': 'This platform does not belong to a team, so its development cannot be accelerated.',
+        'zh-CN': '该平台不属于任何团队，因此无法加速其开发。',
+    },
+    'platform_in_development': {
+        'en': 'Platform "{platform}" is still in development. {remaining} round(s) remaining.',
+        'zh-CN': '平台“{platform}”仍在开发中，还需 {remaining} 个回合。',
+    },
+    'platform_not_developing': {
+        'en': 'Platform is not in development.',
+        'zh-CN': '该平台不在开发中。',
+    },
+    'platform_already_ready': {
+        'en': 'Platform is already ready.',
+        'zh-CN': '该平台已开发完成。',
+    },
+    'acceleration_unaffordable': {
+        'en': 'Insufficient budget. Need {cost}, have {remaining}.',
+        'zh-CN': '预算不足。需要 {cost}，可用 {remaining}。',
+    },
+    'program_cap_reached': {
+        'en': 'Program cap reached ({active}/{maximum}). Deactivate a program before adding another.',
+        'zh-CN': '已达到项目数量上限（{active}/{maximum}）。请先停用一个项目，然后再添加。',
+    },
+    'program_budget_overage': {
+        'en': 'This will exceed your Program budget by {overage}. The overage will be financed as a loan at {rate} interest per round.',
+        'zh-CN': '这将使项目预算超支 {overage}。超支部分将通过贷款解决，每回合利率为 {rate}。',
+    },
+    'resource_query_required': {
+        'en': 'Type what you are looking for before searching.',
+        'zh-CN': '请先输入要查找的内容，然后再搜索。',
+    },
+    # The governance page's standing notices about the team's own position.
+    # They are not refusals, but they are sentences a student reads, and they
+    # were English f-strings in the view. `{pools}` and `{markets}` are lists
+    # joined in the sentence's own language.
+    'governance_notice_pay_transparency': {
+        'en': 'Your {pools} salary is Below Market. Pay transparency is exposing the gap — turnover increased +5%. Raise salaries to Market Rate or above to resolve.',
+        'zh-CN': '您的{pools}薪酬低于市场水平。薪酬透明使这一差距暴露出来——离职率上升 5%。请将薪酬提高到市场水平或以上以解决此问题。',
+    },
+    'governance_notice_anti_corruption': {
+        'en': 'You have JV partnerships in {markets}. Anti-corruption monitoring adds $100K/round per JV market.',
+        'zh-CN': '您在{markets}设有合资企业。反腐败监控会使每个合资市场每回合增加 $100K 的成本。',
+    },
+    'governance_notice_supply_chain_audit': {
+        'en': 'You use contract manufacturing in {markets}. Audit may expose labor concerns (15% probability per round).',
+        'zh-CN': '您在{markets}使用代工生产。审计可能暴露劳工问题（每回合 15% 的概率）。',
+    },
+    'governance_notice_greenwashing': {
+        'en': 'Total ESG investment is only {total}. Reporting without substance is seen as greenwashing. Increase environmental/social investment above $1M or remove this commitment.',
+        'zh-CN': '目前 ESG 总投入仅为 {total}。缺乏实质内容的报告会被视为“漂绿”。请将环境/社会投入提高到 $1M 以上，或取消此项承诺。',
+    },
+    'talent_pool_rd': {
+        'en': 'R&D',
+        'zh-CN': '研发',
+    },
+    'talent_pool_commercial': {
+        'en': 'Commercial',
+        'zh-CN': '商务',
+    },
+    'talent_pool_operations': {
+        'en': 'Operations',
+        'zh-CN': '运营',
+    },
+    'list_separator': {
+        'en': ', ',
+        'zh-CN': '、',
+    },
+    # The legacy per-round checklist (`rounds/<id>/decision-status/`).
+    'status_item_programs': {
+        'en': 'CSR Programs',
+        'zh-CN': 'CSR 项目',
+    },
+    'status_item_challenges': {
+        'en': 'Challenge Responses',
+        'zh-CN': '挑战回应',
+    },
+    'status_item_dilemma': {
+        'en': 'Ethical Dilemma',
+        'zh-CN': '伦理困境',
+    },
+    'status_detail_modified': {
+        'en': 'Modified',
+        'zh-CN': '已修改',
+    },
+    'status_detail_no_changes': {
+        'en': 'No changes',
+        'zh-CN': '无更改',
+    },
+    'status_detail_submitted_count': {
+        'en': '{submitted}/{available} submitted',
+        'zh-CN': '已提交 {submitted}/{available}',
+    },
+    'status_detail_submitted': {
+        'en': 'Submitted',
+        'zh-CN': '已提交',
+    },
+    'status_detail_pending': {
+        'en': 'Pending',
+        'zh-CN': '待提交',
+    },
 }
 
 
 def language_for_request(request):
-    """Return the supported language for a request, defaulting safely to EN."""
-    return 'zh-CN' if get_user_language(request) == 'zh-CN' else 'en'
+    """Return the supported language for a request, defaulting safely to EN.
+
+    Guarded: login and the scope middleware refuse before any user is known,
+    and a refusal must never become a 500 because its language could not be
+    read.
+    """
+    try:
+        return 'zh-CN' if get_user_language(request) == 'zh-CN' else 'en'
+    except Exception:
+        return 'en'
+
+
+# Values a service attaches to a refusal so the view can re-render it in the
+# request's language. Never sent to the client.
+_REFUSAL_VALUES = '_refusal_values'
+
+
+def participant_refusal(request, key, *, field='error', **values):
+    """The response body for a participant-facing refusal: sentence + code."""
+    return {
+        field: participant_message(
+            key, language=language_for_request(request), **values),
+        'code': key,
+    }
+
+
+def service_refusal(key, **values):
+    """A refusal raised below the view, where no request (so no language) is known.
+
+    It carries the English sentence, so a caller that is not a view still reads
+    something sensible, and the key and values `localise_refusal` needs.
+    """
+    return {'error': participant_message(key, language='en', **values),
+            'code': key, _REFUSAL_VALUES: values}
+
+
+def localise_refusal(request, result):
+    """Re-render a `service_refusal` in the request's language, in place."""
+    values = result.pop(_REFUSAL_VALUES, None)
+    if values is not None and result.get('code') in MESSAGES:
+        result['error'] = participant_message(
+            result['code'], language=language_for_request(request), **values)
+    return result
 
 
 SUPPORTED_LANGUAGES = ('en', 'zh-CN')

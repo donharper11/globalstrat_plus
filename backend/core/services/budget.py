@@ -116,13 +116,15 @@ def get_budget_status(team_id, round_id=None):
     }
 
 
-def validate_program_activation(team_id, round_id=None, additional_cost=None):
+def validate_program_activation(team_id, round_id=None, additional_cost=None,
+                                language='en'):
     """
     Check whether a team can activate another program.
     Returns (ok, warnings, errors).
     - Program cap is a hard block (error).
     - Budget overage is allowed but produces a warning (auto-loan).
     """
+    from core.utils.participant_messages import participant_message
     errors = []
     warnings = []
 
@@ -130,8 +132,9 @@ def validate_program_activation(team_id, round_id=None, additional_cost=None):
     max_programs = int(_get_param('max_active_programs', '6'))
 
     if active_count >= max_programs:
-        errors.append(f'Program cap reached ({active_count}/{max_programs}). '
-                      f'Deactivate a program before adding another.')
+        errors.append(participant_message(
+            'program_cap_reached', language=language,
+            active=active_count, maximum=max_programs))
 
     if additional_cost is not None:
         budget = calculate_program_budget(team_id, round_id)
@@ -140,10 +143,10 @@ def validate_program_activation(team_id, round_id=None, additional_cost=None):
         if new_total > budget:
             overage = new_total - budget
             rate = _get_param('loan_interest_rate', '0.08')
-            warnings.append(
-                f'This will exceed your Program budget by ${float(overage):,.0f}. '
-                f'The overage will be financed as a loan at {float(rate)*100:.0f}% interest per round.'
-            )
+            warnings.append(participant_message(
+                'program_budget_overage', language=language,
+                overage=f'${float(overage):,.0f}',
+                rate=f'{float(rate)*100:.0f}%'))
 
     ok = len(errors) == 0
     return ok, warnings, errors

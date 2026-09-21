@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from core.models.gamification import (
     Achievement, GamificationBadge, PlayerProgress,
     TeamAchievement, TeamBadge,
@@ -75,11 +76,13 @@ class QicoinView(APIView):
     def get(self, request):
         team_id = request.query_params.get('team_id')
         if not team_id:
-            return Response({'error': 'team_id is required'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
         try:
             team_id = int(team_id)
         except (ValueError, TypeError):
-            return Response({'error': 'team_id must be an integer'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
 
         result = calculate_qicoin(team_id)
         result['team_id'] = team_id

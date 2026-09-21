@@ -54,7 +54,9 @@ class ActiveEventsView(APIView):
         try:
             game = Game.objects.get(id=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=404)
+            from core.utils.participant_messages import participant_refusal
+            return Response(
+                participant_refusal(request, 'game_not_found'), status=404)
 
         current_round = game.current_round
 
@@ -132,7 +134,9 @@ class EventHistoryView(APIView):
         try:
             game = Game.objects.get(id=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=404)
+            from core.utils.participant_messages import participant_refusal
+            return Response(
+                participant_refusal(request, 'game_not_found'), status=404)
 
         events = EventInstance.objects.filter(
             game=game,

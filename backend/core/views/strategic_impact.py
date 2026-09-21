@@ -10,6 +10,7 @@ Optional query param: ?round_number=N to get a single round.
 from decimal import Decimal
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework import status
 
 from core.models.cc24_models import (
@@ -32,7 +33,9 @@ class StrategicImpactView(APIView):
             game = Game.objects.get(id=game_id)
             team = Team.objects.get(id=team_id, game=game)
         except (Game.DoesNotExist, Team.DoesNotExist):
-            return Response({'error': 'Game or team not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                participant_refusal(request, 'game_or_team_not_found'),
+                status=status.HTTP_404_NOT_FOUND)
 
         self._language = get_user_language(request)
         round_number = request.query_params.get('round_number')

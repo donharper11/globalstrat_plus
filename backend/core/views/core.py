@@ -17,6 +17,8 @@ from core.services.cohort_scope import (
 from core.services.lifecycle import request_id_for
 from core.utils.auth_context import get_request_role
 from core.utils.cohort_messages import cohort_message, language_for_request
+from core.utils.operator_messages import operator_refusal
+from core.utils.participant_messages import participant_refusal
 from core.views.mixins import InstanceScopedMixin
 from core.models import (
     Team, User, Round, SimulationState,
@@ -144,7 +146,7 @@ class UserViewSet(viewsets.ModelViewSet):
         Create users in bulk and return created count plus any errors."""
         csv_text = request.data.get('csv', '')
         if not csv_text:
-            return Response({'error': 'No CSV data provided.'},
+            return Response(operator_refusal(request, 'accounts_csv_empty'),
                             status=status.HTTP_400_BAD_REQUEST)
 
         rows = list(csv.DictReader(io.StringIO(csv_text)))
@@ -165,7 +167,8 @@ class UserViewSet(viewsets.ModelViewSet):
         for row_num, row in enumerate(rows, start=2):
             username = (row.get('username') or '').strip()
             if not username:
-                errors.append({'row': row_num, 'error': 'Missing username'})
+                errors.append({'row': row_num, **operator_refusal(
+                    request, 'accounts_row_missing_username')})
                 continue
 
             role = (row.get('role') or 'Student').strip()
@@ -182,8 +185,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 try:
                     team_id = int(team_id)
                 except ValueError:
-                    errors.append({'row': row_num,
-                                   'error': f'Invalid team_id: {team_id}'})
+                    errors.append({'row': row_num, **operator_refusal(
+                        request, 'accounts_row_invalid_team', value=team_id)})
                     continue
 
             password_hash = ''
@@ -232,7 +235,7 @@ class UserViewSet(viewsets.ModelViewSet):
             try:
                 team = Team.objects.get(pk=int(team_id))
             except (Team.DoesNotExist, ValueError, TypeError):
-                return Response({'error': 'Team not found.'},
+                return Response(operator_refusal(request, 'team_not_found'),
                                 status=status.HTTP_404_NOT_FOUND)
             # `get_object` has already settled whose student this is; this
             # settles whose team.
@@ -303,12 +306,14 @@ class DashboardViewSet(viewsets.ViewSet):
     def list(self, request):
         team_id = request.query_params.get('team_id')
         if not team_id:
-            return Response({'error': 'team_id is required'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
 
         try:
             team_id = int(team_id)
         except ValueError:
-            return Response({'error': 'team_id must be an integer'}, status=400)
+            return Response(
+                participant_refusal(request, 'request_incomplete'), status=400)
 
         instance_id = self._get_instance_id(request)
 
@@ -320,7 +325,8 @@ class DashboardViewSet(viewsets.ViewSet):
         try:
             team = Team.objects.get(pk=team_id)
         except Team.DoesNotExist:
-            return Response({'error': 'Team not found'}, status=404)
+            return Response(
+                participant_refusal(request, 'team_not_found'), status=404)
 
         # Instance filter dict — reused across queries
         inst_filter = {'instance_id': instance_id} if instance_id else {}

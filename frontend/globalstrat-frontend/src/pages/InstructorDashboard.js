@@ -403,7 +403,7 @@ const InstructorDashboard = () => {
       setDrillError(
         err?.response?.data?.detail
         || err?.message
-        || 'The request failed.'
+        || t('instructor.msg_request_failed')
       );
     }
     setDrillLoading(false);
@@ -814,7 +814,7 @@ const InstructorDashboard = () => {
                             <Tooltip title={t('instructor.locked_tooltip')}>
                               <LockOutlined style={{ color: '#999' }} />
                             </Tooltip>
-                            <Text>{record.home_market_name || 'Not set'}</Text>
+                            <Text>{record.home_market_name || t('instructor.home_market_not_set')}</Text>
                           </Space>
                         ) : (
                           <Select
@@ -1141,7 +1141,7 @@ const InstructorDashboard = () => {
         ) : (
           <>
             <Space>
-              <Text strong>{rubrics[0]?.rubric_name || 'Rubric'}</Text>
+              <Text strong>{rubrics[0]?.rubric_name || t('instructor.grading_rubric')}</Text>
               <Button size="small" icon={<EditOutlined />} onClick={openRubricEditor}>
                 {t('instructor.edit_rubric')}
               </Button>
@@ -1334,7 +1334,7 @@ const InstructorDashboard = () => {
               <Col xs={24} md={12} key={alert.id}>
                 <Badge.Ribbon text={sev.label} color={sev.color}>
                   <Card size="small"
-                    title={<Space><Text strong>{alert.team_name || 'Unknown'}</Text>{alert.round_number && <Tag>R{alert.round_number}</Tag>}</Space>}
+                    title={<Space><Text strong>{alert.team_name || t('instructor.unknown_team')}</Text>{alert.round_number && <Tag>R{alert.round_number}</Tag>}</Space>}
                     actions={[
                       alert.acknowledged ? <Text key="ack" type="secondary">{t('instructor.acknowledged')}</Text> :
                         <Button key="ack" type="link" size="small" onClick={() => handleAcknowledge(alert.id)}>{t('instructor.acknowledge')}</Button>,
@@ -1612,7 +1612,7 @@ const InstructorDashboard = () => {
             }` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <Text strong style={{ fontSize: 15 }}>{createGameName || 'Game'}</Text>
+                  <Text strong style={{ fontSize: 15 }}>{createGameName || t('instructor.game')}</Text>
                   <Tag color={displayGameStatus === 'active' ? 'green' : displayGameStatus === 'paused' ? 'orange' : displayGameStatus === 'archived' ? 'default' : 'blue'}
                     style={{ marginLeft: 8 }}>{displayGameStatus}</Tag>
                   <Text type="secondary" style={{ marginLeft: 8 }}>
@@ -1902,7 +1902,7 @@ const InstructorDashboard = () => {
             size="small" style={{ marginBottom: 16 }}
           >
             <Alert type="success" showIcon
-              message={`Game: ${createGameName || selectedScenario?.name || 'Game'}`}
+              message={t('instructor.game_named', { game: createGameName || selectedScenario?.name || t('instructor.game') })}
               description={
                 <span>
                   {createdGameTeams.length} teams &middot; Status: <Tag color={
@@ -1931,7 +1931,7 @@ const InstructorDashboard = () => {
                         {assignedStudents.length === 0
                           ? <Text type="secondary">{t('instructor.no_students_assigned')}</Text>
                           : assignedStudents.map((s, i) => (
-                              <Tag key={i} style={{ marginBottom: 4 }}>{s.display_name || s.username || `User ${s.user_id}`}</Tag>
+                              <Tag key={i} style={{ marginBottom: 4 }}>{s.display_name || s.username || t('instructor.user_n', { id: s.user_id })}</Tag>
                             ))
                         }
                         <div style={{ marginTop: 4 }}>
@@ -2013,7 +2013,7 @@ const InstructorDashboard = () => {
                                 }
                                 options={unassigned.map(r => ({
                                   value: r.user_id,
-                                  label: r.display_name || r.username || `User ${r.user_id}`,
+                                  label: r.display_name || r.username || t('instructor.user_n', { id: r.user_id }),
                                 }))}
                               />
                               {/* Current members of selected team */}
@@ -2057,7 +2057,7 @@ const InstructorDashboard = () => {
                                   padding: '4px 8px', borderBottom: '1px solid #f5f5f5',
                                 }}>
                                   <div>
-                                    <Text style={{ fontSize: 13 }}>{r.display_name || r.username || `User ${r.user_id}`}</Text>
+                                    <Text style={{ fontSize: 13 }}>{r.display_name || r.username || t('instructor.user_n', { id: r.user_id })}</Text>
                                     {r.email && <Text type="secondary" style={{ fontSize: 11, marginLeft: 8 }}>{r.email}</Text>}
                                   </div>
                                   {pickerTeam && (

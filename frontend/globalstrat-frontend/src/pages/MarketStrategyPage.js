@@ -574,7 +574,7 @@ const MarketStrategyPage = () => {
         <PanelCard headerColor="market" title={t('market_strategy.market_entry')}>
           <Space>
             <Tag color="green">{t('market_strategy.active')}</Tag>
-            <Text>{t('market_strategy.entry_mode')}: {m.entry_mode || 'Export'}</Text>
+            <Text>{t('market_strategy.entry_mode')}: {m.entry_mode || t('market_strategy.entry_modes.export')}</Text>
           </Space>
           {/* CC-31B: IP exposure for JV/licensing */}
           {(m.entry_mode || '').toLowerCase().includes('joint venture') && (

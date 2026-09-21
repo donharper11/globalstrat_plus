@@ -13,6 +13,8 @@ from core.models.cc31_models import GovernanceCommitmentType, TeamGovernanceComm
 from core.models.team_state import TeamMarketPresence
 from core.models.decisions import DecisionSubmission, DecisionESG
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import (
+    language_for_request, participant_message)
 
 
 class GovernanceContextView(APIView):
@@ -54,7 +56,8 @@ class GovernanceContextView(APIView):
             }
 
         # Current interaction conditions (so frontend can show warnings)
-        interaction_warnings = _evaluate_all_interactions(team, game)
+        interaction_warnings = _evaluate_all_interactions(
+            team, game, language_for_request(request))
 
         # Cumulative ESG investment for greenwashing check
         cumulative_esg = 0
@@ -78,9 +81,24 @@ class GovernanceContextView(APIView):
         })
 
 
-def _evaluate_all_interactions(team, game):
-    """Evaluate interaction conditions and return warnings for the frontend."""
+def _evaluate_all_interactions(team, game, language='en'):
+    """Evaluate interaction conditions and return warnings for the frontend.
+
+    Each notice is rendered in `language`. The anti-corruption notice also
+    carries `count`, the number of JV markets: the page prices the commitment
+    from it, and used to get it by counting the commas in the English sentence.
+    """
     warnings = {}
+
+    def say(key, **values):
+        return participant_message(key, language=language, **values)
+
+    def listed(names):
+        return say('list_separator').join(names)
+
+    def market_names(presences):
+        return [get_localized_field(presence.market, 'name', language)
+                for presence in presences]
 
     # Check salary levels (for pay_transparency)
     sub = DecisionSubmission.objects.filter(
@@ -90,42 +108,46 @@ def _evaluate_all_interactions(team, game):
     if sub:
         try:
             talent = sub.talent
-            for pool, level in [('R&D', talent.rd_salary_level),
-                                ('Commercial', talent.commercial_salary_level),
-                                ('Operations', talent.operations_salary_level)]:
+            for pool, level in [('talent_pool_rd', talent.rd_salary_level),
+                                ('talent_pool_commercial',
+                                 talent.commercial_salary_level),
+                                ('talent_pool_operations',
+                                 talent.operations_salary_level)]:
                 if level < 2:
-                    below_market_pools.append(pool)
+                    below_market_pools.append(say(pool))
         except Exception:
             pass
 
     if below_market_pools:
         warnings['pay_transparency'] = {
             'active': True,
-            'message': f'Your {", ".join(below_market_pools)} salary is Below Market. Pay transparency is exposing the gap \u2014 turnover increased +5%. Raise salaries to Market Rate or above to resolve.',
+            'message': say('governance_notice_pay_transparency',
+                           pools=listed(below_market_pools)),
         }
 
     # Check JV entry mode (for anti_corruption)
-    jv_markets = list(
+    jv_markets = market_names(
         TeamMarketPresence.objects.filter(
             team=team, status='active', entry_mode__code='jv',
-        ).values_list('market__name', flat=True)
-    )
+        ).select_related('market'))
     if jv_markets:
         warnings['anti_corruption'] = {
             'active': True,
-            'message': f'You have JV partnerships in {", ".join(jv_markets)}. Anti-corruption monitoring adds $100K/round per JV market.',
+            'count': len(jv_markets),
+            'message': say('governance_notice_anti_corruption',
+                           markets=listed(jv_markets)),
         }
 
     # Check contract manufacturing (for supply_chain_audit)
-    contract_mfg_markets = list(
+    contract_mfg_markets = market_names(
         TeamMarketPresence.objects.filter(
             team=team, status='active', market__contract_mfg_available=True,
-        ).values_list('market__name', flat=True)
-    )
+        ).select_related('market'))
     if contract_mfg_markets:
         warnings['supply_chain_audit'] = {
             'active': True,
-            'message': f'You use contract manufacturing in {", ".join(contract_mfg_markets)}. Audit may expose labor concerns (15% probability per round).',
+            'message': say('governance_notice_supply_chain_audit',
+                           markets=listed(contract_mfg_markets)),
         }
 
     # Check cumulative ESG investment (for public_esg_reporting greenwashing)
@@ -140,7 +162,8 @@ def _evaluate_all_interactions(team, game):
     if cumulative < 1_000_000:
         warnings['public_esg_reporting'] = {
             'active': True,
-            'message': f'Total ESG investment is only ${cumulative:,.0f}. Reporting without substance is seen as greenwashing. Increase environmental/social investment above $1M or remove this commitment.',
+            'message': say('governance_notice_greenwashing',
+                           total=f'${cumulative:,.0f}'),
         }
 
     return warnings

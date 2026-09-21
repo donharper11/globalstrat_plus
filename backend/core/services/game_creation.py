@@ -90,7 +90,17 @@ STARTING_PLATFORM_LABEL = 'alpha'
 
 
 class GameCreationError(ValueError):
-    """The scenario cannot produce a game; the message says what is missing."""
+    """The scenario cannot produce a game; the message says what is missing.
+
+    The message is English: the management command prints it. `key` and
+    `values` name the same sentence in `core.utils.operator_messages`, so the
+    console route can say it in the instructor's language.
+    """
+
+    def __init__(self, message, *, key=None, **values):
+        super().__init__(message)
+        self.key = key
+        self.values = values
 
 
 def get_company_names(scenario):
@@ -119,7 +129,9 @@ def resolve_home_markets(scenario, codes):
             scenario=scenario, code__iexact=str(code).strip()).first()
         if not market:
             raise GameCreationError(
-                f"Market code '{code}' not found in scenario '{scenario.name}'.")
+                f"Market code '{code}' not found in scenario '{scenario.name}'.",
+                key='game_creation_market_unknown', code=str(code),
+                scenario=scenario.name)
         markets.append(market)
     return markets
 
@@ -137,14 +149,16 @@ def create_game(scenario, num_teams, *, name, created_by,
         FirmStarterProfile.objects.filter(scenario=scenario).order_by('id'))
     if not profiles:
         raise GameCreationError(
-            f"No starter profiles found for scenario '{scenario.name}'.")
+            f"No starter profiles found for scenario '{scenario.name}'.",
+            key='game_creation_no_starter_profiles', scenario=scenario.name)
 
     starting_gen = PlatformGenerationDefinition.objects.filter(
         scenario=scenario, is_starting_platform=True).order_by('id').first()
     if not starting_gen:
         raise GameCreationError(
             f"No starting platform generation found for scenario "
-            f"'{scenario.name}'.")
+            f"'{scenario.name}'.",
+            key='game_creation_no_starting_platform', scenario=scenario.name)
 
     default_entry_mode = EntryModeDefinition.objects.filter(
         scenario=scenario).order_by('capital_requirement', 'id').first()

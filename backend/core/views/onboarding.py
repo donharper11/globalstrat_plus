@@ -3,6 +3,7 @@ Onboarding API — data for the student first-login walkthrough.
 """
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from core.utils.participant_messages import participant_refusal
 from rest_framework import status
 
 from django.db.models import Sum
@@ -21,18 +22,20 @@ class OnboardingDataView(APIView):
         game_id = request.query_params.get('game_id')
         team_id = request.query_params.get('team_id')
         if not game_id or not team_id:
-            return Response({'error': 'game_id and team_id required'},
+            return Response(participant_refusal(request, 'request_incomplete'),
                             status=status.HTTP_400_BAD_REQUEST)
 
         try:
             game = Game.objects.select_related('scenario').get(pk=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(participant_refusal(request, 'game_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         try:
             team = Team.objects.select_related('home_market').get(pk=team_id)
         except Team.DoesNotExist:
-            return Response({'error': 'Team not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(participant_refusal(request, 'team_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         # Products
         products = list(
@@ -88,7 +91,7 @@ class OnboardingCompleteView(APIView):
         user_id = request.data.get('user_id')
         section_id = request.data.get('section_id')
         if not user_id:
-            return Response({'error': 'user_id required'},
+            return Response(participant_refusal(request, 'request_incomplete'),
                             status=status.HTTP_400_BAD_REQUEST)
 
         filters = {'user_id': user_id, 'is_active': True}
@@ -97,7 +100,7 @@ class OnboardingCompleteView(APIView):
 
         updated = Enrollment.objects.filter(**filters).update(onboarding_completed=True)
         if updated == 0:
-            return Response({'error': 'No active enrollment found'},
+            return Response(participant_refusal(request, 'enrollment_not_found'),
                             status=status.HTTP_404_NOT_FOUND)
 
         return Response({'onboarding_completed': True})

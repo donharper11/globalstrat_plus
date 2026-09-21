@@ -10,6 +10,18 @@ from rest_framework.permissions import BasePermission
 from core.utils.auth_context import get_request_role
 
 
+def _say(request, key):
+    """A refusal sentence in the caller's language.
+
+    A DRF permission's `message` is the `detail` of the 403 it causes. These
+    were class-level English literals; DRF builds a fresh permission object for
+    every request, so setting it per request is safe.
+    """
+    from core.utils.participant_messages import (
+        language_for_request, participant_message)
+    return participant_message(key, language=language_for_request(request))
+
+
 def _get_role(request):
     """Return the lowercased role for the authenticated caller, or None."""
     return get_request_role(request)
@@ -17,9 +29,9 @@ def _get_role(request):
 
 class IsInstructor(BasePermission):
     """Allow only Instructor or Admin roles."""
-    message = 'Instructor or Admin access required.'
 
     def has_permission(self, request, view):
+        self.message = _say(request, 'instructor_access_required')
         role = _get_role(request)
         return role in ('instructor', 'admin')
 
@@ -34,9 +46,9 @@ class IsInstructorOrReadOnly(BasePermission):
     project default. /api/teams/ served every team's cash position, debt and
     equity to the open internet. A read now still requires a login.
     """
-    message = 'Instructor or Admin access required for write operations.'
 
     def has_permission(self, request, view):
+        self.message = _say(request, 'instructor_write_required')
         role = _get_role(request)
         if request.method in ('GET', 'HEAD', 'OPTIONS'):
             # Authenticated, any role.
@@ -118,9 +130,9 @@ class GameIsNotPaused(BasePermission):
     students could keep playing through a pause. Instructors are exempt so
     they can still administer a paused game.
     """
-    message = 'The game is paused by your instructor. No changes can be made right now.'
 
     def has_permission(self, request, view):
+        self.message = _say(request, 'game_paused')
         if request.method in ('GET', 'HEAD', 'OPTIONS'):
             return True
         if _get_role(request) in ('instructor', 'admin'):
@@ -138,6 +150,6 @@ class GameIsNotPaused(BasePermission):
         if game.status == 'paused':
             return False
         if game.status in ('completed', 'archived'):
-            self.message = f'This game is {game.status}. No further changes can be made.'
+            self.message = _say(request, 'game_finished')
             return False
         return True

@@ -10,10 +10,15 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach auth token to every request
+const isLoginRequest = (config) => /\/auth\/login\/?$/.test(config?.url || '');
+
+// Attach auth token to every request -- except the login itself. A token left
+// over from yesterday is refused as expired before the password is even read,
+// and since a refused login no longer reloads the page (below), nothing would
+// ever clear it: the student could not log in at all.
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
-  if (token) {
+  if (token && !isLoginRequest(config)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   // Send user's language preference so backend can localize responses
@@ -37,6 +42,16 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
+/**
+ * A 401 means the session has ended -- except from the login form itself,
+ * where it means a wrong password. Redirecting that one reloaded the page and
+ * wiped the refusal ("Invalid username or password") before it could be read,
+ * and sent an instructor who mistyped on /instructor/login to the student form.
+ */
+export const isSessionExpiry = (error) => (
+  error?.response?.status === 401 && !isLoginRequest(error?.config)
+);
+
 // Handle 401 — redirect to login
 client.interceptors.response.use(
   (response) => {
@@ -44,7 +59,7 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (isSessionExpiry(error)) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('gs_user');
       localStorage.removeItem('gs_session_id');

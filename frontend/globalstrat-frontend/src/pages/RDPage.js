@@ -389,11 +389,11 @@ const RDPage = () => {
     const cost = Number(nextCost.incremental_cost || nextCost.cumulative_from_current || 0);
     const alreadyInvested = currentInvestments.some(inv => inv.feature_id === feature.feature_id);
     if (!alreadyInvested && Number(investmentSlots.remaining || 0) <= 0) {
-      message.warning('All R&D investment slots are already used this round.');
+      message.warning(t('rd.slots_all_used'));
       return;
     }
     if (cost > rdRemaining && !alreadyInvested) {
-      message.warning('This upgrade exceeds the remaining R&D budget.');
+      message.warning(t('rd.upgrade_exceeds_budget'));
       return;
     }
 
@@ -412,11 +412,11 @@ const RDPage = () => {
     setSavingInvestment(feature.feature_id);
     try {
       await patchDecision(gameId, teamId, currentRound, 'rd', { rd_investments: nextPayload });
-      message.success(`Saved R&D investment: ${feature.name} to level ${current + 1}`);
+      message.success(t('rd.investment_saved', { feature: feature.name, level: current + 1 }));
       await loadContext();
       refreshBudgets();
     } catch (err) {
-      const detail = err?.response?.data?.detail || err?.response?.data?.non_field_errors?.join(' ') || 'R&D investment could not be saved.';
+      const detail = err?.response?.data?.detail || err?.response?.data?.non_field_errors?.join(' ') || t('rd.investment_save_failed');
       message.error(detail);
     } finally {
       setSavingInvestment(null);

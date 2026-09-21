@@ -13,7 +13,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.services import research_catalogue
-from core.utils.participant_messages import field_label, participant_message
+from core.utils.participant_messages import (
+    field_label, participant_message, participant_refusal)
 # The same membership rule and write boundary every other team-scoped decision
 # write uses.
 from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember
@@ -134,7 +135,9 @@ class ResearchReportsView(APIView):
             last_round = max(game.current_round - 1, 0)
 
         if report_type not in research_catalogue.REPORT_TYPES:
-            return Response({'error': f'Unknown report type: {report_type}'}, status=400)
+            return Response(
+                participant_refusal(request, 'research_report_unknown'),
+                status=400)
 
         # A report is bought for the round it is bought in, and that round's
         # report shows the previous round's data. So the purchase that unlocks

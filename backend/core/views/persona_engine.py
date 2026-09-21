@@ -8,6 +8,8 @@ Views for the unified Persona Messaging system.
 """
 from rest_framework import status
 from rest_framework.response import Response
+from core.utils.participant_messages import (
+    localise_refusal, participant_refusal)
 from rest_framework.views import APIView
 
 from core.models.messaging import Message
@@ -29,8 +31,13 @@ class PersonaReplyView(APIView):
         reply_text = request.data.get('reply_text', '')
 
         if not team_id or not message_id or not reply_text.strip():
+            # Which sentence, not whether: the page supplies the two ids, the
+            # student supplies the text.
             return Response(
-                {'error': 'team_id, message_id, and reply_text are required'},
+                participant_refusal(
+                    request, 'request_incomplete'
+                    if not team_id or not message_id
+                    else 'persona_reply_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -40,6 +47,8 @@ class PersonaReplyView(APIView):
             reply_text=reply_text.strip(),
         )
 
+        # The service knows no request; its refusal gets its language here.
+        localise_refusal(request, result)
         if 'error' in result and 'student_message' not in result:
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -62,7 +71,10 @@ class PersonaConsultView(APIView):
 
         if not team_id or not persona_key or not question.strip():
             return Response(
-                {'error': 'team_id, persona_key, and question are required'},
+                participant_refusal(
+                    request, 'request_incomplete'
+                    if not team_id or not persona_key
+                    else 'persona_question_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -72,6 +84,8 @@ class PersonaConsultView(APIView):
             question=question.strip(),
         )
 
+        # The service knows no request; its refusal gets its language here.
+        localise_refusal(request, result)
         if 'error' in result and 'student_message' not in result:
             return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
@@ -114,7 +128,7 @@ class ConsultationUsageView(APIView):
         team_id = request.query_params.get('team_id')
         if not team_id:
             return Response(
-                {'error': 'team_id is required'},
+                participant_refusal(request, 'request_incomplete'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         usage = get_consultation_usage(int(team_id))
