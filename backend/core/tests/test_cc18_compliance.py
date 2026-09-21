@@ -173,6 +173,58 @@ class CC18ComplianceTest(TestCase):
         self.assertNotIn((self.team.id, self.product.id, self.na.id), ctx.revenue)
         self.assertGreater(ctx.compliance_lost_revenue[self.team.id], 0)
 
+    # -- Market isolation (owner statement 2026-09-21) --------------------
+    # A freeze may cost a team the market it is frozen out of. It must not
+    # touch the other markets where the team is active and compliant.
+    def _sell_in(self, sub, market, round_number):
+        DecisionMarketing.objects.create(
+            submission=sub, team_product=self.product, market=market,
+            retail_price=D('500'), promotion_budget=D('0'), campaign_focus_feature_ids=[],
+            channel_digital_pct=D('1'), channel_traditional_pct=D('0'), channel_trade_pct=D('0'),
+            distribution_strategy='hybrid', distribution_investment=D('0'), demand_estimate=1000,
+            production_volume=1000, production_source_market=market)
+        RoundResultAdoption.objects.create(
+            game=self.game, round_number=round_number, team=self.team, market=market,
+            best_product=self.product, segment=self.segment, fit_score=D('0.5'),
+            adjusted_fit_score=D('0.5'), market_readiness_pct=D('1'), adoption_pool=D('1000'),
+            team_attractiveness=D('1'), team_share_pct=D('1'), new_adopters=D('1000'),
+            cumulative_adopters=D('1000'))
+
+    def _revenue(self, freezes):
+        ctx = _Ctx(self.game, 1, [self.team], self.scenario)
+        ctx.compliance_freezes = set(freezes)
+        calculate_revenue(ctx)
+        return ctx
+
+    def test_a_freeze_in_one_market_leaves_the_other_market_to_the_cent(self):
+        other = (MarketDefinition.objects.filter(scenario=self.scenario)
+                 .exclude(id=self.na.id).order_by('id').first())
+        rnd = self._round(1)
+        sub = DecisionSubmission.objects.create(team=self.team, round=rnd, status='locked')
+        self._sell_in(sub, self.na, 1)
+        self._sell_in(sub, other, 1)
+
+        free = self._revenue([])
+        frozen = self._revenue([(self.team.id, self.na.id)])
+
+        na_key = (self.team.id, self.product.id, self.na.id)
+        other_key = (self.team.id, self.product.id, other.id)
+        # Control: unfrozen, both markets sell.
+        self.assertIn(na_key, free.revenue)
+        self.assertIn(other_key, free.revenue)
+        # Frozen market books nothing; the compliant market is untouched.
+        self.assertNotIn(na_key, frozen.revenue)
+        self.assertEqual(frozen.revenue[other_key], free.revenue[other_key])
+        self.assertGreater(frozen.revenue[other_key]['home_revenue'], 0)
+
+        # And the team is still competing: its remaining revenue clears the
+        # inactivity floor even against its own unfrozen total as the round's best.
+        def total(ctx):
+            return sum(D(str(v['home_revenue']))
+                       for k, v in ctx.revenue.items() if k[0] == self.team.id)
+        floor = material_revenue_floor([total(free)])
+        self.assertFalse(is_commercially_inactive(total(frozen), floor))
+
     def test_freeze_blocks_customer_adoption_credit(self):
         from core.engine.utils import RoundContext, SegmentEffectiveState
 
