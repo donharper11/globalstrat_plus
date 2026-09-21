@@ -86,7 +86,7 @@ One module, keyed by the backend field each input is sent as, each entry naming 
 
 ### Backend — `core/utils/numeric_refusals.py`
 
-Every decision write — the per-type PATCH, the whole-submission POST/PUT, the four supply-chain views, and the rest of the twenty classes built on it — passes through `CompetitionDecisionWriteMixin`, and every one of them validates with `is_valid(raise_exception=True)`. So `handle_exception` on that mixin is the one place that sees all of them, whichever serializer raised. It rewrites `ValidationError.detail` and hands it back to DRF's handler.
+Every decision write — the per-type PATCH, the whole-submission POST/PUT, the four supply-chain views, and the rest of the fourteen view classes built on it — passes through `CompetitionDecisionWriteMixin`, and every one of them validates with `is_valid(raise_exception=True)`. So `handle_exception` on that mixin is the one place that sees all of them, whichever serializer raised. It rewrites `ValidationError.detail` and hands it back to DRF's handler.
 
 | DRF code | Sentence |
 |---|---|
