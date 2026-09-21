@@ -515,6 +515,26 @@ MESSAGES = {
         'en': 'This row names a team, "{value}", that is not a number, so no account was created from it.',
         'zh-CN': '此行填写的团队“{value}”不是数字，因此未据此创建账号。',
     },
+    'game_creation_market_unknown': {
+        'en': 'Market code "{code}" is not a market in scenario "{scenario}".',
+        'zh-CN': '场景“{scenario}”中没有代码为“{code}”的市场。',
+    },
+    'game_creation_no_starter_profiles': {
+        'en': 'Scenario "{scenario}" has no starter profiles, so no game can be created from it.',
+        'zh-CN': '场景“{scenario}”没有初始企业档案，因此无法据此创建游戏。',
+    },
+    'game_creation_no_starting_platform': {
+        'en': 'Scenario "{scenario}" has no starting platform generation, so no game can be created from it.',
+        'zh-CN': '场景“{scenario}”没有初始平台代次，因此无法据此创建游戏。',
+    },
+    'game_creation_failed': {
+        'en': 'The game could not be created: {detail}',
+        'zh-CN': '无法创建游戏。系统给出的原因（英文）：{detail}',
+    },
+    'fire_events_failed': {
+        'en': 'Events could not be fired: {detail}',
+        'zh-CN': '无法触发事件。系统给出的原因（英文）：{detail}',
+    },
     'fire_events_incomplete': {
         'en': 'Choose a game and a round before firing events.',
         'zh-CN': '请先选择游戏和回合，然后再触发事件。',

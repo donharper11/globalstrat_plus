@@ -60,6 +60,6 @@ class FireEventsViewSet(viewsets.ViewSet):
             return Response(result, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
-                {'error': str(e)},
+                operator_refusal(request, 'fire_events_failed', detail=e),
                 status=status.HTTP_400_BAD_REQUEST,
             )

@@ -174,9 +174,14 @@ def english_refusal_literals(source, classes=None, keys=SHOWN_KEYS):
         for node in ast.walk(scope):
             if isinstance(node, ast.Dict):
                 for key, value in zip(node.keys, node.values):
-                    if (isinstance(key, ast.Constant) and key.value in keys
-                            and _is_literal_text(value, bound)):
+                    if not (isinstance(key, ast.Constant) and key.value in keys):
+                        continue
+                    if _is_literal_text(value, bound):
                         found.append((node.lineno, f'{key.value} literal'))
+                    elif (isinstance(value, ast.Call)
+                          and getattr(value.func, 'id', '') == 'str'):
+                        # `{'error': str(exc)}`: an exception's English text.
+                        found.append((node.lineno, f'{key.value} str()'))
             elif isinstance(node, ast.Call):
                 name = getattr(node.func, 'id', getattr(node.func, 'attr', ''))
                 if (name in LIFECYCLE_ERRORS and node.args
@@ -225,6 +230,10 @@ class OperatorRefusalSourceScanTests(TestCase):
             ['message literal', 'warning literal', 'detail literal'])
         self.assertEqual(
             english_refusal_literals(sample, keys=('error',)), [])
+        self.assertEqual(
+            [kind for _, kind in english_refusal_literals(
+                "x = Response({'error': str(exc), 'code': 'c'})")],
+            ['error str()'])
 
     def test_the_live_round_routes_carry_no_english_refusal_literal(self):
         for relative, classes in CONVERTED:
@@ -235,8 +244,9 @@ class OperatorRefusalSourceScanTests(TestCase):
                                if isinstance(node, ast.ClassDef)}
                     self.assertEqual(classes - present, set(),
                                      'a scanned class was renamed or removed')
+                offenders, _ = split_exempt(relative, source, classes)
                 self.assertEqual(
-                    english_refusal_literals(source, classes), [],
+                    offenders, [],
                     f'{relative}: an operator refusal bypasses '
                     f'core.utils.operator_messages')
 
@@ -245,7 +255,27 @@ class OperatorRefusalSourceScanTests(TestCase):
 # or beside the line). Empty now, and kept so that an exemption is a reviewed
 # line in this file rather than a quiet hole in the scan; the guard fails on
 # anything not listed, and on a listed entry that no longer matches.
-WHOLE_TREE_EXEMPT = set()
+WHOLE_TREE_EXEMPT = {
+    # The console never shows this sentence: its code is deliberately absent
+    # from the console's allowlist, and the console says its own catalogue
+    # sentence (`instructor.grades_refused_model_component`) for it instead.
+    ('core/views/grading.py', "'code': 'model_derived_component_in_competition'"),
+}
+
+
+def split_exempt(relative, source, classes=None):
+    """(offenders, exemptions matched) for one file."""
+    lines = source.splitlines()
+    offenders, matched = [], set()
+    for lineno, kind in english_refusal_literals(source, classes):
+        context = ' '.join(lines[max(0, lineno - 2):lineno + 1])
+        exempt = {entry for entry in WHOLE_TREE_EXEMPT
+                  if entry[0] == relative and entry[1] in context}
+        if exempt:
+            matched |= exempt
+        else:
+            offenders.append(f'{relative}:{lineno} {kind}')
+    return offenders, matched
 
 
 def every_view_module():
@@ -278,16 +308,10 @@ class WholeTreeRefusalScanTests(TestCase):
         offenders, exempt_seen = [], set()
         for path in every_view_module():
             relative = path.relative_to(BACKEND).as_posix()
-            source = path.read_text(encoding='utf-8')
-            lines = source.splitlines()
-            for lineno, kind in english_refusal_literals(source):
-                context = ' '.join(lines[max(0, lineno - 2):lineno + 1])
-                matched = [entry for entry in WHOLE_TREE_EXEMPT
-                           if entry[0] == relative and entry[1] in context]
-                if matched:
-                    exempt_seen.update(matched)
-                else:
-                    offenders.append(f'{relative}:{lineno} {kind}')
+            found, matched = split_exempt(
+                relative, path.read_text(encoding='utf-8'))
+            offenders += found
+            exempt_seen |= matched
         self.assertEqual(offenders, [])
         self.assertEqual(exempt_seen, WHOLE_TREE_EXEMPT,
                          'an exemption no longer matches anything')
@@ -603,6 +627,39 @@ class OperatorRefusalLanguageTests(TestCase):
     # driven here: both look a round up by a column the model does not have and
     # answer 500 before any refusal is reached (reported as a finding). Their
     # literals are converted and held by the source scan.
+
+    def _someone_to_record_the_game_against(self):
+        from django.contrib.auth.models import User as AuthUser
+        AuthUser.objects.create_superuser(f'root-{id(self)}', password='x')
+
+    def test_a_game_that_names_a_market_the_scenario_does_not_have(self):
+        self._someone_to_record_the_game_against()
+        body = {'scenario_id': self.game.scenario_id, 'num_teams': 2,
+                'home_markets': ['ZZ']}
+        self.both(lambda language: self.call(
+            'post', '/api/games/create/', body, language=language),
+            400, 'game_creation_market_unknown')
+
+    def test_a_scenario_that_cannot_produce_a_game(self):
+        from core.models.scenario import FirmStarterProfile
+        from core.models import Scenario
+        self._someone_to_record_the_game_against()
+        bare = Scenario.objects.create(
+            name='Bare', industry_label='T', description='d',
+            starting_cash=1, num_rounds=2)
+        self.assertFalse(FirmStarterProfile.objects.filter(scenario=bare).exists())
+        self.both(lambda language: self.call(
+            'post', '/api/games/create/',
+            {'scenario_id': bare.id, 'num_teams': 2}, language=language),
+            400, 'game_creation_no_starter_profiles')
+
+    def test_an_event_engine_failure_is_framed_in_the_instructors_language(self):
+        with mock.patch('core.services.event_engine.fire_events',
+                        side_effect=RuntimeError('engine said no')):
+            self.both(lambda language: self.call(
+                'post', '/api/fire-events/',
+                {'round_number': 1, 'game_id': self.game.id},
+                language=language), 400, 'fire_events_failed')
 
     def test_firing_events_without_saying_where(self):
         self.both(lambda language: self.call(
