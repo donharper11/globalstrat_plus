@@ -12,9 +12,13 @@
     },
     "backend/core/utils/cohort_messages.py": {
       "MESSAGES": "Cohort-cap refusals shown to students and instructors."
+    },
+    "backend/core/utils/operator_messages.py": {
+      "MESSAGES": "Operator-route refusals an instructor reads in the console (D3 of 2026-09-21): round control, deadline, pause/resume, team assignment, roster, grading, schedule, team configuration.",
+      "GAME_STATUS_LABELS": "Game status as an instructor reads it, so a Chinese sentence never frames an English storage token."
     }
   },
-  "catalogues_source": "The two shared wording modules introduced by CRV2-12 (V2-061) and CRV2-10 Stage 6. A new participant-facing sentence belongs in one of them; the scope assertion below is what forces that.",
+  "catalogues_source": "The shared wording modules: participant_messages (CRV2-12, V2-061), cohort_messages (CRV2-10 Stage 6) and operator_messages (operator-route refusals, D3 of 2026-09-21). A new participant-facing sentence belongs in one of them; the scope assertion below is what forces that. operator_messages is held to A1-A3 here; the rule that the converted operator routes cannot regrow an English literal is enforced by core.tests.test_operator_refusal_language, not by this check's scope.",
 
   "scope": {
     "backend/core/views/decisions.py": "The decision submit, PATCH, lock, summary and context routes. Every refusal a team can hit while playing a round arrives from here; F-PL-01 and V2-069 were both raised against this file.",

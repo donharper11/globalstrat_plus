@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.permissions import IsInstructor
+from core.utils.operator_messages import operator_refusal
 from core.views.mixins import InstanceScopedMixin
 from core.models.grading import (
     GradingRubric, GradingRubricCategory,
@@ -109,7 +110,7 @@ class SeedRubricView(APIView):
         course_id = request.data.get('course_id')
         if not course_id:
             return Response(
-                {'error': 'course_id is required.'},
+                operator_refusal(request, 'grading_course_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         user_id = request.data.get('user_id')
@@ -129,7 +130,7 @@ class CalculateGradesView(APIView):
         course_id = request.data.get('course_id')
         if not instance_id or not course_id:
             return Response(
-                {'error': 'instance_id and course_id are required.'},
+                operator_refusal(request, 'grading_game_and_course_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         user_id = request.data.get('user_id')
@@ -161,7 +162,7 @@ class OverrideGradeView(APIView):
 
         if not all([instance_id, team_id, override_score is not None]):
             return Response(
-                {'error': 'instance_id, team_id, and override_score are required.'},
+                operator_refusal(request, 'grading_override_incomplete'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -181,7 +182,7 @@ class OverrideGradeView(APIView):
 
         if not all([instance_id, team_id]):
             return Response(
-                {'error': 'instance_id and team_id are required.'},
+                operator_refusal(request, 'grading_clear_incomplete'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -192,7 +193,7 @@ class OverrideGradeView(APIView):
         if grade:
             return Response(TeamGradeSerializer(grade).data)
         return Response(
-            {'error': 'Grade not found.'},
+            operator_refusal(request, 'grade_not_found'),
             status=status.HTTP_404_NOT_FOUND,
         )
 
@@ -206,7 +207,7 @@ class StudentGradesView(APIView):
         team_id = request.query_params.get('team_id')
         if not instance_id:
             return Response(
-                {'error': 'instance_id is required.'},
+                operator_refusal(request, 'grading_game_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         results = get_student_grades(
@@ -257,7 +258,7 @@ class ExportTeamGradesCsvView(APIView):
         instance_id = params.get('instance_id')
         if not instance_id:
             return Response(
-                {'error': 'instance_id is required.'},
+                operator_refusal(request, 'grading_game_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         instance_id = int(instance_id)
@@ -320,7 +321,7 @@ class ExportStudentGradesCsvView(APIView):
         instance_id = params.get('instance_id')
         if not instance_id:
             return Response(
-                {'error': 'instance_id is required.'},
+                operator_refusal(request, 'grading_game_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

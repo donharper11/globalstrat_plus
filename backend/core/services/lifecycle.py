@@ -30,6 +30,8 @@ from rest_framework.response import Response
 
 from core.models.core import Game, Round
 from core.services.competition_locks import lock_game_for_lifecycle
+from core.utils.operator_messages import (
+    language_for_request, lifecycle_refusal, operator_message, round_status)
 
 logger = logging.getLogger('core.lifecycle')
 
@@ -39,16 +41,24 @@ class LifecycleError(Exception):
 
     status_code = status.HTTP_400_BAD_REQUEST
 
-    def __init__(self, detail, guidance='', code=''):
+    def __init__(self, detail, guidance='', code='', localise=None):
         super().__init__(detail)
+        # `detail` and `guidance` are English, always: they are what the
+        # operator audit row and the server log record. `localise(language)`
+        # returns the same two sentences for the operator reading the response
+        # (see `core.utils.operator_messages.lifecycle_refusal`).
         self.detail = detail
         self.guidance = guidance
         self.code = code
+        self.localise = localise
 
-    def as_payload(self, request_id=''):
-        payload = {'error': self.detail, 'code': self.code or type(self).__name__}
-        if self.guidance:
-            payload['guidance'] = self.guidance
+    def as_payload(self, request_id='', language='en'):
+        detail, guidance = self.detail, self.guidance
+        if self.localise is not None and language != 'en':
+            detail, guidance = self.localise(language)
+        payload = {'error': detail, 'code': self.code or type(self).__name__}
+        if guidance:
+            payload['guidance'] = guidance
         if request_id:
             payload['request_id'] = request_id
         return payload
@@ -115,9 +125,9 @@ class OperatorAction:
     def require_round(self):
         round_obj = self.round
         if round_obj is None:
-            raise LifecyclePrecondition(
-                f'Game "{self.game.name}" has no round {self.game.current_round}.',
-                guidance='The game may not be initialised. Check the game setup.')
+            raise lifecycle_refusal(
+                LifecyclePrecondition, 'round_missing',
+                game=self.game.name, round=self.game.current_round)
         return round_obj
 
     def check_expected(self, round_obj):
@@ -135,33 +145,28 @@ class OperatorAction:
             try:
                 expected_number = int(expected_number)
             except (TypeError, ValueError):
-                raise LifecyclePrecondition(
-                    'expected_round_number must be a number.')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'expected_round_not_a_number')
             if expected_number != round_obj.round_number:
-                raise LifecycleConflict(
-                    f'The game has moved to round {round_obj.round_number}; '
-                    f'this request was for round {expected_number}.',
-                    guidance='Refresh the console and repeat the action if it '
-                             'is still what you want.',
-                    code='state_moved')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'state_moved_round',
+                    guidance_key='state_moved_guidance',
+                    current=round_obj.round_number, expected=expected_number)
         if expected_status not in (None, '') and expected_status != round_obj.status:
-            raise LifecycleConflict(
-                f'Round {round_obj.round_number} is now "{round_obj.status}", '
-                f'not "{expected_status}" as the console showed.',
-                guidance='Refresh the console and repeat the action if it is '
-                         'still what you want.',
-                code='state_moved')
+            raise lifecycle_refusal(
+                LifecycleConflict, 'state_moved_status',
+                guidance_key='state_moved_guidance',
+                round=round_obj.round_number,
+                status=round_status(round_obj.status),
+                expected=round_status(str(expected_status)))
         return round_obj
 
     def require_reason(self, minimum=10):
         """A force flag is only a bypass if someone has to say why."""
         reason = str(self.request.data.get('reason', '')).strip()
         if len(reason) < minimum:
-            raise LifecyclePrecondition(
-                f'This action overrides an integrity check, so it requires a '
-                f'written reason of at least {minimum} characters.',
-                guidance='Resend with {"reason": "<why this override is correct>"}.',
-                code='reason_required')
+            raise lifecycle_refusal(
+                LifecyclePrecondition, 'reason_required', minimum=minimum)
         return reason
 
     def commit(self, before, after, reason=''):
@@ -260,7 +265,7 @@ def operator_action(request, game_id, action):
             lock_game_for_lifecycle(game_id)
             game = Game.objects.select_for_update().filter(pk=game_id).first()
             if game is None:
-                raise LifecyclePrecondition(f'No game {game_id}.')
+                raise lifecycle_refusal(LifecyclePrecondition, 'game_not_found')
             holder.game = game
             # A competition heat whose course has no instructor of record is
             # refused before any lifecycle action runs. Every operator action
@@ -273,15 +278,18 @@ def operator_action(request, game_id, action):
             # refused is that rule's reach into a competition, where several
             # institutions share one deployment.
             from core.services.cohort_caps import competition_ownership_error
-            from core.utils.cohort_messages import language_for_request
-            unowned = competition_ownership_error(
-                game, language=language_for_request(request))
-            if unowned:
+            if competition_ownership_error(game):
+                # English into the audit row, the operator's language into the
+                # response -- the same split as every other refusal here.
                 raise LifecyclePrecondition(
-                    unowned,
-                    guidance='Assign an instructor to the course behind this '
-                             'game, then repeat the action.',
-                    code='competition_course_unowned')
+                    competition_ownership_error(game, language='en'),
+                    guidance=operator_message(
+                        'competition_course_unowned_guidance'),
+                    code='competition_course_unowned',
+                    localise=lambda language: (
+                        competition_ownership_error(game, language=language),
+                        operator_message('competition_course_unowned_guidance',
+                                         language=language)))
             yield holder
     except LifecycleError as error:
         if holder.game is not None:
@@ -320,8 +328,10 @@ def lifecycle_view(function):
             return function(self, request, *args, **kwargs)
         except LifecycleError as error:
             logger.info('%s refused: %s', function.__qualname__, error.detail)
-            return Response(error.as_payload(request_id_for(request)),
-                            status=error.status_code)
+            return Response(
+                error.as_payload(request_id_for(request),
+                                 language=language_for_request(request)),
+                status=error.status_code)
 
     return wrapper
 

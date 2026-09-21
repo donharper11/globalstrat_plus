@@ -26,6 +26,9 @@ from core.models.decisions import DecisionSubmission
 from core.permissions import IsInstructor, instructor_can_access_game
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
+from core.utils.operator_messages import (
+    language_for_request, lifecycle_refusal, operator_message,
+    operator_refusal, round_status)
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +149,7 @@ class RoundControlView(APIView):
         game = get_object_or_404(Game, pk=game_id)
         if not instructor_can_access_game(request, game):
             return Response(
-                {'error': 'This game belongs to another instructor.'},
+                operator_refusal(request, 'game_belongs_to_another_instructor'),
                 status=status.HTTP_403_FORBIDDEN)
         round_obj = Round.objects.filter(
             game=game, round_number=game.current_round,
@@ -180,13 +183,10 @@ class RoundCloseView(APIView):
             round_obj = action.check_expected(action.require_round())
             before = action.before = _round_payload(action.game, round_obj)
             if round_obj.status in ('closed', 'processed'):
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} is already '
-                    f'{round_obj.status}.',
-                    guidance='Refresh the console — the deadline scheduler or '
-                             'another operator closed it first.',
-                    code='round_already_closed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'round_already_closed',
+                    round=round_obj.round_number,
+                    status=round_status(round_obj.status))
 
             from core.engine.advance_round import close_round
             result = close_round(action.game.id, reason='manual')
@@ -224,25 +224,20 @@ class RoundReopenView(APIView):
             before = action.before = _round_payload(game, round_obj)
 
             if round_obj.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} has already been processed '
-                    f'and cannot be reopened.',
-                    guidance='Results exist for this round. Recovery is the only '
-                             'route back; see RECOVERY_RUNBOOK.md.',
-                    code='round_already_processed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'reopen_already_processed',
+                    round=round_obj.round_number)
             if round_obj.status == 'open':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} is already open.',
-                    guidance='Refresh the console — another operator reopened it.',
-                    code='round_already_open')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'round_already_open',
+                    round=round_obj.round_number)
 
             new_deadline = request.data.get('deadline')
             if new_deadline:
                 parsed = parse_datetime(new_deadline)
                 if not parsed:
-                    raise LifecyclePrecondition('Could not parse deadline.')
+                    raise lifecycle_refusal(
+                        LifecyclePrecondition, 'deadline_unparseable')
                 if timezone.is_naive(parsed):
                     parsed = timezone.make_aware(
                         parsed, timezone.get_current_timezone())
@@ -250,11 +245,8 @@ class RoundReopenView(APIView):
             elif round_obj.deadline and round_obj.deadline <= timezone.now():
                 # Reopening without moving a past deadline would just let cron
                 # close it again within the minute.
-                raise LifecyclePrecondition(
-                    'The deadline has already passed.',
-                    guidance='Supply a new deadline when reopening, or the '
-                             'scheduler will close the round again within a minute.',
-                    code='deadline_in_past')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'deadline_in_past')
 
             round_obj.status = 'open'
             round_obj.closed_at = None
@@ -309,21 +301,15 @@ class RoundProcessView(APIView):
             # boundary, so a second operator arriving during Phase 1 waits here
             # and then sees the finished state rather than resolving again.
             if round_obj.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} has already been processed.',
-                    guidance='Refresh the console. If results look wrong, use '
-                             'recovery rather than processing again.',
-                    code='round_already_processed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'process_already_processed',
+                    round=round_obj.round_number)
 
             if round_obj.status == 'open':
                 if not force:
-                    error = LifecyclePrecondition(
-                        f'Round {round_obj.round_number} is still open.',
-                        guidance='Close it first, or resend with force=true and '
-                                 'a written reason to close and process in one step.',
-                        code='round_still_open')
-                    raise error
+                    raise lifecycle_refusal(
+                        LifecyclePrecondition, 'round_still_open',
+                        round=round_obj.round_number)
                 # force closes an open round early: an integrity bypass, so it
                 # is not available without a reason on the audit record.
                 reason = action.require_reason()
@@ -339,11 +325,10 @@ class RoundProcessView(APIView):
                 # server fault — report it as an actionable 400.
                 logger.warning('Round not ready to process for game %s: %s',
                                game_id, e)
-                error = LifecyclePrecondition(
-                    str(e), guidance='Re-lock the team, or close the round, '
-                                     'then process again.',
-                    code='round_not_ready')
-                raise error
+                # The engine's own sentence is English; it is carried inside a
+                # sentence in the operator's language rather than dropped.
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'round_not_ready', detail=str(e))
             except Exception as e:
                 logger.exception('Processing failed for game %s', game_id)
                 # The engine marks the round FAILED outside its own rolled-back
@@ -351,7 +336,10 @@ class RoundProcessView(APIView):
                 # lets that record — and this audit row — commit.
                 action.record_fault(f'Post-round processing failed: {e}')
                 return Response(
-                    {'error': f'Post-round processing failed: {e}',
+                    {'error': operator_message(
+                        'processing_failed',
+                        language=language_for_request(request), detail=str(e)),
+                     'code': 'processing_failed',
                      'request_id': action.request_id},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
@@ -392,14 +380,10 @@ class RoundAdvanceView(APIView):
 
             if old_round.status != 'processed':
                 if not force:
-                    error = LifecyclePrecondition(
-                        f'Round {old_round.round_number} is "{old_round.status}", '
-                        f'not "processed".',
-                        guidance='Run post-round processing first, or resend with '
-                                 'force=true and a written reason to advance '
-                                 'without results.',
-                        code='round_not_processed')
-                    raise error
+                    raise lifecycle_refusal(
+                        LifecyclePrecondition, 'round_not_processed',
+                        round=old_round.round_number,
+                        status=round_status(old_round.status))
                 # Advancing past an unprocessed round leaves that round with no
                 # results at all, so the bypass is audited with a reason.
                 reason = action.require_reason()
@@ -408,15 +392,18 @@ class RoundAdvanceView(APIView):
             try:
                 result = advance_to_next_round(game.id, force=True if force else False)
             except ValueError as e:
-                error = LifecycleConflict(str(e), code='advance_refused',
-                                          guidance='Refresh the console.')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
                 logger.exception('Advance failed for game %s', game_id)
                 action.record_fault(f'Advance failed: {e}', code='advance_failed')
-                return Response({'error': f'Advance failed: {e}',
-                                 'request_id': action.request_id},
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                    {'error': operator_message(
+                        'advance_failed',
+                        language=language_for_request(request), detail=str(e)),
+                     'code': 'advance_failed',
+                     'request_id': action.request_id},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             game.refresh_from_db()
             after = _round_payload(game, action.require_round())
@@ -461,19 +448,17 @@ class RoundDeadlineView(APIView):
             # earlier must win, and this request must not extend a round that
             # is already closed or resolved.
             if round_obj.status != 'open':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} is "{round_obj.status}"; '
-                    f'deadline changes are refused unless the round is open.',
-                    guidance='Reopen the round with a new deadline if students '
-                             'still need time.',
-                    code='round_not_open')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'round_not_open',
+                    round=round_obj.round_number,
+                    status=round_status(round_obj.status))
 
             if 'minutes_from_now' in request.data:
                 try:
                     minutes = int(request.data['minutes_from_now'])
                 except (TypeError, ValueError):
-                    raise LifecyclePrecondition('minutes_from_now must be a number.')
+                    raise lifecycle_refusal(
+                        LifecyclePrecondition, 'minutes_not_a_number')
                 round_obj.deadline = timezone.now() + timezone.timedelta(
                     minutes=minutes)
             elif 'deadline' in request.data:
@@ -483,14 +468,15 @@ class RoundDeadlineView(APIView):
                 else:
                     parsed = parse_datetime(raw)
                     if not parsed:
-                        raise LifecyclePrecondition('Could not parse deadline.')
+                        raise lifecycle_refusal(
+                            LifecyclePrecondition, 'deadline_unparseable')
                     if timezone.is_naive(parsed):
                         parsed = timezone.make_aware(
                             parsed, timezone.get_current_timezone())
                     round_obj.deadline = parsed
             else:
-                raise LifecyclePrecondition(
-                    'Provide deadline or minutes_from_now.')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'deadline_required')
 
             round_obj.save(update_fields=['deadline'])
             after = _round_payload(game, action.require_round())

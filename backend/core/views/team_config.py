@@ -14,6 +14,7 @@ from core.models.core import Game, Team, Round
 from core.models.scenario import MarketDefinition
 from core.models.decisions import DecisionSubmission
 from core.permissions import IsInstructor
+from core.utils.operator_messages import lifecycle_refusal, operator_refusal
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
@@ -97,16 +98,12 @@ class InstructorTeamConfigView(APIView):
 
         # Validation: cannot change after first Round 1 submission exists
         if _has_round1_submissions(game):
-            raise LifecyclePrecondition(
-                'Cannot change home markets after Round 1 decisions have been '
-                'submitted.',
-                guidance='Team configuration is fixed once play starts.',
-                code='round_1_started')
+            raise lifecycle_refusal(LifecyclePrecondition, 'round_1_started')
 
         teams_data = request.data.get('teams', [])
         if not teams_data:
             return Response(
-                {'error': 'No teams provided.'},
+                operator_refusal(request, 'team_config_no_teams'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -128,7 +125,7 @@ class InstructorTeamConfigView(APIView):
             team = team_map.get(team_id)
             if not team:
                 return Response(
-                    {'error': f'Team {team_id} not found in this game.'},
+                    operator_refusal(request, 'team_config_team_not_in_game'),
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -150,8 +147,10 @@ class InstructorTeamConfigView(APIView):
                     market = valid_markets.get(market_code)
                     if not market:
                         return Response(
-                            {'error': f'Invalid market code "{market_code}" for this scenario. '
-                                      f'Valid codes: {", ".join(sorted(valid_markets.keys()))}'},
+                            operator_refusal(
+                                request, 'team_config_invalid_market',
+                                market=market_code,
+                                valid=', '.join(sorted(valid_markets.keys()))),
                             status=status.HTTP_400_BAD_REQUEST,
                         )
                     if team.home_market != market:
@@ -187,7 +186,7 @@ class InstructorRandomizeHomeMarketsView(APIView):
 
         if not markets:
             return Response(
-                {'error': 'No markets defined for this scenario.'},
+                operator_refusal(request, 'scenario_has_no_markets'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

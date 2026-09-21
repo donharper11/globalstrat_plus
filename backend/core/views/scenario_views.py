@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
+from core.utils.operator_messages import game_status, lifecycle_refusal
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 import json
@@ -334,16 +335,15 @@ class GameActivateView(APIView):
             game = action.game
             before = action.before = _game_state(game)
             if game.status != 'setup':
-                raise LifecycleConflict(
-                    f"Game is already '{game.status}'. Only 'setup' games can "
-                    f"be activated.",
-                    guidance='Refresh — another operator may have activated it.',
-                    code='game_not_in_setup')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'game_not_in_setup',
+                    status=game_status(game.status))
 
             round_1 = Round.objects.select_for_update().filter(
                 game=game, round_number=1).first()
             if not round_1:
-                raise LifecyclePrecondition('Round 1 not found for this game.')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'round_one_missing')
 
             round_1.status = 'open'
             round_1.opened_at = timezone.now()
@@ -380,11 +380,9 @@ class GamePauseView(APIView):
             game = action.game
             before = action.before = _game_state(game)
             if game.status != 'active':
-                raise LifecycleConflict(
-                    f"Game is '{game.status}', not 'active'. Cannot pause.",
-                    guidance='Refresh — another operator may have paused or '
-                             'completed it.',
-                    code='game_not_active')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'game_not_active',
+                    status=game_status(game.status))
 
             game.status = 'paused'
             game.save(update_fields=['status'])
@@ -442,10 +440,9 @@ class GameResumeView(APIView):
             game = action.game
             before = action.before = _game_state(game)
             if game.status != 'paused':
-                raise LifecycleConflict(
-                    f"Game is '{game.status}', not 'paused'. Cannot resume.",
-                    guidance='Refresh — another operator may have resumed it.',
-                    code='game_not_paused')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'game_not_paused',
+                    status=game_status(game.status))
 
             game.status = 'active'
             game.save(update_fields=['status'])
@@ -469,10 +466,8 @@ class GameArchiveView(APIView):
             game = action.game
             before = action.before = _game_state(game)
             if game.status == 'archived':
-                raise LifecycleConflict(
-                    'Game is already archived.',
-                    guidance='Refresh — another operator archived it.',
-                    code='game_already_archived')
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'game_already_archived')
             reason = action.require_reason()
 
             game.status = 'archived'
