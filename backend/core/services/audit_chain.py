@@ -26,7 +26,7 @@ from django.utils import timezone
 
 from core.models import (
     AuditChainEntry, AuthorizationRefusalEvent, DecisionAuditEvent,
-    OperatorAuditEvent, ResolutionManifest,
+    GameDeletionAuditEvent, OperatorAuditEvent, ResolutionManifest,
     SensitiveReadEvent,
 )
 from core.models.audit_integrity import GENESIS_SHA256
@@ -64,6 +64,14 @@ PROJECTIONS = {
         ('id', 'actor_user_id', 'username', 'game_id_attempted', 'method',
          'route', 'endpoint', 'outcome', 'reason', 'request_id', 'created_at'),
     ),
+    # Every column: the row is small, and each value is one a dispute about a
+    # deleted game could turn on.
+    'competition_game_deletion_audit_event': (
+        GameDeletionAuditEvent,
+        ('id', 'game_id_deleted', 'game_name', 'scenario_id_value',
+         'scenario_name', 'actor_user_id', 'username', 'action', 'reason',
+         'before', 'request_id', 'created_at'),
+    ),
     'competition_sensitive_read_event': (
         SensitiveReadEvent,
         ('id', 'actor_user_id', 'username', 'game_id_read', 'team_id_read',
@@ -99,6 +107,10 @@ SEAL_ORDER = (
     'competition_resolution_manifest',
     'competition_sensitive_read_event',
     'competition_authorization_refusal_event',
+    # Appended last, so the order of every table that was already here -- and
+    # therefore the digests of a chain rebuilt from rows that predate this
+    # table -- is unchanged.
+    'competition_game_deletion_audit_event',
 )
 
 

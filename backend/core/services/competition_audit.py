@@ -1,5 +1,6 @@
 """Competition audit helpers; failures are deliberately fail-closed."""
-from core.models import DecisionAuditEvent, OperatorAuditEvent
+from core.models import (DecisionAuditEvent, GameDeletionAuditEvent,
+                         OperatorAuditEvent)
 from core.utils.auth_context import get_request_user
 
 
@@ -35,4 +36,30 @@ def record_operator_event(request, game, round_obj, action, before, after,
         game=game, round=round_obj, user=user, action=action, reason=reason,
         before=before, after=after, outcome=outcome,
         conflict=conflict or {}, request_id=request_id,
+    )
+
+
+def record_game_deletion(request, before, scenario, reason, request_id):
+    """The durable record of one committed game deletion (R45).
+
+    Called by `GameDeleteView` inside the transaction that deletes the game,
+    after the cascade has succeeded: if this write fails the deletion is rolled
+    back with it, and if anything fails after it the row goes with the
+    deletion. Fail-closed like the rest of this module -- there is no `except`
+    here on purpose.
+
+    Takes `before` (the `_game_state` snapshot) rather than the game, because
+    by now the game object describes a row that no longer exists. Plain values
+    only; see `GameDeletionAuditEvent` for why it holds no keys.
+    """
+    user = get_request_user(request)
+    if user is None:
+        raise ValueError('Authenticated operator identity is required.')
+    return GameDeletionAuditEvent.objects.create(
+        game_id_deleted=before['game_id'], game_name=before['name'],
+        scenario_id_value=getattr(scenario, 'pk', None),
+        scenario_name=getattr(scenario, 'name', '') or '',
+        actor_user_id=user.user_id, username=user.username or '',
+        action='delete_game', reason=reason, before=before,
+        request_id=request_id,
     )

@@ -87,6 +87,19 @@
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
+    "admin/core/authorizationrefusalevent/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/authorizationrefusalevent/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
     "admin/core/complianceinvestment/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
       "lifecycle_mutating": false,
@@ -461,6 +474,19 @@
         "put"
       ],
       "route": "admin/core/game/<path:object_id>/",
+      "uses_boundary": false,
+      "view": "django.views.generic.base.RedirectView"
+    },
+    "admin/core/gamedeletionauditevent/<path:object_id>/|delete,patch,post,put": {
+      "exempt": false,
+      "lifecycle_mutating": false,
+      "methods": [
+        "delete",
+        "patch",
+        "post",
+        "put"
+      ],
+      "route": "admin/core/gamedeletionauditevent/<path:object_id>/",
       "uses_boundary": false,
       "view": "django.views.generic.base.RedirectView"
     },
@@ -2459,6 +2485,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 215,
+  "total_mutating_routes": 217,
   "unguarded": 0
 }

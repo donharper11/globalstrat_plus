@@ -114,5 +114,5 @@ from .competition_audit import (
     DecisionAuditEvent, OperatorAuditEvent, ResolutionManifest,
 )
 from .audit_integrity import (AuditChainEntry, AuthorizationRefusalEvent,
-                              SensitiveReadEvent)
+                              GameDeletionAuditEvent, SensitiveReadEvent)
 from .narrative_jobs import NarrativeJob

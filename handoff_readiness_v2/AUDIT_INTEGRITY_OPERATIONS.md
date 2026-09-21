@@ -19,9 +19,10 @@ visible afterwards by disagreeing with a digest written outside the database.
 
 ## Daily operation
 
-Sealing is automatic. Every decision-audit and operator-audit write schedules a
-seal in `transaction.on_commit`, and a completed resolution manifest does the
-same. Read events are swept up by the next seal.
+Sealing is automatic. Every decision-audit, operator-audit, authorization-refusal
+and game-deletion write schedules a seal in `transaction.on_commit`, and a
+completed resolution manifest does the same. Read events are swept up by the
+next seal.
 
 Sealing is deliberately **after commit**, never inside the writing transaction:
 the seal takes a global advisory lock, and taking it underneath the operator
@@ -54,8 +55,9 @@ maintenance, not after.
 
 `TRUNCATE` does not fire row-level triggers, so the append-only guards alone
 did not cover it — GSP-CRV2-04's own certification run found that out by trying
-it. A statement-level `BEFORE TRUNCATE` guard now refuses it on all five
-tables.
+it. A statement-level `BEFORE TRUNCATE` guard now refuses it on every audit
+table (`audit_guards.ALL_TABLES`: seven, since R45 added
+`competition_game_deletion_audit_event`).
 
 The guard has to make an exception for one legitimate case: Django's
 `TransactionTestCase` resets an isolated test database by truncating every
@@ -141,6 +143,7 @@ needed.
 | `competition_decision_audit_event` | Life of the competition + 1 year (dispute window) | Instructors of the owning course; operators |
 | `competition_operator_audit_event` | Same | Same |
 | `competition_resolution_manifest` | Permanent — it is the reconstruction record | Same |
+| `competition_game_deletion_audit_event` | Same as the operator audit row it stands in for | Operators, via the read-only Django admin (search by request id, game name or actor). Not exposed by any API route |
 | `competition_sensitive_read_event` | 1 year | **Operators only**, via `who_accessed`. Not exposed by any API route |
 | `competition_audit_chain` | Permanent | Operators |
 | `audit-anchors/` | Permanent, backed up off-host | Operators |
@@ -177,12 +180,52 @@ python3 manage.py install_audit_guards --privileges
 
 Until that switch is made, the reject layer is triggers alone.
 
+## A committed game deletion (R45)
+
+`DELETE /api/games/<id>/delete/` removes only a game nothing else records: not
+a competition heat, and not a game any audit table refers to. Because
+`OperatorAuditEvent` holds a protected key to the game, the deletion itself is
+written to `competition_game_deletion_audit_event`, which holds none: game id
+and name, scenario id and name, actor id and username, the written reason, the
+prior state, the request id the operator was shown, and the time. English only
+(R44).
+
+The row is written inside the transaction that deletes the game. There is no
+deletion without its record and no record without its deletion; both
+directions are tested, including a failure injected after the row is written.
+The `core.lifecycle` log line is kept alongside it.
+
+To read one back: Django admin → *Game deletion audit events*, searching by the
+request id from the operator's response, the game's name or the actor. The
+admin is read-only for this table as for every audit table, and the triggers
+hold that whatever the admin says.
+
+**After applying migration `0088` on the competition host**, re-run the role
+provisioning and then check it:
+
+```bash
+ops/provision-app-role.sh            # re-applies the grants; idempotent
+ops/provision-app-role.sh --check    # must print PASS
+python3 manage.py install_audit_guards --check
+```
+
+Default privileges give the application role `UPDATE` and `DELETE` on every new
+table, this one included. The triggers refuse both regardless, but the
+privilege layer is only restored by re-running the script, and `--check` fails
+("can rewrite or own the audit table …") until it has been.
+
 ## Migration and rollback
 
 * `0069_audit_integrity` creates `competition_audit_chain` and
   `competition_sensitive_read_event`. No existing table is altered.
 * `0070_audit_guards` installs the trigger functions and triggers. Reversible;
   the reverse drops them and rewrites nothing.
+
+* `0088_game_deletion_audit_event` creates
+  `competition_game_deletion_audit_event` and installs its two triggers in the
+  same migration. Reversible; the reverse drops that table's triggers and the
+  table, and leaves the shared trigger functions alone. No backfill: deletions
+  committed before it exist only in the `core.lifecycle` log.
 
 Existing audit rows are preserved by both, and neither backfills the chain:
 rows written before the chain existed are sealed by the first

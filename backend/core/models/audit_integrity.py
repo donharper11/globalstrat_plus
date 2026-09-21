@@ -180,3 +180,68 @@ class AuthorizationRefusalEvent(models.Model):
         who = self.username or 'anonymous'
         return (f'{who} refused {self.method} {self.endpoint} '
                 f'(game {self.game_id_attempted})')
+
+
+class GameDeletionAuditEvent(models.Model):
+    """One committed deletion of a game (R45, V2-134).
+
+    `OperatorAuditEvent` cannot hold this: it keeps a PROTECTED key to the
+    game, so the row saying a game was deleted would refuse the deletion it
+    describes. Until this table existed a committed deletion was a
+    `core.lifecycle` log line and nothing else -- the one operator action with
+    no durable record.
+
+    So every value here is plain. There is no key to the game, the scenario or
+    the actor: the game is gone by the time anyone reads this, a scenario or an
+    account may follow it, and every `on_delete` rule would either remove the
+    row or rewrite it, both of which the database triggers refuse.
+
+    Only *committed* deletions are written here. A refused deletion leaves the
+    game in place, so it stays what it always was: a rejected
+    `OperatorAuditEvent` pointing at the game that is still there.
+
+    The row is written inside the transaction that deletes the game
+    (`GameDeleteView`), so neither can exist without the other. English only,
+    whatever language the operator works in (R44).
+    """
+    game_id_deleted = models.BigIntegerField()
+    game_name = models.CharField(max_length=200)
+    # `_value` because `scenario_id` would read as a foreign key's column.
+    scenario_id_value = models.BigIntegerField(null=True, blank=True)
+    scenario_name = models.CharField(max_length=200, blank=True, default='')
+
+    actor_user_id = models.IntegerField()
+    username = models.CharField(max_length=150, blank=True, default='')
+
+    action = models.CharField(max_length=64, default='delete_game')
+    reason = models.TextField()
+    # The lifecycle state the operator audit rows call `before`.
+    before = models.JSONField(default=dict)
+    request_id = models.CharField(max_length=128, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'competition_game_deletion_audit_event'
+        ordering = ['id']
+        indexes = [
+            models.Index(fields=['game_id_deleted']),
+            models.Index(fields=['actor_user_id', 'created_at']),
+            models.Index(fields=['created_at']),
+        ]
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValueError('GameDeletionAuditEvent records are immutable.')
+        result = super().save(*args, **kwargs)
+        # Sealed once the deleting transaction commits, never inside it: the
+        # seal takes a global advisory lock, and this write happens underneath
+        # the operator lifecycle locks. A rolled-back deletion discards the
+        # callback along with the row.
+        from core.models.competition_audit import _schedule_seal
+        _schedule_seal()
+        return result
+
+    def __str__(self):
+        who = self.username or f'user {self.actor_user_id}'
+        return (f'{who} deleted game {self.game_id_deleted} '
+                f'"{self.game_name}"')

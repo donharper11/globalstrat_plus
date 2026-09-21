@@ -948,8 +948,11 @@ class AdminTamperingTests(AuditIntegrityBase):
 
     def test_the_admin_offers_no_way_in_for_any_audit_record(self):
         from django.contrib import admin as django_admin
+        from core.models import (AuthorizationRefusalEvent,
+                                 GameDeletionAuditEvent)
         for model in (DecisionAuditEvent, OperatorAuditEvent,
-                      ResolutionManifest, AuditChainEntry, SensitiveReadEvent):
+                      ResolutionManifest, AuditChainEntry, SensitiveReadEvent,
+                      AuthorizationRefusalEvent, GameDeletionAuditEvent):
             options = django_admin.site._registry[model]
             self.assertFalse(options.has_add_permission(None), model.__name__)
             self.assertFalse(options.has_change_permission(None), model.__name__)

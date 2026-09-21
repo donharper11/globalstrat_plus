@@ -63,6 +63,7 @@ APPEND_ONLY_TABLES=(
   competition_operator_audit_event
   competition_sensitive_read_event
   competition_authorization_refusal_event
+  competition_game_deletion_audit_event
   competition_audit_chain
 )
 MANIFEST_TABLE=competition_resolution_manifest
@@ -129,11 +130,17 @@ report() {
   # The audit tables are listed above with their own, deliberately narrower
   # grants; they are excluded here so the deliberate absence of DELETE does not
   # read as a missing grant.
+  # Built from the array, not from fixed indexes: the list used to name
+  # elements 0 to 4, so a sixth audit table would have pushed the last one out
+  # of the exclusion and into this "must be empty" report as a false alarm.
+  local audit_list="'$MANIFEST_TABLE'"
+  local audit_table
+  for audit_table in "${APPEND_ONLY_TABLES[@]}"; do
+    audit_list="$audit_list,'$audit_table'"
+  done
   q "select tablename from pg_tables
       where schemaname='public'
-        and tablename not in ('${APPEND_ONLY_TABLES[0]}','${APPEND_ONLY_TABLES[1]}',
-                              '${APPEND_ONLY_TABLES[2]}','${APPEND_ONLY_TABLES[3]}',
-                              '${APPEND_ONLY_TABLES[4]}','$MANIFEST_TABLE')
+        and tablename not in ($audit_list)
         and not (has_table_privilege('$ROLE', schemaname||'.'||tablename, 'SELECT')
              and has_table_privilege('$ROLE', schemaname||'.'||tablename, 'INSERT')
              and has_table_privilege('$ROLE', schemaname||'.'||tablename, 'UPDATE')
