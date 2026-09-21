@@ -10,6 +10,8 @@ from core.models import Game, Team
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.auth_context import get_request_user
+from core.utils.operator_messages import (
+    lifecycle_refusal, participation_status)
 from core.views.decisions import IsInstructor
 
 
@@ -42,14 +44,14 @@ class InstructorTeamParticipationView(APIView):
             operator = get_request_user(request)
             action = str(request.data.get('action', '')).strip().lower()
             if action not in ('deactivate', 'reactivate'):
-                raise LifecyclePrecondition(
-                    'action must be either "deactivate" or "reactivate".')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'participation_action_invalid')
             reason = guard.require_reason()
             expected_confirmation = f'{action.upper()} TEAM {team_id}'
             if request.data.get('confirmation') != expected_confirmation:
-                raise LifecyclePrecondition(
-                    f'confirmation must exactly equal "{expected_confirmation}".',
-                    code='confirmation_required')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'confirmation_required',
+                    expected=expected_confirmation)
 
             guard.action = f'team_{action}d'
             team = get_object_or_404(
@@ -58,11 +60,9 @@ class InstructorTeamParticipationView(APIView):
             before = guard.before = _snapshot(team)
             target_status = 'withdrawn' if action == 'deactivate' else 'active'
             if team.participation_status == target_status:
-                error = LifecycleConflict(
-                    f'Team is already {target_status}.',
-                    guidance='Refresh — another operator may have changed it.',
-                    code='participation_unchanged')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'participation_unchanged',
+                    status=participation_status(target_status))
 
             if action == 'deactivate':
                 team.participation_status = 'withdrawn'

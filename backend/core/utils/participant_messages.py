@@ -242,15 +242,15 @@ MESSAGES = {
     },
     'team_withdrawn': {
         'en': 'This team has been withdrawn from the competition and cannot submit decisions.',
-        'zh-CN': '该团队已退出比赛，无法提交决策。',
+        'zh-CN': '该团队已退出游戏，无法提交决策。',
     },
     'game_paused': {
         'en': 'Your instructor has paused the game. Changes cannot be made right now.',
-        'zh-CN': '教师已暂停比赛。当前无法进行修改。',
+        'zh-CN': '教师已暂停游戏。当前无法进行修改。',
     },
     'game_finished': {
         'en': 'This game has finished and no longer accepts decision changes.',
-        'zh-CN': '该比赛已结束，不能再修改决策。',
+        'zh-CN': '该游戏已结束，不能再修改决策。',
     },
     'round_not_open': {
         'en': 'This round is not open for decision submissions.',
@@ -294,7 +294,7 @@ MESSAGES = {
     },
     'platform_wrong_scenario': {
         'en': 'The selected platform is not available in this game. Choose an available platform.',
-        'zh-CN': '所选平台不适用于本场比赛。请选择可用平台。',
+        'zh-CN': '所选平台不适用于本游戏。请选择可用平台。',
     },
     'platform_not_unlocked': {
         'en': '{platform} becomes available in round {round}. Choose an available platform or wait until then.',
@@ -446,6 +446,25 @@ MESSAGES = {
     'analyst_unavailable': {
         'en': 'The research analyst is unavailable right now, so your question was not answered and nothing was charged. Try again in a few minutes; if it keeps happening, tell your instructor.',
         'zh-CN': '分析师服务暂时不可用，因此您的问题未得到回答，也未产生费用。请几分钟后重试；如问题持续出现，请告知教师。',
+    },
+    # The rest of what the analyst route can say. `analyst_no_relevant_research`
+    # is not a refusal: it is the ANSWER to a charged question when the search
+    # finds nothing, so it says plainly that the question was used and charged.
+    'analyst_question_required': {
+        'en': 'Type a question for the analyst before pressing Ask. Nothing was asked and nothing was charged.',
+        'zh-CN': '请先输入要向分析师提出的问题，再点击提问。本次未提交问题，也未产生费用。',
+    },
+    'analyst_not_enabled': {
+        'en': 'The research analyst is not part of this game, so your question was not asked and nothing was charged.',
+        'zh-CN': '本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。',
+    },
+    'analyst_game_or_team_not_found': {
+        'en': 'This game or team could not be found, so your question was not asked and nothing was charged. Reload the page; if it keeps happening, tell your instructor.',
+        'zh-CN': '未找到该游戏或团队，因此您的问题未提交，也未产生费用。请刷新页面；如问题持续出现，请告知教师。',
+    },
+    'analyst_no_relevant_research': {
+        'en': 'The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. This question counts toward your team\'s questions for the round and was charged.',
+        'zh-CN': '分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问已计入您团队本回合的提问次数，并已收费。',
     },
     'research_report_unknown': {
         'en': 'That research report is not available. Choose a report from the research catalogue.',

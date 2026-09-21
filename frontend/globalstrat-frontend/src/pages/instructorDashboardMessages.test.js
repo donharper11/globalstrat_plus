@@ -76,7 +76,7 @@ describe('the scanner itself', () => {
     ["message.warning(\n  'Weights must sum to 100%'\n);", 1],
     ["message.error(t('instructor.msg_upload_failed'));", 0],
     ["message.error(err.response?.data?.error || t('instructor.msg_upload_failed'));", 0],
-    ["message.success(t('instructor.msg_roster_uploaded', { count: n, file: `${a}` }), 10);", 0],
+    ["message.success(t('instructor.roster_upload_added', { created: n, file: `${a}` }), 10);", 0],
   ])('%s', (snippet, expected) => {
     const calls = messageCalls(snippet);
     expect(calls).toHaveLength(1);

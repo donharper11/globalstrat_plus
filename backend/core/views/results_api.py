@@ -29,6 +29,9 @@ from core.models.scenario import MarketDefinition, EventTemplateDefinition
 from core.models.decisions import DecisionSubmission
 from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
+from core.utils.operator_messages import (
+    language_for_request, lifecycle_refusal, operator_message,
+    operator_refusal)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
@@ -629,7 +632,7 @@ class InstructorSessionReadinessView(APIView):
         # pilot -- and is deliberately not restated here.
         if not instructor_can_access_game(request, game):
             return Response(
-                {'error': 'This game belongs to another instructor.'},
+                operator_refusal(request, 'game_belongs_to_another_instructor'),
                 status=status.HTTP_403_FORBIDDEN)
         teams = request.query_params.get('teams')
         cohort = ([int(t) for t in teams.split(',') if t.strip().isdigit()]
@@ -779,11 +782,9 @@ class InstructorAdvanceRoundView(APIView):
             reason = ''
 
             if round_obj.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} has already been processed.',
-                    guidance='Refresh the console and advance instead.',
-                    code='round_already_processed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'legacy_advance_already_processed',
+                    round=round_obj.round_number)
 
             if force:
                 # Overriding the all-teams-locked check resolves the round with
@@ -792,29 +793,27 @@ class InstructorAdvanceRoundView(APIView):
             else:
                 unlocked = _first_unlocked_team(game, round_obj)
                 if unlocked is not None:
-                    error = LifecyclePrecondition(
-                        f'Team "{unlocked}" has not locked decisions.',
-                        guidance='Lock or close the round first, or resend with '
-                                 'force=true and a written reason.',
-                        code='team_not_locked')
-                    raise error
+                    raise lifecycle_refusal(
+                        LifecyclePrecondition, 'team_not_locked', team=unlocked)
 
             from core.engine.advance_round import advance_round, RoundNotReadyError
             try:
                 advance_round(game.id)
             except RoundNotReadyError as e:
-                error = LifecyclePrecondition(str(e), code='round_not_ready')
-                raise error
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'round_not_ready', detail=str(e))
             except ValueError as e:
-                error = LifecycleConflict(str(e), code='advance_refused',
-                                          guidance='Refresh the console.')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
                 logger.exception('Legacy advance failed for game %s', game_id)
                 action.record_fault(f'Round advance failed: {e}',
                                     code='advance_failed')
                 return Response(
-                    {'error': f'Round advance failed: {e}',
+                    {'error': operator_message(
+                        'legacy_advance_failed',
+                        language=language_for_request(request), detail=str(e)),
+                     'code': 'advance_failed',
                      'request_id': action.request_id},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
@@ -860,12 +859,9 @@ class InstructorInjectEventView(APIView):
             # inputs would depend on the clock. The boundary makes that
             # impossible; this check makes the refusal explicit.
             if round_obj.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} has already been processed; '
-                    f'an event injected now would not be part of it.',
-                    guidance='Advance to the next round and inject there.',
-                    code='round_already_processed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'inject_already_processed',
+                    round=round_obj.round_number)
 
             template_id = request.data.get('event_template_id')
             market_id = request.data.get('target_market_id')
@@ -911,18 +907,16 @@ class InstructorExtendDeadlineView(APIView):
             try:
                 hours = int(request.data.get('hours', 24))
             except (TypeError, ValueError):
-                raise LifecyclePrecondition('hours must be a number.')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'hours_not_a_number')
 
             # This route reopens a closed round as a side effect. That is a
             # real state change, so it is refused once results exist and, like
             # every other reopen, it is audited rather than silent.
             if round_obj.status == 'processed':
-                error = LifecycleConflict(
-                    f'Round {round_obj.round_number} has already been processed; '
-                    f'its deadline cannot be extended.',
-                    guidance='Advance to the next round and set its deadline there.',
-                    code='round_already_processed')
-                raise error
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'extend_already_processed',
+                    round=round_obj.round_number)
 
             reason = ''
             if round_obj.status == 'closed':
@@ -1085,7 +1079,7 @@ class InstructorOperatorEventsView(APIView):
         # game id in the URL.
         if not instructor_can_access_game(request, game):
             return Response(
-                {'error': 'This game belongs to another instructor.'},
+                operator_refusal(request, 'game_belongs_to_another_instructor'),
                 status=status.HTTP_403_FORBIDDEN)
 
         events = (OperatorAuditEvent.objects
@@ -1156,7 +1150,8 @@ class InstructorTeamDecisionsView(APIView):
 
         rnd = Round.objects.filter(game=game, round_number=round_number).first()
         if not rnd:
-            return Response({'error': 'Round not found'}, status=404)
+            return Response(operator_refusal(request, 'round_not_found'),
+                            status=404)
 
         sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
         if not sub:

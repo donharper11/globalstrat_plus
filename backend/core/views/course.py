@@ -8,6 +8,7 @@ Views are thin wrappers; heavy logic stays in services/.
 import csv
 import hashlib
 import io
+import logging
 import math
 import random
 import string
@@ -40,12 +41,17 @@ from core.services.cohort_caps import (
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.cohort_messages import cohort_message, language_for_request
+from core.utils.operator_messages import (
+    composed_lifecycle_refusal, lifecycle_refusal, operator_code,
+    operator_message, operator_refusal, round_status)
 from core.serializers.course import (
     CourseSerializer, CourseListSerializer,
     SectionSerializer, SectionDetailSerializer,
     SimulationInstanceSerializer, EnrollmentSerializer,
     RosterUploadSerializer, TeamGenerateSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 # Futuristic company names used when auto-generating teams.
 # ---------------------------------------------------------------------------
@@ -179,7 +185,7 @@ class RosterViewSet(APIView):
         section_id = request.query_params.get('section_id')
         if not section_id:
             return Response(
-                {'error': 'section_id query parameter is required.'},
+                operator_refusal(request, 'section_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         enrollments = Enrollment.objects.filter(
@@ -199,7 +205,7 @@ class RosterViewSet(APIView):
             return self._handle_add_single(request)
         else:
             return Response(
-                {'error': f"Unknown action: '{action_type}'. Use 'upload' or 'add'."},
+                operator_refusal(request, 'roster_unknown_action'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -212,14 +218,14 @@ class RosterViewSet(APIView):
             enrollment_id = request.data.get('enrollment_id')
             if not enrollment_id:
                 return Response(
-                    {'error': 'enrollment_id is required.'},
+                    operator_refusal(request, 'roster_student_required'),
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             try:
                 enrollment = Enrollment.objects.get(enrollment_id=enrollment_id)
             except Enrollment.DoesNotExist:
                 return Response(
-                    {'error': 'Enrollment not found.'},
+                    operator_refusal(request, 'roster_student_not_found'),
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -227,7 +233,7 @@ class RosterViewSet(APIView):
             user = User.objects.filter(user_id=enrollment.user_id).first()
             if not user:
                 return Response(
-                    {'error': 'User not found.'},
+                    operator_refusal(request, 'roster_account_not_found'),
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -247,7 +253,7 @@ class RosterViewSet(APIView):
             return Response(serializer.data)
 
         return Response(
-            {'error': f"Unknown action: '{action_type}'."},
+            operator_refusal(request, 'roster_unknown_action'),
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -257,14 +263,14 @@ class RosterViewSet(APIView):
         enrollment_id = request.query_params.get('enrollment_id')
         if not enrollment_id:
             return Response(
-                {'error': 'enrollment_id query parameter is required.'},
+                operator_refusal(request, 'roster_student_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
             enrollment = Enrollment.objects.get(enrollment_id=enrollment_id)
         except Enrollment.DoesNotExist:
             return Response(
-                {'error': 'Enrollment not found.'},
+                operator_refusal(request, 'roster_student_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
         enrollment.delete()
@@ -281,7 +287,7 @@ class RosterViewSet(APIView):
 
         if not section_id:
             return Response(
-                {'error': 'section_id is required for CSV upload.'},
+                operator_refusal(request, 'section_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -295,7 +301,7 @@ class RosterViewSet(APIView):
 
         if not csv_text:
             return Response(
-                {'error': 'No CSV data provided.'},
+                operator_refusal(request, 'roster_csv_empty'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -304,7 +310,7 @@ class RosterViewSet(APIView):
             section = Section.objects.get(section_id=section_id)
         except Section.DoesNotExist:
             return Response(
-                {'error': 'Section not found.'},
+                operator_refusal(request, 'section_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -321,7 +327,9 @@ class RosterViewSet(APIView):
             if not student_id_val and not email:
                 errors.append({
                     'row': row_num,
-                    'error': 'Row must have at least student_id or email.',
+                    'error': operator_message(
+                        'roster_row_needs_identity', language=language),
+                    'code': operator_code('roster_row_needs_identity'),
                 })
                 continue
 
@@ -338,7 +346,8 @@ class RosterViewSet(APIView):
                 ).exists():
                     full = enrolment_capacity_error(section, language=language)
                     if full:
-                        errors.append({'row': row_num, 'error': full})
+                        errors.append({'row': row_num, 'error': full,
+                                       'code': 'section_full'})
                         continue
                 # Create enrollment if not already enrolled in this section
                 _enroll, enroll_created = Enrollment.objects.get_or_create(
@@ -353,8 +362,17 @@ class RosterViewSet(APIView):
                     created += 1
                 else:
                     updated += 1
-            except Exception as e:
-                errors.append({'row': row_num, 'error': str(e)})
+            except Exception:
+                # What the database raised can name a table or a constraint;
+                # it goes to the log, and the instructor gets a sentence.
+                logger.exception('Roster upload: row %s could not be saved '
+                                 '(section=%s)', row_num, section_id)
+                errors.append({
+                    'row': row_num,
+                    'error': operator_message(
+                        'roster_row_failed', language=language),
+                    'code': operator_code('roster_row_failed'),
+                })
 
         return Response(
             {'created': created, 'updated': updated, 'errors': errors},
@@ -371,12 +389,12 @@ class RosterViewSet(APIView):
 
         if not section_id:
             return Response(
-                {'error': 'section_id is required.'},
+                operator_refusal(request, 'section_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if not student_id_val and not email:
             return Response(
-                {'error': 'At least student_id or email is required.'},
+                operator_refusal(request, 'roster_identity_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -384,7 +402,7 @@ class RosterViewSet(APIView):
             section = Section.objects.get(section_id=section_id)
         except Section.DoesNotExist:
             return Response(
-                {'error': 'Section not found.'},
+                operator_refusal(request, 'section_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -418,8 +436,10 @@ class RosterViewSet(APIView):
                 else status.HTTP_200_OK
             )
             return Response(serializer.data, status=resp_status)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            logger.exception('Roster add failed (section=%s)', section_id)
+            return Response(operator_refusal(request, 'roster_add_failed'),
+                            status=status.HTTP_400_BAD_REQUEST)
 
     # ---- Internal: find or create User ----------------------------------
 
@@ -527,7 +547,7 @@ class TeamManagementView(APIView):
         section_id = request.query_params.get('section_id')
         if not section_id:
             return Response(
-                {'error': 'section_id query parameter is required.'},
+                operator_refusal(request, 'section_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -599,7 +619,7 @@ class TeamManagementView(APIView):
             return self._handle_rename(request)
         else:
             return Response(
-                {'error': f"Unknown action: '{action_type}'. Use 'assign' or 'rename'."},
+                operator_refusal(request, 'team_management_unknown_action'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -614,7 +634,7 @@ class TeamManagementView(APIView):
         assignments = request.data.get('assignments', [])
         if not assignments or not isinstance(assignments, list):
             return Response(
-                {'error': 'assignments must be a non-empty list of {user_id, team_id}.'},
+                operator_refusal(request, 'assignments_required'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -683,7 +703,7 @@ class TeamManagementView(APIView):
 
         if not team_id or not team_name:
             return Response(
-                {'error': 'team_id and team_name are required.'},
+                operator_refusal(request, 'team_rename_incomplete'),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -695,7 +715,7 @@ class TeamManagementView(APIView):
             team = Team.objects.get(id=team_id)
         except Team.DoesNotExist:
             return Response(
-                {'error': 'Team not found.'},
+                operator_refusal(request, 'team_not_found'),
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -723,7 +743,8 @@ class GameRoundScheduleView(APIView):
         try:
             game = Game.objects.get(pk=game_id)
         except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(operator_refusal(request, 'game_not_found'),
+                            status=status.HTTP_404_NOT_FOUND)
 
         rounds = Round.objects.filter(game=game).order_by('round_number')
         result = []
@@ -761,7 +782,8 @@ class GameRoundScheduleView(APIView):
             game = action.game
             rounds_data = request.data.get('rounds', [])
             if not rounds_data:
-                raise LifecyclePrecondition('rounds list is required.')
+                raise lifecycle_refusal(
+                    LifecyclePrecondition, 'schedule_rounds_required')
 
             # Validate everything first; a bulk schedule that half-applies is
             # worse than one that is refused.
@@ -771,13 +793,12 @@ class GameRoundScheduleView(APIView):
                 round_obj = Round.objects.select_for_update().filter(
                     pk=round_id, game=game).first()
                 if round_obj is None:
-                    errors.append(f'Round {round_id} not found in game {game_id}.')
+                    errors.append(('schedule_round_not_in_game', {}))
                     continue
                 if round_obj.status in ('closed', 'processed'):
-                    errors.append(
-                        f'Round {round_obj.round_number} is '
-                        f'"{round_obj.status}"; its schedule can no longer '
-                        f'change.')
+                    errors.append(('schedule_round_frozen', {
+                        'round': round_obj.round_number,
+                        'status': round_status(round_obj.status)}))
                     continue
                 changes = {}
                 for field in ('opened_at', 'deadline'):
@@ -786,7 +807,8 @@ class GameRoundScheduleView(APIView):
                         continue
                     parsed = parse_datetime(raw)
                     if parsed is None:
-                        errors.append(f'Invalid {field} for round {round_id}.')
+                        errors.append(('schedule_invalid_time', {
+                            'round': round_obj.round_number}))
                         break
                     if timezone.is_naive(parsed):
                         parsed = timezone.make_aware(
@@ -796,11 +818,9 @@ class GameRoundScheduleView(APIView):
                     if changes:
                         planned.append((round_obj, changes))
             if errors:
-                raise LifecyclePrecondition(
-                    '; '.join(errors),
-                    guidance='Nothing was scheduled. Fix the listed rounds and '
-                             'resend the whole schedule.',
-                    code='schedule_rejected')
+                raise composed_lifecycle_refusal(
+                    LifecyclePrecondition, 'schedule_rejected', errors,
+                    guidance_key='schedule_rejected_guidance')
 
             action.before = {'rounds': [
                 {'round_number': round_obj.round_number,

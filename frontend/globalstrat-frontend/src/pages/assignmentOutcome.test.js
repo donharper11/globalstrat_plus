@@ -123,7 +123,7 @@ describe('announceAssignment', () => {
  */
 const SHORT_EN = 'Zenith Hardware has 1 member(s); this section expects at '
   + 'least 3. Add members before the game starts.';
-const SHORT_ZH = 'Apex Devices 目前有 2 名成员；本班级要求至少 3 名。请在比赛开始前补充成员。';
+const SHORT_ZH = 'Apex Devices 目前有 2 名成员；本班级要求至少 3 名。请在游戏开始前补充成员。';
 const underMinimum = [
   { team_id: 7, team_name: 'Zenith Hardware', member_count: 1, minimum: 3, detail: SHORT_EN },
   { team_id: 8, team_name: 'Apex Devices', member_count: 2, minimum: 3, detail: SHORT_ZH },

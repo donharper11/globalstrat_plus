@@ -59,7 +59,7 @@ _TICKER_TEMPLATES = {
         'growth_down': '{market}增长放缓 — 需求降温',
         'tariff_up': '{market}关税上调 — 进口成本上升',
         'tariff_down': '{market}关税下调 — 贸易壁垒减少',
-        'deadline': '第{round}回合截止日期：剩余{days}{day_word} — {submitted}/{total}队伍已提交',
+        'deadline': '第{round}回合截止日期：剩余{days}{day_word} — {submitted}/{total} 个团队已提交',
         'day': '天',
         'days': '天',
         'ai_aggressive': '{name}积极扩张 — 竞争加剧',
