@@ -362,3 +362,39 @@ def competition_ownership_error(game, *, language='en'):
         return None
     return cohort_message('competition_course_unowned', language=language,
                           game=getattr(game, 'name', 'This game'))
+
+
+def competition_section_ownership_error(section, *, language='en'):
+    """`competition_ownership_error`, asked of a section rather than a game.
+
+    The roster and team-assignment routes name a section, and a heat's section
+    exists before its game does, so the flag is read from the section's own
+    `SimulationInstance` -- the same column `is_competition_game` reads.
+    """
+    from core.models.core import Game
+    from core.models.course import Course, SimulationInstance
+    from core.utils.cohort_messages import cohort_message
+    if section is None:
+        return None
+    try:
+        instance = SimulationInstance.objects.filter(
+            section_id=section.section_id).first()
+        settings_blob = (instance.settings or {}) if instance else {}
+        if not (isinstance(settings_blob, dict)
+                and settings_blob.get('is_competition', False)):
+            return None
+        course = Course.objects.filter(course_id=section.course_id).first()
+        if course is not None and course.instructor_id is not None:
+            return None
+        game = (Game.objects.filter(pk=instance.game_id).first()
+                if instance.game_id else None)
+        label = (getattr(game, 'name', None) or section.section_name
+                 or section.section_code)
+    except Exception:
+        # As in `is_competition_game`: a cohort that cannot be read is not
+        # turned into a 500 by the check that protects it.
+        logger.exception('Could not resolve competition mode for section %s',
+                         getattr(section, 'section_id', None))
+        return None
+    return cohort_message('competition_course_unowned', language=language,
+                          game=label)

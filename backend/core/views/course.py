@@ -8,6 +8,7 @@ Views are thin wrappers; heavy logic stays in services/.
 import csv
 import hashlib
 import io
+import logging
 import math
 import random
 import string
@@ -35,10 +36,13 @@ from core.models.financials import (
 from core.models.core import SimulationState
 from core.permissions import IsInstructor
 from core.services.cohort_caps import (
-    enrolment_capacity_error, section_for_id, team_capacity_error,
-    under_minimum_teams)
+    enrolment_capacity_error, section_for_id, section_for_team,
+    team_capacity_error, under_minimum_teams)
+from core.services.cohort_scope import (
+    CohortOwnershipRefused, ownership_refusal, ownership_refusal_payload,
+    write_refusal)
 from core.services.lifecycle import (
-    LifecyclePrecondition, lifecycle_view, operator_action)
+    LifecyclePrecondition, lifecycle_view, operator_action, request_id_for)
 from core.utils.cohort_messages import cohort_message, language_for_request
 from core.serializers.course import (
     CourseSerializer, CourseListSerializer,
@@ -46,6 +50,8 @@ from core.serializers.course import (
     SimulationInstanceSerializer, EnrollmentSerializer,
     RosterUploadSerializer, TeamGenerateSerializer,
 )
+
+logger = logging.getLogger(__name__)
 
 # Futuristic company names used when auto-generating teams.
 # ---------------------------------------------------------------------------
@@ -60,6 +66,17 @@ def _generate_password(length=10):
 
 def _hash_password(plain: str) -> str:
     return hashlib.sha256(plain.encode()).hexdigest()
+
+
+def _owned_or_shared(request, queryset, instructor_field):
+    """Narrow a list to what `instructor_can_access_course` would allow."""
+    from django.db.models import Q
+    from core.utils.auth_context import get_request_role, get_request_user_id
+    if (get_request_role(request) or '').lower() == 'admin':
+        return queryset
+    return queryset.filter(
+        Q(**{instructor_field: get_request_user_id(request)})
+        | Q(**{f'{instructor_field}__isnull': True}))
 
 
 # ===================================================================
@@ -83,8 +100,20 @@ class CourseViewSet(viewsets.ModelViewSet):
             qs = qs.filter(instructor_id=instructor_id)
         # For the list action, annotate with section_count
         if self.action == 'list':
+            # A list shows an instructor what they may open: their own courses
+            # and the unowned shared pilot cohort. Detail routes are not
+            # filtered here, so that another instructor's course is refused
+            # with an explanation (`get_object`) rather than a bare 404.
+            qs = _owned_or_shared(self.request, qs, 'instructor_id')
             qs = qs.annotate(section_count=Count('sections'))
         return qs
+
+    def get_object(self):
+        course = super().get_object()
+        refused = ownership_refusal_payload(self.request, course=course)
+        if refused:
+            raise CohortOwnershipRefused(refused)
+        return course
 
     @action(detail=True, methods=['get'])
     def delete_preview(self, request, pk=None):
@@ -134,6 +163,8 @@ class SectionViewSet(viewsets.ModelViewSet):
         course_id = self.request.query_params.get('course_id')
         if course_id:
             qs = qs.filter(course_id=course_id)
+        if self.action == 'list':
+            qs = _owned_or_shared(self.request, qs, 'course__instructor_id')
         # For retrieve/list, annotate with student_count and team_count
         if self.action in ('retrieve', 'list'):
             qs = qs.annotate(
@@ -145,9 +176,28 @@ class SectionViewSet(viewsets.ModelViewSet):
             )
         return qs
 
+    def get_object(self):
+        section = super().get_object()
+        refused = ownership_refusal_payload(self.request, section=section)
+        if refused:
+            raise CohortOwnershipRefused(refused)
+        return section
+
+    def perform_update(self, serializer):
+        # Moving a section under another instructor's course is the same
+        # planting as creating one there.
+        self._refuse_foreign_course(serializer.validated_data.get('course'))
+        serializer.save()
+
+    def _refuse_foreign_course(self, course):
+        refused = ownership_refusal_payload(self.request, course=course)
+        if refused:
+            raise CohortOwnershipRefused(refused)
+
     @transaction.atomic
     def perform_create(self, serializer):
         """Create the section, then auto-create its SimulationInstance."""
+        self._refuse_foreign_course(serializer.validated_data.get('course'))
         section = serializer.save()
         SimulationInstance.objects.create(
             section_id=section.section_id,
@@ -182,6 +232,10 @@ class RosterViewSet(APIView):
                 {'error': 'section_id query parameter is required.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        refused = ownership_refusal(
+            request, section=section_for_id(section_id))
+        if refused:
+            return refused
         enrollments = Enrollment.objects.filter(
             section_id=section_id, is_active=True,
         )
@@ -222,6 +276,13 @@ class RosterViewSet(APIView):
                     {'error': 'Enrollment not found.'},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+            # This route names no game, so the game-scope boundary never saw
+            # it: any instructor could rewrite any cohort's student.
+            refused = write_refusal(
+                request, section_for_id(enrollment.section_id))
+            if refused:
+                return refused
 
             # Update the underlying User record
             user = User.objects.filter(user_id=enrollment.user_id).first()
@@ -267,6 +328,9 @@ class RosterViewSet(APIView):
                 {'error': 'Enrollment not found.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
+        refused = write_refusal(request, section_for_id(enrollment.section_id))
+        if refused:
+            return refused
         enrollment.delete()
         return Response(
             {'detail': 'Enrollment removed.'},
@@ -307,6 +371,10 @@ class RosterViewSet(APIView):
                 {'error': 'Section not found.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        refused = write_refusal(request, section)
+        if refused:
+            return refused
 
         reader = csv.DictReader(io.StringIO(csv_text))
         created = 0
@@ -353,8 +421,22 @@ class RosterViewSet(APIView):
                     created += 1
                 else:
                     updated += 1
-            except Exception as e:
-                errors.append({'row': row_num, 'error': str(e)})
+            except Exception:
+                # The exception text used to be returned to the client, row by
+                # row: constraint names, column names, whatever the driver
+                # said. It belongs in the log; the instructor gets a sentence
+                # and a reference that finds the log line.
+                request_id = request_id_for(request)
+                logger.exception(
+                    'Roster upload failed at row %s of section %s '
+                    '(request_id=%s)', row_num, section_id, request_id)
+                errors.append({
+                    'row': row_num,
+                    'error': cohort_message('roster_row_failed',
+                                            language=language,
+                                            reference=request_id),
+                    'code': 'roster_row_failed',
+                })
 
         return Response(
             {'created': created, 'updated': updated, 'errors': errors},
@@ -388,6 +470,10 @@ class RosterViewSet(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        refused = write_refusal(request, section)
+        if refused:
+            return refused
+
         try:
             user = self._find_or_create_user(
                 student_id_val, display_name, email,
@@ -418,8 +504,19 @@ class RosterViewSet(APIView):
                 else status.HTTP_200_OK
             )
             return Response(serializer.data, status=resp_status)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            request_id = request_id_for(request)
+            logger.exception(
+                'Roster add failed for section %s (request_id=%s)',
+                section_id, request_id)
+            return Response(
+                {'error': cohort_message(
+                    'roster_add_failed',
+                    language=language_for_request(request),
+                    reference=request_id),
+                 'code': 'roster_add_failed',
+                 'request_id': request_id},
+                status=status.HTTP_400_BAD_REQUEST)
 
     # ---- Internal: find or create User ----------------------------------
 
@@ -531,6 +628,11 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        refused = ownership_refusal(
+            request, section=section_for_id(section_id))
+        if refused:
+            return refused
+
         # Teams belong to a Game, and Team has no section_id/team_id/team_name/
         # instance_id of its own. This block was written against the BECSR Team
         # model and raised
@@ -618,6 +720,27 @@ class TeamManagementView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Ownership is settled for the whole request before any of it is
+        # written. One item that reaches into another instructor's cohort --
+        # their student, or their team as the destination -- refuses the lot:
+        # a partly applied cross-cohort assignment is not something to report
+        # item by item.
+        for item in assignments:
+            if not isinstance(item, dict):
+                continue
+            touched = []
+            if item.get('user_id') is not None:
+                enrollment = Enrollment.objects.filter(
+                    user_id=item.get('user_id'), is_active=True).first()
+                if enrollment is not None:
+                    touched.append(section_for_id(enrollment.section_id))
+            if item.get('team_id') is not None:
+                touched.append(section_for_team(item.get('team_id')))
+            for section in touched:
+                refused = write_refusal(request, section)
+                if refused:
+                    return refused
+
         language = language_for_request(request)
         updated = 0
         errors = []
@@ -698,6 +821,10 @@ class TeamManagementView(APIView):
                 {'error': 'Team not found.'},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        refused = write_refusal(request, section_for_team(team.id))
+        if refused:
+            return refused
 
         team.name = team_name
         team.save(update_fields=['name'])

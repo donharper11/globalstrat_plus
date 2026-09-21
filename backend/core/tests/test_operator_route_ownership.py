@@ -617,3 +617,47 @@ class GameDeleteBoundaryTests(OwnershipBase):
                         'the detector must not read that as harmless.')
         self.assertTrue(entry['uses_boundary'])
         self.assertFalse(entry['exempt'])
+
+
+class ConsoleReasonContractTests(OwnershipBase):
+    """What the instructor console has to send, pinned from the server side.
+
+    Found while bringing delete under the boundary: the console called
+    `resetGame(gameId)` and `archiveGame(gameId)` with no body at all, and both
+    routes have required a written reason since they joined the boundary -- so
+    both buttons answered 400 on every click. The frontend half of the repair
+    is pinned by `src/pages/reasonedActions.test.js`.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.game, _teams = build_minimal_game(f'con-{id(self)}')
+        Game.objects.filter(pk=self.game.pk).update(
+            section_id=self.section.section_id)
+
+    def test_the_empty_body_the_console_used_to_send_is_refused(self):
+        client = self._client(self.owner)
+        for path in ('reset', 'archive'):
+            response = client.post(
+                f'/api/games/{self.game.pk}/{path}/', {}, format='json')
+            self.assertEqual(response.status_code, 400, say(response))
+            self.assertEqual(response.data.get('code'), 'reason_required',
+                             say(response))
+
+    def test_the_body_the_console_now_sends_is_accepted(self):
+        client = self._client(self.owner)
+        body = {'reason': 'the course has finished'}
+
+        reset = client.post(f'/api/games/{self.game.pk}/reset/', body,
+                            format='json')
+        archived = client.post(f'/api/games/{self.game.pk}/archive/', body,
+                               format='json')
+
+        self.assertEqual(reset.status_code, 200, say(reset))
+        self.assertEqual(archived.status_code, 200, say(archived))
+
+    def test_deleting_a_game_that_does_not_exist_is_a_refusal_not_a_500(self):
+        response = self._client(self.admin).delete(
+            '/api/games/987654/delete/', {'reason': REASON}, format='json')
+
+        self.assertEqual(response.status_code, 400, say(response))
