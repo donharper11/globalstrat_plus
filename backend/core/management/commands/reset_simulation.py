@@ -8,9 +8,26 @@ Usage:
     python3 manage.py reset_simulation                    # dry-run preview
     python3 manage.py reset_simulation --confirm          # execute
     python3 manage.py reset_simulation --confirm --instance-id 2
+
+WITHHELD FROM COMPETITION DEPLOYMENTS (V2-076). Apart from one statement, the
+SQL below is not scoped to an instance: the TRUNCATEs and UPDATEs reach every
+instance in the database, and failures are swallowed, so a half-finished reset
+reports success. That SQL is deliberately unchanged here. What changed is that
+the command refuses to run at all -- dry run included -- when
+
+  * the process is a production/competition one (`GLOBALSTRAT_ENV=production`,
+    i.e. `settings.IS_PRODUCTION`, or `COMPETITION_REQUIRE_CLEAN_BUILD` on), or
+  * any `SimulationInstance` in the database is flagged
+    `settings['is_competition']`, or
+  * that flag cannot be read (fail closed).
+
+There is NO override, neither a flag nor an environment variable. The command
+has no legitimate use beside a competition heat: recovering a competition
+database is `competition_backup` / the restore runbook, not a reset.
 """
-from django.core.management.base import BaseCommand
-from django.db import connection
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+from django.db import connection, transaction
 
 
 # ── Tables to fully truncate (no round-0 data to preserve) ──────────
@@ -251,7 +268,66 @@ class Command(BaseCommand):
             connection.ensure_connection()
             return None
 
+    def _competition_refusal(self):
+        """Why this command must not run here, or None. V2-076.
+
+        Asked before anything else, including the dry-run counts. No option
+        and no environment variable turns it off: a guard a tired operator can
+        disable from the same shell is the guard being absent.
+        """
+        if getattr(settings, 'IS_PRODUCTION', False):
+            return ('this is a production environment '
+                    f'(GLOBALSTRAT_ENV={getattr(settings, "ENVIRONMENT", "?")}).')
+        if getattr(settings, 'COMPETITION_REQUIRE_CLEAN_BUILD', False):
+            return ('COMPETITION_REQUIRE_CLEAN_BUILD is on, which marks this '
+                    'as a competition stack.')
+
+        # The same flag `cohort_caps.is_competition_game` reads, asked of every
+        # instance rather than one game, because the SQL below is not scoped to
+        # one. Read as raw SQL like the rest of this command: the table is
+        # unmanaged and the ORM's column list need not match a legacy database.
+        try:
+            # atomic(): a failed SELECT must not poison an enclosing
+            # transaction, and must not be left half-open either.
+            with transaction.atomic(), connection.cursor() as cursor:
+                cursor.execute(
+                    'SELECT instance_id, settings FROM simulation_instance '
+                    'ORDER BY instance_id')
+                rows = cursor.fetchall()
+        except Exception as problem:
+            reason = (str(problem).strip().splitlines() or [''])[0]
+            return ('the competition flag could not be read from '
+                    f'simulation_instance ({problem.__class__.__name__}: '
+                    f'{reason}), so it is treated as set.')
+        flagged = []
+        for instance_id, blob in rows:
+            if isinstance(blob, str):
+                import json
+                try:
+                    blob = json.loads(blob)
+                except ValueError:
+                    flagged.append(instance_id)     # unreadable: fail closed
+                    continue
+            if isinstance(blob, dict) and blob.get('is_competition', False):
+                flagged.append(instance_id)
+        if flagged:
+            return ('simulation instance(s) '
+                    f'{", ".join(str(i) for i in flagged)} are flagged '
+                    "settings['is_competition'].")
+        return None
+
     def handle(self, *args, **options):
+        refusal = self._competition_refusal()
+        if refusal:
+            raise CommandError(
+                f'REFUSED: reset_simulation is withheld from competition '
+                f'deployments (V2-076), and {refusal} Its TRUNCATE/UPDATE '
+                f'statements are not scoped to one instance -- they reach '
+                f'every instance in this database -- and it swallows its own '
+                f'failures. Nothing was changed. There is no override; '
+                f'to recover a competition database use the backup/restore '
+                f'runbook.')
+
         dry_run = not options['confirm']
         instance_id = options['instance_id']
 
