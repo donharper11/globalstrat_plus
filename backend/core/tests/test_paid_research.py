@@ -399,6 +399,174 @@ class AnalystRefusalTests(AnalystQueryBase):
         self.assertEqual(offer['queries_remaining'], 3)
 
 
+class AnalystAuditTruthTests(AnalystQueryBase):
+    """The audit trail and the ledger must tell one story about an analyst query.
+
+    D1 of 2026-09-21: the purchase audit event was written with the charge,
+    before the answer existed. When the research system then failed, the
+    purchase row was deleted and the event stayed -- an append-only, chained
+    record of a purchase the ledger never shows. In a dispute that reads as a
+    charge that vanished. The event is now written only once the answer is
+    delivered, in one savepoint with the question log, so every outcome leaves
+    the purchase row, the question log and the audit event all present or all
+    absent.
+    """
+    SECRET = 'embedding host down'
+
+    def _events(self):
+        return DecisionAuditEvent.objects.filter(
+            action='purchase_research_report',
+            payload__report_type=research_catalogue.ANALYST_QUERY)
+
+    def _purchases(self):
+        return DecisionResearchPurchase.objects.filter(
+            report_type=research_catalogue.ANALYST_QUERY)
+
+    def _ask(self, *, embedding_fails=False):
+        from unittest import mock
+        embedding = (mock.patch('core.rag.embeddings.get_embedding',
+                                side_effect=RuntimeError(self.SECRET))
+                     if embedding_fails else
+                     mock.patch('core.rag.embeddings.get_embedding',
+                                return_value=[0.0]))
+        with embedding, \
+                mock.patch('core.rag.embeddings.translate_query_if_needed',
+                           side_effect=lambda text, language: text), \
+                mock.patch('core.rag.client.search_articles',
+                           return_value=[]):
+            return self.client.post(
+                self.ask_url(), {'query': 'How large is the home market?'},
+                format='json')
+
+    def test_an_unanswered_question_leaves_no_purchase_audit_event(self):
+        refused = self._ask(embedding_fails=True)
+
+        self.assertEqual(refused.status_code, 503, refused.data)
+        self.assertFalse(self._purchases().exists())
+        self.assertEqual(
+            self._events().count(), 0,
+            'the audit trail records an analyst purchase the ledger does not')
+
+    def test_an_answered_question_is_audited_exactly_once(self):
+        answered = self._ask()
+
+        self.assertEqual(answered.status_code, 200, answered.data)
+        self.assertEqual(self._purchases().count(), 1)
+        event = self._events().get()
+        self.assertEqual(event.team_id, self.team.id)
+        self.assertEqual(event.round_id, self.round.id)
+        self.assertEqual(D(event.payload['price']), self.ANALYST_PRICE)
+
+    def test_a_failure_then_a_success_audits_only_the_success(self):
+        from core.services import audit_chain
+        self.assertEqual(self._ask(embedding_fails=True).status_code, 503)
+        self.assertEqual(self._ask().status_code, 200)
+
+        self.assertEqual(self._purchases().count(), 1)
+        self.assertEqual(self._events().count(), 1)
+        # Nothing was deleted or rewritten to get here, so the chain seals and
+        # verifies with no unsealed remainder.
+        audit_chain.seal_pending()
+        report = audit_chain.verify_chain()
+        self.assertTrue(report['ok'], report['problems'])
+        self.assertEqual(report['unsealed_total'], 0)
+
+    def test_a_failed_audit_write_charges_nothing_and_logs_no_question(self):
+        """Audit failures are fail-closed: no record, no charge, no answer."""
+        from unittest import mock
+        from core.models.rag import ResearchQueryLog
+        with mock.patch('core.services.competition_audit.record_decision_event',
+                        side_effect=RuntimeError('audit table unavailable')), \
+                self.assertLogs('core.rag.views', level='ERROR'):
+            refused = self._ask()
+
+        self.assertEqual(refused.status_code, 503, refused.data)
+        self.assertFalse(self._purchases().exists())
+        self.assertFalse(ResearchQueryLog.objects.exists())
+        offer = self.client.get(self.queries_url()).data['analyst_query']
+        self.assertEqual(offer['queries_remaining'], 3)
+
+
+class AnalystRouteLanguageTests(AnalystQueryBase):
+    """D2 of 2026-09-21: every sentence the analyst route can say is bilingual.
+
+    The 429 and the 503 were repaired earlier. These are the rest: the three
+    remaining refusals, and the 200 "nothing relevant found" answer -- which is
+    a charged answer, so a zh-CN team was paying full price for an English
+    sentence.
+    """
+
+    def _post(self, body, language, url=None):
+        return self.client.post(url or self.ask_url(), body, format='json',
+                                HTTP_ACCEPT_LANGUAGE=language)
+
+    def assert_catalogue(self, response, status_code, key, language):
+        from core.utils.participant_messages import participant_message
+        self.assertEqual(response.status_code, status_code, response.data)
+        text = response.data.get('error', response.data.get('response'))
+        self.assertEqual(text, participant_message(key, language=language))
+        has_cjk = any('一' <= ch <= '鿿' for ch in text)
+        self.assertEqual(has_cjk, language == 'zh-CN', text)
+
+    def test_an_empty_question_is_refused_in_the_students_language(self):
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                self.assert_catalogue(
+                    self._post({'query': '   '}, language), 400,
+                    'analyst_question_required', language)
+        self.assertFalse(DecisionResearchPurchase.objects.exists())
+
+    def test_a_scenario_without_the_analyst_refuses_in_the_students_language(self):
+        ScenarioConfig.objects.filter(
+            scenario=self.scenario, config_key='rag_enabled',
+        ).update(config_value='false')
+        _config_cache.clear()
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                self.assert_catalogue(
+                    self._post({'query': 'q'}, language), 400,
+                    'analyst_not_enabled', language)
+
+    def test_an_unknown_game_is_refused_in_the_students_language(self):
+        url = (f'/api/games/{self.game.id + 9999}/teams/{self.team.id}'
+               f'/research/query/')
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                self.assert_catalogue(
+                    self._post({'query': 'q'}, language, url=url), 404,
+                    'analyst_game_or_team_not_found', language)
+
+    def test_the_nothing_found_answer_is_in_the_students_language(self):
+        from unittest import mock
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                with mock.patch('core.rag.embeddings.get_embedding',
+                                return_value=[0.0]), \
+                        mock.patch(
+                            'core.rag.embeddings.translate_query_if_needed',
+                            side_effect=lambda text, language: text), \
+                        mock.patch('core.rag.client.search_articles',
+                                   return_value=[]):
+                    answered = self._post({'query': 'anything'}, language)
+                self.assert_catalogue(
+                    answered, 200, 'analyst_no_relevant_research', language)
+
+    def test_an_unsupported_enrolment_language_is_refused_not_crashed(self):
+        """D5: the round-state refusal looked its language up unguarded."""
+        from core.utils.participant_messages import participant_message
+        Enrollment.objects.filter(user_id=self.user.user_id).update(
+            language='fr')
+        self.round.status = 'closed'
+        self.round.save(update_fields=['status'])
+
+        refused = self.client.post(self.ask_url(), {'query': 'q'},
+                                   format='json')
+
+        self.assertEqual(refused.status_code, 403, refused.data)
+        self.assertEqual(refused.data['error'], participant_message(
+            'round_not_open', language='en'))
+
+
 class AuditTests(PaidResearchBase):
     def test_a_purchase_is_audited(self):
         self.client.post(self.buy_url('products'), {}, format='json')

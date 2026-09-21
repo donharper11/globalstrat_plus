@@ -13,7 +13,6 @@ from core.models.results import EventInstance
 from core.models.scenario import EventResponseDefinition
 from core.engine.utils import get_config
 from core.models import User
-from core.utils.localization import get_user_language
 from core.views.decisions import CompetitionDecisionWriteMixin
 
 logger = logging.getLogger(__name__)
@@ -229,23 +228,34 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
     """
 
     def post(self, request, game_id, team_id):
+        from core.utils.participant_messages import (
+            language_for_request, participant_message)
+        # Every sentence this route says comes from the participant catalogue
+        # in this language. `language_for_request` is the guarded resolver: an
+        # enrolment language the catalogue has no entry for reads as English
+        # instead of raising `KeyError` out of a refusal.
+        language_for_refusal = language_for_request(request)
+
         try:
             game = Game.objects.get(id=game_id)
             team = Team.objects.get(id=team_id)
         except (Game.DoesNotExist, Team.DoesNotExist):
-            return Response({'error': 'Game or team not found.'}, status=404)
+            return Response({'error': participant_message(
+                'analyst_game_or_team_not_found',
+                language=language_for_refusal)}, status=404)
 
         # Check RAG is enabled
         rag_enabled = get_config(game.scenario, 'rag_enabled', False, bool)
         if not rag_enabled:
-            return Response(
-                {'error': 'Market research AI is not enabled for this scenario.'},
-                status=400,
-            )
+            return Response({'error': participant_message(
+                'analyst_not_enabled', language=language_for_refusal)},
+                status=400)
 
-        query_text = request.data.get('query', '').strip()
+        query_text = str(request.data.get('query') or '').strip()
         if not query_text:
-            return Response({'error': 'Query text is required.'}, status=400)
+            return Response({'error': participant_message(
+                'analyst_question_required',
+                language=language_for_refusal)}, status=400)
 
         # Check query limit per round
         from core.models.rag import ResearchQueryLog
@@ -256,12 +266,10 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
             round_number=game.current_round,
         ).count()
         if existing_queries >= max_queries:
-            from core.utils.participant_messages import (
-                language_for_request, participant_message)
             return Response(
                 {'error': participant_message(
                     'analyst_query_limit_reached',
-                    language=language_for_request(request),
+                    language=language_for_refusal,
                     maximum=max_queries)},
                 status=429,
             )
@@ -279,10 +287,8 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
         from core.services import research_catalogue
         from core.services.competition_audit import record_decision_event
         from core.services.rd_costs import budget_assessment
-        from core.utils.participant_messages import (
-            field_label, participant_message)
+        from core.utils.participant_messages import field_label
 
-        language_for_refusal = get_user_language(request)
         rnd = Round.objects.filter(
             game=game, round_number=game.current_round).first()
         if rnd is None or rnd.status != 'open':
@@ -306,10 +312,11 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
                 assessment = budget_assessment(submission, team)
                 if not assessment['within_cash']:
                     raise _Unaffordable()
-                record_decision_event(
-                    request, game, team, rnd, 'purchase_research_report',
-                    {'report_type': research_catalogue.ANALYST_QUERY,
-                     'market': '', 'price': str(price)})
+                # The purchase is NOT audited here. Audit rows are append-only
+                # and chained: one written now could not be withdrawn if the
+                # research system then fails and the charge is undone, and the
+                # trail would show a purchase the ledger never does. It is
+                # written below, together with the delivered answer.
         except _Unaffordable:
             return Response({'error': participant_message(
                 'research_purchase_exceeds_cash',
@@ -349,27 +356,36 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
             results = search_articles(query_embedding, limit=5)
 
             if not results:
-                response_text = (
-                    "No relevant research found for this query. "
-                    "Try broadening your search terms or asking about specific markets, "
-                    "entry strategies, or competitive dynamics."
-                )
+                # Still an answer, and still charged (the charging rule is the
+                # owner's); the sentence says so, in the student's language.
+                response_text = participant_message(
+                    'analyst_no_relevant_research',
+                    language=language_for_refusal)
             else:
                 response_text = synthesize_research_brief(
                     query_text, results, team_context,
                     language=language,
                 )
 
-            # Log the query
-            ResearchQueryLog.objects.create(
-                team=team,
-                round_number=game.current_round,
-                query_text=query_text,
-                response_text=response_text,
-                source_tags_used=','.join(set(
-                    tag for r in results for tag in r.get('tags', [])
-                )),
-            )
+            # The answer exists, so the question is logged and the purchase
+            # audited -- in one savepoint, so a failure of either leaves
+            # neither, and the `except` below then undoes the charge. Every
+            # outcome of this route therefore leaves the purchase row, the
+            # question log and the audit event all present or all absent.
+            with transaction.atomic():
+                ResearchQueryLog.objects.create(
+                    team=team,
+                    round_number=game.current_round,
+                    query_text=query_text,
+                    response_text=response_text,
+                    source_tags_used=','.join(set(
+                        tag for r in results for tag in r.get('tags', [])
+                    )),
+                )
+                record_decision_event(
+                    request, game, team, rnd, 'purchase_research_report',
+                    {'report_type': research_catalogue.ANALYST_QUERY,
+                     'market': '', 'price': str(price)})
 
             return Response({
                 'query': query_text,
@@ -384,14 +400,18 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
             # The reason belongs to the operator. What the embedding or vector
             # client raised can name a host, a URL or a credential, and this
             # response is read by a student.
+            # No purchase audit event exists to contradict that: it is only
+            # written with a delivered answer. This log line is the record of
+            # the failed attempt, and carries the request id for a dispute.
             logger.exception(
-                'Analyst query failed; purchase %s undone (game=%s team=%s '
-                'round=%s)', purchase.pk, game.id, team.id, game.current_round)
-            from core.utils.participant_messages import language_for_request
+                'Analyst query failed; purchase %s undone, no audit event '
+                'written (game=%s team=%s round=%s request_id=%s)',
+                purchase.pk, game.id, team.id, game.current_round,
+                request.headers.get('X-Request-ID', ''))
             return Response(
                 {'error': participant_message(
                     'analyst_unavailable',
-                    language=language_for_request(request))},
+                    language=language_for_refusal)},
                 status=503,
             )
 

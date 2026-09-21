@@ -447,6 +447,25 @@ MESSAGES = {
         'en': 'The research analyst is unavailable right now, so your question was not answered and nothing was charged. Try again in a few minutes; if it keeps happening, tell your instructor.',
         'zh-CN': '分析师服务暂时不可用，因此您的问题未得到回答，也未产生费用。请几分钟后重试；如问题持续出现，请告知教师。',
     },
+    # The rest of what the analyst route can say. `analyst_no_relevant_research`
+    # is not a refusal: it is the ANSWER to a charged question when the search
+    # finds nothing, so it says plainly that the question was used and charged.
+    'analyst_question_required': {
+        'en': 'Type a question for the analyst before pressing Ask. Nothing was asked and nothing was charged.',
+        'zh-CN': '请先输入要向分析师提出的问题，再点击提问。本次未提交问题，也未产生费用。',
+    },
+    'analyst_not_enabled': {
+        'en': 'The research analyst is not part of this game, so your question was not asked and nothing was charged.',
+        'zh-CN': '本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。',
+    },
+    'analyst_game_or_team_not_found': {
+        'en': 'This game or team could not be found, so your question was not asked and nothing was charged. Reload the page; if it keeps happening, tell your instructor.',
+        'zh-CN': '未找到该游戏或团队，因此您的问题未提交，也未产生费用。请刷新页面；如问题持续出现，请告知教师。',
+    },
+    'analyst_no_relevant_research': {
+        'en': 'The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. This question counts toward your team\'s questions for the round and was charged.',
+        'zh-CN': '分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问已计入您团队本回合的提问次数，并已收费。',
+    },
     'research_report_unknown': {
         'en': 'That research report is not available. Choose a report from the research catalogue.',
         'zh-CN': '该研究报告不可用。请从研究目录中选择报告。',
