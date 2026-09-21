@@ -37,6 +37,17 @@ client.interceptors.request.use((config) => {
   return config;
 });
 
+/**
+ * A 401 means the session has ended -- except from the login form itself,
+ * where it means a wrong password. Redirecting that one reloaded the page and
+ * wiped the refusal ("Invalid username or password") before it could be read,
+ * and sent an instructor who mistyped on /instructor/login to the student form.
+ */
+export const isSessionExpiry = (error) => (
+  error?.response?.status === 401
+  && !/\/auth\/login\/?$/.test(error?.config?.url || '')
+);
+
 // Handle 401 — redirect to login
 client.interceptors.response.use(
   (response) => {
@@ -44,7 +55,7 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (isSessionExpiry(error)) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('gs_user');
       localStorage.removeItem('gs_session_id');
