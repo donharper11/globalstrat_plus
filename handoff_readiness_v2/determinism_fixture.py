@@ -201,6 +201,11 @@ def ensure_game_owner():
 
 
 def main():
+    # V2-128: never write a pre-resolution dump into the live backup root.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from harness_isolation import require_disposable_backup_dir
+    require_disposable_backup_dir()
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--scenario', type=int)
     parser.add_argument('--teams', type=int, default=4)

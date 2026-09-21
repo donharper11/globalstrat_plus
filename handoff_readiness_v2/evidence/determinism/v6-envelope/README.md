@@ -158,6 +158,13 @@ python3 manage.py load_scenario --file scenarios/consumer_electronics_2026.yaml
                                                                      #  1.998s
 python3 manage.py dump_manifest_schema --check   # "inventory is current."
 
+# CORRECTION 2026-09-21 (V2-127, V2-128). The transcript above and below is what
+# was run on 2026-09-12 and is kept as run. Two steps it omits are required to
+# reproduce it, and the fixture now refuses without the second:
+#   python3 manage.py createsuperuser --noinput --username <u> --email <e>
+#   export COMPETITION_BACKUP_DIR=$(mktemp -d)   # for EVERY command below;
+#       the default is the live backup root on this host.
+
 # 1. Fixture: a game whose round 1 exercises every v6 surface, then resolve.
 COMPETITION_REQUIRE_CLEAN_BUILD=true \
 python3 ../handoff_readiness_v2/v6_envelope_fixture.py --teams 4 \

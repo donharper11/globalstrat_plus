@@ -3214,3 +3214,15 @@ can be read to opposite conclusions. These rows were flagged by the re-audit
 | R40 | V2-123 residual (2) | **Ruled and implemented.** `communication_quality` stays as an instructor option; a heat flagged `is_competition` refuses to calculate grades from a rubric that maps it (409, before any row is written). `test_r40_model_component_not_in_competition.py`, 5 tests, falsified. Console still discards the reason (`InstructorDashboard.js:1150`) — open. |
 | R41 | V2-120 | **Ruled: test play, no result depends on the nine manifests** — nothing has been live on GlobalStrat+ (same ground as R20). Closable once the nine rows are confirmed against the production database to sit in test games; that check has not been run. |
 
+### Repairs merged 2026-09-21
+
+| Finding | State |
+|---|---|
+| V2-104 | **Repaired, pending closure.** The false success toast was already fixed at `1855b25`; the remainder (a third caller that discarded the reply, a success count that fell back to the number requested, three English-only refusals naming storage fields) repaired at `40ea30d`. Status stays 200 because the endpoint is a partly-refusable batch; contract pinned in `test_cohort_caps`. Report: `completion/ASSIGNMENT_REFUSAL_AND_ANALYST_PRICE_2026-09-21.md`. |
+| V2-094 | **Repaired, pending closure** at `f4fcc68`: price and remaining quota come from the server via the calculator the charge uses, and the tab disables itself without a price. **The builder then found the tab could never ask at all** (it sent `query_text`, the server reads `query`); repaired by the integrator at `aeba182` under R23, red-then-green in the tab's own test. Not observed in a browser. |
+| V2-116 | **Repaired, pending closure** at `819bf53`. The fixture seeds `DecisionPlatformDevelopment` through the engine's own `rd_costs` helpers instead of R10-retired rows. Development-grade proof only: round 2 replayed to competitive hash `ec4119f8…`, tampered `committed_cost` refused exit 2. **The narrative hash did not match on that replay and was not investigated** — outside the competitive hash by design, but open. |
+| 0085 downgrade guard | **Built** at `d2d3d83`: reverse-only `RunPython` that names the null-price rows and refuses; forward operations, name and dependencies untouched. New P2 proposed by the builder: a downgrade below `0086` drops paid-research purchases with no guard. |
+| V2-076 | **Repaired in code, pending closure** at `532b031`: `reset_simulation` refuses under `GLOBALSTRAT_ENV=production`, under the clean-build flag, when any instance is flagged `is_competition`, or when that flag cannot be read. No override. Its unscoped SQL still exists wherever the guard passes. |
+| V2-128 | **Repaired, pending closure.** `handoff_readiness_v2/harness_isolation.py` refuses a harness whose backup directory is unset or inside the live root; the three fixtures call it first in `main()`. `test_harness_backup_isolation.py`, 4 tests, including a source check that every fixture calls it. |
+| V2-127 | **Repaired**: the v6 transcript now states the two omitted steps, as a dated correction beside the run as recorded. |
+
