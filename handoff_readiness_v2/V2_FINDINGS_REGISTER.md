@@ -3317,3 +3317,16 @@ Full backend suite on the merged tree: `Ran 1377 tests`, OK.
 | Word limit never binds for Chinese | **Open against the owner.** A scored communication's limit is `len(content.split())`, which counts a Chinese paragraph as one word. What a "word" is in Chinese is a rules question. |
 | 224 new zh-CN sentences on this branch | **Unreviewed by a native speaker**, listed in one table in `completion/REMAINING_ENGLISH_REFUSALS_2026-09-21.md`, least-trusted first. |
 
+## V2-137 — two student decisions can never be saved (registered 2026-09-21)
+
+**Full backend suite at `62a27cd`: `Ran 1447 tests`, OK. Jest 23 suites / 183 tests.** Not the freeze-candidate run.
+
+| ID | Area | Sev | Finding | Status |
+|---|---|---|---|---|
+| V2-137 | Decision path / silent loss | **P0 candidate — the V2-107 class** | **Talent allocation and compliance investment cannot be saved from the screen, and the student is told nothing.** `MarketStrategyPage.js` autosaves section `compliance_investments` and `CorporateStrategyPage.js` section `talent_allocations`; neither key is in `views/decisions.py::_TYPE_MAP`, so `DecisionPartialUpdateView` answers 400 `unknown_decision_type` on every save, and both pages' local `autoSave` end in `catch { /* ignore */ }`. The models, serializers and engine consumers all exist (`cc31_models.py`, `engine/talent.py`), so these are live competitive decisions no team can make — R17 ruled against exactly this. Found by the bounded-inputs builder as its F1 with a throwaway probe; **verified by the integrator by reading both call sites, the type map and both catch blocks.** The compliance payload shape (a dict keyed by market code) also differs from its serializer's. | **Open; assigned** to `crv2-13-silent-section-saves`, which must also sweep every student page for unaccepted sections, rejected payload shapes and swallowed save failures, and route each through the V2-064 save-failure path. **Consequence for evidence:** no balance or calibration run to date has included either decision, because no team could make one. |
+
+| Item | State |
+|---|---|
+| DRF numeric-overflow text reaching a student | **Repaired, pending closure** (`6d634eb`, `8b6ed22`). All 37 student `InputNumber`s bounded from one module keyed to the backend field, none tighter than the server accepts; a scan test re-derives each bound from the backend source. DRF numeric refusals are rewritten by `ErrorDetail.code` into bilingual sentences naming the business label, across all 14 decision-write views. "A valid integer is required." was reachable after all, by typing `1000.5`. |
+| Supply-chain write serializers' own validation messages are English-only, one naming a storage path (the builder's F2) | **Open.** |
+
