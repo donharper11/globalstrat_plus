@@ -179,3 +179,21 @@ test('a failure with no sentence from the server falls back to the catalogue', a
   expect(await screen.findByTestId('analyst-refusal'))
     .toHaveTextContent('market_research.query_failed');
 });
+
+test('R42: an answer that found nothing is not counted, charged or announced', async () => {
+  client.get.mockResolvedValue(queriesPayload());
+  client.post.mockResolvedValue({ data: {
+    response: 'The analyst found no relevant research. Nothing was charged.',
+    charged: false, queries_remaining: 3,
+  } });
+  render(<AskAnalystTab {...props} />);
+
+  const textarea = await screen.findByRole('textbox');
+  fireEvent.change(textarea, { target: { value: 'An obscure question' } });
+  fireEvent.click(screen.getByRole('button', { name: /\$12,345/ }));
+
+  expect(await screen.findByText(/Nothing was charged/)).toBeInTheDocument();
+  expect(textarea.value).toBe('An obscure question');
+  expect(mockRefreshBudgets).not.toHaveBeenCalled();
+  expect(screen.queryByText(/1 \/ 3/)).not.toBeInTheDocument();
+});

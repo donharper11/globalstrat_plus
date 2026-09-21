@@ -244,6 +244,11 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
                 'analyst_game_or_team_not_found',
                 language=language_for_refusal)}, status=404)
 
+        # R43: from here on the team is known, and its language governs every
+        # sentence -- refusal and answer alike.
+        from core.utils.participant_messages import language_for_team
+        language_for_refusal = language_for_team(team, request)
+
         # Check RAG is enabled
         rag_enabled = get_config(game.scenario, 'rag_enabled', False, bool)
         if not rag_enabled:
@@ -356,16 +361,25 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
             results = search_articles(query_embedding, limit=5)
 
             if not results:
-                # Still an answer, and still charged (the charging rule is the
-                # owner's); the sentence says so, in the student's language.
-                response_text = participant_message(
-                    'analyst_no_relevant_research',
-                    language=language_for_refusal)
-            else:
-                response_text = synthesize_research_brief(
-                    query_text, results, team_context,
-                    language=language,
-                )
+                # R42: a question that finds nothing costs nothing. The
+                # purchase is undone, and -- by the rule below that a purchase
+                # is audited only once an answer exists -- no audit event and
+                # no question log is written, so no quota slot is used either.
+                DecisionResearchPurchase.objects.filter(pk=purchase.pk).delete()
+                return Response({
+                    'query': query_text,
+                    'response': participant_message(
+                        'analyst_no_relevant_research',
+                        language=language_for_refusal),
+                    'sources_count': 0,
+                    'charged': False,
+                    'queries_remaining': max_queries - existing_queries,
+                })
+
+            response_text = synthesize_research_brief(
+                query_text, results, team_context,
+                language=language_for_refusal,
+            )
 
             # The answer exists, so the question is logged and the purchase
             # audited -- in one savepoint, so a failure of either leaves
@@ -391,6 +405,7 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
                 'query': query_text,
                 'response': response_text,
                 'sources_count': len(results),
+                'charged': True,
                 'queries_remaining': max_queries - existing_queries - 1,
             })
 

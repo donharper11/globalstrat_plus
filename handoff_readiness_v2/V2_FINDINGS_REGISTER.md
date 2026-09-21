@@ -3283,3 +3283,15 @@ An unverified read-only sweep made three claims about operator routes. Each was 
 
 **Merge note.** The two branches repaired the same roster leak independently and conflicted in four files. Resolved by hand, not by side: the ownership branch's roster and delete repairs (reference ids, lifecycle guard), the other branch's shared `serverReason` reader in the console, and the union of the bilingual code lists.
 
+### Rulings R42–R46, 2026-09-21
+
+| Ruling | State |
+|---|---|
+| R42 — an analyst question that finds nothing is not charged | **Ruled and implemented.** The purchase is undone, and by the existing rule that a purchase is audited only once an answer exists, no audit event and no question log is written, so no quota slot is used. The response carries `charged: false`; the tab keeps the typed question, shows the server's sentence, refreshes no budget and adds nothing to the asked list. The sentence now says nothing was charged. **Builder's reading, stated in the ruling:** the quota slot is treated like the charge; one line to reverse if the owner meant the money only. Tests red then green in `test_paid_research.AnalystRulingsTests` and the tab's Jest test (falsified by stashing the change). |
+| R43 — the team's language governs the analyst route | **Ruled and implemented.** `participant_messages.language_for_team`: the team's first stated, supported enrolment language; the request's language only where the team states none or an unsupported one. `Enrollment.language` defaults to `en`, so a team that never chose is an English team — existing tests that set the language by header alone were restated to set the team's. Scoped to the analyst route; other participant routes are **not** ruled. |
+| R44 — operator audit trail English only | **Ruled; no code change.** Confirms the convention `operator_messages.py` set. |
+| R45 — durable audit record for a game deletion | **Ruled; implementation assigned** to `crv2-08-deletion-audit-and-course-owner`. |
+| R46 — a course's creator owns it | **Ruled; implementation assigned** to the same branch. Existing unowned courses are not reassigned. |
+
+Full backend suite at this commit: `Ran 1339 tests`, OK. Jest 142.
+

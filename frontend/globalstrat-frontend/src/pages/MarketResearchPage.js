@@ -927,6 +927,13 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
         `/games/${gameId}/teams/${teamId}/research/query/`,
         { query: queryText.trim() }
       );
+      if (res.data?.charged === false) {
+        // R42: the analyst found nothing, so nothing was charged and no
+        // question was used. The server's sentence says so; it stays on the
+        // tab with the typed question, and nothing joins the asked list.
+        setRefusal(res.data?.response || t('market_research.no_response_available'));
+        return;
+      }
       setQueries((prev) => [
         {
           query_text: queryText.trim(),

@@ -1,11 +1,11 @@
 {
   "generator": "handoff_readiness_v2/evidence/player-language/generate_inventory.py",
-  "source_sha256": "dfbe87a9f9b26eec11fc4969e615b273f2457018747ec9dac53bfa46b791103c",
-  "candidate_count": 2294,
+  "source_sha256": "98f166eceb18353467fe6c108830ea1680efcbebd0a1d33ad1b6b6667c395cb1",
+  "candidate_count": 2298,
   "counts_by_audience": {
     "instructor-facing": 233,
     "operator-or-log-only": 243,
-    "participant-facing": 1818
+    "participant-facing": 1822
   },
   "counts_by_workstream": {
     "API response review": 576,
@@ -14,7 +14,7 @@
     "instructor UI": 165,
     "instructor coaching alerts": 29,
     "participant decision UI": 245,
-    "participant supporting UI": 811,
+    "participant supporting UI": 815,
     "service-to-route boundary review": 245,
     "templated/player generated content": 188
   },
@@ -10844,7 +10844,7 @@
       "audience": "participant-facing",
       "path": "backend/core/utils/participant_messages.py",
       "line": 466,
-      "text": "The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. This question counts toward your team's questions for the round and was charged.",
+      "text": "The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. Nothing was charged, and this question does not count toward your team's questions for the round.",
       "context": "shared participant-message catalogue",
       "workstream": "API response review",
       "translation_action": "review EN/ZH wording and route through shared catalogue"
@@ -10854,7 +10854,7 @@
       "audience": "participant-facing",
       "path": "backend/core/utils/participant_messages.py",
       "line": 467,
-      "text": "分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问已计入您团队本回合的提问次数，并已收费。",
+      "text": "分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问未收费，也不计入您团队本回合的提问次数。",
       "context": "shared participant-message catalogue",
       "workstream": "API response review",
       "translation_action": "review EN/ZH wording and route through shared catalogue"
@@ -11263,7 +11263,7 @@
       "surface": "backend-response-or-generated-content",
       "audience": "participant-facing",
       "path": "backend/core/utils/participant_messages.py",
-      "line": 578,
+      "line": 604,
       "text": "f'Unknown participant message {key!r}'",
       "context": "shared participant-message catalogue",
       "workstream": "API response review",
@@ -19162,6 +19162,46 @@
     {
       "surface": "frontend-non-t-literal",
       "audience": "participant-facing",
+      "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js",
+      "line": 183,
+      "text": "R42: an answer that found nothing is not counted, charged or announced",
+      "context": "quoted literal outside t()",
+      "workstream": "participant supporting UI",
+      "translation_action": "move to en.json and zh-CN.json, then call t()"
+    },
+    {
+      "surface": "frontend-non-t-literal",
+      "audience": "participant-facing",
+      "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js",
+      "line": 186,
+      "text": "The analyst found no relevant research. Nothing was charged.",
+      "context": "quoted literal outside t()",
+      "workstream": "participant supporting UI",
+      "translation_action": "move to en.json and zh-CN.json, then call t()"
+    },
+    {
+      "surface": "frontend-non-t-literal",
+      "audience": "participant-facing",
+      "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js",
+      "line": 192,
+      "text": "An obscure question",
+      "context": "quoted literal outside t()",
+      "workstream": "participant supporting UI",
+      "translation_action": "move to en.json and zh-CN.json, then call t()"
+    },
+    {
+      "surface": "frontend-non-t-literal",
+      "audience": "participant-facing",
+      "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js",
+      "line": 196,
+      "text": "An obscure question",
+      "context": "quoted literal outside t()",
+      "workstream": "participant supporting UI",
+      "translation_action": "move to en.json and zh-CN.json, then call t()"
+    },
+    {
+      "surface": "frontend-non-t-literal",
+      "audience": "participant-facing",
       "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.js",
       "line": 24,
       "text": "very weak",
@@ -19263,7 +19303,7 @@
       "surface": "frontend-non-t-literal",
       "audience": "participant-facing",
       "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.js",
-      "line": 1031,
+      "line": 1038,
       "text": "12px 0",
       "context": "quoted literal outside t()",
       "workstream": "participant supporting UI",
@@ -19273,7 +19313,7 @@
       "surface": "frontend-non-t-literal",
       "audience": "participant-facing",
       "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.js",
-      "line": 1031,
+      "line": 1038,
       "text": "1px solid var(--color-surface-200)",
       "context": "quoted literal outside t()",
       "workstream": "participant supporting UI",
@@ -19283,7 +19323,7 @@
       "surface": "frontend-non-t-literal",
       "audience": "participant-facing",
       "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.js",
-      "line": 1148,
+      "line": 1155,
       "text": "8px 16px",
       "context": "quoted literal outside t()",
       "workstream": "participant supporting UI",
@@ -19293,7 +19333,7 @@
       "surface": "frontend-non-t-literal",
       "audience": "participant-facing",
       "path": "frontend/globalstrat-frontend/src/pages/MarketResearchPage.js",
-      "line": 1255,
+      "line": 1262,
       "text": "0 auto",
       "context": "quoted literal outside t()",
       "workstream": "participant supporting UI",

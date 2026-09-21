@@ -448,8 +448,8 @@ MESSAGES = {
         'zh-CN': '分析师服务暂时不可用，因此您的问题未得到回答，也未产生费用。请几分钟后重试；如问题持续出现，请告知教师。',
     },
     # The rest of what the analyst route can say. `analyst_no_relevant_research`
-    # is not a refusal: it is the ANSWER to a charged question when the search
-    # finds nothing, so it says plainly that the question was used and charged.
+    # is not a refusal: it is what the analyst says when the search finds
+    # nothing. R42: that costs nothing and uses no question, and it says so.
     'analyst_question_required': {
         'en': 'Type a question for the analyst before pressing Ask. Nothing was asked and nothing was charged.',
         'zh-CN': '请先输入要向分析师提出的问题，再点击提问。本次未提交问题，也未产生费用。',
@@ -463,8 +463,8 @@ MESSAGES = {
         'zh-CN': '未找到该游戏或团队，因此您的问题未提交，也未产生费用。请刷新页面；如问题持续出现，请告知教师。',
     },
     'analyst_no_relevant_research': {
-        'en': 'The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. This question counts toward your team\'s questions for the round and was charged.',
-        'zh-CN': '分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问已计入您团队本回合的提问次数，并已收费。',
+        'en': 'The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. Nothing was charged, and this question does not count toward your team\'s questions for the round.',
+        'zh-CN': '分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问未收费，也不计入您团队本回合的提问次数。',
     },
     'research_report_unknown': {
         'en': 'That research report is not available. Choose a report from the research catalogue.',
@@ -568,6 +568,32 @@ MESSAGES = {
 def language_for_request(request):
     """Return the supported language for a request, defaulting safely to EN."""
     return 'zh-CN' if get_user_language(request) == 'zh-CN' else 'en'
+
+
+SUPPORTED_LANGUAGES = ('en', 'zh-CN')
+
+
+def language_for_team(team, request):
+    """The language a team is spoken to in (R43, 2026-09-21).
+
+    The team's language governs what a route says to a student -- answers and
+    refusals alike -- so one screen never speaks two languages. It is the
+    language of the team's first active enrolment that states one, which is
+    what `get_team_language` has always meant. The request's language is the
+    fallback only where the team states none, or states one the catalogue has
+    no entry for: an unsupported value must never raise out of a refusal.
+    """
+    from core.models.course import Enrollment
+    from django.db import transaction
+    try:
+        with transaction.atomic():
+            stated = (Enrollment.objects
+                      .filter(team_id=team.id, is_active=True)
+                      .exclude(language='').order_by('pk')
+                      .values_list('language', flat=True).first())
+    except Exception:
+        stated = None
+    return stated if stated in SUPPORTED_LANGUAGES else language_for_request(request)
 
 
 def participant_message(key, *, language='en', **values):

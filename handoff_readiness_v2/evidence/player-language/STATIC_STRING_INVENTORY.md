@@ -4,14 +4,14 @@ This is a reproducible Stage 1 candidate inventory, not a claim that every
 candidate is reachable. Reviewers must classify each candidate before changing
 wording; `operator-or-log-only` rows require an explicit exemption rationale.
 
-Source fingerprint: `dfbe87a9f9b26eec11fc4969e615b273f2457018747ec9dac53bfa46b791103c`
-Candidate strings: **2294**
+Source fingerprint: `98f166eceb18353467fe6c108830ea1680efcbebd0a1d33ad1b6b6667c395cb1`
+Candidate strings: **2298**
 
 | Audience | Candidate count |
 | --- | ---: |
 | instructor-facing | 233 |
 | operator-or-log-only | 243 |
-| participant-facing | 1818 |
+| participant-facing | 1822 |
 
 | Workstream | Candidate count |
 | --- | ---: |
@@ -21,7 +21,7 @@ Candidate strings: **2294**
 | instructor UI | 165 |
 | instructor coaching alerts | 29 |
 | participant decision UI | 245 |
-| participant supporting UI | 811 |
+| participant supporting UI | 815 |
 | service-to-route boundary review | 245 |
 | templated/player generated content | 188 |
 
@@ -1111,8 +1111,8 @@ Candidate strings: **2294**
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:459` | 本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。 | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:462` | This game or team could not be found, so your question was not asked and nothing was charged. Reload the page; if it keeps happening, tell your instructor. | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:463` | 未找到该游戏或团队，因此您的问题未提交，也未产生费用。请刷新页面；如问题持续出现，请告知教师。 | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:466` | The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. This question counts toward your team'... | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:467` | 分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问已计入您团队本回合的提问次数，并已收费。 | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:466` | The analyst found no relevant research for this question. Try broader terms, or ask about a specific market, entry strategy or competitor. Nothing was charged, and this question... | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:467` | 分析师未找到与该问题相关的研究资料。请尝试使用更宽泛的措辞，或就具体市场、进入策略或竞争对手提问。本次提问未收费，也不计入您团队本回合的提问次数。 | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:470` | That research report is not available. Choose a report from the research catalogue. | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:471` | 该研究报告不可用。请从研究目录中选择报告。 | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:474` | The {report} report costs {price}. Refresh the page and buy it at the current price. | review EN/ZH wording and route through shared catalogue |
@@ -1153,7 +1153,7 @@ Candidate strings: **2294**
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:554` | 本回合没有融资变动，无需操作。 | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:562` | {team}: equity raise of {requested} exceeds the funding shortfall of {maximum} (eligible uses {eligible} less available funding {available}: opening cash {opening} plus new debt... | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:563` | {team}：新增股权融资 {requested} 超过资金缺口 {maximum}（合格用途 {eligible} 减去可用资金 {available}：期初现金 {opening} 加新增借款 {debt}）。股权融资只能用于弥补本回合真实的资金缺口，不能用于创造盈余现金或支付股利。 | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:578` | f'Unknown participant message {key!r}' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/utils/participant_messages.py:604` | f'Unknown participant message {key!r}' | review EN/ZH wording and route through shared catalogue |
 | participant-facing | account and access | backend-response-or-generated-content | `backend/core/views/auth.py:190` | Username is required. | review EN/ZH wording and route through shared catalogue |
 | participant-facing | account and access | backend-response-or-generated-content | `backend/core/views/auth.py:196` | Password is required. | review EN/ZH wording and route through shared catalogue |
 | participant-facing | account and access | backend-response-or-generated-content | `backend/core/views/auth.py:215` | Invalid username or password. | review EN/ZH wording and route through shared catalogue |
@@ -1943,6 +1943,10 @@ Candidate strings: **2294**
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:159` | 2026-09-21T00:00:00Z | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:173` | a failure with no sentence from the server falls back to the catalogue | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:175` | Network Error | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:183` | R42: an answer that found nothing is not counted, charged or announced | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:186` | The analyst found no relevant research. Nothing was charged. | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:192` | An obscure question | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.analyst.test.js:196` | An obscure question | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:24` | very weak | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:122` | 12px 16px 12px 36px | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:122` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |
@@ -1953,10 +1957,10 @@ Candidate strings: **2294**
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:365` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:518` | 12px 16px 12px 36px | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:518` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1031` | 12px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1031` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1148` | 8px 16px | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1255` | 0 auto | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1038` | 12px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1038` | 1px solid var(--color-surface-200) | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1155` | 8px 16px | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketResearchPage.js:1262` | 0 auto | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketStrategyPage.js:21` | VERY HIGH | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketStrategyPage.js:22` | VERY HIGH | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/MarketStrategyPage.js:49` | HOME | move to en.json and zh-CN.json, then call t() |

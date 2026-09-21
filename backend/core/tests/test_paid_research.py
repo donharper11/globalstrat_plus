@@ -305,7 +305,9 @@ class AnalystQueryPriceTests(AnalystQueryBase):
                 mock.patch('core.rag.embeddings.translate_query_if_needed',
                            side_effect=lambda text, language: text), \
                 mock.patch('core.rag.client.search_articles',
-                           return_value=[]):
+                           return_value=[{'title': 'Home market sizing', 'tags': ['market']}]), \
+                mock.patch('core.rag.views.synthesize_research_brief',
+                           return_value='An answer.'):
             asked = self.client.post(
                 self.ask_url(), {'query': 'How large is the home market?'},
                 format='json')
@@ -333,6 +335,9 @@ class AnalystRefusalTests(AnalystQueryBase):
 
     def ask(self, language=None):
         headers = {'HTTP_ACCEPT_LANGUAGE': language} if language else {}
+        # R43: the team's language governs what the analyst route says.
+        Enrollment.objects.filter(team_id=self.team.id).update(
+            language=language or 'en')
         return self.client.post(
             self.ask_url(), {'query': 'How large is the home market?'},
             format='json', **headers)
@@ -433,7 +438,9 @@ class AnalystAuditTruthTests(AnalystQueryBase):
                 mock.patch('core.rag.embeddings.translate_query_if_needed',
                            side_effect=lambda text, language: text), \
                 mock.patch('core.rag.client.search_articles',
-                           return_value=[]):
+                           return_value=[{'title': 'Home market sizing', 'tags': ['market']}]), \
+                mock.patch('core.rag.views.synthesize_research_brief',
+                           return_value='An answer.'):
             return self.client.post(
                 self.ask_url(), {'query': 'How large is the home market?'},
                 format='json')
@@ -497,6 +504,9 @@ class AnalystRouteLanguageTests(AnalystQueryBase):
     """
 
     def _post(self, body, language, url=None):
+        # R43: the team's language governs once the team is known. The header
+        # still decides the one refusal that comes before it is (unknown game).
+        Enrollment.objects.filter(team_id=self.team.id).update(language=language)
         return self.client.post(url or self.ask_url(), body, format='json',
                                 HTTP_ACCEPT_LANGUAGE=language)
 
@@ -565,6 +575,66 @@ class AnalystRouteLanguageTests(AnalystQueryBase):
         self.assertEqual(refused.status_code, 403, refused.data)
         self.assertEqual(refused.data['error'], participant_message(
             'round_not_open', language='en'))
+
+
+class AnalystRulingsTests(AnalystQueryBase):
+    """R42 and R43, 2026-09-21."""
+
+    def _ask_and_find_nothing(self, **extra):
+        from unittest import mock
+        with mock.patch('core.rag.embeddings.get_embedding',
+                        return_value=[0.0]), \
+                mock.patch('core.rag.embeddings.translate_query_if_needed',
+                           side_effect=lambda text, language: text), \
+                mock.patch('core.rag.client.search_articles', return_value=[]):
+            return self.client.post(self.ask_url(), {'query': 'anything'},
+                                    format='json', **extra)
+
+    def test_r42_a_question_that_finds_nothing_costs_nothing(self):
+        from core.models.rag import ResearchQueryLog
+        before = self.client.get(self.queries_url()).data['analyst_query']
+
+        answered = self._ask_and_find_nothing()
+
+        self.assertEqual(answered.status_code, 200, answered.data)
+        self.assertIs(answered.data['charged'], False)
+        self.assertFalse(DecisionResearchPurchase.objects.exists())
+        self.assertFalse(ResearchQueryLog.objects.exists())
+        self.assertFalse(DecisionAuditEvent.objects.filter(
+            action='purchase_research_report').exists())
+        after = self.client.get(self.queries_url()).data['analyst_query']
+        self.assertEqual(after['queries_remaining'], before['queries_remaining'])
+        self.assertEqual(answered.data['queries_remaining'],
+                         before['queries_remaining'])
+
+    def test_r42_the_sentence_no_longer_says_it_was_charged(self):
+        from core.utils.participant_messages import participant_message
+        for language, charged_words in (('en', 'and was charged'), ('zh-CN', '并已收费')):
+            text = participant_message('analyst_no_relevant_research',
+                                       language=language)
+            self.assertNotIn(charged_words, text)
+
+    def test_r43_the_teams_language_governs_not_the_requests(self):
+        from core.utils.participant_messages import participant_message
+        for team_language, header in (('zh-CN', 'en'), ('en', 'zh-CN')):
+            with self.subTest(team=team_language, request=header):
+                Enrollment.objects.filter(team_id=self.team.id).update(
+                    language=team_language)
+                answered = self._ask_and_find_nothing(
+                    HTTP_ACCEPT_LANGUAGE=header)
+                self.assertEqual(answered.data['response'], participant_message(
+                    'analyst_no_relevant_research', language=team_language))
+
+    def test_r43_a_team_with_no_usable_language_follows_the_request(self):
+        from core.utils.participant_messages import participant_message
+        for stored in ('', 'fr'):
+            with self.subTest(stored=stored):
+                Enrollment.objects.filter(team_id=self.team.id).update(
+                    language=stored)
+                answered = self._ask_and_find_nothing(
+                    HTTP_ACCEPT_LANGUAGE='zh-CN')
+                self.assertEqual(answered.data['response'], participant_message(
+                    'analyst_no_relevant_research', language='zh-CN'))
 
 
 class AuditTests(PaidResearchBase):
