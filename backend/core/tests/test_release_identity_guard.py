@@ -344,3 +344,27 @@ class CheckReleaseIdentityCommandTests(CheckoutCase):
         report = B.release_identity(OTHER_COMMIT)
         self.assertIn(report['message'], err.replace('\n', ' ') + ' ')
         self.assertIn(report['message'], str(caught.exception))
+
+
+class OperatorDataIsNotSourceTests(SimpleTestCase):
+    """A backup directory inside the tree must not read as a code change."""
+
+    def test_a_renamed_backup_directory_inside_the_tree_is_not_hashed(self):
+        import json
+        import tempfile
+        from django.test import override_settings
+        from core.services import build_identity
+        with tempfile.TemporaryDirectory() as tree:
+            root = pathlib.Path(tree)
+            (root / 'engine.py').write_text('x = 1\n')
+            store = root / 'round_dumps' / 'manifests'
+            store.mkdir(parents=True)
+            with override_settings(COMPETITION_BACKUP_DIR=root / 'round_dumps'):
+                before = build_identity.source_tree_digest(root, refresh=True)
+                (store / 'body.json').write_text(json.dumps({'round': 1}))
+                after = build_identity.source_tree_digest(root, refresh=True)
+                self.assertEqual(before, after)
+                # Control: a real source change still moves the digest.
+                (root / 'engine.py').write_text('x = 2\n')
+                self.assertNotEqual(
+                    after, build_identity.source_tree_digest(root, refresh=True))

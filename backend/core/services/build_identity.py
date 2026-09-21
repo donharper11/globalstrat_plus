@@ -67,13 +67,29 @@ def source_root():
     return pathlib.Path(settings.BASE_DIR).resolve()
 
 
+def _operator_data_directories():
+    """Configured directories the running system writes into.
+
+    `competition_backups` is excluded by name, which covers the default. An
+    operator who points `COMPETITION_BACKUP_DIR` at another directory inside
+    this tree would otherwise have every resolution write manifest `.json`
+    bodies into the digested tree, and the start-of-process drift check would
+    then refuse the NEXT resolution for a change that is data, not code.
+    """
+    configured = getattr(settings, 'COMPETITION_BACKUP_DIR', None)
+    return {pathlib.Path(configured).resolve()} if configured else set()
+
+
 def iter_source_files(root=None):
     """Every runtime source file, as (posix relative path, absolute path)."""
     root = pathlib.Path(root) if root else source_root()
+    operator_data = _operator_data_directories()
     for dirpath, dirnames, filenames in os.walk(root):
         # Prune in place so os.walk does not descend into excluded trees.
-        dirnames[:] = sorted(name for name in dirnames
-                             if name not in EXCLUDED_DIRECTORY_NAMES)
+        dirnames[:] = sorted(
+            name for name in dirnames
+            if name not in EXCLUDED_DIRECTORY_NAMES
+            and (pathlib.Path(dirpath) / name).resolve() not in operator_data)
         for filename in sorted(filenames):
             if filename in EXCLUDED_FILE_NAMES:
                 continue
