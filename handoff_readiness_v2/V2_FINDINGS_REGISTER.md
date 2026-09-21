@@ -3166,3 +3166,42 @@ a live HTTP response rather than a dead socket, narratives and the tunnel
 unaffected, production database never contacted. Brief, self-healed, and
 disclosed by the builder against its own interest. The standing lesson, now
 written down: **on this host, kill by explicit PID, never by pattern.**
+
+
+## V2-123 through V2-130 — the re-audit's unregistered findings (registered 2026-09-21)
+
+`GSP-CRV2-09_GO_NO_GO_2026-09-16.md` recorded nine new findings as A-01…A-09 on
+a branch that was never merged, so none of them had a row here. The document was
+merged into the record on 2026-09-21 at `9d61772`. A-02 already exists as
+**V2-118** and the stored-revision half of A-03 as **V2-120**; the rest are
+registered below. **Each state was re-read against the tree at `79db2bf` on
+2026-09-21, not copied from the re-audit**, whose verdict describes `3c99d74`.
+The first sentence of every status cell is the current state.
+
+| ID | Re-audit id | Area | Sev | Finding | Status |
+|---|---|---|---|---|---|
+| V2-123 | A-01 | Determinism boundary / scoring isolation | **P0** as found | A model-derived number reached a hashed, published, graded score: `communication_eval` wrote `coherence_contribution` from a model call and `coherence.py` blended it into `blended_score` at 10% on the production path. V2-016 was recorded closed on the claim this could not happen. | **Repaired at `3bf0d18` under R31; pending closure by the auditor.** `coherence.py:144-162` has no communication term and the only caller passes `skip_rag=True`; pinned by `test_r31_llm_not_in_grades.py`. **Two residuals, both open:** (1) a latent branch still blends a model RAG score into the hashed row if called with `skip_rag=False` — no caller today, no guard; assigned 2026-09-21 to `crv2-01-release-identity-guard`. (2) `grading.py`'s `communication_quality` rubric component averages the model's `overall_score` into a grade; dormant unless a rubric selects it, and **an owner question no ruling covers.** |
+| V2-124 | A-03 (guard half) | Release provenance | **P1, effectively blocking** | The resolution-time guard cannot see a wrong revision. `resolution_manifest.py` returns a configured `GIT_REVISION` verbatim and `require_identified_build` tests only a `-dirty` suffix, while production is a git checkout whose revision is set by hand. | **Open — detection only, and drifting in production now.** `check_release_identity` (`3f34777`) runs on the audit-anchor timer, but the unit prefixes it with `-`, so it logs and never fails. **Verified live 2026-09-21:** the backend advertises `0fd9a39` while the code on disk is later (`b955c41`, then `79db2bf`); the journal shows the drift line every fifteen minutes since at least 2026-09-19. The nonexistent `86c2ad4` the re-audit saw is gone. Code half assigned 2026-09-21 to `crv2-01-release-identity-guard`. **Deployment half:** serve from a separate checkout or immutable build at the freeze commit — production is the development working tree, so every commit re-drifts it (shared root cause with V2-129). |
+| V2-125 | A-04 | Provenance completeness | **P1** | Runtime configuration sits outside the certified source digest: `requirements.txt` and the `.env` that `settings.py` loads are not covered by `SOURCE_SUFFIXES`. | **Open.** Unchanged at head. R31 lowers the stakes (model routing can no longer move a grade) without removing them. Assigned 2026-09-21 to `crv2-01-release-identity-guard`, with the constraint that the manifest envelope must not move. |
+| V2-126 | A-05 | Verification / guard scope | P2 | The model-routing guards are substring scans with asymmetric coverage, and there is no backend deploy gate equivalent to the frontend's. | **Open.** Unchanged at head. |
+| V2-127 | A-06 | Evidence reproducibility | P2 | The stored v6-envelope transcript does not run as written; it omits the `createsuperuser` step. | **Open.** One line in `evidence/determinism/v6-envelope/README.md`. |
+| V2-128 | A-07 | Harness isolation / backup hygiene | **P1** | Replay harnesses write pre-resolution dumps into the **live** backup root by default: `settings.py:35-36` defaults `COMPETITION_BACKUP_DIR` to `BASE_DIR/competition_backups`, and `v6_envelope_fixture.py`, `r34_inactivity_fixture.py` and `determinism_fixture.py` do not override it. | **Open — the hazard stands, there is no residue.** The live directory was inspected 2026-09-21: 118 files, all `0600`, no stray dumps. To be repaired after `crv2-01-fixture-downgrade-reset` lands, because that branch is editing one of the three fixtures. |
+| V2-129 | A-09 | Programme governance | P2 | The release candidate was not frozen: commits landed on the integration branch during the audit. | **Open by design until the freeze is cut.** The only tags are the three 2026-08-27 RC tags. |
+| V2-130 | A-08 | Rules governance | **P1** | A competition rule changed with no dated ruling: `1855b25` relaxed campaign focus features from *1–3 required* to *at most 3, required only when `promotion_budget > 0`*. They feed `campaign_engine`. The re-audit calls the change defensible and probably right, which V2-073 says is not the test. | **Open against the rules owner.** No ruling R30–R38 mentions it. Needs a dated ruling either confirming or reverting the relaxation. |
+
+### Status reconciliation, 2026-09-21
+
+The 2026-09-17 read-through recorded that status cells here are append-only and
+can be read to opposite conclusions. These rows were flagged by the re-audit
+(its R-1…R-10a) as claims their own evidence did not support. States as of
+`79db2bf`:
+
+| Row | Current state | Why the cell misleads |
+|---|---|---|
+| V2-016 | **Closure was false when made and is true now; needs re-certifying against `3bf0d18`, not against `4bf93e9`.** | The cell reads "Closed at `4bf93e9`" with no note that V2-123 contradicted it. R31 says so explicitly. |
+| V2-117 | **Closed by R31** — the marking-scale question dissolved with the graded path. | The cell still reads as an open question; R31's own text says to close it. |
+| V2-024 | **Mechanism repaired**: `advance_round.py` enforces `funding_need.violations` with `EquityExceedsFundingNeedError`. Pending closure. | The cell opens "Open — stops the handoff". |
+| V2-100 | **Stale — the condition is gone.** aide-checks is vendored at `77b8ced` and the hook has run and passed on every commit since 2026-09-17, including today's. | The row still reads "Open". |
+| V2-068 | **Half open.** The `globalstrat-narratives` unit is active and enabled; `NARRATIVE_WORKER_OPERATIONS.md` still describes the wrong unit, and no real job has been proven end to end on the production stack. | The checklist tick covers supervision only. |
+| V2-107 | **Repaired at `1855b25`; browser proof at a containing revision is still missing** — all eight stamps under `evidence/bug-sweep` read `135508e`. | Record is right, evidence is stale. To be re-driven on the freeze commit. |
+| Calibration evidence | **Invalidated and unmarked.** R18, R32, R36 and R37 each change stored competitive values by their own commit messages; nothing in `evidence/calibration/` says so. Re-measure after the freeze (the R28 balance gate). | No marker exists. |
