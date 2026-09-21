@@ -113,3 +113,69 @@ test('asking spends money, so the committed-spend figures are refreshed', async 
   await waitFor(() => expect(mockRefreshBudgets).toHaveBeenCalled());
   expect(await screen.findByText(/1 \/ 3/)).toBeInTheDocument();
 });
+
+/**
+ * The refusals. The server writes both in the student's language
+ * (`participant_messages`: `analyst_query_limit_reached`, `analyst_unavailable`)
+ * and says in each that nothing was charged. A three-second toast is not
+ * somewhere a student can re-read that, so the sentence stays on the tab until
+ * the next question; it is the server's wording, verbatim, never the generic
+ * `query_failed`.
+ */
+const refuse = (status, error) => {
+  const rejection = new Error(`Request failed with status code ${status}`);
+  rejection.response = { status, data: { error } };
+  return rejection;
+};
+
+const askOnce = async () => {
+  const textarea = await screen.findByRole('textbox');
+  fireEvent.change(textarea, { target: { value: 'How large is the market?' } });
+  fireEvent.click(screen.getByRole('button', { name: /\$12,345/ }));
+  await waitFor(() => expect(client.post).toHaveBeenCalledTimes(1));
+};
+
+test('an outage is reported in the server’s words and stays on the tab', async () => {
+  const sentence = '分析师服务暂时不可用，因此您的问题未得到回答，也未产生费用。';
+  client.get.mockResolvedValue(queriesPayload());
+  client.post.mockRejectedValue(refuse(503, sentence));
+  render(<AskAnalystTab {...props} />);
+  await askOnce();
+
+  const refusal = await screen.findByTestId('analyst-refusal');
+  expect(refusal).toHaveTextContent(sentence);
+  expect(refusal).not.toHaveTextContent('market_research.query_failed');
+  // Nothing was bought, so the question is still there to be asked again.
+  expect(screen.getByRole('textbox')).toHaveValue('How large is the market?');
+  expect(mockRefreshBudgets).not.toHaveBeenCalled();
+});
+
+test('a quota refusal re-reads the quota, because this tab’s count was stale', async () => {
+  const sentence = 'Your team has used all 3 analyst questions for this round.';
+  client.get
+    .mockResolvedValueOnce(queriesPayload())
+    .mockResolvedValueOnce(queriesPayload({
+      queries: [1, 2, 3].map((n) => ({
+        query_text: `q${n}`, response_text: 'a', queried_at: '2026-09-21T00:00:00Z',
+      })),
+      analyst_query: { price: '12345', max_queries_per_round: 3, queries_remaining: 0 },
+    }));
+  client.post.mockRejectedValue(refuse(429, sentence));
+  render(<AskAnalystTab {...props} />);
+  await askOnce();
+
+  expect(await screen.findByTestId('analyst-refusal')).toHaveTextContent(sentence);
+  // A teammate used the quota from another screen; the tab now shows that.
+  expect(await screen.findByText(/3 \/ 3/)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /\$12,345/ })).toBeDisabled();
+});
+
+test('a failure with no sentence from the server falls back to the catalogue', async () => {
+  client.get.mockResolvedValue(queriesPayload());
+  client.post.mockRejectedValue(new Error('Network Error'));
+  render(<AskAnalystTab {...props} />);
+  await askOnce();
+
+  expect(await screen.findByTestId('analyst-refusal'))
+    .toHaveTextContent('market_research.query_failed');
+});

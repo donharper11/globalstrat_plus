@@ -1,6 +1,8 @@
 """
 CC-7/CC-11: RAG research query and event API views.
 """
+import logging
+
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +15,8 @@ from core.engine.utils import get_config
 from core.models import User
 from core.utils.localization import get_user_language
 from core.views.decisions import CompetitionDecisionWriteMixin
+
+logger = logging.getLogger(__name__)
 
 
 class IsTeamMember(permissions.BasePermission):
@@ -252,8 +256,13 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
             round_number=game.current_round,
         ).count()
         if existing_queries >= max_queries:
+            from core.utils.participant_messages import (
+                language_for_request, participant_message)
             return Response(
-                {'error': f'Query limit reached ({max_queries} per round).'},
+                {'error': participant_message(
+                    'analyst_query_limit_reached',
+                    language=language_for_request(request),
+                    maximum=max_queries)},
                 status=429,
             )
 
@@ -369,11 +378,20 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
                 'queries_remaining': max_queries - existing_queries - 1,
             })
 
-        except Exception as e:
+        except Exception:
             # No answer was delivered, so nothing is owed for it.
             DecisionResearchPurchase.objects.filter(pk=purchase.pk).delete()
+            # The reason belongs to the operator. What the embedding or vector
+            # client raised can name a host, a URL or a credential, and this
+            # response is read by a student.
+            logger.exception(
+                'Analyst query failed; purchase %s undone (game=%s team=%s '
+                'round=%s)', purchase.pk, game.id, team.id, game.current_round)
+            from core.utils.participant_messages import language_for_request
             return Response(
-                {'error': f'Research system unavailable: {str(e)}'},
+                {'error': participant_message(
+                    'analyst_unavailable',
+                    language=language_for_request(request))},
                 status=503,
             )
 

@@ -256,6 +256,30 @@ class TeamAssignmentCapTests(CohortCapTestBase):
         self.assertIn('已达本班级允许的上限',
                       response.data['errors'][0]['error'])
 
+    def test_the_short_team_report_is_localised_for_a_zh_instructor(self):
+        """Contract pin, green at head: the console now shows `detail` verbatim.
+
+        The instructor console (`assignmentOutcome.js`, `UnderMinimumNotice`)
+        prints `under_minimum[].detail` exactly as sent, so the sentence has to
+        arrive in the instructor's language and name no storage field.
+        """
+        user = self._enrol('zh-only-one')
+        zh_client = self._client(self.instructor, language='zh-CN')
+
+        response = zh_client.put('/api/team-management/', {
+            'action': 'assign',
+            'assignments': [{'user_id': user.user_id,
+                             'team_id': self.team.id}],
+        }, format='json')
+
+        self.assertEqual(response.data['errors'], [])
+        details = [row['detail'] for row in response.data['under_minimum']
+                   if row['team_id'] == self.team.id]
+        self.assertEqual(len(details), 1)
+        self.assertIn('本班级要求至少 3 名', details[0])
+        for storage_name in ('team_size_min', 'team_id', 'member_count'):
+            self.assertNotIn(storage_name, details[0])
+
     def test_every_other_refusal_is_localised_and_names_no_storage_field(self):
         """The cap was the only refusal in the list written for an instructor.
 

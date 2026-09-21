@@ -32,7 +32,10 @@ import {
   updateEnrollment,
 } from '../api/instructor';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { assignmentOutcome, announceAssignment } from './assignmentOutcome';
+import {
+  assignmentOutcome, announceAssignment, UnderMinimumNotice,
+} from './assignmentOutcome';
+import { bilingualServerReason } from './bilingualServerReason';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -133,6 +136,9 @@ const InstructorDashboard = () => {
   const [showCreateGame, setShowCreateGame] = useState(false);
   const [createdGameTeams, setCreatedGameTeams] = useState([]); // teams from game creation response
   const [pickerTeam, setPickerTeam] = useState(null); // selected team in student assignment picker
+  // Teams the server last reported as below the section's minimum size
+  // (R12). Set from every assignment response; see assignmentOutcome.js.
+  const [underMinimum, setUnderMinimum] = useState([]);
   // Round schedule state
   const [roundSchedule, setRoundSchedule] = useState(null); // { rounds: [...], game_name, ... }
   const [roundScheduleEdits, setRoundScheduleEdits] = useState({}); // { roundId: { deadline: '...' } }
@@ -248,14 +254,14 @@ const InstructorDashboard = () => {
         home_markets: homeMarketCodes,
         section_id: selectedSection || undefined,
       });
-      message.success(`Game "${res.data.game_name}" created with ${res.data.num_teams} teams!`);
+      message.success(t('instructor.msg_game_created', { name: res.data.game_name, teams: res.data.num_teams }));
       setGameId(res.data.game_id);
       setGameStatus(res.data.status || 'setup');
       setCreatedGameTeams(res.data.teams || []);
       // Load round schedule for the new game
       loadRoundScheduleData(res.data.game_id);
     } catch (err) {
-      message.error(err.response?.data?.error || 'Failed to create game');
+      message.error(err.response?.data?.error || t('instructor.msg_create_game_failed'));
     }
     setCreateLoading(false);
   };
@@ -347,9 +353,9 @@ const InstructorDashboard = () => {
       setSelectedEventTemplate(null);
       setSelectedMarket(null);
       loadData();
-      message.success('Event injected');
+      message.success(t('instructor.msg_event_injected'));
     } catch (err) {
-      message.error(err.response?.data?.error || 'Failed to inject event');
+      message.error(err.response?.data?.error || t('instructor.msg_inject_event_failed'));
     }
     setActionLoading(false);
   };
@@ -420,10 +426,11 @@ const InstructorDashboard = () => {
         ...edits,
       }));
       await updateRoundSchedule(gameId, rounds);
-      message.success('Round schedule saved');
+      message.success(t('instructor.msg_schedule_saved'));
       await loadRoundScheduleData(gameId);
     } catch (err) {
-      message.error('Failed to save schedule');
+      // The server's reason only when it is bilingual; see the helper.
+      message.error(bilingualServerReason(err) || t('instructor.msg_schedule_save_failed'));
       console.error(err);
     } finally { setRoundScheduleSaving(false); }
   };
@@ -460,8 +467,8 @@ const InstructorDashboard = () => {
                   setGameStatus(res.data?.status || 'active');
                   loadRoundScheduleData(gameId);
                   loadData();
-                  message.success('Game activated — Round 1 is open');
-                } catch (err) { message.error(err.response?.data?.error || 'Failed to activate'); }
+                  message.success(t('instructor.msg_game_activated'));
+                } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_activate_failed')); }
               }}>
                 <Button type="primary">{t('instructor.activate_game')}</Button>
               </Popconfirm>
@@ -487,8 +494,8 @@ const InstructorDashboard = () => {
                   try {
                     const res = await resumeGame(gameId);
                     setGameStatus(res.data?.status || 'active');
-                    message.success('Game resumed');
-                  } catch (err) { message.error(err.response?.data?.error || 'Failed to resume'); }
+                    message.success(t('instructor.msg_game_resumed'));
+                  } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_resume_failed')); }
                 }}>
                   <Button type="primary">{t('instructor.resume_game')}</Button>
                 </Popconfirm>
@@ -502,8 +509,8 @@ const InstructorDashboard = () => {
                   setGameStatus(res.data?.status || 'setup');
                   setDashboard(null);
                   loadRoundScheduleData(gameId);
-                  message.success('Game reset to setup');
-                } catch (err) { message.error(err.response?.data?.error || 'Failed to reset'); }
+                  message.success(t('instructor.msg_game_reset'));
+                } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_reset_failed')); }
               }}>
                 <Button danger>{t('instructor.reset_to_setup')}</Button>
               </Popconfirm>
@@ -513,8 +520,8 @@ const InstructorDashboard = () => {
                 try {
                   await archiveGame(gameId);
                   setGameStatus('archived');
-                  message.success('Game archived. You can now create a new game for this section.');
-                } catch (err) { message.error(err.response?.data?.error || 'Failed to archive'); }
+                  message.success(t('instructor.msg_game_archived'));
+                } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_archive_failed')); }
               }}>
                 <Button>{t('instructor.archive_game')}</Button>
               </Popconfirm>
@@ -527,8 +534,8 @@ const InstructorDashboard = () => {
                 setDashboard(null);
                 setRoundSchedule(null);
                 setCreatedGameTeams([]);
-                message.success('Game deleted. You can now create a new game.');
-              } catch (err) { message.error(err.response?.data?.error || 'Failed to delete'); }
+                message.success(t('instructor.msg_game_deleted'));
+              } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_delete_failed')); }
             }}>
               <Button danger type="primary">{t('instructor.delete_game')}</Button>
             </Popconfirm>
@@ -639,10 +646,10 @@ const InstructorDashboard = () => {
                     }));
                     await updateRoundSchedule(gameId, rounds);
                     await loadRoundScheduleData(gameId);
-                    message.success(`Schedule saved for ${playableRounds.length} rounds.`);
-                  } catch {
+                    message.success(t('instructor.msg_schedule_generated_saved', { count: playableRounds.length }));
+                  } catch (err) {
                     setRoundScheduleEdits(prev => ({ ...prev, ...edits }));
-                    message.warning('Schedule generated but failed to save. Click "Save Schedule" to retry.');
+                    message.warning(bilingualServerReason(err) || t('instructor.msg_schedule_generated_not_saved'));
                   }
                 }}>
                   {t('instructor.generate_save')}
@@ -698,7 +705,7 @@ const InstructorDashboard = () => {
                   setTeamConfigEdits({});
                   loadTeamConfig();
                 } catch (err) {
-                  message.error(err.response?.data?.error || 'Failed to save');
+                  message.error(err.response?.data?.error || t('instructor.msg_team_config_save_failed'));
                 }
                 setTeamConfigSaving(false);
               };
@@ -710,9 +717,9 @@ const InstructorDashboard = () => {
                   const edits = {};
                   preview.forEach(p => { edits[p.team_id] = p.home_market_code; });
                   setTeamConfigEdits(edits);
-                  message.info('Random assignment previewed — click Save to apply');
+                  message.info(t('instructor.msg_random_previewed'));
                 } catch (err) {
-                  message.error(err.response?.data?.error || 'Failed to randomize');
+                  message.error(err.response?.data?.error || t('instructor.msg_randomize_failed'));
                 }
               };
 
@@ -1006,7 +1013,7 @@ const InstructorDashboard = () => {
   const handleRubricSave = async () => {
     const totalWeight = editCategories.reduce((s, c) => s + Number(c.weight || 0), 0);
     if (Math.abs(totalWeight - 100) > 0.01) {
-      message.warning(`Weights must sum to 100% (currently ${totalWeight.toFixed(1)}%)`);
+      message.warning(t('instructor.msg_weights_must_total', { total: totalWeight.toFixed(1) }));
       return;
     }
     setRubricSaving(true);
@@ -1037,10 +1044,10 @@ const InstructorDashboard = () => {
           });
         }
       }
-      message.success('Rubric updated');
+      message.success(t('instructor.msg_rubric_updated'));
       setRubricModalOpen(false);
       loadGrading();
-    } catch { message.error('Failed to save rubric'); }
+    } catch { message.error(t('instructor.msg_rubric_save_failed')); }
     setRubricSaving(false);
   };
 
@@ -1115,9 +1122,9 @@ const InstructorDashboard = () => {
             <Button type="primary" style={{ marginLeft: 12 }} onClick={async () => {
               try {
                 await seedRubric(gradingCourse);
-                message.success('Default rubric created');
+                message.success(t('instructor.msg_default_rubric_created'));
                 loadGrading();
-              } catch { message.error('Failed to seed rubric'); }
+              } catch { message.error(t('instructor.msg_seed_rubric_failed')); }
             }}>
               {t('instructor.create_default_rubric')}
             </Button>
@@ -1215,7 +1222,7 @@ const InstructorDashboard = () => {
               const url = URL.createObjectURL(res.data);
               const a = document.createElement('a'); a.href = url; a.download = 'team_grades.csv'; a.click();
               URL.revokeObjectURL(url);
-            } catch { message.error('No grades to export — calculate grades first'); }
+            } catch { message.error(t('instructor.msg_no_team_grades_to_export')); }
           }}>{t('instructor.export_team_grades')}</Button>
           <Button disabled={!gradingInstanceId} onClick={async () => {
             try {
@@ -1223,7 +1230,7 @@ const InstructorDashboard = () => {
               const url = URL.createObjectURL(res.data);
               const a = document.createElement('a'); a.href = url; a.download = 'student_grades.csv'; a.click();
               URL.revokeObjectURL(url);
-            } catch { message.error('No student grades to export'); }
+            } catch { message.error(t('instructor.msg_no_student_grades_to_export')); }
           }}>{t('instructor.export_student_grades')}</Button>
         </Space>
       </Card>
@@ -1407,11 +1414,14 @@ const InstructorDashboard = () => {
     setSelectedCourse(courseId);
     setSelectedSection(null);
     setRoster([]);
+    setUnderMinimum([]);
     setTeamMgmt(null);
     try { const res = await getSections(courseId); setSections(res.data || []); } catch { /* empty */ }
   };
 
   const loadRoster = async (sectionId) => {
+    // The short-team notice belongs to the section it was reported for.
+    if (sectionId !== selectedSection) setUnderMinimum([]);
     setSelectedSection(sectionId);
     try {
       const [rosterRes, teamRes, gamesRes] = await Promise.all([
@@ -1481,8 +1491,8 @@ const InstructorDashboard = () => {
               await createCourse({ course_code: newCourseCode, course_name: newCourseName, is_active: true });
               setNewCourseCode(''); setNewCourseName('');
               loadCourses();
-              message.success('Course created');
-            } catch { message.error('Failed to create course'); }
+              message.success(t('instructor.msg_course_created'));
+            } catch { message.error(t('instructor.msg_create_course_failed')); }
           }}>{t('instructor.create')}</Button>
         </div>
         {courses.length === 0 ? (
@@ -1538,8 +1548,8 @@ const InstructorDashboard = () => {
                 await createSection({ course: selectedCourse, section_code: newSectionCode, section_name: newSectionName, is_active: true });
                 setNewSectionCode(''); setNewSectionName('');
                 loadSections(selectedCourse);
-                message.success('Section created');
-              } catch { message.error('Failed to create section'); }
+                message.success(t('instructor.msg_section_created'));
+              } catch { message.error(t('instructor.msg_create_section_failed')); }
             }}>{t('instructor.create')}</Button>
           </div>
           {sections.length === 0 ? (
@@ -1610,10 +1620,10 @@ const InstructorDashboard = () => {
                         try {
                           const res = await activateGame(gameId);
                           setGameStatus(res.data.status);
-                          message.success('Game activated! Round 1 is now open.');
+                          message.success(t('instructor.msg_game_activated'));
                           loadRoundScheduleData(gameId);
                         } catch (err) {
-                          message.error(err.response?.data?.error || 'Failed to activate');
+                          message.error(err.response?.data?.error || t('instructor.msg_activate_failed'));
                         }
                         setActivatingGame(false);
                       }}
@@ -1637,8 +1647,8 @@ const InstructorDashboard = () => {
                       try {
                         const res = await resumeGame(gameId);
                         setGameStatus(res.data.status);
-                        message.success('Game resumed');
-                      } catch (err) { message.error(err.response?.data?.error || 'Failed to resume'); }
+                        message.success(t('instructor.msg_game_resumed'));
+                      } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_resume_failed')); }
                     }}>{t('instructor.resume_game')}</Button>
                   )}
                   {(displayGameStatus === 'active' || displayGameStatus === 'paused') && (
@@ -1649,9 +1659,9 @@ const InstructorDashboard = () => {
                         try {
                           const res = await resetGame(gameId);
                           setGameStatus(res.data.status);
-                          message.success('Game reset to setup');
+                          message.success(t('instructor.msg_game_reset'));
                           loadRoundScheduleData(gameId);
-                        } catch (err) { message.error(err.response?.data?.error || 'Failed to reset'); }
+                        } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_reset_failed')); }
                       }}
                     >
                       <Button danger>{t('instructor.reset_to_setup')}</Button>
@@ -1750,10 +1760,10 @@ const InstructorDashboard = () => {
                           email: addStudentEmail.trim(),
                           student_id: addStudentId.trim(),
                         });
-                        message.success('Student added');
+                        message.success(t('instructor.msg_student_added'));
                         setAddStudentName(''); setAddStudentEmail(''); setAddStudentId('');
                         loadRoster(selectedSection);
-                      } catch (err) { message.error(err.response?.data?.error || 'Failed to add student'); }
+                      } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_add_student_failed')); }
                     }}>{t('instructor.add')}</Button>
                 </Col>
               </Row>
@@ -1779,9 +1789,9 @@ const InstructorDashboard = () => {
                           const text = await file.text();
                           try {
                             const res = await uploadRoster(selectedSection, text);
-                            message.success(`Created ${res.data?.created || 0} students from ${file.name}`);
+                            message.success(t('instructor.msg_roster_uploaded_from_file', { count: res.data?.created || 0, file: file.name }));
                             loadRoster(selectedSection);
-                          } catch (err) { message.error(err.response?.data?.error || 'Upload failed'); }
+                          } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_upload_failed')); }
                           e.target.value = '';
                         }}
                       />
@@ -1794,10 +1804,10 @@ const InstructorDashboard = () => {
                       <Button type="primary" size="small" style={{ marginTop: 8 }} disabled={!csvText.trim()} onClick={async () => {
                         try {
                           const res = await uploadRoster(selectedSection, csvText);
-                          message.success(`Created ${res.data?.created || 0} students`);
+                          message.success(t('instructor.msg_roster_uploaded', { count: res.data?.created || 0 }));
                           setCsvText('');
                           loadRoster(selectedSection);
-                        } catch (err) { message.error(err.response?.data?.error || 'Upload failed'); }
+                        } catch (err) { message.error(err.response?.data?.error || t('instructor.msg_upload_failed')); }
                       }}>{t('instructor.upload_pasted_text')}</Button>
                     </Col>
                   </Row>
@@ -1846,10 +1856,10 @@ const InstructorDashboard = () => {
                               email: editStudentEmail,
                               student_id: editStudentId,
                             });
-                            message.success('Student updated');
+                            message.success(t('instructor.msg_student_updated'));
                             setEditingEnrollment(null);
                             loadRoster(selectedSection);
-                          } catch (err) { message.error('Failed to update'); }
+                          } catch { message.error(t('instructor.msg_update_student_failed')); }
                         }}>{t('instructor.save')}</Button>
                         <Button type="text" size="small" style={{ padding: '0 4px' }} onClick={() => setEditingEnrollment(null)}>✕</Button>
                       </Space>
@@ -1931,6 +1941,7 @@ const InstructorDashboard = () => {
                 const assignedCount = roster.filter(r => isAssignedToGame(r)).length;
                 return (
                   <div>
+                    <UnderMinimumNotice notices={underMinimum} t={t} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                       <Text strong>
                         {t('instructor.assign_students')} ({assignedCount} / {roster.length} {t('instructor.assigned')})
@@ -1982,7 +1993,7 @@ const InstructorDashboard = () => {
                                     // Read in one place: assignmentOutcome.js.
                                     announceAssignment(
                                       assignmentOutcome((await assignStudents(assignments))?.data),
-                                      { t, message, Modal });
+                                      { t, message, Modal, onUnderMinimum: setUnderMinimum });
                                     loadRoster(selectedSection);
                                   } catch { message.error(t('instructor.assign_failed')); }
                                 }}
@@ -2009,7 +2020,7 @@ const InstructorDashboard = () => {
                                             // site still discarding it (V2-104).
                                             announceAssignment(
                                               assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: null }]))?.data),
-                                              { t, message, Modal, mode: 'unassign' });
+                                              { t, message, Modal, mode: 'unassign', onUnderMinimum: setUnderMinimum });
                                             loadRoster(selectedSection);
                                           } catch { message.error(t('instructor.unassign_failed')); }
                                         }}>{t('instructor.remove')}</Button>
@@ -2045,7 +2056,7 @@ const InstructorDashboard = () => {
                                         // here can still be a refusal (F4).
                                         announceAssignment(
                                           assignmentOutcome((await assignStudents([{ user_id: r.user_id, team_id: pickerTeam }]))?.data),
-                                          { t, message, Modal });
+                                          { t, message, Modal, onUnderMinimum: setUnderMinimum });
                                         loadRoster(selectedSection);
                                       } catch { message.error(t('instructor.assign_failed')); }
                                     }}>

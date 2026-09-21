@@ -888,6 +888,10 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
   const [queryText, setQueryText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  // The last refusal, in the server's own words. It says whether the team was
+  // charged, so it stays on the tab until the next question instead of
+  // passing by in a toast.
+  const [refusal, setRefusal] = useState(null);
 
   const fetchQueries = useCallback(async () => {
     if (!gameId || !teamId) return;
@@ -917,6 +921,7 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
       return;
     }
     setSubmitting(true);
+    setRefusal(null);
     try {
       const res = await client.post(
         `/games/${gameId}/teams/${teamId}/research/query/`,
@@ -940,7 +945,11 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
         err.response?.data?.error ||
         err.response?.data?.detail ||
         t('market_research.query_failed');
-      message.error(msg);
+      setRefusal(msg);
+      // 429: the quota was used from another screen, so the count this tab
+      // holds is stale. Re-read it rather than keep offering a question the
+      // server will refuse again.
+      if (err.response?.status === 429) fetchQueries();
     } finally {
       setSubmitting(false);
     }
@@ -971,6 +980,16 @@ export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
             showIcon
             style={{ marginBottom: 12 }}
             message={t('market_research.price_unavailable')}
+          />
+        )}
+        {refusal && (
+          <Alert
+            type="error"
+            showIcon
+            closable
+            onClose={() => setRefusal(null)}
+            style={{ marginBottom: 12 }}
+            message={<span data-testid="analyst-refusal">{refusal}</span>}
           />
         )}
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>

@@ -436,6 +436,17 @@ MESSAGES = {
         'en': 'Buying the {report} report costs {price}, which would take committed spend to {committed} against available cash of {cash}. Reduce committed spend or raise financing before buying it.',
         'zh-CN': '购买{report}报告需 {price}，将使承诺支出达到 {committed}，而可用现金为 {cash}。购买前请减少承诺支出或增加融资。',
     },
+    # The two refusals a student can meet after pressing Ask on the analyst
+    # tab. Neither may carry anything the server raised: the reason an outage
+    # happened goes to the log, not to a participant.
+    'analyst_query_limit_reached': {
+        'en': 'Your team has used all {maximum} analyst questions for this round, so this question was not asked and nothing was charged. You can ask again next round.',
+        'zh-CN': '您的团队本回合的 {maximum} 次分析师查询机会已用完，因此本次问题未提交，也未产生费用。下一回合可继续提问。',
+    },
+    'analyst_unavailable': {
+        'en': 'The research analyst is unavailable right now, so your question was not answered and nothing was charged. Try again in a few minutes; if it keeps happening, tell your instructor.',
+        'zh-CN': '分析师服务暂时不可用，因此您的问题未得到回答，也未产生费用。请几分钟后重试；如问题持续出现，请告知教师。',
+    },
     'research_report_unknown': {
         'en': 'That research report is not available. Choose a report from the research catalogue.',
         'zh-CN': '该研究报告不可用。请从研究目录中选择报告。',
