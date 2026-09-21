@@ -15,6 +15,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
 import { StateBadge, pageState } from '../components/sc/scState';
 import useUnsavedChangesGuard from '../hooks/useUnsavedChangesGuard';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Text, Paragraph } = Typography;
 
@@ -201,7 +202,7 @@ const SourcingPage = () => {
       <Input style={{ width: 150 }} placeholder={t('sc.sourcing.payment_example')} value={r.payment_terms}
         disabled={!editable || round < UNLOCK.payment_terms} onChange={(e) => updateRow(r.key, { payment_terms: e.target.value })} />) },
     { title: <>{t('sc.sourcing.volume')} {round < UNLOCK.volume_commitments && lockTag(UNLOCK.volume_commitments, t)}</>, key: 'v', width: 130, render: (_, r) => (
-      <InputNumber min={0} value={r.volume_commitment_units} disabled={!editable || round < UNLOCK.volume_commitments}
+      <InputNumber min={0} max={DECISION_INPUT_LIMITS.volume_commitment_units} value={r.volume_commitment_units} disabled={!editable || round < UNLOCK.volume_commitments}
         onChange={(v) => updateRow(r.key, { volume_commitment_units: v ?? 0 })} />) },
     { title: '', key: 'x', width: 40, render: (_, r) => (
       <Button type="text" danger icon={<DeleteOutlined />} disabled={!editable} onClick={() => removeRow(r.key)} />) },

@@ -9,6 +9,7 @@ import { getStrategyContext, getTalentContext, getTalentAllocationContext, getGo
 import { PanelCard, PageHeader } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
+import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
 
 const { Title, Text } = Typography;
 
@@ -223,7 +224,7 @@ const TalentPoolCard = ({ pool, poolKey, talent, locked, onChange, prev, markets
         <Col flex="160px">
           <Text style={{ fontSize: 11, display: 'block', marginBottom: 2 }}>{t('corporate_strategy.training_investment')}</Text>
           <InputNumber
-            size="small" prefix="$" min={0} step={50000}
+            size="small" prefix="$" min={0} max={DECISION_INPUT_LIMITS.training_budget} step={50000}
             value={talent.training_budget} disabled={locked}
             onChange={v => onChange({ ...talent, training_budget: v || 0 })}
             style={{ width: '100%' }}
@@ -878,7 +879,7 @@ const CorporateStrategyPage = () => {
               <Col xs={24} md={12}>
                 <Card size="small" title={t('corporate_strategy.environmental')}>
                   <InputNumber
-                    prefix="$" min={0} step={50000}
+                    prefix="$" min={0} max={DECISION_INPUT_LIMITS.environmental_investment} step={50000}
                     value={esg.environmental_investment} disabled={locked}
                     onChange={v => {
                       const e = { ...esg, environmental_investment: v || 0 };
@@ -892,7 +893,7 @@ const CorporateStrategyPage = () => {
               <Col xs={24} md={12}>
                 <Card size="small" title={t('corporate_strategy.social_programs')}>
                   <InputNumber
-                    prefix="$" min={0} step={50000}
+                    prefix="$" min={0} max={DECISION_INPUT_LIMITS.social_investment} step={50000}
                     value={esg.social_investment} disabled={locked}
                     onChange={v => {
                       const e = { ...esg, social_investment: v || 0 };
