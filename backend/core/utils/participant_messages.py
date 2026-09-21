@@ -740,6 +740,14 @@ MESSAGES = {
         'en': 'Insufficient budget. Need {cost}, have {remaining}.',
         'zh-CN': '预算不足。需要 {cost}，可用 {remaining}。',
     },
+    'program_cap_reached': {
+        'en': 'Program cap reached ({active}/{maximum}). Deactivate a program before adding another.',
+        'zh-CN': '已达到项目数量上限（{active}/{maximum}）。请先停用一个项目，然后再添加。',
+    },
+    'program_budget_overage': {
+        'en': 'This will exceed your Program budget by {overage}. The overage will be financed as a loan at {rate} interest per round.',
+        'zh-CN': '这将使项目预算超支 {overage}。超支部分将通过贷款解决，每回合利率为 {rate}。',
+    },
     'resource_query_required': {
         'en': 'Type what you are looking for before searching.',
         'zh-CN': '请先输入要查找的内容，然后再搜索。',

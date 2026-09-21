@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from core.utils.participant_messages import (
-    localise_refusal, participant_refusal)
+    language_for_request, localise_refusal, participant_refusal)
 
 from core.views.mixins import InstanceScopedMixin, DecisionLockedMixin
 from core.models import (
@@ -61,7 +61,8 @@ class ProgramViewSet(DecisionLockedMixin, InstanceScopedMixin, viewsets.ModelVie
         prog_status = request.data.get('status', '')
         if team_id and prog_status and prog_status.lower() == 'active':
             from core.services.budget import validate_program_activation
-            ok, warnings, errors = validate_program_activation(int(team_id))
+            ok, warnings, errors = validate_program_activation(
+                    int(team_id), language=language_for_request(request))
             if not ok:
                 return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
         response = super().create(request, *args, **kwargs)
@@ -91,7 +92,8 @@ class ProgramViewSet(DecisionLockedMixin, InstanceScopedMixin, viewsets.ModelVie
             team_id = instance.team_id
             if team_id:
                 from core.services.budget import validate_program_activation
-                ok, warnings, errors = validate_program_activation(int(team_id))
+                ok, warnings, errors = validate_program_activation(
+                    int(team_id), language=language_for_request(request))
                 if not ok:
                     return Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
         return super().update(request, *args, **kwargs)

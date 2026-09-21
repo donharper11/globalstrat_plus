@@ -323,6 +323,19 @@ class ServiceRefusalTests(StudentRefusalBase):
                 'persona_reply_limit', language='zh-CN', maximum=3),
             'code': 'persona_reply_limit'})
 
+    def test_the_legacy_programme_cap_is_said_in_the_callers_language(self):
+        from core.services import budget
+        with mock.patch.object(budget, '_get_param', return_value='0'):
+            _, _, english = budget.validate_program_activation(self.team.id)
+            _, _, chinese = budget.validate_program_activation(
+                self.team.id, language='zh-CN')
+        self.assertEqual(english, [
+            'Program cap reached (0/0). Deactivate a program before adding '
+            'another.'])
+        self.assertEqual(len(chinese), 1)
+        self.assertTrue(has_cjk(chinese[0]), chinese)
+        self.assertIsNone(re.search(r'[A-Za-z]{3,}', chinese[0]), chinese)
+
     def test_every_service_refusal_names_a_catalogue_sentence(self):
         import ast
         from pathlib import Path
