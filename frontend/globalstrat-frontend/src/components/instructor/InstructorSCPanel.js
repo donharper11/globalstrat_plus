@@ -4,6 +4,7 @@ import {
   Card, Descriptions, InputNumber, Tooltip, Empty,
 } from 'antd';
 import { ThunderboltOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import {
   getInstructorSCPanel, getInstructorSCEventCatalog, injectSCEvent,
   getResilienceWeightOverrides, saveResilienceWeightOverride,
@@ -64,6 +65,7 @@ const WEIGHT_LABELS = {
  * the real instructor SC endpoints.
  */
 const InstructorSCPanel = ({ gameId }) => {
+  const { t } = useTranslation();
   const [panel, setPanel] = useState(null);
   const [catalog, setCatalog] = useState([]);
   const [overrides, setOverrides] = useState([]);
@@ -100,11 +102,11 @@ const InstructorSCPanel = ({ gameId }) => {
     setInjecting(true);
     try {
       const { data } = await injectSCEvent(gameId, selectedEvent);
-      message.success(data.message || 'Event injected.');
+      message.success(data.message || t('instructor.sc_event_injected'));
       setSelectedEvent(null);
       await load();
     } catch (e) {
-      message.error(e?.response?.data?.detail || 'Injection failed.');
+      message.error(e?.response?.data?.error || e?.response?.data?.detail || t('instructor.sc_injection_failed'));
     } finally {
       setInjecting(false);
     }
@@ -117,12 +119,12 @@ const InstructorSCPanel = ({ gameId }) => {
         weight_name: weightDraft.name, override_value: weightDraft.value,
         reason: 'Set from instructor SC panel',
       });
-      message.success('Resilience weight override saved.');
+      message.success(t('instructor.sc_weights_saved'));
       setWeightDraft({ name: null, value: null });
       await load();
     } catch (e) {
       const d = e?.response?.data;
-      message.error(typeof d === 'string' ? d : (d?.detail || JSON.stringify(d) || 'Save failed.'));
+      message.error(typeof d === 'string' ? d : (d?.detail || JSON.stringify(d) || t('instructor.sc_save_failed')));
     }
   };
 

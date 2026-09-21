@@ -20,15 +20,7 @@ const STATUS_COLOUR = {
   pending: 'default',
 };
 
-const PROCESSING_LABEL = {
-  PENDING: 'Not yet processed',
-  PROCESSING: 'Processing…',
-  RESULTS_AVAILABLE: 'Results ready — narratives generating',
-  FULLY_COMPLETE: 'Complete',
-  FAILED: 'Failed',
-};
-
-function formatRemaining(seconds) {
+function formatRemaining(seconds, t) {
   if (seconds === null || seconds === undefined) return null;
   const overdue = seconds < 0;
   const s = Math.abs(seconds);
@@ -36,11 +28,12 @@ function formatRemaining(seconds) {
   const h = Math.floor((s % 86400) / 3600);
   const m = Math.floor((s % 3600) / 60);
   const parts = [];
-  if (d) parts.push(`${d}d`);
-  if (h || d) parts.push(`${h}h`);
-  parts.push(`${m}m`);
-  const text = parts.join(' ');
-  return overdue ? `${text} overdue` : `${text} remaining`;
+  if (d) parts.push(t('instructor.rc_unit_days', { n: d }));
+  if (h || d) parts.push(t('instructor.rc_unit_hours', { n: h }));
+  parts.push(t('instructor.rc_unit_minutes', { n: m }));
+  const time = parts.join(' ');
+  if (overdue) return t('instructor.rc_time_overdue', { time });
+  return t('instructor.rc_time_remaining', { time });
 }
 
 /**
@@ -71,12 +64,12 @@ export default function RoundControlCard({ gameId, onChanged }) {
     } catch (err) {
       // A game in setup has no round yet; that isn't an error worth shouting about.
       if (err.response?.status !== 404) {
-        message.error(err.response?.data?.error || 'Could not load round status');
+        message.error(err.response?.data?.error || t('instructor.rc_load_failed'));
       }
     } finally {
       setLoading(false);
     }
-  }, [gameId]);
+  }, [gameId, t]);
 
   useEffect(() => {
     load();
@@ -102,7 +95,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
     setBusy(key);
     try {
       const res = await fn();
-      message.success(res.data?.message || 'Done');
+      message.success(res.data?.message || t('instructor.rc_done'));
       if (res.data?.warning) message.warning(res.data.warning);
       await load();
       onChanged?.();
@@ -112,7 +105,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
       // under us. Say so, show the guidance the API sent, and refresh — the
       // console is now showing a state that no longer exists.
       const conflict = err.response?.status === 409;
-      const text = [body?.error || confirmMsg || 'Action failed', body?.guidance]
+      const text = [body?.error || confirmMsg || t('instructor.rc_action_failed'), body?.guidance]
         .filter(Boolean)
         .join(' ');
       if (conflict) {
@@ -128,23 +121,37 @@ export default function RoundControlCard({ gameId, onChanged }) {
   };
 
   if (!data) {
-    return <Card title="Round Control" loading style={{ marginTop: 16 }} />;
+    return <Card title={t('instructor.rc_title')} loading style={{ marginTop: 16 }} />;
   }
 
   const round = data.round;
   if (!round) {
     return (
-      <Card title="Round Control" style={{ marginTop: 16 }}>
+      <Card title={t('instructor.rc_title')} style={{ marginTop: 16 }}>
         <Alert type="info" showIcon
-          message="No round yet"
-          description="Activate the game to open Round 1." />
+          message={t('instructor.rc_no_round')}
+          description={t('instructor.rc_no_round_hint')} />
       </Card>
     );
   }
 
   const next = round.next_action;
-  const remaining = formatRemaining(round.seconds_remaining);
+  const remaining = formatRemaining(round.seconds_remaining, t);
   const gamePaused = data.game_status === 'paused';
+  // One t() per key: the string gate cannot resolve a key chosen at run time.
+  const statusLabel = {
+    open: t('instructor.rc_status_open'),
+    closed: t('instructor.rc_status_closed'),
+    processed: t('instructor.rc_status_processed'),
+    pending: t('instructor.rc_status_pending'),
+  };
+  const processingLabel = {
+    PENDING: t('instructor.rc_processing_pending'),
+    PROCESSING: t('instructor.rc_processing_running'),
+    RESULTS_AVAILABLE: t('instructor.rc_processing_results'),
+    FULLY_COMPLETE: t('instructor.rc_processing_complete'),
+    FAILED: t('instructor.rc_processing_failed'),
+  };
 
   return (
     <Card
@@ -154,49 +161,53 @@ export default function RoundControlCard({ gameId, onChanged }) {
         total: data.total_rounds ?? '—',
       })}
       style={{ marginTop: 16 }}
-      extra={<Button size="small" onClick={load} loading={loading}>Refresh</Button>}
+      extra={<Button size="small" onClick={load} loading={loading}>{t('instructor.rc_refresh')}</Button>}
     >
       {gamePaused && (
         <Alert type="warning" showIcon style={{ marginBottom: 12 }}
-          message="Game is paused"
-          description="Students cannot submit or change anything while the game is paused. The deadline is also on hold — it will not close the round until you resume." />
+          message={t('instructor.rc_paused')}
+          description={t('instructor.rc_paused_hint')} />
       )}
 
       <Descriptions size="small" column={{ xs: 1, sm: 2, md: 3 }} bordered
         style={{ marginBottom: 16 }}>
-        <Descriptions.Item label="Round status">
-          <Tag color={STATUS_COLOUR[round.status] || 'default'}>{round.status}</Tag>
+        <Descriptions.Item label={t('instructor.rc_round_status')}>
+          <Tag color={STATUS_COLOUR[round.status] || 'default'}>
+            {statusLabel[round.status] || round.status}
+          </Tag>
           {round.close_reason && (
             <Text type="secondary">
-              {round.close_reason === 'deadline' ? 'closed by deadline' : 'closed by instructor'}
+              {round.close_reason === 'deadline'
+                ? t('instructor.rc_closed_by_deadline')
+                : t('instructor.rc_closed_by_instructor')}
             </Text>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Deadline">
+        <Descriptions.Item label={t('instructor.rc_deadline')}>
           {round.deadline ? (
             <Space direction="vertical" size={0}>
               <Text>{new Date(round.deadline).toLocaleString()}</Text>
               <Text type={round.is_overdue ? 'danger' : 'secondary'}>{remaining}</Text>
             </Space>
           ) : (
-            <Text type="warning">Not set — this round will never close on its own</Text>
+            <Text type="warning">{t('instructor.rc_deadline_not_set')}</Text>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Decisions in">
+        <Descriptions.Item label={t('instructor.rc_decisions_in')}>
           <Text>{round.teams_locked} / {round.teams_total}</Text>
           {round.teams_pending > 0 && (
-            <Text type="secondary"> ({round.teams_pending} still out)</Text>
+            <Text type="secondary">{' '}{t('instructor.rc_still_out', { n: round.teams_pending })}</Text>
           )}
         </Descriptions.Item>
-        <Descriptions.Item label="Processing" span={3}>
-          {PROCESSING_LABEL[round.processing_status] || round.processing_status}
+        <Descriptions.Item label={t('instructor.rc_processing')} span={3}>
+          {processingLabel[round.processing_status] || round.processing_status}
           {round.phase_1_duration != null && (
-            <Text type="secondary"> — scoring took {round.phase_1_duration.toFixed(1)}s</Text>
+            <Text type="secondary">{' '}{t('instructor.rc_scoring_took', { seconds: round.phase_1_duration.toFixed(1) })}</Text>
           )}
           {round.narrative_error && (
             <Alert type="warning" showIcon style={{ marginTop: 8 }}
-              message="Narrative generation failed"
-              description={`${round.narrative_error} — the numbers are still valid.`} />
+              message={t('instructor.rc_narrative_failed')}
+              description={t('instructor.rc_narrative_failed_hint', { error: round.narrative_error })} />
           )}
         </Descriptions.Item>
       </Descriptions>
@@ -206,14 +217,12 @@ export default function RoundControlCard({ gameId, onChanged }) {
       )}
 
       <Paragraph type="secondary" style={{ marginBottom: 12 }}>
-        A round closes at its deadline (or when you close it), then you run
-        post-round processing, then you advance. Processing and advancing are
-        separate so you can check the results before the game moves on.
+        {t('instructor.rc_lifecycle_hint')}
       </Paragraph>
 
       <Space wrap>
         <Button onClick={() => { setDeadlineValue(round.deadline ? dayjs(round.deadline) : null); setDeadlineOpen(true); }}>
-          {round.deadline ? 'Change deadline' : 'Set deadline'}
+          {round.deadline ? t('instructor.rc_change_deadline') : t('instructor.rc_set_deadline')}
         </Button>
 
         {round.status === 'open' && (
@@ -222,12 +231,12 @@ export default function RoundControlCard({ gameId, onChanged }) {
               game: data.game_name || t('instructor.game'),
               round: round.round_number,
             })}
-            description="Students will be locked out immediately and all decisions submitted as they stand."
+            description={t('instructor.rc_close_hint')}
             onConfirm={() => run('close', () => closeRound(gameId, round))}
           >
             <Button danger={round.is_overdue} type={next === 'close' ? 'primary' : 'default'}
               loading={busy === 'close'}>
-              Close round now
+              {t('instructor.rc_close_now')}
             </Button>
           </Popconfirm>
         )}
@@ -239,15 +248,15 @@ export default function RoundControlCard({ gameId, onChanged }) {
                 game: data.game_name || t('instructor.game'),
                 round: round.round_number,
               })}
-              description="Scores events, R&D, adoption, revenue, costs, financial statements, performance index and the leaderboard. Takes a few seconds."
+              description={t('instructor.rc_process_hint')}
               onConfirm={() => run('process', () => processRound(gameId, false, round))}
             >
               <Button type="primary" loading={busy === 'process'}>
-                Run post-round processing
+                {t('instructor.rc_process')}
               </Button>
             </Popconfirm>
             <Button onClick={() => { setReopenValue(null); setReopenOpen(true); }}>
-              Reopen round
+              {t('instructor.rc_reopen')}
             </Button>
           </>
         )}
@@ -262,20 +271,20 @@ export default function RoundControlCard({ gameId, onChanged }) {
                 game: data.game_name || t('instructor.game'),
                 round: round.round_number + 1,
               })}
-            description="Students will start the next round."
+            description={t('instructor.rc_advance_hint')}
             onConfirm={() => run('advance', () => advanceToNextRound(gameId))}
           >
             <Button type="primary" loading={busy === 'advance'}>
               {data.current_round >= data.total_rounds
-                ? 'Finish game'
-                : `Advance to round ${round.round_number + 1}`}
+                ? t('instructor.rc_finish_game')
+                : t('instructor.rc_advance_to', { round: round.round_number + 1 })}
             </Button>
           </Popconfirm>
         )}
 
         {round.status === 'open' && (
           <Button loading={busy === 'force'} onClick={() => setForceOpen(true)}>
-            Close &amp; process now
+            {t('instructor.rc_close_and_process')}
           </Button>
         )}
       </Space>
@@ -286,7 +295,7 @@ export default function RoundControlCard({ gameId, onChanged }) {
         })}
         open={forceOpen}
         onCancel={() => setForceOpen(false)}
-        okText="Close and process"
+        okText={t('instructor.rc_close_and_process_ok')}
         okButtonProps={{ danger: true, disabled: forceReason.trim().length < 10 }}
         onOk={async () => {
           await run('force',
@@ -296,15 +305,13 @@ export default function RoundControlCard({ gameId, onChanged }) {
         }}
       >
         <Paragraph type="secondary">
-          This closes the round early and resolves it immediately, skipping the
-          review pause. Teams still editing lose whatever they had not saved.
-          The reason below is written to the operator audit record.
+          {t('instructor.rc_force_hint')}
         </Paragraph>
         <Input.TextArea
           rows={3}
           value={forceReason}
           onChange={(e) => setForceReason(e.target.value)}
-          placeholder="Why is closing early correct here? (at least 10 characters)"
+          placeholder={t('instructor.rc_force_reason_placeholder')}
         />
       </Modal>
 
@@ -320,17 +327,17 @@ export default function RoundControlCard({ gameId, onChanged }) {
           }, round));
           setDeadlineOpen(false);
         }}
-        okText="Save deadline"
+        okText={t('instructor.rc_save_deadline')}
       >
         <Paragraph type="secondary">
-          The round closes automatically at this time and students are locked
-          out. Clear it to let the round run until you close it by hand.
+          {t('instructor.rc_deadline_hint')}
         </Paragraph>
         <DatePicker showTime style={{ width: '100%' }}
           value={deadlineValue} onChange={setDeadlineValue} />
         <Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>
-          Times are in your local timezone. Server time is currently{' '}
-          {new Date(data.server_time).toLocaleString()}.
+          {t('instructor.rc_timezone_hint', {
+            time: new Date(data.server_time).toLocaleString(),
+          })}
         </Paragraph>
       </Modal>
 
@@ -343,20 +350,19 @@ export default function RoundControlCard({ gameId, onChanged }) {
         onCancel={() => setReopenOpen(false)}
         onOk={async () => {
           if (!reopenValue) {
-            message.error('Pick a new deadline, or the round will close again straight away.');
+            message.error(t('instructor.rc_reopen_needs_deadline'));
             return;
           }
           await run('reopen', () => reopenRound(gameId, reopenValue.toISOString(), round));
           setReopenOpen(false);
         }}
-        okText="Reopen round"
+        okText={t('instructor.rc_reopen')}
       >
         <Paragraph>
-          This unlocks every team's decisions and lets students edit again.
+          {t('instructor.rc_reopen_hint')}
         </Paragraph>
         <Paragraph type="secondary">
-          Give the round a new deadline in the future — otherwise the old one
-          is still in the past and the round would close again within a minute.
+          {t('instructor.rc_reopen_deadline_hint')}
         </Paragraph>
         <DatePicker showTime style={{ width: '100%' }}
           value={reopenValue} onChange={setReopenValue} />
