@@ -379,3 +379,44 @@ class GovernanceNoticeLanguageTests(StudentRefusalBase):
             with self.subTest(language=language):
                 self.assertEqual(
                     self.notices(language)['anti_corruption']['count'], 2)
+
+
+class PermissionRefusalLanguageTests(StudentRefusalBase):
+    """`core/permissions.py` refused in English: a DRF permission's `message`
+    is the `detail` of the 403, and these were class-level literals."""
+
+    def assert_instructors_only(self, make_request, key):
+        for language in LANGUAGES:
+            with self.subTest(language=language):
+                refused = make_request(language)
+                self.assertEqual(refused.status_code, 403, refused.data)
+                self.assertEqual(
+                    str(refused.data['detail']),
+                    participant_message(key, language=language))
+
+    def test_a_student_on_an_instructor_route(self):
+        self.assert_instructors_only(lambda language: self.call(
+            'post', '/api/fire-events/', {}, language),
+            'instructor_access_required')
+
+    def test_a_student_writing_where_only_an_instructor_may(self):
+        self.assert_instructors_only(lambda language: self.call(
+            'post', '/api/teams/', {'name': 'x'}, language),
+            'instructor_write_required')
+
+    def test_no_permission_class_carries_an_english_message(self):
+        import ast
+        from pathlib import Path
+        source = (Path(__file__).resolve().parents[1]
+                  / 'permissions.py').read_text(encoding='utf-8')
+        literal = []
+        for node in ast.walk(ast.parse(source)):
+            if not isinstance(node, ast.Assign):
+                continue
+            named_message = any(
+                getattr(target, 'id', getattr(target, 'attr', '')) == 'message'
+                for target in node.targets)
+            if named_message and isinstance(
+                    node.value, (ast.Constant, ast.JoinedStr)):
+                literal.append(node.lineno)
+        self.assertEqual(literal, [])

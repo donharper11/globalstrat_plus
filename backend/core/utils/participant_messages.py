@@ -612,6 +612,10 @@ MESSAGES = {
         'en': 'This game or team could not be found. Reload the page and try again.',
         'zh-CN': '未找到该游戏或团队。请刷新页面后重试。',
     },
+    'instructor_write_required': {
+        'en': 'Only an instructor can make this change.',
+        'zh-CN': '只有教师可以进行此更改。',
+    },
     'team_access_denied': {
         'en': 'You do not have access to this team.',
         'zh-CN': '您无权访问该团队。',
