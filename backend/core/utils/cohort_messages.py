@@ -36,7 +36,7 @@ MESSAGES = {
         'en': ('{team} has {current} member(s); this section expects at least '
                '{minimum}. Add members before the game starts.'),
         'zh-CN': ('{team} 目前有 {current} 名成员；本班级要求至少 {minimum} 名。'
-                  '请在比赛开始前补充成员。'),
+                  '请在游戏开始前补充成员。'),
     },
     # V2-104. The other ways one item of a team assignment can be refused. They
     # reach the instructor in the same list as `team_full`, so they are written
@@ -68,14 +68,14 @@ MESSAGES = {
     'game_below_minimum': {
         'en': ('A game needs at least {minimum} teams, and {requested} were '
                'requested. Increase the number of teams.'),
-        'zh-CN': ('一场比赛至少需要 {minimum} 个团队，本次请求为 {requested} 个。'
+        'zh-CN': ('一场游戏至少需要 {minimum} 个团队，本次请求为 {requested} 个。'
                   '请增加团队数量。'),
     },
     'competition_course_unowned': {
         'en': ('{game} is a competition game with no instructor of record, so '
                'it cannot be opened or changed. Assign an instructor to its '
                'course, then try again.'),
-        'zh-CN': ('{game} 是比赛场次，但尚未指定负责教师，因此无法开启或修改。'
+        'zh-CN': ('{game} 是一场竞赛，但尚未指定负责教师，因此无法开启或修改。'
                   '请先为其所属课程指定教师，然后重试。'),
     },
 }

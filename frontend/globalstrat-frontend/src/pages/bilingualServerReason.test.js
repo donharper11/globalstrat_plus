@@ -5,7 +5,7 @@ import {
 } from './bilingualServerReason';
 
 const refusal = (data) => ({ response: { status: 400, data } });
-const UNOWNED_ZH = 'Heat 1 是比赛场次，但尚未指定负责教师，因此无法开启或修改。'
+const UNOWNED_ZH = 'Heat 1 是一场竞赛，但尚未指定负责教师，因此无法开启或修改。'
   + '请先为其所属课程指定教师，然后重试。';
 
 describe('bilingualServerReason', () => {

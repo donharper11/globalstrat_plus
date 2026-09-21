@@ -242,15 +242,15 @@ MESSAGES = {
     },
     'team_withdrawn': {
         'en': 'This team has been withdrawn from the competition and cannot submit decisions.',
-        'zh-CN': '该团队已退出比赛，无法提交决策。',
+        'zh-CN': '该团队已退出游戏，无法提交决策。',
     },
     'game_paused': {
         'en': 'Your instructor has paused the game. Changes cannot be made right now.',
-        'zh-CN': '教师已暂停比赛。当前无法进行修改。',
+        'zh-CN': '教师已暂停游戏。当前无法进行修改。',
     },
     'game_finished': {
         'en': 'This game has finished and no longer accepts decision changes.',
-        'zh-CN': '该比赛已结束，不能再修改决策。',
+        'zh-CN': '该游戏已结束，不能再修改决策。',
     },
     'round_not_open': {
         'en': 'This round is not open for decision submissions.',
@@ -294,7 +294,7 @@ MESSAGES = {
     },
     'platform_wrong_scenario': {
         'en': 'The selected platform is not available in this game. Choose an available platform.',
-        'zh-CN': '所选平台不适用于本场比赛。请选择可用平台。',
+        'zh-CN': '所选平台不适用于本游戏。请选择可用平台。',
     },
     'platform_not_unlocked': {
         'en': '{platform} becomes available in round {round}. Choose an available platform or wait until then.',
