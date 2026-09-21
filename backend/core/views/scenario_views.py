@@ -23,37 +23,12 @@ from core.models.scenario import (
 )
 from core.models.core import Game, Team, Round
 
-# Default company names used when no scenario-specific names are configured.
-DEFAULT_COMPANY_NAMES = [
-    'Nexus Dynamics', 'Aether Industries', 'Solaris Corp',
-    'Zenith Innovations', 'Orion Collective', 'Helios Ventures',
-    'Vantage Systems', 'Prism Technologies', 'Astra Enterprises',
-    'Vertex Global', 'Nova Synthetica', 'Quantum Forge',
-    'Eclipse Digital', 'Cipher Networks', 'Parallax Labs',
-    'Meridian Works', 'Stratos Group', 'Axiom Devices',
-    'Pulse Robotics', 'Titan Microtech', 'Lumen Industries',
-    'Catalyst Corp', 'Helix Foundry', 'Aegis Solutions',
-    'Photon Systems', 'Nebula Dynamics', 'Tesseract Inc',
-    'Arc Innovations', 'Cobalt Ventures', 'Apex Synergies',
-]
-
-
-def _get_company_names(scenario):
-    """Return a shuffled list of company names for team creation."""
-    cfg = ScenarioConfig.objects.filter(
-        scenario=scenario, config_key='company_names',
-    ).first()
-    if cfg:
-        try:
-            names = json.loads(cfg.config_value)
-            if isinstance(names, list) and names:
-                random.shuffle(names)
-                return names
-        except (json.JSONDecodeError, TypeError):
-            pass
-    names = list(DEFAULT_COMPANY_NAMES)
-    random.shuffle(names)
-    return names
+# The team-building loop, the company names and the starter-state rules live
+# in ONE place (V2-112). The old names stay importable from here.
+from core.services.game_creation import (  # noqa: E402,F401
+    DEFAULT_COMPANY_NAMES, GameCreationError, create_game,
+    get_company_names as _get_company_names, resolve_home_markets,
+)
 from core.utils.localization import get_localized_field, get_user_language
 from core.models.team_state import (
     TeamPlatform, TeamPlatformFeatureLevel,
@@ -254,242 +229,46 @@ class GameCreateView(APIView):
             )
 
         # ── Resolve created_by ───────────────────────────────────────
-        if (
-            hasattr(request, 'user')
-            and request.user.is_authenticated
-            and hasattr(request.user, 'pk')
-        ):
-            created_by = request.user
-        else:
-            created_by = AuthUser.objects.filter(is_superuser=True).first()
+        # `Game.created_by` is a foreign key to Django's auth user, and the
+        # only authentication class hands this view a `JWTUser` wrapping the
+        # platform's own `core.User`. Assigning that raised ValueError, so this
+        # route answered 500 to every instructor it exists for and the
+        # superuser fallback below was unreachable. Only a real auth user is
+        # assigned; otherwise the game is recorded against the first superuser,
+        # exactly as `initialize_game` records it.
+        created_by = request.user if isinstance(request.user, AuthUser) else None
+        if created_by is None:
+            created_by = AuthUser.objects.filter(
+                is_superuser=True).order_by('id').first()
             if not created_by:
                 return Response(
                     {'error': 'No authenticated user and no superuser found.'},
                     status=status.HTTP_403_FORBIDDEN,
                 )
 
-        # ── Pre-flight checks ────────────────────────────────────────
-        profiles = list(FirmStarterProfile.objects.filter(scenario=scenario))
-        if not profiles:
+        # ── Build the game: the one builder every path calls (V2-112) ──
+        try:
+            home_market_overrides = resolve_home_markets(
+                scenario, home_markets_arg)
+            game, created_teams = create_game(
+                scenario, num_teams, name=game_name, created_by=created_by,
+                home_market_overrides=home_market_overrides,
+                section_id=section_id)
+        except GameCreationError as exc:
             return Response(
-                {'error': f"No starter profiles found for scenario '{scenario.name}'."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                {'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-        starting_gen = PlatformGenerationDefinition.objects.filter(
-            scenario=scenario, is_starting_platform=True,
-        ).first()
-        if not starting_gen:
-            return Response(
-                {'error': f"No starting platform generation found for scenario '{scenario.name}'."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        default_entry_mode = EntryModeDefinition.objects.filter(
-            scenario=scenario,
-        ).order_by('capital_requirement').first()
-
-        strategy_features = FeatureDefinition.objects.filter(
-            scenario=scenario, layer='strategy',
-        )
-
-        # Resolve home market overrides
-        home_market_overrides = []
-        if home_markets_arg:
-            for code in home_markets_arg:
-                mkt = MarketDefinition.objects.filter(
-                    scenario=scenario, code__iexact=code.strip(),
-                ).first()
-                if not mkt:
-                    return Response(
-                        {'error': f"Market code '{code}' not found in scenario '{scenario.name}'."},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-                home_market_overrides.append(mkt)
-
-        # ── Create game inside a transaction ─────────────────────────
-        with transaction.atomic():
-            game = Game.objects.create(
-                scenario=scenario,
-                name=game_name,
-                current_round=0,
-                status='setup',
-                created_by=created_by,
-                section_id=section_id,
-            )
-
-            teams_response = []
-            company_names = _get_company_names(scenario)
-
-            for i in range(num_teams):
-                profile = profiles[i % len(profiles)]
-                starting_cash = profile.starting_cash if profile.starting_cash else scenario.starting_cash
-                starting_debt = profile.starting_debt
-                total_equity = starting_cash - starting_debt
-
-                # Determine home market
-                if home_market_overrides:
-                    assigned_home_market = home_market_overrides[i % len(home_market_overrides)]
-                else:
-                    assigned_home_market = profile.home_market
-
-                team_name = company_names[i] if i < len(company_names) else f"Team {i + 1}"
-                team = Team.objects.create(
-                    game=game,
-                    name=team_name,
-                    firm_starter_profile=profile,
-                    home_market=assigned_home_market,
-                    performance_index=scenario.performance_index_base,
-                    cash_on_hand=starting_cash,
-                    total_debt=starting_debt,
-                    total_equity=total_equity,
-                )
-
-                # Create TeamPlatforms — one per platform_label in starter config
-                starter_configs = FirmStarterPlatformConfig.objects.filter(
-                    firm_starter_profile=profile,
-                )
-                platform_labels = sorted(
-                    starter_configs.values_list('platform_label', flat=True).distinct()
-                )
-                if not platform_labels:
-                    platform_labels = ['alpha']
-
-                all_platform_features = FeatureDefinition.objects.filter(
-                    scenario=scenario, layer='platform',
-                )
-                label_names = {'alpha': 'A', 'beta': 'B', 'gamma': 'C'}
-                platform_map = {}  # label -> TeamPlatform
-
-                for label in platform_labels:
-                    team_platform = TeamPlatform.objects.create(
-                        team=team,
-                        platform_generation=starting_gen,
-                        name=f"{team.name} Platform {label_names.get(label, label.title())}",
-                        status='active',
-                        activated_round=0,
-                    )
-                    platform_map[label] = team_platform
-
-                    # Create feature levels from starter config for this label
-                    label_configs = starter_configs.filter(platform_label=label)
-                    initialized_ids = set()
-                    for config in label_configs:
-                        TeamPlatformFeatureLevel.objects.create(
-                            team_platform=team_platform,
-                            feature=config.feature,
-                            current_level=config.starting_level,
-                        )
-                        initialized_ids.add(config.feature_id)
-
-                    # Initialize remaining platform features at level 0
-                    for feat in all_platform_features:
-                        if feat.id not in initialized_ids:
-                            TeamPlatformFeatureLevel.objects.create(
-                                team_platform=team_platform,
-                                feature=feat,
-                                current_level=0,
-                            )
-
-                # Create TeamProduct + TeamProductMarket from starter products
-                starter_products = FirmStarterProduct.objects.filter(
-                    firm_starter_profile=profile,
-                )
-                for sp in starter_products:
-                    target_platform = platform_map.get(
-                        sp.platform_label, list(platform_map.values())[0]
-                    )
-                    tp = TeamProduct.objects.create(
-                        team=team,
-                        team_platform=target_platform,
-                        name=sp.product_name,
-                        positioning=sp.positioning_label.lower().replace('-', '_').replace(' ', '_'),
-                        created_round=0,
-                    )
-                    product_market = assigned_home_market if assigned_home_market else sp.market
-                    TeamProductMarket.objects.create(
-                        team_product=tp,
-                        market=product_market,
-                        first_offered_round=0,
-                    )
-
-                # Create TeamMarketPresence for home market
-                if default_entry_mode:
-                    TeamMarketPresence.objects.create(
-                        team=team,
-                        market=assigned_home_market,
-                        entry_mode=default_entry_mode,
-                        established_round=0,
-                        initial_investment=0,
-                        status='active',
-                    )
-
-                # Initialize TeamMarketCompliance for home market
-                TeamMarketCompliance.objects.create(
-                    game=game,
-                    team=team,
-                    market=assigned_home_market,
-                    cumulative_investment=0,
-                    compliance_level=0,
-                    current_trust_multiplier=1.0,
-                    effective_rd_multiplier=1.0,
-                    effective_commercial_multiplier=1.0,
-                    effective_operations_multiplier=1.0,
-                    rounds_present=1,
-                )
-
-                # Initialize strategy-layer features at defaults
-                for feat in strategy_features:
-                    TeamStrategyFeatureLevel.objects.create(
-                        team=team,
-                        feature=feat,
-                        market=None,
-                        current_level=feat.default_value,
-                        round_number=0,
-                    )
-
-                # CC-32B: Initialize org structure (default: Centralized)
-                default_org = OrganizationalStructureType.objects.filter(
-                    scenario=scenario, code='centralized',
-                ).first()
-                if default_org:
-                    TeamOrganizationalStructure.objects.create(
-                        game=game, team=team,
-                        current_structure=default_org,
-                        adopted_round=0,
-                    )
-
-                teams_response.append({
-                    'team_id': team.id,
-                    'team_name': team.name,
-                    'profile_name': get_localized_field(profile, 'profile_name', language),
-                    'home_market': get_localized_field(assigned_home_market, 'name', language) if assigned_home_market else None,
-                })
-
-            # Create rounds
-            Round.objects.create(game=game, round_number=0, status='processed')
-            for r in range(1, scenario.num_rounds + 1):
-                Round.objects.create(game=game, round_number=r, status='pending')
-
-            # Bootstrap Round 0 results
-            from core.engine.bootstrap import bootstrap_round_zero
-            bootstrap_round_zero(game)
-
-            # Create SimulationInstance to bridge Section → Game for student auth
-            if section_id:
-                from core.models.course import SimulationInstance
-                SimulationInstance.objects.update_or_create(
-                    section_id=section_id,
-                    defaults={
-                        'game_id': game.id,
-                        'current_round': 0,
-                        'total_rounds': scenario.num_rounds,
-                        'status': 'setup',
-                    },
-                )
-
-            # Game stays in 'setup' — instructor activates explicitly
-            # after assigning students and setting round schedule
+        # Game stays in 'setup' — instructor activates explicitly
+        # after assigning students and setting round schedule
+        teams_response = [{
+            'team_id': row['team'].id,
+            'team_name': row['team'].name,
+            'profile_name': get_localized_field(
+                row['profile'], 'profile_name', language),
+            'home_market': (get_localized_field(
+                row['home_market'], 'name', language)
+                if row['home_market'] else None),
+        } for row in created_teams]
 
         return Response({
             'game_id': game.id,
