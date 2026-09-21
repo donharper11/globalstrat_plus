@@ -14,7 +14,24 @@ export const BILINGUAL_REFUSAL_CODES = Object.freeze([
   'competition_course_unowned', // lifecycle boundary, every game-scoped write
   'team_count_refused',         // game creation, R12 team-count cap
   'section_full',               // roster add, section capacity
+  'cohort_belongs_to_another_instructor', // roster, teams, courses, sections
+  'roster_add_failed',          // roster add, server fault (text is logged)
+  'competition_game_not_deletable', // game delete
+  'game_has_record',            // game delete
 ]);
+
+/**
+ * The refusal with the server's "do this instead", when both are in the
+ * instructor's language. Lifecycle guidance is English-only on most routes,
+ * so it is shown only beside a refusal from the list above.
+ */
+export const bilingualServerReasonWithGuidance = (err) => {
+  const reason = bilingualServerReason(err);
+  if (!reason) return null;
+  const guidance = err?.response?.data?.guidance;
+  return typeof guidance === 'string' && guidance.length > 0
+    ? `${reason} ${guidance}` : reason;
+};
 
 export const bilingualServerReason = (err) => {
   const data = err?.response?.data;
