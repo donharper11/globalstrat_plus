@@ -78,6 +78,33 @@ def price_for(scenario, report_type):
         return DEFAULT_RESEARCH_PRICE
 
 
+DEFAULT_ANALYST_QUERIES_PER_ROUND = 5
+
+
+def max_analyst_queries(scenario):
+    """How many analyst questions a team may ask in one round."""
+    from core.engine.utils import get_config
+
+    return get_config(scenario, 'max_research_queries_per_round',
+                      DEFAULT_ANALYST_QUERIES_PER_ROUND, int)
+
+
+def analyst_offer(scenario, queries_used):
+    """What one analyst question costs, published before it is asked (V2-094).
+
+    The analyst query was the one purchasable item no payload priced: a report
+    names its price on its own paywall, and the analyst tab never fetches a
+    report. The price here is `price_for()` and the quota is the one the charge
+    enforces, so what a team is shown is what it is charged and refused by.
+    """
+    maximum = max_analyst_queries(scenario)
+    return {
+        'price': str(price_for(scenario, ANALYST_QUERY)),
+        'max_queries_per_round': maximum,
+        'queries_remaining': max(0, maximum - int(queries_used)),
+    }
+
+
 def scope_key_for(report_type, market_code=None):
     """The discriminator that makes "bought once this round" a database rule."""
     if report_type in MARKET_SCOPED and market_code:

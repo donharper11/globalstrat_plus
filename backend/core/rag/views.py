@@ -245,9 +245,8 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
 
         # Check query limit per round
         from core.models.rag import ResearchQueryLog
-        max_queries = get_config(
-            game.scenario, 'max_research_queries_per_round', 5, int,
-        )
+        from core.services.research_catalogue import max_analyst_queries
+        max_queries = max_analyst_queries(game.scenario)
         existing_queries = ResearchQueryLog.objects.filter(
             team=team,
             round_number=game.current_round,

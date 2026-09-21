@@ -13,8 +13,6 @@ import { PageHeader, PanelCard } from '../components/design-system';
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
 
-const MAX_QUERIES = 5;
-
 // --------------- helpers ---------------
 
 const fitColor = (label) => {
@@ -876,9 +874,17 @@ const ChannelsTab = ({ gameId, teamId, round }) => {
 
 // --------------- Tab 5: Ask the Analyst ---------------
 
-const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
+// V2-094. A question is charged per question, so the tab names the price
+// before it takes one. The figure and the quota both come from the server
+// (`analyst_query` on the queries payload, the same calculator the charge
+// reads); nothing here is a constant. If the server did not say what a
+// question costs, the tab does not sell one: an unpriced Ask button is the
+// defect, and a failed fetch must not bring it back.
+export const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
   const { t } = useTranslation();
+  const { refreshBudgets } = useGame();
   const [queries, setQueries] = useState([]);
+  const [offer, setOffer] = useState(null);
   const [queryText, setQueryText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -890,8 +896,9 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
         `/games/${gameId}/teams/${teamId}/research/queries/`
       );
       setQueries(res.data?.queries || []);
+      setOffer(res.data?.analyst_query || null);
     } catch {
-      /* ignore */
+      setOffer(null);
     } finally {
       setLoading(false);
     }
@@ -899,10 +906,14 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
 
   useEffect(() => { fetchQueries(); }, [fetchQueries]);
 
+  const priceKnown = offer != null && offer.price != null
+    && Number.isFinite(Number(offer.price));
+  const maxQueries = priceKnown ? Number(offer.max_queries_per_round) : 0;
+
   const handleSubmit = async () => {
-    if (!queryText.trim()) return;
-    if (queries.length >= MAX_QUERIES) {
-      message.warning(t('market_research.query_limit_reached', { max: MAX_QUERIES }));
+    if (!queryText.trim() || !priceKnown) return;
+    if (queries.length >= maxQueries) {
+      message.warning(t('market_research.query_limit_reached', { max: maxQueries }));
       return;
     }
     setSubmitting(true);
@@ -921,6 +932,9 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
       ]);
       setQueryText('');
       message.success(t('market_research.query_submitted'));
+      // The question has been charged: the top bar and Finance read committed
+      // spend from the finance context, as they do after a report is bought.
+      if (refreshBudgets) refreshBudgets();
     } catch (err) {
       const msg =
         err.response?.data?.error ||
@@ -934,14 +948,31 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
 
   if (loading) return <LoadingSpinner tip={t("market_research.loading_queries")} />;
 
-  const remaining = Math.max(0, MAX_QUERIES - queries.length);
+  const remaining = Math.max(0, maxQueries - queries.length);
 
   return (
     <div>
       <PanelCard headerColor="strategic" title={t("market_research.ai_analyst").toUpperCase()}>
-        <Paragraph type="secondary">
-          {t("market_research.ai_analyst_desc", { max: MAX_QUERIES })}
-        </Paragraph>
+        {priceKnown ? (
+          <>
+            <Paragraph type="secondary">
+              {t("market_research.ai_analyst_desc", { max: maxQueries })}
+            </Paragraph>
+            <Alert
+              type="info"
+              showIcon
+              style={{ marginBottom: 12 }}
+              message={t('market_research.price_per_query', { price: money(offer.price) })}
+            />
+          </>
+        ) : (
+          <Alert
+            type="warning"
+            showIcon
+            style={{ marginBottom: 12 }}
+            message={t('market_research.price_unavailable')}
+          />
+        )}
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           <TextArea
             value={queryText}
@@ -961,13 +992,15 @@ const AskAnalystTab = ({ gameId, teamId, currentRound }) => {
             type="primary"
             onClick={handleSubmit}
             loading={submitting}
-            disabled={!queryText.trim() || remaining <= 0}
+            disabled={!priceKnown || !queryText.trim() || remaining <= 0}
           >
-            {t("market_research.ask")}
+            {priceKnown
+              ? `${t("market_research.ask")} — ${money(offer.price)}`
+              : t("market_research.ask")}
           </Button>
         </div>
         <Text type="secondary">
-          {t("market_research.queries_this_round")}: {queries.length} / {MAX_QUERIES}
+          {t("market_research.queries_this_round")}: {queries.length} / {priceKnown ? maxQueries : '--'}
           {remaining > 0 ? ` (${remaining} ${t("market_research.remaining")})` : ''}
         </Text>
       </PanelCard>

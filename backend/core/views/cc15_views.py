@@ -150,10 +150,20 @@ class ResearchQueriesListView(APIView):
             'queried_at': q.queried_at.isoformat(),
         } for q in queries]
 
+        # V2-094. The analyst tab loads this payload and nothing else, so this
+        # is where the price of a question has to be named for a team to see it
+        # before asking. The quota counts the *current* round's questions, the
+        # same count the charge refuses on, whichever round is being viewed.
+        from core.services import research_catalogue
+        used_this_round = ResearchQueryLog.objects.filter(
+            team=team, round_number=game.current_round).count()
+
         return Response({
             'round_number': int(round_number),
             'queries': data,
             'query_count': len(data),
+            'analyst_query': research_catalogue.analyst_offer(
+                game.scenario, used_this_round),
         })
 
 

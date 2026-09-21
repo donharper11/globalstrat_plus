@@ -238,6 +238,84 @@ class AuthoredPriceTests(PaidResearchBase):
             research_catalogue.purchase_total(self.submission()), PRICE)
 
 
+class AnalystQueryPriceTests(PaidResearchBase):
+    """V2-094: the analyst query is the one purchase whose price no payload named.
+
+    The reports endpoint names a price per *report type*, and the analyst tab
+    never fetches a report, so a team was charged per question without having
+    been shown the figure. The tab already loads `research/queries/`; the
+    price is published there, from `price_for()` -- the same calculator the
+    charge reads -- so the figure shown and the figure charged cannot differ.
+    """
+    ANALYST_PRICE = D('12345')
+
+    def setUp(self):
+        super().setUp()
+        ScenarioConfig.objects.filter(
+            scenario=self.scenario,
+            config_key='research_analyst_query_price',
+        ).update(config_value=str(self.ANALYST_PRICE))
+        ScenarioConfig.objects.create(
+            scenario=self.scenario, config_key='rag_enabled',
+            config_value='true', description='rag')
+        ScenarioConfig.objects.create(
+            scenario=self.scenario,
+            config_key='max_research_queries_per_round',
+            config_value='3', description='quota')
+        _config_cache.clear()
+
+    def queries_url(self):
+        return (f'/api/games/{self.game.id}/teams/{self.team.id}'
+                f'/research/queries/')
+
+    def ask_url(self):
+        return (f'/api/games/{self.game.id}/teams/{self.team.id}'
+                f'/research/query/')
+
+    def test_the_analyst_price_is_published_before_any_question_is_asked(self):
+        response = self.client.get(self.queries_url())
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['queries'], [])
+        offer = response.data['analyst_query']
+        self.assertEqual(offer['price'], str(self.ANALYST_PRICE))
+        self.assertNotEqual(
+            self.ANALYST_PRICE, research_catalogue.DEFAULT_RESEARCH_PRICE,
+            'the test would prove nothing if it used the fallback figure')
+        # Reading the price is not a purchase.
+        self.assertFalse(DecisionResearchPurchase.objects.exists())
+
+    def test_the_quota_published_is_the_quota_enforced(self):
+        """The page multiplied a hardcoded 5 by nothing; the rule is authored."""
+        offer = self.client.get(self.queries_url()).data['analyst_query']
+
+        self.assertEqual(offer['max_queries_per_round'], 3)
+        self.assertEqual(offer['queries_remaining'], 3)
+
+    def test_the_price_shown_is_the_price_charged(self):
+        from unittest import mock
+
+        shown = self.client.get(self.queries_url()).data['analyst_query']['price']
+        with mock.patch('core.rag.embeddings.get_embedding',
+                        return_value=[0.0]), \
+                mock.patch('core.rag.embeddings.translate_query_if_needed',
+                           side_effect=lambda text, language: text), \
+                mock.patch('core.rag.client.search_articles',
+                           return_value=[]):
+            asked = self.client.post(
+                self.ask_url(), {'query': 'How large is the home market?'},
+                format='json')
+
+        self.assertEqual(asked.status_code, 200, asked.data)
+        charged = DecisionResearchPurchase.objects.get(
+            submission=self.submission(),
+            report_type=research_catalogue.ANALYST_QUERY)
+        self.assertEqual(str(charged.price.normalize()),
+                         str(D(shown).normalize()))
+        after = self.client.get(self.queries_url()).data['analyst_query']
+        self.assertEqual(after['queries_remaining'], 2)
+
+
 class AuditTests(PaidResearchBase):
     def test_a_purchase_is_audited(self):
         self.client.post(self.buy_url('products'), {}, format='json')
