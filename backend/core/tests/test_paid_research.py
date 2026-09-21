@@ -238,15 +238,8 @@ class AuthoredPriceTests(PaidResearchBase):
             research_catalogue.purchase_total(self.submission()), PRICE)
 
 
-class AnalystQueryPriceTests(PaidResearchBase):
-    """V2-094: the analyst query is the one purchase whose price no payload named.
-
-    The reports endpoint names a price per *report type*, and the analyst tab
-    never fetches a report, so a team was charged per question without having
-    been shown the figure. The tab already loads `research/queries/`; the
-    price is published there, from `price_for()` -- the same calculator the
-    charge reads -- so the figure shown and the figure charged cannot differ.
-    """
+class AnalystQueryBase(PaidResearchBase):
+    """A scenario with the analyst switched on, a price and a quota of 3."""
     ANALYST_PRICE = D('12345')
 
     def setUp(self):
@@ -271,6 +264,17 @@ class AnalystQueryPriceTests(PaidResearchBase):
     def ask_url(self):
         return (f'/api/games/{self.game.id}/teams/{self.team.id}'
                 f'/research/query/')
+
+
+class AnalystQueryPriceTests(AnalystQueryBase):
+    """V2-094: the analyst query is the one purchase whose price no payload named.
+
+    The reports endpoint names a price per *report type*, and the analyst tab
+    never fetches a report, so a team was charged per question without having
+    been shown the figure. The tab already loads `research/queries/`; the
+    price is published there, from `price_for()` -- the same calculator the
+    charge reads -- so the figure shown and the figure charged cannot differ.
+    """
 
     def test_the_analyst_price_is_published_before_any_question_is_asked(self):
         response = self.client.get(self.queries_url())
@@ -314,6 +318,85 @@ class AnalystQueryPriceTests(PaidResearchBase):
                          str(D(shown).normalize()))
         after = self.client.get(self.queries_url()).data['analyst_query']
         self.assertEqual(after['queries_remaining'], 2)
+
+
+class AnalystRefusalTests(AnalystQueryBase):
+    """The two refusals a student can meet after pressing Ask.
+
+    Both were English-only, and the 503 interpolated `str(exception)` into the
+    sentence a student reads -- a host name, a connection string, whatever the
+    embedding or vector client happened to raise. The wording now comes from
+    `participant_messages` in the request's language, the exception goes to the
+    server log, and neither refusal leaves a charge behind.
+    """
+    SECRET = 'qdrant http://10.9.8.7:6333 refused api_key=sk-not-for-students'
+
+    def ask(self, language=None):
+        headers = {'HTTP_ACCEPT_LANGUAGE': language} if language else {}
+        return self.client.post(
+            self.ask_url(), {'query': 'How large is the home market?'},
+            format='json', **headers)
+
+    def use_up_the_quota(self):
+        from core.models.rag import ResearchQueryLog
+        for index in range(3):
+            ResearchQueryLog.objects.create(
+                team=self.team, round_number=self.game.current_round,
+                query_text=f'q{index}', response_text='a')
+
+    def test_the_quota_refusal_is_in_the_students_language(self):
+        from core.utils.participant_messages import participant_message
+        self.use_up_the_quota()
+
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                refused = self.ask(language)
+                self.assertEqual(refused.status_code, 429, refused.data)
+                self.assertEqual(refused.data['error'], participant_message(
+                    'analyst_query_limit_reached', language=language,
+                    maximum=3))
+                self.assertIn('3', refused.data['error'])
+        self.assertTrue(any('\u4e00' <= ch <= '\u9fff'
+                            for ch in self.ask('zh-CN').data['error']))
+        # A refusal at the quota is not a purchase.
+        self.assertFalse(DecisionResearchPurchase.objects.exists())
+
+    def _ask_while_the_research_system_is_down(self, language):
+        from unittest import mock
+        with mock.patch('core.rag.embeddings.translate_query_if_needed',
+                        side_effect=lambda text, language: text), \
+                mock.patch('core.rag.embeddings.get_embedding',
+                           side_effect=RuntimeError(self.SECRET)):
+            return self.ask(language)
+
+    def test_an_outage_tells_the_student_nothing_about_the_server(self):
+        from core.utils.participant_messages import participant_message
+
+        for language in ('zh-CN', 'en'):
+            with self.subTest(language=language):
+                with self.assertLogs('core.rag.views', level='ERROR') as logs:
+                    refused = self._ask_while_the_research_system_is_down(
+                        language)
+                self.assertEqual(refused.status_code, 503, refused.data)
+                self.assertEqual(refused.data['error'], participant_message(
+                    'analyst_unavailable', language=language))
+                for fragment in ('qdrant', '10.9.8.7', 'sk-not-for-students',
+                                 'RuntimeError'):
+                    self.assertNotIn(fragment, str(refused.data))
+                # The operator still gets the reason; the student does not.
+                self.assertIn(self.SECRET, '\n'.join(logs.output))
+
+    def test_an_unanswered_question_is_not_charged(self):
+        """Contract pin: this already held at head and had no test."""
+        from core.models.rag import ResearchQueryLog
+        refused = self._ask_while_the_research_system_is_down('en')
+
+        self.assertEqual(refused.status_code, 503, refused.data)
+        self.assertFalse(DecisionResearchPurchase.objects.filter(
+            report_type=research_catalogue.ANALYST_QUERY).exists())
+        self.assertFalse(ResearchQueryLog.objects.exists())
+        offer = self.client.get(self.queries_url()).data['analyst_query']
+        self.assertEqual(offer['queries_remaining'], 3)
 
 
 class AuditTests(PaidResearchBase):
