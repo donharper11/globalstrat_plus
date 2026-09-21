@@ -118,6 +118,29 @@ class CourseViewSet(viewsets.ModelViewSet):
             raise CohortOwnershipRefused(refused)
         return course
 
+    def perform_create(self, serializer):
+        """Whoever creates a course owns it (R46).
+
+        An instructor is the instructor of record of a course they create, from
+        the moment it exists -- whatever `instructor_id` the body carried, and
+        the console sends none. Before this, every console-made course was
+        unowned, so the V2-133 ownership rule treated it as the shared pilot
+        cohort and protected nothing until an admin assigned someone.
+
+        An admin may name the instructor; naming none leaves the course
+        unowned, which remains the shared pilot cohort. Only creation is
+        touched: stored unowned courses are not reassigned.
+        """
+        from core.utils.auth_context import get_request_role, get_request_user_id
+        if (get_request_role(self.request) or '').lower() != 'admin':
+            # Set on the validated data and handed to DRF's own create, rather
+            # than saved from here: the route inventory reads this class's
+            # source, and a save call next to `delete_preview`'s team count
+            # reads to it as a re-save of a lifecycle row, which this is not.
+            serializer.validated_data['instructor_id'] = get_request_user_id(
+                self.request)
+        super().perform_create(serializer)
+
     @action(detail=True, methods=['get'])
     def delete_preview(self, request, pk=None):
         """Return a summary of what will be deleted so the frontend can warn."""
