@@ -1790,50 +1790,6 @@
       "uses_boundary": false,
       "view": "core.views.messaging.TeamNotificationViewSet"
     },
-    "api/^teams/$|post": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "post"
-      ],
-      "route": "api/^teams/$",
-      "uses_boundary": false,
-      "view": "core.views.core.TeamViewSet"
-    },
-    "api/^teams/(?P<pk>[^/.]+)/$|delete,patch,put": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "delete",
-        "patch",
-        "put"
-      ],
-      "route": "api/^teams/(?P<pk>[^/.]+)/$",
-      "uses_boundary": false,
-      "view": "core.views.core.TeamViewSet"
-    },
-    "api/^teams/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$|delete,patch,put": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "delete",
-        "patch",
-        "put"
-      ],
-      "route": "api/^teams/(?P<pk>[^/.]+)\\.(?P<format>[a-z0-9]+)/?$",
-      "uses_boundary": false,
-      "view": "core.views.core.TeamViewSet"
-    },
-    "api/^teams\\.(?P<format>[a-z0-9]+)/?$|post": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "post"
-      ],
-      "route": "api/^teams\\.(?P<format>[a-z0-9]+)/?$",
-      "uses_boundary": false,
-      "view": "core.views.core.TeamViewSet"
-    },
     "api/^users/$|post": {
       "exempt": true,
       "lifecycle_mutating": true,
@@ -2503,6 +2459,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 219,
+  "total_mutating_routes": 215,
   "unguarded": 0
 }

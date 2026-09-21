@@ -1,6 +1,7 @@
 import csv
 import io
 import hashlib
+import logging
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -10,7 +11,11 @@ from rest_framework.response import Response
 from core.permissions import IsInstructor, IsInstructorOrReadOnly
 from core.services.cohort_caps import (
     section_for_team, section_for_user, team_capacity_error)
-from core.utils.cohort_messages import language_for_request
+from core.services.cohort_scope import (
+    CohortOwnershipRefused, ownership_refusal, ownership_refusal_payload)
+from core.services.lifecycle import request_id_for
+from core.utils.auth_context import get_request_role
+from core.utils.cohort_messages import cohort_message, language_for_request
 from core.views.mixins import InstanceScopedMixin
 from core.models import (
     Team, User, Round, SimulationState,
@@ -23,13 +28,50 @@ from core.serializers import (
 )
 
 
-class TeamViewSet(viewsets.ModelViewSet):
+logger = logging.getLogger(__name__)
+
+STAFF_ONLY_CODE = 'staff_account_admin_only'
+
+
+class TeamViewSet(viewsets.ReadOnlyModelViewSet):
+    """Read-only, deliberately.
+
+    This was a full `ModelViewSet` over `TeamSerializer`, whose fields are
+    `'__all__'`: any instructor account could PATCH any team's cash, equity,
+    performance index or participation status -- a rival cohort's included --
+    with no lock, no reason and no audit row. Nothing in the product wrote
+    through it. Every sanctioned team write has a guarded route of its own
+    (team-management, team-config, instructor/teams/<id>/participation), so
+    the write half is removed rather than scoped: a scoped version would still
+    let an instructor edit their own teams' balance sheets behind the
+    lifecycle boundary's back.
+    """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     permission_classes = [IsInstructorOrReadOnly]
 
 
+def _is_student_role(role):
+    return (role or '').strip().lower() == 'student'
+
+
 class UserViewSet(viewsets.ModelViewSet):
+    """Accounts. An admin administers everyone; an instructor, their students.
+
+    The viewset checked a role and nothing else, and its write serializer
+    writes `role` and `password`. Driven with an instructor token: PATCH your
+    own role to admin; POST a new admin with a password you chose; set another
+    instructor's password; rename and re-password another cohort's student.
+
+    For a caller who is not an admin:
+
+    * the queryset is the students they may administer -- the same
+      `_visible_users_qs` rule the student-accounts screen has always used
+      (their courses, plus the unowned shared pilot cohort), and never an
+      instructor or admin account. Anything else is a 404, as it is there;
+    * `role` may only be Student, on create, update and bulk upload;
+    * a team may only be assigned inside a cohort they may access.
+    """
     # No select_related: `team_id` is an integer column, not a relation.
     queryset = User.objects.all()
     permission_classes = [IsInstructor]
@@ -39,8 +81,49 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserWriteSerializer
         return UserSerializer
 
+    def _caller_is_admin(self):
+        return (get_request_role(self.request) or '').lower() == 'admin'
+
+    def _staff_only_payload(self):
+        return {
+            'error': cohort_message(
+                STAFF_ONLY_CODE, language=language_for_request(self.request)),
+            'code': STAFF_ONLY_CODE,
+            'request_id': request_id_for(self.request),
+        }
+
+    def _refuse_unsafe_write(self, validated_data):
+        """Role and team, the two fields that reach beyond the account."""
+        if self._caller_is_admin():
+            return
+        if 'role' in validated_data and not _is_student_role(
+                validated_data['role']):
+            raise CohortOwnershipRefused(self._staff_only_payload())
+        team_id = validated_data.get('team_id')
+        if team_id is not None:
+            refused = ownership_refusal_payload(
+                self.request, section=section_for_team(team_id))
+            if refused:
+                raise CohortOwnershipRefused(refused)
+
+    def perform_create(self, serializer):
+        self._refuse_unsafe_write(serializer.validated_data)
+        if not self._caller_is_admin():
+            # An omitted role must not fall through to a model default.
+            serializer.save(role='Student')
+            return
+        serializer.save()
+
+    def perform_update(self, serializer):
+        self._refuse_unsafe_write(serializer.validated_data)
+        serializer.save()
+
     def get_queryset(self):
         qs = super().get_queryset()
+        if not self._caller_is_admin():
+            from core.views.instructor_accounts import _visible_users_qs
+            visible = _visible_users_qs(self.request).values('user_id')
+            qs = qs.filter(user_id__in=visible, role__iexact='student')
         role = self.request.query_params.get('role')
         team_id = self.request.query_params.get('team_id')
         if role:
@@ -58,17 +141,34 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'error': 'No CSV data provided.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        reader = csv.DictReader(io.StringIO(csv_text))
+        rows = list(csv.DictReader(io.StringIO(csv_text)))
         created = 0
         errors = []
 
-        for row_num, row in enumerate(reader, start=2):
+        # A row that seats an account on another instructor's team refuses the
+        # whole upload, before any account is created.
+        if not self._caller_is_admin():
+            for row in rows:
+                raw_team = (row.get('team_id') or '').strip()
+                if raw_team.isdigit():
+                    refused = ownership_refusal(
+                        request, section=section_for_team(int(raw_team)))
+                    if refused:
+                        return refused
+
+        for row_num, row in enumerate(rows, start=2):
             username = (row.get('username') or '').strip()
             if not username:
                 errors.append({'row': row_num, 'error': 'Missing username'})
                 continue
 
             role = (row.get('role') or 'Student').strip()
+            if not self._caller_is_admin() and not _is_student_role(role):
+                errors.append({'row': row_num, **{
+                    key: value
+                    for key, value in self._staff_only_payload().items()
+                    if key != 'request_id'}})
+                continue
             team_id = (row.get('team_id') or '').strip() or None
             password = (row.get('password') or '').strip()
 
@@ -99,8 +199,19 @@ class UserViewSet(viewsets.ModelViewSet):
                     password_hash=password_hash,
                 )
                 created += 1
-            except Exception as e:
-                errors.append({'row': row_num, 'error': str(e)})
+            except Exception:
+                request_id = request_id_for(request)
+                logger.exception(
+                    'Account bulk upload failed at row %s (request_id=%s)',
+                    row_num, request_id)
+                errors.append({
+                    'row': row_num,
+                    'error': cohort_message(
+                        'account_row_failed',
+                        language=language_for_request(request),
+                        reference=request_id),
+                    'code': 'account_row_failed',
+                })
 
         return Response({'created': created, 'errors': errors},
                         status=status.HTTP_201_CREATED)
@@ -117,6 +228,12 @@ class UserViewSet(viewsets.ModelViewSet):
             except (Team.DoesNotExist, ValueError, TypeError):
                 return Response({'error': 'Team not found.'},
                                 status=status.HTTP_404_NOT_FOUND)
+            # `get_object` has already settled whose student this is; this
+            # settles whose team.
+            refused = ownership_refusal(
+                request, section=section_for_team(team.pk))
+            if refused:
+                return refused
             # This route writes User.team_id, a second membership record the
             # roster surface does not write. Capping only the other one would
             # leave the cap trivially reachable from here (see cohort_caps).

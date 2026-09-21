@@ -122,6 +122,23 @@ MESSAGES = {
         'zh-CN': ('{game} 已存在教师操作或团队决策记录。'
                   '该记录为永久保存，因此无法删除此场次。'),
     },
+    # The generic account routes. An instructor account could set any
+    # account's role, its own included.
+    'staff_account_admin_only': {
+        'en': ('Only an administrator can create or change an instructor or '
+               'administrator account. You can add and edit student accounts '
+               'in your own courses.'),
+        'zh-CN': ('只有管理员可以创建或修改教师或管理员账号。'
+                  '您可以在自己的课程中添加和编辑学生账号。'),
+    },
+    'account_row_failed': {
+        'en': ('This account could not be created, so the row was skipped. '
+               'Check that the username is not already in use, then upload '
+               'the row again. If it keeps happening, give your administrator '
+               'this reference: {reference}.'),
+        'zh-CN': ('未能创建此账号，已跳过该行。请确认用户名未被占用后重新上传该行。'
+                  '如问题持续出现，请将此参考编号提供给管理员：{reference}。'),
+    },
     'game_deleted': {
         'en': '{game} and all of its data were permanently deleted.',
         'zh-CN': '{game} 及其全部数据已被永久删除。',

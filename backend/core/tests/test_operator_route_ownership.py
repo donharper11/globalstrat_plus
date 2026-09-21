@@ -830,3 +830,35 @@ class AlternateEntryPointTests(OwnershipBase):
         self.assertEqual(response.data['errors'][0].get('code'),
                          'account_row_failed')
         self.assertIn('users_email_key', '\n'.join(logs.output))
+
+
+class InventoryBlindSpotTests(TestCase):
+    """The detector reads source; a bare model viewset has none to read."""
+
+    def test_a_bare_model_viewset_over_a_lifecycle_model_is_flagged(self):
+        from rest_framework import viewsets
+        from core.services.route_inventory import generic_lifecycle_writer
+
+        class WritableTeams(viewsets.ModelViewSet):
+            queryset = Team.objects.all()
+
+        class ReadableTeams(viewsets.ReadOnlyModelViewSet):
+            queryset = Team.objects.all()
+
+        class WritableCourses(viewsets.ModelViewSet):
+            queryset = Course.objects.all()
+
+        self.assertTrue(generic_lifecycle_writer(WritableTeams))
+        self.assertFalse(generic_lifecycle_writer(ReadableTeams))
+        self.assertFalse(generic_lifecycle_writer(WritableCourses))
+
+    def test_no_registered_writable_viewset_sits_on_a_lifecycle_model(self):
+        from core.services.route_inventory import (
+            generic_lifecycle_writer, mutating_routes)
+        from django.utils.module_loading import import_string
+        offenders = sorted({
+            entry['view'] for entry in mutating_routes().values()
+            if generic_lifecycle_writer(import_string(entry['view']))
+            and not entry['uses_boundary'] and not entry['exempt']})
+        self.assertEqual(offenders, [])
+
