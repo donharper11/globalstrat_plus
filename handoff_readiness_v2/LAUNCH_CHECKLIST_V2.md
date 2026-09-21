@@ -59,8 +59,21 @@
       `ef01237` (50 determinism + 31 concurrency + 28 durable-narrative tests).
 - [x] Resolution refuses an unidentified build; replay refuses a source-tree
       mismatch before mutation.
-- [ ] Competition stack sets `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or
-      `ENVIRONMENT=production`) — deployment action, not yet done.
+- [x] Competition stack sets `COMPETITION_REQUIRE_CLEAN_BUILD=true` (or
+      `ENVIRONMENT=production`). **Verified on this host 2026-09-21 from the
+      running process, not from the environment file:** the `globalstrat-backend`
+      main process carries `GLOBALSTRAT_ENV=production` (set in the systemd unit,
+      as it is for `globalstrat-narratives`) and carries **no**
+      `COMPETITION_REQUIRE_CLEAN_BUILD` override, so `settings.py:340-341`
+      defaults the guard to on. Only those key names were read; the credential
+      lines were not. The variable is `GLOBALSTRAT_ENV`, not `ENVIRONMENT` as
+      this line was written. **What this tick does not say:** the guard it turns
+      on tests only a `-dirty` suffix, and the same read showed production
+      advertising `GIT_REVISION=0fd9a39` while the code on disk was `b955c41`
+      and then `79db2bf` — the audit-anchor timer has logged that drift every
+      fifteen minutes since at least 2026-09-19 and nothing alerts on it. The
+      flag is set; release identity is **not** established. That is the
+      re-audit's A-03 and is open (code, deployment and owner parts).
 - [x] Frontend production build PASS (warnings), 2026-08-28.
 - [x] Frontend clean install, Jest and production build pass on the supported
       toolchain; V2-009 closed by GSP-CRV2-05.
