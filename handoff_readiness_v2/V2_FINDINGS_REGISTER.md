@@ -3304,3 +3304,16 @@ Full backend suite at this commit: `Ran 1339 tests`, OK. Jest 142.
 
 Full backend suite on the merged tree: `Ran 1377 tests`, OK.
 
+### Remaining English refusals merged 2026-09-21 (`be54b7d`)
+
+**Full backend suite on the merged tree: `Ran 1430 tests`, OK. Jest 22 suites / 172 tests. Participant-string gate PASS at 5,192 units.** Not the freeze-candidate run.
+
+| Item | State |
+|---|---|
+| V2-136 remainder — English-only refusals outside the console's live-round routes | **Repaired, pending closure.** All 61 listed literals converted (15 instructor-side, 46 student-facing); a wider scanner found 102 sites and 101 are converted, the one exemption (`grading.py:144`) is never shown and is exempted in the guard with its reason. **Fourteen further sentences sat outside any dict literal where no scan could see them**, the main one being `GamePauseGuardMiddleware`, which refused every student write to a paused, completed or archived game in English — and answered *before* CRV2-12's bilingual permission, so that Chinese sentence had never reached a student. Refusal codes 72 → 90; the console allow-list is regenerated from `bilingual_codes()`. No status code, rule or audit content changed; three affected audit rows asserted byte-identical. |
+| Login refusal wiped before it could be read | **Repaired** (`30e7864`, `a81136b`), the one non-wording change on the branch, audited separately: every 401 redirected to `/login`, including the 401 that answers a wrong password, so the refusal was reloaded away and an instructor who mistyped landed on the student form. The redirect now excludes the login request's own 401, and the login request no longer sends a left-over token. |
+| DRF numeric-overflow text reaching a student | **Open; assigned** to `crv2-13-bounded-number-inputs`. 21 of 37 student `InputNumber` fields have no `max`, and `DecisionSaveAlert` prints Django's English default verbatim. |
+| `rounds/<id>/decision-status/` and `rounds/<id>/send-reminder/` answer 500 to every call | **Open against the owner: remove or repair.** `Round` has no `round_id` column; both depend on the v1 `SimulationState` model and neither has a caller anywhere in the frontend. Integrator's recommendation is removal, on the R16 precedent (legacy engine code is deleted, not patched). |
+| Word limit never binds for Chinese | **Open against the owner.** A scored communication's limit is `len(content.split())`, which counts a Chinese paragraph as one word. What a "word" is in Chinese is a rules question. |
+| 224 new zh-CN sentences on this branch | **Unreviewed by a native speaker**, listed in one table in `completion/REMAINING_ENGLISH_REFUSALS_2026-09-21.md`, least-trusted first. |
+
