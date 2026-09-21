@@ -53,6 +53,25 @@ class Command(BaseCommand):
         from core.services.resolution_manifest import resolve_code_revision
         current_revision = resolve_code_revision()
         manifest_revision = (manifest.code_revision or '').strip()
+        # A-03: the comparison below is only as good as `current_revision`, and
+        # a hand-set GIT_REVISION was believed verbatim -- so a drifted
+        # deployment could "match" a manifest it did not produce, or refuse one
+        # it did. Where the clean-build guard is on, verify the running
+        # revision first. The same override applies, because a restore-only
+        # recovery during an incident must stay possible; the status is
+        # written to the durable audit either way.
+        from core.services.build_identity import release_identity
+        strict = getattr(settings, 'COMPETITION_REQUIRE_CLEAN_BUILD',
+                         getattr(settings, 'IS_PRODUCTION', False))
+        identity_report = (release_identity(current_revision) if strict
+                           else {'status': 'not-checked', 'ok': True})
+        if not identity_report['ok'] and not options['allow_code_revision_mismatch']:
+            raise CommandError(
+                f'The running revision cannot be trusted for the RD-03 '
+                f'comparison ({identity_report["status"]}). '
+                f'{identity_report["message"]} Or pass '
+                f'--allow-code-revision-mismatch (use --restore-only) to '
+                f'override.')
         if manifest_revision != current_revision and not options['allow_code_revision_mismatch']:
             raise CommandError(
                 f'Backup code revision {manifest_revision or "(empty)"} does not '
@@ -73,6 +92,7 @@ class Command(BaseCommand):
             'input_sha256': manifest.input_sha256, 'dry_run': options['dry_run'],
             'manifest_code_revision': manifest_revision,
             'running_code_revision': current_revision,
+            'running_release_identity': identity_report['status'],
             'code_revision_override': bool(options['allow_code_revision_mismatch']),
         }
         audit_path = append_recovery_audit(intent)

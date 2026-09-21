@@ -190,11 +190,24 @@ def environment_fingerprint():
     except Exception:
         db_version = None
     from core.services.build_identity import build_identity
+    from core.services.runtime_config import (
+        installed_packages_digest, requirements_digest, runtime_configuration,
+        runtime_configuration_digest)
     identity = build_identity()
+    # A-04: how the code was configured, not only which code it was. An
+    # allow-list of non-secret settings (see runtime_config) -- never a
+    # credential -- and, like everything else here, outside every hash.
+    runtime = runtime_configuration()
+    packages = installed_packages_digest()
     return {
         'code_revision': identity['code_revision'],
         'source_tree_sha256': identity['source_tree_sha256'],
         'source_file_count': identity['source_file_count'],
+        'runtime_config': runtime,
+        'runtime_config_sha256': runtime_configuration_digest(runtime),
+        'requirements_sha256': requirements_digest(),
+        'installed_packages_sha256': packages['sha256'],
+        'installed_packages_count': packages['count'],
         'python': sys.version.split()[0],
         'python_build': ' '.join(platform.python_build()),
         'django': django.get_version(),

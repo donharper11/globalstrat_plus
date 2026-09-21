@@ -57,7 +57,7 @@ DISTRIBUTION_ALIGNMENT = {
 }
 
 
-def calculate_coherence(context, skip_rag=False):
+def calculate_coherence(context, skip_rag=True):
     """
     For each team, score across 5 dimensions:
     1. Positioning-Price Alignment
@@ -65,8 +65,23 @@ def calculate_coherence(context, skip_rag=False):
     3. Entry Mode-Market Risk Alignment
     4. R&D-Market Alignment
     5. Financial Prudence
-    Normalize to 0-100. RAG score is placeholder (None).
+    Normalize to 0-100. The stored score is the formula score and nothing else.
+
+    R31: this function writes `RoundResultCoherence`, which is graded,
+    published and inside the hashed `coherence` manifest section, so it has no
+    route to a language model. `skip_rag` survives only so the existing caller
+    keeps working; it no longer selects anything, and asking for the old
+    behaviour is refused outright rather than quietly ignored -- a caller that
+    believes retrieval is being graded when it is not is its own defect. The
+    model's view of a round is Phase-2 instructor commentary
+    (`update_coherence_with_rag`), which writes no competitive field.
     """
+    if not skip_rag:
+        raise RuntimeError(
+            'R31: calculate_coherence() cannot blend a model score. The stored '
+            'coherence score is graded and hashed, and a language model must '
+            'not reach it. Call it with skip_rag=True (the default); retrieval '
+            'commentary is produced in Phase 2 by update_coherence_with_rag().')
     game = context.game
     current_round = context.round_number
 
@@ -132,15 +147,6 @@ def calculate_coherence(context, skip_rag=False):
         else:
             formula_score = D('50.00')
 
-        # RAG-grounded coherence scoring (CC-11)
-        # CC-32H: skip_rag=True during Phase 1 (formula only), RAG added in Phase 2
-        if skip_rag:
-            rag_score_val, rag_feedback = None, None
-        else:
-            rag_score_val, rag_feedback = _calculate_rag_coherence(
-                context, team, float(formula_score),
-            )
-
         # R31 (2026-09-16): the communication score does NOT reach this number.
         # It was scored by a language model at submit time, and this row is
         # graded (services/grading.py), published, and inside the hashed
@@ -149,32 +155,25 @@ def calculate_coherence(context, skip_rag=False):
         # records that a model cannot reach a graded number. The evaluation
         # survives on TeamCommunication as feedback for the student and the
         # instructor; it is not graded, and it is not in this row.
-        if rag_score_val is not None:
-            blended_val = 0.6 * float(formula_score) + 0.4 * rag_score_val
-            blended_score = D(str(round(blended_val, 2)))
-            rag_score = D(str(rag_score_val))
-            breakdown['rag_evaluation'] = {
-                'score': rag_score_val,
-                'feedback': rag_feedback,
-            }
-        else:
-            rag_score = None
-            blended_score = formula_score
-
+        #
+        # Nor does a model's retrieval score. A second blend lived here until
+        # 2026-09-21 -- six tenths formula, four tenths model -- behind a
+        # `skip_rag=False` that was also the default argument. Production never
+        # took it, but one forgotten argument was all that stood between a
+        # model and a graded number, so the branch is gone rather than guarded.
+        # `rag_score` stays in the row, always empty: the column is part of the
+        # hashed section's shape, and removing it would move the envelope.
         RoundResultCoherence.objects.update_or_create(
             game=game, round_number=current_round, team=team,
             defaults={
                 'formula_score': formula_score,
-                'rag_score': rag_score,
-                'blended_score': blended_score,
+                'rag_score': None,
+                'blended_score': formula_score,
                 'breakdown': breakdown,
             },
         )
 
-        context.log.append(
-            f'Coherence: {team.name} = {blended_score}/100'
-            f'{f" (RAG: {rag_score_val})" if rag_score_val is not None else ""}'
-        )
+        context.log.append(f'Coherence: {team.name} = {formula_score}/100')
 
 
 def update_coherence_with_rag(game, round_number, team, rag_text):

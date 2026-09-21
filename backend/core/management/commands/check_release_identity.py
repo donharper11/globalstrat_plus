@@ -9,26 +9,23 @@ possible moment to find out.
 
 Found drifted on 2026-09-16: production advertised a revision absent from the
 repository entirely (a pre-V2-048-rewrite hash), while running today's code.
+Found drifted again on 2026-09-21, having been reported by this command every
+fifteen minutes for days with nothing acting on it (A-03). Detection was never
+the missing part; enforcement was. The comparison now lives in
+`core.services.build_identity.release_identity` and resolution itself calls
+it, so this command reports exactly what a round would be refused for.
 
-Exit 0 when they agree, 1 when they do not. Run it wherever a stale value would
-matter — the audit-anchor timer runs it every fifteen minutes.
+Exit 0 when they agree, 1 when they do not. Run it after every deploy, and on a
+timer whose failure is *visible*: a unit line prefixed with `-` records the
+failure and alerts nobody.
+
+A fresh `manage.py` process has, by construction, just loaded the code on disk,
+so this cannot see a long-running worker that started before the tree changed.
+Resolution checks that for itself (`build_identity.loaded_source_drift`).
 """
-import pathlib
-import subprocess
-
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-
-def _git(*args):
-    root = pathlib.Path(settings.BASE_DIR).resolve().parent
-    try:
-        result = subprocess.run(
-            ['git', '-C', str(root), *args],
-            capture_output=True, text=True, timeout=5)
-        return result.stdout.strip() if result.returncode == 0 else ''
-    except (OSError, subprocess.SubprocessError):
-        return ''
+from core.services.build_identity import release_identity
 
 
 class Command(BaseCommand):
@@ -39,40 +36,10 @@ class Command(BaseCommand):
                             help='Say nothing when it agrees.')
 
     def handle(self, *args, **options):
-        advertised = str(getattr(settings, 'GIT_REVISION', '') or '').strip()
-        head = _git('rev-parse', 'HEAD')
-        dirty = bool(_git('status', '--porcelain', '--untracked-files=no'))
-
-        if not advertised:
+        report = release_identity()
+        if not report['ok']:
             self.stderr.write(self.style.ERROR(
-                'GIT_REVISION is unset. In production, resolution refuses to '
-                'run without it; everywhere else the revision is guessed from '
-                'the working tree.'))
+                f"[{report['status']}] {report['message']}"))
             raise SystemExit(1)
-
-        if not head:
-            # Not a checkout: an immutable build is the case GIT_REVISION was
-            # designed for, and there is nothing to compare against.
-            if not options['quiet']:
-                self.stdout.write(f'Release {advertised[:12]}: no git checkout '
-                                  'to compare against (immutable build).')
-            return
-
-        if advertised != head:
-            self.stderr.write(self.style.ERROR(
-                f'Release identity has drifted: this process advertises '
-                f'{advertised[:12]}, the code on disk is {head[:12]}. Every '
-                f'round resolved now is stamped with the wrong commit. Update '
-                f'GIT_REVISION in the deployment environment and restart.'))
-            raise SystemExit(1)
-
-        if dirty:
-            self.stderr.write(self.style.ERROR(
-                f'Release {advertised[:12]} matches HEAD, but the working tree '
-                f'has uncommitted changes: the commit hash alone does not '
-                f'describe the running code.'))
-            raise SystemExit(1)
-
         if not options['quiet']:
-            self.stdout.write(self.style.SUCCESS(
-                f'Release identity verified: {advertised[:12]}, clean tree.'))
+            self.stdout.write(self.style.SUCCESS(report['message']))

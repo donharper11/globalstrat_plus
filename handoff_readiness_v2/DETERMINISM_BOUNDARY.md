@@ -84,10 +84,28 @@ migration list.
   source file under `backend/` regardless of git state, so it catches an
   untracked file that `git status --untracked-files=no` calls clean — which is
   exactly what the negative test in the evidence demonstrates.
+
+  *Added 2026-09-21 (A-03, A-04); none of it enters a hash, and the envelope is
+  still version 6.* The digest now also covers `backend/requirements.txt`, so
+  digests recorded before this change are not comparable with digests taken
+  after it even for otherwise identical code (they never were across commits:
+  a digest is evidence for its own commit). It is taken at process start
+  (`CoreConfig.ready`), so it names the code the process loaded rather than the
+  disk at first resolution. With `COMPETITION_REQUIRE_CLEAN_BUILD` on,
+  resolution additionally refuses unless the advertised revision is a full
+  commit hash, equals HEAD with a clean tracked tree when running from a git
+  checkout, and the tree on disk still matches the start-of-process digest —
+  the same logic `manage.py check_release_identity` reports.
 - **The environment fingerprint.** `ResolutionManifest.environment` records
   Python, Django, OS, host timezone, locale, encoding and database version
   precisely so a replay can vary them. Hashing it would make a
-  cross-environment match impossible by construction.
+  cross-environment match impossible by construction. Since 2026-09-21 it also
+  carries `runtime_config` and `runtime_config_sha256` — an explicit allow-list
+  of non-secret effective settings (model routing per purpose, the sanitised
+  gateway endpoint, timezone, the competition flags; never a key, password or
+  secret: `core/services/runtime_config.py`) — plus `requirements_sha256` and
+  `installed_packages_sha256`. The column is outside the audit chain's
+  projection, so these are a record, not tamper-evident proof.
 
 ## Canonical serialisation
 

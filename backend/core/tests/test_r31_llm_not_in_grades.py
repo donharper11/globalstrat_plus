@@ -133,3 +133,82 @@ class GradingSurfaceTests(TestCase):
         import inspect
         source = inspect.getsource(grading._extract_communication_quality)
         self.assertIn("evaluation.get('overall_score')", source)
+
+
+class ModelRetrievalScoreCannotBeBlendedTests(TestCase):
+    """The other blend: `0.6 x formula + 0.4 x model retrieval score`.
+
+    R31's sever removed the communication blend. The retrieval blend survived
+    beside it in `calculate_coherence`, reachable by any caller that passed
+    `skip_rag=False` -- which was also the *default*. Production's one caller
+    passes `skip_rag=True`, so nothing was ever graded this way; the defect was
+    that one argument, or one new caller forgetting it, put a model's number
+    into a hashed, published, graded row (2026-09-16 re-audit, under A-01).
+
+    These run the real function against real rows with the model stubbed to
+    answer, because the question is what gets stored when a model *does*
+    answer.
+    """
+
+    def setUp(self):
+        from core.engine.utils import RoundContext
+        self.game, self.teams = build_game(f'r31-rag-{id(self)}')
+        self.round = Round.objects.create(
+            game=self.game, round_number=1, status='closed',
+            opened_at=timezone.now())
+        for team in self.teams:
+            DecisionSubmission.objects.create(
+                team=team, round=self.round, status='locked',
+                locked_at=timezone.now())
+        self.context = RoundContext(self.game, 1)
+        self.context.teams = list(self.teams)
+
+    def assert_rows_are_formula_only(self):
+        rows = list(RoundResultCoherence.objects.filter(
+            game=self.game, round_number=1))
+        for row in rows:
+            with self.subTest(team=row.team_id):
+                self.assertEqual(row.blended_score, row.formula_score)
+                self.assertIsNone(row.rag_score)
+                self.assertNotIn('rag_evaluation', row.breakdown or {})
+        return rows
+
+    def test_asking_for_the_model_blend_is_refused_and_stores_nothing_graded(self):
+        with patch.object(C, '_calculate_rag_coherence',
+                          return_value=(5.0, 'the model has opinions')) as model:
+            with self.assertRaisesRegex(RuntimeError, 'R31'):
+                C.calculate_coherence(self.context, skip_rag=False)
+        model.assert_not_called()
+        # Refused before any write, so there is no half-scored round.
+        self.assertEqual(self.assert_rows_are_formula_only(), [])
+
+    def test_the_default_call_never_consults_a_model(self):
+        """The default used to be `skip_rag=False`: forgetting the argument was
+        enough to grade a model's output."""
+        with patch.object(C, '_calculate_rag_coherence',
+                          return_value=(5.0, 'the model has opinions')) as model:
+            C.calculate_coherence(self.context)
+        model.assert_not_called()
+        self.assertEqual(len(self.assert_rows_are_formula_only()),
+                         len(self.teams))
+
+    def test_the_graded_function_has_no_route_to_the_model(self):
+        import inspect
+        source = inspect.getsource(C.calculate_coherence)
+        self.assertNotIn('_calculate_rag_coherence(', source)
+        self.assertNotIn('0.4 *', source)
+        self.assertNotIn('0.6 *', source)
+
+    def test_the_commentary_path_is_still_there_and_still_display_only(self):
+        """What survives: Phase 2 records the model's view for the instructor."""
+        import json
+        C.calculate_coherence(self.context, skip_rag=True)
+        team = self.teams[0]
+        before = RoundResultCoherence.objects.get(
+            game=self.game, round_number=1, team=team)
+        C.update_coherence_with_rag(
+            self.game, 1, team, json.dumps({'score': 5, 'feedback': 'weak'}))
+        after = RoundResultCoherence.objects.get(pk=before.pk)
+        self.assertEqual(after.blended_score, before.blended_score)
+        self.assertIsNone(after.rag_score)
+        self.assertEqual(after.breakdown, before.breakdown)

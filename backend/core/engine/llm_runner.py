@@ -38,7 +38,9 @@ MODEL_BY_PURPOSE = {
     'research_brief': 'tutor',
     'persona_reply': 'tutor',
     'query_translation': 'tutor',
-    # Scored once at submission; feeds 10% of graded coherence
+    # Scored once at submission. Feedback only: R31 severed it from graded
+    # coherence. (grading.py's `communication_quality` rubric component still
+    # reads it if a rubric selects one -- an open owner question.)
     'communication_eval': 'tutor',
     # Batch analysis
     'persona_reaction': 'analyst',

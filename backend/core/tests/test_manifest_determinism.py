@@ -991,11 +991,26 @@ class BuildIdentityTests(SimpleTestCase):
     def test_clean_build_gate_accepts_a_named_revision(self):
         from django.test import override_settings
         from core.services.build_identity import require_identified_build
-        clean = {'code_revision': 'abc123', 'code_revision_is_dirty': False,
+        # A-03 (2026-09-21): this test used to pass the label 'abc123' and
+        # expect acceptance, which was the defect -- any string without a
+        # `-dirty` suffix was believed. A named revision is now a full commit
+        # hash, and it is accepted unverified only where there is no checkout
+        # to verify it against (an immutable build). The checkout cases are in
+        # test_release_identity_guard.
+        import tempfile
+        clean = {'code_revision': 'ab' * 20, 'code_revision_is_dirty': False,
                  'source_tree_sha256': 'c' * 64, 'source_file_count': 1,
                  'source_root': '/tmp'}
-        with override_settings(COMPETITION_REQUIRE_CLEAN_BUILD=True):
-            self.assertEqual(require_identified_build(clean), clean)
+        label = dict(clean, code_revision='abc123')
+        with tempfile.TemporaryDirectory() as directory:
+            backend = pathlib.Path(directory) / 'backend'
+            backend.mkdir()
+            with override_settings(COMPETITION_REQUIRE_CLEAN_BUILD=True,
+                                   BASE_DIR=backend):
+                self.assertEqual(require_identified_build(clean), clean)
+                with self.assertRaisesRegex(RuntimeError,
+                                            'not a full commit hash'):
+                    require_identified_build(label)
 
     def test_environment_fingerprint_carries_the_source_digest(self):
         from core.services.resolution_manifest import environment_fingerprint
