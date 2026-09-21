@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { isSessionExpiry } from './client';
+import client, { isSessionExpiry } from './client';
 
 /**
  * A wrong password is answered 401 -- and every 401 used to send the browser
@@ -28,6 +28,19 @@ describe('a 401 means the session ended, except from the login form', () => {
     expect(isSessionExpiry(refused('/games/3/', 403))).toBe(false);
     expect(isSessionExpiry({})).toBe(false);
     expect(isSessionExpiry(undefined)).toBe(false);
+  });
+
+  test('a stale token is not sent with the login, so it cannot refuse it', () => {
+    const attach = client.interceptors.request.handlers[0].fulfilled;
+    localStorage.setItem('access_token', 'left-over-from-yesterday');
+    try {
+      expect(attach({ url: '/auth/login/', headers: {} }).headers.Authorization)
+        .toBeUndefined();
+      expect(attach({ url: '/auth/me/', headers: {} }).headers.Authorization)
+        .toBe('Bearer left-over-from-yesterday');
+    } finally {
+      localStorage.removeItem('access_token');
+    }
   });
 
   test('the interceptor asks this question rather than its own', () => {
