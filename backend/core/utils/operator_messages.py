@@ -489,6 +489,9 @@ CODES = {
 COHORT_BILINGUAL_CODES = (
     'competition_course_unowned', 'team_count_refused', 'section_full',
     'team_full',
+    # Cohort ownership and game deletion (crv2-08-operator-route-ownership).
+    'cohort_belongs_to_another_instructor', 'roster_add_failed',
+    'competition_game_not_deletable', 'game_has_record',
 )
 
 # A refusal composed from several catalogue sentences rather than rendered

@@ -81,6 +81,35 @@ def instructor_can_access_game(request, game):
     return get_request_user_id(request) == course.instructor_id
 
 
+def instructor_can_access_course(request, course):
+    """Whether this caller may read or change a course and what hangs off it.
+
+    The same rule as `instructor_can_access_game`, asked of the course itself
+    because the roster, team-assignment, course and section routes name no
+    game: an admin always; a course with no `instructor_id` is the shared pilot
+    cohort and any instructor may work in it; otherwise only its instructor of
+    record.
+    """
+    role = (get_request_role(request) or '').lower()
+    if role == 'admin':
+        return True
+    if role != 'instructor':
+        return False
+    if course is None or course.instructor_id is None:
+        return True
+    from core.utils.auth_context import get_request_user_id
+    return get_request_user_id(request) == course.instructor_id
+
+
+def instructor_can_access_section(request, section):
+    """`instructor_can_access_course`, reached from a section."""
+    from core.models.course import Course
+    course = None
+    if section is not None:
+        course = Course.objects.filter(course_id=section.course_id).first()
+    return instructor_can_access_course(request, course)
+
+
 class GameIsNotPaused(BasePermission):
     """
     Block student writes while the instructor has paused the game.

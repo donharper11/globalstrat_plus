@@ -132,12 +132,17 @@ export const pauseGame = (gameId) =>
   client.post(`/games/${gameId}/pause/`);
 export const resumeGame = (gameId) =>
   client.post(`/games/${gameId}/resume/`);
-export const resetGame = (gameId) =>
-  client.post(`/games/${gameId}/reset/`);
-export const archiveGame = (gameId) =>
-  client.post(`/games/${gameId}/archive/`);
-export const deleteGame = (gameId) =>
-  client.delete(`/games/${gameId}/delete/`);
+// Reset, archive and delete override or end a game, so the server refuses
+// them without a written reason (`reason_required`) and keeps the reason in
+// the operator record. These posted an empty body until 2026-09-21, which the
+// server answered with 400 on every click.
+export const resetGame = (gameId, reason) =>
+  client.post(`/games/${gameId}/reset/`, { reason });
+export const archiveGame = (gameId, reason) =>
+  client.post(`/games/${gameId}/archive/`, { reason });
+// axios sends a DELETE body only through `data`.
+export const deleteGame = (gameId, reason) =>
+  client.delete(`/games/${gameId}/delete/`, { data: { reason } });
 
 // Edit enrollment (update student details)
 export const updateEnrollment = (enrollmentId, data) =>

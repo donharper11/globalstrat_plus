@@ -36,6 +36,8 @@ RETIRED = {
 COMPETITION_KEYS = {
     'frontend:instructor.grades_refused_model_component',
     'cohort_messages:competition_course_unowned',
+    # A heat cannot be deleted: the sentence is about the competition itself.
+    'cohort_messages:competition_game_not_deletable',
 }
 
 

@@ -37,6 +37,7 @@ import {
 } from './assignmentOutcome';
 import { bilingualServerReason, serverReason } from './bilingualServerReason';
 import { rosterUploadOutcome, announceRosterUpload } from './rosterUploadOutcome';
+import ReasonedAction from '../components/instructor/ReasonedAction';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -504,42 +505,49 @@ const InstructorDashboard = () => {
               </>
             )}
             {(displayGameStatus === 'active' || displayGameStatus === 'paused') && (
-              <Popconfirm title={t('instructor.reset_confirm')} okText={t('instructor.reset')} okType="danger" onConfirm={async () => {
-                try {
-                  const res = await resetGame(gameId);
-                  setGameStatus(res.data?.status || 'setup');
-                  setDashboard(null);
-                  loadRoundScheduleData(gameId);
-                  message.success(t('instructor.msg_game_reset'));
-                } catch (err) { message.error(serverReason(err) || t('instructor.msg_reset_failed')); }
-              }}>
-                <Button danger>{t('instructor.reset_to_setup')}</Button>
-              </Popconfirm>
+              <ReasonedAction t={t} label={t('instructor.reset_to_setup')}
+                title={t('instructor.reset_game_question')} description={t('instructor.reset_confirm')}
+                okText={t('instructor.reset')} buttonProps={{ danger: true }}
+                onConfirm={async (reason) => {
+                  try {
+                    const res = await resetGame(gameId, reason);
+                    setGameStatus(res.data?.status || 'setup');
+                    setDashboard(null);
+                    loadRoundScheduleData(gameId);
+                    message.success(t('instructor.msg_game_reset'));
+                  } catch (err) { message.error(serverReason(err) || t('instructor.msg_reset_failed')); }
+                }} />
             )}
             {displayGameStatus !== 'archived' && (
-              <Popconfirm title={t('instructor.archive_confirm')} okText={t('instructor.archive')} onConfirm={async () => {
-                try {
-                  await archiveGame(gameId);
-                  setGameStatus('archived');
-                  message.success(t('instructor.msg_game_archived'));
-                } catch (err) { message.error(serverReason(err) || t('instructor.msg_archive_failed')); }
-              }}>
-                <Button>{t('instructor.archive_game')}</Button>
-              </Popconfirm>
+              <ReasonedAction t={t} label={t('instructor.archive_game')}
+                title={t('instructor.archive_game')} description={t('instructor.archive_confirm')}
+                okText={t('instructor.archive')}
+                onConfirm={async (reason) => {
+                  try {
+                    await archiveGame(gameId, reason);
+                    setGameStatus('archived');
+                    message.success(t('instructor.msg_game_archived'));
+                  } catch (err) { message.error(serverReason(err) || t('instructor.msg_archive_failed')); }
+                }} />
             )}
-            <Popconfirm title={t('instructor.delete_confirm')} okText={t('instructor.delete_forever')} okType="danger" onConfirm={async () => {
-              try {
-                await deleteGame(gameId);
-                setGameId(null);
-                setGameStatus(null);
-                setDashboard(null);
-                setRoundSchedule(null);
-                setCreatedGameTeams([]);
-                message.success(t('instructor.msg_game_deleted'));
-              } catch (err) { message.error(serverReason(err) || t('instructor.msg_delete_failed')); }
-            }}>
-              <Button danger type="primary">{t('instructor.delete_game')}</Button>
-            </Popconfirm>
+            <ReasonedAction t={t} label={t('instructor.delete_game')}
+              title={t('instructor.delete_game')} description={t('instructor.delete_confirm')}
+              okText={t('instructor.delete_forever')} buttonProps={{ danger: true, type: 'primary' }}
+              onConfirm={async (reason) => {
+                try {
+                  await deleteGame(gameId, reason);
+                  setGameId(null);
+                  setGameStatus(null);
+                  setDashboard(null);
+                  setRoundSchedule(null);
+                  setCreatedGameTeams([]);
+                  message.success(t('instructor.msg_game_deleted'));
+                } catch (err) {
+                  // A heat, or a game that already has a record, is refused
+                  // with "archive it instead" -- in the instructor's language.
+                  message.error(serverReason(err) || t('instructor.msg_delete_failed'), 8);
+                }
+              }} />
           </Space>
           {hasGame && rs.deadline && (
             <Text type="secondary">{t('instructor.current_deadline')}: {new Date(rs.deadline).toLocaleString()}</Text>
@@ -1653,20 +1661,18 @@ const InstructorDashboard = () => {
                     }}>{t('instructor.resume_game')}</Button>
                   )}
                   {(displayGameStatus === 'active' || displayGameStatus === 'paused') && (
-                    <Popconfirm
+                    <ReasonedAction t={t} label={t('instructor.reset_to_setup')}
                       title={t('instructor.reset_game_question')}
                       description={t('instructor.reset_game_desc')}
-                      onConfirm={async () => {
+                      okText={t('instructor.reset')} buttonProps={{ danger: true }}
+                      onConfirm={async (reason) => {
                         try {
-                          const res = await resetGame(gameId);
+                          const res = await resetGame(gameId, reason);
                           setGameStatus(res.data.status);
                           message.success(t('instructor.msg_game_reset'));
                           loadRoundScheduleData(gameId);
                         } catch (err) { message.error(serverReason(err) || t('instructor.msg_reset_failed')); }
-                      }}
-                    >
-                      <Button danger>{t('instructor.reset_to_setup')}</Button>
-                    </Popconfirm>
+                      }} />
                   )}
                 </Space>
               </div>

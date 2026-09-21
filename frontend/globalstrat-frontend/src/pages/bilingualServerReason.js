@@ -25,7 +25,9 @@ export const BILINGUAL_REFUSAL_CODES = Object.freeze([
   'advance_failed',
   'advance_refused',
   'assignments_required',
+  'cohort_belongs_to_another_instructor',
   'competition_course_unowned',
+  'competition_game_not_deletable',
   'confirmation_required',
   'deadline_in_past',
   'deadline_required',
@@ -34,6 +36,7 @@ export const BILINGUAL_REFUSAL_CODES = Object.freeze([
   'game_already_archived',
   'game_belongs_to_another_instructor',
   'game_creator_missing',
+  'game_has_record',
   'game_not_active',
   'game_not_found',
   'game_not_in_setup',
@@ -118,3 +121,9 @@ export const bilingualServerReason = (err) => {
 export const serverReason = (err) => (
   bilingualServerReason(err) || text(err?.response?.data?.error)
 );
+
+/**
+ * Kept for the reset, archive and delete call sites: `bilingualServerReason`
+ * already appends the guidance, which is localised with the refusal.
+ */
+export const bilingualServerReasonWithGuidance = bilingualServerReason;
