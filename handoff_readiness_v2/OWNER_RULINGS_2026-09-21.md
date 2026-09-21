@@ -1,6 +1,6 @@
 # Competition owner rulings — 2026-09-21
 
-Four rulings, recorded in the form the programme record requires: the question as
+Nine rulings, recorded in the form the programme record requires: the question as
 asked, the ruling, the consequence, and what each dispositions. They follow
 R32–R37 in `OWNER_RULINGS_2026-09-17.md`.
 
@@ -182,3 +182,131 @@ ground as R20.
 
 **Dispositions:** V2-120 — **ruled; closable by the auditor once the nine rows
 are confirmed to sit in test games.**
+
+---
+
+## R42 — an analyst question that finds nothing is not charged
+
+**Question as asked.** A paid analyst question (R23) that retrieves nothing
+returns "No relevant research found". Today the team pays in full and one of the
+round's quota slots is used; only a system failure is free. Should a team be
+charged for that answer?
+
+**The owner's answer, in the owner's words.** "NO."
+
+**Ruling.** **A question that finds no research costs nothing.**
+
+**Consequence.**
+
+- The purchase row is not kept, so nothing reaches `funding_need` or
+  `research_expense`, and — following D1's rule that the audit event is written
+  only once an answer exists — no purchase audit event is written either.
+- **Recorded as the builder's reading, not the owner's words:** the question also
+  does not use a quota slot. The owner was asked about the charge; the question
+  as put named both the charge and the slot, and the answer was a plain no. A
+  slot spent on nothing is a cost of the same kind, so it is treated the same
+  way. If the owner meant the money only, this is one line to reverse.
+- The sentence the student reads must stop saying the question was counted and
+  charged, which it was changed to say earlier the same day.
+
+**Dispositions:** the analyst builder's owner question Q1 — ruled.
+
+---
+
+## R43 — what a student is told follows the team's language
+
+**Question as asked.** On the analyst route, refusals follow the request's
+language while the synthesised answer follows the team's language, so one screen
+can speak two languages. Which governs?
+
+**The owner's answer, in the owner's words.** "Team's language."
+
+**Ruling.** **The team's language governs what the analyst route says to a
+student — answers and refusals alike.**
+
+**Consequence.**
+
+- The route resolves one language, from the team, and uses it for every
+  sentence. The request's language is the fallback only where no team language
+  is set or it is one the platform does not support — the safe resolver added
+  earlier stays, because an unsupported value used to raise a 500.
+- Scoped to the analyst route, where the question arose. Whether other
+  participant routes should follow the team rather than the request is a wider
+  sweep and is **not** ruled here.
+
+**Dispositions:** the analyst builder's owner question Q2 — ruled.
+
+---
+
+## R44 — the operator audit trail is English only
+
+**Question as asked.** The operator catalogue localises the response an
+instructor sees and keeps the audit row in English, reversing what one refusal
+did before. Should the operator audit trail be English-only?
+
+**The owner's answer, in the owner's words.** "English only."
+
+**Ruling.** **Audit rows are written in English whatever language the operator
+works in.**
+
+**Consequence.** No code change; the convention `operator_messages.py` set is
+confirmed. One record, one language: a dispute reads the same sentence
+regardless of who triggered it, and the hash chain never depends on a request
+header.
+
+**Dispositions:** the analyst builder's owner question Q3 — ruled.
+
+---
+
+## R45 — a game deletion gets a durable audit record
+
+**Question as asked.** V2-134. A committed game deletion is a `core.lifecycle`
+log line, because `OperatorAuditEvent` holds a protected key to the game and a
+row about the deletion would block it. A durable record needs a new table with
+no game key. Stakes are low — only a game with no record at all can be deleted.
+Worth building?
+
+**The owner's answer, in the owner's words.** "Yes. worth building for
+auditability I would imagine."
+
+**Ruling.** **Build it.**
+
+**Consequence.**
+
+- A new audit table with no foreign key to the game, carrying what the log line
+  carries: game id and name, actor, written reason, prior state, request id,
+  time. Registered with the audit guards and the hash chain like the other audit
+  tables, and append-only under the same database triggers.
+- Written in the same transaction as the deletion, so there is never a deletion
+  without its record or a record without its deletion.
+- A schema change: one migration, and `ops/provision-app-role.sh --check` must be
+  re-run after it (launch checklist, V2-072) so the application role holds no
+  more than insert and select on it.
+
+**Dispositions:** V2-134's open question — ruled; implementation open.
+
+---
+
+## R46 — whoever creates a course owns it
+
+**Question as asked.** V2-133. The console creates courses with no instructor of
+record, so under the adopted rule they stay shared with every instructor until
+an admin assigns one. Should a course's creator own it?
+
+**The owner's answer, in the owner's words.** "Course creator owns."
+
+**Ruling.** **A course created by an instructor has that instructor as its
+instructor of record from the moment it exists.**
+
+**Consequence.**
+
+- The ownership rule V2-133 introduced then protects a new course immediately,
+  rather than only after an admin acts.
+- An admin creating a course may name the instructor; if they name none, the
+  course is unowned as before, which remains the shared pilot cohort.
+- **Existing unowned courses are not reassigned by this ruling.** Nothing has
+  been live (R41), and guessing an owner for a stored course would be inventing
+  a fact. They stay shared until an admin assigns one.
+
+**Dispositions:** V2-133's open question — ruled; implementation open.
+
