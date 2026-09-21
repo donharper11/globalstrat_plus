@@ -566,21 +566,107 @@ def _delete_game_cascade(game):
     game.delete()
 
 
+def _has_permanent_record(game):
+    """Whether any append-only audit table already refers to this game.
+
+    Those tables hold PROTECT foreign keys to the game and database triggers
+    refuse to delete their rows, so such a game cannot be deleted by anyone --
+    which is the design, not an accident: the record is meant to outlive every
+    operator's intentions. Note that a *refused* operator action writes a row
+    too, so this is true of far more games than the ones that were ever played.
+    """
+    from core.models import (DecisionAuditEvent, OperatorAuditEvent,
+                             ResolutionManifest)
+    return (OperatorAuditEvent.objects.filter(game=game).exists()
+            or DecisionAuditEvent.objects.filter(game=game).exists()
+            or ResolutionManifest.objects.filter(game=game).exists())
+
+
 class GameDeleteView(APIView):
-    """DELETE /api/games/<game_id>/delete/ — permanently delete a game and all data."""
+    """DELETE /api/games/<game_id>/delete/ — permanently delete a game that
+    was never operated. Body: `{"reason": "<at least 10 characters>"}`.
+
+    This used to sit outside the lifecycle boundary: no lock, no reason, no
+    record, and it deleted a competition heat for anyone who could reach it --
+    including, for a heat whose course has no instructor of record, any
+    instructor account at all. Against a game with any audit row it raised
+    ProtectedError and answered 500.
+
+    It is now an operator action like archive and reset. What it will delete
+    is deliberately narrow:
+
+    * never a competition heat (409 `competition_game_not_deletable`);
+    * never a game the audit tables already refer to (409 `game_has_record`),
+      which is every game that has been activated, played, or even had an
+      action refused.
+
+    Both refusals point at archiving, which keeps every record and frees the
+    section. What remains deletable is a game created by mistake and never
+    touched. Its deletion cannot be written to `OperatorAuditEvent`, because
+    that row would PROTECT the game it says was deleted; it is written to the
+    `core.lifecycle` log with the actor, the reason, the prior state and the
+    request id the operator was shown. Every *refused* delete is an ordinary
+    rejected `OperatorAuditEvent`, since the game is still there to point at.
+    """
 
     permission_classes = [IsInstructor]
 
-    @transaction.atomic
+    @lifecycle_view
     def delete(self, request, game_id):
-        try:
-            game = Game.objects.get(pk=game_id)
-        except Game.DoesNotExist:
-            return Response({'error': 'Game not found.'}, status=status.HTTP_404_NOT_FOUND)
+        import logging
+        from django.db.models.deletion import ProtectedError
+        from core.services.cohort_caps import is_competition_game
+        from core.utils.auth_context import get_request_user
+        from core.utils.cohort_messages import (cohort_message,
+                                                language_for_request)
 
-        game_name = game.name
-        _delete_game_cascade(game)
+        with operator_action(request, game_id, 'delete_game') as action:
+            game = action.game
+            before = action.before = _game_state(game)
+            language = language_for_request(request)
+            archive_instead = cohort_message('archive_instead',
+                                             language=language)
 
-        return Response({
-            'message': f'Game "{game_name}" and all related data permanently deleted.',
-        })
+            if is_competition_game(game):
+                raise LifecycleConflict(
+                    cohort_message('competition_game_not_deletable',
+                                   language=language, game=game.name),
+                    guidance=archive_instead,
+                    code='competition_game_not_deletable')
+            if _has_permanent_record(game):
+                raise LifecycleConflict(
+                    cohort_message('game_has_record', language=language,
+                                   game=game.name),
+                    guidance=archive_instead, code='game_has_record')
+            reason = action.require_reason()
+
+            try:
+                # A savepoint, so that a protected row found halfway through
+                # the cascade undoes the layers already deleted before the
+                # refusal is raised, whatever the caller does with it.
+                with transaction.atomic():
+                    _delete_game_cascade(game)
+            except ProtectedError:
+                logging.getLogger('core.lifecycle').exception(
+                    'delete_game: game %s is referenced by a protected row '
+                    'the pre-check does not know about (request_id=%s)',
+                    game_id, action.request_id)
+                raise LifecycleConflict(
+                    cohort_message('game_has_record', language=language,
+                                   game=before['name']),
+                    guidance=archive_instead, code='game_has_record')
+
+            actor = get_request_user(request)
+            logging.getLogger('core.lifecycle').warning(
+                'delete_game committed: game %s "%s" deleted by %s (user %s); '
+                'reason: %s; before=%s; request_id=%s',
+                before['game_id'], before['name'],
+                getattr(actor, 'username', '?'),
+                getattr(actor, 'user_id', '?'), reason, before,
+                action.request_id)
+            return Response({
+                'message': f'Game "{before["name"]}" and all related data '
+                           f'permanently deleted.',
+                'game_id': before['game_id'],
+                'request_id': action.request_id,
+            })

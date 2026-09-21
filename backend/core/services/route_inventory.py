@@ -57,6 +57,12 @@ _WRITE_PATTERNS = (
     # not stop, they only moved out of sight. A bare-name match is safe here
     # in the direction that matters: a false positive flags MORE routes.
     re.compile(r'\bcreate_game\('),
+    # The same blind spot, found the same way. `GameDeleteView` removes a
+    # game's rounds, teams, submissions and events through the module-level
+    # helper `_delete_game_cascade`, so none of those deletes are in the view's
+    # own source and the route was checked in as `lifecycle_mutating: false` --
+    # never an unguarded offender, because it was never counted at all.
+    re.compile(r'\b_delete_game_cascade\('),
 )
 
 # A bare `.save()` on a lifecycle row rewrites *every* column from whatever the

@@ -6,8 +6,8 @@
     "core.views.programs.ProgramViewSet": "Writes Program rows. It reaches Round.objects only through DecisionLockedMixin, which reads Round.decisions_locked to gate student writes and never assigns to it.",
     "core.views.scenario_views.GameCreateView": "Creates a new Game and its Rounds. There is no existing lifecycle for the new game to race, and no other game is touched."
   },
-  "guarded": 21,
-  "lifecycle_mutating_routes": 37,
+  "guarded": 22,
+  "lifecycle_mutating_routes": 38,
   "routes": {
     "admin/auth/group/<path:object_id>/|delete,patch,post,put": {
       "exempt": false,
@@ -1960,12 +1960,12 @@
     },
     "api/games/<int:game_id>/delete/|delete": {
       "exempt": false,
-      "lifecycle_mutating": false,
+      "lifecycle_mutating": true,
       "methods": [
         "delete"
       ],
       "route": "api/games/<int:game_id>/delete/",
-      "uses_boundary": false,
+      "uses_boundary": true,
       "view": "core.views.scenario_views.GameDeleteView"
     },
     "api/games/<int:game_id>/disclosure-overrides/<int:override_id>/|delete": {
