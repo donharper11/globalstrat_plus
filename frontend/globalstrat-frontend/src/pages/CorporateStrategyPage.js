@@ -218,7 +218,7 @@ const TalentPoolCard = ({ pool, poolKey, talent, locked, onChange, prev, markets
               <Select.Option key={s.level} value={s.level}>{s.label}</Select.Option>
             ))}
           </Select>
-          {prev && <Text style={prevStyle}>{t('corporate_strategy.last')}: {SALARY_OPTIONS.find(s => s.level === prev.salary_level)?.label || `Level ${prev.salary_level}`}</Text>}
+          {prev && <Text style={prevStyle}>{t('corporate_strategy.last')}: {SALARY_OPTIONS.find(s => s.level === prev.salary_level)?.label || t('corporate_strategy.salary_level_n', { level: prev.salary_level })}</Text>}
         </Col>
         <Col flex="160px">
           <Text style={{ fontSize: 11, display: 'block', marginBottom: 2 }}>{t('corporate_strategy.training_investment')}</Text>

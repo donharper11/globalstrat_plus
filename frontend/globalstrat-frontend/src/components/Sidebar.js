@@ -142,25 +142,25 @@ const Sidebar = ({ collapsed, onNavigate }) => {
         {
           key: 'sourcing',
           icon: icon(faIndustry),
-          label: <span>{sidebarLabels?.sourcing_page || 'Sourcing'} {statusIcon(categoryStatus.sourcing)}</span>,
+          label: <span>{sidebarLabels?.sourcing_page || t('nav.sourcing')} {statusIcon(categoryStatus.sourcing)}</span>,
           onClick: () => go(`${base}/decisions/sourcing`),
         },
         {
           key: 'logistics',
           icon: icon(faTruck),
-          label: <span>{sidebarLabels?.logistics_page || 'Logistics'} {statusIcon(categoryStatus.logistics)}</span>,
+          label: <span>{sidebarLabels?.logistics_page || t('nav.logistics')} {statusIcon(categoryStatus.logistics)}</span>,
           onClick: () => go(`${base}/decisions/logistics`),
         },
         {
           key: 'trade-finance',
           icon: icon(faMoneyBillWave),
-          label: <span>{sidebarLabels?.trade_finance_page || 'Trade Finance'} {statusIcon(categoryStatus.trade_finance)}</span>,
+          label: <span>{sidebarLabels?.trade_finance_page || t('nav.trade_finance')} {statusIcon(categoryStatus.trade_finance)}</span>,
           onClick: () => go(`${base}/decisions/trade-finance`),
         },
         {
           key: 'inventory',
           icon: icon(faBoxesStacked),
-          label: <span>{sidebarLabels?.inventory_page || 'Inventory'} {statusIcon(categoryStatus.inventory)}</span>,
+          label: <span>{sidebarLabels?.inventory_page || t('nav.inventory')} {statusIcon(categoryStatus.inventory)}</span>,
           onClick: () => go(`${base}/decisions/inventory`),
         },
         {

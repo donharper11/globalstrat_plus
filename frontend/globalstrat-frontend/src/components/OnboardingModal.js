@@ -265,7 +265,7 @@ const OnboardingModal = () => {
         {t('onboarding.s5_inherited', { team: data.team_name })}
       </Paragraph>
       <div style={{ marginTop: 16 }}>
-        <InfoCard label={t('onboarding.s5_products')} value={t('onboarding.s5_products_value', { count: data.product_count, platform: data.platform_name || 'Gen 1' })} color="#2563EB" />
+        <InfoCard label={t('onboarding.s5_products')} value={t('onboarding.s5_products_value', { count: data.product_count, platform: data.platform_name || t('onboarding.default_platform') })} color="#2563EB" />
         <InfoCard label={t('onboarding.s5_cash')} value={fmt(data.cash_on_hand)} color="#16A34A" />
         <InfoCard label={t('onboarding.s5_market')} value={data.home_market_name || '—'} color="#D97706" />
         <InfoCard label={t('onboarding.s5_talent')} value={t('onboarding.s5_talent_value', { count: data.talent_count || 0 })} color="#8B5CF6" />

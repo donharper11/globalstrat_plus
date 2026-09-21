@@ -89,11 +89,11 @@ const InstructorSCPanel = ({ gameId }) => {
       setCatalog(c.data.events || []);
       setOverrides(o.data || []);
     } catch (e) {
-      setError(e?.response?.data?.detail || 'Failed to load the supply-chain panel.');
+      setError(e?.response?.data?.detail || t('instructor.sc_load_failed'));
     } finally {
       setLoading(false);
     }
-  }, [gameId]);
+  }, [gameId, t]);
 
   useEffect(() => { load(); }, [load]);
 
