@@ -50,6 +50,13 @@ _WRITE_PATTERNS = (
     re.compile(r'\b(?:%s)\.objects[^\n]*?\.(?:update|delete)\('
                % '|'.join(LIFECYCLE_MODELS)),
     re.compile(r'\.(?:%s)\s*=(?!=)' % '|'.join(LIFECYCLE_FIELDS)),
+    # V2-112 moved the Game/Team/Round creates out of `GameCreateView` into
+    # `core.services.game_creation.create_game`. This detector reads a view's
+    # own source, so without this line the route that creates a whole game
+    # would have been re-recorded as not lifecycle-mutating — the writes did
+    # not stop, they only moved out of sight. A bare-name match is safe here
+    # in the direction that matters: a false positive flags MORE routes.
+    re.compile(r'\bcreate_game\('),
 )
 
 # A bare `.save()` on a lifecycle row rewrites *every* column from whatever the
