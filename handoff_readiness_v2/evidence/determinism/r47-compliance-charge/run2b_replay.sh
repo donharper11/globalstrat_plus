@@ -11,7 +11,7 @@ set +e
 time python3 manage.py replay_round --game-id "$GAME_ID" --round 1 \
   --restore --confirm "REPLAY-GAME-$GAME_ID-ROUND-1" --allow-source-mismatch \
   --expected-manifest "$EV/recorded/expected-manifest.json" \
-  --evidence-dir "$EV/replay-at-r47" \
+  --evidence-dir "$EV/replay-at-ee94c37" \
   --label 'R47 run 2: control, recorded at 90b2dea, replayed at the R47 commit' \
   --require-env tz_env=UTC --wait-narrative 180 2>&1 | grep -v " INFO \| WARNING \| DEBUG \|Batches" | tail -n 25
 echo "replay exit=${PIPESTATUS[0]}"

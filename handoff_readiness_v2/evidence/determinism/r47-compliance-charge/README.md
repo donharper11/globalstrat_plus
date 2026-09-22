@@ -16,12 +16,12 @@ competitive hash).
 
 | Run | Recorded at | Replayed at | Lever | Competitive hash | Result |
 |---|---|---|---|---|---|
-| 1 | `3020eaa` (R47) | `3020eaa` | used — `compliance_rows=5` ($400k, $400k, $200k, $0 across 4 teams) | `e396efbeec093e63b2ca1ac72d680398be3037d720fabc5b7bf958ba2d67e2d2` | **exact**, exit 0 |
-| 2 (control) | `90b2dea` (base) | `3020eaa` (`--allow-source-mismatch`) | unused — `compliance_rows=0` | `763b827b089e161164f71b54346bc42b3433b1acb7bf17d8f825eb42bd8715aa` | **exact**, exit 0 |
-| 3 (negative) | `3020eaa` | `90b2dea` (`--allow-source-mismatch`) | used (run 1's backup) | expected `e396efbe…`, actual `5d22ff29d94b6dc0a7d2e8aa2d6e74c742f3104992b2168a719dd8223ec204f1` | **differs**, exit 3 |
+| 1 | `ee94c37` (R47) | `ee94c37` | used — `compliance_rows=5` ($400k, $400k, $200k, $0 across 4 teams) | `17f1f48d877b9273a7b561bc04eb25400da53cb68b1822bfe2dfd8de3e51db47` | **exact**, exit 0 |
+| 2 (control) | `90b2dea` (base) | `ee94c37` (`--allow-source-mismatch`) | unused — `compliance_rows=0` | `763b827b089e161164f71b54346bc42b3433b1acb7bf17d8f825eb42bd8715aa` | **exact**, exit 0 |
+| 3 (negative) | `ee94c37` | `90b2dea` (`--allow-source-mismatch`) | used (run 1's backup) | expected `17f1f48d…`, actual `2fcac81cdbdd112dee39e2242474dde75bb58ad868a25e7011bf56aabdb6105b` | **differs**, exit 3 |
 
-Source tree digests: `57ea8e617727c32cf754cb985578611f24d59433dc6347619799d359009a8ebd`
-(457 files, `3020eaa`) and `51725d6aafd2463e9cb6f9a061ad5f22c5e7ae9298e76ff500947ac7be9e2a3e`
+Source tree digests: `861fafdf01f0e048b3b34b349c73b4b71ddf18ebde4398f61f3ec2d6489047c8`
+(457 files, `ee94c37`) and `51725d6aafd2463e9cb6f9a061ad5f22c5e7ae9298e76ff500947ac7be9e2a3e`
 (`90b2dea`, a `git archive` of the commit with `GIT_REVISION` set, no `.git`).
 Run 1 verified the digest matched; runs 2 and 3 crossed it deliberately and
 recorded the override in `source-identity.json`.
@@ -47,6 +47,13 @@ What the three runs show together:
 Each run directory holds `replay-report.json`, `source-identity.json`,
 `input-verification.json`, the expected and replayed manifests and the
 Phase-2 prose that was hashed (gzipped, as `--expected-manifest` reads them).
+
+The same three runs were first taken at `3020eaa`, before a comment in
+`views/decisions.py` was reworded and the fixture's return type fixed
+(`ee94c37`, neither inside Phase 1). Every per-team figure in run 3's diff
+(cash down by `400000` / `400000` / `200000`) was identical in both takes;
+the hashes differ only because each recording is a fresh game with its own
+name and team names in every natural-key token.
 `*.fixture.log` is the fixture's per-round line for each recording. The
 `*.sh` files are the exact scripts, with the scratchpad and worktree paths
 replaced by `$SCRATCH` and `$REPO`.
