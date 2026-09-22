@@ -51,6 +51,11 @@ def wait_processed(page, timeout=900):
         last = (r.get('status'), r.get('processing_status'))
         if r.get('status') == 'processed' and r.get('processing_status') in ('RESULTS_AVAILABLE', 'FULLY_COMPLETE', 'FAILED'):
             return b
+        # The lifecycle card's Advance Round is the legacy one-step route: it
+        # processes the round AND opens the next, so the console never shows
+        # this round as 'processed'; the next round being open is the signal.
+        if PATH == 'lifecycle' and r.get('round_number') == ROUND + 1 and r.get('status') == 'open':
+            return b
         page.wait_for_timeout(5000)
     R.step('round processing finished', 'fail', 'still %r after %ds' % (last, timeout))
     return rc(page)
@@ -114,8 +119,11 @@ def main():
         done = wait_processed(page)
         R.observe('round_control_processed', done)
         rd = done.get('round') or {}
-        R.step('round %d processed' % ROUND, 'pass' if rd.get('status') == 'processed' and rd.get('processing_status') != 'FAILED' else 'fail',
-               'processing=%s narrative_error=%r phase1=%s' % (rd.get('processing_status'), rd.get('narrative_error'), rd.get('phase_1_duration')))
+        sched = api(page, 'GET', '/api/games/%s/round-schedule/' % GID)['body']
+        srow = next((x for x in ((sched or {}).get('rounds') or []) if x.get('round_number') == ROUND), {})
+        R.observe('schedule_row', srow)
+        R.step('round %d processed' % ROUND, 'pass' if srow.get('status') == 'processed' or (rd.get('round_number') == ROUND and rd.get('status') == 'processed' and rd.get('processing_status') != 'FAILED') else 'fail',
+               'schedule=%s processing=%s narrative_error=%r phase1=%s' % (srow.get('status'), rd.get('processing_status'), rd.get('narrative_error'), rd.get('phase_1_duration')))
         R.observe('narrative_error', rd.get('narrative_error'))
         page.reload(wait_until='domcontentloaded'); page.wait_for_timeout(5000)
         page.locator('.ant-card', has_text=G['course_code']).last.click(); page.wait_for_timeout(2000)
