@@ -53,7 +53,7 @@ const StaffAllocationSection = ({ poolKey, headcount, markets, allocations, lock
   const remaining = headcount - total;
 
   const summaryText = markets.length > 0
-    ? `HQ: ${hqCount}` + markets.map(m => ` | ${m.code}: ${allocations[m.code] || 0}`).join('')
+    ? t('corporate_strategy.hq_count', { count: hqCount }) + markets.map(m => ` | ${m.code}: ${allocations[m.code] || 0}`).join('')
     : t('corporate_strategy.not_configured');
 
   return (
@@ -941,7 +941,7 @@ const CorporateStrategyPage = () => {
                               <Alert
                                 type="warning" showIcon
                                 style={{ marginTop: 4, fontSize: 10 }}
-                                message={`Revoking triggers a ${ct.revocation_penalty.duration_rounds}-round investor confidence penalty (${ct.revocation_penalty.investor_confidence_drop ? (ct.revocation_penalty.investor_confidence_drop * 100).toFixed(0) + '%' : ''}).`}
+                                message={t('corporate_strategy.revoke_penalty_warning', { rounds: ct.revocation_penalty.duration_rounds, drop: ct.revocation_penalty.investor_confidence_drop ? `${(ct.revocation_penalty.investor_confidence_drop * 100).toFixed(0)}%` : '' })}
                               />
                             )}
                             {ct.amplifier && (
@@ -963,7 +963,7 @@ const CorporateStrategyPage = () => {
                         <Alert
                           type="error" showIcon
                           style={{ marginTop: 4, fontSize: 11 }}
-                          message={`Revocation penalty active: ${state.penalty_rounds_remaining} round${state.penalty_rounds_remaining === 1 ? '' : 's'} remaining`}
+                          message={t('corporate_strategy.revocation_penalty_active', { rounds: state.penalty_rounds_remaining })}
                         />
                       )}
                     </div>

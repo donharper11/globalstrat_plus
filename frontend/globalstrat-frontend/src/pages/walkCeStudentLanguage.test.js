@@ -69,7 +69,15 @@ describe.each([
     "'Unsaved financing changes'", "'Saving financing...'", "'Financing saved'",
     "'Financing save failed'", '| Round {currentRound} budget remaining',
     'Enter dollar amounts directly', 'Setup: {fmt(switchCost)}', 'Regulators: {',
+    '`Allocated budget ${', "'net positive'", "'net negative if audited'",
   ]],
+  // The remaining-literal sweep (2026-09-22): what it found on the visited
+  // screens and this pass could fix.
+  ['GameDashboard.js', ["label: 'Supply Chain'"]],
+  ['ProductsPage.js', ['placeholder="e.g. Nexus Pro"']],
+  ['CorporateStrategyPage.js', ['`Revoking triggers a', '`Revocation penalty active:', '`HQ: ${']],
+  ['MarketingPage.js', ['{d.positioning}\n']],
+  ['../components/TeamActivityBanner.js', ["|| 'a decision'"]],
 ])('%s: the literals W-CE-16 removed', (name, literals) => {
   const source = withoutComments(read(name));
 

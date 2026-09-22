@@ -320,7 +320,7 @@ const FinancePage = () => {
           />
         )}
         {totalAllocated > operatingBudgetAvailable && (
-          <WarningBanner message={`Allocated budget ${fmt(totalAllocated)} exceeds the Round ${currentRound} operating budget ${fmt(operatingBudgetAvailable)}.`} type="error" />
+          <WarningBanner message={t('finance.over_allocated', { allocated: fmt(totalAllocated), round: currentRound, available: fmt(operatingBudgetAvailable) })} type="error" />
         )}
         <Row gutter={[16, 16]}>
           {[
@@ -674,7 +674,7 @@ const FinancePage = () => {
                           {roundsRemaining > 0 && ` Expected value over ${roundsRemaining} remaining rounds: `}
                           {roundsRemaining > 0 && (
                             <Text strong style={{ color: (estNetBenefit * roundsRemaining - estAuditCost) > 0 ? '#16A34A' : '#DC2626' }}>
-                              {(estNetBenefit * roundsRemaining - estAuditCost) > 0 ? 'net positive' : 'net negative if audited'}
+                              {(estNetBenefit * roundsRemaining - estAuditCost) > 0 ? t('finance.net_positive') : t('finance.net_negative_if_audited')}
                             </Text>
                           )}
                         </Text>

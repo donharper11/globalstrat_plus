@@ -69,6 +69,10 @@ describe('W-CE-17: the console’s English on a Chinese screen', () => {
     'placeholder="Category name',
     'placeholder="Description"',
     "['Team', 'Index', 'Cash'",
+    "'Select a section first'",
+    "'No simulation linked to this section'",
+    'placeholder="e.g. Spring 2026 Simulation"',
+    'John Doe,john@university.edu',
   ])('no longer says %s', (literal) => {
     expect(source).not.toContain(literal);
   });

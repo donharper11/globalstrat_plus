@@ -1074,7 +1074,7 @@ const GameDashboard = () => {
     { key: 'markets', label: t('dashboard.market_results'), children: <MarketTab /> },
     { key: 'events', label: t('dashboard.events_intelligence'), children: <EventsTab /> },
     { key: 'strategic', label: t('dashboard.strategic_scorecard'), children: <StrategicScorecardTab /> },
-    { key: 'supply_chain', label: 'Supply Chain', children: <SupplyChainPanel /> },
+    { key: 'supply_chain', label: t('dashboard.supply_chain_tab'), children: <SupplyChainPanel /> },
     ...(briefing ? [{ key: 'briefing', label: t('dashboard.strategic_briefing_tab', { round: briefing.round_number }), children: <StrategicBriefingTab /> }] : []),
   ];
 

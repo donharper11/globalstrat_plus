@@ -1179,7 +1179,7 @@ const InstructorDashboard = () => {
                 ]}
               />
             )}
-            <Tooltip title={!gradingSection ? 'Select a section first' : !gradingInstanceId ? 'No simulation linked to this section' : ''}>
+            <Tooltip title={!gradingSection ? t('instructor.select_section_first') : !gradingInstanceId ? t('instructor.no_simulation_linked') : ''}>
               <Button
                 style={{ marginTop: 8 }}
                 disabled={!gradingInstanceId}
@@ -1745,7 +1745,7 @@ const InstructorDashboard = () => {
                   <Col xs={24} md={8}>
                     <Text strong style={{ display: 'block', marginBottom: 4 }}>{t('instructor.game_name')}</Text>
                     <Input value={createGameName} onChange={e => setCreateGameName(e.target.value)}
-                      placeholder="e.g. Spring 2026 Simulation" />
+                      placeholder={t('instructor.game_name_placeholder')} />
                   </Col>
                   <Col xs={24} md={8}>
                     <Text strong style={{ display: 'block', marginBottom: 4 }}>{t('instructor.number_of_teams')}</Text>
@@ -1834,7 +1834,7 @@ const InstructorDashboard = () => {
                     </Col>
                     <Col xs={24} md={12}>
                       <TextArea rows={3}
-                        placeholder={"student_id,display_name,email\n12345,John Doe,john@university.edu"}
+                        placeholder={t('instructor.csv_example_placeholder')}
                         value={csvText} onChange={e => setCsvText(e.target.value)}
                       />
                       <Button type="primary" size="small" style={{ marginTop: 8 }} disabled={!csvText.trim()} onClick={async () => {
