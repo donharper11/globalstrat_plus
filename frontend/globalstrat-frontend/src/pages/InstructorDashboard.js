@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import OperatorEventsPanel from '../components/instructor/OperatorEventsPanel';
 import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
@@ -294,6 +295,7 @@ const InstructorDashboard = () => {
         {user && <Text type="secondary">{user.display_name || user.username}</Text>}
       </div>
       <Space>
+        <LanguageSwitcher style={{ color: '#64748B' }} />
         {gameId && (
           <Button size="small" onClick={() => { setGameId(null); setDashboard(null); }}>
             {t('instructor.switch_game')}
@@ -317,11 +319,19 @@ const InstructorDashboard = () => {
   const displayGameStatus = gameStatus || dashboard?.status || 'setup';
   const roundState = rs.round_state || 'unknown';
   const roundStateMeta = {
-    open: { text: 'Open for student decisions', color: 'blue' },
-    closed: { text: 'Closed; awaiting processing', color: 'orange' },
-    processed: { text: 'Processed; results available', color: 'purple' },
-    pending: { text: 'Not open yet', color: 'default' },
+    open: { text: t('instructor.round_state_open'), color: 'blue' },
+    closed: { text: t('instructor.round_state_closed'), color: 'orange' },
+    processed: { text: t('instructor.round_state_processed'), color: 'purple' },
+    pending: { text: t('instructor.round_state_pending'), color: 'default' },
   }[roundState] || { text: roundState.replace(/_/g, ' '), color: 'default' };
+  // The stored status token was the label in three places (W-CE-17).
+  const gameStatusLabel = (status) => (
+    status === 'setup' ? t('instructor.game_status_setup')
+      : status === 'active' ? t('instructor.game_status_active')
+        : status === 'paused' ? t('instructor.game_status_paused')
+          : status === 'completed' ? t('instructor.game_status_completed')
+            : status === 'archived' ? t('instructor.game_status_archived')
+              : status);
   const totalDecisionRounds = roundSchedule?.total_rounds || dashboard?.total_rounds || '—';
   const latestProcessedRound = roundState === 'processed'
     ? dashboard?.current_round || 0
@@ -366,10 +376,13 @@ const InstructorDashboard = () => {
   };
 
   const exportAllTeams = () => {
-    const headers = ['Team', 'Index', 'Cash', 'Revenue', 'Coherence', 'Status', 'Markets'];
-    const rows = teams.map(t => [
-      t.team_name, t.performance_index, t.cash_on_hand, t.total_revenue,
-      t.coherence_score ?? '', t.decision_status, (t.markets_entered || []).join(';'),
+    const headers = [
+      t('instructor.team'), t('instructor.index'), t('instructor.cash'), t('instructor.revenue'),
+      t('instructor.coherence'), t('instructor.status'), t('instructor.markets'),
+    ];
+    const rows = teams.map(tm => [
+      tm.team_name, tm.performance_index, tm.cash_on_hand, tm.total_revenue,
+      tm.coherence_score ?? '', submissionStatusLabel(tm.decision_status), (tm.markets_entered || []).join(';'),
     ]);
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -379,6 +392,13 @@ const InstructorDashboard = () => {
   };
 
   const statusColor = { locked: 'green', draft: 'orange', empty: 'red' };
+  // The stored token was shown as the label (`no_submission`, `locked`),
+  // beside a sentence that already said the same thing (W-CE-08).
+  const submissionStatusLabel = (status) => (
+    status === 'locked' ? t('instructor.submission_status_locked')
+      : status === 'draft' ? t('instructor.submission_status_draft')
+        : (status === 'empty' || status === 'no_submission') ? t('instructor.submission_status_empty')
+          : status);
   const severityConfig = {
     critical: { color: 'red', label: t('instructor.critical') },
     concern: { color: 'gold', label: t('instructor.concern') },
@@ -447,17 +467,21 @@ const InstructorDashboard = () => {
       {/* Status summary */}
       <Row gutter={[16, 16]}>
         <Col xs={12} md={6}><Card><Statistic title={t('instructor.game')} value={createGameName || dashboard?.game_name || t('instructor.game')} suffix={gameId ? `#${gameId}` : undefined} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title="Decision round" value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${totalDecisionRounds}`} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title="Round status" value={roundStateMeta.text} valueStyle={{ color: roundStateMeta.color === 'blue' ? '#1677ff' : roundStateMeta.color === 'orange' ? '#fa8c16' : roundStateMeta.color === 'purple' ? '#722ed1' : undefined, fontSize: 20 }} /></Card></Col>
-        <Col xs={12} md={6}><Card><Statistic title="Game status" value={displayGameStatus} valueStyle={{ color: gameStatusColor }} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title={t('instructor.stat_decision_round')} value={dashboard?.current_round ?? 0} suffix={`${t('instructor.of')} ${totalDecisionRounds}`} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title={t('instructor.stat_round_status')} value={roundStateMeta.text} valueStyle={{ color: roundStateMeta.color === 'blue' ? '#1677ff' : roundStateMeta.color === 'orange' ? '#fa8c16' : roundStateMeta.color === 'purple' ? '#722ed1' : undefined, fontSize: 20 }} /></Card></Col>
+        <Col xs={12} md={6}><Card><Statistic title={t('instructor.stat_game_status')} value={gameStatusLabel(displayGameStatus)} valueStyle={{ color: gameStatusColor }} /></Card></Col>
         <Col xs={12} md={6}><Card><Statistic title={t('instructor.teams')} value={createdGameTeams.length || rs.total_teams || 0} suffix={hasGame ? `(${rs.teams_locked || 0} ${t('instructor.locked')})` : undefined} /></Card></Col>
       </Row>
 
       <Alert
         showIcon
         type="info"
-        message={`Monitoring ${createGameName || dashboard?.game_name || t('instructor.game')}${gameId ? ` (#${gameId})` : ''}`}
-        description={`Decision round ${dashboard?.current_round ?? 0} of ${totalDecisionRounds} is ${roundStateMeta.text.toLowerCase()}. Game status: ${displayGameStatus}. Latest processed results round: ${latestProcessedRound}.`}
+        message={t('instructor.monitoring_title', { game: `${createGameName || dashboard?.game_name || t('instructor.game')}${gameId ? ` (#${gameId})` : ''}` })}
+        description={t('instructor.monitoring_desc', {
+          round: dashboard?.current_round ?? 0, total: totalDecisionRounds,
+          state: roundStateMeta.text.toLowerCase(), status: gameStatusLabel(displayGameStatus),
+          processed: latestProcessedRound,
+        })}
         style={{ marginTop: 16 }}
       />
 
@@ -919,7 +943,7 @@ const InstructorDashboard = () => {
             const o = r.submission_origin;
             return (
               <Space direction="vertical" size={0}>
-                <Tag color={statusColor[v] || 'default'}>{v}</Tag>
+                <Tag color={statusColor[v] || 'default'}>{submissionStatusLabel(v)}</Tag>
                 {o && originColor[o] && <Tag color={originColor[o]}>{t(`instructor.origin_${o}`)}</Tag>}
               </Space>
             );
@@ -1183,7 +1207,7 @@ const InstructorDashboard = () => {
                 ]}
               />
             )}
-            <Tooltip title={!gradingSection ? 'Select a section first' : !gradingInstanceId ? 'No simulation linked to this section' : ''}>
+            <Tooltip title={!gradingSection ? t('instructor.select_section_first') : !gradingInstanceId ? t('instructor.no_simulation_linked') : ''}>
               <Button
                 style={{ marginTop: 8 }}
                 disabled={!gradingInstanceId}
@@ -1309,7 +1333,7 @@ const InstructorDashboard = () => {
                     value={cat.category_name}
                     onChange={e => updateEditCategory(idx, 'category_name', e.target.value)}
                     style={{ width: 280 }}
-                    placeholder="Category name (e.g. Strategic Coherence)"
+                    placeholder={t('instructor.category_name_placeholder')}
                   />
                   <InputNumber
                     value={Number(cat.weight)}
@@ -1326,7 +1350,7 @@ const InstructorDashboard = () => {
               <Input
                 value={cat.description || ''}
                 onChange={e => updateEditCategory(idx, 'description', e.target.value)}
-                placeholder="Description"
+                placeholder={t('instructor.description')}
                 size="small"
               />
             </Space>
@@ -1652,9 +1676,13 @@ const InstructorDashboard = () => {
                 <div>
                   <Text strong style={{ fontSize: 15 }}>{createGameName || t('instructor.game')}</Text>
                   <Tag color={displayGameStatus === 'active' ? 'green' : displayGameStatus === 'paused' ? 'orange' : displayGameStatus === 'archived' ? 'default' : 'blue'}
-                    style={{ marginLeft: 8 }}>{displayGameStatus}</Tag>
+                    style={{ marginLeft: 8 }}>{gameStatusLabel(displayGameStatus)}</Tag>
                   <Text type="secondary" style={{ marginLeft: 8 }}>
-                    {createdGameTeams.length} teams &middot; {roster.filter(r => r.team_id && createdGameTeams.some(t => t.team_id === r.team_id)).length}/{roster.length} students assigned
+                    {t('instructor.teams_students_assigned', {
+                      teams: createdGameTeams.length,
+                      assigned: roster.filter(r => r.team_id && createdGameTeams.some(tm => tm.team_id === r.team_id)).length,
+                      total: roster.length,
+                    })}
                   </Text>
                 </div>
                 <Space>
@@ -1755,7 +1783,7 @@ const InstructorDashboard = () => {
                   <Col xs={24} md={8}>
                     <Text strong style={{ display: 'block', marginBottom: 4 }}>{t('instructor.game_name')}</Text>
                     <Input value={createGameName} onChange={e => setCreateGameName(e.target.value)}
-                      placeholder="e.g. Spring 2026 Simulation" />
+                      placeholder={t('instructor.game_name_placeholder')} />
                   </Col>
                   <Col xs={24} md={8}>
                     <Text strong style={{ display: 'block', marginBottom: 4 }}>{t('instructor.number_of_teams')}</Text>
@@ -1823,7 +1851,7 @@ const InstructorDashboard = () => {
                   <Row gutter={16}>
                     <Col xs={24} md={12}>
                       <Text type="secondary" style={{ display: 'block', marginBottom: 8, fontSize: 12 }}>
-                        CSV format: student_id, display_name, email (header row required)
+                        {t('instructor.csv_format_hint', { columns: 'student_id, display_name, email' })}
                       </Text>
                       <input
                         type="file" accept=".csv,.txt"
@@ -1845,7 +1873,7 @@ const InstructorDashboard = () => {
                     </Col>
                     <Col xs={24} md={12}>
                       <TextArea rows={3}
-                        placeholder={"student_id,display_name,email\n12345,John Doe,john@university.edu"}
+                        placeholder={t('instructor.csv_example_placeholder')}
                         value={csvText} onChange={e => setCsvText(e.target.value)}
                       />
                       <Button type="primary" size="small" style={{ marginTop: 8 }} disabled={!csvText.trim()} onClick={async () => {
@@ -1962,9 +1990,9 @@ const InstructorDashboard = () => {
               message={t('instructor.game_named', { game: createGameName || selectedScenario?.name || t('instructor.game') })}
               description={
                 <span>
-                  {createdGameTeams.length} teams &middot; Status: <Tag color={
+                  {t('instructor.teams_count_status', { teams: createdGameTeams.length })} <Tag color={
                     displayGameStatus === 'active' ? 'green' : displayGameStatus === 'paused' ? 'orange' : displayGameStatus === 'archived' ? 'default' : 'blue'
-                  }>{displayGameStatus}</Tag>
+                  }>{gameStatusLabel(displayGameStatus)}</Tag>
                 </span>
               }
             />
@@ -1992,7 +2020,7 @@ const InstructorDashboard = () => {
                             ))
                         }
                         <div style={{ marginTop: 4 }}>
-                          <Text type="secondary" style={{ fontSize: 11 }}>{assignedStudents.length} student(s)</Text>
+                          <Text type="secondary" style={{ fontSize: 11 }}>{t('instructor.students_count', { count: assignedStudents.length })}</Text>
                         </div>
                       </Card>
                     </Col>
@@ -2032,7 +2060,7 @@ const InstructorDashboard = () => {
                               const count = roster.filter(r => r.team_id === tm.team_id).length;
                               return {
                                 value: tm.team_id,
-                                label: `${tm.team_name} (${tm.home_market || '—'}) — ${count} student(s)`,
+                                label: `${tm.team_name} (${tm.home_market || '—'}) — ${t('instructor.students_count', { count })}`,
                               };
                             })}
                           />
@@ -2165,7 +2193,7 @@ const InstructorDashboard = () => {
     ...(gameId ? [
       { key: 'control', label: t('instructor.game_control'), children: gameControlTab },
     ] : []),
-    { key: 'accounts', label: 'Students & Logins', children: <StudentAccountsPanel gameId={gameId} /> },
+    { key: 'accounts', label: t('instructor.students_logins'), children: <StudentAccountsPanel gameId={gameId} /> },
     { key: 'grading', label: t('instructor.grading_export'), children: gradingTab },
     // --- Game-specific (only when game is active/paused with dashboard data) ---
     ...(hasGame ? [
@@ -2208,7 +2236,7 @@ const InstructorDashboard = () => {
           hazard the requirement exists to prevent. */}
       <Modal title={t('instructor.extend_deadline_title', { game: dashboard?.game_name || createGameName || t('instructor.game') })} open={extendModalOpen} onOk={handleExtend} onCancel={() => setExtendModalOpen(false)} confirmLoading={actionLoading}>
         <Text>{t('instructor.extend_deadline_by')}:</Text>
-        <InputNumber min={1} max={168} value={extendHours} onChange={setExtendHours} addonAfter="hours" style={{ width: '100%', marginTop: 8 }} />
+        <InputNumber min={1} max={168} value={extendHours} onChange={setExtendHours} addonAfter={t('instructor.hours_unit')} style={{ width: '100%', marginTop: 8 }} />
       </Modal>
 
       {/* Inject Event Modal — now with dropdowns */}
@@ -2258,12 +2286,13 @@ const InstructorDashboard = () => {
             description={drillError} />
         ) : !drillData ? <Empty description={t('instructor.no_submission_data')} /> : (
           <div>
-            <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{drillData.status}</Tag>
+            {drillData.status !== 'no_submission' && (
+              <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{submissionStatusLabel(drillData.status)}</Tag>
+            )}
             {drillData.submission_origin_label && <Tag color={drillData.submission_origin === 'defaulted_missing' ? 'red' : drillData.submission_origin === 'deadline_locked' ? 'gold' : 'default'} style={{ marginLeft: 4 }}>{drillData.submission_origin_label}</Tag>}
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
             {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
 
-            <AuditEvidenceTable events={drillData.audit_events} />
 
             {drillData.budget && (
               <Descriptions title={t('instructor.budget_allocation')} size="small" bordered column={{ xs: 1, sm: 2, md: 3 }} style={{ marginTop: 12 }}>
@@ -2323,6 +2352,10 @@ const InstructorDashboard = () => {
                 <Descriptions.Item label={t('instructor.operations_hc')}>{drillData.talent.operations_headcount}</Descriptions.Item>
               </Descriptions>
             )}
+
+            {/* W-CE-20: the evidence follows the decisions it is evidence for,
+                behind a closed panel; nothing in it is removed. */}
+            <AuditEvidenceTable events={drillData.audit_events} collapsed />
           </div>
         )}
       </Modal>

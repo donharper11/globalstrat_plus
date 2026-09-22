@@ -1,5 +1,6 @@
 import React from 'react';
 import { Select, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
@@ -11,7 +12,10 @@ const { Text } = Typography;
  * rounds that have actually been reached — offering round 5 of a game on round
  * 3 would invite a fetch that can only fail.
  */
-export default function AuditRoundSelect({ value, currentRound, onChange, label = 'Round' }) {
+export default function AuditRoundSelect({ value, currentRound, onChange, label: givenLabel }) {
+  const { t } = useTranslation();
+  // The default was English whatever the console's language (W-CE-17 sweep).
+  const label = givenLabel || t('instructor.round');
   const rounds = Math.max(0, Number(currentRound) || 0);
   return (
     <div style={{ marginBottom: 12 }}>

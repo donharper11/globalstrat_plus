@@ -6,6 +6,7 @@ import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { useDecisions } from '../../contexts/DecisionContext';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const fmt = (v) => {
   if (v == null) return '$0';
@@ -123,6 +124,8 @@ function DSTopBar({ onToggle, isMobile }) {
           serves a student and the instructor alerts are instructor-only.
           Removed rather than wired to a subsystem that does not exist. */}
       <div className="ds-topbar-right">
+        {/* W-CE-11: the language switch inside the game, not only on the login page. */}
+        <LanguageSwitcher style={{ color: '#CBD5E1' }} />
         <button className="ds-topbar-action" onClick={handleLogout} title={t('topbar.log_out')}
           aria-label={t('topbar.log_out')}>
           <FontAwesomeIcon icon={faSignOutAlt} />

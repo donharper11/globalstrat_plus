@@ -29,6 +29,18 @@ const getDistributionChannels = (t) => [
   { key: 'direct_online', label: t('marketing.ch_direct_online'), description: t('marketing.ch_direct_online_desc'), reach: t('marketing.reach_medium'), margin: t('marketing.margin_high') },
 ];
 
+// A product's positioning token was shown raw ('mainstream'); one literal key
+// per value so the string gate sees each (W-CE-16 sweep, 2026-09-22).
+const positioningLabel = (value, t) => {
+  switch (value) {
+    case 'budget': return t('marketing.positioning_budget');
+    case 'mainstream': return t('marketing.positioning_mainstream');
+    case 'premium': return t('marketing.positioning_premium');
+    case 'ultra_premium': return t('marketing.positioning_ultra_premium');
+    default: return value;
+  }
+};
+
 const MarketingPage = () => {
   const { t } = useTranslation();
   const DISTRIBUTION_CHANNELS = getDistributionChannels(t);
@@ -404,7 +416,7 @@ const MarketingPage = () => {
             </Col>
             <Col>
               <Tag color={d.positioning === 'premium' ? 'purple' : d.positioning === 'budget' ? 'green' : 'blue'}>
-                {d.positioning}
+                {positioningLabel(d.positioning, t)}
               </Tag>
             </Col>
           </Row>
@@ -684,7 +696,7 @@ const MarketingPage = () => {
                 color={d.positioning === 'premium' ? 'purple' : d.positioning === 'budget' ? 'green' : 'blue'}
                 style={{ fontSize: 10, marginLeft: 6 }}
               >
-                {d.positioning}
+                {positioningLabel(d.positioning, t)}
               </Tag>
             </span>
           ),

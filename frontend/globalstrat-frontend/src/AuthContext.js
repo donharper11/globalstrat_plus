@@ -1,5 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getCurrentUser } from './api/auth';
+import { getCurrentUser, setLanguagePreference } from './api/auth';
+
+const SUPPORTED_LANGUAGES = ['en', 'zh-CN'];
+
+/**
+ * The language chosen on the login page becomes the signed-in person's stated
+ * preference (W-CE-15, 2026-09-22).
+ *
+ * The switch on the login page can only write `localStorage.gs_language`:
+ * there is no token yet, so nothing reached the server, and the enrolment
+ * kept its default 'en'. The team's language -- what the analyst route and
+ * Phase 2 speak to a student in (R43) -- is read from the enrolment, so a
+ * team playing in Chinese was refused in English. Sent once, at sign-in, only
+ * when the stored choice differs from what the server holds; best effort.
+ */
+export const syncLanguagePreference = (userData) => {
+  let chosen = null;
+  try {
+    chosen = localStorage.getItem('gs_language');
+  } catch {
+    return null;
+  }
+  if (!SUPPORTED_LANGUAGES.includes(chosen)) return null;
+  if ((userData?.language || 'en') === chosen) return null;
+  setLanguagePreference(chosen).catch(() => {});
+  return chosen;
+};
 
 const AuthContext = createContext(null);
 
@@ -48,8 +74,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    localStorage.setItem('gs_user', JSON.stringify(userData));
-    setUser(userData);
+    const chosen = syncLanguagePreference(userData);
+    const stored = chosen ? { ...userData, language: chosen } : userData;
+    localStorage.setItem('gs_user', JSON.stringify(stored));
+    setUser(stored);
   };
 
   const logout = () => {

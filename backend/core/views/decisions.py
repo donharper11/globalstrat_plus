@@ -1178,8 +1178,16 @@ class DecisionSummaryView(APIView):
             FXHedgeDecision as _FX, InventoryDecision as _INV, ContingencyPlan as _CP,
         )
 
+        # None of the four is a precondition of the lock (the lock checks
+        # budget, products, marketing and strategy below), so each says so:
+        # the Summary listed them as requirements to 'fix' (W-CE-13).
         def _sc_cfg(exists):
-            return {'status': 'configured' if exists else 'empty', 'warnings': []}
+            return {
+                'status': 'configured' if exists else 'empty',
+                'warnings': [] if exists else [participant_message(
+                    'summary_section_optional', language=language)],
+                'optional': True,
+            }
         sc_categories = {
             'sourcing': _sc_cfg(_SA.objects.filter(team_id=team_id, round=rnd).exists()),
             'logistics': _sc_cfg(_LD.objects.filter(team_id=team_id, round=rnd).exists()),
@@ -1898,7 +1906,10 @@ class RDContextView(APIView):
             'rd_budget': float(rd_budget),
             'rd_budget_remaining': float(rd_budget - rd_spent),
             'rd_spent': float(rd_spent),
-            'budget_source': f"20% of previous round net profit ({float(prev_net_income):,.0f}) + base allocation ({float(base_allocation):,.0f})",
+            'budget_source': participant_message(
+                'rd_budget_source', language=language,
+                profit=f'{float(prev_net_income):,.0f}',
+                base=f'{float(base_allocation):,.0f}'),
             'pending_feature_gains': pending,
         })
 
@@ -2236,6 +2247,13 @@ class StrategyContextView(APIView):
                 'entry_mode': get_localized_field(presence.entry_mode, 'name', language) if presence else None,
                 'allows_manufacturing': mkt.allows_manufacturing,
                 'contract_mfg_available': mkt.contract_mfg_available,
+                # The authored plant figures (W-CE-22). The page showed $0 for
+                # every market because none of these travelled; a cost the
+                # scenario does not author is null, never a number.
+                'plant_build_cost': (float(mkt.plant_build_cost)
+                                     if mkt.plant_build_cost is not None else None),
+                'plant_build_rounds': mkt.plant_build_rounds,
+                'plant_capacity_units': mkt.plant_capacity_units,
             })
 
         # Active partnerships
@@ -2350,9 +2368,18 @@ class StrategyContextView(APIView):
                 'available': round_available and meets_presence and not acquired_by,
                 'locked_reasons': [
                     reason for reason in [
-                        f'Available from Round {target.min_round_available}' if not round_available else None,
-                        f'Requires presence in {get_localized_field(target.market, "name", language)}' if not meets_presence else None,
-                        f'Already acquired by {acquired_by.team.name}' if acquired_by else None,
+                        participant_message(
+                            'ma_available_from_round', language=language,
+                            round=target.min_round_available)
+                        if not round_available else None,
+                        participant_message(
+                            'ma_requires_presence', language=language,
+                            market=get_localized_field(target.market, 'name', language))
+                        if not meets_presence else None,
+                        participant_message(
+                            'ma_already_acquired', language=language,
+                            team=acquired_by.team.name)
+                        if acquired_by else None,
                     ] if reason
                 ],
                 'acquired_by_team': acquired_by.team.name if acquired_by else None,

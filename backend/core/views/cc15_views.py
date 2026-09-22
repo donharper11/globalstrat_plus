@@ -30,6 +30,7 @@ from core.models.decisions import (
     DecisionMarketEntry, DecisionResearchAllocation,
 )
 from core.models.cc15_models import TeamFrameworkAnalysis, ForecastScenario
+from core.engine.events import event_narrative_for_reader
 from core.utils.localization import get_localized_field, get_user_language
 
 
@@ -87,7 +88,7 @@ class IndustryNewsView(APIView):
             tmpl = ev.event_template
             events.append({
                 'name': get_localized_field(tmpl, 'name', language),
-                'narrative': ev.narrative or get_localized_field(tmpl, 'description_template', language),
+                'narrative': event_narrative_for_reader(ev, language),
                 'category': tmpl.category,
                 'severity': tmpl.severity,
                 'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',

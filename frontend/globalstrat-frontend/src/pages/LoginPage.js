@@ -208,10 +208,10 @@ const LoginPage = () => {
           lineHeight: 1.6,
         }}>
           <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: 13, color: '#8A8A8A' }}>
-            Clarity. Capability. Camdani.
+            {t('login.brand_line')}
           </div>
           <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 300, fontSize: 12, color: '#A0A0A0' }}>
-            Built for Real Work, Not Just Coursework
+            {t('login.tagline')}
           </div>
         </div>
 

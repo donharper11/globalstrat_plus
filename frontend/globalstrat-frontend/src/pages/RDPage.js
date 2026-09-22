@@ -74,8 +74,8 @@ const CreatePlatformModal = ({ open, onClose, onCreated, context, gameId, teamId
   const missingFields = [];
   if (!platformName.trim()) missingFields.push(t('rd.platform_name'));
   if (!selectedGenId) missingFields.push(t('rd.technology_base'));
-  if (saving) missingFields.push('Saving...');
-  if (overBudget) missingFields.push('Cost exceeds R&D budget');
+  if (saving) missingFields.push(t('rd.saving'));
+  if (overBudget) missingFields.push(t('rd.cost_exceeds_budget'));
   if (selectedGen?.prerequisites_met === false && selectedGen?.generation_order !== 1) missingFields.push(t('rd.prerequisites_not_met'));
   const canCreate = missingFields.length === 0;
 
@@ -679,8 +679,8 @@ const RDPage = () => {
       <Alert
         showIcon
         type="info"
-        message="Choose one R&D action for this round"
-        description={`You have ${fmt(rdRemaining)} of R&D budget remaining and ${investmentSlots.remaining ?? 0} of ${investmentSlots.max ?? 0} investment slots open. Upgrade an existing feature when a new platform is over budget.`}
+        message={t('rd.guidance_title')}
+        description={t('rd.guidance_desc', { remaining: fmt(rdRemaining), open: investmentSlots.remaining ?? 0, max: investmentSlots.max ?? 0 })}
         style={{ marginBottom: 16 }}
       />
 
@@ -775,7 +775,7 @@ const RDPage = () => {
                       loading={savingInvestment === f.feature_id}
                       onClick={() => investInNextLevel(f)}
                     >
-                      Invest next level
+                      {t('rd.invest_next_level')}
                     </Button>
                   </div>
                 );
@@ -785,16 +785,16 @@ const RDPage = () => {
       )}
 
       {currentInvestments.length > 0 && (
-        <PanelCard headerColor="decision" title="CURRENT R&D DRAFT" style={{ marginBottom: 16 }}>
+        <PanelCard headerColor="decision" title={t('rd.current_draft')} style={{ marginBottom: 16 }}>
           <Table
             dataSource={currentInvestments.map(inv => ({ ...inv, key: inv.id || inv.feature_id }))}
             pagination={false}
             size="small"
             columns={[
-              { title: 'Feature', dataIndex: 'feature_name', key: 'feature_name' },
-              { title: 'Target level', dataIndex: 'target_level', key: 'target_level', width: 120 },
-              { title: 'Method', dataIndex: 'method', key: 'method', width: 120 },
-              { title: 'Cost', dataIndex: 'cost', key: 'cost', width: 120, align: 'right', render: value => fmt(value) },
+              { title: t('rd.feature'), dataIndex: 'feature_name', key: 'feature_name' },
+              { title: t('rd.target_level'), dataIndex: 'target_level', key: 'target_level', width: 120 },
+              { title: t('rd.method'), dataIndex: 'method', key: 'method', width: 120 },
+              { title: t('rd.cost'), dataIndex: 'cost', key: 'cost', width: 120, align: 'right', render: value => fmt(value) },
             ]}
           />
         </PanelCard>

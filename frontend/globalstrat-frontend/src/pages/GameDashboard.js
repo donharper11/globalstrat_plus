@@ -550,19 +550,19 @@ const GameDashboard = () => {
         <PanelCard title={t('dashboard.budget_overview')} headerColor="financial">
           <BudgetBar budgets={budgets} />
         </PanelCard>
-        <PanelCard title="NEXT REQUIRED ACTION" headerColor="decision">
+        <PanelCard title={t('dashboard.next_required_action')} headerColor="decision">
           {nextDecisionPage ? (
             <Space direction="vertical" size={8} style={{ width: '100%' }}>
               <Text strong>{nextDecisionPage.label}</Text>
               <Text type="secondary" style={{ fontSize: 12 }}>
-                Continue here first. The checklist below updates as each draft decision is saved.
+                {t('dashboard.continue_here_first')}
               </Text>
               <Button type="primary" onClick={() => navigate(nextDecisionPage.path)}>
-                Continue to {nextDecisionPage.label}
+                {t('dashboard.continue_to', { page: nextDecisionPage.label })}
               </Button>
             </Space>
           ) : (
-            <Text type="secondary">Open Review & Submit to check the round.</Text>
+            <Text type="secondary">{t('dashboard.open_review')}</Text>
           )}
         </PanelCard>
         <PanelCard title={t('dashboard.decision_checklist')} headerColor="neutral">
@@ -570,7 +570,10 @@ const GameDashboard = () => {
             {decisionPages.map(p => {
               const cat = decisionStatus(p);
               const done = cat.status === 'configured';
-              const statusText = done ? 'Complete' : cat.status === 'partial' ? 'Needs review' : cat.status === 'error' ? 'Blocked' : 'Not started';
+              const statusText = done ? t('summary_page.status_complete')
+                : cat.status === 'partial' ? t('summary_page.status_needs_review')
+                  : cat.status === 'error' ? t('summary_page.status_blocked')
+                    : t('summary_page.status_not_started');
               return (
                 <div key={p.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
                   <Button type="link" onClick={() => navigate(p.path)} style={{ padding: 0, fontSize: 13, textAlign: 'left' }}>{p.label}</Button>
@@ -1071,7 +1074,7 @@ const GameDashboard = () => {
     { key: 'markets', label: t('dashboard.market_results'), children: <MarketTab /> },
     { key: 'events', label: t('dashboard.events_intelligence'), children: <EventsTab /> },
     { key: 'strategic', label: t('dashboard.strategic_scorecard'), children: <StrategicScorecardTab /> },
-    { key: 'supply_chain', label: 'Supply Chain', children: <SupplyChainPanel /> },
+    { key: 'supply_chain', label: t('dashboard.supply_chain_tab'), children: <SupplyChainPanel /> },
     ...(briefing ? [{ key: 'briefing', label: t('dashboard.strategic_briefing_tab', { round: briefing.round_number }), children: <StrategicBriefingTab /> }] : []),
   ];
 

@@ -76,16 +76,23 @@ def zh_sentences():
             ('participant_messages',
              ('MESSAGES', 'FIELD_LABELS', 'ROUND_STATUS_LABELS')),
             ('cohort_messages', ('MESSAGES',)),
-            ('operator_messages', ('MESSAGES', 'GAME_STATUS_LABELS'))):
+            ('operator_messages', ('MESSAGES', 'GAME_STATUS_LABELS',
+                                   'SUBMISSION_ORIGIN_LABELS'))):
         for key, text in _python_catalogue(
                 f'core/utils/{module}.py', *names).items():
             short = key.split('.', 1)[1] if key.startswith('MESSAGES.') else key
             sentences[f'{module}:{short}'] = text
-    # The instructor ticker keeps its zh-CN strings beside the view.
-    ticker = (BACKEND / 'core/views/cc31h_views.py').read_text(encoding='utf-8')
-    for index, text in enumerate(re.findall(r"'([^'\n]*[一-鿿][^'\n]*)'",
-                                            ticker)):
-        sentences[f'cc31h_views:{index}'] = text
+    # The instructor ticker keeps its zh-CN strings beside the view, and the
+    # Phase-2 template fallbacks keep theirs beside the engine (W-CE-16).
+    for label, relative in (
+            ('cc31h_views', 'core/views/cc31h_views.py'),
+            ('narratives', 'core/engine/narratives.py'),
+            ('instructor_alerts', 'core/engine/instructor_alerts.py'),
+            ('communication_eval', 'core/rag/communication_eval.py')):
+        source = (BACKEND / relative).read_text(encoding='utf-8')
+        for index, text in enumerate(re.findall(r"'([^'\n]*[一-鿿][^'\n]*)'",
+                                                source)):
+            sentences[f'{label}:{index}'] = text
     return sentences
 
 
@@ -95,7 +102,8 @@ class ZhTerminologyTests(SimpleTestCase):
         sources = {key.split(':', 1)[0] for key in zh_sentences()}
         self.assertEqual(sources, {
             'frontend', 'participant_messages', 'cohort_messages',
-            'operator_messages', 'cc31h_views'})
+            'operator_messages', 'cc31h_views', 'narratives',
+            'instructor_alerts', 'communication_eval'})
         self.assertGreater(len(zh_sentences()), 1500)
 
     def test_no_catalogue_uses_a_retired_term(self):

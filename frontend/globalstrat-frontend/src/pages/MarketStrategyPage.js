@@ -10,6 +10,7 @@ import { complianceRows, complianceByCode } from './sectionPayloads';
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
+import { distanceLabel, plantStatusLabel, perRoundCharge, plantBuildLabel } from './marketStrategyLabels';
 
 const { Title, Text } = Typography;
 
@@ -94,7 +95,7 @@ const MarketOperationsSection = ({ market, complianceCtx, localizationData, load
               <Text style={{ display: 'block', marginBottom: 4 }}>{t('common.home_market')}: {loc.home_market.name}</Text>
             )}
             <Space style={{ marginBottom: 8 }}>
-              <Text>{t('market_strategy.cultural_distance')}: <Tag color={DISTANCE_COLORS[loc?.distance?.level] || '#8c8c8c'}>{loc?.distance?.level || '—'}</Tag></Text>
+              <Text>{t('market_strategy.cultural_distance')}: <Tag color={DISTANCE_COLORS[loc?.distance?.level] || '#8c8c8c'}>{distanceLabel(loc?.distance?.level, t)}</Tag></Text>
               {loc?.distance?.level && loc.distance.level !== 'UNKNOWN' && (
                 <span>
                   {Array.from({ length: 4 }, (_, i) => (
@@ -615,7 +616,7 @@ const MarketStrategyPage = () => {
                   </Col>
                   <Col xs={12}>
                     <Tag color={plant.status === 'operational' ? 'green' : 'orange'}>
-                      {plant.status}
+                      {plantStatusLabel(plant.status, t)}
                     </Tag>
                   </Col>
                 </Row>
@@ -633,7 +634,7 @@ const MarketStrategyPage = () => {
                       autoSave('plants', { plant_decisions: pd });
                     }}
                   >
-                    {t('market_strategy.build_plant')} — {fmt(m.plant_build_cost)}, {t('market_strategy.build_plant_detail', { rounds: m.plant_build_rounds || 2, units: m.plant_capacity_units || 50000 })}
+                    {plantBuildLabel(m, t, fmt)}
                   </Button>
                 )}
               </div>
@@ -654,7 +655,7 @@ const MarketStrategyPage = () => {
             <div style={{ marginBottom: 12 }}>
               {marketPartnerships.map(p => (
                 <Tag key={p.id} color="blue" style={{ marginBottom: 4 }}>
-                  {p.strategy_option_name} — {fmt(p.annual_investment)}/round
+                  {p.strategy_option_name} — {perRoundCharge(p.annual_investment, t, fmt)}
                 </Tag>
               ))}
             </div>
@@ -676,7 +677,7 @@ const MarketStrategyPage = () => {
                     autoSave('partnerships', { partnerships: updated });
                   }}
                 >
-                  + {so.name} — {fmt(so.capital_cost_base)} + {fmt(so.recurring_cost_per_round)}/round
+                  + {so.name} — {perRoundCharge(so.capital_cost_base, t, fmt)}
                 </Button>
               ))}
             </Space>

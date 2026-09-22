@@ -15,7 +15,8 @@ import DSTopBar from './TopBar';
  */
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key) => key }),
+  // `i18n` too: the top bar now carries the language switch (W-CE-11).
+  useTranslation: () => ({ t: (key) => key, i18n: { language: 'en', changeLanguage: jest.fn() } }),
 }));
 
 jest.mock('../../AuthContext', () => ({

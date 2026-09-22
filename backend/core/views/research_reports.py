@@ -37,6 +37,7 @@ from core.models.decisions import (
     DecisionSubmission, DecisionMarketing,
 )
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import participant_message
 
 
 def _f(v):
@@ -46,73 +47,103 @@ def _f(v):
     return float(v)
 
 
-def _importance_label(weight):
+# The rating words a report shows (W-CE-16, 2026-09-22). Each `_*_code`
+# function decides the rating; `_word` renders it from the participant
+# catalogue in the reader's language. The report carries both -- the word for
+# the reader and the code for the page's colours -- and the rules below
+# compare codes, never words.
+
+def _word(kind, code, language):
+    return participant_message(f'research_{kind}_{code}', language=language)
+
+
+def _importance_code(weight):
     w = float(weight)
     if w > 0.15:
-        return 'Critical'
+        return 'critical'
     if w >= 0.08:
-        return 'High'
+        return 'high'
     if w >= 0.04:
-        return 'Moderate'
-    return 'Low'
+        return 'moderate'
+    return 'low'
 
 
-def _fit_label(score):
+def _fit_code(score):
     s = float(score)
     if s > 0.7:
-        return 'Strong'
+        return 'strong'
     if s >= 0.5:
-        return 'Moderate'
+        return 'moderate'
     if s >= 0.3:
-        return 'Weak'
-    return 'Very Weak'
+        return 'weak'
+    return 'very_weak'
 
 
-def _growth_label(rate):
+def _growth_code(rate):
     r = float(rate)
     if r >= 0.08:
-        return 'Fastest'
+        return 'fastest'
     if r >= 0.05:
-        return 'Fast'
+        return 'fast'
     if r >= 0.03:
-        return 'Moderate growth'
-    return 'Slow growth'
+        return 'moderate'
+    return 'slow'
 
 
-def _price_sensitivity_label(weight):
+def _price_sensitivity_code(weight):
     """Derive from weight of price-related feature in segment preferences."""
     w = float(weight)
     if w > 0.15:
-        return 'Very High'
+        return 'very_high'
     if w >= 0.10:
-        return 'High'
+        return 'high'
     if w >= 0.05:
-        return 'Moderate'
-    return 'Low'
+        return 'moderate'
+    return 'low'
 
 
-def _opportunity_signal(seg_data):
-    """Rule-based opportunity signal from segment data."""
+def _importance_label(weight, language='en'):
+    return _word('importance', _importance_code(weight), language)
+
+
+def _fit_label(score, language='en'):
+    return _word('fit', _fit_code(score), language)
+
+
+def _growth_label(rate, language='en', short=False):
+    code = _growth_code(rate)
+    if short and code in ('moderate', 'slow'):
+        code += '_short'
+    return _word('growth', code, language)
+
+
+def _price_sensitivity_label(weight, language='en'):
+    return _word('price', _price_sensitivity_code(weight), language)
+
+
+def _opportunity_signal(seg_data, language='en'):
+    """Rule-based opportunity signal from segment data (codes, not words)."""
     growth = float(seg_data.get('growth_rate', 0))
     your_share = float(seg_data.get('your_share', 0))
-    fit_label = seg_data.get('your_fit_score_label', 'Very Weak')
+    fit = seg_data.get('your_fit_score_code', 'very_weak')
     underserved = seg_data.get('underserved', False)
     population = seg_data.get('population', 0)
-    price_sens = seg_data.get('price_sensitivity', 'Moderate')
+    price_sens = seg_data.get('price_sensitivity_code', 'moderate')
 
+    key = None
     if growth >= 0.05 and your_share < 0.10:
-        return 'Growing segment you\'re not capturing. Investigate fit gaps.'
-    if your_share > 0.20 and fit_label in ('Weak', 'Very Weak'):
-        return 'Your lead may be eroding. Check competitor moves.'
-    if population > 50000 and underserved:
-        return 'Large underserved segment. First-mover advantage available.'
-    if price_sens == 'Low' and fit_label in ('Weak', 'Very Weak'):
-        return 'High-margin segment. Your capabilities may not match their expectations.'
-    if price_sens in ('Very High', 'High') and your_share > 0.15:
-        return 'Dominated by price competition. Margins thin.'
-    if growth >= 0.03 and fit_label == 'Strong':
-        return 'Growing segment where you have strong fit. Protect and expand.'
-    return ''
+        key = 'growing_uncaptured'
+    elif your_share > 0.20 and fit in ('weak', 'very_weak'):
+        key = 'lead_eroding'
+    elif population > 50000 and underserved:
+        key = 'underserved'
+    elif price_sens == 'low' and fit in ('weak', 'very_weak'):
+        key = 'high_margin_mismatch'
+    elif price_sens in ('very_high', 'high') and your_share > 0.15:
+        key = 'price_competition'
+    elif growth >= 0.03 and fit == 'strong':
+        key = 'protect_expand'
+    return _word('opportunity', key, language) if key else ''
 
 
 class ResearchReportsView(APIView):
@@ -234,14 +265,16 @@ class ResearchReportsView(APIView):
 
             top_features = [{
                 'name': get_localized_field(p.feature, 'name', language),
-                'importance': _importance_label(p.weight),
+                'importance': _importance_label(p.weight, language),
+                'importance_code': _importance_code(p.weight),
             } for p in prefs]
 
             # Price sensitivity from price-related feature weight
             price_pref = SegmentPreference.objects.filter(
                 segment=seg, feature__code__in=['price_competitiveness', 'retail_price'],
             ).first()
-            price_sensitivity = _price_sensitivity_label(price_pref.weight if price_pref else 0.05)
+            price_weight = price_pref.weight if price_pref else 0.05
+            price_sensitivity = _price_sensitivity_label(price_weight, language)
 
             # Adoption data for this team
             adoption = RoundResultAdoption.objects.filter(
@@ -282,24 +315,28 @@ class ResearchReportsView(APIView):
             seg_entry = {
                 'name': get_localized_field(seg, 'name', language),
                 'type': seg.segment_type,
-                'market': get_localized_field(seg.market, 'name', language) if seg.market else 'All Markets',
+                'market': get_localized_field(seg.market, 'name', language) if seg.market
+                          else participant_message('research_all_markets', language=language),
                 'population': seg.population_size,
                 'growth_rate': _f(seg.population_growth_rate),
-                'growth_label': _growth_label(seg.population_growth_rate),
-                'your_fit_score_label': _fit_label(your_fit),
+                'growth_label': _growth_label(seg.population_growth_rate, language),
+                'your_fit_score_label': _fit_label(your_fit, language),
+                'your_fit_score_code': _fit_code(your_fit),
                 'your_share': your_share,
                 'your_rank': your_rank,
-                'top_competitor': top_competitor or 'N/A',
+                'top_competitor': top_competitor or participant_message(
+                    'research_no_competitor', language=language),
                 'top_competitor_share': top_competitor_share,
                 'adoption_trend': trend,
                 'price_sensitivity': price_sensitivity,
+                'price_sensitivity_code': _price_sensitivity_code(price_weight),
                 'top_valued_features': top_features,
                 'underserved': underserved,
             }
-            seg_entry['opportunity_signal'] = _opportunity_signal(seg_entry)
+            seg_entry['opportunity_signal'] = _opportunity_signal(seg_entry, language)
             segments_data.append(seg_entry)
 
-        market_name = 'All Markets'
+        market_name = participant_message('research_all_markets', language=language)
         if market_code != 'all':
             mkt = MarketDefinition.objects.filter(scenario=scenario, code=market_code).first()
             if mkt:
@@ -343,10 +380,11 @@ class ResearchReportsView(APIView):
 
                 for a in adoptions:
                     fit = _f(a.adjusted_fit_score)
-                    label = _fit_label(fit)
+                    label = _fit_label(fit, language)
                     seg_fits.append({
                         'segment': get_localized_field(a.segment, 'name', language),
                         'fit_label': label,
+                        'fit_code': _fit_code(fit),
                         'adoption': int(_f(a.new_adopters)),
                     })
                     if fit > strongest_fit:
@@ -461,7 +499,7 @@ class ResearchReportsView(APIView):
             seg_breakdown = [{
                 'segment': get_localized_field(s, 'name', language),
                 'pct_of_market': round(s.population_size / total_pop, 2),
-                'growth': _growth_label(s.population_growth_rate).replace(' growth', ''),
+                'growth': _growth_label(s.population_growth_rate, language, short=True),
             } for s in segs]
 
             # Competitor count
@@ -579,22 +617,23 @@ class ResearchReportsView(APIView):
 
         # Channel comparison: show theoretical reach if present, 0 if not in market
         reach_multiplier = 1.0 if is_present else 0.0
+        def _channel(key, reach, margin, budget, premium):
+            return {
+                'strategy': participant_message(f'research_channel_{key}', language=language),
+                'key': key,
+                'reach': round(reach * reach_multiplier, 2), 'theoretical_reach': reach,
+                'margin_impact': margin,
+                'fit_with_budget': _word('channel_fit', budget, language),
+                'fit_with_budget_code': budget,
+                'fit_with_premium': _word('channel_fit', premium, language),
+                'fit_with_premium_code': premium,
+            }
         channel_comparison = [
-            {'strategy': 'Mass Retail', 'key': 'mass_retail',
-             'reach': round(0.90 * reach_multiplier, 2), 'theoretical_reach': 0.90,
-             'margin_impact': -0.05, 'fit_with_budget': 'Excellent', 'fit_with_premium': 'Poor'},
-            {'strategy': 'Selective Retail', 'key': 'selective_retail',
-             'reach': round(0.60 * reach_multiplier, 2), 'theoretical_reach': 0.60,
-             'margin_impact': 0.00, 'fit_with_budget': 'Good', 'fit_with_premium': 'Good'},
-            {'strategy': 'Exclusive Retail', 'key': 'exclusive_retail',
-             'reach': round(0.30 * reach_multiplier, 2), 'theoretical_reach': 0.30,
-             'margin_impact': 0.10, 'fit_with_budget': 'Poor', 'fit_with_premium': 'Excellent'},
-            {'strategy': 'Direct Online', 'key': 'direct_online',
-             'reach': round(0.50 * reach_multiplier, 2), 'theoretical_reach': 0.50,
-             'margin_impact': 0.08, 'fit_with_budget': 'Moderate', 'fit_with_premium': 'Moderate'},
-            {'strategy': 'Hybrid', 'key': 'hybrid',
-             'reach': round(0.70 * reach_multiplier, 2), 'theoretical_reach': 0.70,
-             'margin_impact': 0.03, 'fit_with_budget': 'Good', 'fit_with_premium': 'Good'},
+            _channel('mass_retail', 0.90, -0.05, 'excellent', 'poor'),
+            _channel('selective_retail', 0.60, 0.00, 'good', 'good'),
+            _channel('exclusive_retail', 0.30, 0.10, 'poor', 'excellent'),
+            _channel('direct_online', 0.50, 0.08, 'moderate', 'moderate'),
+            _channel('hybrid', 0.70, 0.03, 'good', 'good'),
         ]
 
         return Response({
@@ -670,10 +709,12 @@ class ResearchReportsView(APIView):
 
             groups[stype]['segments'].append({
                 'name': get_localized_field(seg, 'name', language),
-                'market': get_localized_field(seg.market, 'name', language) if seg.market else 'Global',
+                'market': get_localized_field(seg.market, 'name', language) if seg.market
+                          else participant_message('research_global', language=language),
                 'description': get_localized_field(seg, 'description', language),
                 'satisfaction': round(satisfaction, 3),
-                'satisfaction_label': _fit_label(satisfaction),
+                'satisfaction_label': _fit_label(satisfaction, language),
+                'satisfaction_code': _fit_code(satisfaction),
                 'weight': round(_f(seg.performance_index_weight), 4),
                 'trend': trend,
                 'gaps': gaps,

@@ -24,10 +24,7 @@ const read = (relative) => fs.readFileSync(path.join(__dirname, relative), 'utf8
 const PANELS = {
   'RoundControlCard.js': read('RoundControlCard.js'),
   'StudentAccountsPanel.js': read('StudentAccountsPanel.js'),
-};
-// Only its announcements are policed: the rest of this panel is still English
-// (reported, not part of this item).
-const ANNOUNCEMENTS_ONLY = {
+  // W-CE-17 (2026-09-22): the whole panel, not only its announcements.
   'instructor/InstructorSCPanel.js': read('instructor/InstructorSCPanel.js'),
 };
 
@@ -148,21 +145,6 @@ describe.each(Object.entries(PANELS))('%s', (name, source) => {
   test('picks no key at run time', () => {
     // The string gate cannot resolve a computed key; write one t() per key.
     expect(withoutComments(source).match(/\bt\(\s*(?!['"])/g) || []).toEqual([]);
-  });
-
-  test('every key it asks for exists in both languages', () => {
-    const missing = keysUsed(source).filter(
-      (key) => !exists(en, key) || !exists(zh, key));
-    expect(missing).toEqual([]);
-  });
-});
-
-describe.each(Object.entries(ANNOUNCEMENTS_ONLY))('%s announcements', (name, source) => {
-  test('no message.*( call falls back to, or opens on, English', () => {
-    const calls = withoutComments(source).split('\n')
-      .filter((line) => /\bmessage\.(success|error|warning|info)\(/.test(line));
-    expect(calls.length).toBeGreaterThanOrEqual(4);
-    expect(calls.filter((line) => spokenFallbacks(line).length > 0)).toEqual([]);
   });
 
   test('every key it asks for exists in both languages', () => {

@@ -225,10 +225,30 @@ def _call_llm_evaluation(prompt):
         return None
 
 
+# The heuristic's sentences in both languages (W-CE-16, 2026-09-22): a
+# Chinese team read them in English whenever the evaluator was unavailable.
+_FALLBACK_TEXT = {
+    'en': {
+        'criterion': 'Automated evaluation unavailable. Score based on submission completeness.',
+        'strength': 'Communication submitted within word limit',
+        'gap': 'LLM evaluation unavailable — detailed feedback not generated',
+        'overall': ('This communication was evaluated using a fallback heuristic because the AI evaluator '
+                    'was unavailable. The score reflects submission completeness only.'),
+    },
+    'zh-CN': {
+        'criterion': '自动评估不可用。得分基于提交内容的完整性。',
+        'strength': '沟通稿在字数限制内提交',
+        'gap': '模型评估不可用——未生成详细反馈',
+        'overall': '由于评估模型不可用，本沟通稿采用备用规则进行评估。得分仅反映提交内容的完整性。',
+    },
+}
+
+
 def _fallback_evaluation(team_comm):
-    """Generate a basic evaluation when LLM is unavailable."""
+    """Generate a basic evaluation when LLM is unavailable, in the team's language."""
     word_count = team_comm.word_count
     word_limit = team_comm.assignment.word_limit
+    text = _FALLBACK_TEXT.get(get_team_language(team_comm.team), _FALLBACK_TEXT['en'])
 
     # Simple heuristic: word count relative to limit
     length_score = min(word_count / max(word_limit * 0.5, 1), 1.0)
@@ -238,20 +258,17 @@ def _fallback_evaluation(team_comm):
     for c in (team_comm.assignment.evaluation_criteria or []):
         criteria_scores[c['criterion']] = {
             'score': base_score,
-            'feedback': 'Automated evaluation unavailable. Score based on submission completeness.',
+            'feedback': text['criterion'],
         }
 
     return {
         'overall_score': base_score,
         'criteria_scores': criteria_scores,
-        'strengths': ['Communication submitted within word limit'] if word_count <= word_limit else [],
-        'gaps': ['LLM evaluation unavailable — detailed feedback not generated'],
+        'strengths': [text['strength']] if word_count <= word_limit else [],
+        'gaps': [text['gap']],
         'consistency_flags': [],
         'framework_references': [],
-        'overall_feedback': (
-            'This communication was evaluated using a fallback heuristic because the AI evaluator '
-            'was unavailable. The score reflects submission completeness only.'
-        ),
+        'overall_feedback': text['overall'],
     }
 
 

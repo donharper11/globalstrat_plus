@@ -319,7 +319,7 @@ const ProductsPage = () => {
         {refusal && <RefusalNotice sentences={refusal} />}
         <Form form={createForm} layout="vertical" onFinish={handleCreate}>
           <Form.Item name="name" label={t("products_page.product_name")} rules={[{ required: true }]}>
-            <Input placeholder="e.g. Nexus Pro" />
+            <Input placeholder={t('products_page.name_placeholder')} />
           </Form.Item>
           <Form.Item name="platform" label={t("products_page.parent_platform")} rules={[{ required: true }]}>
             <Select placeholder={t("products_page.select_platform")}>

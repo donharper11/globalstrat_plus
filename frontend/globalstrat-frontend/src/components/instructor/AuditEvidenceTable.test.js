@@ -3,6 +3,17 @@ import { render, screen, within, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import AuditEvidenceTable, { PAGE_SIZE } from './AuditEvidenceTable';
 
+/**
+ * `t` is stubbed to print its key (W-CE-17): every heading and notice is
+ * asserted by catalogue key, and the rows -- the record -- by their stored
+ * values.
+ */
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key, values) => (values ? `${key} ${JSON.stringify(values)}` : key),
+  }),
+}));
+
 const event = (overrides = {}) => ({
   id: 1,
   server_timestamp: '2026-03-04T09:15:00Z',
@@ -16,6 +27,11 @@ const event = (overrides = {}) => ({
 });
 
 const rowsOf = table => within(table).getAllByRole('row').slice(1);
+
+const HEADINGS = [
+  'instructor.time_server', 'instructor.actor', 'instructor.action', 'instructor.endpoint',
+  'instructor.request_id', 'instructor.payload_sha256', 'instructor.payload',
+];
 
 describe('audit evidence rendering', () => {
   test('shows actor, server time, request id, hash and payload for a save', () => {
@@ -43,30 +59,30 @@ describe('audit evidence rendering', () => {
     expect(cells.length).toBeGreaterThanOrEqual(2);
   });
 
-  test('every column an instructor needs is present, in order', () => {
+  test('every column an instructor needs is present, in order, from the catalogue', () => {
     render(<AuditEvidenceTable events={[event()]} />);
     // Read from the header row rather than by text: antd also renders a hidden
     // measurement row that repeats every heading, so a text query matches twice.
     const headings = screen.getAllByRole('columnheader').map(h => h.textContent);
-    expect(headings).toEqual([
-      'Time (server)', 'Actor', 'Action', 'Endpoint',
-      'Request ID', 'Payload SHA-256', 'Payload',
-    ]);
+    expect(headings).toEqual(HEADINGS);
+  });
+
+  test('the title is the catalogue’s unless the caller names one', () => {
+    render(<AuditEvidenceTable events={[event()]} />);
+    expect(screen.getByText('instructor.audit_evidence_title')).toBeInTheDocument();
   });
 });
 
 describe('empty and failed history', () => {
   test('an empty audit trail says so', () => {
     render(<AuditEvidenceTable events={[]} />);
-    expect(screen.getByText('No recorded saves for this round'))
-      .toBeInTheDocument();
+    expect(screen.getByText('instructor.audit_no_saves')).toBeInTheDocument();
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });
 
   test('a missing audit trail is treated the same as an empty one', () => {
     render(<AuditEvidenceTable events={undefined} />);
-    expect(screen.getByText('No recorded saves for this round'))
-      .toBeInTheDocument();
+    expect(screen.getByText('instructor.audit_no_saves')).toBeInTheDocument();
   });
 
   test('a failed request is not shown as an empty audit trail', () => {
@@ -75,20 +91,47 @@ describe('empty and failed history', () => {
     // server error read as evidence about the team.
     render(<AuditEvidenceTable events={undefined} error="503 Service Unavailable" />);
 
-    expect(screen.getByText('Audit evidence could not be loaded'))
-      .toBeInTheDocument();
+    expect(screen.getByText('instructor.audit_load_failed')).toBeInTheDocument();
     expect(screen.getByText('503 Service Unavailable')).toBeInTheDocument();
-    expect(screen.getByText(/not the same as an empty audit trail/))
-      .toBeInTheDocument();
-    expect(screen.queryByText('No recorded saves for this round'))
-      .not.toBeInTheDocument();
+    expect(screen.getByText('instructor.audit_not_empty_note')).toBeInTheDocument();
+    expect(screen.queryByText('instructor.audit_no_saves')).not.toBeInTheDocument();
   });
 
   test('an error wins over rows that are also present', () => {
     render(<AuditEvidenceTable events={[event()]} error="network error" />);
-    expect(screen.getByText('Audit evidence could not be loaded'))
-      .toBeInTheDocument();
+    expect(screen.getByText('instructor.audit_load_failed')).toBeInTheDocument();
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+});
+
+describe('W-CE-20: collapsed behind the decisions, nothing removed', () => {
+  test('a collapsed table shows its heading and no rows until opened', () => {
+    render(<AuditEvidenceTable events={[event()]} collapsed />);
+    expect(screen.getByText('instructor.audit_evidence_title')).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(screen.queryByText('ada.lovelace')).not.toBeInTheDocument();
+  });
+
+  test('opening the panel shows every column and the verbatim payload', () => {
+    render(<AuditEvidenceTable events={[event()]} collapsed />);
+    fireEvent.click(screen.getByText('instructor.audit_evidence_title'));
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getAllByRole('columnheader').map(h => h.textContent)).toEqual(HEADINGS);
+    expect(screen.getByText('{"marketing_budget":250000}')).toBeInTheDocument();
+    expect(screen.getByText('srv-11111111-2222-3333-4444-555555555555'))
+      .toBeInTheDocument();
+  });
+
+  test('a failed fetch is still distinguishable from an empty trail when collapsed', () => {
+    render(<AuditEvidenceTable events={undefined} error="503 Service Unavailable" collapsed />);
+    fireEvent.click(screen.getByText('instructor.audit_evidence_title'));
+    expect(screen.getByText('instructor.audit_load_failed')).toBeInTheDocument();
+    expect(screen.queryByText('instructor.audit_no_saves')).not.toBeInTheDocument();
+  });
+
+  test('the default rendering is unchanged: open, in a card', () => {
+    render(<AuditEvidenceTable events={[event()]} />);
+    expect(screen.getByRole('table')).toBeInTheDocument();
   });
 });
 

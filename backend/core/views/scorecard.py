@@ -21,6 +21,7 @@ from core.models.results_financials import (
 )
 from core.models.talent import TeamTalentState
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import participant_message
 
 
 class BalancedScorecardView(APIView):
@@ -224,36 +225,44 @@ class BalancedScorecardView(APIView):
         }
 
         # === Strategic Signals ===
+        # Rendered from the participant catalogue in the reader's language:
+        # these were f-strings, and a Chinese student read them in English
+        # (W-CE-16).
         signals = []
         if growth['rd_as_pct_of_revenue'] < 5:
             signals.append({
                 'type': 'warning',
-                'text': f"R&D investment is {growth['rd_as_pct_of_revenue']}% of revenue. "
-                        f"Competitors may be outpacing your innovation.",
+                'text': participant_message(
+                    'signal_rd_low', language=language,
+                    pct=growth['rd_as_pct_of_revenue']),
             })
         if capability['technology_rating_pct'] < 50 and next_gen and next_gen.unlock_round <= game.current_round:
             signals.append({
                 'type': 'warning',
-                'text': f"Technology capability at {capability['technology_rating_pct']}%. "
-                        f"A next-generation platform is available for development.",
+                'text': participant_message(
+                    'signal_tech_low', language=language,
+                    pct=capability['technology_rating_pct']),
             })
         if customer['satisfaction'] < 0.4:
             signals.append({
                 'type': 'alert',
-                'text': "Customer satisfaction is below average. Review Market Research "
-                        "to identify underperforming segments.",
+                'text': participant_message(
+                    'signal_satisfaction_low', language=language),
             })
         if growth['markets_entered'] == 1 and game.current_round >= 2:
             signals.append({
                 'type': 'info',
-                'text': f"Operating in {growth['markets_entered']} of {growth['total_markets']} markets. "
-                        f"International expansion could unlock growth.",
+                'text': participant_message(
+                    'signal_single_market', language=language,
+                    entered=growth['markets_entered'],
+                    total=growth['total_markets']),
             })
         if financial['debt_to_equity'] > 1.5:
             signals.append({
                 'type': 'warning',
-                'text': f"Debt-to-equity ratio at {financial['debt_to_equity']:.2f}. "
-                        f"Conservative investors may be concerned.",
+                'text': participant_message(
+                    'signal_leverage', language=language,
+                    ratio=f"{financial['debt_to_equity']:.2f}"),
             })
 
         return Response({

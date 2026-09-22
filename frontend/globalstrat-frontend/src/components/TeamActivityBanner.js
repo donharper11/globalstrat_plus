@@ -84,7 +84,7 @@ const TeamActivityBanner = ({ gameId, teamId, currentRound, currentUserId }) => 
             <Text strong style={{ fontSize: 12 }}>
               {change.user_name || change.username || t('common.teammate')}
             </Text>
-            <Text style={{ fontSize: 12 }}> {t('common.updated')} {change.decision_type || change.field_name || 'a decision'}</Text>
+            <Text style={{ fontSize: 12 }}> {t('common.updated')} {change.decision_type || change.field_name || t('common.a_decision')}</Text>
             <Text type="secondary" style={{ fontSize: 11, marginLeft: 6 }}>
               {relativeTime(change.created_at || change.timestamp)}
             </Text>
