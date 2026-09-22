@@ -15,6 +15,7 @@ from core.models.scenario import MarketDefinition
 from core.models.decisions import DecisionSubmission
 from core.permissions import IsInstructor
 from core.utils.operator_messages import lifecycle_refusal, operator_refusal
+from core.services.game_creation import rehome_team
 from core.services.lifecycle import (
     LifecyclePrecondition, lifecycle_view, operator_action)
 from core.utils.localization import get_localized_field, get_user_language
@@ -154,8 +155,11 @@ class InstructorTeamConfigView(APIView):
                             status=status.HTTP_400_BAD_REQUEST,
                         )
                     if team.home_market != market:
-                        team.home_market = market
-                        save_fields.append('home_market')
+                        # Not a field write: the team's starting state --
+                        # presence, starter products, compliance, round-0
+                        # results -- was built against the old market and
+                        # moves with it (W-CE-21).
+                        rehome_team(team, market)
 
             if save_fields:
                 team.save(update_fields=save_fields)
