@@ -66,6 +66,10 @@ from core.models.scenario import (
     FirmStarterProduct, FirmStarterProfile, MarketDefinition,
     PlatformGenerationDefinition, ScenarioConfig,
 )
+from core.models.results import RoundResultAdoption
+from core.models.results_financials import (
+    RoundResultMarketRevenue, RoundResultProductMarket,
+)
 from core.models.team_state import (
     TeamMarketPresence, TeamPlatform, TeamPlatformFeatureLevel, TeamProduct,
     TeamProductMarket, TeamStrategyFeatureLevel,
@@ -287,3 +291,53 @@ def create_game(scenario, num_teams, *, name, created_by,
             )
 
     return game, teams
+
+
+def rehome_team(team, market):
+    """Move a team's starting state to ``market`` (W-CE-21).
+
+    The console's Team Configuration panel sets a team's home market after
+    the game exists.  ``Team.home_market`` alone used to change: the round-0
+    presence, the starter products' market rows, the compliance row and every
+    round-0 result had already been built by ``create_game`` against the
+    profile's authored market, and ``bootstrap_round_zero`` reads the home
+    market from the presence row.  The student then saw the chosen market as
+    *Not Entered* and the authored one as a foreign market at VERY_HIGH
+    cultural distance -- both fields reported faithfully, disagreeing.
+
+    This moves exactly the rows ``create_game`` wrote against the home market
+    and rebuilds round 0, so a team re-homed here starts byte-for-byte as one
+    created with ``home_market_overrides=[market]`` (the Create Game form's
+    own path).  It is for a game no team has played yet: the route refuses
+    once a round-1 submission exists, and nothing later than round 0 is
+    touched.  A game whose home markets are never changed is not touched at
+    all -- ``create_game`` and ``bootstrap_round_zero`` are as they were.
+    """
+    if team.home_market_id == market.id:
+        return
+    game = team.game
+    with transaction.atomic():
+        team.home_market = market
+        team.save(update_fields=['home_market'])
+
+        # The starting rows `create_game` keys on the home market.  Each team
+        # has exactly one presence, one compliance row and one market row per
+        # starter product at round 0, so these are the rows and only these.
+        TeamMarketPresence.objects.filter(
+            team=team, established_round=0).update(market=market)
+        TeamProductMarket.objects.filter(
+            team_product__team=team, first_offered_round=0,
+        ).update(market=market)
+        TeamMarketCompliance.objects.filter(team=team).update(market=market)
+
+        # Round-0 results carry the market in their key, so a rebuild would
+        # leave the old market's rows beside the new ones: clear the team's
+        # market-keyed round-0 rows, then rebuild round 0 the one way it is
+        # ever built.  Everything else bootstrap writes is keyed without a
+        # market and is overwritten in place with the same values.
+        for model in (RoundResultProductMarket, RoundResultAdoption,
+                      RoundResultMarketRevenue):
+            model.objects.filter(game=game, round_number=0, team=team).delete()
+
+        from core.engine.bootstrap import bootstrap_round_zero
+        bootstrap_round_zero(game)
