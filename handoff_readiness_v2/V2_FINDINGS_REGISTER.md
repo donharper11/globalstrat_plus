@@ -3361,3 +3361,29 @@ Full backend suite on the merged tree: `Ran 1377 tests`, OK.
 | 9 — product edit that could never succeed | **Repaired** (`1348ca4`). Edit affordance removed; products are fixed once created; a "Retire product" link opens a read-only modal with the two retirement timings. Serializer and rules untouched. |
 | 12 — committed compliance spend before lock | **Repaired** (`84f2ac2`). Row in the shared `BudgetBar` on Summary, Finance and the dashboard, read from the payload, nothing summed on the client. **The builder found `platform_development_committed` on the same payloads and rendered nowhere; the integrator added that row on merge** in the same pattern. |
 
+## W-CE-01 through W-CE-26 — the first full-game browser walkthrough, Consumer Electronics (registered 2026-09-22)
+
+Record: `completion/WALKTHROUGH_CE_2026-09-22.md` (the authoritative defects table, with reproduction steps and evidence paths); evidence under `evidence/walkthrough-ce-2026-09-22/` (770 screens, 4,753 API calls, 538 screenshots, no 5xx, no JavaScript exception in either language). Instructor set-up from the console, three student teams (one in zh-CN) across four resolved rounds, end-game flows. **Verdict:** playable end to end; not bug-free. Calibration observations (teams at −$30M after four rounds, the cheapest platform unaffordable in round 1, a $0 plant) are noted in the record and deferred under R48. Merged at `4b152f8`. Repairs assigned same day: console → `walk-ce-console`, student numbers → `walk-ce-student-numbers`, language and wording → `walk-ce-language`, home market → `walk-ce-home-market`.
+
+| ID | Sev | Screen / role | What the user sees | Status |
+|---|---|---|---|---|
+| W-CE-02 | **P0** | Finance, student | Typing `5000000` into Loan Amount stores $5, $0 or $50 depending on typing cadence; only paste works. | Open — assigned |
+| W-CE-14 | **P0** | Round Results, student | "Shareholder return 999,966.5 %" (API `shareholder_return_cumulative` 9999.665). | Open — assigned |
+| W-CE-01 | P1 | Game Control, instructor | Every action (activate, deadline, extend, process) throws the console back to Courses & Sections. | Open — assigned |
+| W-CE-03 | P1 | R&D, student | "Invest next level" offered five times; every click refused by the server. | Open — assigned (W-CE-19, the platform being unaffordable, is calibration: deferred) |
+| W-CE-04 | P1 | Marketing, student | One bad row fails the whole page's save; the notice names no product and shows twice. | Open — assigned |
+| W-CE-05 | P1 | Roster upload, instructor | CSV upload announces nothing. | Open — assigned |
+| W-CE-09 | P1 | Team Activity, student | Calls an instructor-only route; 403 on every visit. | Open — assigned |
+| W-CE-10 | P1 | Notifications, student | The bell is decorative; no notifications screen exists. | Open — assigned |
+| W-CE-12 | P1 | Grading, instructor | Override has no console control. | Open — assigned |
+| W-CE-15/16/17 | P1 | Many, zh-CN | English on Chinese screens: analyst refusal, R&D guidance, summary checklist, news and ticker narratives, login page; console tab "Students & Logins", Game Control statistics, Monitoring banner, Supply Chain panel, audit table. | Open — assigned |
+| W-CE-18/18b | P1 | Summary / Finance, student | Strategy budget bar and charged expense disagree; the round-3 summary shows three different spend figures. | Open — assigned |
+| W-CE-21 | P1 | Setup / student | Home market set by the instructor (Africa) shows "Not Entered"; the team starts in North America at VERY_HIGH cultural distance. | Open — assigned |
+| W-CE-23 | P1 | Finance, student | $16.6M over-spend allowed in round 2; the team is then locked out in round 3 by negative cash it cannot undo. | Open — assigned |
+| W-CE-24 | P1 | Lifecycle, instructor | "Advance Round" modal has no reason box and is refused `reason_required` whenever teams are pending. | Open — assigned |
+| W-CE-25 | P1 | Summary, student | Lock refused for debt-to-equity 2.35 > 2.0 although the summary showed no blocker. | Open — assigned |
+| W-CE-26 | P1 | Game Control, instructor | "Reset to Setup" accepted on a competition heat with four processed rounds; left at round 0 with rounds 1–4 still processed. | Open — assigned |
+| W-CE-06/07/08/11/13/20/22 | P2 | Various | `{market}` placeholder in the ticker; raw JSON in the Operator Log; raw `no_submission` tag; no in-game language switch; four supply-chain sections shown as lock requirements; drill-down leads with a giant audit table; "Build Plant — $0", partnership label vs stored per-round charge, `VERY_HIGH` enum on screen. | Open — assigned |
+
+**Not driven** (the record's own list): grading override (no control), notifications (no screen), marking a heat from the console, model-backed narratives and analyst answers, tax-structure switch in zh-CN, rounds 5–10, teams 4–8 (deadline-locked each round). Media and Clean Energy walkthroughs follow once these repairs land.
+
