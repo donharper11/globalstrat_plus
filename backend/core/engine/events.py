@@ -481,17 +481,43 @@ def _compounded_growth_factor(game, market, current_round):
 # CC-7: Event narrative generation
 # ---------------------------------------------------------------------------
 
-def generate_event_narrative(template, target_market, round_number, scenario):
+# The words that stand in for a placeholder no value can fill. Both languages,
+# because the template a Chinese reader sees is `description_template_zh`.
+_NARRATIVE_WORDS = {
+    'en': {'global_markets': 'global markets', 'significant': 'significant'},
+    'zh-CN': {'global_markets': '全球市场', 'significant': '显著'},
+}
+_UNFILLED_PLACEHOLDER = ('{market}', '{value}', '{round}')
+
+
+def generate_event_narrative(template, target_market, round_number, scenario,
+                             language='en'):
     """
     Resolve placeholders in description_template:
     - {market} → target market name
     - {value} → contextually appropriate value (tariff %, currency %, etc.)
     - {round} → current round number
-    """
-    narrative = template.description_template
 
-    # Market name
-    market_name = target_market.name if target_market else "global markets"
+    `language` picks the authored template (`description_template_zh` when it
+    exists) and the market's localised name, so a Chinese reader is not shown
+    an English sentence with a Chinese market name dropped into it
+    (W-CE-16). English is the default and is what the engine stores.
+    """
+    words = _NARRATIVE_WORDS.get(language, _NARRATIVE_WORDS['en'])
+    narrative = template.description_template
+    if language == 'zh-CN':
+        narrative = (getattr(template, 'description_template_zh', '') or '') \
+            or template.description_template
+
+    # Market name. An event injected for every market has no target, and the
+    # placeholder used to reach the ticker unfilled (W-CE-06).
+    if target_market is None:
+        market_name = words['global_markets']
+    elif language == 'zh-CN':
+        market_name = (getattr(target_market, 'name_zh', '') or '') \
+            or target_market.name
+    else:
+        market_name = target_market.name
     narrative = narrative.replace('{market}', market_name)
 
     # Value — derive from the most significant impact
@@ -506,12 +532,36 @@ def generate_event_narrative(template, target_market, round_number, scenario):
         else:
             value = f"{abs(float(primary_impact.impact_value)):.1f}"
     else:
-        value = "significant"
+        value = words['significant']
     narrative = narrative.replace('{value}', value)
 
     narrative = narrative.replace('{round}', str(round_number))
 
     return narrative
+
+
+def event_narrative_for_reader(event_instance, language='en'):
+    """The narrative of a fired or injected event, in the reader's language.
+
+    The stored `narrative` is English: the engine writes it once, with its
+    context and research enrichment, and does not know who will read it. A
+    Chinese reader gets the authored Chinese template rendered for this event
+    when the scenario carries one; otherwise the stored English text. A stored
+    narrative that still carries a placeholder -- an event injected before
+    W-CE-06, stored as the raw template -- is rendered again rather than shown
+    with `{market}` in it.
+    """
+    template = event_instance.event_template
+    stored = event_instance.narrative or ''
+    if language == 'zh-CN' and (getattr(template, 'description_template_zh', '') or ''):
+        return generate_event_narrative(
+            template, event_instance.target_market,
+            event_instance.round_number, None, language='zh-CN')
+    if not stored or any(token in stored for token in _UNFILLED_PLACEHOLDER):
+        return generate_event_narrative(
+            template, event_instance.target_market,
+            event_instance.round_number, None, language='en')
+    return stored
 
 
 def generate_event_context(template, impacts):

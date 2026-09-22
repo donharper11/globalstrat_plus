@@ -17,6 +17,7 @@ from core.models.scenario import (
 )
 from core.models.results import EventInstance
 from core.models.decisions import DecisionSubmission
+from core.engine.events import event_narrative_for_reader
 from core.utils.localization import get_localized_field, get_team_language
 
 
@@ -167,7 +168,7 @@ class TickerView(APIView):
                 priority = 'medium'
                 icon = '\U0001f4cb'
 
-            headline = ev.narrative[:80] if ev.narrative else get_localized_field(tmpl, 'description_template', language)[:80]
+            headline = event_narrative_for_reader(ev, language)[:80]
             text = f'{get_localized_field(tmpl, "name", language)} \u2014 {headline}'
 
             items.append({

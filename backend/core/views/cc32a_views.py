@@ -21,6 +21,7 @@ from core.permissions import IsInstructor
 from core.models.core import Game, Team, Round
 from core.models.cc32_models import CommunicationAssignment, TeamCommunication
 from core.models.results import EventInstance
+from core.engine.events import event_narrative_for_reader
 from core.utils.localization import get_localized_field, get_user_language
 # R48 item 7: one word-count rule for both languages, shared with the page.
 from core.services.communication_words import count_words
@@ -63,7 +64,7 @@ class CommunicationAssignmentsView(APIView):
                         triggered = True
                         event_context = {
                             'event_name': get_localized_field(ev.event_template, 'name', language),
-                            'event_description': ev.narrative or get_localized_field(ev.event_template, 'description_template', language),
+                            'event_description': event_narrative_for_reader(ev, language),
                         }
                         break
 

@@ -34,6 +34,8 @@ from core.utils.operator_messages import (
     operator_refusal)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
+from core.engine.events import (
+    event_narrative_for_reader, generate_event_narrative)
 from core.utils.localization import get_localized_field, get_user_language
 
 logger = logging.getLogger(__name__)
@@ -218,7 +220,7 @@ class RoundResultsView(APIView):
             tmpl = ev.event_template
             events.append({
                 'name': get_localized_field(tmpl, 'name', language),
-                'narrative': ev.narrative or get_localized_field(tmpl, 'description_template', language),
+                'narrative': event_narrative_for_reader(ev, language),
                 'category': tmpl.category,
                 'severity': tmpl.severity,
                 'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',
@@ -880,7 +882,12 @@ class InstructorInjectEventView(APIView):
                 event_template=template,
                 round_number=game.current_round,
                 target_market=target_market,
-                narrative=template.description_template,
+                # Rendered, not the raw template: the placeholders are
+                # for the generator, and `{market}` reached the ticker
+                # when an event was injected for every market (W-CE-06).
+                narrative=generate_event_narrative(
+                    template, target_market, game.current_round,
+                    game.scenario),
             )
             action.commit(before, {
                 'event_template': template.name,
