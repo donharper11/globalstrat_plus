@@ -141,19 +141,19 @@ const FinancePage = () => {
 
   const autoSaveBudget = useCallback((nextBudgetAllocation) => {
     clearTimeout(budgetSaveTimer.current);
-    setSaveState({ status: 'pending', message: 'Unsaved budget changes' });
+    setSaveState({ status: 'pending', message: t('finance.unsaved_budget') });
     budgetSaveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
-      setSaveState({ status: 'saving', message: 'Saving budget...' });
+      setSaveState({ status: 'saving', message: t('finance.saving_budget') });
       try {
         await patchDecision(gameId, teamId, currentRound, 'budget', {
           budget_allocation: nextBudgetAllocation,
         });
         await refreshBudgets();
-        setSaveState({ status: 'saved', message: 'Budget saved' });
+        setSaveState({ status: 'saved', message: t('finance.budget_saved') });
       } catch (error) {
-        setSaveState({ status: 'error', message: saveErrorMessage(error, 'Budget save failed') });
+        setSaveState({ status: 'error', message: saveErrorMessage(error, t('finance.budget_save_failed')) });
       } finally {
         setSaving(false);
       }
@@ -162,19 +162,19 @@ const FinancePage = () => {
 
   const autoSaveFinancing = useCallback((nextFinancing) => {
     clearTimeout(financingSaveTimer.current);
-    setSaveState({ status: 'pending', message: 'Unsaved financing changes' });
+    setSaveState({ status: 'pending', message: t('finance.unsaved_financing') });
     financingSaveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
       setSaving(true);
-      setSaveState({ status: 'saving', message: 'Saving financing...' });
+      setSaveState({ status: 'saving', message: t('finance.saving_financing') });
       try {
         await patchDecision(gameId, teamId, currentRound, 'financing', {
           financing: nextFinancing,
         });
         await refreshBudgets();
-        setSaveState({ status: 'saved', message: 'Financing saved' });
+        setSaveState({ status: 'saved', message: t('finance.financing_saved') });
       } catch (error) {
-        setSaveState({ status: 'error', message: saveErrorMessage(error, 'Financing save failed') });
+        setSaveState({ status: 'error', message: saveErrorMessage(error, t('finance.financing_save_failed')) });
       } finally {
         setSaving(false);
       }
@@ -342,12 +342,12 @@ const FinancePage = () => {
         </Row>
         <div style={{ marginTop: 12 }}>
           <Text type="secondary">
-            {t('finance.total_allocated')}: {fmt(totalAllocated)} | Round {currentRound} budget remaining: {fmt(allocationRemaining)}
+            {t('finance.total_allocated')}: {fmt(totalAllocated)} | {t('finance.round_budget_remaining', { round: currentRound })}: {fmt(allocationRemaining)}
           </Text>
           {budgetAllocation.rd_budget === 0 && <WarningBanner message={t('finance.rd_budget_zero')} style={{ marginTop: 8 }} />}
           {budgetAllocation.marketing_budget === 0 && <WarningBanner message={t('finance.marketing_budget_zero')} style={{ marginTop: 8 }} />}
           <Text type="secondary" style={{ display: 'block', marginTop: 8, fontSize: 12 }}>
-            Enter dollar amounts directly. Examples: 2500000, $2,500,000, or 2.5M.
+            {t('finance.amount_entry_hint')}
           </Text>
         </div>
       </PanelCard>
@@ -592,7 +592,7 @@ const FinancePage = () => {
                     {isCurrent && <Tag color="blue">{t('finance.current')}</Tag>}
                   </div>
                   {switchCost > 0 && !isCurrent && (
-                    <Tag color="orange">Setup: {fmt(switchCost)}</Tag>
+                    <Tag color="orange">{t('finance.setup_cost', { cost: fmt(switchCost) })}</Tag>
                   )}
                 </div>
 
@@ -635,7 +635,7 @@ const FinancePage = () => {
                   )}
                   {s.regulator_modifier !== 0 && (
                     <Tag color={s.regulator_modifier > 0 ? 'green' : 'red'} style={{ fontSize: 10 }}>
-                      Regulators: {s.regulator_modifier > 0 ? '+' : ''}{(s.regulator_modifier * 100).toFixed(0)}%
+                      {t('finance.regulators_modifier', { value: `${s.regulator_modifier > 0 ? '+' : ''}${(s.regulator_modifier * 100).toFixed(0)}%` })}
                     </Tag>
                   )}
                 </div>

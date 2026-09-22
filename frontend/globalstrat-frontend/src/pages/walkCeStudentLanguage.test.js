@@ -56,6 +56,33 @@ describe('LoginPage.js: the two taglines under the form', () => {
   });
 });
 
+// Pages another builder is editing at the same time: held to the literals
+// this pass removed, by name, and to their keys existing.
+describe.each([
+  ['RDPage.js', [
+    "push('Saving...')", "'Cost exceeds R&D budget'", 'message="Choose one R&D action',
+    'Upgrade an existing feature when', 'Invest next level\n', 'title="CURRENT R&D DRAFT"',
+    "{ title: 'Feature'", "{ title: 'Method'", "{ title: 'Cost'",
+  ]],
+  ['FinancePage.js', [
+    "'Unsaved budget changes'", "'Saving budget...'", "'Budget saved'", "'Budget save failed'",
+    "'Unsaved financing changes'", "'Saving financing...'", "'Financing saved'",
+    "'Financing save failed'", '| Round {currentRound} budget remaining',
+    'Enter dollar amounts directly', 'Setup: {fmt(switchCost)}', 'Regulators: {',
+  ]],
+])('%s: the literals W-CE-16 removed', (name, literals) => {
+  const source = withoutComments(read(name));
+
+  test.each(literals)('no longer says %s', (literal) => {
+    expect(source).not.toContain(literal);
+  });
+
+  test('every key it asks for exists in both languages', () => {
+    const missing = keysUsed(source).filter((key) => !exists(en, key) || !exists(zh, key));
+    expect(missing).toEqual([]);
+  });
+});
+
 describe('GameDashboard.js: the next-action card and the checklist', () => {
   const source = withoutComments(read('GameDashboard.js'));
 
