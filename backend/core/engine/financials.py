@@ -94,6 +94,19 @@ def generate_financial_statements(context):
         marketing_expense = opex.get('marketing_expense', D('0'))
         strategy_expense = opex.get('strategy_expense', D('0'))
         research_expense = opex.get('research_expense', D('0'))
+        # R47: compliance investment, charged from cash at resolution. Its
+        # own line in `context.opex`; on the STORED statement it is carried
+        # inside `strategy_expense` below, and that is a deliberate,
+        # one-site holding position rather than the ruling's final shape.
+        # The owner's amendment asks for its own line on the income
+        # statement, which means a new column on `RoundResultFinancials` --
+        # a hashed output section -- and by `manifest_version.py`'s own rule
+        # (2 -> 3, the `platform_switch_write_off` line) that is a schema
+        # bump to 7, which the R47 build was told not to make. Unfolding it
+        # is one column, this line, and the v7 procedure; nothing else here
+        # changes, because the total and every figure below it already
+        # include the amount.
+        compliance_expense = opex.get('compliance_expense', D('0'))
         admin_overhead = opex.get('admin_overhead', D('0'))
         platform_amortization = opex.get('platform_amortization', D('0'))
         # Stock stranded by a re-base. Cash-effective like `retirement_expense`,
@@ -106,8 +119,8 @@ def generate_financial_statements(context):
 
         total_opex = (
             rd_expense + marketing_expense + strategy_expense
-            + research_expense + admin_overhead + platform_amortization
-            + platform_switch_write_off
+            + research_expense + compliance_expense + admin_overhead
+            + platform_amortization + platform_switch_write_off
         )
 
         logistics_tariff = D('0')
@@ -363,7 +376,10 @@ def generate_financial_statements(context):
                 'platform_amortization': platform_amortization,
                 'platform_switch_write_off': platform_switch_write_off,
                 'marketing_expense': marketing_expense,
-                'strategy_expense': strategy_expense,
+                # R47 holding position (see above): the compliance line is
+                # inside this stored figure until the statement has its own
+                # column under schema v7.
+                'strategy_expense': strategy_expense + compliance_expense,
                 'research_expense': research_expense,
                 'admin_overhead': admin_overhead,
                 'logistics_tariff_expense': logistics_tariff,

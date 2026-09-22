@@ -341,6 +341,14 @@ def committed_outlay(submission, team=None):
     from core.services.funding_need import org_transition_charge
     lines['org_transition'] = org_transition_charge(
         team or submission.team, submission.round.round_number)
+    # R47: compliance investment saved this round. Committed money in the
+    # same position, read through the same function the engine books from
+    # (`funding_need.compliance_investment_total`), so the lock refusal, the
+    # Decision Summary, the Finance context and the statement all price it
+    # identically. A team that cannot fund it is refused at lock through the
+    # existing `committed_spend_exceeds_cash` sentence.
+    from core.services.funding_need import compliance_investment_total
+    lines['compliance_investment'] = compliance_investment_total(submission)
     return lines
 
 
@@ -363,7 +371,8 @@ def budget_assessment(submission, team=None):
     # affordability answer a team gets at the point of buying is the one every
     # other surface already gives.
     committed = (budget_total + lines['platform_development']
-                 + lines['research_purchases'] + lines['org_transition'])
+                 + lines['research_purchases'] + lines['org_transition']
+                 + lines['compliance_investment'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
 
     rd_committed = lines['rd_investments'] + lines['platform_development']
