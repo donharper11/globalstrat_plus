@@ -243,3 +243,34 @@ class DrillDownStatusLabelTests(WalkCEBase):
         for origin, labels in SUBMISSION_ORIGIN_LABELS.items():
             self.assertTrue(has_cjk(labels['zh-CN']), origin)
             self.assertFalse(has_cjk(labels['en']), origin)
+
+
+# ---------------------------------------------------------------------------
+# W-CE-22 -- the plant cost the page shows is the authored one, or none
+# ---------------------------------------------------------------------------
+
+class PlantCostContextTests(WalkCEBase):
+
+    def _market_payload(self):
+        response = self.client_for(self.student, 'en').get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/context/strategy/')
+        self.assertEqual(response.status_code, 200, response.data)
+        return next(m for m in response.data['markets'] if m['id'] == self.market.id)
+
+    def test_an_authored_cost_travels_with_the_market(self):
+        self.market.plant_build_cost = D('12000000')
+        self.market.plant_build_rounds = 3
+        self.market.plant_capacity_units = 80000
+        self.market.save(update_fields=[
+            'plant_build_cost', 'plant_build_rounds', 'plant_capacity_units'])
+        payload = self._market_payload()
+        self.assertEqual(payload['plant_build_cost'], 12000000.0)
+        self.assertEqual(payload['plant_build_rounds'], 3)
+        self.assertEqual(payload['plant_capacity_units'], 80000)
+
+    def test_an_unauthored_cost_is_null_not_zero(self):
+        self.assertIsNone(self.market.plant_build_cost)
+        payload = self._market_payload()
+        self.assertIn('plant_build_cost', payload)
+        self.assertIsNone(payload['plant_build_cost'])
+        self.assertIsNone(payload['plant_capacity_units'])

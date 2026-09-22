@@ -2236,6 +2236,13 @@ class StrategyContextView(APIView):
                 'entry_mode': get_localized_field(presence.entry_mode, 'name', language) if presence else None,
                 'allows_manufacturing': mkt.allows_manufacturing,
                 'contract_mfg_available': mkt.contract_mfg_available,
+                # The authored plant figures (W-CE-22). The page showed $0 for
+                # every market because none of these travelled; a cost the
+                # scenario does not author is null, never a number.
+                'plant_build_cost': (float(mkt.plant_build_cost)
+                                     if mkt.plant_build_cost is not None else None),
+                'plant_build_rounds': mkt.plant_build_rounds,
+                'plant_capacity_units': mkt.plant_capacity_units,
             })
 
         # Active partnerships
