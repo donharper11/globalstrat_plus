@@ -48,3 +48,22 @@ describe('W-CE-08: a submission status is a translated label, never the stored t
     expect(DASHBOARD).toMatch(/drillData\.status !== 'no_submission' &&/);
   });
 });
+
+describe('W-CE-20: the drill-down leads with the decisions, not the audit table', () => {
+  const modal = DASHBOARD.slice(
+    DASHBOARD.indexOf('{/* Team Decisions Drill-Down Modal */}'),
+    DASHBOARD.indexOf('export default InstructorDashboard'));
+
+  test('the audit table is rendered once, after every decision block, collapsed', () => {
+    const audit = modal.indexOf('<AuditEvidenceTable');
+    expect(audit).toBeGreaterThan(-1);
+    expect(modal.indexOf('<AuditEvidenceTable', audit + 1)).toBe(-1);
+    ['drillData.budget &&', 'drillData.rd?.investments', 'drillData.marketing?.length',
+      'drillData.financing &&', 'drillData.esg &&', 'drillData.talent &&']
+      .forEach((block) => {
+        expect(modal.indexOf(block)).toBeGreaterThan(-1);
+        expect(modal.indexOf(block)).toBeLessThan(audit);
+      });
+    expect(modal.slice(audit, modal.indexOf('/>', audit))).toContain('collapsed');
+  });
+});

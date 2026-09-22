@@ -92,6 +92,40 @@ describe('empty and failed history', () => {
   });
 });
 
+describe('W-CE-20: collapsed behind the decisions, nothing removed', () => {
+  test('a collapsed table shows its heading and no rows until opened', () => {
+    render(<AuditEvidenceTable events={[event()]} collapsed />);
+    expect(screen.getByText('Submission audit evidence')).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(screen.queryByText('ada.lovelace')).not.toBeInTheDocument();
+  });
+
+  test('opening the panel shows every column and the verbatim payload', () => {
+    render(<AuditEvidenceTable events={[event()]} collapsed />);
+    fireEvent.click(screen.getByText('Submission audit evidence'));
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getAllByRole('columnheader').map(h => h.textContent)).toEqual([
+      'Time (server)', 'Actor', 'Action', 'Endpoint',
+      'Request ID', 'Payload SHA-256', 'Payload',
+    ]);
+    expect(screen.getByText('{"marketing_budget":250000}')).toBeInTheDocument();
+    expect(screen.getByText('srv-11111111-2222-3333-4444-555555555555'))
+      .toBeInTheDocument();
+  });
+
+  test('a failed fetch is still distinguishable from an empty trail when collapsed', () => {
+    render(<AuditEvidenceTable events={undefined} error="503 Service Unavailable" collapsed />);
+    fireEvent.click(screen.getByText('Submission audit evidence'));
+    expect(screen.getByText('Audit evidence could not be loaded')).toBeInTheDocument();
+    expect(screen.queryByText('No recorded saves for this round')).not.toBeInTheDocument();
+  });
+
+  test('the default rendering is unchanged: open, in a card', () => {
+    render(<AuditEvidenceTable events={[event()]} />);
+    expect(screen.getByRole('table')).toBeInTheDocument();
+  });
+});
+
 describe('pagination', () => {
   const many = count => Array.from({ length: count }, (_, i) =>
     event({ id: i + 1, actor: `actor-${i + 1}`,

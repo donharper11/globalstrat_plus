@@ -2219,7 +2219,6 @@ const InstructorDashboard = () => {
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
             {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
 
-            <AuditEvidenceTable events={drillData.audit_events} />
 
             {drillData.budget && (
               <Descriptions title={t('instructor.budget_allocation')} size="small" bordered column={{ xs: 1, sm: 2, md: 3 }} style={{ marginTop: 12 }}>
@@ -2279,6 +2278,10 @@ const InstructorDashboard = () => {
                 <Descriptions.Item label={t('instructor.operations_hc')}>{drillData.talent.operations_headcount}</Descriptions.Item>
               </Descriptions>
             )}
+
+            {/* W-CE-20: the evidence follows the decisions it is evidence for,
+                behind a closed panel; nothing in it is removed. */}
+            <AuditEvidenceTable events={drillData.audit_events} collapsed />
           </div>
         )}
       </Modal>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Card, Empty, Table, Typography } from 'antd';
+import { Alert, Card, Collapse, Empty, Table, Typography } from 'antd';
 
 const { Text } = Typography;
 
@@ -18,39 +18,37 @@ export const PAGE_SIZE = 8;
  * defending a disputed result needs to know which one they are looking at: one
  * says the team did not submit, the other says we do not currently know what
  * the team did.
+ *
+ * `collapsed` (W-CE-20): the drill-down opened on this table, whose rows are
+ * hundreds of pixels tall, and the team's actual decisions sat below dozens of
+ * them. Behind a closed panel the evidence is one click away and nothing is
+ * removed: every row, column and payload is still there when it opens.
  */
-export default function AuditEvidenceTable({ events, error, title = 'Submission audit evidence' }) {
+export default function AuditEvidenceTable({
+  events, error, title = 'Submission audit evidence', collapsed = false,
+}) {
+  let body;
   if (error) {
-    return (
-      <Card size="small" title={title} style={{ marginTop: 12 }}>
-        <Alert
-          type="error"
-          showIcon
-          message="Audit evidence could not be loaded"
-          description={
-            <>
-              <div>{error}</div>
-              <div style={{ marginTop: 4 }}>
-                This is not the same as an empty audit trail. Retry before
-                concluding anything about what this team submitted.
-              </div>
-            </>
-          }
-        />
-      </Card>
+    body = (
+      <Alert
+        type="error"
+        showIcon
+        message="Audit evidence could not be loaded"
+        description={
+          <>
+            <div>{error}</div>
+            <div style={{ marginTop: 4 }}>
+              This is not the same as an empty audit trail. Retry before
+              concluding anything about what this team submitted.
+            </div>
+          </>
+        }
+      />
     );
-  }
-
-  if (!events || events.length === 0) {
-    return (
-      <Card size="small" title={title} style={{ marginTop: 12 }}>
-        <Empty description="No recorded saves for this round" />
-      </Card>
-    );
-  }
-
-  return (
-    <Card size="small" title={title} style={{ marginTop: 12 }}>
+  } else if (!events || events.length === 0) {
+    body = <Empty description="No recorded saves for this round" />;
+  } else {
+    body = (
       <Table
         dataSource={events}
         rowKey="id"
@@ -79,6 +77,21 @@ export default function AuditEvidenceTable({ events, error, title = 'Submission 
           },
         ]}
       />
+    );
+  }
+
+  if (collapsed) {
+    return (
+      <Collapse
+        size="small"
+        style={{ marginTop: 12 }}
+        items={[{ key: 'audit', label: title, children: body }]}
+      />
+    );
+  }
+  return (
+    <Card size="small" title={title} style={{ marginTop: 12 }}>
+      {body}
     </Card>
   );
 }
