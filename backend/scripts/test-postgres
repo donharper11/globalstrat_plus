@@ -28,8 +28,14 @@ docker run -d --rm --name "$container_name" \
   -p 127.0.0.1::5432 \
   postgres:16-alpine >/dev/null
 
+# How long to wait for the container to answer pg_isready. 30 s is plenty on
+# an idle host; on 2026-09-22 the host's disk stalled (ext4 journal thread in
+# D state, I/O pressure ~80 %) and initdb's fsyncs took minutes, so every
+# runner on the host failed here without running a test. The default is
+# unchanged; a longer window is opt-in per run.
+ready_seconds="${TEST_POSTGRES_READY_SECONDS:-30}"
 host_port=''
-for _attempt in $(seq 1 30); do
+for _attempt in $(seq 1 "$ready_seconds"); do
   host_port="$(docker port "$container_name" 5432/tcp | sed -n 's/.*:\([0-9][0-9]*\)$/\1/p' | head -n 1)"
   if [ -n "$host_port" ] && pg_isready -h 127.0.0.1 -p "$host_port" -U globalstrat_test >/dev/null 2>&1; then
     break
