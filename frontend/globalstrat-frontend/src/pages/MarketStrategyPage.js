@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Typography, Tabs, Select, Button, Tag, Space, Row, Col, Alert, Statistic, InputNumber, Progress, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
-import { getStrategyContext, getComplianceContext, getMarketLocalization, getAllianceState, patchDecision } from '../api/decisions';
+import { getStrategyContext, getComplianceContext, getMarketLocalization, getAllianceState } from '../api/decisions';
+import useSectionAutosave from '../hooks/useSectionAutosave';
+import { complianceRows, complianceByCode } from './sectionPayloads';
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
@@ -369,7 +371,6 @@ const MarketStrategyPage = () => {
   const { draft, locked } = useDecisions();
   const [context, setContext] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [marketEntries, setMarketEntries] = useState([]);
   const [plantDecisions, setPlantDecisions] = useState([]);
   const [partnerships, setPartnerships] = useState([]);
@@ -377,7 +378,6 @@ const MarketStrategyPage = () => {
   const [localizationData, setLocalizationData] = useState({});
   const [allianceData, setAllianceData] = useState({ alliances: [], dissolved: [] });
   const [complianceInvestments, setComplianceInvestments] = useState({});
-  const saveTimer = useRef(null);
 
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) { setLoading(false); return; }
@@ -390,12 +390,10 @@ const MarketStrategyPage = () => {
       setContext(res.data);
       if (compRes?.data) {
         setComplianceCtx(compRes.data);
-        // Initialize compliance investments from draft
-        const inv = {};
-        (compRes.data.markets || []).forEach(m => {
-          inv[m.code] = draft?.compliance_investments?.[m.code] || 0;
-        });
-        setComplianceInvestments(inv);
+        // The server stores compliance as rows naming a market by id; the
+        // screen edits it by market code.
+        setComplianceInvestments(complianceByCode(
+          draft?.compliance_investments, compRes.data.markets));
       }
       if (allianceRes?.data) {
         setAllianceData(allianceRes.data);
@@ -409,18 +407,10 @@ const MarketStrategyPage = () => {
 
   useEffect(() => { loadContext(); }, [loadContext]);
 
-  const autoSave = useCallback((section, data) => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      if (!gameId || !teamId || !currentRound || locked) return;
-      setSaving(true);
-      try {
-        await patchDecision(gameId, teamId, currentRound, section, data);
-        refreshBudgets();
-      } catch { /* ignore */ }
-      setSaving(false);
-    }, 2000);
-  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
+  // One timer per section, and no discarded failures: see the hook.
+  const { autoSave, saving } = useSectionAutosave({
+    gameId, teamId, currentRound, locked, onSaved: refreshBudgets,
+  });
 
   const loadLocalization = useCallback(async (marketCode) => {
     if (!gameId || !teamId || localizationData[marketCode]) return;
@@ -435,10 +425,12 @@ const MarketStrategyPage = () => {
   const handleComplianceChange = useCallback((marketCode, value) => {
     setComplianceInvestments(prev => {
       const next = { ...prev, [marketCode]: value || 0 };
-      autoSave('compliance_investments', { compliance_investments: next });
+      autoSave('compliance-investments', {
+        compliance_investments: complianceRows(next, complianceCtx?.markets),
+      });
       return next;
     });
-  }, [autoSave]);
+  }, [autoSave, complianceCtx]);
 
   if (loading) return <LoadingSpinner />;
   if (!context) return <Alert message={t('market_strategy.unable_to_load')} type="error" />;

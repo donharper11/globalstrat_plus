@@ -7,7 +7,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useGame } from '../contexts/GameContext';
-import { useDecisions } from '../contexts/DecisionContext';
+import { useDecisions, describeRefusal } from '../contexts/DecisionContext';
+import { reportUnpublishedFailure } from '../api/saveFailures';
 import { getProductContext, patchDecision } from '../api/decisions';
 import LoadingSpinner from '../components/LoadingSpinner';
 import WarningBanner from '../components/WarningBanner';
@@ -23,11 +24,30 @@ const positionLabelKeys = {
   budget: 'products_page.pos_budget', mainstream: 'products_page.pos_mainstream', premium: 'products_page.pos_premium', ultra_premium: 'products_page.pos_ultra_premium',
 };
 
+/** "Not saved", with the server's sentences, inside a modal. */
+const RefusalNotice = ({ sentences }) => {
+  const { t } = useTranslation();
+  return (
+    <Alert
+      type="error"
+      showIcon
+      style={{ marginBottom: 12 }}
+      message={t('decision_save.not_saved_title')}
+      description={sentences.length
+        ? <ul style={{ margin: 0, paddingLeft: 18 }}>{sentences.map((msg, i) => <li key={i}>{msg}</li>)}</ul>
+        : t('decision_save.network_failed')}
+    />
+  );
+};
+
 const ProductsPage = () => {
   const { t } = useTranslation();
   const { gameId, teamId, currentRound, refreshBudgets } = useGame();
-  const { draft, locked } = useDecisions();
+  const { draft, locked, loadDraft } = useDecisions();
   const [context, setContext] = useState(null);
+  // The server's own sentences for a refused create, edit or retire, shown
+  // inside the open modal: the shared notice sits behind it.
+  const [refusal, setRefusal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
@@ -39,9 +59,28 @@ const ProductsPage = () => {
     try {
       const res = await getProductContext(gameId, teamId);
       setContext(res.data);
-    } catch { /* ignore */ }
+    } catch { /* a read; the page shows it could not load */ }
     setLoading(false);
   }, [gameId, teamId]);
+
+  /**
+   * After a save lands. Every save below re-sends the WHOLE section built
+   * from `draft`, so the draft must be re-read before the next one, or a
+   * second product created in one sitting is sent as [second] and replaces
+   * the first (2026-09-21).
+   */
+  const afterSave = useCallback(async () => {
+    setRefusal(null);
+    await Promise.all([loadDraft(), loadContext()]);
+    refreshBudgets();
+  }, [loadDraft, loadContext, refreshBudgets]);
+
+  const onRefused = useCallback((err) => {
+    // Announced to the shared notice by the interceptor; this covers a
+    // failure that never became a request, and shows the sentences here.
+    reportUnpublishedFailure(err);
+    setRefusal(describeRefusal(err?.response?.data));
+  }, []);
 
   useEffect(() => { loadContext(); }, [loadContext]);
 
@@ -60,9 +99,10 @@ const ProductsPage = () => {
       });
       setShowCreate(false);
       createForm.resetFields();
-      loadContext();
-      refreshBudgets();
-    } catch { /* ignore */ }
+      await afterSave();
+    } catch (err) {
+      onRefused(err);
+    }
   };
 
   // ── Edit (open modal) ──
@@ -121,9 +161,10 @@ const ProductsPage = () => {
       }
       setEditProduct(null);
       editForm.resetFields();
-      loadContext();
-      refreshBudgets();
-    } catch { /* ignore */ }
+      await afterSave();
+    } catch (err) {
+      onRefused(err);
+    }
   };
 
   // ── Retire ──
@@ -139,8 +180,10 @@ const ProductsPage = () => {
       });
       setEditProduct(null);
       editForm.resetFields();
-      loadContext();
-    } catch { /* ignore */ }
+      await afterSave();
+    } catch (err) {
+      onRefused(err);
+    }
   };
 
   if (loading) return <LoadingSpinner />;
@@ -328,10 +371,11 @@ const ProductsPage = () => {
       <Modal
         title={t("products_page.create_new_product")}
         open={showCreate}
-        onCancel={() => { setShowCreate(false); createForm.resetFields(); }}
+        onCancel={() => { setShowCreate(false); createForm.resetFields(); setRefusal(null); }}
         onOk={() => createForm.submit()}
         okText={t("products_page.create")}
       >
+        {refusal && <RefusalNotice sentences={refusal} />}
         <Form form={createForm} layout="vertical" onFinish={handleCreate}>
           <Form.Item name="name" label={t("products_page.product_name")} rules={[{ required: true }]}>
             <Input placeholder="e.g. Nexus Pro" />
@@ -365,7 +409,7 @@ const ProductsPage = () => {
       <Modal
         title={`${editProduct?.name || ''}`}
         open={!!editProduct}
-        onCancel={() => { setEditProduct(null); editForm.resetFields(); }}
+        onCancel={() => { setEditProduct(null); editForm.resetFields(); setRefusal(null); }}
         width={640}
         footer={[
           <Button key="cancel" onClick={() => { setEditProduct(null); editForm.resetFields(); }}>
@@ -386,6 +430,7 @@ const ProductsPage = () => {
           </Button>,
         ]}
       >
+        {refusal && <RefusalNotice sentences={refusal} />}
         {editProduct && (
           <>
             <Descriptions size="small" column={2} style={{ marginBottom: 16 }}>

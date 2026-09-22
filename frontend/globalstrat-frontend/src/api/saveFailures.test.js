@@ -9,6 +9,7 @@
 import {
   isDecisionWrite, publishSaveFailure, publishSaveSuccess,
   subscribeToSaves, getLastFailedRequest, resetSaveFailures,
+  reportUnpublishedFailure,
 } from './saveFailures';
 
 afterEach(() => resetSaveFailures());
@@ -67,5 +68,97 @@ describe('publishing', () => {
     stop();
     publishSaveSuccess();
     expect(seen).toHaveLength(0);
+  });
+});
+
+/**
+ * 2026-09-21. Two pages save several sections each, and the notice was cleared
+ * by ANY successful decision write: a refused staff allocation followed by an
+ * accepted ESG save took the notice down with the allocation still unsaved.
+ * That is the silent loss R17 forbids, arrived at through the repair for it.
+ */
+describe('one section succeeding does not excuse another that was refused', () => {
+  const allocation = { method: 'patch', url: '/games/1/teams/2/decisions/round/3/talent-allocations/' };
+  const esg = { method: 'patch', url: '/games/1/teams/2/decisions/round/3/esg/' };
+  const refusal = (config) => ({ config, response: { status: 400, data: {} } });
+
+  test('the refused request is still the one to retry', () => {
+    const seen = [];
+    subscribeToSaves(e => seen.push(e));
+    publishSaveFailure(refusal(allocation));
+    publishSaveSuccess(esg);
+
+    expect(getLastFailedRequest()).toBe(allocation);
+    // The listener is told the failure still stands, not that all is saved.
+    expect(seen.map(e => e.type)).toEqual(['failed', 'failed']);
+    expect(seen[1].error.config).toBe(allocation);
+  });
+
+  test('the same section succeeding does clear it', () => {
+    const seen = [];
+    subscribeToSaves(e => seen.push(e));
+    publishSaveFailure(refusal(allocation));
+    publishSaveSuccess({ ...allocation });
+
+    expect(getLastFailedRequest()).toBeNull();
+    expect(seen.map(e => e.type)).toEqual(['failed', 'saved']);
+  });
+
+  test('two refused sections are worked through one at a time', () => {
+    publishSaveFailure(refusal(allocation));
+    publishSaveFailure(refusal(esg));
+    expect(getLastFailedRequest()).toBe(esg);
+    publishSaveSuccess(esg);
+    expect(getLastFailedRequest()).toBe(allocation);
+    publishSaveSuccess(allocation);
+    expect(getLastFailedRequest()).toBeNull();
+  });
+
+  test('a newer refusal of the same section replaces the older request', () => {
+    const newer = { ...allocation, data: '{"newer":true}' };
+    publishSaveFailure(refusal(allocation));
+    publishSaveFailure(refusal(newer));
+    expect(getLastFailedRequest()).toBe(newer);
+    publishSaveSuccess(newer);
+    expect(getLastFailedRequest()).toBeNull();
+  });
+});
+
+describe('the other student writes whose failures were swallowed', () => {
+  test('choosing a tax structure is a decision write', () => {
+    expect(isDecisionWrite({
+      method: 'post', url: '/games/1/teams/2/context/tax-structure/',
+    })).toBe(true);
+    // ...and reading the same route is not.
+    expect(isDecisionWrite({
+      method: 'get', url: '/games/1/teams/2/context/tax-structure/',
+    })).toBe(false);
+  });
+
+  test('autosaving a stakeholder communication draft is a decision write', () => {
+    expect(isDecisionWrite({
+      method: 'post', url: '/games/1/teams/2/communications/7/draft/',
+    })).toBe(true);
+  });
+});
+
+describe('a failure the interceptor never saw', () => {
+  test('is announced, so it cannot be silent', () => {
+    const seen = [];
+    subscribeToSaves(e => seen.push(e));
+    reportUnpublishedFailure(new TypeError('payload could not be built'));
+    expect(seen.map(e => e.type)).toEqual(['failed']);
+  });
+
+  test('is not announced twice when the interceptor already did', () => {
+    const seen = [];
+    subscribeToSaves(e => seen.push(e));
+    const error = {
+      config: { method: 'patch', url: '/games/1/teams/2/decisions/round/3/esg/' },
+      response: { status: 400, data: {} },
+    };
+    publishSaveFailure(error);
+    reportUnpublishedFailure(error);
+    expect(seen).toHaveLength(1);
   });
 });

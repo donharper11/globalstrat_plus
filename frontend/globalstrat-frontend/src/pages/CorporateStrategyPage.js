@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Typography, InputNumber, Row, Col, Checkbox, Space, Tag, Alert, Select, Progress, Tabs, Button, Descriptions, Divider, Empty, Collapse, Tooltip, Table, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
 import { useAuth } from '../AuthContext';
-import { getStrategyContext, getTalentContext, getTalentAllocationContext, getGovernanceContext, patchDecision, getOrgStructureContext, switchOrgStructure } from '../api/decisions';
+import { getStrategyContext, getTalentContext, getTalentAllocationContext, getGovernanceContext, getOrgStructureContext, switchOrgStructure } from '../api/decisions';
+import useSectionAutosave from '../hooks/useSectionAutosave';
+import { effectiveAllocation, rebalanceAfterEdit, followHeadcount, staffingPayload } from './sectionPayloads';
 import { PanelCard, PageHeader } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
@@ -87,7 +89,7 @@ const StaffAllocationSection = ({ poolKey, headcount, markets, allocations, lock
                 <InputNumber
                   size="small" min={0} max={headcount}
                   value={hqCount} disabled={locked}
-                  onChange={v => onAllocChange({ ...allocations, hq: v || 0 })}
+                  onChange={v => onAllocChange({ ...allocations, hq: v || 0 }, 'hq')}
                   style={{ width: 64 }}
                 />
                 {headcount > 0 && (
@@ -118,7 +120,7 @@ const StaffAllocationSection = ({ poolKey, headcount, markets, allocations, lock
                       <InputNumber
                         size="small" min={0} max={headcount}
                         value={val} disabled={locked || !isActive}
-                        onChange={v => onAllocChange({ ...allocations, [m.code]: v || 0 })}
+                        onChange={v => onAllocChange({ ...allocations, [m.code]: v || 0 }, m.code)}
                         style={{ width: 64, opacity: isActive ? 1 : 0.4 }}
                       />
                     </Tooltip>
@@ -237,7 +239,7 @@ const TalentPoolCard = ({ pool, poolKey, talent, locked, onChange, prev, markets
           poolKey={poolKey}
           headcount={talent.headcount}
           markets={markets}
-          allocations={allocations || {}}
+          allocations={effectiveAllocation(allocations, talent.headcount)}
           locked={locked}
           onAllocChange={onAllocChange}
         />
@@ -329,12 +331,17 @@ const MnATab = ({ context, locked, autoSave, draft }) => {
   const targets = context.acquisition_targets || [];
   const teamAcquisitions = context.team_acquisitions || [];
 
-  // Track which target is queued in the current draft
-  const draftAcquisitions = draft?.acquisitions || [];
+  // The targets queued this round. Kept locally and re-read from the draft
+  // when it changes: building each save from `draft` alone meant a second
+  // acquisition queued in one sitting was sent as [second] and replaced the
+  // first, because the draft is not re-read after a save.
+  const [draftAcquisitions, setDraftAcquisitions] = useState(draft?.acquisitions || []);
+  useEffect(() => { setDraftAcquisitions(draft?.acquisitions || []); }, [draft?.acquisitions]);
   const pendingTargetIds = new Set(draftAcquisitions.map(a => a.acquisition_target));
 
   const handleAcquire = (targetId) => {
     const newAcquisitions = [...draftAcquisitions, { acquisition_target: targetId }];
+    setDraftAcquisitions(newAcquisitions);
     autoSave('acquisitions', { acquisitions: newAcquisitions });
   };
 
@@ -589,8 +596,10 @@ const CorporateStrategyPage = () => {
   const [context, setContext] = useState(null);
   const [talentCtx, setTalentCtx] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [allocCtx, setAllocCtx] = useState(null);
+  // False until the stored allocation has been read: a save built before
+  // then would send an empty list and delete rows the page never saw.
+  const [allocLoaded, setAllocLoaded] = useState(false);
   const [allocations, setAllocations] = useState({ rd: {}, commercial: {}, operations: {} });
   const [esg, setEsg] = useState({ environmental_investment: 0, social_investment: 0, governance_commitments: [] });
   const [govCtx, setGovCtx] = useState(null);
@@ -601,8 +610,6 @@ const CorporateStrategyPage = () => {
     commercial: { headcount: 30, salary_level: 3, training_budget: 0, current_level: 3.0, turnover_rate: 0.08 },
     operations: { headcount: 40, salary_level: 3, training_budget: 0, current_level: 3.0, turnover_rate: 0.08 },
   });
-  const saveTimer = useRef(null);
-
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) { setLoading(false); return; }
     try {
@@ -621,6 +628,7 @@ const CorporateStrategyPage = () => {
           commercial: { hq: da.commercial?.hq_count || 0, ...(da.commercial?.market_allocation || {}) },
           operations: { hq: da.operations?.hq_count || 0, ...(da.operations?.market_allocation || {}) },
         });
+        setAllocLoaded(true);
       }
       if (orgRes?.data) setOrgCtx(orgRes.data);
       if (talentRes?.data) {
@@ -663,53 +671,39 @@ const CorporateStrategyPage = () => {
 
   useEffect(() => { loadContext(); }, [loadContext]);
 
-  const autoSave = useCallback((section, data) => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      if (!gameId || !teamId || !currentRound || locked) return;
-      setSaving(true);
-      try {
-        await patchDecision(gameId, teamId, currentRound, section, data);
-        refreshBudgets();
-      } catch { /* ignore */ }
-      setSaving(false);
-    }, 2000);
-  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
+  // One timer per section, and no discarded failures: see the hook.
+  const { autoSave, saving } = useSectionAutosave({
+    gameId, teamId, currentRound, locked, onSaved: refreshBudgets,
+  });
 
-  const handleAllocChange = useCallback((poolKey, newAlloc) => {
-    setAllocations(prev => {
-      const next = { ...prev, [poolKey]: newAlloc };
-      // Auto-save allocations
-      const payload = {};
-      ['rd', 'commercial', 'operations'].forEach(k => {
-        const a = next[k] || {};
-        const { hq, ...marketAlloc } = a;
-        payload[k] = { hq_count: hq || 0, market_allocation: marketAlloc };
-      });
-      autoSave('talent_allocations', { talent_allocations: payload });
-      return next;
-    });
-  }, [autoSave]);
+  // Staffing and staff allocation are one decision to the server: an
+  // allocation must total its pool's headcount, so they are sent together, to
+  // the staffing section, whichever of the two was edited.
+  const saveStaffing = useCallback((nextTalent, nextAllocations) => {
+    autoSave('talent', staffingPayload(nextTalent, nextAllocations, allocLoaded));
+  }, [autoSave, allocLoaded]);
+
+  const handleAllocChange = useCallback((poolKey, newAlloc, editedKey) => {
+    const headcount = talent[poolKey]?.headcount || 0;
+    const next = {
+      ...allocations,
+      [poolKey]: rebalanceAfterEdit(newAlloc, editedKey, headcount),
+    };
+    setAllocations(next);
+    saveStaffing(talent, next);
+  }, [allocations, talent, saveStaffing]);
 
   const handleTalentChange = useCallback((poolKey, poolData) => {
-    setTalent(prev => {
-      const next = { ...prev, [poolKey]: poolData };
-      autoSave('talent', {
-        talent: {
-          rd_headcount: next.rd.headcount,
-          rd_salary_level: next.rd.salary_level,
-          rd_training_budget: next.rd.training_budget,
-          commercial_headcount: next.commercial.headcount,
-          commercial_salary_level: next.commercial.salary_level,
-          commercial_training_budget: next.commercial.training_budget,
-          operations_headcount: next.operations.headcount,
-          operations_salary_level: next.operations.salary_level,
-          operations_training_budget: next.operations.training_budget,
-        },
-      });
-      return next;
-    });
-  }, [autoSave]);
+    const nextTalent = { ...talent, [poolKey]: poolData };
+    const previous = talent[poolKey]?.headcount || 0;
+    const nextAllocations = poolData.headcount === previous ? allocations : {
+      ...allocations,
+      [poolKey]: followHeadcount(allocations[poolKey], previous, poolData.headcount),
+    };
+    setTalent(nextTalent);
+    if (nextAllocations !== allocations) setAllocations(nextAllocations);
+    saveStaffing(nextTalent, nextAllocations);
+  }, [allocations, talent, saveStaffing]);
 
   if (loading) return <LoadingSpinner />;
   if (!context) return <Alert message={t('corporate_strategy.unable_to_load')} type="error" />;
@@ -740,7 +734,7 @@ const CorporateStrategyPage = () => {
               prev={talentCtx?.pools?.[key]}
               markets={allocCtx?.markets || []}
               allocations={allocations[key]}
-              onAllocChange={alloc => handleAllocChange(key, alloc)}
+              onAllocChange={(alloc, editedKey) => handleAllocChange(key, alloc, editedKey)}
             />
           ))}
 

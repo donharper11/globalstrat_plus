@@ -11,6 +11,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import WarningBanner from '../components/WarningBanner';
 import TeamActivityBanner from '../components/TeamActivityBanner';
 import { DECISION_INPUT_LIMITS, boundTo } from '../decisionInputLimits';
+import { reportUnpublishedFailure } from '../api/saveFailures';
 
 const { Title, Text } = Typography;
 
@@ -201,7 +202,11 @@ const FinancePage = () => {
       // Reload to get updated state
       const res = await getTaxStructureContext(gameId, teamId);
       setTaxData(res.data);
-    } catch { /* ignore */ }
+    } catch (err) {
+      // A refused choice is announced by the interceptor; this covers a
+      // failure that never became a request. The selection is left as it was.
+      reportUnpublishedFailure(err);
+    }
     setTaxSaving(false);
   };
 

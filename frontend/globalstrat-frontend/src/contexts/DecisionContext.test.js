@@ -22,7 +22,7 @@ import { render, screen, act, fireEvent } from '@testing-library/react';
 import { DecisionProvider, useDecisions } from './DecisionContext';
 import DecisionSaveAlert from '../components/DecisionSaveAlert';
 import GameStatusBar from '../components/GameStatusBar';
-import { saveDecisions } from '../api/decisions';
+import { saveDecisions, getDecisions } from '../api/decisions';
 import client from '../api/client';
 import {
   publishSaveFailure, publishSaveSuccess, resetSaveFailures,
@@ -251,5 +251,72 @@ describe('the indicator stops claiming a save that did not happen (V2-064)', () 
     await save();
     expect(screen.getByText('game_status.not_saved')).toBeInTheDocument();
     expect(screen.queryByText('game_status.saved')).not.toBeInTheDocument();
+  });
+});
+
+describe('one section being saved does not hide another that was refused', () => {
+  const allocation = {
+    method: 'patch', url: '/games/1/teams/2/decisions/round/3/talent/',
+  };
+  const esg = { method: 'patch', url: '/games/1/teams/2/decisions/round/3/esg/' };
+
+  test('the notice stays up, and Retry re-sends the refused one', async () => {
+    await mount();
+    await act(async () => {
+      publishSaveFailure({
+        config: allocation,
+        response: { status: 400, data: { talent_allocations: ['Allocated staff (45) must equal the selected team headcount (50).'] } },
+      });
+    });
+    await act(async () => { publishSaveSuccess(esg); });
+
+    expect(screen.getByText('decision_save.not_saved_title')).toBeInTheDocument();
+    expect(screen.getByText(
+      'Allocated staff (45) must equal the selected team headcount (50).')).toBeInTheDocument();
+
+    await act(async () => { fireEvent.click(screen.getByText('decision_save.retry_now')); });
+    expect(client.request).toHaveBeenCalledWith(allocation);
+  });
+});
+
+describe('what a page reads back is what the server holds (2026-09-21)', () => {
+  // The provider sits above every student route, so it mounted once and read
+  // the draft once. Pages rebuild "the whole list" from that draft on every
+  // save, so a second product created in one sitting was sent as [second] and
+  // replaced the first; and a page revisited without a reload showed the
+  // round as it stood when the student logged in.
+  test('loadDraft re-reads the draft', async () => {
+    getDecisions.mockResolvedValueOnce({ data: {} });
+    await mount();
+    expect(ctx.draft).toEqual({});
+
+    getDecisions.mockResolvedValueOnce({ data: { product_creates: [{ product_name: 'A' }] } });
+    await act(async () => { await ctx.loadDraft(); });
+    expect(ctx.draft.product_creates).toEqual([{ product_name: 'A' }]);
+  });
+
+  test('a refresh that finds nothing new keeps the same draft object', async () => {
+    // Pages re-initialise their state when `draft` changes identity, so a
+    // no-change refresh must not reset a page the student is typing on.
+    getDecisions.mockResolvedValueOnce({ data: { esg: { social_investment: 5 } } });
+    await mount();
+    const before = ctx.draft;
+    getDecisions.mockResolvedValueOnce({ data: { esg: { social_investment: 5 } } });
+    await act(async () => { await ctx.loadDraft(); });
+    expect(ctx.draft).toBe(before);
+  });
+
+  test('a refresh that fails keeps the draft it had', async () => {
+    // Blanking it would be worse than staleness: the next replace-style save
+    // built from an empty draft deletes what the server holds.
+    getDecisions.mockResolvedValueOnce({ data: { status: 'locked', acquisitions: [{ acquisition_target: 4 }] } });
+    await mount();
+    expect(ctx.locked).toBe(true);
+
+    getDecisions.mockRejectedValueOnce(new Error('offline'));
+    await act(async () => { await ctx.loadDraft(); });
+
+    expect(ctx.draft.acquisitions).toEqual([{ acquisition_target: 4 }]);
+    expect(ctx.locked).toBe(true);
   });
 });

@@ -11,6 +11,7 @@ import ShallowRouteRecovery from './components/ShallowRouteRecovery';
 import { DSTopBar } from './components/design-system';
 import BudgetAlert from './components/BudgetAlert';
 import DecisionSaveAlert from './components/DecisionSaveAlert';
+import DraftRefreshOnNavigate from './components/DraftRefreshOnNavigate';
 import DemoBanner from './components/DemoBanner';
 import NewsTicker from './components/NewsTicker';
 import themeConfig from './theme/themeConfig';
@@ -144,6 +145,11 @@ function App() {
                                 mounted beside BudgetAlert rather than on any
                                 one page. */}
                             <DecisionSaveAlert />
+                            {/* Every decision screen initialises from the
+                                stored submission, so it is re-read on each
+                                move between screens rather than once a
+                                session. */}
+                            <DraftRefreshOnNavigate />
                             <Routes>
                               <Route path="/" element={<GameDashboard />} />
                               {/* Information pages */}

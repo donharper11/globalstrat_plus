@@ -5,7 +5,7 @@ import { CheckCircleOutlined, WarningOutlined, CloseCircleOutlined } from '@ant-
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
-import { getDecisionSummary, lockDecisions, patchDecision } from '../api/decisions';
+import { getDecisionSummary, lockDecisions, saveDecisions } from '../api/decisions';
 import BudgetBar from '../components/BudgetBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
@@ -24,7 +24,7 @@ const SummaryPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { gameId, teamId, currentRound } = useGame();
-  const { locked, setLocked } = useDecisions();
+  const { draft, locked, setLocked } = useDecisions();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -44,6 +44,10 @@ const SummaryPage = () => {
   }, [gameId, teamId, currentRound]);
 
   useEffect(() => { loadSummary(); }, [loadSummary]);
+
+  // Notes were never read back: a team that reloaded saw an empty box over
+  // the notes the server held.
+  useEffect(() => { setTeamNotes(draft?.team_notes || ''); }, [draft?.team_notes]);
 
   const categories = summary?.categories || {};
   const requiredForLock = ['budget', 'products', 'marketing', 'strategy'];
@@ -86,9 +90,11 @@ const SummaryPage = () => {
     setLockLoading(true);
     setLockError(null);
     try {
-      // Save team notes first
-      if (teamNotes) {
-        await patchDecision(gameId, teamId, currentRound, 'budget', { team_notes: teamNotes });
+      // Notes belong to the submission itself, not to any section. They were
+      // sent to the budget section, which requires its three budgets, so any
+      // team that typed a note had its lock refused (2026-09-21).
+      if (teamNotes !== (draft?.team_notes || '')) {
+        await saveDecisions(gameId, teamId, currentRound, { team_notes: teamNotes });
       }
       await lockDecisions(gameId, teamId, currentRound);
       setLocked(true);

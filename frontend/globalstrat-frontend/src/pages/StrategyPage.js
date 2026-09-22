@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Typography, Collapse, InputNumber, Select, Button, Tag, Space, Row, Col, Checkbox, Alert, Statistic } from 'antd';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
-import { getStrategyContext, patchDecision } from '../api/decisions';
+import { getStrategyContext } from '../api/decisions';
+import useSectionAutosave from '../hooks/useSectionAutosave';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PageHeader } from '../components/design-system';
 // eslint-disable-next-line no-unused-vars
@@ -26,7 +27,6 @@ const StrategyPage = () => {
   const { draft, locked } = useDecisions();
   const [context, setContext] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
 
   // Decision state
   const [marketEntries, setMarketEntries] = useState([]);
@@ -34,7 +34,6 @@ const StrategyPage = () => {
   const [plantDecisions, setPlantDecisions] = useState([]);
   const [partnerships, setPartnerships] = useState([]);
   const [esg, setEsg] = useState({ environmental_investment: 0, social_investment: 0, governance_commitments: [] });
-  const saveTimer = useRef(null);
 
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) return;
@@ -53,18 +52,10 @@ const StrategyPage = () => {
 
   useEffect(() => { loadContext(); }, [loadContext]);
 
-  const autoSave = useCallback((section, data) => {
-    clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(async () => {
-      if (!gameId || !teamId || !currentRound || locked) return;
-      setSaving(true);
-      try {
-        await patchDecision(gameId, teamId, currentRound, section, data);
-        refreshBudgets();
-      } catch { /* ignore */ }
-      setSaving(false);
-    }, 2000);
-  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
+  // One timer per section, and no discarded failures: see the hook.
+  const { autoSave, saving } = useSectionAutosave({
+    gameId, teamId, currentRound, locked, onSaved: refreshBudgets,
+  });
 
   if (loading) return <LoadingSpinner />;
   if (!context) return <Alert message={t("strategy_page.unable_to_load")} type="error" />;
