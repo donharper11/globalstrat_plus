@@ -40,9 +40,12 @@ determines, charged from cash at resolution.**
   needs a focused test that fails without it, and it invalidates replay
   evidence for any round carrying a compliance investment — of which, by
   V2-137, there are none.
-- **Not ruled, recorded as the builder's reading:** how the charge is
-  presented on the income statement (its own line, or within strategy
-  expense). The builder follows the nearest precedent and says which.
+- **Presentation, ruled the same day.** Asked whether the charge shows as its
+  own line on the income statement or within strategy expense, the owner
+  answered: "Show its own line on the income statement." So it is a distinct
+  line — in the engine's opex record, on the statements a student and an
+  instructor read, in the tax deduction total and in committed spend — named
+  "Compliance investment" in both languages.
 
 **Dispositions:** the silent-saves builder's owner question — ruled;
 implementation open against the engine owner.
