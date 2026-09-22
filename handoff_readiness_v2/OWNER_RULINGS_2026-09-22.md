@@ -49,3 +49,47 @@ determines, charged from cash at resolution.**
 
 **Dispositions:** the silent-saves builder's owner question — ruled;
 implementation open against the engine owner.
+
+---
+
+## R48 — bugs first; calibration is deferred to a clean walkthrough, and the pending calls are delegated
+
+**Question as asked.** Twelve items were put to the owner with context: five on the
+reference-price ladder (V2-114 and its follow-ons), the analyst quota reading
+under R42, the Chinese word limit, two dead instructor routes, editing an existing
+product, retention of deletion records, the framework translation layer, and a
+missing pre-lock row for committed compliance spend.
+
+**The owner's answer, in the owner's words.** "I'm not gonna rule on any. It's
+gonna be your call. Why? Cuz, I don't understand when, how, or why, globalstrat+'s
+pricing set up got so complex. And I gonna guess, that no matter what I rule now,
+it's still not gonna work the way I expect. Builders just seem to be doing
+whatever. So, here's what's gonna happen, the most important thing is to get the
+platform working - free of bugs! How companies decisions end up playing out is
+what we're gonna recalibrate when we're done, have a working platform, and do a
+full walkthough. When that happens without bugs, we can play clean games and fix
+ridiculous scoring, pricing, etc."
+
+**Ruling.**
+
+1. **Priority is a working, bug-free platform.** Correctness of behaviour comes
+   before calibration of outcomes.
+2. **Calibration is deferred.** How decisions play out — scoring, pricing bands,
+   reference prices, starting-field balance — is recalibrated after a full
+   walkthrough of the working platform, by playing clean games. No calibration
+   question is put to the owner until then.
+3. **The pending calls are delegated to the integrator**, to be decided in the
+   direction of the least change that keeps the platform working, and recorded
+   as integrator decisions under this ruling, not as owner rulings.
+4. **Standing complaint, recorded:** the owner cannot trace how the pricing
+   set-up reached its present complexity, and finds builders deciding things on
+   their own. Every future change to a rule that a player can feel must be
+   traceable to a dated ruling or a decision under this one, in plain language,
+   in one place.
+
+**Consequence.** The freeze is no longer blocked on rulings. The next gate is a
+full walkthrough, in a real browser, in both roles and both languages, across
+whole games; every defect found is a finding first and a repair second.
+
+**Dispositions:** the twelve pending items — delegated; see
+`INTEGRATOR_DECISIONS_UNDER_R48.md`.
