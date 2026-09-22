@@ -204,13 +204,14 @@ def scan(text, lang):
     return found
 
 
-def sign_in(page, route, username, lang):
+def sign_in(page, route, username, lang, password=None):
+    """Students' passwords are their student ids (issued in bulk from the console)."""
     page.goto(BASE + route, wait_until='domcontentloaded')
     page.evaluate("(l) => localStorage.setItem('gs_language', l)", lang)
     page.reload(wait_until='domcontentloaded')
     page.wait_for_timeout(2000)
     page.fill('input#username, input[name="username"]', username)
-    page.fill('input#password, input[name="password"]', PASSWORD)
+    page.fill('input#password, input[name="password"]', password or PASSWORD)
     page.click('button[type="submit"]')
     page.wait_for_timeout(5000)
     return bool(page.evaluate("() => localStorage.getItem('access_token')"))
@@ -266,8 +267,10 @@ def toast(page, tries=40):
 
 def modal_text(page):
     return page.evaluate("""() => {
-        const els = document.querySelectorAll('.ant-modal-content');
-        const el = els[els.length - 1];
+        // Only a modal that is actually shown: AntD leaves closed ones in the DOM.
+        const els = Array.from(document.querySelectorAll('.ant-modal-wrap'))
+            .filter(w => w.style.display !== 'none' && w.offsetParent !== null);
+        const el = els.length ? els[els.length - 1].querySelector('.ant-modal-content') : null;
         return el ? el.textContent.replace(/\\s+/g, ' ').trim() : null;
     }""")
 

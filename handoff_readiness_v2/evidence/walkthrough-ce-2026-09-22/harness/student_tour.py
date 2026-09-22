@@ -63,7 +63,7 @@ def main():
         page.evaluate("(l) => localStorage.setItem('gs_language', l)", LANG)
         page.reload(wait_until='domcontentloaded'); page.wait_for_timeout(2000)
         R.screen(page, 's-%s-00-login' % TAG)
-        ok = sign_in(page, '/login', STUDENT, LANG)
+        ok = sign_in(page, '/login', STUDENT, LANG, password=members[0].get('student_id') or STUDENT)
         R.step('student %s signs in' % STUDENT, 'pass' if ok else 'fail')
         if not ok:
             browser.close(); return R.finish()
