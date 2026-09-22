@@ -43,7 +43,6 @@ import CompetitiveIntelPage from './pages/CompetitiveIntelPage';
 import StrategyToolsPage from './pages/StrategyToolsPage';
 import FinancialReportsPage from './pages/FinancialReportsPage';
 import CompanyForecastPage from './pages/CompanyForecastPage';
-import TeamActivityPage from './pages/TeamActivityPage';
 import CommunicationsPage from './pages/CommunicationsPage';
 
 const { Content } = Layout;
@@ -158,7 +157,6 @@ function App() {
                               <Route path="/games/:gameId/teams/:teamId/competitors" element={<CompetitiveIntelPage />} />
                               <Route path="/games/:gameId/teams/:teamId/tools" element={<StrategyToolsPage />} />
                               <Route path="/games/:gameId/teams/:teamId/financial-reports" element={<FinancialReportsPage />} />
-                              <Route path="/games/:gameId/teams/:teamId/team-activity" element={<TeamActivityPage />} />
                               {/* Analysis */}
                               <Route path="/games/:gameId/teams/:teamId/forecast" element={<CompanyForecastPage />} />
                               {/* Decisions */}
