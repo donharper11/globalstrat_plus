@@ -615,6 +615,106 @@ MESSAGES = {
         'en': 'Optional this round. Locking your decisions does not require it.',
         'zh-CN': '本回合为可选项，锁定决策时无需完成。',
     },
+    # -----------------------------------------------------------------------
+    # W-CE-16 (2026-09-22) -- sentences that reached a Chinese student in
+    # English because they were f-strings in a view.
+    # -----------------------------------------------------------------------
+    # The dashboard's Strategic Signals (views/scorecard.py).
+    'signal_rd_low': {
+        'en': 'R&D investment is {pct}% of revenue. Competitors may be outpacing your innovation.',
+        'zh-CN': '研发投入仅占收入的 {pct}%。竞争对手的创新可能正在超越您。',
+    },
+    'signal_tech_low': {
+        'en': 'Technology capability at {pct}%. A next-generation platform is available for development.',
+        'zh-CN': '技术能力为 {pct}%。新一代平台已可开发。',
+    },
+    'signal_satisfaction_low': {
+        'en': 'Customer satisfaction is below average. Review Market Research to identify underperforming segments.',
+        'zh-CN': '客户满意度低于平均水平。请查看市场研究，找出表现不佳的细分市场。',
+    },
+    'signal_single_market': {
+        'en': 'Operating in {entered} of {total} markets. International expansion could unlock growth.',
+        'zh-CN': '目前仅在 {total} 个市场中的 {entered} 个开展业务。国际扩张可能带来增长。',
+    },
+    'signal_leverage': {
+        'en': 'Debt-to-equity ratio at {ratio}. Conservative investors may be concerned.',
+        'zh-CN': '资产负债率为 {ratio}。保守型投资者可能会感到担忧。',
+    },
+    # Why an acquisition target cannot be bought yet (the M&A card).
+    'ma_available_from_round': {
+        'en': 'Available from Round {round}',
+        'zh-CN': '第 {round} 回合起可用',
+    },
+    'ma_requires_presence': {
+        'en': 'Requires presence in {market}',
+        'zh-CN': '需要先进入{market}',
+    },
+    'ma_already_acquired': {
+        'en': 'Already acquired by {team}',
+        'zh-CN': '已被{team}收购',
+    },
+    # How this round's R&D budget was arrived at (the R&D page header).
+    'rd_budget_source': {
+        'en': '20% of previous round net profit ({profit}) + base allocation ({base})',
+        'zh-CN': '上一回合净利润的 20%（{profit}）+ 基础拨款（{base}）',
+    },
+    # The research reports' rating words (views/research_reports.py). The view
+    # reasons in codes and renders the word here, so a Chinese reader gets
+    # the word and the page keeps colouring by the code.
+    'research_importance_critical': {'en': 'Critical', 'zh-CN': '关键'},
+    'research_importance_high': {'en': 'High', 'zh-CN': '高'},
+    'research_importance_moderate': {'en': 'Moderate', 'zh-CN': '中等'},
+    'research_importance_low': {'en': 'Low', 'zh-CN': '低'},
+    'research_fit_strong': {'en': 'Strong', 'zh-CN': '强'},
+    'research_fit_moderate': {'en': 'Moderate', 'zh-CN': '中等'},
+    'research_fit_weak': {'en': 'Weak', 'zh-CN': '弱'},
+    'research_fit_very_weak': {'en': 'Very Weak', 'zh-CN': '很弱'},
+    'research_growth_fastest': {'en': 'Fastest', 'zh-CN': '最快'},
+    'research_growth_fast': {'en': 'Fast', 'zh-CN': '快速'},
+    'research_growth_moderate': {'en': 'Moderate growth', 'zh-CN': '温和增长'},
+    'research_growth_slow': {'en': 'Slow growth', 'zh-CN': '缓慢增长'},
+    'research_growth_moderate_short': {'en': 'Moderate', 'zh-CN': '温和'},
+    'research_growth_slow_short': {'en': 'Slow', 'zh-CN': '缓慢'},
+    'research_price_very_high': {'en': 'Very High', 'zh-CN': '很高'},
+    'research_price_high': {'en': 'High', 'zh-CN': '高'},
+    'research_price_moderate': {'en': 'Moderate', 'zh-CN': '中等'},
+    'research_price_low': {'en': 'Low', 'zh-CN': '低'},
+    'research_channel_fit_excellent': {'en': 'Excellent', 'zh-CN': '极佳'},
+    'research_channel_fit_good': {'en': 'Good', 'zh-CN': '良好'},
+    'research_channel_fit_moderate': {'en': 'Moderate', 'zh-CN': '中等'},
+    'research_channel_fit_poor': {'en': 'Poor', 'zh-CN': '较差'},
+    'research_channel_mass_retail': {'en': 'Mass Retail', 'zh-CN': '大众零售'},
+    'research_channel_selective_retail': {'en': 'Selective Retail', 'zh-CN': '精选零售'},
+    'research_channel_exclusive_retail': {'en': 'Exclusive Retail', 'zh-CN': '独家零售'},
+    'research_channel_direct_online': {'en': 'Direct Online', 'zh-CN': '直销在线'},
+    'research_channel_hybrid': {'en': 'Hybrid', 'zh-CN': '混合渠道'},
+    'research_all_markets': {'en': 'All Markets', 'zh-CN': '所有市场'},
+    'research_global': {'en': 'Global', 'zh-CN': '全球'},
+    'research_no_competitor': {'en': 'None', 'zh-CN': '无'},
+    'research_opportunity_growing_uncaptured': {
+        'en': 'Growing segment you’re not capturing. Investigate fit gaps.',
+        'zh-CN': '该细分市场正在增长，但您尚未获取份额。请排查契合度差距。',
+    },
+    'research_opportunity_lead_eroding': {
+        'en': 'Your lead may be eroding. Check competitor moves.',
+        'zh-CN': '您的领先地位可能正在削弱。请关注竞争对手动向。',
+    },
+    'research_opportunity_underserved': {
+        'en': 'Large underserved segment. First-mover advantage available.',
+        'zh-CN': '大型且服务不足的细分市场，具备先发优势。',
+    },
+    'research_opportunity_high_margin_mismatch': {
+        'en': 'High-margin segment. Your capabilities may not match their expectations.',
+        'zh-CN': '高利润细分市场，但您的能力可能不符合其期望。',
+    },
+    'research_opportunity_price_competition': {
+        'en': 'Dominated by price competition. Margins thin.',
+        'zh-CN': '价格竞争激烈，利润率微薄。',
+    },
+    'research_opportunity_protect_expand': {
+        'en': 'Growing segment where you have strong fit. Protect and expand.',
+        'zh-CN': '您在该增长细分市场契合度高。请巩固并扩大。',
+    },
     # The same rule as `equity_exceeds_funding_need`, in the detailed form the
     # engine already recorded. The English rendering is byte-identical to the
     # sentence `funding_need.describe` built before CRV2-12, so the refusal an

@@ -1906,7 +1906,10 @@ class RDContextView(APIView):
             'rd_budget': float(rd_budget),
             'rd_budget_remaining': float(rd_budget - rd_spent),
             'rd_spent': float(rd_spent),
-            'budget_source': f"20% of previous round net profit ({float(prev_net_income):,.0f}) + base allocation ({float(base_allocation):,.0f})",
+            'budget_source': participant_message(
+                'rd_budget_source', language=language,
+                profit=f'{float(prev_net_income):,.0f}',
+                base=f'{float(base_allocation):,.0f}'),
             'pending_feature_gains': pending,
         })
 
@@ -2365,9 +2368,18 @@ class StrategyContextView(APIView):
                 'available': round_available and meets_presence and not acquired_by,
                 'locked_reasons': [
                     reason for reason in [
-                        f'Available from Round {target.min_round_available}' if not round_available else None,
-                        f'Requires presence in {get_localized_field(target.market, "name", language)}' if not meets_presence else None,
-                        f'Already acquired by {acquired_by.team.name}' if acquired_by else None,
+                        participant_message(
+                            'ma_available_from_round', language=language,
+                            round=target.min_round_available)
+                        if not round_available else None,
+                        participant_message(
+                            'ma_requires_presence', language=language,
+                            market=get_localized_field(target.market, 'name', language))
+                        if not meets_presence else None,
+                        participant_message(
+                            'ma_already_acquired', language=language,
+                            team=acquired_by.team.name)
+                        if acquired_by else None,
                     ] if reason
                 ],
                 'acquired_by_team': acquired_by.team.name if acquired_by else None,

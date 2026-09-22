@@ -15,13 +15,15 @@ const { TextArea } = Input;
 
 // --------------- helpers ---------------
 
-const fitColor = (label) => {
-  if (!label) return undefined;
-  const l = label.toLowerCase();
+// Coloured by the server's code (`*_code`), so the word beside it can be in
+// any language (W-CE-16); a payload without codes still colours by the word.
+const fitColor = (codeOrLabel) => {
+  if (!codeOrLabel) return undefined;
+  const l = codeOrLabel.toLowerCase();
   if (l === 'strong' || l === 'excellent') return 'green';
   if (l === 'moderate' || l === 'good') return 'gold';
   if (l === 'weak' || l === 'fair') return 'orange';
-  if (l === 'very weak' || l === 'poor') return 'red';
+  if (l === 'very_weak' || l === 'very weak' || l === 'poor') return 'red';
   return undefined;
 };
 
@@ -135,7 +137,7 @@ const SegmentDetail = ({ seg }) => {
           </Col>
           <Col span={8}>
             <Text type="secondary" style={{ fontSize: 11 }}>{t('market_research.fit')}</Text>
-            <div><Tag color={fitColor(seg.your_fit_score_label)}>{seg.your_fit_score_label || '--'}</Tag></div>
+            <div><Tag color={fitColor(seg.your_fit_score_code || seg.your_fit_score_label)}>{seg.your_fit_score_label || '--'}</Tag></div>
           </Col>
         </Row>
       </Col>
@@ -166,10 +168,10 @@ const SegmentDetail = ({ seg }) => {
                   <Col span={10}><Text style={{ fontSize: 12 }}>{f.name}</Text></Col>
                   <Col span={14}>
                     <Progress
-                      percent={importancePct(f.importance)}
+                      percent={importancePct(f.importance_code || f.importance)}
                       size="small"
                       format={() => f.importance}
-                      strokeColor={f.importance === 'Critical' ? '#f5222d' : f.importance === 'High' ? '#fa8c16' : '#1890ff'}
+                      strokeColor={(f.importance_code || f.importance || '').toLowerCase() === 'critical' ? '#f5222d' : (f.importance_code || f.importance || '').toLowerCase() === 'high' ? '#fa8c16' : '#1890ff'}
                     />
                   </Col>
                 </Row>
@@ -307,7 +309,7 @@ const SegmentsTab = ({ gameId, teamId, round }) => {
                         <td className="text-right">{seg.growth_label || pct(seg.growth_rate)}</td>
                         <td className="text-right">{pct(seg.your_share)}</td>
                         <td>#{seg.your_rank ?? '--'}</td>
-                        <td><Tag color={fitColor(seg.your_fit_score_label)} style={{ margin: 0 }}>{seg.your_fit_score_label || '--'}</Tag></td>
+                        <td><Tag color={fitColor(seg.your_fit_score_code || seg.your_fit_score_label)} style={{ margin: 0 }}>{seg.your_fit_score_label || '--'}</Tag></td>
                         <td>{seg.top_competitor || '--'}</td>
                         <td>
                           {seg.opportunity_signal && <Tag color="blue" style={{ margin: 0 }}>{t('market_research.opportunity')}</Tag>}
@@ -337,7 +339,7 @@ const SegmentsTab = ({ gameId, teamId, round }) => {
 
 const getSegFitColumns = (t) => [
   { title: t('market_research.segment'), dataIndex: 'segment', key: 'segment' },
-  { title: t('market_research.fit'), dataIndex: 'fit_label', key: 'fit_label', render: (v) => <Tag color={fitColor(v)}>{v}</Tag> },
+  { title: t('market_research.fit'), dataIndex: 'fit_label', key: 'fit_label', render: (v, row) => <Tag color={fitColor(row.fit_code || v)}>{v}</Tag> },
   { title: t('market_research.adoption'), dataIndex: 'adoption', key: 'adoption', render: (v) => (v != null ? v.toLocaleString() : '--') },
 ];
 
@@ -854,8 +856,8 @@ const ChannelsTab = ({ gameId, teamId, round }) => {
                               </Text>
                             ) : '--'}
                           </td>
-                          <td><Tag color={fitColor(c.fit_with_budget)} style={{ margin: 0 }}>{c.fit_with_budget || '--'}</Tag></td>
-                          <td><Tag color={fitColor(c.fit_with_premium)} style={{ margin: 0 }}>{c.fit_with_premium || '--'}</Tag></td>
+                          <td><Tag color={fitColor(c.fit_with_budget_code || c.fit_with_budget)} style={{ margin: 0 }}>{c.fit_with_budget || '--'}</Tag></td>
+                          <td><Tag color={fitColor(c.fit_with_premium_code || c.fit_with_premium)} style={{ margin: 0 }}>{c.fit_with_premium || '--'}</Tag></td>
                         </tr>
                       );
                     })}

@@ -158,7 +158,7 @@ const FinancePage = () => {
         setSaving(false);
       }
     }, 700);
-  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
+  }, [gameId, teamId, currentRound, locked, refreshBudgets, t]);
 
   const autoSaveFinancing = useCallback((nextFinancing) => {
     clearTimeout(financingSaveTimer.current);
@@ -179,7 +179,7 @@ const FinancePage = () => {
         setSaving(false);
       }
     }, 700);
-  }, [gameId, teamId, currentRound, locked, refreshBudgets]);
+  }, [gameId, teamId, currentRound, locked, refreshBudgets, t]);
 
   const updateBudget = (field, value) => {
     const next = { ...budgetAllocation, [field]: boundTo(field, normalizeMoneyInput(value)) };

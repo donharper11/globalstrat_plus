@@ -533,19 +533,88 @@ def _build_compliance_calls(game, round_obj):
     return calls
 
 
-def _sc_event_fallback(inst):
+# ---------------------------------------------------------------------------
+# W-CE-16 (2026-09-22): the template fallbacks in both languages
+# ---------------------------------------------------------------------------
+# Phase 2 falls back to these when no model answers. They were English only,
+# so a Chinese team read English briefings and notices whenever the model was
+# unavailable -- which is what the walkthrough's stack was. Each is selected
+# by the language the model path would have been asked for: the team's for
+# a briefing or a compliance notice, the instructor's for a supply-chain
+# event (stored once per event, read by every team; the same choice
+# `_build_sc_event_calls` makes). English is byte-identical to what shipped.
+
+_FALLBACK_TEXT = {
+    'en': {
+        'sc_event_generic': 'A {severity} supply-chain event ({name}) disrupted sourcing this round.',
+        'compliance_all_markets': 'all markets',
+        'compliance_enforcement': '{regime} enforcement in {market}: {trigger}.',
+        'compliance_cost': 'Remediation/penalty cost ${cost:,.0f}.',
+        'compliance_frozen': 'Market access is frozen through round {round}.',
+        'briefing_heading': '**Quarter {round} Results**',
+        'briefing_revenue_grew': 'Revenue grew {pct:.1f}% to ${revenue:,.0f}.',
+        'briefing_revenue_declined': 'Revenue declined {pct:.1f}% to ${revenue:,.0f}.',
+        'briefing_revenue_flat': 'Revenue: ${revenue:,.0f}.',
+        'briefing_summary': '{heading}\n\n{revenue_line} Net income: ${net_income:,.0f}. Cash position: ${cash:,.0f}.',
+        'briefing_cash_distress': '\n\nCash position below $1M — financial distress risk.',
+        'rec_profitability': 'Reduce operating costs or increase revenue to restore profitability.',
+        'rec_cash': 'Shore up cash reserves — consider reducing dividends or raising capital.',
+        'rec_margin': 'Gross margins are thin — review pricing or COGS structure.',
+        'rec_maintain': 'Maintain current trajectory and explore growth opportunities.',
+        'risk_cash': 'Cash below $1M — financial distress imminent.',
+        'risk_margin': 'Net margin at {pct:.0f}% — losses unsustainable.',
+        'risk_no_revenue': 'No revenue generated — all spending is a loss.',
+        'risk_leverage': 'Debt exceeds equity — leverage risk elevated.',
+    },
+    'zh-CN': {
+        'sc_event_generic': '一起{severity}级供应链事件（{name}）扰乱了本回合的采购。',
+        'compliance_all_markets': '所有市场',
+        'compliance_enforcement': '{regime}在{market}的执法：{trigger}。',
+        'compliance_cost': '整改/处罚成本 ${cost:,.0f}。',
+        'compliance_frozen': '市场准入冻结至第 {round} 回合。',
+        'briefing_heading': '**第 {round} 回合业绩**',
+        'briefing_revenue_grew': '收入增长 {pct:.1f}%，达到 ${revenue:,.0f}。',
+        'briefing_revenue_declined': '收入下降 {pct:.1f}%，降至 ${revenue:,.0f}。',
+        'briefing_revenue_flat': '收入：${revenue:,.0f}。',
+        'briefing_summary': '{heading}\n\n{revenue_line}净利润：${net_income:,.0f}。现金状况：${cash:,.0f}。',
+        'briefing_cash_distress': '\n\n现金低于 100 万美元——存在财务困境风险。',
+        'rec_profitability': '削减运营成本或提高收入，以恢复盈利。',
+        'rec_cash': '充实现金储备——考虑减少股利或筹集资本。',
+        'rec_margin': '毛利率偏低——请检查定价或销售成本结构。',
+        'rec_maintain': '保持当前发展轨迹，并探索增长机会。',
+        'risk_cash': '现金低于 100 万美元——财务困境迫在眉睫。',
+        'risk_margin': '净利润率为 {pct:.0f}%——亏损不可持续。',
+        'risk_no_revenue': '没有产生任何收入——所有支出均为亏损。',
+        'risk_leverage': '负债超过权益——杠杆风险上升。',
+    },
+}
+
+
+def _fallback_text(language, key, **values):
+    table = _FALLBACK_TEXT.get(language, _FALLBACK_TEXT['en'])
+    return table.get(key, _FALLBACK_TEXT['en'][key]).format(**values)
+
+
+def _sc_event_fallback(inst, language='en'):
     tmpl = inst.event_template
     desc = (tmpl.description_template or '').strip()
-    return desc or (f"A {tmpl.severity} supply-chain event ({tmpl.name}) disrupted "
-                    f"sourcing this round.")
+    if language == 'zh-CN':
+        desc = (getattr(tmpl, 'description_template_zh', '') or '').strip() or desc
+    return desc or _fallback_text(language, 'sc_event_generic',
+                                  severity=tmpl.severity, name=tmpl.name)
 
 
-def _compliance_fallback(ev, round_obj):
-    mkt = ev.market.code if ev.market else 'all markets'
-    parts = [f"{ev.regime.name} enforcement in {mkt}: {ev.triggered_by}.",
-             f"Remediation/penalty cost ${float(ev.cost_usd):,.0f}."]
+def _compliance_fallback(ev, round_obj, language='en'):
+    if ev.market:
+        mkt = ev.market.code
+    else:
+        mkt = _fallback_text(language, 'compliance_all_markets')
+    parts = [_fallback_text(language, 'compliance_enforcement',
+                            regime=ev.regime.name, market=mkt, trigger=ev.triggered_by),
+             _fallback_text(language, 'compliance_cost', cost=float(ev.cost_usd))]
     if ev.freeze_until_round >= round_obj.round_number:
-        parts.append(f"Market access is frozen through round {ev.freeze_until_round}.")
+        parts.append(_fallback_text(language, 'compliance_frozen',
+                                    round=ev.freeze_until_round))
     return ' '.join(parts)
 
 
@@ -553,10 +622,11 @@ def _store_sc_event_narratives(game, round_obj, results):
     """Write the LLM narrative (or a factual template fallback) onto each SC
     event's resolution_data."""
     from core.models.sc_state import SCEventInstance
+    language = get_instructor_language(game)
     for inst in SCEventInstance.objects.filter(round=round_obj).select_related('event_template'):
         r = results.get(f'sc_event_{inst.id}', {})
         text = r.get('content') if r.get('success') else None
-        text = (text or _sc_event_fallback(inst)).strip()
+        text = (text or _sc_event_fallback(inst, language)).strip()
         try:
             # Dedicated column, not resolution_data: that JSON holds the
             # competitive fire/applied flags and is inside the output hash.
@@ -571,10 +641,11 @@ def _store_compliance_narratives(game, round_obj, results):
     compliance enforcement event."""
     from core.models.sc_state import ComplianceEnforcementEvent
     for ev in (ComplianceEnforcementEvent.objects.filter(round=round_obj)
-               .select_related('regime', 'market')):
+               .select_related('regime', 'market', 'team')):
         r = results.get(f'compliance_{ev.id}', {})
         text = r.get('content') if r.get('success') else None
-        text = (text or _compliance_fallback(ev, round_obj)).strip()
+        text = (text or _compliance_fallback(
+            ev, round_obj, get_team_language(ev.team))).strip()
         try:
             ev.narrative = text
             ev.save(update_fields=['narrative'])
@@ -714,25 +785,26 @@ def _build_briefing_fields(game, round_number, team, llm_text=None):
     if prev_revenue > 0:
         rev_change_pct = round((revenue - prev_revenue) / prev_revenue * 100, 1)
 
-    # Executive summary
+    # Executive summary, in the team's language (the same the model path is
+    # asked for; W-CE-16).
+    language = get_team_language(team)
     if llm_text:
         executive_summary = llm_text
     else:
-        direction = "grew" if (rev_change_pct or 0) > 0 else "declined"
-        rev_line = (
-            f"Revenue {direction} {abs(rev_change_pct):.1f}% to ${revenue:,.0f}."
-            if rev_change_pct is not None
-            else f"Revenue: ${revenue:,.0f}."
-        )
-        executive_summary = (
-            f"**Quarter {round_number} Results**\n\n"
-            f"{rev_line} Net income: ${net_income:,.0f}. "
-            f"Cash position: ${cash:,.0f}."
-        )
+        if rev_change_pct is None:
+            rev_line = _fallback_text(language, 'briefing_revenue_flat', revenue=revenue)
+        else:
+            grew = (rev_change_pct or 0) > 0
+            rev_line = _fallback_text(
+                language, 'briefing_revenue_grew' if grew else 'briefing_revenue_declined',
+                pct=abs(rev_change_pct), revenue=revenue)
+        executive_summary = _fallback_text(
+            language, 'briefing_summary',
+            heading=_fallback_text(language, 'briefing_heading', round=round_number),
+            revenue_line=rev_line,
+            net_income=net_income, cash=cash)
         if cash < 1_000_000:
-            executive_summary += (
-                "\n\nCash position below $1M — financial distress risk."
-            )
+            executive_summary += _fallback_text(language, 'briefing_cash_distress')
 
     # Performance analysis
     performance_analysis = {
@@ -776,25 +848,30 @@ def _build_briefing_fields(game, round_number, team, llm_text=None):
     # Strategic recommendations
     recommendations = []
     if net_income < 0:
-        recommendations.append("Reduce operating costs or increase revenue to restore profitability.")
+        recommendations.append(_fallback_text(language, 'rec_profitability'))
     if cash < 5_000_000:
-        recommendations.append("Shore up cash reserves — consider reducing dividends or raising capital.")
+        recommendations.append(_fallback_text(language, 'rec_cash'))
     if gross_margin < 0.2:
-        recommendations.append("Gross margins are thin — review pricing or COGS structure.")
+        recommendations.append(_fallback_text(language, 'rec_margin'))
     if not recommendations:
-        recommendations.append("Maintain current trajectory and explore growth opportunities.")
+        recommendations.append(_fallback_text(language, 'rec_maintain'))
     strategic_recommendations = {'items': recommendations}
 
     # Risk alerts
     risk_alerts = []
     if cash < 1_000_000:
-        risk_alerts.append({'severity': 'critical', 'message': 'Cash below $1M — financial distress imminent.'})
+        risk_alerts.append({'severity': 'critical',
+                            'message': _fallback_text(language, 'risk_cash')})
     if revenue > 0 and net_margin < -0.15:
-        risk_alerts.append({'severity': 'warning', 'message': f'Net margin at {max(net_margin, -1)*100:.0f}% — losses unsustainable.'})
+        risk_alerts.append({'severity': 'warning',
+                            'message': _fallback_text(
+                                language, 'risk_margin', pct=max(net_margin, -1) * 100)})
     elif revenue == 0 and net_income < 0:
-        risk_alerts.append({'severity': 'warning', 'message': 'No revenue generated — all spending is a loss.'})
+        risk_alerts.append({'severity': 'warning',
+                            'message': _fallback_text(language, 'risk_no_revenue')})
     if debt > equity and equity > 0:
-        risk_alerts.append({'severity': 'warning', 'message': 'Debt exceeds equity — leverage risk elevated.'})
+        risk_alerts.append({'severity': 'warning',
+                            'message': _fallback_text(language, 'risk_leverage')})
 
     return {
         'executive_summary': executive_summary,
