@@ -1,0 +1,1253 @@
+{
+ "driver": "instructor-round2-force",
+ "language": "en",
+ "base": "http://127.0.0.1:33329",
+ "started": "2026-09-22T17:33:29",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 2 is the open round before resolve",
+   "outcome": "pass",
+   "detail": "{\"round_id\": 3, \"round_number\": 2, \"status\": \"open\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-09-22T17:18:55.150549+00:00\", \"deadline\": \""
+  },
+  {
+   "name": "round 2 processed",
+   "outcome": "pass",
+   "detail": "schedule=processed processing=FULLY_COMPLETE narrative_error='' phase1=4.17144775390625"
+  },
+  {
+   "name": "advance control offered after processing",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 3 open after advance",
+   "outcome": "pass",
+   "detail": "{\"round_id\": 4, \"round_number\": 3, \"status\": \"open\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-09-22T17:35:00.511695+00:00\", \"deadline\": \""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:33:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:34:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:34:04"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:33:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:33:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "17:33:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "17:33:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "17:33:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "17:33:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "17:33:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "17:33:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:33:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "17:33:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:33:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:33:55"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:33:59"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:34:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:34:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "17:34:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "17:34:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:34:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:34:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/1/decisions/?round=2",
+   "status": 200,
+   "at": "17:34:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:34:47"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/advance/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "17:35:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:35:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "17:35:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "17:35:16"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "r2-00-control-before-close",
+   "url": "/instructor",
+   "screenshot": "r2-00-control-before-close-en.jpg",
+   "note": "teams locked: 3/8",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r2-01-force-modal",
+   "url": "/instructor",
+   "screenshot": "r2-01-force-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "r2-04-processed",
+   "url": "/instructor",
+   "screenshot": "r2-04-processed-en.jpg",
+   "note": "processing status as shown",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/process/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r2-05-team-overview",
+   "url": "/instructor",
+   "screenshot": "r2-05-team-overview-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "r2-06-decision-drill",
+   "url": "/instructor",
+   "screenshot": "r2-06-decision-drill-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "field_name": "team_product",
+     "context": "sions\":[{\"market\":1,\"retail_price\":585,\"team_product\":1,\"demand_estimate\":0,\"pro"
+    },
+    {
+     "field_name": "retail_price",
+     "context": "5\n\t{\"marketing_decisions\":[{\"market\":1,\"retail_price\":585,\"team_product\":1,\"dema"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/1/decisions/?round=2",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r2-07-briefings",
+   "url": "/instructor",
+   "screenshot": "r2-07-briefings-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "r2-08-research-monitor",
+   "url": "/instructor",
+   "screenshot": "r2-08-research-monitor-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "r2-09-ai-coach",
+   "url": "/instructor",
+   "screenshot": "r2-09-ai-coach-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r2-10-advance-confirm",
+   "url": "/instructor",
+   "screenshot": "r2-10-advance-confirm-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "r2-11-next-round-open",
+   "url": "/instructor",
+   "screenshot": "r2-11-next-round-open-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/advance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r2-12-operator-log",
+   "url": "/instructor",
+   "screenshot": "r2-12-operator-log-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": "8:00:00+00:00\",\"round_id\":4,\"closed_at\":null,\"opened_at\":\"2026-09-22T17:35:00.51"
+    },
+    {
+     "field_name": "round_number",
+     "context": "at\":\"2026-09-22T17:34:02.247621+00:00\",\"round_number\":2,\"teams_locked\":8,\"teams_"
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "5,\"phase_2_duration\":0.613593339920044,\"processing_status\":\"FULLY_COMPLETE\",\"sec"
+    },
+    {
+     "field_name": "RESULTS_AVAILABLE",
+     "context": "e_2_duration\":null,\"processing_status\":\"RESULTS_AVAILABLE\",\"seconds_remaining\":3"
+    },
+    {
+     "field_name": "FULLY_COMPLETE",
+     "context": ":0.613593339920044,\"processing_status\":\"FULLY_COMPLETE\",\"seconds_remaining\":3470"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "r2-06-decision-drill",
+   "leaks": [
+    {
+     "field_name": "team_product",
+     "context": "sions\":[{\"market\":1,\"retail_price\":585,\"team_product\":1,\"demand_estimate\":0,\"pro"
+    },
+    {
+     "field_name": "retail_price",
+     "context": "5\n\t{\"marketing_decisions\":[{\"market\":1,\"retail_price\":585,\"team_product\":1,\"dema"
+    }
+   ]
+  },
+  {
+   "screen": "r2-12-operator-log",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": "8:00:00+00:00\",\"round_id\":4,\"closed_at\":null,\"opened_at\":\"2026-09-22T17:35:00.51"
+    },
+    {
+     "field_name": "round_number",
+     "context": "at\":\"2026-09-22T17:34:02.247621+00:00\",\"round_number\":2,\"teams_locked\":8,\"teams_"
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "5,\"phase_2_duration\":0.613593339920044,\"processing_status\":\"FULLY_COMPLETE\",\"sec"
+    },
+    {
+     "field_name": "RESULTS_AVAILABLE",
+     "context": "e_2_duration\":null,\"processing_status\":\"RESULTS_AVAILABLE\",\"seconds_remaining\":3"
+    },
+    {
+     "field_name": "FULLY_COMPLETE",
+     "context": ":0.613593339920044,\"processing_status\":\"FULLY_COMPLETE\",\"seconds_remaining\":3470"
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "round_control_before": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 2,
+   "total_rounds": 10,
+   "server_time": "2026-09-22T17:33:55.402862+00:00",
+   "round": {
+    "round_id": 3,
+    "round_number": 2,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-22T17:18:55.150549+00:00",
+    "deadline": "2026-09-26T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 347164,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 3,
+    "teams_pending": 5,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "force_modal": null,
+  "force_toast": null,
+  "round_control_processed": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 2,
+   "total_rounds": 10,
+   "server_time": "2026-09-22T17:34:04.285187+00:00",
+   "round": {
+    "round_id": 3,
+    "round_number": 2,
+    "status": "processed",
+    "processing_status": "FULLY_COMPLETE",
+    "narrative_generated": true,
+    "narrative_error": "",
+    "opened_at": "2026-09-22T17:18:55.150549+00:00",
+    "deadline": "2026-09-26T18:00:00+00:00",
+    "closed_at": "2026-09-22T17:33:57.248994+00:00",
+    "close_reason": "manual",
+    "processed_at": "2026-09-22T17:34:02.247621+00:00",
+    "phase_1_duration": 4.17144775390625,
+    "phase_2_duration": 0.613593339920044,
+    "seconds_remaining": 347155,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 8,
+    "teams_pending": 0,
+    "next_action": "advance"
+   },
+   "narratives": {
+    "jobs": [
+     {
+      "narrative_type": "briefing",
+      "label": "Strategic briefings",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-09-22T17:34:02.617771+00:00",
+      "claimed_at": "2026-09-22T17:34:02.726764+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:02.988809+00:00"
+     },
+     {
+      "narrative_type": "coaching",
+      "label": "Instructor coaching alerts",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-09-22T17:34:02.619805+00:00",
+      "claimed_at": "2026-09-22T17:34:02.991261+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:03.136366+00:00"
+     },
+     {
+      "narrative_type": "coherence_rag",
+      "label": "Coherence RAG evaluation",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "analyst",
+      "last_error": "8/8 calls fell back to templates: no response",
+      "created_at": "2026-09-22T17:34:02.618888+00:00",
+      "claimed_at": "2026-09-22T17:34:03.139719+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:03.283221+00:00"
+     },
+     {
+      "narrative_type": "compliance",
+      "label": "Compliance enforcement narratives",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": false,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "",
+      "created_at": "2026-09-22T17:34:02.622572+00:00",
+      "claimed_at": "2026-09-22T17:34:03.295563+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:03.302194+00:00"
+     },
+     {
+      "narrative_type": "outlook",
+      "label": "Market outlooks",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": true,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "5/5 calls fell back to templates: no response",
+      "created_at": "2026-09-22T17:34:02.620731+00:00",
+      "claimed_at": "2026-09-22T17:34:03.304736+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:03.328215+00:00"
+     },
+     {
+      "narrative_type": "sc_event",
+      "label": "Supply-chain event narratives",
+      "state": "succeeded",
+      "state_label": "Succeeded",
+      "degraded": false,
+      "attempts": 1,
+      "max_attempts": 3,
+      "attempts_remaining": 2,
+      "template_version": 1,
+      "model_name": "tutor",
+      "last_error": "",
+      "created_at": "2026-09-22T17:34:02.621660+00:00",
+      "claimed_at": "2026-09-22T17:34:03.330294+00:00",
+      "claim_expires_at": null,
+      "completed_at": "2026-09-22T17:34:03.337551+00:00"
+     }
+    ],
+    "summary": {
+     "total": 6,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 6,
+     "failed": 0,
+     "degraded": 4
+    }
+   }
+  },
+  "schedule_row": {
+   "round_id": 3,
+   "round_number": 2,
+   "status": "processed",
+   "opened_at": "2026-09-22T17:18:55.150549+00:00",
+   "deadline": "2026-09-26T18:00:00+00:00",
+   "processed_at": "2026-09-22T17:34:02.247621+00:00"
+  },
+  "narrative_error": "",
+  "team_overview_rows": 8,
+  "dashboard_teams": [
+   [
+    "Aurora Devices",
+    57.59,
+    -5229467.05,
+    3255735,
+    "locked"
+   ],
+   [
+    "Prism Tech",
+    60.56,
+    20918069.7,
+    3839010,
+    "locked"
+   ],
+   [
+    "Nova Circuit",
+    57.88,
+    20696607.2,
+    2601760,
+    "locked"
+   ],
+   [
+    "Eclipse Gadgets",
+    44.91,
+    48220000,
+    0,
+    "locked"
+   ],
+   [
+    "Meridian Tech",
+    44.87,
+    47980000,
+    0,
+    "locked"
+   ],
+   [
+    "Cipher Systems",
+    44.78,
+    47500000,
+    0,
+    "locked"
+   ],
+   [
+    "Stratos Electronics",
+    44.98,
+    48700000,
+    0,
+    "locked"
+   ],
+   [
+    "Titan Micro",
+    44.85,
+    47860000,
+    0,
+    "locked"
+   ]
+  ],
+  "drill_modal": "",
+  "advance_popconfirm": "CE 2026 Heat A: advance to round 3?Students will start the next round.CancelOK",
+  "advance_toast": null,
+  "round_control_after_advance": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 3,
+   "total_rounds": 10,
+   "server_time": "2026-09-22T17:35:10.533454+00:00",
+   "round": {
+    "round_id": 4,
+    "round_number": 3,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-22T17:35:00.511695+00:00",
+    "deadline": "2026-09-28T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 519889,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  }
+ },
+ "summary": {
+  "passed": 5,
+  "failed": 0,
+  "observed": 0,
+  "screens": 11,
+  "screens_with_leaks": 2,
+  "console_errors": 8,
+  "api_calls": 63,
+  "api_refused": 0
+ }
+}

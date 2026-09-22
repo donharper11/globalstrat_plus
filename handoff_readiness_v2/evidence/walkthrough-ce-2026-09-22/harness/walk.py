@@ -269,7 +269,7 @@ def modal_text(page):
     return page.evaluate("""() => {
         // Only a modal that is actually shown: AntD leaves closed ones in the DOM.
         const els = Array.from(document.querySelectorAll('.ant-modal-wrap'))
-            .filter(w => w.style.display !== 'none' && w.offsetParent !== null);
+            .filter(w => getComputedStyle(w).display !== 'none');   // the wrap is position:fixed, so offsetParent is always null
         const el = els.length ? els[els.length - 1].querySelector('.ant-modal-content') : null;
         return el ? el.textContent.replace(/\\s+/g, ' ').trim() : null;
     }""")
