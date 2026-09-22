@@ -68,6 +68,12 @@ const InstructorDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Which console tab is open. Held here, not by <Tabs>, so that a reload of
+  // the dashboard (after activate, a deadline, extend, process...) cannot
+  // forget it: until 2026-09-22 (W-CE-01) the Tabs were uncontrolled and were
+  // unmounted for the length of every reload, so every one of those actions
+  // dropped the instructor back on Courses & Sections.
+  const [activeTab, setActiveTab] = useState('courses');
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [extendModalOpen, setExtendModalOpen] = useState(false);
   const [extendHours, setExtendHours] = useState(24);
@@ -291,7 +297,10 @@ const InstructorDashboard = () => {
     </div>
   );
 
-  if (loading && gameId) return <>{instructorHeader}<LoadingSpinner /></>;
+  // The full-page spinner is for the FIRST load of a game only. A reload
+  // keeps the console on screen, on its tab; the cards that change refresh
+  // in place (W-CE-01).
+  if (loading && gameId && !dashboard) return <>{instructorHeader}<LoadingSpinner /></>;
 
   // Extract game data (may be null if no game selected)
   const hasGame = !!dashboard;
@@ -2117,10 +2126,15 @@ const InstructorDashboard = () => {
   return (
     <div>
       {instructorHeader}
-      <Tabs className="ds-colored-tabs" items={tabItems} defaultActiveKey="courses" onTabClick={(key) => {
-        if (key === 'grading') loadGrading();
-        if (key === 'control' && gameId && roundSchedule === null) loadRoundScheduleData(gameId);
-      }} />
+      <Tabs className="ds-colored-tabs" items={tabItems}
+        // A tab that has gone (the game-specific ones, after a reset or a
+        // delete) falls back to Courses & Sections rather than to nothing.
+        activeKey={tabItems.some((item) => item.key === activeTab) ? activeTab : 'courses'}
+        onChange={setActiveTab}
+        onTabClick={(key) => {
+          if (key === 'grading') loadGrading();
+          if (key === 'control' && gameId && roundSchedule === null) loadRoundScheduleData(gameId);
+        }} />
 
       {/* Game-specific modals (only render when game is active) */}
       {hasGame && <>
