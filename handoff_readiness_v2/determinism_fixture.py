@@ -89,7 +89,6 @@ def seed_round(game, round_obj, scenario, compliance_investment=True):
     suppliers = list(Supplier.objects.filter(scenario=scenario).order_by('supplier_id')[:3])
     teams = list(Team.objects.filter(game=game).order_by('id'))
     developments = 0
-    compliance_rows = 0
 
     for index, team in enumerate(teams):
         label, price_factor, volume, rd_share, promo_share, entries = \
@@ -139,7 +138,6 @@ def seed_round(game, round_obj, scenario, compliance_investment=True):
                 ComplianceInvestment.objects.update_or_create(
                     submission=submission, market=market,
                     defaults=dict(investment_amount=D('200000')))
-                compliance_rows += 1
 
         for pool in ('rd', 'commercial', 'operations'):
             TalentAllocation.objects.update_or_create(
@@ -158,7 +156,7 @@ def seed_round(game, round_obj, scenario, compliance_investment=True):
                 critical_input_category='semiconductor',
                 defaults=dict(allocation_pct=share, volume_commitment_units=0,
                               payment_terms='net30'))
-    return developments, compliance_rows
+    return developments
 
 
 def seed_platform_development(submission, team, round_obj, scenario, method):
@@ -289,10 +287,14 @@ def main():
     total_developments = 0
     for _ in range(args.rounds):
         round_obj = Round.objects.get(game=game, round_number=game.current_round)
-        developments, compliance_rows = seed_round(
+        developments = seed_round(
             game, round_obj, scenario,
             compliance_investment=not args.no_compliance_investment)
         total_developments += developments
+        # Counted from the table rather than from the seeding loop, so the
+        # printed figure is what the round actually carried.
+        compliance_rows = ComplianceInvestment.objects.filter(
+            submission__round=round_obj).count()
         round_obj.deadline = timezone.now()
         round_obj.save(update_fields=['deadline'])
         close_round(game.id, reason='determinism-fixture')

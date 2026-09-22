@@ -2488,7 +2488,7 @@ class FinanceContextView(APIView):
                         'total_allocated': float(total_allocated),
                         'platform_development_committed': float(
                             Decimal(lines['platform_development'])),
-                        # R47: as on the Decision Summary.
+                        # R47: the same figure the summary endpoint publishes.
                         'compliance_committed': float(
                             Decimal(lines['compliance_investment'])),
                         'committed_total': float(committed_total),
