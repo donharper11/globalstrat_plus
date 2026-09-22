@@ -79,6 +79,17 @@ def main():
                 btn.last.click(); page.wait_for_timeout(1200)
             if modal_text(page):
                 page.keyboard.press('Escape'); page.wait_for_timeout(800)
+        # Any modal still open (onboarding, a briefing) is dismissed first: it
+        # would swallow the clicks the two checks below make.
+        for _ in range(6):
+            if not modal_text(page):
+                break
+            b = page.locator('.ant-modal-wrap:visible .ant-modal-content button')
+            if b.count():
+                b.last.click(); page.wait_for_timeout(1200)
+            else:
+                page.keyboard.press('Escape'); page.wait_for_timeout(800)
+        R.observe('modal_still_open_before_topbar_checks', modal_text(page))
         # W-CE-10: the decorative bell was removed. If one is present it must
         # do something; if none is present that is the repair, recorded.
         bell = page.locator('.anticon-bell')

@@ -170,6 +170,25 @@ def main():
         R.screen(page, 'r%d-11-next-round-open' % ROUND)
         click_tab(page, L['log']); page.wait_for_timeout(4000)
         R.screen(page, 'r%d-12-operator-log' % ROUND)
+        # W-CE-07: the before -> after column must read as words, not JSON.
+        rows = A(page).locator('tbody tr')
+        texts = [(rows.nth(i).inner_text() or '').replace('\n', ' | ')[:300]
+                 for i in range(min(rows.count(), 6))]
+        R.observe('operator_log_rows', texts)
+        json_shaped = [t for t in texts if '{"' in t or '": ' in t]
+        R.step('operator log states before -> after in words (W-CE-07)',
+               'pass' if texts and not json_shaped else 'fail',
+               json.dumps(json_shaped or texts[:2], ensure_ascii=False)[:400])
+        # W-CE-20: the drill-down must lead with the decisions, not the audit table.
+        drill = R.record['observed'].get('drill_modal') or ''
+        if drill:
+            audit_at = drill.find('Submission audit evidence')
+            if audit_at < 0:
+                audit_at = drill.find('\u63d0\u4ea4\u5ba1\u8ba1')
+            R.observe('drill_audit_offset', audit_at)
+            R.step('the decision drill-down leads with the decisions (W-CE-20)',
+                   'pass' if audit_at != 0 else 'fail',
+                   'audit table at offset %s of the modal text' % audit_at)
         browser.close()
     return R.finish()
 

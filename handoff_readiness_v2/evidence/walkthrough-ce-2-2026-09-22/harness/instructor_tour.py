@@ -108,7 +108,7 @@ def main():
         for key, name in (('accounts', 'i21-students-logins'), ('grading', 'i22-grading'), ('teams', 'i23-team-overview'),
                           ('operator_log', 'i24-operator-log'), ('supply_chain', 'i25-supply-chain'), ('events', 'i26-event-manager'),
                           ('briefings', 'i27-briefings'), ('research', 'i28-research-monitor'), ('alerts', 'i29-ai-coach')):
-            label = {'accounts': 'Students & Logins', 'grading': T('instructor.grading_export'), 'teams': T('instructor.team_overview'),
+            label = {'accounts': T('instructor.students_logins'), 'grading': T('instructor.grading_export'), 'teams': T('instructor.team_overview'),
                      'operator_log': T('instructor.operator_log'), 'supply_chain': T('instructor.supply_chain'), 'events': T('instructor.event_manager'),
                      'briefings': T('instructor.briefings'), 'research': T('instructor.research_monitor'), 'alerts': T('instructor.ai_coach')}[key]
             if not click_tab(page, label):

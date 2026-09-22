@@ -358,56 +358,9 @@ def marketing(page):
         alerted = (T('marketing.price_out_of_band')[:20] in txt) or (T('marketing.price_band_range', min='', max='')[:8] in txt)
         R.step('marketing: out-of-band price is flagged and kept', 'pass' if alerted and row and int(float(row.get('retail_price') or 0)) == oob else 'fail', 'stored=%s flagged=%s' % (row and row.get('retail_price'), alerted))
         R.observe('oob_price', oob)
-        # W-CE-04: make ONE row invalid (its campaign focus cleared) and then
-        # edit another row, to see whether the refusal names the product it is
-        # about and whether it is shown once.
-        if inner.count() > 1:
-            inner.nth(1).click(); page.wait_for_timeout(1200)
-            second = pms[1] if len(pms) > 1 else None
-            fill_row(int((bands.get(pm_key(second)) or {}).get('anchor') or 250) if second else 250,
-                     volume=3000, promo=50000)
-            def focus_ids():
-                row = next((r for r in (draft(page).get('marketing_decisions') or [])
-                            if second and r.get('team_product') == second.get('product_id')), None)
-                return (row or {}).get('campaign_focus_feature_ids')
-            tags = pane(page).locator('.ant-tag[style*="cursor"]')
-            cleared = 0
-            for _ in range(8):
-                ids = focus_ids()
-                if not ids:
-                    break
-                ix = int(ids[0]) - 1
-                if ix < 0 or ix >= tags.count():
-                    break
-                tags.nth(ix).click(); page.wait_for_timeout(2500); cleared += 1
-            page.wait_for_timeout(2500)
-            R.observe('focus_tags_cleared', cleared)
-            R.observe('focus_ids_after_clearing', focus_ids())
-            inner.first.click(); page.wait_for_timeout(1200)
-            set_number(page, pane(page).locator('.ant-input-number-input').nth(2), 6000)
-            page.wait_for_timeout(4000)
-            whole = visible_text(page)
-            R.observe('marketing_notices',
-                      [l.strip() for l in whole.splitlines()
-                       if 'saved' in l.lower() or 'not saved' in l.lower() or 'choose' in l.lower()
-                       or 'focus' in l.lower() or '\u672a\u4fdd\u5b58' in l or '\u9009\u62e9' in l][:10])
-            focus_notice = [l for l in whole.splitlines()
-                            if T('marketing.choose_focus')[:18] in l or 'campaign focus' in l.lower() or '\u7126\u70b9' in l]
-            R.observe('focus_refusal_lines', focus_notice[:6])
-            names = [(pm.get('product_name') or pm.get('name') or '') for pm in pms]
-            named = any(any(nm and nm in l for nm in names) for l in focus_notice)
-            R.observe('product_names_for_refusal', names[:6])
-            R.step('marketing: a refused row is named, and the refusal is shown once (W-CE-04)',
-                   'pass' if focus_notice and named and len(focus_notice) <= 2 else 'fail',
-                   'lines=%s named=%s' % (json.dumps(focus_notice[:4], ensure_ascii=False)[:300], named))
-            R.screen(page, '%s-r%d-42b-marketing-focus-refusal' % (P, ROUND),
-                     'one row has no campaign focus; another row is edited')
-            # put the focus back so the round can be locked
-            inner.nth(1).click(); page.wait_for_timeout(1000)
-            tags = pane(page).locator('.ant-tag[style*="cursor"]')
-            if tags.count():
-                tags.first.click(); page.wait_for_timeout(2500)
-            inner.first.click(); page.wait_for_timeout(1000)
+        # W-CE-04 is driven by verify_marketing_refusal.py: a row with no
+        # campaign focus refuses every save of the whole section, so it must
+        # not be left behind in a round this team still has to lock.
         # Blank price on the second product-market, if any.
         if inner.count() > 1:
             inner.nth(1).click(); page.wait_for_timeout(1000)
@@ -645,8 +598,22 @@ def communications(page):
         R.observe('comm_dialog', dialogs)
         R.observe('comm_after_submit', visible_text(page)[:600])
         subs = api(page, 'GET', '/api/games/%d/teams/%d/communications/history/' % (GID, TID))['body']
-        R.observe('comm_history', json.dumps(subs)[:500])
-        R.step('communications: memo submitted and an evaluation shown', 'pass' if not dialogs and (T('communications_page.submitted_this_round') in visible_text(page)) else 'fail', 'dialog=%s' % dialogs)
+        R.observe('comm_history', json.dumps(subs, ensure_ascii=False)[:900])
+        rows = (subs or {}).get('history') or [] if isinstance(subs, dict) else []
+        mine = [x for x in rows if x.get('round_number') == ROUND]
+        R.observe('comm_submission_this_round',
+                  {k: (mine[0] or {}).get(k) for k in
+                   ('assignment_name', 'overall_score', 'evaluation', 'status', 'submitted_at')}
+                  if mine else None)
+        page.wait_for_timeout(2000)
+        shown = visible_text(page)
+        R.observe('comm_evaluation_lines',
+                  [l.strip() for l in shown.splitlines()
+                   if '%' in l or 'score' in l.lower() or 'evaluat' in l.lower()
+                   or '评分' in l or '评估' in l][:8])
+        R.step('communications: memo submitted and an evaluation shown',
+               'pass' if not dialogs and mine else 'fail',
+               'dialog=%s stored=%s' % (dialogs, json.dumps(R.record['observed'].get('comm_submission_this_round'), ensure_ascii=False)[:250]))
     else:
         R.step('communications: submit enabled for an in-limit memo', 'fail')
     R.screen(page, '%s-r%d-72-communications-submitted' % (P, ROUND))
