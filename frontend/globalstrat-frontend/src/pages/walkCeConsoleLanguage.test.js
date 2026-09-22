@@ -49,6 +49,15 @@ describe('W-CE-08: a submission status is a translated label, never the stored t
   });
 });
 
+describe('W-CE-11: the console header carries the language switch', () => {
+  test('the instructor header renders LanguageSwitcher', () => {
+    const header = DASHBOARD.slice(
+      DASHBOARD.indexOf('const instructorHeader = ('),
+      DASHBOARD.indexOf('if (loading && gameId) return'));
+    expect(header).toContain('<LanguageSwitcher');
+  });
+});
+
 describe('W-CE-20: the drill-down leads with the decisions, not the audit table', () => {
   const modal = DASHBOARD.slice(
     DASHBOARD.indexOf('{/* Team Decisions Drill-Down Modal */}'),

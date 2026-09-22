@@ -6,6 +6,7 @@ import { faBars, faSignOutAlt, faBell } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from '../../AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { useDecisions } from '../../contexts/DecisionContext';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const fmt = (v) => {
   if (v == null) return '$0';
@@ -119,6 +120,8 @@ function DSTopBar({ onToggle, isMobile }) {
 
       {/* Right section */}
       <div className="ds-topbar-right">
+        {/* W-CE-11: the language switch inside the game, not only on the login page. */}
+        <LanguageSwitcher style={{ color: '#CBD5E1' }} />
         <button className="ds-topbar-action">
           <FontAwesomeIcon icon={faBell} />
         </button>

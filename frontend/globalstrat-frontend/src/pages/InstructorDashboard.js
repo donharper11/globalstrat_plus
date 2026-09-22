@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import OperatorEventsPanel from '../components/instructor/OperatorEventsPanel';
 import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
@@ -281,6 +282,7 @@ const InstructorDashboard = () => {
         {user && <Text type="secondary">{user.display_name || user.username}</Text>}
       </div>
       <Space>
+        <LanguageSwitcher style={{ color: '#64748B' }} />
         {gameId && (
           <Button size="small" onClick={() => { setGameId(null); setDashboard(null); }}>
             {t('instructor.switch_game')}
