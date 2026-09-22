@@ -344,14 +344,21 @@ def generate_financial_statements(context):
         else:
             share_price = raw_share_price
 
-        # Cumulative shareholder return
-        initial_share_price = (team.game.scenario.starting_cash / D('1000000')).quantize(
-            D('0.0001'), rounding=ROUND_HALF_UP,
-        )
+        # Cumulative shareholder return: a per-share quantity throughout.
+        # `dividends_paid` is money -- $500,000 for a million shares at $0.50
+        # -- so it is brought to per share before it meets a price; adding it
+        # as it stood is what showed a team a 999,966.5 % return after one
+        # ordinary round (W-CE-14). The base is the price the team was shown
+        # at round 0 (`bootstrap` publishes `total_equity / shares`), and the
+        # old `starting_cash / 1,000,000` only where no round-0 row exists.
+        initial_share_price = _initial_share_price(game, team)
         cumulative_dividends = _get_cumulative_dividends(game, team, current_round, dividends)
+        dividends_per_share = cumulative_dividends / max(
+            D(str(team.shares_outstanding)), D('1'))
         if initial_share_price > 0:
             shareholder_return = _clamp_ratio(
-                (share_price + cumulative_dividends - initial_share_price) / initial_share_price,
+                (share_price + dividends_per_share - initial_share_price)
+                / initial_share_price,
             )
         else:
             shareholder_return = D('0')
@@ -516,6 +523,24 @@ def generate_financial_statements(context):
         }
 
     context.log.append('Financial statements generated')
+
+
+def _initial_share_price(game, team):
+    """The share price the team started the game at.
+
+    The round-0 statement `bootstrap` writes carries the price the team was
+    shown (`total_equity / shares`). A game bootstrapped without one keeps
+    the historical base, the scenario's starting cash spread over a million
+    shares, so no existing game's base moves.
+    """
+    opening = RoundResultFinancials.objects.filter(
+        game=game, team=team, round_number=0,
+    ).values_list('share_price', flat=True).first()
+    if opening is not None and opening > 0:
+        return D(str(opening)).quantize(D('0.0001'), rounding=ROUND_HALF_UP)
+    return (game.scenario.starting_cash / D('1000000')).quantize(
+        D('0.0001'), rounding=ROUND_HALF_UP,
+    )
 
 
 def _get_cumulative_dividends(game, team, current_round, this_round_dividends):
