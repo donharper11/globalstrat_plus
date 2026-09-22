@@ -1411,19 +1411,9 @@ class DecisionSummaryView(APIView):
         budget_summary = None
         try:
             budget = submission.budget_allocation
-            rd_spent = sum(i.amount for i in submission.rd_investments.all())
-            mkt_spent = sum(
-                m.promotion_budget + m.distribution_investment
-                for m in submission.marketing_decisions.all()
-            )
-            strategy_spent = sum(me.initial_investment for me in submission.market_entries.all())
-            strategy_spent += sum(p.annual_investment for p in submission.partnerships.all())
-            strategy_spent += sum(a.acquisition_target.base_acquisition_cost for a in submission.acquisitions.select_related('acquisition_target').all())
-            try:
-                esg = submission.esg
-                strategy_spent += esg.environmental_investment + esg.social_investment
-            except DecisionESG.DoesNotExist:
-                pass
+            # W-CE-18: every spent figure from the one assessment, which
+            # reads the engine's own outlay calculator; this view used to
+            # sum them a second way of its own.
             from core.services.rd_costs import budget_assessment
             assessment = budget_assessment(submission, team)
             lines = assessment['lines']
@@ -1436,11 +1426,15 @@ class DecisionSummaryView(APIView):
                 # Research actually bought this round. The bucket above is a
                 # declaration; this is the money committed by buying reports.
                 'research_spent': float(Decimal(lines['research_purchases'])),
-                'rd_spent': float(rd_spent),
+                'rd_spent': float(Decimal(assessment['rd_spent'])),
                 'marketing_allocated': float(budget.marketing_budget),
-                'marketing_spent': float(mkt_spent),
+                'marketing_spent': float(Decimal(assessment['marketing_spent'])),
                 'strategy_allocated': float(budget.strategy_budget),
-                'strategy_spent': float(strategy_spent),
+                'strategy_spent': float(Decimal(assessment['strategy_spent'])),
+                # Charged from cash under no budget line: shown as committed
+                # rows, like compliance and platform development.
+                'talent_committed': float(Decimal(assessment['talent_committed'])),
+                'plant_committed': float(Decimal(assessment['plant_committed'])),
                 'total_available': float(team.cash_on_hand),
                 'total_allocated': float(total_allocated),
                 'platform_development_committed': float(
@@ -2437,22 +2431,15 @@ class FinanceContextView(APIView):
             if sub:
                 try:
                     budget = sub.budget_allocation
-                    rd_spent = sum(i.amount for i in sub.rd_investments.all())
-                    mkt_spent = sum(
-                        m.promotion_budget + m.distribution_investment
-                        for m in sub.marketing_decisions.all()
-                    )
-                    strat_spent = sum(me.initial_investment for me in sub.market_entries.all())
-                    strat_spent += sum(p.annual_investment for p in sub.partnerships.all())
-                    strat_spent += sum(a.acquisition_target.base_acquisition_cost for a in sub.acquisitions.select_related('acquisition_target').all())
-                    try:
-                        esg = sub.esg
-                        strat_spent += esg.environmental_investment + esg.social_investment
-                    except DecisionESG.DoesNotExist:
-                        pass
+                    # W-CE-18: the same assessment the Summary publishes,
+                    # so the Finance page's bar and the Summary's bar are
+                    # one bar.
                     from core.services.rd_costs import budget_assessment
                     assessment = budget_assessment(sub, team)
                     lines = assessment['lines']
+                    rd_spent = Decimal(assessment['rd_spent'])
+                    mkt_spent = Decimal(assessment['marketing_spent'])
+                    strat_spent = Decimal(assessment['strategy_spent'])
                     total_allocated = Decimal(assessment['budget_total'])
                     committed_total = Decimal(assessment['committed_total'])
 
@@ -2479,6 +2466,10 @@ class FinanceContextView(APIView):
                         'marketing_spent': float(mkt_spent),
                         'strategy_allocated': float(budget.strategy_budget),
                         'strategy_spent': float(strat_spent),
+                        'talent_committed': float(
+                            Decimal(assessment['talent_committed'])),
+                        'plant_committed': float(
+                            Decimal(assessment['plant_committed'])),
                         'research_allocated': float(
                             Decimal(lines['research_budget'])),
                         # Research actually bought this round. The bucket above

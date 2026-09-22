@@ -349,6 +349,34 @@ def committed_outlay(submission, team=None):
     # existing `committed_spend_exceeds_cash` sentence.
     from core.services.funding_need import compliance_investment_total
     lines['compliance_investment'] = compliance_investment_total(submission)
+    # W-CE-18 / W-CE-23: the decision outlays the engine charges from cash
+    # under each budget line, read through the calculator the engine books
+    # from (`funding_need.decision_outlays`, V2-024) rather than restated.
+    # The budget lines above are declarations (A5/R14); until here nothing
+    # counted what the decisions themselves will cost, so an acquisition
+    # could exceed the declared strategy budget by any amount and no
+    # affordability figure saw it, and the Decision Summary and the Finance
+    # context each summed "spent" their own way. R47's consequence is the
+    # rule: charged from cash means it counts toward committed spend.
+    #
+    # Acquisitions are added here and not in `decision_outlays`: the engine
+    # charges one only if it is fulfilled at resolution, so V2-024's eligible
+    # uses -- which must not exceed what the engine charges -- leave it out,
+    # while committed spend, which must not fall short of it, counts it at
+    # its authored price, as platform development is counted.
+    from core.services.funding_need import decision_outlays
+    team = team or submission.team
+    outlays = decision_outlays(
+        team.game.scenario, team, submission, submission.round.round_number)
+    acquisitions = sum(
+        (Decimal(row.acquisition_target.base_acquisition_cost or ZERO)
+         for row in submission.acquisitions
+         .select_related('acquisition_target').order_by('id')), ZERO)
+    lines['marketing_outlays'] = outlays['marketing']
+    lines['acquisitions'] = acquisitions
+    lines['strategy_outlays'] = outlays['strategy'] + acquisitions
+    lines['talent'] = outlays['talent']
+    lines['plant_capex'] = outlays['plant_capex']
     return lines
 
 
@@ -365,14 +393,28 @@ def budget_assessment(submission, team=None):
     lines = committed_outlay(submission, team)
     budget_total = (lines['rd_budget'] + lines['marketing_budget']
                     + lines['strategy_budget'] + lines['research_budget'])
+    # A declared budget line is a floor, not a cap (W-CE-23): what is
+    # declared is committed (V2-057), and what the decisions under that line
+    # will cost beyond it is committed too, because the engine charges it.
+    spent = {
+        'rd': lines['rd_investments'],
+        'marketing': lines['marketing_outlays'],
+        'strategy': lines['strategy_outlays'],
+    }
+    over_budget_spend = sum(
+        (max(spent[name] - lines[f'{name}_budget'], ZERO) for name in spent),
+        ZERO)
     # Platform development and bought research are committed money that the
     # budget lines do not contain, so they are added to the total the cash has
     # to cover. A research purchase is refused through this same rule, so the
     # affordability answer a team gets at the point of buying is the one every
-    # other surface already gives.
-    committed = (budget_total + lines['platform_development']
+    # other surface already gives. Payroll and a plant build (W-CE-18) sit in
+    # the same position: charged from cash, under no budget line.
+    committed = (budget_total + over_budget_spend
+                 + lines['platform_development']
                  + lines['research_purchases'] + lines['org_transition']
-                 + lines['compliance_investment'])
+                 + lines['compliance_investment']
+                 + lines['talent'] + lines['plant_capex'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
 
     rd_committed = lines['rd_investments'] + lines['platform_development']
@@ -385,6 +427,14 @@ def budget_assessment(submission, team=None):
         'rd_committed': str(rd_committed),
         'rd_budget': str(lines['rd_budget']),
         'within_rd_budget': rd_committed <= lines['rd_budget'],
+        # The "spent" figures every student surface shows, from here and
+        # nowhere else (W-CE-18).
+        'rd_spent': str(spent['rd']),
+        'marketing_spent': str(spent['marketing']),
+        'strategy_spent': str(spent['strategy']),
+        'talent_committed': str(lines['talent']),
+        'plant_committed': str(lines['plant_capex']),
+        'over_budget_spend': str(over_budget_spend),
     }
 
 
