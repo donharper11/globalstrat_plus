@@ -38,6 +38,8 @@ COMPETITION_KEYS = {
     'cohort_messages:competition_course_unowned',
     # A heat cannot be deleted: the sentence is about the competition itself.
     'cohort_messages:competition_game_not_deletable',
+    # A heat cannot be reset either (W-CE-26): the same sentence, for reset.
+    'cohort_messages:competition_game_not_resettable',
 }
 
 

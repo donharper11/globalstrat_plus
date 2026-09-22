@@ -897,3 +897,158 @@ class InventoryBlindSpotTests(TestCase):
             and not entry['uses_boundary'] and not entry['exempt']})
         self.assertEqual(offenders, [])
 
+
+# ---------------------------------------------------------------------------
+# W-CE-26 -- reset is guarded the way delete is
+# ---------------------------------------------------------------------------
+
+class GameResetBoundaryTests(OwnershipBase):
+    """Reset to Setup on a game that has been played.
+
+    Found on the 2026-09-22 walkthrough: on a competition heat with four
+    processed rounds, `POST /games/<id>/reset/` with a written reason was
+    ACCEPTED. It set `status=setup, current_round=0` and returned rounds that
+    were `open` to `pending` -- and nothing else. Rounds 1-4 stayed
+    `processed`, every result stayed readable, and the game could not be
+    activated cleanly again (activation needs round 1 pending). The
+    management command `reset_simulation` refuses a heat; this route did not.
+
+    The rule adopted is delete's: a competition heat is never reset
+    (`competition_game_not_resettable`, R13/R16 spirit), and no game is reset
+    once a round has been processed (`reset_round_processed`), because the
+    route cannot restore a consistent state and the results are permanent.
+    A game that was activated by mistake and never resolved a round is still
+    reset, as before.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from django.utils import timezone
+        self.game, self.teams = build_minimal_game(f'rst-{id(self)}')
+        Game.objects.filter(pk=self.game.pk).update(
+            section_id=self.section.section_id, status='active',
+            current_round=2)
+        self.game.refresh_from_db()
+        now = timezone.now()
+        self.round1 = Round.objects.create(
+            game=self.game, round_number=1, status='processed',
+            opened_at=now, closed_at=now, processed_at=now)
+        self.round2 = Round.objects.create(
+            game=self.game, round_number=2, status='open', opened_at=now)
+
+    def _reset(self, user=None, language=None, reason='the heat is over'):
+        client = self._client(user or self.owner, language=language)
+        client.raise_request_exception = False
+        return client.post(f'/api/games/{self.game.pk}/reset/',
+                           {'reason': reason}, format='json')
+
+    def _mark_competition(self):
+        SimulationInstance.objects.create(
+            section_id=self.section.section_id, game_id=self.game.pk,
+            current_round=2, total_rounds=5, status='active',
+            settings={'is_competition': True})
+
+    def _state(self):
+        self.game.refresh_from_db()
+        return {
+            'status': self.game.status,
+            'current_round': self.game.current_round,
+            'rounds': list(Round.objects.filter(game=self.game)
+                           .order_by('round_number')
+                           .values_list('round_number', 'status')),
+        }
+
+    def assertUntouched(self, response):
+        self.assertEqual(self._state(), {
+            'status': 'active', 'current_round': 2,
+            'rounds': [(1, 'processed'), (2, 'open')],
+        }, say(response))
+
+    def test_a_competition_heat_cannot_be_reset(self):
+        self._mark_competition()
+
+        response = self._reset()
+
+        self.assertEqual(response.status_code, 409,
+                         f'{say(response)} -> left {self._state()}')
+        self.assertEqual(response.data.get('code'),
+                         'competition_game_not_resettable')
+        self.assertIn('rchive', response.data.get('guidance', ''))
+        self.assertUntouched(response)
+        event = OperatorAuditEvent.objects.get(
+            game=self.game, action='reset_game')
+        self.assertEqual(event.outcome, 'rejected')
+        self.assertEqual(event.user_id, self.owner.user_id)
+        self.assertEqual(event.request_id, response.data['request_id'])
+
+    def test_an_admin_cannot_reset_a_competition_heat_either(self):
+        self._mark_competition()
+
+        response = self._reset(self.admin)
+
+        self.assertEqual(response.status_code, 409, say(response))
+        self.assertUntouched(response)
+
+    def test_the_competition_refusal_is_in_chinese_for_a_zh_operator(self):
+        self._mark_competition()
+
+        response = self._reset(language='zh-CN')
+
+        self.assertEqual(response.status_code, 409, say(response))
+        self.assertIn('竞赛', response.data['error'])
+        self.assertNotIn('competition', response.data['error'])
+        self.assertIn('归档', response.data['guidance'])
+
+    def test_a_game_with_a_processed_round_cannot_be_reset(self):
+        """Not a heat: an ordinary course game, one round resolved."""
+        response = self._reset()
+
+        self.assertEqual(response.status_code, 409,
+                         f'{say(response)} -> left {self._state()}')
+        self.assertEqual(response.data.get('code'), 'reset_round_processed')
+        self.assertIn('round 1', response.data['error'].lower())
+        self.assertIn('rchive', response.data.get('guidance', ''))
+        self.assertUntouched(response)
+        event = OperatorAuditEvent.objects.get(
+            game=self.game, action='reset_game')
+        self.assertEqual(event.outcome, 'rejected')
+        self.assertEqual(event.conflict.get('code'), 'reset_round_processed')
+
+    def test_the_processed_refusal_is_in_chinese_for_a_zh_operator(self):
+        response = self._reset(language='zh-CN')
+
+        self.assertEqual(response.status_code, 409, say(response))
+        self.assertIn('回合', response.data['error'])
+        self.assertNotIn('round', response.data['error'].lower())
+        self.assertIn('归档', response.data['guidance'])
+
+    def test_the_reason_is_still_required_on_a_resettable_game(self):
+        Round.objects.filter(pk=self.round1.pk).update(
+            status='pending', processed_at=None, closed_at=None,
+            opened_at=None)
+
+        response = self._reset(reason='')
+
+        self.assertEqual(response.status_code, 400, say(response))
+        self.assertEqual(response.data.get('code'), 'reason_required')
+
+    def test_a_game_that_never_resolved_a_round_is_still_reset(self):
+        """Activated by mistake, round 1 open, nothing processed: as before."""
+        Round.objects.filter(pk=self.round1.pk).update(
+            status='open', processed_at=None, closed_at=None)
+        Round.objects.filter(pk=self.round2.pk).update(status='pending',
+                                                       opened_at=None)
+        Game.objects.filter(pk=self.game.pk).update(current_round=1)
+
+        response = self._reset()
+
+        self.assertEqual(response.status_code, 200, say(response))
+        self.assertEqual(self._state(), {
+            'status': 'setup', 'current_round': 0,
+            'rounds': [(1, 'pending'), (2, 'pending')],
+        })
+        event = OperatorAuditEvent.objects.get(
+            game=self.game, action='reset_game')
+        self.assertEqual(event.outcome, 'committed')
+        self.assertEqual(event.reason, 'the heat is over')
+

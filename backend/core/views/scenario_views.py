@@ -404,18 +404,53 @@ class GamePauseView(APIView):
 
 
 class GameResetView(APIView):
-    """POST /api/games/<game_id>/reset/ — reset game back to setup status."""
+    """POST /api/games/<game_id>/reset/ — reset game back to setup status.
+    Body: `{"reason": "<at least 10 characters>"}`.
+
+    What it undoes is narrow: rounds that are open go back to pending and the
+    game goes back to round 0. It does not, and cannot, undo a processed
+    round: the results, the leaderboard rows and the audit record of that
+    round are permanent. Until 2026-09-22 (W-CE-26) it ran regardless, and a
+    competition heat with four processed rounds was left at `setup`, round 0,
+    with rounds 1-4 still `processed` -- a state the console could not
+    activate cleanly again. So, like delete:
+
+    * never a competition heat (409 `competition_game_not_resettable`);
+    * never once any round has been processed (409 `reset_round_processed`).
+
+    Both refusals point at archiving. A game that was activated by mistake
+    and has not resolved a round is still reset, as before.
+    """
 
     permission_classes = [IsInstructor]
 
     @lifecycle_view
     def post(self, request, game_id):
+        from core.services.cohort_caps import is_competition_game
+        from core.utils.cohort_messages import (cohort_message,
+                                                language_for_request)
+
         # The most destructive of the five: it reopens rounds and sends the
         # game back to round 0. Racing a resolution it would strand results for
         # a round the game no longer believes it is on.
         with operator_action(request, game_id, 'reset_game') as action:
             game = action.game
             before = action.before = _game_state(game)
+
+            if is_competition_game(game):
+                language = language_for_request(request)
+                raise LifecycleConflict(
+                    cohort_message('competition_game_not_resettable',
+                                   language=language, game=game.name),
+                    guidance=cohort_message('archive_instead',
+                                            language=language),
+                    code='competition_game_not_resettable')
+            processed = (Round.objects.filter(game=game, status='processed')
+                         .order_by('round_number').first())
+            if processed is not None:
+                raise lifecycle_refusal(
+                    LifecycleConflict, 'reset_round_processed',
+                    game=game.name, round=processed.round_number)
             reason = action.require_reason()
 
             reopened = Round.objects.filter(game=game, status='open').update(
