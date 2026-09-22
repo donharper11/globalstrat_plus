@@ -135,6 +135,9 @@ class RoundResultsView(APIView):
                 'platform_switch_write_off': _dec(fin.platform_switch_write_off),
                 'marketing_expense': _dec(fin.marketing_expense),
                 'strategy_expense': _dec(fin.strategy_expense),
+                'research_expense': _dec(fin.research_expense),
+                # R47: its own line on the income statement.
+                'compliance_expense': _dec(fin.compliance_expense),
                 'interest_expense': _dec(fin.interest_expense),
                 'tax_expense': _dec(fin.tax_expense),
                 'logistics_tariff_expense': _dec(fin.logistics_tariff_expense),

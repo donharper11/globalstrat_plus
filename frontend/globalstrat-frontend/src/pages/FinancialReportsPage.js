@@ -13,6 +13,7 @@ import { getInvestorRelations } from '../api/results';
 import { getGovernmentRelations } from '../api/decisions';
 import { getHedgePositions, getTradeFinance } from '../api/sc';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { incomeStatementColumns, incomeStatementRow } from './incomeStatementRows';
 import { PanelCard, PageHeader, MetricRow } from '../components/design-system';
 import InvestorProfilePopover, { InvestorNameLink } from '../components/InvestorProfilePopover';
 
@@ -872,33 +873,13 @@ const FinancialReportsPage = () => {
   const roundOptions = rounds.map(r => ({ value: r.round_number, label: `${t('common.round')} ${r.round_number}` }));
   const current = rounds.find(r => r.round_number === selectedRound) || rounds[rounds.length - 1];
 
-  // Income statement table
-  const incomeData = rounds.map(r => ({
-    key: r.round_number,
-    round: `R${r.round_number}`,
-    revenue: r.total_revenue,
-    cogs: r.total_cogs,
-    gross_profit: r.gross_profit,
-    rd: r.rd_expense,
-    marketing: r.marketing_expense,
-    strategy: r.strategy_expense,
-    admin: r.admin_overhead,
-    net_income: r.net_income,
-    margin: r.net_margin_pct,
-  }));
-
-  const incomeColumns = [
-    { title: t('common.round'), dataIndex: 'round', key: 'round', width: 70 },
-    { title: t('financial_reports.revenue'), dataIndex: 'revenue', key: 'revenue', render: fmt },
-    { title: t('financial_reports.cogs'), dataIndex: 'cogs', key: 'cogs', render: fmt },
-    { title: t('financial_reports.gross_profit'), dataIndex: 'gross_profit', key: 'gp', render: fmt },
-    { title: t('financial_reports.rd_label'), dataIndex: 'rd', key: 'rd', render: fmt },
-    { title: t('financial_reports.marketing_label'), dataIndex: 'marketing', key: 'mktg', render: fmt },
-    { title: t('financial_reports.strategy_label'), dataIndex: 'strategy', key: 'strat', render: fmt },
-    { title: t('financial_reports.admin'), dataIndex: 'admin', key: 'admin', render: fmt },
-    { title: t('financial_reports.net_income'), dataIndex: 'net_income', key: 'ni', render: fmt },
-    { title: t('financial_reports.margin'), dataIndex: 'margin', key: 'margin', render: pct },
-  ];
+  // Income statement table. The lines live in incomeStatementRows.js so the
+  // set a student reads is asserted by a test rather than by inspection
+  // (R47: compliance investment and research are their own lines).
+  const incomeData = rounds.map(incomeStatementRow);
+  const incomeColumns = incomeStatementColumns(t, {
+    money: fmt, pct, roundTitle: t('common.round'),
+  });
 
   // Balance sheet table
   const balanceData = rounds.map(r => ({

@@ -1445,6 +1445,11 @@ class DecisionSummaryView(APIView):
                 'total_allocated': float(total_allocated),
                 'platform_development_committed': float(
                     Decimal(lines['platform_development'])),
+                # R47: compliance investment committed this round, published
+                # on its own like platform development so the figure a team
+                # is refused on at lock is visible here before it locks.
+                'compliance_committed': float(
+                    Decimal(lines['compliance_investment'])),
                 'committed_total': float(committed_total),
                 'unallocated': float(team.cash_on_hand - committed_total),
             }
@@ -2483,6 +2488,9 @@ class FinanceContextView(APIView):
                         'total_allocated': float(total_allocated),
                         'platform_development_committed': float(
                             Decimal(lines['platform_development'])),
+                        # R47: the same figure the summary endpoint publishes.
+                        'compliance_committed': float(
+                            Decimal(lines['compliance_investment'])),
                         'committed_total': float(committed_total),
                         'total_spent': total_spent,
                         'over_budget': over_budget,

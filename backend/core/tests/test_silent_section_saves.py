@@ -642,9 +642,9 @@ class ManifestTests(SectionSaveBase):
         empty = self.input_body()
         self.save('1500000')
         body = self.input_body()
-        self.assertEqual(MANIFEST_SCHEMA_VERSION, 6)
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
         # Canonicalised: the envelope carries its numbers as strings.
-        self.assertEqual(str(body['schema_version']), '6')
+        self.assertEqual(str(body['schema_version']), '7')
         self.assertEqual(len(body['sections']['talent_allocation']), 3)
         self.assertEqual(len(body['sections']['compliance_investment']), 1)
         self.assertIn('1500000', str(body['sections']['compliance_investment']))

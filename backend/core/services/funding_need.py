@@ -118,6 +118,41 @@ def org_transition_charge(team, current_round):
     return D(str(row.current_structure.transition_cost or 0))
 
 
+def compliance_investment_total(submission):
+    """Everything this submission has committed to compliance this round.
+
+    R47: V2-137's repair made `ComplianceInvestment` saveable for the first
+    time, and the silent-saves record found the lever was free -- the amount
+    raised `TeamMarketCompliance.compliance_level` but appeared in neither
+    `decision_outlays` nor `costs.calculate_operating_expenses`. The owner
+    ruled that it costs money, charged from cash at resolution.
+
+    This is the one function both calculators read, in the position
+    `research_catalogue.purchase_total` (R23) and `org_transition_charge`
+    (R36) already occupy: `decision_outlays` totals it, the engine books it,
+    `rd_costs.committed_outlay` counts it toward committed spend, and the
+    parity assertion in `calculate_operating_expenses` stops the round if the
+    two sides ever disagree.
+
+    The figure is the amount the team typed, summed over its market rows. No
+    price is invented and no scenario data is read: the row *is* the decision,
+    so the charge and the decision that caused it cannot disagree, a round
+    with no rows costs nothing, and re-resolving a round recomputes the same
+    amount rather than a cumulative one. `ComplianceInvestment` is already a
+    hashed input section (`manifest_sections.py`), so nothing new enters the
+    envelope.
+    """
+    from core.models.cc31_models import ComplianceInvestment
+
+    if submission is None:
+        return D('0')
+    total = D('0')
+    for row in (ComplianceInvestment.objects
+                .filter(submission=submission).order_by('id')):
+        total += D(str(row.investment_amount or 0))
+    return total
+
+
 def decision_outlays(scenario, team, submission, current_round,
                      capitalize_platform=False):
     """Every cash outlay this round that the team's own decisions determine.
@@ -134,7 +169,8 @@ def decision_outlays(scenario, team, submission, current_round,
 
     lines = {'rd': D('0'), 'platform_capex': D('0'), 'marketing': D('0'),
              'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0'),
-             'research': D('0'), 'org_structure': D('0')}
+             'research': D('0'), 'org_structure': D('0'),
+             'compliance': D('0')}
     # R36: computed *before* the submission guard below, because a structure
     # switch writes no decision row of its own -- a team can switch in a round
     # it never otherwise submitted in, and the charge is owed either way.
@@ -209,6 +245,13 @@ def decision_outlays(scenario, team, submission, current_round,
     # one-calculator rule exists to prevent.
     from core.services.research_catalogue import purchase_total
     lines['research'] = purchase_total(submission)
+
+    # R47: compliance investment, from the rows the team saved for this
+    # round, through the one function the engine also books from. It is an
+    # outlay the team's own decision determines -- the amount it typed -- so
+    # it belongs here with research and the structure switch, and it is
+    # covered by the engine's parity assertion for the same reason they are.
+    lines['compliance'] = compliance_investment_total(submission)
 
     lines['talent'] = talent_cost(team, submission, current_round)
     return lines

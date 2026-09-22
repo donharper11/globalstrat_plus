@@ -397,6 +397,7 @@ def calculate_operating_expenses(context):
         marketing_expense = D('0')
         strategy_expense = D('0')
         research_expense = D('0')
+        compliance_expense = D('0')
         platform_capex = D('0')
 
         if submission:
@@ -604,17 +605,29 @@ def calculate_operating_expenses(context):
             from core.services.research_catalogue import purchase_total
             research_expense = purchase_total(submission)
 
+            # R47: compliance investment the team saved this round -- the
+            # amount it typed, per market, read from the decision rows through
+            # the same function `decision_outlays` totals. Carried as its own
+            # line in `context.opex` (the owner's amended ruling: its own
+            # line, not folded into strategy expense), so the statement step
+            # and the tax deduction read it by name.
+            from core.services.funding_need import compliance_investment_total
+            compliance_expense = compliance_investment_total(submission)
+
             # R36 widens this pair rather than leaving the new line merely
             # satisfied. `org_structure` is a decision-driven outlay, so the
             # invariant has to be *enforced* over it: without it here, a later
             # edit could charge the switch on one side only and the round would
             # still resolve, which is the V2-037/V2-038 divergence this
             # assertion exists to stop.
+            #
+            # R47 widens it again over `compliance`, for the same reason.
             _shared = (_outlays['rd'] + _outlays['platform_capex']
                        + _outlays['marketing'] + _outlays['research']
-                       + _outlays['org_structure'])
+                       + _outlays['org_structure'] + _outlays['compliance'])
             _engine = (rd_expense + platform_capex + marketing_expense
-                       + research_expense + org_transition)
+                       + research_expense + org_transition
+                       + compliance_expense)
             if _shared != _engine:
                 raise AssertionError(
                     f'funding_need.decision_outlays disagrees with the cost '
@@ -681,6 +694,7 @@ def calculate_operating_expenses(context):
             'marketing_expense': marketing_expense,
             'strategy_expense': strategy_expense,
             'research_expense': research_expense,
+            'compliance_expense': compliance_expense,
             'admin_overhead': admin_overhead,
             'total_revenue': total_team_revenue,
             'capex': capex,
@@ -751,12 +765,13 @@ def calculate_tax(context):
             market_revenues[m_id] = mr['home_revenue']
             team_total_rev += mr['home_revenue']
 
-        # Get total opex (R&D, marketing, strategy, research, admin, interest)
-        # to allocate against market profits for tax purposes
+        # Get total opex (R&D, marketing, strategy, research, compliance,
+        # admin, interest) to allocate against market profits for tax purposes
         opex = context.opex.get(team.id, {})
         total_opex = (
             opex.get('rd_expense', D('0')) + opex.get('marketing_expense', D('0'))
             + opex.get('strategy_expense', D('0')) + opex.get('research_expense', D('0'))
+            + opex.get('compliance_expense', D('0'))
             + opex.get('admin_overhead', D('0'))
             + opex.get('platform_switch_write_off', D('0'))
         )

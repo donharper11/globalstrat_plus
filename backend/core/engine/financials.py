@@ -94,6 +94,12 @@ def generate_financial_statements(context):
         marketing_expense = opex.get('marketing_expense', D('0'))
         strategy_expense = opex.get('strategy_expense', D('0'))
         research_expense = opex.get('research_expense', D('0'))
+        # R47: compliance investment, charged from cash at resolution. Its
+        # own line here and on the stored statement, by the owner's amended
+        # ruling ("show its own line on the income statement"). The column
+        # is a new hashed field on the `financials` section, which is what
+        # moved the envelope to schema version 7.
+        compliance_expense = opex.get('compliance_expense', D('0'))
         admin_overhead = opex.get('admin_overhead', D('0'))
         platform_amortization = opex.get('platform_amortization', D('0'))
         # Stock stranded by a re-base. Cash-effective like `retirement_expense`,
@@ -106,8 +112,8 @@ def generate_financial_statements(context):
 
         total_opex = (
             rd_expense + marketing_expense + strategy_expense
-            + research_expense + admin_overhead + platform_amortization
-            + platform_switch_write_off
+            + research_expense + compliance_expense + admin_overhead
+            + platform_amortization + platform_switch_write_off
         )
 
         logistics_tariff = D('0')
@@ -365,6 +371,7 @@ def generate_financial_statements(context):
                 'marketing_expense': marketing_expense,
                 'strategy_expense': strategy_expense,
                 'research_expense': research_expense,
+                'compliance_expense': compliance_expense,
                 'admin_overhead': admin_overhead,
                 'logistics_tariff_expense': logistics_tariff,
                 'inventory_expense': inventory_expense,

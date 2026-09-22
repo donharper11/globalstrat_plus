@@ -129,7 +129,7 @@ class RecordedOutsideTheHashTests(TestCase):
 
     def test_the_envelope_version_did_not_move(self):
         from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
-        self.assertEqual(MANIFEST_SCHEMA_VERSION, 6)
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
 
     def test_the_fingerprint_carries_the_configuration_digest(self):
         from core.services.resolution_manifest import environment_fingerprint
