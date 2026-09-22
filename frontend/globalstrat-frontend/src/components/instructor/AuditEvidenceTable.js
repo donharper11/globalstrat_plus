@@ -1,5 +1,6 @@
 import React from 'react';
 import { Alert, Card, Collapse, Empty, Table, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
@@ -23,30 +24,32 @@ export const PAGE_SIZE = 8;
  * hundreds of pixels tall, and the team's actual decisions sat below dozens of
  * them. Behind a closed panel the evidence is one click away and nothing is
  * removed: every row, column and payload is still there when it opens.
+ *
+ * Its headings and notices come from the catalogue (W-CE-17): the table was
+ * English on a Chinese console. The rows themselves -- actor, action,
+ * endpoint, request id, hash, payload -- are the record and are shown as
+ * stored.
  */
-export default function AuditEvidenceTable({
-  events, error, title = 'Submission audit evidence', collapsed = false,
-}) {
+export default function AuditEvidenceTable({ events, error, title, collapsed = false }) {
+  const { t } = useTranslation();
+  const heading = title || t('instructor.audit_evidence_title');
   let body;
   if (error) {
     body = (
       <Alert
         type="error"
         showIcon
-        message="Audit evidence could not be loaded"
+        message={t('instructor.audit_load_failed')}
         description={
           <>
             <div>{error}</div>
-            <div style={{ marginTop: 4 }}>
-              This is not the same as an empty audit trail. Retry before
-              concluding anything about what this team submitted.
-            </div>
+            <div style={{ marginTop: 4 }}>{t('instructor.audit_not_empty_note')}</div>
           </>
         }
       />
     );
   } else if (!events || events.length === 0) {
-    body = <Empty description="No recorded saves for this round" />;
+    body = <Empty description={t('instructor.audit_no_saves')} />;
   } else {
     body = (
       <Table
@@ -57,21 +60,21 @@ export default function AuditEvidenceTable({
         scroll={{ x: 1000 }}
         columns={[
           {
-            title: 'Time (server)',
+            title: t('instructor.time_server'),
             dataIndex: 'server_timestamp',
             render: v => (v ? new Date(v).toLocaleString() : '—'),
           },
-          { title: 'Actor', dataIndex: 'actor', render: v => v || '—' },
-          { title: 'Action', dataIndex: 'action' },
-          { title: 'Endpoint', dataIndex: 'endpoint' },
-          { title: 'Request ID', dataIndex: 'request_id', render: v => v || '—' },
+          { title: t('instructor.actor'), dataIndex: 'actor', render: v => v || '—' },
+          { title: t('instructor.action'), dataIndex: 'action' },
+          { title: t('instructor.endpoint'), dataIndex: 'endpoint' },
+          { title: t('instructor.request_id'), dataIndex: 'request_id', render: v => v || '—' },
           {
-            title: 'Payload SHA-256',
+            title: t('instructor.payload_sha256'),
             dataIndex: 'payload_sha256',
             render: v => <Text code copyable>{v}</Text>,
           },
           {
-            title: 'Payload',
+            title: t('instructor.payload'),
             dataIndex: 'payload',
             render: v => <Text code copyable>{JSON.stringify(v)}</Text>,
           },
@@ -85,12 +88,12 @@ export default function AuditEvidenceTable({
       <Collapse
         size="small"
         style={{ marginTop: 12 }}
-        items={[{ key: 'audit', label: title, children: body }]}
+        items={[{ key: 'audit', label: heading, children: body }]}
       />
     );
   }
   return (
-    <Card size="small" title={title} style={{ marginTop: 12 }}>
+    <Card size="small" title={heading} style={{ marginTop: 12 }}>
       {body}
     </Card>
   );

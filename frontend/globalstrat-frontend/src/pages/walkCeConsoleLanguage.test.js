@@ -49,6 +49,55 @@ describe('W-CE-08: a submission status is a translated label, never the stored t
   });
 });
 
+describe('W-CE-17: the console’s English on a Chinese screen', () => {
+  const source = DASHBOARD.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+
+  test.each([
+    "label: 'Students & Logins'",
+    'title="Decision round"',
+    'title="Round status"',
+    'title="Game status"',
+    "text: 'Open for student decisions'",
+    "text: 'Not open yet'",
+    '`Monitoring ${',
+    'Latest processed results round: ${',
+    'addonAfter="hours"',
+    'CSV format: student_id',
+    '} student(s)</Text>',
+    "} student(s)`",
+    '} students assigned',
+    'placeholder="Category name',
+    'placeholder="Description"',
+    "['Team', 'Index', 'Cash'",
+  ])('no longer says %s', (literal) => {
+    expect(source).not.toContain(literal);
+  });
+
+  test('the stored game status is never its own label', () => {
+    expect(source).not.toMatch(/>\{displayGameStatus\}</);
+    expect(source).not.toMatch(/value=\{displayGameStatus\}/);
+  });
+
+  test('every key the console asks for exists in both languages', () => {
+    const keys = [...new Set([...source.matchAll(/\bt\(\s*'([\w.]+)'/g)].map((m) => m[1]))];
+    expect(keys.length).toBeGreaterThan(300);
+    expect(keys.filter((key) => !inBoth(key))).toEqual([]);
+  });
+
+  test('the audit table and the supply-chain panel are whole-scan clean', () => {
+    // Held to the same scan as the round-control card; see
+    // consolePanelsLanguage.test.js (InstructorSCPanel) and the render test
+    // AuditEvidenceTable.test.js. Here: no computed key and every key exists.
+    ['../components/instructor/AuditEvidenceTable.js', '../components/instructor/InstructorSCPanel.js']
+      .forEach((relative) => {
+        const panel = read(relative).replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+        expect(panel.match(/\bt\(\s*(?!['"])/g) || []).toEqual([]);
+        const keys = [...panel.matchAll(/\bt\(\s*'([\w.]+)'/g)].map((m) => m[1]);
+        expect(keys.filter((key) => !inBoth(key))).toEqual([]);
+      });
+  });
+});
+
 describe('W-CE-11: the console header carries the language switch', () => {
   test('the instructor header renders LanguageSwitcher', () => {
     const header = DASHBOARD.slice(
