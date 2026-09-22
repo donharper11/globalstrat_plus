@@ -36,7 +36,9 @@ import {
   assignmentOutcome, announceAssignment, UnderMinimumNotice,
 } from './assignmentOutcome';
 import { bilingualServerReason, serverReason } from './bilingualServerReason';
-import { rosterUploadOutcome, announceRosterUpload } from './rosterUploadOutcome';
+import {
+  rosterUploadOutcome, announceRosterUpload, rosterUploadSummary,
+} from './rosterUploadOutcome';
 import ReasonedAction from '../components/instructor/ReasonedAction';
 import AdvanceRoundControl from '../components/instructor/AdvanceRoundControl';
 import RoundControlCard from '../components/RoundControlCard';
@@ -110,6 +112,10 @@ const InstructorDashboard = () => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionCode, setNewSectionCode] = useState('');
   const [csvText, setCsvText] = useState('');
+  // The last CSV upload's outcome, kept on the roster panel until dismissed
+  // (W-CE-05): the toast is gone in three seconds and the table growing
+  // silently is not an announcement.
+  const [lastRosterUpload, setLastRosterUpload] = useState(null); // { outcome, fileName }
   // Grading
   const [rubrics, setRubrics] = useState([]);
   const [gradingCategories, setGradingCategories] = useState([]);
@@ -1431,7 +1437,7 @@ const InstructorDashboard = () => {
 
   const loadRoster = async (sectionId) => {
     // The short-team notice belongs to the section it was reported for.
-    if (sectionId !== selectedSection) setUnderMinimum([]);
+    if (sectionId !== selectedSection) { setUnderMinimum([]); setLastRosterUpload(null); }
     setSelectedSection(sectionId);
     try {
       const [rosterRes, teamRes, gamesRes] = await Promise.all([
@@ -1796,9 +1802,10 @@ const InstructorDashboard = () => {
                           if (!file) return;
                           const text = await file.text();
                           try {
-                            announceRosterUpload(
+                            const uploaded = announceRosterUpload(
                               rosterUploadOutcome((await uploadRoster(selectedSection, text)).data),
                               { t, message, Modal, fileName: file.name });
+                            setLastRosterUpload({ outcome: uploaded, fileName: file.name });
                             loadRoster(selectedSection);
                           } catch (err) { message.error(serverReason(err) || t('instructor.msg_upload_failed')); }
                           e.target.value = '';
@@ -1815,6 +1822,7 @@ const InstructorDashboard = () => {
                           const uploaded = announceRosterUpload(
                             rosterUploadOutcome((await uploadRoster(selectedSection, csvText)).data),
                             { t, message, Modal });
+                          setLastRosterUpload({ outcome: uploaded, fileName: null });
                           // The pasted text survives a refusal, so the refused
                           // rows can be corrected and sent again.
                           if (uploaded.kind === 'uploaded') setCsvText('');
@@ -1826,6 +1834,23 @@ const InstructorDashboard = () => {
                 ),
               }]}
             />
+
+            {/* What the last upload did, until the instructor dismisses it. */}
+            {lastRosterUpload && (() => {
+              const summary = rosterUploadSummary(lastRosterUpload.outcome, t);
+              return (
+                <Alert data-testid="roster-upload-outcome" showIcon closable
+                  type={summary.type} style={{ marginBottom: 16 }}
+                  message={summary.title}
+                  description={[
+                    lastRosterUpload.fileName
+                      ? t('instructor.roster_upload_file', { file: lastRosterUpload.fileName })
+                      : null,
+                    summary.detail,
+                  ].filter(Boolean).join(' ') || null}
+                  onClose={() => setLastRosterUpload(null)} />
+              );
+            })()}
 
             {/* Student table with edit/delete */}
             {roster.length === 0 ? (
