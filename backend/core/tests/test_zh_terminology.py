@@ -74,7 +74,8 @@ def zh_sentences():
             ('participant_messages',
              ('MESSAGES', 'FIELD_LABELS', 'ROUND_STATUS_LABELS')),
             ('cohort_messages', ('MESSAGES',)),
-            ('operator_messages', ('MESSAGES', 'GAME_STATUS_LABELS'))):
+            ('operator_messages', ('MESSAGES', 'GAME_STATUS_LABELS',
+                                   'SUBMISSION_ORIGIN_LABELS'))):
         for key, text in _python_catalogue(
                 f'core/utils/{module}.py', *names).items():
             short = key.split('.', 1)[1] if key.startswith('MESSAGES.') else key

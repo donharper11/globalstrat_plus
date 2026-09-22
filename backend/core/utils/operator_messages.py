@@ -41,6 +41,19 @@ GAME_STATUS_LABELS = {
     'archived': {'en': 'archived', 'zh-CN': '已归档'},
 }
 
+# How a team's round submission reached its state, as the drill-down shows it
+# (W-CE-08, 2026-09-22). `classify_submission_origin` in views/results_api.py
+# decides which applies; the sentence is chosen here so the console reads it
+# in the instructor's language rather than the English the view used to hold.
+SUBMISSION_ORIGIN_LABELS = {
+    'no_submission': {'en': 'No submission', 'zh-CN': '未提交'},
+    'draft': {'en': 'Draft (not locked)', 'zh-CN': '草稿（未锁定）'},
+    'student_locked': {'en': 'Locked by team', 'zh-CN': '团队已锁定'},
+    'deadline_locked': {'en': 'Auto-locked at deadline', 'zh-CN': '截止时自动锁定'},
+    'defaulted_missing': {'en': 'Never submitted — defaulted at close',
+                          'zh-CN': '从未提交——回合关闭时按默认处理'},
+}
+
 MESSAGES = {
     # -- the lifecycle boundary: every game-scoped operator write -----------
     'game_not_found': {
@@ -699,6 +712,11 @@ def game_status(status):
 
 def participation_status(status):
     return lambda language: _label(PARTICIPATION_STATUS_LABELS, status, language)
+
+
+def submission_origin_label(origin, language='en'):
+    """The drill-down's origin label; an unknown origin reads as its token."""
+    return _label(SUBMISSION_ORIGIN_LABELS, origin, language)
 
 
 def _label(table, status, language):

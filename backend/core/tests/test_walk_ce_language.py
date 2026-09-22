@@ -193,3 +193,53 @@ class EventNarrativeLanguageTests(WalkCEBase):
         response = self.client_for(self.student, 'zh-CN').get(
             f'/api/games/{self.game.id}/teams/{self.team.id}/news/round/1/')
         self.assertEqual(response.data['events'][0]['narrative'], event.narrative)
+
+
+# ---------------------------------------------------------------------------
+# W-CE-08 -- the drill-down's origin label reads in the instructor's language
+# ---------------------------------------------------------------------------
+
+class DrillDownStatusLabelTests(WalkCEBase):
+
+    def _drill(self, language):
+        response = self.client_for(self.instructor, language).get(
+            f'/api/games/{self.game.id}/instructor/teams/{self.team.id}/decisions/',
+            {'round': 1})
+        self.assertEqual(response.status_code, 200, response.data)
+        return response.data
+
+    def test_no_submission_is_labelled_in_both_languages(self):
+        self.assertEqual(self._drill('en')['submission_origin_label'], 'No submission')
+        zh = self._drill('zh-CN')
+        self.assertEqual(zh['submission_origin'], 'no_submission')
+        self.assertTrue(has_cjk(zh['submission_origin_label']), zh)
+        self.assertIsNone(LATIN_WORD.search(zh['submission_origin_label']), zh)
+
+    def test_a_draft_is_labelled_in_both_languages(self):
+        from core.models import DecisionSubmission
+        DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        self.assertEqual(self._drill('en')['submission_origin_label'],
+                         'Draft (not locked)')
+        zh = self._drill('zh-CN')
+        self.assertEqual(zh['submission_origin'], 'draft')
+        self.assertTrue(has_cjk(zh['submission_origin_label']), zh)
+
+    def test_every_origin_the_classifier_can_return_has_both_labels(self):
+        import ast
+        from pathlib import Path
+        from core.utils.operator_messages import SUBMISSION_ORIGIN_LABELS
+        source = (Path(__file__).resolve().parents[1]
+                  / 'views/results_api.py').read_text(encoding='utf-8')
+        tree = ast.parse(source)
+        classifier = next(node for node in ast.walk(tree)
+                          if isinstance(node, ast.FunctionDef)
+                          and node.name == 'classify_submission_origin')
+        returned = {node.value.value for node in ast.walk(classifier)
+                    if isinstance(node, ast.Return)
+                    and isinstance(node.value, ast.Constant)}
+        self.assertTrue(returned)
+        self.assertEqual(returned - set(SUBMISSION_ORIGIN_LABELS), set())
+        for origin, labels in SUBMISSION_ORIGIN_LABELS.items():
+            self.assertTrue(has_cjk(labels['zh-CN']), origin)
+            self.assertFalse(has_cjk(labels['en']), origin)

@@ -31,7 +31,8 @@ from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
 from core.utils.operator_messages import (
     language_for_request, lifecycle_refusal, operator_message,
-    operator_refusal)
+    operator_refusal,
+    submission_origin_label)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.engine.events import (
@@ -48,14 +49,9 @@ def _dec(v):
     return float(v)
 
 
-# Human-readable labels for each submission origin, for instructor UI/disputes.
-SUBMISSION_ORIGIN_LABELS = {
-    'no_submission': 'No submission',
-    'draft': 'Draft (not locked)',
-    'student_locked': 'Locked by team',
-    'deadline_locked': 'Auto-locked at deadline',
-    'defaulted_missing': 'Never submitted — defaulted at close',
-}
+# The label for each submission origin lives with the other operator wording
+# (`operator_messages.SUBMISSION_ORIGIN_LABELS`) and is rendered in the
+# instructor's language (W-CE-08).
 
 
 def classify_submission_origin(game, team, rnd, submission):
@@ -1174,7 +1170,8 @@ class InstructorTeamDecisionsView(APIView):
             return Response({
                 'status': 'no_submission', 'round': round_number,
                 'submission_origin': 'no_submission',
-                'submission_origin_label': SUBMISSION_ORIGIN_LABELS['no_submission'],
+                'submission_origin_label': submission_origin_label(
+                    'no_submission', language),
             })
 
         origin = classify_submission_origin(game, team, rnd, sub)
@@ -1189,7 +1186,7 @@ class InstructorTeamDecisionsView(APIView):
             'locked_at': sub.locked_at.isoformat() if sub.locked_at else None,
             'locked_by': locked_by,
             'submission_origin': origin,
-            'submission_origin_label': SUBMISSION_ORIGIN_LABELS.get(origin, origin),
+            'submission_origin_label': submission_origin_label(origin, language),
         }
 
         # V2-G: expose the immutable evidence behind the snapshot so an

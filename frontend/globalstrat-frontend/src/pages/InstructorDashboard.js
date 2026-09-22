@@ -376,6 +376,13 @@ const InstructorDashboard = () => {
   };
 
   const statusColor = { locked: 'green', draft: 'orange', empty: 'red' };
+  // The stored token was shown as the label (`no_submission`, `locked`),
+  // beside a sentence that already said the same thing (W-CE-08).
+  const submissionStatusLabel = (status) => (
+    status === 'locked' ? t('instructor.submission_status_locked')
+      : status === 'draft' ? t('instructor.submission_status_draft')
+        : (status === 'empty' || status === 'no_submission') ? t('instructor.submission_status_empty')
+          : status);
   const severityConfig = {
     critical: { color: 'red', label: t('instructor.critical') },
     concern: { color: 'gold', label: t('instructor.concern') },
@@ -911,7 +918,7 @@ const InstructorDashboard = () => {
             const o = r.submission_origin;
             return (
               <Space direction="vertical" size={0}>
-                <Tag color={statusColor[v] || 'default'}>{v}</Tag>
+                <Tag color={statusColor[v] || 'default'}>{submissionStatusLabel(v)}</Tag>
                 {o && originColor[o] && <Tag color={originColor[o]}>{t(`instructor.origin_${o}`)}</Tag>}
               </Space>
             );
@@ -2205,7 +2212,9 @@ const InstructorDashboard = () => {
             description={drillError} />
         ) : !drillData ? <Empty description={t('instructor.no_submission_data')} /> : (
           <div>
-            <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{drillData.status}</Tag>
+            {drillData.status !== 'no_submission' && (
+              <Tag color={drillData.status === 'locked' ? 'green' : 'orange'}>{submissionStatusLabel(drillData.status)}</Tag>
+            )}
             {drillData.submission_origin_label && <Tag color={drillData.submission_origin === 'defaulted_missing' ? 'red' : drillData.submission_origin === 'deadline_locked' ? 'gold' : 'default'} style={{ marginLeft: 4 }}>{drillData.submission_origin_label}</Tag>}
             {drillData.locked_at && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked')}: {new Date(drillData.locked_at).toLocaleString()}</Text>}
             {drillData.locked_by && <Text type="secondary" style={{ marginLeft: 8 }}>{t('instructor.locked_by')}: {drillData.locked_by}</Text>}
