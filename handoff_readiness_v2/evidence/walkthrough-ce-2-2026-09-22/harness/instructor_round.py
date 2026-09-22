@@ -76,7 +76,14 @@ def main():
         R.observe('round_control_before', pre)
         R.screen(page, 'r%d-00-control-before-close' % ROUND, 'teams locked: %s/%s' % ((pre.get('round') or {}).get('teams_locked'), (pre.get('round') or {}).get('teams_total')))
         rnd = pre.get('round') or {}
-        R.step('round %d is the open round before resolve' % ROUND, 'pass' if rnd.get('round_number') == ROUND and rnd.get('status') == 'open' else 'fail', json.dumps(rnd)[:200])
+        if PATH == 'reprocess':
+            # The round is already closed (a previous processing attempt failed);
+            # only "Run post-round processing" is driven.
+            R.step('round %d is closed and awaiting processing' % ROUND,
+                   'pass' if rnd.get('round_number') == ROUND and rnd.get('status') == 'closed' else 'fail',
+                   json.dumps(rnd)[:200])
+        else:
+            R.step('round %d is the open round before resolve' % ROUND, 'pass' if rnd.get('round_number') == ROUND and rnd.get('status') == 'open' else 'fail', json.dumps(rnd)[:200])
 
         if PATH == 'console':
             A(page).locator('button', has_text=L['close']).first.click(); page.wait_for_timeout(1000)
@@ -108,6 +115,11 @@ def main():
             R.screen(page, 'r%d-01-force-modal' % ROUND)
             page.locator('.ant-modal-footer .ant-btn-primary').last.click()
             R.observe('force_toast', toast(page, 10))
+        elif PATH == 'reprocess':
+            A(page).locator('button', has_text=L['process']).first.click(); page.wait_for_timeout(1000)
+            R.observe('process_popconfirm', page.locator('.ant-popover:not(.ant-popover-hidden)').last.text_content() if page.locator('.ant-popover:not(.ant-popover-hidden)').count() else None)
+            popconfirm_ok(page, 3000)
+            R.observe('process_toast', toast(page, 10))
         elif PATH == 'lifecycle':
             A(page).locator('button', has_text=L['lifecycle_advance']).first.click(); page.wait_for_timeout(1000)
             R.observe('advance_modal', modal_text(page))

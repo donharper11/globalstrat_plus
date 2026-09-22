@@ -115,6 +115,11 @@ def main():
         g = next((x for x in (st.get('games') or []) if x.get('game_id') == GID), {})
         R.observe('game_after_reset', g)
         R.step('reset outcome recorded', 'observed', 'toast=%r status=%s current_round=%s' % (t, g.get('status'), g.get('current_round')))
+        # W-CE-26: on a competition heat whose rounds are processed, Reset to
+        # Setup must be refused and the game left as it was.
+        R.step('reset refused on a competition heat with processed rounds (W-CE-26)',
+               'pass' if g.get('status') != 'setup' and (g.get('current_round') or 0) > 0 else 'fail',
+               'toast=%r status=%s current_round=%s' % (t, g.get('status'), g.get('current_round')))
 
         # 5. archive
         t = reasoned(page, T('instructor.archive_game'), 'Walkthrough: archiving the heat at the end of the audit.', 'archive')
