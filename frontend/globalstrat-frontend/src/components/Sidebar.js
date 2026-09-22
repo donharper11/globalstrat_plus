@@ -6,7 +6,7 @@ import {
   faTachometerAlt, faFlask, faCubes, faBullhorn, faBuilding, faGlobe,
   faDollarSign, faClipboardCheck, faChartBar, faTrophy,
   faGamepad, faGraduationCap,
-  faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine, faBell,
+  faNewspaper, faSearch, faEye, faWrench, faFileInvoiceDollar, faChartLine,
   faHome, faEdit, faIndustry, faTruck, faMoneyBillWave, faBoxesStacked,
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +79,6 @@ const Sidebar = ({ collapsed, onNavigate }) => {
   else if (pathname.includes('/competitors')) selectedKey = 'competitors';
   else if (pathname.includes('/tools')) selectedKey = 'tools';
   else if (pathname.includes('/financial-reports')) selectedKey = 'financial-reports';
-  else if (pathname.includes('/team-activity')) selectedKey = 'team-activity';
   else if (pathname.includes('/forecast')) selectedKey = 'forecast';
   else if (pathname.includes('/results')) selectedKey = 'results';
   else if (pathname.includes('/leaderboard')) selectedKey = 'leaderboard';
@@ -251,12 +250,6 @@ const Sidebar = ({ collapsed, onNavigate }) => {
           icon: icon(faTrophy),
           label: t('nav.leaderboard'),
           onClick: () => go('/leaderboard'),
-        },
-        {
-          key: 'team-activity',
-          icon: icon(faBell),
-          label: t('nav.team_activity'),
-          onClick: () => go(`${base}/team-activity`),
         },
       ],
     },

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Card, Select, Space, Table, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { getOperatorEvents } from '../../api/instructor';
+import { changedFields, fieldLabel, formatValue } from './operatorChange';
 
 const { Text } = Typography;
 
@@ -25,7 +26,49 @@ const { Text } = Typography;
  * literal call left a string in this file that matches a search for the very
  * defect it records, and two separate review passes reported this panel as
  * still carrying a fallback on the strength of this comment alone.
+ *
+ * "Before → after" was the audit row's JSON until 2026-09-22 (W-CE-07):
+ * storage names, `null`, braces. It is now the fields that changed, labelled
+ * and valued from the catalogue (`operatorChange.js`); the raw record stays
+ * one click away, copyable, because the dispute runbook reads it.
  */
+const OperatorChange = ({ row, t }) => {
+  const raw = JSON.stringify({ before: row.before, after: row.after, conflict: row.conflict });
+  const copy = (
+    <Text type="secondary" style={{ fontSize: 11 }}
+      copyable={{ text: raw, tooltips: false }}>
+      {t('instructor.oplog_copy_record')}
+    </Text>
+  );
+  if (row.outcome === 'rejected') {
+    return (
+      <div>
+        <div>
+          <Text type="danger">{t('instructor.oplog_refused_because')}</Text>{' '}
+          {row.conflict?.detail || '—'}
+          {row.conflict?.code ? <Text code style={{ marginLeft: 4 }}>{row.conflict.code}</Text> : null}
+        </div>
+        {copy}
+      </div>
+    );
+  }
+  const rows = changedFields(row.before, row.after);
+  return (
+    <div>
+      {rows.length === 0
+        ? <Text type="secondary">{t('instructor.oplog_no_change')}</Text>
+        : rows.map(({ key, before, after }) => (
+          <div key={key}>
+            {fieldLabel(key, t)}: {before === undefined
+              ? formatValue(key, after, t)
+              : `${formatValue(key, before, t)} → ${formatValue(key, after, t)}`}
+          </div>
+        ))}
+      {copy}
+    </div>
+  );
+};
+
 export default function OperatorEventsPanel({ gameId }) {
   const { t } = useTranslation();
   const [events, setEvents] = useState([]);
@@ -102,11 +145,7 @@ export default function OperatorEventsPanel({ gameId }) {
           {
             title: t('instructor.before_after'),
             key: 'before_after',
-            render: (_, row) => (
-              <Text code copyable={{ text: JSON.stringify({ before: row.before, after: row.after, conflict: row.conflict }) }}>
-                {JSON.stringify(row.before)} → {JSON.stringify(row.after)}
-              </Text>
-            ),
+            render: (_, row) => <OperatorChange row={row} t={t} />,
           },
           {
             title: t('instructor.request_id'),

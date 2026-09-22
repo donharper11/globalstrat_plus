@@ -43,32 +43,67 @@ export const rosterUploadOutcome = (data) => {
 };
 
 /**
+ * The one sentence that sums an upload up, and how serious it is. Read by
+ * the toast, by the refusal modal's title and by the roster panel's standing
+ * notice, so they cannot disagree.
+ */
+export const rosterUploadSummary = (outcome, t) => {
+  if (outcome.kind === 'uploaded') {
+    return {
+      type: 'success',
+      title: outcome.existing > 0
+        ? t('instructor.roster_upload_added_existing', {
+          created: outcome.created, existing: outcome.existing,
+        })
+        : t('instructor.roster_upload_added', { created: outcome.created }),
+      detail: null,
+    };
+  }
+  if (outcome.kind === 'unconfirmed') {
+    return {
+      type: 'warning',
+      title: t('instructor.roster_upload_unconfirmed'),
+      detail: null,
+    };
+  }
+  return {
+    type: 'warning',
+    title: outcome.kind === 'partial'
+      ? t('instructor.roster_upload_partial', {
+        accepted: outcome.accepted, refused: outcome.refusals.length,
+      })
+      : t('instructor.roster_upload_none', { refused: outcome.refusals.length }),
+    detail: outcome.kind === 'partial'
+      ? t('instructor.roster_upload_accepted_detail', {
+        created: outcome.created, existing: outcome.existing,
+      })
+      : null,
+  };
+};
+
+/**
  * Tell the instructor, and hand the outcome back so the caller can decide
  * what to keep on screen (the pasted text survives anything but a clean
  * upload, so the refused rows can be corrected and sent again).
  *
  * A clean upload is a toast. Anything refused is a modal that stays until it
  * is dismissed: a list of rows is not something to read in three seconds.
+ *
+ * The toast alone was found wanting on the 2026-09-22 walkthrough (W-CE-05):
+ * three seconds after a 27-row upload there was nothing on the screen to say
+ * what had happened. The caller therefore also keeps the outcome on the
+ * roster panel (`rosterUploadSummary`) until it is dismissed.
  */
 export const announceRosterUpload = (outcome, { t, message, Modal, fileName }) => {
+  const { title } = rosterUploadSummary(outcome, t);
   if (outcome.kind === 'uploaded') {
-    message.success(outcome.existing > 0
-      ? t('instructor.roster_upload_added_existing', {
-        created: outcome.created, existing: outcome.existing,
-      })
-      : t('instructor.roster_upload_added', { created: outcome.created }));
+    message.success(title);
     return outcome;
   }
   if (outcome.kind === 'unconfirmed') {
-    message.warning(t('instructor.roster_upload_unconfirmed'));
+    message.warning(title);
     return outcome;
   }
-
-  const title = outcome.kind === 'partial'
-    ? t('instructor.roster_upload_partial', {
-      accepted: outcome.accepted, refused: outcome.refusals.length,
-    })
-    : t('instructor.roster_upload_none', { refused: outcome.refusals.length });
 
   Modal.warning({
     title,

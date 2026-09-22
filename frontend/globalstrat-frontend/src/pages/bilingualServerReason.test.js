@@ -73,8 +73,11 @@ describe('the dashboard’s server reasons', () => {
 
   test('no toast reads the raw error field past the shared reading', () => {
     expect(source).not.toMatch(/err\.response\?\.data\?\.error/);
+    // 19 until 2026-09-22: the lifecycle card's advance-round refusal moved
+    // to `components/instructor/AdvanceRoundControl.js` (W-CE-24), where its
+    // own test pins the same reading.
     expect((source.match(/serverReason\(err\) \|\| t\('/g) || []).length)
-      .toBeGreaterThanOrEqual(19);
+      .toBeGreaterThanOrEqual(18);
   });
 
   test('catch blocks on converted routes no longer discard the reason', () => {

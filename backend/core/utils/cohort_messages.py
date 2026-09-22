@@ -115,6 +115,15 @@ MESSAGES = {
         'zh-CN': ('{game} 是竞赛场次，因此无法删除。'
                   '竞赛结束后，其成绩和记录仍须保留。'),
     },
+    # Resetting a game to setup (W-CE-26). The route cannot undo a processed
+    # round, and a heat's rounds are the record of the event.
+    'competition_game_not_resettable': {
+        'en': ('{game} is a competition game, so it cannot be reset to '
+               'setup. Its rounds, results and records have to stay as they '
+               'were played.'),
+        'zh-CN': ('{game} 是竞赛场次，因此无法重置为初始设置。'
+                  '其回合、成绩和记录须保持原样。'),
+    },
     'game_has_record': {
         'en': ('{game} already has a record of instructor actions or team '
                'decisions. That record is permanent, so the game cannot be '

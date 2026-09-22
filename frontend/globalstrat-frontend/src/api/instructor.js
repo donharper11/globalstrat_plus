@@ -8,8 +8,11 @@ export const getInstructorDashboard = (gameId) =>
 export const getOperatorEvents = (gameId, params = {}) =>
   client.get(`/games/${gameId}/instructor/operator-events/`, { params });
 
-export const advanceRound = (gameId, force = false) =>
-  client.post(`/games/${gameId}/instructor/advance-round/`, { force });
+// With teams pending the console sends `force: true`, which the server treats
+// as an override: it is refused without a written reason (`reason_required`).
+// The reason travelled nowhere until 2026-09-22 (W-CE-24).
+export const advanceRound = (gameId, force = false, reason = '') =>
+  client.post(`/games/${gameId}/instructor/advance-round/`, { force, reason });
 
 export const injectEvent = (gameId, eventTemplateId, targetMarketId) =>
   client.post(`/games/${gameId}/instructor/inject-event/`, {
@@ -105,6 +108,10 @@ export const getTeamGrades = (teamId) =>
   client.get('/team-grades/', { params: teamId ? { team_id: teamId } : {} });
 export const overrideGrade = (instanceId, teamId, categoryId, score, comments) =>
   client.post('/grades/override/', { instance_id: instanceId, team_id: teamId, category_id: categoryId, override_score: score, comments });
+// Reverts a category to its computed score. axios sends a DELETE body only
+// through `data`.
+export const clearGradeOverride = (instanceId, teamId, categoryId) =>
+  client.delete('/grades/override/', { data: { instance_id: instanceId, team_id: teamId, category_id: categoryId } });
 export const exportTeamGradesCsv = (instanceId) =>
   client.get('/grades/export/teams/', { params: { instance_id: instanceId }, responseType: 'blob' });
 export const exportStudentGradesCsv = (instanceId) =>

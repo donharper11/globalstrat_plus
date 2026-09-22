@@ -12,7 +12,7 @@ import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
 import OperatorEventsPanel from '../components/instructor/OperatorEventsPanel';
 import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
-  getInstructorDashboard, advanceRound, injectEvent,
+  getInstructorDashboard, injectEvent,
   extendDeadline, getResearchQueries,
   getInstructorAlerts, acknowledgeAlert,
   getEventTemplates, getTeamBriefings, getTeamDecisions,
@@ -36,8 +36,12 @@ import {
   assignmentOutcome, announceAssignment, UnderMinimumNotice,
 } from './assignmentOutcome';
 import { bilingualServerReason, serverReason } from './bilingualServerReason';
-import { rosterUploadOutcome, announceRosterUpload } from './rosterUploadOutcome';
+import {
+  rosterUploadOutcome, announceRosterUpload, rosterUploadSummary,
+} from './rosterUploadOutcome';
 import ReasonedAction from '../components/instructor/ReasonedAction';
+import AdvanceRoundControl from '../components/instructor/AdvanceRoundControl';
+import GradeOverrideControl from '../components/instructor/GradeOverrideControl';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -67,7 +71,12 @@ const InstructorDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [advanceModalOpen, setAdvanceModalOpen] = useState(false);
+  // Which console tab is open. Held here, not by <Tabs>, so that a reload of
+  // the dashboard (after activate, a deadline, extend, process...) cannot
+  // forget it: until 2026-09-22 (W-CE-01) the Tabs were uncontrolled and were
+  // unmounted for the length of every reload, so every one of those actions
+  // dropped the instructor back on Courses & Sections.
+  const [activeTab, setActiveTab] = useState('courses');
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [extendModalOpen, setExtendModalOpen] = useState(false);
   const [extendHours, setExtendHours] = useState(24);
@@ -104,6 +113,10 @@ const InstructorDashboard = () => {
   const [newSectionName, setNewSectionName] = useState('');
   const [newSectionCode, setNewSectionCode] = useState('');
   const [csvText, setCsvText] = useState('');
+  // The last CSV upload's outcome, kept on the roster panel until dismissed
+  // (W-CE-05): the toast is gone in three seconds and the table growing
+  // silently is not an announcement.
+  const [lastRosterUpload, setLastRosterUpload] = useState(null); // { outcome, fileName }
   // Grading
   const [rubrics, setRubrics] = useState([]);
   const [gradingCategories, setGradingCategories] = useState([]);
@@ -291,7 +304,10 @@ const InstructorDashboard = () => {
     </div>
   );
 
-  if (loading && gameId) return <>{instructorHeader}<LoadingSpinner /></>;
+  // The full-page spinner is for the FIRST load of a game only. A reload
+  // keeps the console on screen, on its tab; the cards that change refresh
+  // in place (W-CE-01).
+  if (loading && gameId && !dashboard) return <>{instructorHeader}<LoadingSpinner /></>;
 
   // Extract game data (may be null if no game selected)
   const hasGame = !!dashboard;
@@ -313,19 +329,6 @@ const InstructorDashboard = () => {
   const gameStatusColor = displayGameStatus === 'active' ? '#52c41a'
     : displayGameStatus === 'paused' ? '#faad14'
       : displayGameStatus === 'archived' ? '#8c8c8c' : '#1890ff';
-
-  const handleAdvance = async () => {
-    setActionLoading(true);
-    try {
-      const force = rs.teams_pending > 0;
-      await advanceRound(gameId, force);
-      setAdvanceModalOpen(false);
-      loadData();
-    } catch (err) {
-      Modal.error({ title: t('instructor.error'), content: serverReason(err) || t('instructor.failed_advance_round') });
-    }
-    setActionLoading(false);
-  };
 
   const handleExtend = async () => {
     setActionLoading(true);
@@ -477,7 +480,12 @@ const InstructorDashboard = () => {
             )}
             {displayGameStatus === 'active' && (
               <>
-                <Button type="primary" onClick={() => setAdvanceModalOpen(true)}>{t('instructor.advance_round')}</Button>
+                {/* With teams pending this is an override and needs a
+                    written reason (W-CE-24); the control asks for one. */}
+                <AdvanceRoundControl t={t} gameId={gameId}
+                  gameName={dashboard?.game_name || createGameName || t('instructor.game')}
+                  teamsPending={rs.teams_pending || 0}
+                  onAdvanced={() => { loadData(); loadRoundScheduleData(gameId); }} />
                 <Button onClick={() => setExtendModalOpen(true)}>{t('instructor.extend_deadline')}</Button>
                 <Popconfirm title={t('instructor.pause_confirm')} onConfirm={async () => {
                   try {
@@ -1085,6 +1093,26 @@ const InstructorDashboard = () => {
   const selectedGradingSection = gradingSections.find(s => s.section_id === gradingSection);
   const gradingInstanceId = selectedGradingSection?.simulation_status?.instance_id || null;
 
+  // Calculate (or recalculate, after an override: the calculation keeps
+  // overrides and re-stretches the final grade across every team).
+  const runCalculateGrades = async ({ announce = true } = {}) => {
+    try {
+      const res = await calculateGrades(gradingInstanceId, gradingCourse);
+      setGradeResults(res.data || []);
+      if (announce) message.success(t('instructor.grades_calculated'));
+    } catch (err) {
+      // R40: a competition heat refuses a rubric that uses a
+      // model-scored component. Say so, rather than "failed".
+      const refused = err?.response?.data?.code
+        === 'model_derived_component_in_competition';
+      if (refused) {
+        message.error(t('instructor.grades_refused_model_component'), 10);
+      } else {
+        message.error(t('instructor.calculate_grades_failed'));
+      }
+    }
+  };
+
   const gradingTab = (
     <div>
       {/* Course / Section selector */}
@@ -1159,23 +1187,7 @@ const InstructorDashboard = () => {
               <Button
                 style={{ marginTop: 8 }}
                 disabled={!gradingInstanceId}
-                onClick={async () => {
-                  try {
-                    const res = await calculateGrades(gradingInstanceId, gradingCourse);
-                    setGradeResults(res.data || []);
-                    message.success(t('instructor.grades_calculated'));
-                  } catch (err) {
-                    // R40: a competition heat refuses a rubric that uses a
-                    // model-scored component. Say so, rather than "failed".
-                    const refused = err?.response?.data?.code
-                      === 'model_derived_component_in_competition';
-                    if (refused) {
-                      message.error(t('instructor.grades_refused_model_component'), 10);
-                    } else {
-                      message.error(t('instructor.calculate_grades_failed'));
-                    }
-                  }
-                }}
+                onClick={() => runCalculateGrades()}
               >
                 {t('instructor.calculate_grades')}
               </Button>
@@ -1199,7 +1211,21 @@ const InstructorDashboard = () => {
                 width: 140,
                 render: (_, record) => {
                   const c = record.categories?.find(x => x.category_name === cat.category_name);
-                  return c ? c.final_score.toFixed(1) : '—';
+                  if (!c) return '—';
+                  const overridden = c.override_score !== null && c.override_score !== undefined;
+                  return (
+                    <span>
+                      {c.final_score.toFixed(1)}
+                      {overridden && (
+                        <Tooltip title={[
+                          t('instructor.grade_computed_was', { score: Number(c.computed_score).toFixed(1) }),
+                          c.comments,
+                        ].filter(Boolean).join(' — ')}>
+                          <Tag color="gold" style={{ marginLeft: 6 }}>{t('instructor.grade_overridden')}</Tag>
+                        </Tooltip>
+                      )}
+                    </span>
+                  );
                 },
               })),
               {
@@ -1213,6 +1239,18 @@ const InstructorDashboard = () => {
                 dataIndex: 'overall',
                 width: 100,
                 render: v => <Text strong>{v?.toFixed(1)}</Text>,
+              },
+              {
+                // W-CE-12: the override the API has always taken.
+                title: t('instructor.grade_override'),
+                key: 'override',
+                width: 110,
+                render: (_, record) => (
+                  <GradeOverrideControl t={t}
+                    instanceId={gradingInstanceId} teamId={record.team_id}
+                    teamName={record.team_name} categories={record.categories || []}
+                    onChanged={() => runCalculateGrades({ announce: false })} />
+                ),
               },
             ]}
           />
@@ -1430,7 +1468,7 @@ const InstructorDashboard = () => {
 
   const loadRoster = async (sectionId) => {
     // The short-team notice belongs to the section it was reported for.
-    if (sectionId !== selectedSection) setUnderMinimum([]);
+    if (sectionId !== selectedSection) { setUnderMinimum([]); setLastRosterUpload(null); }
     setSelectedSection(sectionId);
     try {
       const [rosterRes, teamRes, gamesRes] = await Promise.all([
@@ -1795,9 +1833,10 @@ const InstructorDashboard = () => {
                           if (!file) return;
                           const text = await file.text();
                           try {
-                            announceRosterUpload(
+                            const uploaded = announceRosterUpload(
                               rosterUploadOutcome((await uploadRoster(selectedSection, text)).data),
                               { t, message, Modal, fileName: file.name });
+                            setLastRosterUpload({ outcome: uploaded, fileName: file.name });
                             loadRoster(selectedSection);
                           } catch (err) { message.error(serverReason(err) || t('instructor.msg_upload_failed')); }
                           e.target.value = '';
@@ -1814,6 +1853,7 @@ const InstructorDashboard = () => {
                           const uploaded = announceRosterUpload(
                             rosterUploadOutcome((await uploadRoster(selectedSection, csvText)).data),
                             { t, message, Modal });
+                          setLastRosterUpload({ outcome: uploaded, fileName: null });
                           // The pasted text survives a refusal, so the refused
                           // rows can be corrected and sent again.
                           if (uploaded.kind === 'uploaded') setCsvText('');
@@ -1825,6 +1865,23 @@ const InstructorDashboard = () => {
                 ),
               }]}
             />
+
+            {/* What the last upload did, until the instructor dismisses it. */}
+            {lastRosterUpload && (() => {
+              const summary = rosterUploadSummary(lastRosterUpload.outcome, t);
+              return (
+                <Alert data-testid="roster-upload-outcome" showIcon closable
+                  type={summary.type} style={{ marginBottom: 16 }}
+                  message={summary.title}
+                  description={[
+                    lastRosterUpload.fileName
+                      ? t('instructor.roster_upload_file', { file: lastRosterUpload.fileName })
+                      : null,
+                    summary.detail,
+                  ].filter(Boolean).join(' ') || null}
+                  onClose={() => setLastRosterUpload(null)} />
+              );
+            })()}
 
             {/* Student table with edit/delete */}
             {roster.length === 0 ? (
@@ -2125,22 +2182,18 @@ const InstructorDashboard = () => {
   return (
     <div>
       {instructorHeader}
-      <Tabs className="ds-colored-tabs" items={tabItems} defaultActiveKey="courses" onTabClick={(key) => {
-        if (key === 'grading') loadGrading();
-        if (key === 'control' && gameId && roundSchedule === null) loadRoundScheduleData(gameId);
-      }} />
+      <Tabs className="ds-colored-tabs" items={tabItems}
+        // A tab that has gone (the game-specific ones, after a reset or a
+        // delete) falls back to Courses & Sections rather than to nothing.
+        activeKey={tabItems.some((item) => item.key === activeTab) ? activeTab : 'courses'}
+        onChange={setActiveTab}
+        onTabClick={(key) => {
+          if (key === 'grading') loadGrading();
+          if (key === 'control' && gameId && roundSchedule === null) loadRoundScheduleData(gameId);
+        }} />
 
       {/* Game-specific modals (only render when game is active) */}
       {hasGame && <>
-      {/* Advance Round Modal */}
-      <Modal title={t('instructor.advance_round')} open={advanceModalOpen} onOk={handleAdvance} onCancel={() => setAdvanceModalOpen(false)} confirmLoading={actionLoading}>
-        <Text>
-          {rs.teams_pending > 0
-            ? t('instructor.advance_pending', { count: rs.teams_pending })
-            : t('instructor.advance_ready')}
-        </Text>
-      </Modal>
-
       {/* Extend Deadline Modal */}
       {/* Named, like every other lifecycle confirmation: this control acts on
           a round, and acting on the wrong heat's deadline is unrecoverable.

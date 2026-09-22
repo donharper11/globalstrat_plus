@@ -269,6 +269,18 @@ MESSAGES = {
         'en': 'Refresh — another operator archived it.',
         'zh-CN': '请刷新——另一位操作者已将其归档。',
     },
+    # Reset to Setup once a round has been processed (W-CE-26): the route
+    # returns open rounds to pending and the game to round 0, and nothing
+    # more, so a processed round would stay processed under a game that
+    # believes it has not started.
+    'reset_round_processed': {
+        'en': 'Round {round} of "{game}" has already been processed, so the game cannot be reset to setup. The results and the record of that round are permanent.',
+        'zh-CN': '游戏“{game}”的第 {round} 回合已结算，因此无法重置为初始设置。该回合的结果和记录为永久保存。',
+    },
+    'reset_round_processed_guidance': {
+        'en': 'Archive the game instead, then create a new game for this section.',
+        'zh-CN': '请改为归档该游戏，然后为该班级创建新的游戏。',
+    },
 
     # -- game creation and the read-only console panels -----------------------
     'scenario_required': {
@@ -649,6 +661,8 @@ COHORT_BILINGUAL_CODES = (
     # Cohort ownership and game deletion (crv2-08-operator-route-ownership).
     'cohort_belongs_to_another_instructor', 'roster_add_failed',
     'competition_game_not_deletable', 'game_has_record',
+    # Reset to Setup on a competition heat (W-CE-26).
+    'competition_game_not_resettable',
 )
 
 # A refusal composed from several catalogue sentences rather than rendered
