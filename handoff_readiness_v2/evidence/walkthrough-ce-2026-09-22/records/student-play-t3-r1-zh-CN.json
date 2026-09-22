@@ -1,0 +1,5381 @@
+{
+ "driver": "student-play-t3-r1",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:33329",
+ "started": "2026-09-22T17:09:59",
+ "steps": [
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "finance: budget allocation saved as entered",
+   "outcome": "pass",
+   "detail": "{\"id\": 23, \"rd_budget\": \"2500000.00\", \"marketing_budget\": \"2500000.00\", \"strategy_budget\": \"1500000.00\", \"warnings\": []}"
+  },
+  {
+   "name": "finance: loan and dividend saved as entered",
+   "outcome": "pass",
+   "detail": "{\"id\": 13, \"new_debt\": \"5000000.00\", \"debt_repayment\": \"0.00\", \"new_equity\": \"0.00\", \"dividend_per_share\": \"0.5000\"}"
+  },
+  {
+   "name": "finance: another tax structure offered",
+   "outcome": "fail",
+   "detail": "no selectable structure card"
+  },
+  {
+   "name": "rd: feature upgrade saved",
+   "outcome": "fail",
+   "detail": "[]"
+  },
+  {
+   "name": "rd: platform creation blocked (reason shown in modal)",
+   "outcome": "observed",
+   "detail": " 1 项符合功能配置最多设置5个功能等级。设为0可排除。处理器性能0147$2.6M电池续航0120—耐用性0140—应用生态0100—产品设计0120—可持续性080—开发方式自主研发 — 基础成本，1 回合许可引进 — 2.5倍功能成本，即时完成合作开发 — 1.6倍功能成本，1 回合代次基础成本: $5.0M处理器性能 → 等级 7: $2.6M合计: $7.6M就绪: 1 回合研发预算: $4.1M超出预算: $3.5M必填: Cost exceeds R&D budget取 消创建平台"
+  },
+  {
+   "name": "products: new product saved from the modal",
+   "outcome": "pass",
+   "detail": "[{\"id\": 3, \"team_platform\": 3, \"product_name\": \"Nova Nova R1\", \"positioning\": \"mainstream\", \"target_market_ids\": [1]}] modal='创建新产品产品名称母平台选择平台定位经济型主流高端超高端目标市场 选择市场取 消创 建'"
+  },
+  {
+   "name": "marketing: in-band price, volume, promotion saved",
+   "outcome": "pass",
+   "detail": "{\"id\": 11, \"team_product\": 5, \"market\": 1, \"retail_price\": \"400.00\", \"promotion_budget\": \"200000.00\", \"campaign_focus_feature_ids\": [1], \"channel_digital_pct\": \"0.3400\", \"channel_traditional_pct\": \"0.3300\", \"channel_trade_pct\": \"0.3300\", \"distribution_strategy\": \"mass_retail\", \"distribution_investme"
+  },
+  {
+   "name": "market strategy: market entry saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 3, \"market\": 2, \"entry_mode\": 1, \"initial_investment\": \"500000.00\", \"action\": \"enter\", \"integration_strategy\": \"FULL\"}]"
+  },
+  {
+   "name": "market strategy: plant build saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 3, \"market\": 1, \"action\": \"build\", \"capacity_units\": 0, \"contract_mfg_volume\": 0}]"
+  },
+  {
+   "name": "market strategy: partnership saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 3, \"market\": 1, \"strategy_option\": 1, \"annual_investment\": \"2000000.00\", \"action\": \"establish\"}]"
+  },
+  {
+   "name": "market strategy: compliance investment control reachable",
+   "outcome": "observed",
+   "detail": "no foreign market is entered yet, so the control is not offered this round"
+  },
+  {
+   "name": "corporate: talent headcount and training saved",
+   "outcome": "pass",
+   "detail": "{\"rd_headcount\": 60, \"rd_salary_level\": 3, \"rd_training_budget\": 100000, \"commercial_headcount\": 30, \"commercial_salary_level\": 3, \"commercial_training_budget\": 0, \"operations_headcount\": 40, \"operati"
+  },
+  {
+   "name": "corporate: talent allocation saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 5, \"talent_pool\": \"rd\", \"hq_count\": 55, \"market_allocation\": {\"NA\": 5}}]"
+  },
+  {
+   "name": "corporate: acquisition targets offered",
+   "outcome": "fail",
+   "detail": ""
+  },
+  {
+   "name": "corporate: ESG investment and a commitment saved",
+   "outcome": "pass",
+   "detail": "{\"id\": 5, \"environmental_investment\": \"500000.00\", \"social_investment\": \"250000.00\", \"governance_commitments\": [\"board_diversity\"]}"
+  },
+  {
+   "name": "corporate: org structure switch accepted",
+   "outcome": "pass",
+   "detail": "{\"current_structure\": {\"id\": 2, \"code\": \"regional\", \"name\": \"Regional\", \"adopted_round\": 1}, \"transitioning\": true, \"transition_to\": null, \"pending_structure\": null}"
+  },
+  {
+   "name": "communications: an assignment is offered",
+   "outcome": "observed",
+   "detail": "no assignment this round"
+  },
+  {
+   "name": "research: report bought and delivered",
+   "outcome": "pass",
+   "detail": "None"
+  },
+  {
+   "name": "research: analyst answers or refuses visibly (no model behind this stack)",
+   "outcome": "pass",
+   "detail": "The research analyst is not part of this game, so your question was not asked and nothing was charged."
+  },
+  {
+   "name": "products: retire at end of round saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 3, \"team_product\": 6, \"timing\": \"end_of_round\"}]"
+  },
+  {
+   "name": "summary: decisions locked from the screen",
+   "outcome": "pass",
+   "detail": "status=locked modal_after='确认提交确定锁定第1回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策'"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:09:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:09:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:09:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:09:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:17"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:17"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "17:10:44"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:10:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:26"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:26"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:11:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:12:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:12:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:12:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:12:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "17:12:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:13:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:13:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:13:11"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "17:13:11"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/onboarding/?game_id=1&team_id=3",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/0/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/0/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/0/",
+   "status": 200,
+   "at": "17:10:02"
+  },
+  {
+   "method": "POST",
+   "url": "/api/onboarding/complete/",
+   "status": 200,
+   "at": "17:10:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:22"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/budget/",
+   "status": 200,
+   "at": "17:10:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:23"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/budget/",
+   "status": 200,
+   "at": "17:10:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:24"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/budget/",
+   "status": 200,
+   "at": "17:10:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:29"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/financing/",
+   "status": 200,
+   "at": "17:10:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:33"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/financing/",
+   "status": 200,
+   "at": "17:10:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/rd/",
+   "status": 200,
+   "at": "17:10:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:44"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/rd/",
+   "status": 400,
+   "at": "17:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:10:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:10:56"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/products/",
+   "status": 200,
+   "at": "17:11:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "17:11:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:11:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "17:11:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "17:11:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "17:11:11"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/marketing/",
+   "status": 200,
+   "at": "17:11:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:18"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/marketing/",
+   "status": 200,
+   "at": "17:11:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/compliance/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/alliances/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/markets/NA/localization/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/compliance/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/alliances/",
+   "status": 200,
+   "at": "17:11:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:11:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:31"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/market-entry/",
+   "status": 200,
+   "at": "17:11:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:36"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/plants/",
+   "status": 200,
+   "at": "17:11:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:41"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/partnerships/",
+   "status": 200,
+   "at": "17:11:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:11:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "17:11:51"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/talent/",
+   "status": 200,
+   "at": "17:11:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:11:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "17:12:01"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/talent/",
+   "status": 200,
+   "at": "17:12:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:12:06"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/esg/",
+   "status": 200,
+   "at": "17:12:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:12:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:12:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:12:21"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "17:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "17:12:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/communications/history/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/communications/assignments/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/markets/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=0",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:12:32"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/reports/segments/purchase/",
+   "status": 201,
+   "at": "17:12:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:12:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=0",
+   "status": 200,
+   "at": "17:12:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:12:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/queries/",
+   "status": 200,
+   "at": "17:12:44"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/query/",
+   "status": 400,
+   "at": "17:12:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/queries/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:05"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/product-retires/",
+   "status": 200,
+   "at": "17:13:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "17:13:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:13:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:13:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "17:13:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:17"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:18"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/1/lock/",
+   "status": 200,
+   "at": "17:13:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/summary/",
+   "status": 200,
+   "at": "17:13:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/1/",
+   "status": 200,
+   "at": "17:13:23"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/1/rd/",
+   "status": 400,
+   "at": "17:10:44",
+   "body": "{\"rd_investments\":[\"功能级研发投入现已不可用。请开发新的平台，并将产品迁移到该平台以改进产品。\"]}",
+   "request": "{\"rd_investments\":[{\"team_platform\":3,\"feature\":4,\"method\":\"in_house\",\"amount\":260000,\"target_level\":3,\"calculated_cost\":260000}]}"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/query/",
+   "status": 400,
+   "at": "17:12:48",
+   "body": "{\"error\":\"The research analyst is not part of this game, so your question was not asked and nothing was charged.\"}",
+   "request": "{\"query\":\"Which segment in our home market is growing fastest and what price do they expect?\"}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "p3-r1-10-finance-budget",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r1-10-finance-budget-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/onboarding/?game_id=1&team_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/0/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/0/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/0/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/onboarding/complete/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-11-finance-budget-saved",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r1-11-finance-budget-saved-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Budget saved",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-13-finance-capital",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r1-13-finance-capital-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Financing saved",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-14-finance-tax",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r1-14-finance-tax-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Financing saved",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r1-20-rd",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r1-20-rd-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/rd/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-21a-rd-upgrade-clicked",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r1-21a-rd-upgrade-clicked-zh-CN.jpg",
+   "note": "what the student sees after Invest next level",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/rd/",
+     "s": 400
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-21-rd-after-upgrade",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r1-21-rd-after-upgrade-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-22-rd-create-platform-modal",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r1-22-rd-create-platform-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    },
+    {
+     "english": "Cost exceeds",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r1-23-rd-after-platform",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r1-23-rd-after-platform-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r1-30-products",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r1-30-products-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-31-products-create-modal",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r1-31-products-create-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 3
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-32-products-after-create",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r1-32-products-after-create-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-40-marketing",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r1-40-marketing-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-41-marketing-in-band",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r1-41-marketing-in-band-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-44-marketing-final",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r1-44-marketing-final-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-50-market-strategy",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r1-50-market-strategy-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/markets/NA/localization/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/alliances/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-51-market-entry",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r1-51-market-entry-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/market-entry/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-52-market-home",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r1-52-market-home-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/plants/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-60-corporate-talent",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-60-corporate-talent-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-61-corporate-allocation",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-61-corporate-allocation-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-62-corporate-ma",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-62-corporate-ma-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Available from Round",
+     "n": 5
+    },
+    {
+     "english": "presence in",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r1-63-corporate-esg",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-63-corporate-esg-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/esg/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-64-corporate-org",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-64-corporate-org-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r1-65-corporate-org-modal",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-65-corporate-org-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-66-corporate-org-after",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r1-66-corporate-org-after-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-70-communications",
+   "url": "/games/1/teams/3/decisions/communications",
+   "screenshot": "p3-r1-70-communications-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/communications/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/communications/assignments/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-80-research-segments",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r1-80-research-segments-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=0",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-81-research-bought",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r1-81-research-bought-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Weak\tMeridian Tech",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Slow growth",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Moderate growth",
+     "n": 1
+    },
+    {
+     "english": "Very Weak\tPrism Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/research/reports/segments/purchase/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=0",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-82-research-analyst",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r1-82-research-analyst-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/queries/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-83-research-analyst-asked",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r1-83-research-analyst-asked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "research analyst is not part of this game",
+     "n": 1
+    },
+    {
+     "english": "your question was not asked and nothing was charged",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/research/query/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/queries/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-33-products-edit-modal",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r1-33-products-edit-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 3
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "North America",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-34-products-after-retire",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r1-34-products-after-retire-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "North America",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/1/product-retires/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-95-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r1-95-summary-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-96-lock-confirm",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r1-96-lock-confirm-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-97-locked",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r1-97-locked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/1/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/1/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "p3-r1-10-finance-budget",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-11-finance-budget-saved",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Budget saved",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-13-finance-capital",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Financing saved",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-14-finance-tax",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Financing saved",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-20-rd",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-21a-rd-upgrade-clicked",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-21-rd-after-upgrade",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-22-rd-create-platform-modal",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    },
+    {
+     "english": "Cost exceeds",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-23-rd-after-platform",
+   "leaks": [
+    {
+     "english": "Invest next level",
+     "n": 5
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "previous round net profit",
+     "n": 1
+    },
+    {
+     "english": "base allocation",
+     "n": 1
+    },
+    {
+     "english": "Choose one",
+     "n": 1
+    },
+    {
+     "english": "action for this round\nYou have",
+     "n": 1
+    },
+    {
+     "english": "budget remaining and",
+     "n": 1
+    },
+    {
+     "english": "investment slots open",
+     "n": 1
+    },
+    {
+     "english": "Upgrade an existing feature when",
+     "n": 1
+    },
+    {
+     "english": "new platform is over budget",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit Base Platform active",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-30-products",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-31-products-create-modal",
+   "leaks": [
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 3
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-32-products-after-create",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "North America\n\n\t\nIronClad Field",
+     "n": 1
+    },
+    {
+     "english": "North America",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-40-marketing",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-41-marketing-in-band",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-44-marketing-final",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-50-market-strategy",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-51-market-entry",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-52-market-home",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-60-corporate-talent",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-61-corporate-allocation",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-62-corporate-ma",
+   "leaks": [
+    {
+     "english": "Available from Round",
+     "n": 5
+    },
+    {
+     "english": "presence in",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-63-corporate-esg",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-64-corporate-org",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-65-corporate-org-modal",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-66-corporate-org-after",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-70-communications",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-80-research-segments",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-81-research-bought",
+   "leaks": [
+    {
+     "english": "Weak\tMeridian Tech",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Slow growth",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Moderate growth",
+     "n": 1
+    },
+    {
+     "english": "Very Weak\tPrism Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-82-research-analyst",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-83-research-analyst-asked",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "research analyst is not part of this game",
+     "n": 1
+    },
+    {
+     "english": "your question was not asked and nothing was charged",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-33-products-edit-modal",
+   "leaks": [
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 3
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "North America",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-34-products-after-retire",
+   "leaks": [
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit Base Platform",
+     "n": 2
+    },
+    {
+     "english": "North America",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-95-summary",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-96-lock-confirm",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r1-97-locked",
+   "leaks": [
+    {
+     "english": "This requirement has draft work saved",
+     "n": 4
+    },
+    {
+     "english": "competitor has launched an aggressively priced Gen",
+     "n": 2
+    },
+    {
+     "english": "product in",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Complete\nSourcing\nOpen Sourcing to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Sourcing\nNot started\nLogistics\nOpen Logistics to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Logistics\nNot started\nTrade Finance\nOpen Trade Finance to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Trade Finance\nNot started\nInventory\nOpen Inventory to complete this requirement",
+     "n": 1
+    },
+    {
+     "english": "Inventory\nNot started",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "student": "s2610",
+  "team": "Nova Circuit",
+  "profile": "plain",
+  "finance_context": {
+   "operating_budget": null,
+   "operating_budget_available": null,
+   "cash_on_hand": null,
+   "total_debt": null,
+   "budget_source": null
+  },
+  "finance_budget_inputs": 3,
+  "budget_saved": {
+   "id": 23,
+   "rd_budget": "2500000.00",
+   "marketing_budget": "2500000.00",
+   "strategy_budget": "1500000.00",
+   "warnings": []
+  },
+  "capital_inputs": 4,
+  "financing_saved": {
+   "id": 13,
+   "new_debt": "5000000.00",
+   "debt_repayment": "0.00",
+   "new_equity": "0.00",
+   "dividend_per_share": "0.5000"
+  },
+  "tax_cards": 3,
+  "rd_upgrade_buttons": 5,
+  "rd_toast": "研发投资未能保存。",
+  "rd_saved": [],
+  "platform_modal": "创建新研发平台平台名称技术基础第一代——标准电子产品基础: $5.0M第二代——智能互联平台基础: $15.0M 第 2 回合或之后 — 当前回合：1 至少 3 项功能达到 10 级或以上 — 3 项中已有 1 项符合功能配置最多设置5个功能等级。设为0可排除。处理器性能0147$2.6M电池续航0120—耐用性0140—应用生态0100—产品设计0120—可持续性080—开发方式自主研发 — 基础成本，1 回合许可引进 — 2.5倍功能成本，即时完成合作开发 — 1.6倍功能成本，1 回合代次基础成本: $5.0M处理器性能 → 等级 7: $2.6M合计: $7.6M就绪: 1 回合研发预算: $4.1M超出预算: $3.5M必填: Cost exceeds R&D budget取 消创建平台",
+  "platform_create_enabled": false,
+  "product_modal_after": "创建新产品产品名称母平台选择平台定位经济型主流高端超高端目标市场 选择市场取 消创 建",
+  "product_creates": [
+   {
+    "id": 3,
+    "team_platform": 3,
+    "product_name": "Nova Nova R1",
+    "positioning": "mainstream",
+    "target_market_ids": [
+     1
+    ]
+   }
+  ],
+  "price_bands": {
+   "5_1": {
+    "min": 280,
+    "max": 520,
+    "band_pct": 0.3,
+    "anchor": 400,
+    "anchor_source": "previous_round",
+    "anchor_round_number": 0
+   },
+   "6_1": {
+    "min": 175,
+    "max": 325,
+    "band_pct": 0.3,
+    "anchor": 250,
+    "anchor_source": "previous_round",
+    "anchor_round_number": 0
+   }
+  },
+  "product_markets": [
+   {
+    "product_id": 5,
+    "product_name": "IronClad X",
+    "positioning": "mainstream",
+    "platform_name": "Nova Circuit Base Platform",
+    "markets": [
+     {
+      "market_id": 1,
+      "market__name": "North America"
+     }
+    ],
+    "feature_levels": [
+     {
+      "feature_id": 1,
+      "feature__name": "Processing Power",
+      "current_level": 5
+     },
+     {
+      "feature_id": 2,
+      "feature__name": "Battery Life",
+      "current_level": 9
+     },
+     {
+      "feature_id": 3,
+      "feature__name": "Durability",
+      "current_level": 12
+     },
+     {
+      "feature_id": 4,
+      "feature__name": "App Ecosystem",
+      "current_level": 2
+     },
+     {
+      "feature_id": 6,
+      "feature__name": "Product Design",
+      "current_level": 2
+     }
+    ]
+   },
+   {
+    "product_id": 6,
+    "product_name": "IronClad Field",
+    "positioning": "budget",
+    "platform_name": "Nova Circuit Base Platform",
+    "markets": [
+     {
+      "market_id": 1,
+      "market__name": "North America"
+     }
+    ],
+    "feature_levels": [
+     {
+      "feature_id": 1,
+      "feature__name": "Processing Power",
+      "current_level": 5
+     },
+     {
+      "feature_id": 2,
+      "feature__name": "Battery Life",
+      "current_level": 9
+     },
+     {
+      "feature_id": 3,
+      "feature__name": "Durability",
+      "current_level": 12
+     },
+     {
+      "feature_id": 4,
+      "feature__name": "App Ecosystem",
+      "current_level": 2
+     },
+     {
+      "feature_id": 6,
+      "feature__name": "Product Design",
+      "current_level": 2
+     }
+    ]
+   }
+  ],
+  "inner_product_tabs": 2,
+  "marketing_row_in_band": {
+   "id": 11,
+   "team_product": 5,
+   "market": 1,
+   "retail_price": "400.00",
+   "promotion_budget": "200000.00",
+   "campaign_focus_feature_ids": [
+    1
+   ],
+   "channel_digital_pct": "0.3400",
+   "channel_traditional_pct": "0.3300",
+   "channel_trade_pct": "0.3300",
+   "distribution_strategy": "mass_retail",
+   "distribution_investment": "0.00",
+   "sales_team_count": 0,
+   "distribution_channel_detail": {},
+   "production_volume": 5000,
+   "production_source_market": 1,
+   "demand_estimate": 0,
+   "warnings": []
+  },
+  "market_tabs": [
+   "北美 已进入",
+   "东亚 未进入",
+   "西欧 未进入",
+   "非洲 未进入",
+   "南美 未进入"
+  ],
+  "entry_mode_cards": 5,
+  "market_entries": [
+   {
+    "id": 3,
+    "market": 2,
+    "entry_mode": 1,
+    "initial_investment": "500000.00",
+    "action": "enter",
+    "integration_strategy": "FULL"
+   }
+  ],
+  "talent_inputs": 6,
+  "talent_saved": {
+   "rd_headcount": 60,
+   "rd_salary_level": 3,
+   "rd_training_budget": 100000,
+   "commercial_headcount": 30,
+   "commercial_salary_level": 3,
+   "commercial_training_budget": 0,
+   "operations_headcount": 40,
+   "operations_salary_level": 3,
+   "operations_training_budget": 0
+  },
+  "allocation_inputs": 2,
+  "talent_allocations": [
+   {
+    "id": 5,
+    "talent_pool": "rd",
+    "hq_count": 55,
+    "market_allocation": {
+     "NA": 5
+    }
+   }
+  ],
+  "esg_saved": {
+   "id": 5,
+   "environmental_investment": "500000.00",
+   "social_investment": "250000.00",
+   "governance_commitments": [
+    "board_diversity"
+   ]
+  },
+  "org_modal": "切换到区域式?一次性成本： $1.5M干扰: 1 round转型后：总部人才: -10%本地人才: +20%创新: -10%协调: -15%速度: +5%这是一项重大组织变革。请仔细考虑时机。集权式切换到区域式 — $1.5M",
+  "org_after_modal": "切换到区域式?一次性成本： $1.5M干扰: 1 round转型后：总部人才: -10%本地人才: +20%创新: -10%协调: -15%速度: +5%这是一项重大组织变革。请仔细考虑时机。集权式切换到区域式 — $1.5M",
+  "org_context_after": {
+   "current_structure": {
+    "id": 2,
+    "code": "regional",
+    "name": "Regional",
+    "adopted_round": 1
+   },
+   "transitioning": true,
+   "transition_to": null,
+   "pending_structure": null
+  },
+  "buy_label": "购买报告 — $50,000",
+  "buy_toast": null,
+  "analyst_refusal": "The research analyst is not part of this game, so your question was not asked and nothing was charged.",
+  "analyst_toast": null,
+  "analyst_queries": "{\"round_number\": 1, \"queries\": [], \"query_count\": 0, \"analyst_query\": {\"price\": \"50000\", \"max_queries_per_round\": 5, \"queries_remaining\": 5}}",
+  "product_rows": 2,
+  "edit_modal": "IronClad Field预计单位成本$45功能处理器性能: 5.0电池续航: 9.0耐用性: 12.0应用生态: 2.0产品设计: 2.0产品名称基础平台Nova Circuit Base Platform定位经济型主流高端超高端活跃市场北美取 消立即退役回合结束退役保存更改",
+  "product_retires": [
+   {
+    "id": 3,
+    "team_product": 6,
+    "timing": "end_of_round"
+   }
+  ],
+  "summary": {
+   "can_lock": true,
+   "lock_blockers": []
+  },
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "configured",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "configured"
+  },
+  "lock_button_enabled": true,
+  "lock_modal": "确认提交确定锁定第1回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策",
+  "lock_modal_after": "确认提交确定锁定第1回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策",
+  "final_draft": {
+   "id": 3,
+   "team": 3,
+   "round": 2,
+   "status": "locked",
+   "locked_at": "2026-09-22T17:13:18.578743Z",
+   "locked_by": 11,
+   "team_notes": "Round 1: platform first, one new market, prices inside the band.",
+   "budget_allocation": {
+    "id": 23,
+    "rd_budget": "2500000.00",
+    "marketing_budget": "2500000.00",
+    "strategy_budget": "1500000.00",
+    "warnings": []
+   },
+   "financing": {
+    "id": 13,
+    "new_debt": "5000000.00",
+    "debt_repayment": "0.00",
+    "new_equity": "0.00",
+    "dividend_per_share": "0.5000"
+   },
+   "esg": {
+    "id": 5,
+    "environmental_investment": "500000.00",
+    "social_investment": "250000.00",
+    "governance_commitments": [
+     "board_diversity"
+    ]
+   },
+   "rd_investments": [],
+   "platform_developments": [],
+   "product_creates": [
+    {
+     "id": 3,
+     "team_platform": 3,
+     "product_name": "Nova Nova R1",
+     "positioning": "mainstream",
+     "target_market_ids": [
+      1
+     ]
+    }
+   ],
+   "product_retires": [
+    {
+     "id": 3,
+     "team_product": 6,
+     "timing": "end_of_round"
+    }
+   ],
+   "marketing_decisions": [
+    {
+     "id": 12,
+     "team_product": 5,
+     "market": 1,
+     "retail_price": "400.00",
+     "promotion_budget": "200000.00",
+     "campaign_focus_feature_ids": [
+      1
+     ],
+     "channel_digital_pct": "0.3400",
+     "channel_traditional_pct": "0.3300",
+     "channel_trade_pct": "0.3300",
+     "distribution_strategy": "mass_retail",
+     "distribution_investment": "0.00",
+     "sales_team_count": 0,
+     "distribution_channel_detail": {},
+     "production_volume": 5000,
+     "production_source_market": 1,
+     "demand_estimate": 0,
+     "warnings": []
+    },
+    {
+     "id": 13,
+     "team_product": 6,
+     "market": 1,
+     "retail_price": "250.00",
+     "promotion_budget": "100000.00",
+     "campaign_focus_feature_ids": [
+      1
+     ],
+     "channel_digital_pct": "0.3400",
+     "channel_traditional_pct": "0.3300",
+     "channel_trade_pct": "0.3300",
+     "distribution_strategy": "mass_retail",
+     "distribution_investment": "0.00",
+     "sales_team_count": 0,
+     "distribution_channel_detail": {},
+     "production_volume": 4000,
+     "production_source_market": 1,
+     "demand_estimate": 0,
+     "warnings": []
+    }
+   ],
+   "market_entries": [
+    {
+     "id": 3,
+     "market": 2,
+     "entry_mode": 1,
+     "initial_investment": "500000.00",
+     "action": "enter",
+     "integration_strategy": "FULL"
+    }
+   ],
+   "plant_decisions": [
+    {
+     "id": 3,
+     "market": 1,
+     "action": "build",
+     "capacity_units": 0,
+     "contract_mfg_volume": 0
+    }
+   ],
+   "partnerships": [
+    {
+     "id": 3,
+     "market": 1,
+     "strategy_option": 1,
+     "annual_investment": "2000000.00",
+     "action": "establish"
+    }
+   ],
+   "acquisitions": [],
+   "event_responses": [],
+   "research_allocations": [],
+   "talent_allocations": [
+    {
+     "id": 5,
+     "talent_pool": "rd",
+     "hq_count": 55,
+     "market_allocation": {
+      "NA": 5
+     }
+    }
+   ],
+   "compliance_investments": []
+  }
+ },
+ "summary": {
+  "passed": 16,
+  "failed": 3,
+  "observed": 3,
+  "screens": 35,
+  "screens_with_leaks": 35,
+  "console_errors": 26,
+  "api_calls": 208,
+  "api_refused": 2
+ }
+}
