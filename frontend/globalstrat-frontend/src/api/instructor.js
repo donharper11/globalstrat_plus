@@ -108,6 +108,10 @@ export const getTeamGrades = (teamId) =>
   client.get('/team-grades/', { params: teamId ? { team_id: teamId } : {} });
 export const overrideGrade = (instanceId, teamId, categoryId, score, comments) =>
   client.post('/grades/override/', { instance_id: instanceId, team_id: teamId, category_id: categoryId, override_score: score, comments });
+// Reverts a category to its computed score. axios sends a DELETE body only
+// through `data`.
+export const clearGradeOverride = (instanceId, teamId, categoryId) =>
+  client.delete('/grades/override/', { data: { instance_id: instanceId, team_id: teamId, category_id: categoryId } });
 export const exportTeamGradesCsv = (instanceId) =>
   client.get('/grades/export/teams/', { params: { instance_id: instanceId }, responseType: 'blob' });
 export const exportStudentGradesCsv = (instanceId) =>

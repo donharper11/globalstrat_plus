@@ -41,6 +41,7 @@ import {
 } from './rosterUploadOutcome';
 import ReasonedAction from '../components/instructor/ReasonedAction';
 import AdvanceRoundControl from '../components/instructor/AdvanceRoundControl';
+import GradeOverrideControl from '../components/instructor/GradeOverrideControl';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -1092,6 +1093,26 @@ const InstructorDashboard = () => {
   const selectedGradingSection = gradingSections.find(s => s.section_id === gradingSection);
   const gradingInstanceId = selectedGradingSection?.simulation_status?.instance_id || null;
 
+  // Calculate (or recalculate, after an override: the calculation keeps
+  // overrides and re-stretches the final grade across every team).
+  const runCalculateGrades = async ({ announce = true } = {}) => {
+    try {
+      const res = await calculateGrades(gradingInstanceId, gradingCourse);
+      setGradeResults(res.data || []);
+      if (announce) message.success(t('instructor.grades_calculated'));
+    } catch (err) {
+      // R40: a competition heat refuses a rubric that uses a
+      // model-scored component. Say so, rather than "failed".
+      const refused = err?.response?.data?.code
+        === 'model_derived_component_in_competition';
+      if (refused) {
+        message.error(t('instructor.grades_refused_model_component'), 10);
+      } else {
+        message.error(t('instructor.calculate_grades_failed'));
+      }
+    }
+  };
+
   const gradingTab = (
     <div>
       {/* Course / Section selector */}
@@ -1166,23 +1187,7 @@ const InstructorDashboard = () => {
               <Button
                 style={{ marginTop: 8 }}
                 disabled={!gradingInstanceId}
-                onClick={async () => {
-                  try {
-                    const res = await calculateGrades(gradingInstanceId, gradingCourse);
-                    setGradeResults(res.data || []);
-                    message.success(t('instructor.grades_calculated'));
-                  } catch (err) {
-                    // R40: a competition heat refuses a rubric that uses a
-                    // model-scored component. Say so, rather than "failed".
-                    const refused = err?.response?.data?.code
-                      === 'model_derived_component_in_competition';
-                    if (refused) {
-                      message.error(t('instructor.grades_refused_model_component'), 10);
-                    } else {
-                      message.error(t('instructor.calculate_grades_failed'));
-                    }
-                  }
-                }}
+                onClick={() => runCalculateGrades()}
               >
                 {t('instructor.calculate_grades')}
               </Button>
@@ -1206,7 +1211,21 @@ const InstructorDashboard = () => {
                 width: 140,
                 render: (_, record) => {
                   const c = record.categories?.find(x => x.category_name === cat.category_name);
-                  return c ? c.final_score.toFixed(1) : '—';
+                  if (!c) return '—';
+                  const overridden = c.override_score !== null && c.override_score !== undefined;
+                  return (
+                    <span>
+                      {c.final_score.toFixed(1)}
+                      {overridden && (
+                        <Tooltip title={[
+                          t('instructor.grade_computed_was', { score: Number(c.computed_score).toFixed(1) }),
+                          c.comments,
+                        ].filter(Boolean).join(' — ')}>
+                          <Tag color="gold" style={{ marginLeft: 6 }}>{t('instructor.grade_overridden')}</Tag>
+                        </Tooltip>
+                      )}
+                    </span>
+                  );
                 },
               })),
               {
@@ -1220,6 +1239,18 @@ const InstructorDashboard = () => {
                 dataIndex: 'overall',
                 width: 100,
                 render: v => <Text strong>{v?.toFixed(1)}</Text>,
+              },
+              {
+                // W-CE-12: the override the API has always taken.
+                title: t('instructor.grade_override'),
+                key: 'override',
+                width: 110,
+                render: (_, record) => (
+                  <GradeOverrideControl t={t}
+                    instanceId={gradingInstanceId} teamId={record.team_id}
+                    teamName={record.team_name} categories={record.categories || []}
+                    onChanged={() => runCalculateGrades({ announce: false })} />
+                ),
               },
             ]}
           />
