@@ -23,6 +23,13 @@ when the platform path has to be inside the replayed round; the per-round
 line printed below says how many development rows each round carried.
 `--require-platform-development` turns an all-empty run into a non-zero exit.
 
+Compliance investment (R47). Every profile with market entries seeds a
+`ComplianceInvestment` row per entered market, so a default run carries the
+lever and, from R47 on, the charge. `--no-compliance-investment` seeds none,
+for the control that shows a round with the lever unused hashes the same
+before and after the charge existed; the per-round line prints how many rows
+each round carried either way.
+
 ISOLATED USE ONLY. Point DB_* at a disposable stack; this script refuses the
 production database host. `initialize_game` needs a superuser to own the
 game; on a fresh disposable database the fixture creates one with an unusable
@@ -75,13 +82,14 @@ PROFILES = [
 ]
 
 
-def seed_round(game, round_obj, scenario):
+def seed_round(game, round_obj, scenario, compliance_investment=True):
     markets = list(MarketDefinition.objects.filter(scenario=scenario).order_by('code'))
     features = list(FeatureDefinition.objects.filter(scenario=scenario).order_by('code')[:4])
     entry_mode = EntryModeDefinition.objects.filter(scenario=scenario).order_by('code').first()
     suppliers = list(Supplier.objects.filter(scenario=scenario).order_by('supplier_id')[:3])
     teams = list(Team.objects.filter(game=game).order_by('id'))
     developments = 0
+    compliance_rows = 0
 
     for index, team in enumerate(teams):
         label, price_factor, volume, rd_share, promo_share, entries = \
@@ -127,9 +135,11 @@ def seed_round(game, round_obj, scenario):
             DecisionPlant.objects.update_or_create(
                 submission=submission, market=market, action='contract',
                 defaults=dict(capacity_units=0, contract_mfg_volume=volume // 2))
-            ComplianceInvestment.objects.update_or_create(
-                submission=submission, market=market,
-                defaults=dict(investment_amount=D('200000')))
+            if compliance_investment:
+                ComplianceInvestment.objects.update_or_create(
+                    submission=submission, market=market,
+                    defaults=dict(investment_amount=D('200000')))
+                compliance_rows += 1
 
         for pool in ('rd', 'commercial', 'operations'):
             TalentAllocation.objects.update_or_create(
@@ -148,7 +158,7 @@ def seed_round(game, round_obj, scenario):
                 critical_input_category='semiconductor',
                 defaults=dict(allocation_pct=share, volume_commitment_units=0,
                               payment_terms='net30'))
-    return developments
+    return developments, compliance_rows
 
 
 def seed_platform_development(submission, team, round_obj, scenario, method):
@@ -250,6 +260,10 @@ def main():
                         help='Exit non-zero if no resolved round carried a '
                              'platform development (needs --rounds 2 or more '
                              'in the shipped scenarios).')
+    parser.add_argument('--no-compliance-investment', action='store_true',
+                        help='Seed no ComplianceInvestment rows: the control '
+                             'for the R47 charge, a round with the lever '
+                             'unused.')
     args = parser.parse_args()
 
     from django.conf import settings
@@ -275,7 +289,9 @@ def main():
     total_developments = 0
     for _ in range(args.rounds):
         round_obj = Round.objects.get(game=game, round_number=game.current_round)
-        developments = seed_round(game, round_obj, scenario)
+        developments, compliance_rows = seed_round(
+            game, round_obj, scenario,
+            compliance_investment=not args.no_compliance_investment)
         total_developments += developments
         round_obj.deadline = timezone.now()
         round_obj.save(update_fields=['deadline'])
@@ -285,6 +301,7 @@ def main():
         manifest = Round.objects.get(pk=round_obj.pk).resolution_manifest
         print(f'round={round_obj.round_number} phase_2={phase_2} '
               f'platform_developments={developments} '
+              f'compliance_rows={compliance_rows} '
               f'schema_version={manifest.schema_version} '
               f'input_sha256={manifest.input_sha256} '
               f'output_sha256={manifest.output_sha256} '
