@@ -22,6 +22,8 @@ from core.models.core import Game, Team, Round
 from core.models.cc32_models import CommunicationAssignment, TeamCommunication
 from core.models.results import EventInstance
 from core.utils.localization import get_localized_field, get_user_language
+# R48 item 7: one word-count rule for both languages, shared with the page.
+from core.services.communication_words import count_words
 
 
 class CommunicationAssignmentsView(APIView):
@@ -126,7 +128,7 @@ class CommunicationDraftView(CompetitionDecisionWriteMixin, APIView):
 
         ca = get_object_or_404(CommunicationAssignment, id=assignment_id)
         content = request.data.get('content', '')
-        word_count = len(content.split())
+        word_count = count_words(content)
 
         tc, _ = TeamCommunication.objects.update_or_create(
             game=game, team=team, round=rnd, assignment=ca,
@@ -172,7 +174,7 @@ class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
             content = request.data.get('content', '')
             tc = TeamCommunication.objects.create(
                 game=game, team=team, round=rnd, assignment=ca,
-                content=content, word_count=len(content.split()),
+                content=content, word_count=count_words(content),
                 is_draft=True,
             )
 
@@ -185,7 +187,7 @@ class CommunicationSubmitView(CompetitionDecisionWriteMixin, APIView):
         content = request.data.get('content')
         if content is not None:
             tc.content = content
-            tc.word_count = len(content.split())
+            tc.word_count = count_words(content)
             tc.save()
 
         if tc.word_count == 0:

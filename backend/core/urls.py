@@ -80,8 +80,6 @@ from .views import (
     TeamViewSet, UserViewSet, RoundViewSet,
     SimulationStateViewSet, SimulationSettingsViewSet,
     SimulationParametersViewSet, DashboardViewSet,
-    # Round deadline management
-    DecisionStatusView, SendReminderView,
     # Programs (placeholder — will become platforms/products in CC-2)
     ProgramViewSet, ProgramTypeViewSet,
     ProgramPortfolioViewSet, ProgramFeatureViewSet,
@@ -261,10 +259,6 @@ urlpatterns = [
     # ---- Course / Section / Roster / Team / Instance Management ----
     path('roster/', RosterViewSet.as_view(), name='roster'),
     path('team-management/', TeamManagementView.as_view(), name='team-management'),
-    # ---- Round Deadline Management ----
-    path('rounds/<int:round_id>/decision-status/', DecisionStatusView.as_view(), name='round-decision-status'),
-    path('rounds/<int:round_id>/send-reminder/', SendReminderView.as_view(), name='round-send-reminder'),
-    path('rounds/current/my-status/', DecisionStatusView.as_view(), name='my-decision-status'),
     # ---- Grading ----
     path('grades/seed-rubric/', SeedRubricView.as_view(), name='grades-seed-rubric'),
     path('grades/calculate/', CalculateGradesView.as_view(), name='grades-calculate'),

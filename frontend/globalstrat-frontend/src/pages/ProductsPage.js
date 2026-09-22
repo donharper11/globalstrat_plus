@@ -2,10 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Typography, Button, Tag, Modal, Form, Input, Select, Radio,
-  Space, Alert, Table, Checkbox, Descriptions, Tooltip,
+  Space, Alert, Table, Descriptions, Tooltip,
 } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions, describeRefusal } from '../contexts/DecisionContext';
 import { reportUnpublishedFailure } from '../api/saveFailures';
@@ -45,13 +43,16 @@ const ProductsPage = () => {
   const { gameId, teamId, currentRound, refreshBudgets } = useGame();
   const { draft, locked, loadDraft } = useDecisions();
   const [context, setContext] = useState(null);
-  // The server's own sentences for a refused create, edit or retire, shown
+  // The server's own sentences for a refused create or retire, shown
   // inside the open modal: the shared notice sits behind it.
   const [refusal, setRefusal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
-  const [editProduct, setEditProduct] = useState(null);
-  const [editForm] = Form.useForm();
+  // R48 item 9: products are fixed once created. The product open in the
+  // modal can be retired; there is no edit path (the one there was sent an
+  // id of the product to change, which the server drops, so it never once
+  // succeeded).
+  const [retireProduct, setRetireProduct] = useState(null);
   const [createForm] = Form.useForm();
 
   const loadContext = useCallback(async () => {
@@ -105,81 +106,26 @@ const ProductsPage = () => {
     }
   };
 
-  // ── Edit (open modal) ──
-  const openEdit = (product) => {
-    setEditProduct(product);
-    const activeMarketIds = (product.markets || [])
-      .filter(m => m.is_active)
-      .map(m => m.market_id);
-    editForm.setFieldsValue({
-      name: product.name,
-      platform: product.platform_id,
-      positioning: product.positioning,
-      markets: activeMarketIds,
-    });
+  // ── Retire (open modal) ──
+  const openRetire = (product) => {
+    setRefusal(null);
+    setRetireProduct(product);
   };
 
-  // ── Save edits ──
-  const handleEditSave = async (values) => {
-    if (!gameId || !teamId || !currentRound || !editProduct) return;
-    try {
-      // Product creates for modifications — we update by sending the full list
-      // with this product's changes applied
-      const existingCreates = draft?.product_creates || [];
-      const existingRetires = draft?.product_retires || [];
-
-      // Check if this is a pending create (not yet persisted)
-      const pendingIdx = existingCreates.findIndex(
-        c => c.product_name === editProduct.name && c.team_platform === editProduct.platform_id
-      );
-
-      if (pendingIdx >= 0) {
-        // Update the pending create
-        const updated = [...existingCreates];
-        updated[pendingIdx] = {
-          ...updated[pendingIdx],
-          team_platform: values.platform,
-          product_name: values.name,
-          positioning: values.positioning,
-          target_market_ids: values.markets,
-        };
-        await patchDecision(gameId, teamId, currentRound, 'products', {
-          product_creates: updated,
-        });
-      } else {
-        // For existing products, we re-submit with updated fields
-        await patchDecision(gameId, teamId, currentRound, 'products', {
-          product_creates: [...existingCreates, {
-            team_platform: values.platform,
-            product_name: values.name,
-            positioning: values.positioning,
-            target_market_ids: values.markets,
-            existing_product_id: editProduct.id,
-          }],
-          product_retires: existingRetires,
-        });
-      }
-      setEditProduct(null);
-      editForm.resetFields();
-      await afterSave();
-    } catch (err) {
-      onRefused(err);
-    }
-  };
+  const closeRetire = () => { setRetireProduct(null); setRefusal(null); };
 
   // ── Retire ──
   const handleRetire = async (timing) => {
-    if (!gameId || !teamId || !currentRound || !editProduct) return;
+    if (!gameId || !teamId || !currentRound || !retireProduct) return;
     try {
       const existing = draft?.product_retires || [];
       await patchDecision(gameId, teamId, currentRound, 'product-retires', {
         product_retires: [...existing, {
-          team_product: editProduct.id,
+          team_product: retireProduct.id,
           timing,
         }],
       });
-      setEditProduct(null);
-      editForm.resetFields();
+      setRetireProduct(null);
       await afterSave();
     } catch (err) {
       onRefused(err);
@@ -279,17 +225,16 @@ const ProductsPage = () => {
     {
       title: '',
       key: 'actions',
-      width: 50,
+      width: 90,
       align: 'center',
       render: (_, r) => (
         !locked && r.status === 'active' ? (
-          <Tooltip title={t("products_page.edit_product")}>
-            <Button
-              type="text" size="small"
-              icon={<FontAwesomeIcon icon={faEdit} style={{ color: '#1677ff' }} />}
-              onClick={(e) => { e.stopPropagation(); openEdit(r); }}
-            />
-          </Tooltip>
+          <Button
+            type="link" size="small" danger
+            onClick={(e) => { e.stopPropagation(); openRetire(r); }}
+          >
+            {t("products_page.retire_product")}
+          </Button>
         ) : null
       ),
     },
@@ -355,15 +300,11 @@ const ProductsPage = () => {
             defaultExpandAllRows: true,
           }}
           onRow={(record) => ({
-            onClick: () => { if (!locked && record.status === 'active') openEdit(record); },
-            style: {
-              cursor: (!locked && record.status === 'active') ? 'pointer' : 'default',
-              opacity: record.status === 'retired' ? 0.5 : 1,
-            },
+            style: { opacity: record.status === 'retired' ? 0.5 : 1 },
           })}
         />
         <div style={{ marginTop: 8 }}>
-          <Text type="secondary" style={{ fontSize: 11 }}>{t("products_page.click_to_edit")}</Text>
+          <Text type="secondary" style={{ fontSize: 11 }}>{t("products_page.fixed_once_created")}</Text>
         </div>
       </PanelCard>
 
@@ -405,79 +346,54 @@ const ProductsPage = () => {
         </Form>
       </Modal>
 
-      {/* ── Edit / Retire Modal ── */}
+      {/* ── Retire Modal ── */}
       <Modal
-        title={`${editProduct?.name || ''}`}
-        open={!!editProduct}
-        onCancel={() => { setEditProduct(null); editForm.resetFields(); setRefusal(null); }}
+        title={`${retireProduct?.name || ''}`}
+        open={!!retireProduct}
+        onCancel={closeRetire}
         width={640}
         footer={[
-          <Button key="cancel" onClick={() => { setEditProduct(null); editForm.resetFields(); }}>
+          <Button key="cancel" onClick={closeRetire}>
             {t("common.cancel")}
           </Button>,
-          <Tooltip title={t("products_page.retire_immediate_tooltip")}>
-            <Button key="retire-now" danger onClick={() => handleRetire('immediate')}>
+          <Tooltip key="retire-now" title={t("products_page.retire_immediate_tooltip")}>
+            <Button danger onClick={() => handleRetire('immediate')}>
               {t("products_page.retire_immediately")}
             </Button>
           </Tooltip>,
-          <Tooltip title={t("products_page.retire_eor_tooltip")}>
-            <Button key="retire-eor" onClick={() => handleRetire('end_of_round')}>
+          <Tooltip key="retire-eor" title={t("products_page.retire_eor_tooltip")}>
+            <Button onClick={() => handleRetire('end_of_round')}>
               {t("products_page.retire_end_of_round")}
             </Button>
           </Tooltip>,
-          <Button key="save" type="primary" onClick={() => editForm.submit()}>
-            {t("products_page.save_changes")}
-          </Button>,
         ]}
       >
         {refusal && <RefusalNotice sentences={refusal} />}
-        {editProduct && (
-          <>
-            <Descriptions size="small" column={2} style={{ marginBottom: 16 }}>
-              <Descriptions.Item label={t("products_page.col_est_unit_cost")}>
-                ${editProduct.est_unit_cost?.toFixed(0) || '—'}
-              </Descriptions.Item>
-              <Descriptions.Item label={t("products_page.features")}>
-                <Space wrap>
-                  {(editProduct.feature_levels || []).map(f => (
-                    <Tag key={f.feature_code}>
-                      {f.feature_name}: {f.current_level.toFixed(1)}
-                    </Tag>
-                  ))}
-                </Space>
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Form form={editForm} layout="vertical" onFinish={handleEditSave}>
-              <Form.Item name="name" label={t("products_page.product_name")} rules={[{ required: true }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="platform" label={t("products_page.base_platform")} rules={[{ required: true }]}>
-                <Select>
-                  {platforms.map(pl => (
-                    <Select.Option key={pl.id} value={pl.id}>{pl.name}</Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item name="positioning" label={t("products_page.positioning")} rules={[{ required: true }]}>
-                <Radio.Group>
-                  <Radio.Button value="budget">{t('products_page.pos_budget')}</Radio.Button>
-                  <Radio.Button value="mainstream">{t('products_page.pos_mainstream')}</Radio.Button>
-                  <Radio.Button value="premium">{t('products_page.pos_premium')}</Radio.Button>
-                  <Radio.Button value="ultra_premium">{t('products_page.pos_ultra_premium')}</Radio.Button>
-                </Radio.Group>
-              </Form.Item>
-              <Form.Item name="markets" label={t("products_page.active_markets")} rules={[{ required: true }]}>
-                <Checkbox.Group>
-                  <Space direction="vertical">
-                    {markets.map(m => (
-                      <Checkbox key={m.id} value={m.id}>{m.name}</Checkbox>
-                    ))}
-                  </Space>
-                </Checkbox.Group>
-              </Form.Item>
-            </Form>
-          </>
+        {retireProduct && (
+          <Descriptions size="small" column={2}>
+            <Descriptions.Item label={t("products_page.col_platform")}>
+              {retireProduct.platform_name}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("products_page.col_est_unit_cost")}>
+              ${retireProduct.est_unit_cost?.toFixed(0) || '—'}
+            </Descriptions.Item>
+            <Descriptions.Item label={t("products_page.active_markets")}>
+              <Space wrap>
+                {(retireProduct.markets || []).filter(m => m.is_active).map(m => (
+                  <Tag key={m.market_id}>{m.market__name || m.market_name}</Tag>
+                ))}
+              </Space>
+            </Descriptions.Item>
+            <Descriptions.Item label={t("products_page.features")} span={2}>
+              <Space wrap>
+                {(retireProduct.feature_levels || []).map(f => (
+                  <Tag key={f.feature_code}>
+                    {f.feature_name}: {f.current_level.toFixed(1)}
+                  </Tag>
+                ))}
+              </Space>
+            </Descriptions.Item>
+          </Descriptions>
         )}
       </Modal>
     </div>

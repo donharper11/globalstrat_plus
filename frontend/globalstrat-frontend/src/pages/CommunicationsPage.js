@@ -6,6 +6,7 @@ import { getCommunicationAssignments, saveCommunicationDraft, submitCommunicatio
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { reportUnpublishedFailure } from '../api/saveFailures';
+import { countWords } from '../communicationWords';
 
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -54,8 +55,8 @@ const CommunicationEditor = ({ assignment, gameId, teamId, onSubmitted }) => {
 
   const updateContent = useCallback((text) => {
     setContent(text);
-    const wc = text.trim() ? text.trim().split(/\s+/).length : 0;
-    setWordCount(wc);
+    // R48 item 7: the same rule the server refuses on, in both languages.
+    setWordCount(countWords(text));
 
     // Auto-save draft after 1.5s of inactivity
     if (saveTimer.current) clearTimeout(saveTimer.current);
