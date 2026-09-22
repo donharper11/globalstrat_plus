@@ -46,6 +46,29 @@ const MoneyTextInput = ({ value, disabled, formatter, parser, onCommit }) => {
   );
 };
 
+const normalizeMoneyInput = (value) => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric >= 0 ? numeric : 0;
+};
+
+// Module-level on purpose. rc-input-number re-formats its text from the
+// value whenever the `formatter` prop's identity changes, so a formatter
+// created inside the render would rewrite the box on every keystroke.
+const formatMoneyInput = (value, info) => {
+  if (info?.userTyping) return info.input;
+  if (value === undefined || value === null || value === '') return '';
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? `$ ${numeric.toLocaleString('en-US')}` : value;
+};
+
+const parseMoneyInput = (value) => {
+  if (typeof value !== 'string') return value;
+  const normalized = value.trim().toLowerCase();
+  const multiplier = normalized.endsWith('m') ? 1000000 : normalized.endsWith('k') ? 1000 : 1;
+  const numeric = Number(normalized.replace(/[^0-9.]/g, ''));
+  return Number.isFinite(numeric) ? numeric * multiplier : 0;
+};
+
 const ratioColor = (val, greenMax, yellowMax) => {
   const n = Number(val);
   if (n <= greenMax) return 'green';
@@ -107,26 +130,6 @@ const FinancePage = () => {
       })
       .catch(() => {});
   }, [gameId, teamId]);
-
-  const normalizeMoneyInput = (value) => {
-    const numeric = Number(value);
-    return Number.isFinite(numeric) && numeric >= 0 ? numeric : 0;
-  };
-
-  const formatMoneyInput = (value, info) => {
-    if (info?.userTyping) return info.input;
-    if (value === undefined || value === null || value === '') return '';
-    const numeric = Number(value);
-    return Number.isFinite(numeric) ? `$ ${numeric.toLocaleString('en-US')}` : value;
-  };
-
-  const parseMoneyInput = (value) => {
-    if (typeof value !== 'string') return value;
-    const normalized = value.trim().toLowerCase();
-    const multiplier = normalized.endsWith('m') ? 1000000 : normalized.endsWith('k') ? 1000 : 1;
-    const numeric = Number(normalized.replace(/[^0-9.]/g, ''));
-    return Number.isFinite(numeric) ? numeric * multiplier : 0;
-  };
 
   const saveErrorMessage = (error, fallback) => {
     const data = error?.response?.data;
@@ -283,8 +286,12 @@ const FinancePage = () => {
     return <Tag>{t('finance.neutral')}</Tag>;
   };
 
-  const BudgetTab = () => {
-    const { t } = useTranslation();
+  // The three tabs are render functions, not components declared here. A
+  // component declared inside the render is a new type on every render, so
+  // each keystroke -- which sets state and re-renders the page -- made React
+  // unmount the whole tab and mount it again, destroying the focused input
+  // mid-word (W-CE-02: 5000000 typed, $5 stored).
+  const renderBudgetTab = () => {
     return (
     <div>
       <PanelCard headerColor="financial" title={t('finance.current_budget_status')}>
@@ -355,8 +362,7 @@ const FinancePage = () => {
   );
   };
 
-  const CapitalTab = () => {
-    const { t } = useTranslation();
+  const renderCapitalTab = () => {
     return (
     <div>
       {/* Raise Debt */}
@@ -524,8 +530,7 @@ const FinancePage = () => {
   );
   };
 
-  const TaxTab = () => {
-    const { t } = useTranslation();
+  const renderTaxTab = () => {
     if (!taxData) return <Text type="secondary">{t('finance.loading_tax')}</Text>;
     const structures = taxData.structures || [];
     const current = taxData.current || {};
@@ -719,17 +724,17 @@ const FinancePage = () => {
     {
       key: 'budget',
       label: t('finance.budget_allocation'),
-      children: <BudgetTab />,
+      children: renderBudgetTab(),
     },
     {
       key: 'tax',
       label: t('finance.tax_structure'),
-      children: <TaxTab />,
+      children: renderTaxTab(),
     },
     {
       key: 'capital',
       label: t('finance.capital_management'),
-      children: <CapitalTab />,
+      children: renderCapitalTab(),
     },
   ];
 

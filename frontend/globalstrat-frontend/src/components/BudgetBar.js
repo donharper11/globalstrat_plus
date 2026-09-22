@@ -35,6 +35,11 @@ const BudgetBar = ({ budgets }) => {
     // rendered nowhere.
     { key: 'platform_development', label: t('budget.platform_development_committed'),
       amount: budgets.platform_development_committed },
+    // W-CE-18: charged from cash under no budget line, and booked by the
+    // engine into strategy expense (payroll) or capex (a plant); shown so
+    // the bar and the statement can be reconciled line by line.
+    { key: 'talent', label: t('budget.talent_committed'), amount: budgets.talent_committed },
+    { key: 'plant', label: t('budget.plant_committed'), amount: budgets.plant_committed },
   ].filter(row => row.amount != null);
 
   return (

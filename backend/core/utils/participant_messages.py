@@ -195,6 +195,10 @@ MESSAGES = {
         'en': 'Choose one to three campaign focus features.',
         'zh-CN': '请选择一到三个营销活动重点功能。',
     },
+    'marketing_row_refused': {
+        'en': '{product} in {market}: {reason}',
+        'zh-CN': '{product}（{market}）：{reason}',
+    },
     'campaign_features_invalid': {
         'en': 'Choose campaign focus features from the available feature list.',
         'zh-CN': '请从可用功能列表中选择营销活动重点功能。',

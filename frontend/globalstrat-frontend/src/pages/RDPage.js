@@ -301,7 +301,6 @@ const RDPage = () => {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [savingInvestment, setSavingInvestment] = useState(null);
 
   const loadContext = useCallback(async () => {
     if (!gameId || !teamId) { setLoading(false); return; }
@@ -319,8 +318,8 @@ const RDPage = () => {
 
   const rdBudget = Number(context?.rd_budget || 0);
   const rdRemaining = Number(context?.rd_budget_remaining ?? rdBudget);
-  const investmentSlots = context.investment_slots || {};
   const currentInvestments = context.current_investments || [];
+  const featureInvestment = context.feature_investment || null;
   const ownedPlatforms = context.owned_platforms || [];
   const platformDevDecisions = context.platform_dev_decisions || [];
 
@@ -374,58 +373,6 @@ const RDPage = () => {
   // Gather feature names from the first active platform for column headers
   const activePlatform = ownedPlatforms.find(p => p.status === 'active');
   const featureList = activePlatform?.features || [];
-
-  const currentInvestmentPayload = currentInvestments.map(inv => ({
-    team_platform: inv.team_platform_id,
-    feature: inv.feature_id,
-    method: inv.method || 'in_house',
-    amount: inv.cost,
-    target_level: inv.target_level,
-    calculated_cost: inv.cost,
-  }));
-
-  const investInNextLevel = async (feature) => {
-    if (!activePlatform || locked) return;
-    const current = Math.floor(feature.current_level);
-    const nextCost = (feature.cost_schedule || []).find(e => e.level === current + 1);
-    if (!nextCost) return;
-    const cost = Number(nextCost.incremental_cost || nextCost.cumulative_from_current || 0);
-    const alreadyInvested = currentInvestments.some(inv => inv.feature_id === feature.feature_id);
-    if (!alreadyInvested && Number(investmentSlots.remaining || 0) <= 0) {
-      message.warning(t('rd.slots_all_used'));
-      return;
-    }
-    if (cost > rdRemaining && !alreadyInvested) {
-      message.warning(t('rd.upgrade_exceeds_budget'));
-      return;
-    }
-
-    const nextPayload = [
-      ...currentInvestmentPayload.filter(inv => inv.feature !== feature.feature_id),
-      {
-        team_platform: activePlatform.id,
-        feature: feature.feature_id,
-        method: 'in_house',
-        amount: cost,
-        target_level: current + 1,
-        calculated_cost: cost,
-      },
-    ];
-
-    setSavingInvestment(feature.feature_id);
-    try {
-      await patchDecision(gameId, teamId, currentRound, 'rd', { rd_investments: nextPayload });
-      message.success(t('rd.investment_saved', { feature: feature.name, level: current + 1 }));
-      await loadContext();
-      refreshBudgets();
-    } catch (err) {
-      const detail = err?.response?.data?.detail || err?.response?.data?.non_field_errors?.join(' ') || t('rd.investment_save_failed');
-      message.error(detail);
-    } finally {
-      setSavingInvestment(null);
-    }
-  };
-
 
   // Table columns: Platform name | each feature level | added cost
   const columns = [
@@ -617,7 +564,6 @@ const RDPage = () => {
             const current = Math.floor(f.current_level);
             const ceiling = Math.floor(f.ceiling);
             const pct = ceiling > 0 ? Math.round((current / ceiling) * 100) : 0;
-            const nextCost = (f.cost_schedule || []).find(e => e.level === current + 1);
             return (
               <div key={f.feature_id} style={{
                 display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
@@ -637,12 +583,9 @@ const RDPage = () => {
                   </div>
                 </div>
                 <div style={{ width: 100, fontSize: 11, color: '#666', textAlign: 'right' }}>
-                  {current < ceiling && nextCost
-                    ? <span>{t('rd.next_level')}: {fmt(nextCost.incremental_cost)}</span>
-                    : current >= ceiling
-                      ? <Tag color="green" style={{ fontSize: 10 }}>{t('rd.maxed')}</Tag>
-                      : null
-                  }
+                  {current >= ceiling
+                    ? <Tag color="green" style={{ fontSize: 10 }}>{t('rd.maxed')}</Tag>
+                    : null}
                 </div>
               </div>
             );
@@ -676,11 +619,23 @@ const RDPage = () => {
         }
       />
 
+      {/* W-CE-03: the page offers only what the server accepts. Feature-level
+          R&D investment is refused for every row (R10), so nothing here
+          offers it; the server says so, in the reader's language, and that
+          sentence stands where the offer used to be. */}
       <Alert
         showIcon
         type="info"
-        message={t('rd.guidance_title')}
-        description={t('rd.guidance_desc', { remaining: fmt(rdRemaining), open: investmentSlots.remaining ?? 0, max: investmentSlots.max ?? 0 })}
+        message={t('rd.round_guidance_title')}
+        description={(
+          <div>
+            {/* Slots went with the retired feature-level investment (W-CE-03). */}
+            <div>{t('rd.round_guidance', { remaining: fmt(rdRemaining) })}</div>
+            {featureInvestment?.available === false && featureInvestment.reason && (
+              <div style={{ marginTop: 4 }}>{featureInvestment.reason}</div>
+            )}
+          </div>
+        )}
         style={{ marginBottom: 16 }}
       />
 
@@ -735,54 +690,6 @@ const RDPage = () => {
           locale={{ emptyText: t('rd.no_pending_investments') }}
         />
       </PanelCard>
-
-      {/* Platform Upgrade - shown when an active platform exists with upgradeable features */}
-      {activePlatform && activePlatform.features?.some(f => Math.floor(f.current_level) < Math.floor(f.ceiling)) && (
-        <PanelCard headerColor="strategic" title={t('rd.platform_upgrade')} style={{ marginBottom: 16 }}>
-          <div style={{ padding: '8px 0' }}>
-            {activePlatform.features
-              .filter(f => Math.floor(f.current_level) < Math.floor(f.ceiling))
-              .map(f => {
-                const current = Math.floor(f.current_level);
-                const ceiling = Math.floor(f.ceiling);
-                const pct = ceiling > 0 ? Math.round((current / ceiling) * 100) : 0;
-                const nextCost = (f.cost_schedule || []).find(e => e.level === current + 1);
-                return (
-                  <div key={f.feature_id} style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '4px 0', borderBottom: '1px solid #f5f5f5',
-                  }}>
-                    <div style={{ width: 130, fontSize: 12, fontWeight: 600 }}>{f.name}</div>
-                    <div style={{ width: 60, fontSize: 14, fontWeight: 700 }}>
-                      {current} <span style={{ color: '#999', fontWeight: 400, fontSize: 11 }}>/ {ceiling}</span>
-                    </div>
-                    <div style={{ flex: 1, maxWidth: 200 }}>
-                      <div style={{ background: '#f0f0f0', borderRadius: 4, height: 8 }}>
-                        <div style={{
-                          background: '#1890ff',
-                          borderRadius: 4, height: 8,
-                          width: `${Math.min(pct, 100)}%`,
-                        }} />
-                      </div>
-                    </div>
-                    <div style={{ width: 120, fontSize: 11, color: '#666', textAlign: 'right' }}>
-                      {nextCost ? <span>{t('rd.next_level')}: {fmt(nextCost.incremental_cost)}</span> : null}
-                    </div>
-                    <Button
-                      size="small"
-                      type="primary"
-                      disabled={locked || !nextCost || (Number(nextCost.incremental_cost || 0) > rdRemaining && !currentInvestments.some(inv => inv.feature_id === f.feature_id))}
-                      loading={savingInvestment === f.feature_id}
-                      onClick={() => investInNextLevel(f)}
-                    >
-                      {t('rd.invest_next_level')}
-                    </Button>
-                  </div>
-                );
-              })}
-          </div>
-        </PanelCard>
-      )}
 
       {currentInvestments.length > 0 && (
         <PanelCard headerColor="decision" title={t('rd.current_draft')} style={{ marginBottom: 16 }}>

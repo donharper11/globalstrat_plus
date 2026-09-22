@@ -80,8 +80,9 @@ const SummaryPage = () => {
     const messages = [...(cat.errors || []), ...(cat.warnings || [])];
     if (messages.length > 0) return messages;
     // An optional section is never a requirement to open (W-CE-13): the
-    // server marks it and says so in its own sentence.
-    if (cat.optional) return [];
+    // server marks it and says so in its own sentence; its warnings, if any,
+    // are the server's.
+    if (cat.optional) return cat.warnings?.length ? cat.warnings : [];
     if (cat.status === 'configured') return [t('summary_page.guidance_draft_saved')];
     if (item.key === 'rd') return [t('summary_page.guidance_rd')];
     if (item.key === 'budget') return [t('summary_page.guidance_budget')];

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Button, Card, Typography, Tabs, InputNumber, Select, Slider, Tag, Space, Row, Col, Progress, Alert, Checkbox, Statistic } from 'antd';
+import { Card, Typography, Tabs, InputNumber, Select, Slider, Tag, Space, Row, Col, Progress, Alert, Checkbox, Statistic } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
@@ -712,26 +712,12 @@ const MarketingPage = () => {
       <PageHeader title={t('marketing.title')} subtitle={`${t('common.round')} ${currentRound}`} status={locked ? 'locked' : 'draft'} />
       {saving && <Tag color="processing">{t('marketing.saving')}</Tag>}
 
-      {/* R17: the edit was refused, so say so where the team is working, name
-          what the server objected to, and offer the retry. */}
-      {saveError && (
-        <Alert
-          type="error"
-          showIcon
-          style={{ marginBottom: 16 }}
-          message={t('marketing.save_failed_title')}
-          description={(
-            <div>
-              <ul style={{ margin: '0 0 8px', paddingLeft: 18 }}>
-                {saveError.map((msg, i) => <li key={i}>{msg}</li>)}
-              </ul>
-              <Button size="small" onClick={retrySave} loading={saving}>
-                {t('marketing.save_failed_retry')}
-              </Button>
-            </div>
-          )}
-        />
-      )}
+      {/* R17: a refused save is announced by the shared DecisionSaveAlert,
+          which the axios interceptor feeds for every decision write and
+          which carries the server's own sentences and the retry. This page
+          used to repeat it with a banner of its own, so one refusal was
+          shown twice (W-CE-04); `saveError` now only marks the entries as
+          unsaved where they are edited. */}
 
       <Card size="small" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>

@@ -71,3 +71,23 @@ test('the label exists in both catalogues, worded as the income statement line',
   expect(en.budget.compliance_committed).toBe(en.financial_reports.compliance_label);
   expect(zh.budget.compliance_committed).toBe(zh.financial_reports.compliance_label);
 });
+
+// W-CE-18: payroll and a plant build are charged from cash under no budget
+// line; the Summary and Finance payloads carry them as `talent_committed`
+// and `plant_committed`, and the one shared bar shows them as rows.
+test('payroll and plant construction committed this round are rows too', () => {
+  render(<BudgetBar budgets={budgets({ talent_committed: 6250000, plant_committed: 0 })} />);
+  expect(screen.getByText('budget.talent_committed')).toBeInTheDocument();
+  expect(screen.getByText('$6.3M')).toBeInTheDocument();
+  expect(screen.getByText('budget.plant_committed')).toBeInTheDocument();
+  expect(en.budget.talent_committed).toBeTruthy();
+  expect(zh.budget.talent_committed).toBeTruthy();
+  expect(en.budget.plant_committed).toBeTruthy();
+  expect(zh.budget.plant_committed).toBeTruthy();
+});
+
+test('an older server without the two figures shows neither row', () => {
+  render(<BudgetBar budgets={budgets()} />);
+  expect(screen.queryByText('budget.talent_committed')).not.toBeInTheDocument();
+  expect(screen.queryByText('budget.plant_committed')).not.toBeInTheDocument();
+});
