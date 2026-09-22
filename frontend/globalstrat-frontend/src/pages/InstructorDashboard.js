@@ -12,7 +12,7 @@ import AuditEvidenceTable from '../components/instructor/AuditEvidenceTable';
 import OperatorEventsPanel from '../components/instructor/OperatorEventsPanel';
 import AuditRoundSelect from '../components/instructor/AuditRoundSelect';
 import {
-  getInstructorDashboard, advanceRound, injectEvent,
+  getInstructorDashboard, injectEvent,
   extendDeadline, getResearchQueries,
   getInstructorAlerts, acknowledgeAlert,
   getEventTemplates, getTeamBriefings, getTeamDecisions,
@@ -38,6 +38,7 @@ import {
 import { bilingualServerReason, serverReason } from './bilingualServerReason';
 import { rosterUploadOutcome, announceRosterUpload } from './rosterUploadOutcome';
 import ReasonedAction from '../components/instructor/ReasonedAction';
+import AdvanceRoundControl from '../components/instructor/AdvanceRoundControl';
 import RoundControlCard from '../components/RoundControlCard';
 import StudentAccountsPanel from '../components/StudentAccountsPanel';
 import { PageHeader, PanelCard } from '../components/design-system';
@@ -67,7 +68,6 @@ const InstructorDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [advanceModalOpen, setAdvanceModalOpen] = useState(false);
   const [eventModalOpen, setEventModalOpen] = useState(false);
   const [extendModalOpen, setExtendModalOpen] = useState(false);
   const [extendHours, setExtendHours] = useState(24);
@@ -314,19 +314,6 @@ const InstructorDashboard = () => {
     : displayGameStatus === 'paused' ? '#faad14'
       : displayGameStatus === 'archived' ? '#8c8c8c' : '#1890ff';
 
-  const handleAdvance = async () => {
-    setActionLoading(true);
-    try {
-      const force = rs.teams_pending > 0;
-      await advanceRound(gameId, force);
-      setAdvanceModalOpen(false);
-      loadData();
-    } catch (err) {
-      Modal.error({ title: t('instructor.error'), content: serverReason(err) || t('instructor.failed_advance_round') });
-    }
-    setActionLoading(false);
-  };
-
   const handleExtend = async () => {
     setActionLoading(true);
     try {
@@ -477,7 +464,12 @@ const InstructorDashboard = () => {
             )}
             {displayGameStatus === 'active' && (
               <>
-                <Button type="primary" onClick={() => setAdvanceModalOpen(true)}>{t('instructor.advance_round')}</Button>
+                {/* With teams pending this is an override and needs a
+                    written reason (W-CE-24); the control asks for one. */}
+                <AdvanceRoundControl t={t} gameId={gameId}
+                  gameName={dashboard?.game_name || createGameName || t('instructor.game')}
+                  teamsPending={rs.teams_pending || 0}
+                  onAdvanced={() => { loadData(); loadRoundScheduleData(gameId); }} />
                 <Button onClick={() => setExtendModalOpen(true)}>{t('instructor.extend_deadline')}</Button>
                 <Popconfirm title={t('instructor.pause_confirm')} onConfirm={async () => {
                   try {
@@ -2132,15 +2124,6 @@ const InstructorDashboard = () => {
 
       {/* Game-specific modals (only render when game is active) */}
       {hasGame && <>
-      {/* Advance Round Modal */}
-      <Modal title={t('instructor.advance_round')} open={advanceModalOpen} onOk={handleAdvance} onCancel={() => setAdvanceModalOpen(false)} confirmLoading={actionLoading}>
-        <Text>
-          {rs.teams_pending > 0
-            ? t('instructor.advance_pending', { count: rs.teams_pending })
-            : t('instructor.advance_ready')}
-        </Text>
-      </Modal>
-
       {/* Extend Deadline Modal */}
       {/* Named, like every other lifecycle confirmation: this control acts on
           a round, and acting on the wrong heat's deadline is unrecoverable.

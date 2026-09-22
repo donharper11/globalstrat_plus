@@ -8,8 +8,11 @@ export const getInstructorDashboard = (gameId) =>
 export const getOperatorEvents = (gameId, params = {}) =>
   client.get(`/games/${gameId}/instructor/operator-events/`, { params });
 
-export const advanceRound = (gameId, force = false) =>
-  client.post(`/games/${gameId}/instructor/advance-round/`, { force });
+// With teams pending the console sends `force: true`, which the server treats
+// as an override: it is refused without a written reason (`reason_required`).
+// The reason travelled nowhere until 2026-09-22 (W-CE-24).
+export const advanceRound = (gameId, force = false, reason = '') =>
+  client.post(`/games/${gameId}/instructor/advance-round/`, { force, reason });
 
 export const injectEvent = (gameId, eventTemplateId, targetMarketId) =>
   client.post(`/games/${gameId}/instructor/inject-event/`, {
