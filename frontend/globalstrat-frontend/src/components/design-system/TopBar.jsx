@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOutAlt, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import { useDecisions } from '../../contexts/DecisionContext';
@@ -66,7 +66,8 @@ function DSTopBar({ onToggle, isMobile }) {
   return (
     <div className="ds-topbar">
       {/* Toggle */}
-      <button className="ds-topbar-action" onClick={onToggle} style={{ marginRight: 8 }}>
+      <button className="ds-topbar-action" onClick={onToggle} style={{ marginRight: 8 }}
+        title={t('topbar.menu')} aria-label={t('topbar.menu')}>
         <FontAwesomeIcon icon={faBars} />
       </button>
 
@@ -117,12 +118,13 @@ function DSTopBar({ onToggle, isMobile }) {
         </>
       )}
 
-      {/* Right section */}
+      {/* Right section. A bell sat here until 2026-09-22 (W-CE-10): a button
+          with no handler and nothing behind it -- no notifications API
+          serves a student and the instructor alerts are instructor-only.
+          Removed rather than wired to a subsystem that does not exist. */}
       <div className="ds-topbar-right">
-        <button className="ds-topbar-action">
-          <FontAwesomeIcon icon={faBell} />
-        </button>
-        <button className="ds-topbar-action" onClick={handleLogout} title={t('topbar.log_out')}>
+        <button className="ds-topbar-action" onClick={handleLogout} title={t('topbar.log_out')}
+          aria-label={t('topbar.log_out')}>
           <FontAwesomeIcon icon={faSignOutAlt} />
         </button>
         {!isMobile && (
