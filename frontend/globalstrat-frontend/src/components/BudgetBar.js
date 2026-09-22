@@ -23,6 +23,16 @@ const BudgetBar = ({ budgets }) => {
     { key: 'research', label: t('budget.research'), color: '#0891B2', allocated: budgets.research_allocated, spent: budgets.research_spent },
   ];
 
+  // R48 item 12: money committed this round outside the four budget buckets,
+  // shown as its own line before lock. Each figure is already inside the
+  // server's `committed_total` (rd_costs.budget_assessment), which
+  // `unallocated` is computed from, so a row here is a line shown, not a
+  // figure added: nothing on this bar sums. Absent from the payload (an older
+  // server), the row is not drawn.
+  const committed = [
+    { key: 'compliance', label: t('budget.compliance_committed'), amount: budgets.compliance_committed },
+  ].filter(row => row.amount != null);
+
   return (
     <div style={{ padding: '8px 0' }}>
       <Space direction="vertical" size={4} style={{ width: '100%' }}>
@@ -43,6 +53,12 @@ const BudgetBar = ({ budgets }) => {
             </div>
           );
         })}
+        {committed.map(row => (
+          <div key={row.key} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Text style={{ minWidth: 70, fontSize: 12, color: '#64748B' }}>{row.label}</Text>
+            <Text style={{ fontSize: 12 }}>{fmt(row.amount)}</Text>
+          </div>
+        ))}
         {budgets.unallocated != null && (
           <Text type="secondary" style={{ fontSize: 11 }}>
             {t('budget.unallocated', { amount: fmt(budgets.unallocated) })}
