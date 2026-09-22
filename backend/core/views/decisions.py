@@ -66,6 +66,11 @@ from core.serializers.decisions import (
     DecisionEventResponseSerializer,
     DecisionResearchAllocationSerializer,
     DecisionTalentSerializer,
+    ComplianceInvestmentSerializer,
+    TalentAllocationSerializer,
+    talent_headcounts,
+    validate_compliance_investments,
+    validate_talent_allocations,
 )
 
 
@@ -488,6 +493,11 @@ _TYPE_MAP = {
     'esg':              ('esg',                    DecisionESGSerializer,                   True),
     'event-responses':  ('event_responses',        DecisionEventResponseSerializer,         False),
     'talent':           ('talent',                 DecisionTalentSerializer,                True),
+    # 2026-09-21: both were saved by their pages from the day they were built
+    # and refused here as unknown on every call, so neither decision could be
+    # made from the screen (core/tests/test_silent_section_saves.py).
+    'talent-allocations':     ('talent_allocations',     TalentAllocationSerializer,     False),
+    'compliance-investments': ('compliance_investments', ComplianceInvestmentSerializer, False),
 }
 
 
@@ -555,9 +565,42 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                          'funding_assessment': assessment},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+            paired_allocations = None
+            if decision_type == 'talent':
+                # An allocation must total its pool's headcount, so neither
+                # can change first: the page sends both when a headcount
+                # changes, and they are judged and stored together. A staffing
+                # save that arrives alone is judged against the allocation
+                # already stored, and refused if it would strand it -- staff
+                # deployed to markets who are no longer on the payroll.
+                from core.models.cc31_models import TalentAllocation
+                headcounts = talent_headcounts(validated)
+                sent = (request.data.get('talent_allocations')
+                        if isinstance(request.data, dict) else None)
+                if sent is not None:
+                    paired_allocations = []
+                    for item in (sent if isinstance(sent, list) else [sent]):
+                        item_ser = TalentAllocationSerializer(
+                            data=item, context={'request': request})
+                        item_ser.is_valid(raise_exception=True)
+                        paired_allocations.append(item_ser.validated_data)
+                    rows_to_judge = paired_allocations
+                else:
+                    rows_to_judge = list(
+                        TalentAllocation.objects.filter(submission=submission)
+                        .order_by('talent_pool')
+                        .values('talent_pool', 'hq_count', 'market_allocation'))
+                validate_talent_allocations(
+                    rows_to_judge, submission, get_user_language(request),
+                    headcounts=headcounts)
             model_cls = serializer_cls.Meta.model
             model_cls.objects.filter(submission=submission).delete()
             model_cls.objects.create(submission=submission, **validated)
+            if paired_allocations is not None:
+                TalentAllocation.objects.filter(submission=submission).delete()
+                TalentAllocation.objects.bulk_create([
+                    TalentAllocation(submission=submission, **row)
+                    for row in paired_allocations])
         else:
             if not isinstance(nested_data, list):
                 nested_data = [nested_data]
@@ -578,6 +621,12 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                     validated_items, 'platform', team=team,
                     round_number=rnd.round_number,
                     language=get_user_language(request))
+            if decision_type == 'talent-allocations':
+                validate_talent_allocations(
+                    validated_items, submission, get_user_language(request))
+            if decision_type == 'compliance-investments':
+                validate_compliance_investments(
+                    validated_items, team, get_user_language(request))
             if decision_type == 'products':
                 # Before the delete below, so a refused payload leaves the
                 # team's existing decisions exactly as they were.
@@ -606,6 +655,8 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
                         'partnerships': 'Corporate Strategy', 'acquisitions': 'Corporate Strategy',
                         'esg': 'Corporate Strategy', 'event-responses': 'Events',
                         'research': 'Research', 'talent': 'Corporate Strategy',
+                        'talent-allocations': 'Corporate Strategy',
+                        'compliance-investments': 'Market Strategy',
                     }
                     pg = _PG.get(decision_type, decision_type)
                     DecisionChangeLog.objects.create(

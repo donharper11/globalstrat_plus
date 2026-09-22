@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
-import { useDecisions } from '../contexts/DecisionContext';
+import { useDecisions, describeRefusal } from '../contexts/DecisionContext';
 import { getRDContext, patchDecision } from '../api/decisions';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
@@ -100,7 +100,10 @@ const CreatePlatformModal = ({ open, onClose, onCreated, context, gameId, teamId
       await onCreated();
       onClose();
     } catch (err) {
-      message.error(t('rd.create_failed'));
+      // The server's own sentences (why the platform was refused: cost,
+      // unlock round, feature cap...), not a generic line that hides them.
+      const sentences = describeRefusal(err?.response?.data);
+      message.error(sentences.length ? sentences.join(' ') : t('rd.create_failed'));
     }
     setSaving(false);
   };

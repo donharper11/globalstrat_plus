@@ -55,7 +55,7 @@ export const isSessionExpiry = (error) => (
 // Handle 401 — redirect to login
 client.interceptors.response.use(
   (response) => {
-    if (isDecisionWrite(response.config)) publishSaveSuccess();
+    if (isDecisionWrite(response.config)) publishSaveSuccess(response.config);
     return response;
   },
   (error) => {

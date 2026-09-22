@@ -5,6 +5,7 @@ import { useGame } from '../contexts/GameContext';
 import { getCommunicationAssignments, saveCommunicationDraft, submitCommunication, getCommunicationHistory } from '../api/decisions';
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { reportUnpublishedFailure } from '../api/saveFailures';
 
 const { Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -62,7 +63,11 @@ const CommunicationEditor = ({ assignment, gameId, teamId, onSubmitted }) => {
       setSaving(true);
       try {
         await saveCommunicationDraft(gameId, teamId, assignment.id, text);
-      } catch { /* ignore */ }
+      } catch (err) {
+        // The draft stays on screen; the shared notice says it was not
+        // saved and retries it (api/saveFailures.js).
+        reportUnpublishedFailure(err);
+      }
       setSaving(false);
     }, 1500);
   }, [gameId, teamId, assignment.id]);

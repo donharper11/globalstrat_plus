@@ -3,7 +3,9 @@ import { useGame } from './GameContext';
 import { useAuth } from '../AuthContext';
 import { getDecisions, saveDecisions } from '../api/decisions';
 import client from '../api/client';
-import { subscribeToSaves, getLastFailedRequest } from '../api/saveFailures';
+import {
+  subscribeToSaves, getLastFailedRequest, reportUnpublishedFailure,
+} from '../api/saveFailures';
 
 const DecisionContext = createContext(null);
 
@@ -73,17 +75,43 @@ export const DecisionProvider = ({ children }) => {
   const retryRunner = useRef(null);
   const sendDraftRef = useRef(null);
 
-  // Load existing draft on mount or round change
+  // Which game/team/round the draft in state belongs to.
+  const draftOwner = useRef(null);
+
+  /**
+   * Load the stored submission: on mount, on a round change, and again on
+   * every navigation between student screens (`DraftRefreshOnNavigate`).
+   *
+   * This provider sits above every student route, so it used to read the
+   * draft exactly once per session. The pages rebuild "the whole list" of a
+   * section from that draft on each save, so a second product created in one
+   * sitting was sent as [second] and replaced the first, and a screen
+   * revisited without a reload showed the round as it stood at login -- a save
+   * that worked and was never read back.
+   *
+   * A refresh that FAILS keeps the draft it had. Blanking it is worse than
+   * staleness: the next replace-style save built from an empty draft deletes
+   * what the server holds. It is blanked only when it belongs to a different
+   * game, team or round.
+   */
   const loadDraft = useCallback(async () => {
     if (!gameId || !teamId || !currentRound) { setLoadingDraft(false); return; }
+    const owner = `${gameId}/${teamId}/${currentRound}`;
     setLoadingDraft(true);
     try {
       const res = await getDecisions(gameId, teamId, currentRound);
-      setDraft(res.data || {});
-      setLocked(isDemo || res.data?.status === 'locked');
+      draftOwner.current = owner;
+      const next = res.data || {};
+      // Pages re-initialise from `draft` when its identity changes. A refresh
+      // that found nothing new keeps the old object, so a page is not reset
+      // (and an edit in flight not overwritten) for no change.
+      setDraft(prev => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
+      setLocked(isDemo || next.status === 'locked');
     } catch {
-      setDraft({});
-      setLocked(false);
+      if (draftOwner.current !== owner) {
+        setDraft({});
+        setLocked(false);
+      }
     } finally {
       setLoadingDraft(false);
     }
@@ -129,10 +157,11 @@ export const DecisionProvider = ({ children }) => {
     setSaving(true);
     try {
       await client.request(config);
-    } catch {
-      // The interceptor republishes this failure and the subscription below
-      // reacts to it. Swallowing here only stops an unhandled rejection from
-      // a retry that nobody is awaiting.
+    } catch (err) {
+      // The interceptor republishes a refused retry and the subscription
+      // below reacts to it, so there is nothing more to do for that case. A
+      // failure that never became a request is announced here instead.
+      reportUnpublishedFailure(err);
     } finally {
       setSaving(false);
     }
