@@ -81,7 +81,7 @@ const SummaryPage = () => {
     if (messages.length > 0) return messages;
     if (cat.optional && cat.status === 'configured') return cat.warnings?.length ? cat.warnings : ['No action required this round.'];
     if (cat.status === 'configured') return ['This requirement has draft work saved.'];
-    if (item.key === 'rd') return ['Open R&D Investment and either upgrade an existing feature or create an affordable platform.'];
+    if (item.key === 'rd') return ['Open R&D Investment and create an affordable platform.'];
     if (item.key === 'budget') return ['Open Finance and allocate R&D, Marketing, and Strategy budgets.'];
     return [`Open ${item.label} to complete this requirement.`];
   };

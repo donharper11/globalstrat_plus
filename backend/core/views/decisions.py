@@ -1912,6 +1912,16 @@ class RDContextView(APIView):
             },
             'max_platform_features': int(self._get_config(scenario, 'max_platform_features', '5')),
             'current_investments': current_investments,
+            # W-CE-03: feature-level R&D investment is refused for every row
+            # (R10, `rd_investment_retired`). The page offers only what the
+            # server accepts, so the server says so here, in the reader's
+            # language, instead of the page offering five buttons that are
+            # refused five times.
+            'feature_investment': {
+                'available': False,
+                'reason': participant_message(
+                    'rd_investment_retired', language=language),
+            },
             'rd_budget': float(rd_budget),
             'rd_budget_remaining': float(rd_budget - rd_spent),
             'rd_spent': float(rd_spent),
