@@ -740,6 +740,330 @@ class ProductRebaseView(CompetitionDecisionWriteMixin, APIView):
 # Lock / Unlock
 # ---------------------------------------------------------------------------
 
+def lock_blockers_for(submission, language='en'):
+    """Every reason this submission cannot be locked, in the reader's language.
+
+    The lock refuses on exactly this list, and the Decision Summary
+    publishes exactly this list as `lock_blockers` (W-CE-25): the two
+    used to keep separate lists, and a team saw `can_lock: true` on the
+    page and a debt-ceiling refusal in the confirmation dialog.
+    """
+    errors = []
+    team = submission.team
+    game = team.game
+    scenario = game.scenario
+
+    # Budget allocation must exist
+    try:
+        budget = submission.budget_allocation
+    except DecisionBudgetAllocation.DoesNotExist:
+        errors.append(participant_message('budget_required', language=language))
+        return errors
+
+    # Budget fields >= 0
+    for field in ('rd_budget', 'marketing_budget', 'strategy_budget'):
+        if getattr(budget, field) < 0:
+            errors.append(participant_message(
+                'non_negative', language=language,
+                field=field_label(field, language)))
+
+    # Total committed spend vs available cash, including platform
+    # development. One rule, in one place: this was written three times
+    # (here, :888 and :1015), the three disagreed about whether
+    # research_budget counted, and none of them counted platform
+    # development at all (V2-038).
+    from core.services.rd_costs import (budget_assessment,
+                                        describe_budget_problems)
+    assessment = budget_assessment(submission, team)
+    errors.extend(describe_budget_problems(assessment, language=language))
+
+    # R&D investments: total <= rd_budget
+    rd_total = sum(
+        inv.amount for inv in submission.rd_investments.all()
+    )
+    if rd_total > budget.rd_budget:
+        errors.append(participant_message(
+            'rd_budget_exceeded', language=language,
+            spent=f'${rd_total:,.2f}', budget=f'${budget.rd_budget:,.2f}'))
+
+    # R&D: validate team_platform belongs to team
+    for inv in submission.rd_investments.all():
+        if inv.team_platform.team_id != team.id:
+            errors.append(participant_message(
+                'rd_platform_not_owned', language=language))
+        if inv.team_platform.status != 'active':
+            errors.append(participant_message(
+                'rd_platform_inactive', language=language))
+        if inv.feature.layer != 'platform':
+            errors.append(participant_message(
+                'rd_feature_wrong_layer', language=language))
+        if inv.method == 'license' and hasattr(inv.feature, 'is_licensable') and not inv.feature.is_licensable:
+            errors.append(participant_message(
+                'rd_feature_unlicensable', language=language))
+        # Check ceiling
+        ceiling = PlatformFeatureCeiling.objects.filter(
+            platform_generation=inv.team_platform.platform_generation,
+            feature=inv.feature,
+        ).first()
+        if ceiling:
+            current_level = TeamPlatformFeatureLevel.objects.filter(
+                team_platform=inv.team_platform, feature=inv.feature,
+            ).values_list('current_level', flat=True).first() or Decimal('0')
+            if current_level >= ceiling.ceiling_value:
+                errors.append(participant_message(
+                    'feature_at_ceiling', language=language,
+                    feature=get_localized_field(
+                        inv.feature, 'name', language)))
+
+    # Platform development: validate generation
+    for pd in submission.platform_developments.all():
+        if pd.platform_generation.scenario_id != scenario.id:
+            errors.append(participant_message(
+                'platform_wrong_scenario', language=language))
+        if pd.platform_generation.unlock_round > game.current_round:
+            errors.append(participant_message(
+                'platform_not_unlocked', language=language,
+                platform=get_localized_field(
+                    pd.platform_generation, 'name', language),
+                round=pd.platform_generation.unlock_round))
+        existing = TeamPlatform.objects.filter(
+            team=team, platform_generation=pd.platform_generation,
+        ).exclude(status='retired')
+        if existing.exists():
+            errors.append(participant_message(
+                'platform_already_owned', language=language,
+                platform=get_localized_field(
+                    pd.platform_generation, 'name', language)))
+
+    # Product creates: validate platform and limits
+    active_products = TeamProduct.objects.filter(team=team, status='active').count()
+    for pc in submission.product_creates.all():
+        if pc.team_platform.team_id != team.id:
+            errors.append(participant_message(
+                'product_platform_not_owned', language=language))
+        if pc.team_platform.status != 'active':
+            errors.append(participant_message(
+                'product_platform_inactive', language=language))
+        # Check max products
+        if active_products + 1 > scenario.max_products_total:
+            errors.append(participant_message(
+                'product_limit', language=language,
+                maximum=scenario.max_products_total))
+        # Check target markets have presence
+        for mid in (pc.target_market_ids or []):
+            if not TeamMarketPresence.objects.filter(
+                team=team, market_id=mid, status='active',
+            ).exists():
+                errors.append(participant_message(
+                    'product_market_not_active', language=language,
+                    product=pc.product_name))
+
+    # Product retires: validate ownership
+    for pr in submission.product_retires.all():
+        if pr.team_product.team_id != team.id:
+            errors.append(participant_message('product_not_owned', language=language))
+        if pr.team_product.status != 'active':
+            errors.append(participant_message(
+                'product_not_active', language=language,
+                product=pr.team_product.name))
+
+    # Marketing: channel pcts, budget
+    marketing_total = Decimal('0')
+    for md in submission.marketing_decisions.all():
+        if md.team_product.team_id != team.id:
+            errors.append(participant_message('product_not_owned', language=language))
+        ch_sum = md.channel_digital_pct + md.channel_traditional_pct + md.channel_trade_pct
+        if abs(ch_sum - Decimal('1.0')) > Decimal('0.001'):
+            errors.append(participant_message(
+                'marketing_channels_invalid', language=language,
+                product=md.team_product.name,
+                market=get_localized_field(md.market, 'name', language),
+                total=f'{ch_sum * 100:g}'))
+        # A blank price is legal to SAVE (Ruling 2) and is filled at the
+        # band floor when the round closes — but only for a product that
+        # sold in this market last round. With no prior-round price there
+        # is nothing to fall back to, so the team must price it before
+        # locking rather than have one invented for them.
+        if md.retail_price is None:
+            from core.services import price_band as _band_rules
+            _band = _band_rules.price_band(
+                scenario, team, md.team_product, md.market,
+                submission.round.round_number)
+            if _band_rules.blank_price(_band) is None:
+                errors.append(participant_message(
+                    'marketing_price_invalid', language=language,
+                    product=md.team_product.name,
+                    market=get_localized_field(
+                        md.market, 'name', language)))
+        elif md.retail_price <= 0:
+            errors.append(participant_message(
+                'marketing_price_invalid', language=language,
+                product=md.team_product.name,
+                market=get_localized_field(md.market, 'name', language)))
+        marketing_total += md.promotion_budget + md.distribution_investment
+
+    if marketing_total > budget.marketing_budget:
+        errors.append(participant_message(
+            'marketing_budget_exceeded', language=language,
+            spent=f'${marketing_total:,.2f}',
+            budget=f'${budget.marketing_budget:,.2f}'))
+
+    # Market entry: validate actions
+    for me in submission.market_entries.all():
+        presence = TeamMarketPresence.objects.filter(
+            team=team, market=me.market,
+        ).exclude(status='exited').first()
+        if me.action == 'enter' and presence:
+            errors.append(participant_message(
+                'market_already_entered', language=language,
+                market=get_localized_field(me.market, 'name', language)))
+        if me.action in ('change_mode', 'exit') and not presence:
+            errors.append(participant_message(
+                'market_not_active', language=language,
+                market=get_localized_field(me.market, 'name', language)))
+        if me.action == 'enter' and me.initial_investment < me.entry_mode.capital_requirement:
+            errors.append(participant_message(
+                'entry_investment_low', language=language,
+                market=get_localized_field(me.market, 'name', language),
+                submitted=f'${me.initial_investment:,.2f}',
+                minimum=f'${me.entry_mode.capital_requirement:,.2f}'))
+
+    # Core Round 1 decisions must be explicit before locking.
+    if submission.product_creates.count() == 0 and submission.product_retires.count() == 0:
+        errors.append(participant_message(
+            'product_portfolio_required', language=language))
+
+    active_product_markets = TeamProductMarket.objects.filter(
+        team_product__team=team, team_product__status='active', is_active=True,
+    ).count()
+    marketing_count = submission.marketing_decisions.count()
+    if active_product_markets > 0 and marketing_count < active_product_markets:
+        errors.append(participant_message(
+            'marketing_mix_required', language=language))
+    elif active_product_markets == 0:
+        errors.append(participant_message(
+            'marketing_mix_needs_product', language=language))
+
+    strategy_configured = (
+        submission.market_entries.count()
+        + submission.plant_decisions.count()
+        + submission.partnerships.count()
+        + submission.acquisitions.count()
+    ) > 0
+    try:
+        submission.esg
+        strategy_configured = True
+    except DecisionESG.DoesNotExist:
+        pass
+    if not strategy_configured:
+        errors.append(participant_message(
+            'strategy_mix_required', language=language))
+
+    # Financing: debt ceiling
+    try:
+        fin = submission.financing
+        max_ratio = Decimal('2.0')
+        cfg = ScenarioConfig.objects.filter(
+            scenario=scenario, config_key='max_debt_to_equity_ratio',
+        ).first()
+        if cfg:
+            max_ratio = Decimal(cfg.config_value)
+        projected_debt = team.total_debt + fin.new_debt - fin.debt_repayment
+        if fin.debt_repayment > team.total_debt:
+            errors.append(participant_message(
+                'debt_repayment_exceeds_debt', language=language,
+                repayment=f'${fin.debt_repayment:,.2f}',
+                debt=f'${team.total_debt:,.2f}'))
+        projected_equity = team.total_equity + fin.new_equity
+        if projected_equity > 0 and projected_debt / projected_equity > max_ratio:
+            errors.append(participant_message(
+                'debt_ratio_exceeded', language=language,
+                ratio=f'{projected_debt / projected_equity:.2f}',
+                maximum=max_ratio))
+        total_dividends = fin.dividend_per_share * team.shares_outstanding
+        # Simple check: dividends shouldn't exceed equity
+        if total_dividends > projected_equity:
+            errors.append(participant_message(
+                'dividends_exceed_equity', language=language,
+                dividends=f'${total_dividends:,.2f}'))
+    except DecisionFinancing.DoesNotExist:
+        pass  # Financing is optional
+
+    # (Research budget removed — research queries are free)
+
+    # ESG: total <= strategy_budget (shared with other strategy items)
+    try:
+        esg = submission.esg
+        esg_total = esg.environmental_investment + esg.social_investment
+        # Strategy budget is shared — don't validate in isolation here,
+        # but flag obvious overspend
+    except DecisionESG.DoesNotExist:
+        pass
+
+    # Projected ending cash check
+    # Keep the lock response on the same cash total as the summary and
+    # Finance context.  `budget_total` omits platform development; only
+    # `committed_total` answers what this submission will actually cost.
+    projected_cash = team.cash_on_hand - Decimal(
+        assessment['committed_total'])
+    try:
+        fin = submission.financing
+        projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
+        projected_cash -= fin.dividend_per_share * team.shares_outstanding
+    except DecisionFinancing.DoesNotExist:
+        pass
+    if projected_cash < 0:
+        errors.append(participant_message(
+            'cash_negative', language=language,
+            cash=f'${projected_cash:,.2f}'))
+
+    # CC-32A: Check mandatory communication assignments
+    try:
+        from core.models.cc32_models import CommunicationAssignment, TeamCommunication
+        game = submission.round.game
+        scenario = game.scenario
+        current_round = submission.round.round_number
+
+        for ca in CommunicationAssignment.objects.filter(scenario=scenario, is_mandatory=True):
+            triggered = False
+            if ca.trigger_type == 'ROUND_MILESTONE':
+                triggered = (ca.trigger_condition or {}).get('round') == current_round
+            elif ca.trigger_type == 'EVENT_BASED':
+                categories = (ca.trigger_condition or {}).get('event_category', [])
+                if isinstance(categories, str):
+                    categories = [categories]
+                from core.models.results import EventInstance
+                triggered = EventInstance.objects.filter(
+                    game=game, round_number=current_round,
+                    event_template__category__in=categories,
+                ).exists()
+
+            if triggered:
+                submitted = TeamCommunication.objects.filter(
+                    game=game, team=submission.team, round=submission.round,
+                    assignment=ca, is_draft=False,
+                ).exists()
+                if not submitted:
+                    errors.append(participant_message(
+                        'mandatory_communication_required', language=language,
+                        communication=ca.name))
+    except Exception:
+        pass  # Don't block locking if communication check fails
+
+    # V2-024: a raise larger than the round's funding shortfall. Refused at
+    # save and again by the engine, which will not resolve a round carrying
+    # one; the lock is the last point before the decisions are frozen, so it
+    # is refused here too rather than shown on the Summary and then let
+    # through (W-CE-25).
+    from core.services import funding_need
+    funding = funding_need.assess_submission(submission)
+    if not funding['within_limit']:
+        errors.append(funding_need.describe(
+            funding, team.name, language=language))
+
+    return errors
+
+
 class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
     """POST — lock the submission after full validation."""
     permission_classes = [IsTeamMember, IsRoundOpen]
@@ -799,312 +1123,7 @@ class DecisionLockView(CompetitionDecisionWriteMixin, APIView):
         return Response(DecisionSubmissionSerializer(submission).data)
 
     def _full_validate(self, submission, language='en'):
-        """
-        Run hard validation for locking. Returns list of error strings.
-        """
-        errors = []
-        team = submission.team
-        game = team.game
-        scenario = game.scenario
-
-        # Budget allocation must exist
-        try:
-            budget = submission.budget_allocation
-        except DecisionBudgetAllocation.DoesNotExist:
-            errors.append(participant_message('budget_required', language=language))
-            return errors
-
-        # Budget fields >= 0
-        for field in ('rd_budget', 'marketing_budget', 'strategy_budget'):
-            if getattr(budget, field) < 0:
-                errors.append(participant_message(
-                    'non_negative', language=language,
-                    field=field_label(field, language)))
-
-        # Total committed spend vs available cash, including platform
-        # development. One rule, in one place: this was written three times
-        # (here, :888 and :1015), the three disagreed about whether
-        # research_budget counted, and none of them counted platform
-        # development at all (V2-038).
-        from core.services.rd_costs import (budget_assessment,
-                                            describe_budget_problems)
-        assessment = budget_assessment(submission, team)
-        errors.extend(describe_budget_problems(assessment, language=language))
-
-        # R&D investments: total <= rd_budget
-        rd_total = sum(
-            inv.amount for inv in submission.rd_investments.all()
-        )
-        if rd_total > budget.rd_budget:
-            errors.append(participant_message(
-                'rd_budget_exceeded', language=language,
-                spent=f'${rd_total:,.2f}', budget=f'${budget.rd_budget:,.2f}'))
-
-        # R&D: validate team_platform belongs to team
-        for inv in submission.rd_investments.all():
-            if inv.team_platform.team_id != team.id:
-                errors.append(participant_message(
-                    'rd_platform_not_owned', language=language))
-            if inv.team_platform.status != 'active':
-                errors.append(participant_message(
-                    'rd_platform_inactive', language=language))
-            if inv.feature.layer != 'platform':
-                errors.append(participant_message(
-                    'rd_feature_wrong_layer', language=language))
-            if inv.method == 'license' and hasattr(inv.feature, 'is_licensable') and not inv.feature.is_licensable:
-                errors.append(participant_message(
-                    'rd_feature_unlicensable', language=language))
-            # Check ceiling
-            ceiling = PlatformFeatureCeiling.objects.filter(
-                platform_generation=inv.team_platform.platform_generation,
-                feature=inv.feature,
-            ).first()
-            if ceiling:
-                current_level = TeamPlatformFeatureLevel.objects.filter(
-                    team_platform=inv.team_platform, feature=inv.feature,
-                ).values_list('current_level', flat=True).first() or Decimal('0')
-                if current_level >= ceiling.ceiling_value:
-                    errors.append(participant_message(
-                        'feature_at_ceiling', language=language,
-                        feature=get_localized_field(
-                            inv.feature, 'name', language)))
-
-        # Platform development: validate generation
-        for pd in submission.platform_developments.all():
-            if pd.platform_generation.scenario_id != scenario.id:
-                errors.append(participant_message(
-                    'platform_wrong_scenario', language=language))
-            if pd.platform_generation.unlock_round > game.current_round:
-                errors.append(participant_message(
-                    'platform_not_unlocked', language=language,
-                    platform=get_localized_field(
-                        pd.platform_generation, 'name', language),
-                    round=pd.platform_generation.unlock_round))
-            existing = TeamPlatform.objects.filter(
-                team=team, platform_generation=pd.platform_generation,
-            ).exclude(status='retired')
-            if existing.exists():
-                errors.append(participant_message(
-                    'platform_already_owned', language=language,
-                    platform=get_localized_field(
-                        pd.platform_generation, 'name', language)))
-
-        # Product creates: validate platform and limits
-        active_products = TeamProduct.objects.filter(team=team, status='active').count()
-        for pc in submission.product_creates.all():
-            if pc.team_platform.team_id != team.id:
-                errors.append(participant_message(
-                    'product_platform_not_owned', language=language))
-            if pc.team_platform.status != 'active':
-                errors.append(participant_message(
-                    'product_platform_inactive', language=language))
-            # Check max products
-            if active_products + 1 > scenario.max_products_total:
-                errors.append(participant_message(
-                    'product_limit', language=language,
-                    maximum=scenario.max_products_total))
-            # Check target markets have presence
-            for mid in (pc.target_market_ids or []):
-                if not TeamMarketPresence.objects.filter(
-                    team=team, market_id=mid, status='active',
-                ).exists():
-                    errors.append(participant_message(
-                        'product_market_not_active', language=language,
-                        product=pc.product_name))
-
-        # Product retires: validate ownership
-        for pr in submission.product_retires.all():
-            if pr.team_product.team_id != team.id:
-                errors.append(participant_message('product_not_owned', language=language))
-            if pr.team_product.status != 'active':
-                errors.append(participant_message(
-                    'product_not_active', language=language,
-                    product=pr.team_product.name))
-
-        # Marketing: channel pcts, budget
-        marketing_total = Decimal('0')
-        for md in submission.marketing_decisions.all():
-            if md.team_product.team_id != team.id:
-                errors.append(participant_message('product_not_owned', language=language))
-            ch_sum = md.channel_digital_pct + md.channel_traditional_pct + md.channel_trade_pct
-            if abs(ch_sum - Decimal('1.0')) > Decimal('0.001'):
-                errors.append(participant_message(
-                    'marketing_channels_invalid', language=language,
-                    product=md.team_product.name,
-                    market=get_localized_field(md.market, 'name', language),
-                    total=f'{ch_sum * 100:g}'))
-            # A blank price is legal to SAVE (Ruling 2) and is filled at the
-            # band floor when the round closes — but only for a product that
-            # sold in this market last round. With no prior-round price there
-            # is nothing to fall back to, so the team must price it before
-            # locking rather than have one invented for them.
-            if md.retail_price is None:
-                from core.services import price_band as _band_rules
-                _band = _band_rules.price_band(
-                    scenario, team, md.team_product, md.market,
-                    submission.round.round_number)
-                if _band_rules.blank_price(_band) is None:
-                    errors.append(participant_message(
-                        'marketing_price_invalid', language=language,
-                        product=md.team_product.name,
-                        market=get_localized_field(
-                            md.market, 'name', language)))
-            elif md.retail_price <= 0:
-                errors.append(participant_message(
-                    'marketing_price_invalid', language=language,
-                    product=md.team_product.name,
-                    market=get_localized_field(md.market, 'name', language)))
-            marketing_total += md.promotion_budget + md.distribution_investment
-
-        if marketing_total > budget.marketing_budget:
-            errors.append(participant_message(
-                'marketing_budget_exceeded', language=language,
-                spent=f'${marketing_total:,.2f}',
-                budget=f'${budget.marketing_budget:,.2f}'))
-
-        # Market entry: validate actions
-        for me in submission.market_entries.all():
-            presence = TeamMarketPresence.objects.filter(
-                team=team, market=me.market,
-            ).exclude(status='exited').first()
-            if me.action == 'enter' and presence:
-                errors.append(participant_message(
-                    'market_already_entered', language=language,
-                    market=get_localized_field(me.market, 'name', language)))
-            if me.action in ('change_mode', 'exit') and not presence:
-                errors.append(participant_message(
-                    'market_not_active', language=language,
-                    market=get_localized_field(me.market, 'name', language)))
-            if me.action == 'enter' and me.initial_investment < me.entry_mode.capital_requirement:
-                errors.append(participant_message(
-                    'entry_investment_low', language=language,
-                    market=get_localized_field(me.market, 'name', language),
-                    submitted=f'${me.initial_investment:,.2f}',
-                    minimum=f'${me.entry_mode.capital_requirement:,.2f}'))
-
-        # Core Round 1 decisions must be explicit before locking.
-        if submission.product_creates.count() == 0 and submission.product_retires.count() == 0:
-            errors.append(participant_message(
-                'product_portfolio_required', language=language))
-
-        active_product_markets = TeamProductMarket.objects.filter(
-            team_product__team=team, team_product__status='active', is_active=True,
-        ).count()
-        marketing_count = submission.marketing_decisions.count()
-        if active_product_markets > 0 and marketing_count < active_product_markets:
-            errors.append(participant_message(
-                'marketing_mix_required', language=language))
-        elif active_product_markets == 0:
-            errors.append(participant_message(
-                'marketing_mix_needs_product', language=language))
-
-        strategy_configured = (
-            submission.market_entries.count()
-            + submission.plant_decisions.count()
-            + submission.partnerships.count()
-            + submission.acquisitions.count()
-        ) > 0
-        try:
-            submission.esg
-            strategy_configured = True
-        except DecisionESG.DoesNotExist:
-            pass
-        if not strategy_configured:
-            errors.append(participant_message(
-                'strategy_mix_required', language=language))
-
-        # Financing: debt ceiling
-        try:
-            fin = submission.financing
-            max_ratio = Decimal('2.0')
-            cfg = ScenarioConfig.objects.filter(
-                scenario=scenario, config_key='max_debt_to_equity_ratio',
-            ).first()
-            if cfg:
-                max_ratio = Decimal(cfg.config_value)
-            projected_debt = team.total_debt + fin.new_debt - fin.debt_repayment
-            if fin.debt_repayment > team.total_debt:
-                errors.append(participant_message(
-                    'debt_repayment_exceeds_debt', language=language,
-                    repayment=f'${fin.debt_repayment:,.2f}',
-                    debt=f'${team.total_debt:,.2f}'))
-            projected_equity = team.total_equity + fin.new_equity
-            if projected_equity > 0 and projected_debt / projected_equity > max_ratio:
-                errors.append(participant_message(
-                    'debt_ratio_exceeded', language=language,
-                    ratio=f'{projected_debt / projected_equity:.2f}',
-                    maximum=max_ratio))
-            total_dividends = fin.dividend_per_share * team.shares_outstanding
-            # Simple check: dividends shouldn't exceed equity
-            if total_dividends > projected_equity:
-                errors.append(participant_message(
-                    'dividends_exceed_equity', language=language,
-                    dividends=f'${total_dividends:,.2f}'))
-        except DecisionFinancing.DoesNotExist:
-            pass  # Financing is optional
-
-        # (Research budget removed — research queries are free)
-
-        # ESG: total <= strategy_budget (shared with other strategy items)
-        try:
-            esg = submission.esg
-            esg_total = esg.environmental_investment + esg.social_investment
-            # Strategy budget is shared — don't validate in isolation here,
-            # but flag obvious overspend
-        except DecisionESG.DoesNotExist:
-            pass
-
-        # Projected ending cash check
-        # Keep the lock response on the same cash total as the summary and
-        # Finance context.  `budget_total` omits platform development; only
-        # `committed_total` answers what this submission will actually cost.
-        projected_cash = team.cash_on_hand - Decimal(
-            assessment['committed_total'])
-        try:
-            fin = submission.financing
-            projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
-            projected_cash -= fin.dividend_per_share * team.shares_outstanding
-        except DecisionFinancing.DoesNotExist:
-            pass
-        if projected_cash < 0:
-            errors.append(participant_message(
-                'cash_negative', language=language,
-                cash=f'${projected_cash:,.2f}'))
-
-        # CC-32A: Check mandatory communication assignments
-        try:
-            from core.models.cc32_models import CommunicationAssignment, TeamCommunication
-            game = submission.round.game
-            scenario = game.scenario
-            current_round = submission.round.round_number
-
-            for ca in CommunicationAssignment.objects.filter(scenario=scenario, is_mandatory=True):
-                triggered = False
-                if ca.trigger_type == 'ROUND_MILESTONE':
-                    triggered = (ca.trigger_condition or {}).get('round') == current_round
-                elif ca.trigger_type == 'EVENT_BASED':
-                    categories = (ca.trigger_condition or {}).get('event_category', [])
-                    if isinstance(categories, str):
-                        categories = [categories]
-                    from core.models.results import EventInstance
-                    triggered = EventInstance.objects.filter(
-                        game=game, round_number=current_round,
-                        event_template__category__in=categories,
-                    ).exists()
-
-                if triggered:
-                    submitted = TeamCommunication.objects.filter(
-                        game=game, team=submission.team, round=submission.round,
-                        assignment=ca, is_draft=False,
-                    ).exists()
-                    if not submitted:
-                        errors.append(participant_message(
-                            'mandatory_communication_required', language=language,
-                            communication=ca.name))
-        except Exception:
-            pass  # Don't block locking if communication check fails
-
-        return errors
+        return lock_blockers_for(submission, language=language)
 
 
 class DecisionUnlockView(APIView):
@@ -1405,6 +1424,10 @@ class DecisionSummaryView(APIView):
                 lock_blockers.append(participant_message(
                     message_key, language=language))
 
+        # W-CE-25: one list. The category checklist above is presentation;
+        # what blocks the lock is what the lock validator says, so the page
+        # cannot show an enabled button for a submission the server refuses.
+        lock_blockers = lock_blockers_for(submission, language=language)
         can_lock = len(lock_blockers) == 0
 
         # Budget summary
