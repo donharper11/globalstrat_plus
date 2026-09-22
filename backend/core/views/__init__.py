@@ -50,7 +50,6 @@ from .course import (
     CourseViewSet, SectionViewSet,
     RosterViewSet, TeamManagementView,
     GameRoundScheduleView,
-    DecisionStatusView, SendReminderView,
 )
 from .grading import (
     GradingRubricViewSet, GradingRubricCategoryViewSet,

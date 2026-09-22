@@ -499,10 +499,6 @@ MESSAGES = {
         'en': 'No active round.',
         'zh-CN': '当前没有进行中的回合。',
     },
-    'reminder_game_required': {
-        'en': 'The request did not say which game session to remind, so no reminder was sent. Reload the console and try again.',
-        'zh-CN': '本次请求未指明要提醒哪个游戏场次，因此未发送提醒。请刷新控制台后重试。',
-    },
     'accounts_csv_empty': {
         'en': 'No account data was provided. Paste the account list, then upload again.',
         'zh-CN': '未提供账号数据。请粘贴账号列表后重新上传。',

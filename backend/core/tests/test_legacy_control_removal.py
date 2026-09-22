@@ -73,6 +73,57 @@ class LegacyControlRefusesInstructors(TestCase):
 
 
 # --------------------------------------------------------------------------
+# The per-round checklist and reminder routes (R48 item 8)
+# --------------------------------------------------------------------------
+
+class DeadRoundStatusRoutesAreGone(SimpleTestCase):
+    """`rounds/<id>/decision-status/`, `rounds/<id>/send-reminder/` and
+    `rounds/current/my-status/` looked a round up by `round_id`, a column the
+    model does not have, and answered 500 on every call. No console control
+    and no student page called them (the frontend has no caller of any of the
+    three paths). Integrator decision under R48: remove them, as R16 removed
+    the legacy control surface."""
+
+    def test_the_route_names_no_longer_reverse(self):
+        for name, args in (('round-decision-status', [1]),
+                           ('round-send-reminder', [1]),
+                           ('my-decision-status', [])):
+            with self.assertRaises(NoReverseMatch, msg=f'{name} still registered'):
+                reverse(name, args=args)
+
+    def test_the_paths_no_longer_resolve(self):
+        for path in ('/api/rounds/1/decision-status/',
+                     '/api/rounds/1/send-reminder/',
+                     '/api/rounds/current/my-status/'):
+            with self.assertRaises(Resolver404, msg=f'{path} still resolves'):
+                resolve(path)
+
+    def test_the_views_are_gone_with_their_routes(self):
+        import core.views
+        import core.views.course
+        for module in (core.views, core.views.course):
+            for name in ('DecisionStatusView', 'SendReminderView'):
+                self.assertFalse(hasattr(module, name),
+                                 f'{module.__name__}.{name} survives its route')
+
+    def test_the_sentences_only_they_spoke_are_gone_from_the_catalogues(self):
+        """A catalogue entry no route can reach is dead wording that the
+        string inventory would keep listing as reachable."""
+        from core.utils.operator_messages import MESSAGES as OPERATOR
+        from core.utils.participant_messages import MESSAGES as PARTICIPANT
+        self.assertNotIn('reminder_game_required', OPERATOR)
+        for key in ('round_not_found', 'status_item_programs',
+                    'status_item_challenges', 'status_item_dilemma',
+                    'status_detail_modified', 'status_detail_no_changes',
+                    'status_detail_submitted_count', 'status_detail_submitted',
+                    'status_detail_pending'):
+            self.assertNotIn(key, PARTICIPANT, key)
+        # The operator sentence of the same name is still spoken by the
+        # instructor's round-results route and stays.
+        self.assertIn('round_not_found', OPERATOR)
+
+
+# --------------------------------------------------------------------------
 # The detector that recorded the removed route as guarded
 # --------------------------------------------------------------------------
 

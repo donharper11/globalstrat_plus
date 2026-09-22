@@ -80,9 +80,10 @@ def _models_read(source, names):
 def _mentions(source, name):
     """Whole-identifier match.
 
-    A substring test flags `DecisionLockedMixin` and `DecisionStatusView` as
-    reads of the `Decision` model, which puts two views that serve no decision
-    rows on a list whose value depends on every row being real.
+    A substring test flagged `DecisionLockedMixin` and `DecisionStatusView`
+    (since removed under R48) as reads of the `Decision` model, which put two
+    views that served no decision rows on a list whose value depends on every
+    row being real.
     """
     return re.search(r'\b%s\b' % re.escape(name), source) is not None
 

@@ -2454,16 +2454,6 @@
       "uses_boundary": false,
       "view": "core.views.course.RosterViewSet"
     },
-    "api/rounds/<int:round_id>/send-reminder/|post": {
-      "exempt": false,
-      "lifecycle_mutating": false,
-      "methods": [
-        "post"
-      ],
-      "route": "api/rounds/<int:round_id>/send-reminder/",
-      "uses_boundary": false,
-      "view": "core.views.course.SendReminderView"
-    },
     "api/team-management/|put": {
       "exempt": true,
       "lifecycle_mutating": true,
@@ -2485,6 +2475,6 @@
       "view": "core.views.auth.LanguagePreferenceView"
     }
   },
-  "total_mutating_routes": 217,
+  "total_mutating_routes": 216,
   "unguarded": 0
 }

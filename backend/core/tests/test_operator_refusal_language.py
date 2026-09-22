@@ -105,8 +105,7 @@ CONVERTED = [
     ('core/views/team_control.py', None),
     ('core/views/instructor_accounts.py', None),
     ('core/views/course.py',
-     {'RosterViewSet', 'TeamManagementView', 'GameRoundScheduleView',
-      'DecisionStatusView', 'SendReminderView'}),
+     {'RosterViewSet', 'TeamManagementView', 'GameRoundScheduleView'}),
     ('core/views/scenario_views.py',
      {'GameActivateView', 'GamePauseView', 'GameResumeView', 'GameResetView',
       'GameArchiveView', 'GameCreateView', 'GameTeamsView', 'GameDeleteView',
@@ -646,10 +645,10 @@ class OperatorRefusalLanguageTests(TestCase):
             row.conflict['detail'],
             'Round 1 is "closed"; an event staged now would not fire in it.')
 
-    # `rounds/<id>/send-reminder/` and `rounds/<id>/decision-status/` are not
-    # driven here: both look a round up by a column the model does not have and
-    # answer 500 before any refusal is reached (reported as a finding). Their
-    # literals are converted and held by the source scan.
+    # `rounds/<id>/send-reminder/` and `rounds/<id>/decision-status/` looked a
+    # round up by a column the model does not have and answered 500 before any
+    # refusal was reached; both were removed under R48 (item 8), with the
+    # sentences only they spoke.
 
     def _someone_to_record_the_game_against(self):
         from django.contrib.auth.models import User as AuthUser

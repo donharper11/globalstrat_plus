@@ -66,7 +66,6 @@ export const BILINGUAL_REFUSAL_CODES = Object.freeze([
   'password_too_short',
   'processing_failed',
   'reason_required',
-  'reminder_game_required',
   'roster_account_not_found',
   'roster_add_failed',
   'roster_csv_empty',

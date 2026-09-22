@@ -679,10 +679,6 @@ MESSAGES = {
         'en': 'This game has no round in progress yet.',
         'zh-CN': '该游戏目前没有进行中的回合。',
     },
-    'round_not_found': {
-        'en': 'That round could not be found. Reload the page and try again.',
-        'zh-CN': '未找到该回合。请刷新页面后重试。',
-    },
     'decisions_locked': {
         'en': 'Decisions are locked for this round.',
         'zh-CN': '本回合的决策已锁定。',
@@ -842,39 +838,6 @@ MESSAGES = {
     'list_separator': {
         'en': ', ',
         'zh-CN': '、',
-    },
-    # The legacy per-round checklist (`rounds/<id>/decision-status/`).
-    'status_item_programs': {
-        'en': 'CSR Programs',
-        'zh-CN': 'CSR 项目',
-    },
-    'status_item_challenges': {
-        'en': 'Challenge Responses',
-        'zh-CN': '挑战回应',
-    },
-    'status_item_dilemma': {
-        'en': 'Ethical Dilemma',
-        'zh-CN': '伦理困境',
-    },
-    'status_detail_modified': {
-        'en': 'Modified',
-        'zh-CN': '已修改',
-    },
-    'status_detail_no_changes': {
-        'en': 'No changes',
-        'zh-CN': '无更改',
-    },
-    'status_detail_submitted_count': {
-        'en': '{submitted}/{available} submitted',
-        'zh-CN': '已提交 {submitted}/{available}',
-    },
-    'status_detail_submitted': {
-        'en': 'Submitted',
-        'zh-CN': '已提交',
-    },
-    'status_detail_pending': {
-        'en': 'Pending',
-        'zh-CN': '待提交',
     },
 }
 
