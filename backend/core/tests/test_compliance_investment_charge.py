@@ -396,8 +396,10 @@ class ResolvedRoundTests(ComplianceChargeBase):
         self.resolve()
         mine, control = self.statements()
 
-        self.assertEqual(mine.strategy_expense - control.strategy_expense,
+        # Its own line (owner's amendment); strategy expense is untouched.
+        self.assertEqual(mine.compliance_expense - control.compliance_expense,
                          INVESTMENT)
+        self.assertEqual(mine.strategy_expense, control.strategy_expense)
         self.assertEqual(control.net_income - mine.net_income, INVESTMENT)
         self.assertEqual(control.cash_closing - mine.cash_closing, INVESTMENT)
         self.assertEqual(self.cash(self.rival) - self.cash(self.team),
@@ -411,3 +413,63 @@ class ResolvedRoundTests(ComplianceChargeBase):
         self.assertEqual(mine.strategy_expense, control.strategy_expense)
         self.assertEqual(mine.cash_closing, control.cash_closing)
         self.assertEqual(self.cash(self.team), self.cash(self.rival))
+
+
+class OwnLineTests(ComplianceChargeBase):
+    """The owner's amendment: its own line on the income statement.
+
+    A column of its own on `RoundResultFinancials`, no longer carried inside
+    `strategy_expense`; the envelope moves to schema version 7 because the
+    hashed `financials` section gains a field; and every statement a student
+    reads publishes the line.
+    """
+
+    def resolve(self):
+        from core.engine.advance_round import process_round
+        Round.objects.filter(pk=self.round.pk).update(status='closed')
+        for team in self.teams:
+            DecisionSubmission.objects.update_or_create(
+                team=team, round=self.round, defaults={'status': 'locked'})
+        process_round(self.game.id)
+
+    def statements(self):
+        return tuple(RoundResultFinancials.objects.get(
+            game=self.game, round_number=1, team=team)
+            for team in (self.team, self.rival))
+
+    def test_the_statement_has_its_own_column_and_strategy_is_untouched(self):
+        self.invest([(self.eu, INVESTMENT)])
+        self.resolve()
+        mine, control = self.statements()
+        self.assertEqual(mine.compliance_expense, INVESTMENT)
+        self.assertEqual(control.compliance_expense, D('0'))
+        # Not folded: strategy expense is the same for both teams.
+        self.assertEqual(mine.strategy_expense, control.strategy_expense)
+        # And the totals still carry it.
+        self.assertEqual(control.net_income - mine.net_income, INVESTMENT)
+        self.assertEqual(control.cash_closing - mine.cash_closing, INVESTMENT)
+
+    def test_the_envelope_is_version_7_and_hashes_the_column(self):
+        from core.services.manifest_schema import build_schema_inventory
+        from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
+        financials = build_schema_inventory()['output']['financials']
+        self.assertIn('compliance_expense', financials['hashed'])
+        self.assertNotIn('compliance_expense', financials['dropped'])
+
+    def test_the_statement_endpoints_publish_the_line(self):
+        self.invest([(self.eu, INVESTMENT)])
+        self.resolve()
+        results = self.client.get(f'{self.base}/results/round/1/')
+        self.assertEqual(results.status_code, 200, results.data)
+        self.assertEqual(D(str(results.data['financials']['compliance_expense'])),
+                         INVESTMENT)
+        # research_expense had a column since v6 and no statement surface
+        # published it; it rides the same one-line pattern now.
+        self.assertIn('research_expense', results.data['financials'])
+
+        history = self.client.get(f'{self.base}/financial-reports/history/')
+        self.assertEqual(history.status_code, 200, history.data)
+        rows = {row['round_number']: row for row in history.data['rounds']}
+        self.assertEqual(D(str(rows[1]['compliance_expense'])), INVESTMENT)
+        self.assertIn('research_expense', rows[1])

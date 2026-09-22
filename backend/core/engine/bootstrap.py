@@ -385,6 +385,7 @@ def bootstrap_round_zero(game):
                 'marketing_expense': D('0'),
                 'strategy_expense': D('0'),
                 'research_expense': D('0'),
+                'compliance_expense': D('0'),
                 'admin_overhead': admin_overhead,
                 'logistics_tariff_expense': D('0'),
                 'inventory_expense': D('0'),

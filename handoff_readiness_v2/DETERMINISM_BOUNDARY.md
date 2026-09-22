@@ -48,6 +48,14 @@ configuration sections, the roster (`team_member`), the ordered decision audit
 trail (`decision_audit_event`), the RNG seed derivation inputs, and the applied
 migration list.
 
+*Schema version 7 (2026-09-22, R47).* The `financials` section gained one
+hashed field, `compliance_expense` -- compliance investment charged from
+cash and shown as its own income-statement line by owner ruling. The section
+count is unchanged; every round resolved from v7 on carries bytes the v6
+definition did not, so a v6 hash and a v7 hash of the same state are not
+comparable and `replay_round` refuses the comparison by version before it
+restores anything (`evidence/determinism/r47-compliance-charge/`).
+
 ## What is deliberately outside it, and why
 
 - **Phase-2 prose.** `strategic_briefing` and `market_intelligence`, plus the
@@ -85,8 +93,8 @@ migration list.
   untracked file that `git status --untracked-files=no` calls clean — which is
   exactly what the negative test in the evidence demonstrates.
 
-  *Added 2026-09-21 (A-03, A-04); none of it enters a hash, and the envelope is
-  still version 6.* The digest now also covers `backend/requirements.txt`, so
+  *Added 2026-09-21 (A-03, A-04); none of it enters a hash, and the envelope was
+  still version 6 at the time.* The digest now also covers `backend/requirements.txt`, so
   digests recorded before this change are not comparable with digests taken
   after it even for otherwise identical code (they never were across commits:
   a digest is evidence for its own commit). It is taken at process start

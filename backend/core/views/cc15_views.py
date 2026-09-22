@@ -413,6 +413,9 @@ class FinancialReportsHistoryView(APIView):
                 'rd_expense': _dec(fin.rd_expense),
                 'marketing_expense': _dec(fin.marketing_expense),
                 'strategy_expense': _dec(fin.strategy_expense),
+                'research_expense': _dec(fin.research_expense),
+                # R47: its own line on the income statement.
+                'compliance_expense': _dec(fin.compliance_expense),
                 'admin_overhead': _dec(fin.admin_overhead),
                 'logistics_tariff_expense': _dec(fin.logistics_tariff_expense),
                 'inventory_expense': _dec(fin.inventory_expense),

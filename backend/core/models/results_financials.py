@@ -62,6 +62,12 @@ class RoundResultFinancials(models.Model):
     marketing_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     strategy_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     research_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
+    compliance_expense = models.DecimalField(
+        max_digits=15, decimal_places=2, default=0,
+        help_text='R47: compliance investment the team made this round, '
+                  'charged from cash at resolution; its own line on the '
+                  'income statement by owner ruling.',
+    )
     admin_overhead = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     logistics_tariff_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     inventory_expense = models.DecimalField(max_digits=15, decimal_places=2, default=0)

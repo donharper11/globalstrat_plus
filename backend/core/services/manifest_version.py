@@ -20,4 +20,9 @@ module having to import the whole manifest machinery.
 #         a `research_expense` line that is now produced rather than always
 #         zero. Both change the competitive envelope: every round resolved
 #         after this carries a section the previous definition did not have.
-MANIFEST_SCHEMA_VERSION = 6
+# 6 -> 7: R47 -- the `compliance_expense` financial line. Compliance investment
+#         is charged from cash and, by the owner's amended ruling, shown as
+#         its own line on the income statement: a new hashed field on the
+#         `financials` output section, so every round resolved after this
+#         hashes bytes the v6 definition did not contain.
+MANIFEST_SCHEMA_VERSION = 7
