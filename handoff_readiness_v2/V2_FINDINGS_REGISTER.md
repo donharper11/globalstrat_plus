@@ -3389,3 +3389,7 @@ Record: `completion/WALKTHROUGH_CE_2026-09-22.md` (the authoritative defects tab
 
 **Host note, 2026-09-22 evening (from `completion/WALK_CE_CONSOLE_2026-09-22.md`):** the host disk stalled again (`jbd2` in D state, I/O pressure 30–50%); a bare `initdb` took minutes and the runner's fixed 30 s readiness window failed for every builder. `backend/scripts/test-postgres` now reads `TEST_POSTGRES_READY_SECONDS` (default 30). The full suite took 33 minutes under the stall. An operator item, not a code one.
 
+### All four walkthrough repair branches merged — certifying run 2026-09-22
+
+**Full backend suite on the fully merged tree at `b890976`: `Ran 1584 tests`, OK, 191 s (the disk stall had eased). Jest 48 suites / 478 tests. Participant-string gate PASS at 5,718 units; inventory clean.** Not the freeze-candidate run. Of W-CE-01..26: every P0 and P1 repaired pending closure except the second half of W-CE-23 (a rules question) and W-CE-19 (calibration, deferred); W-CE-09 and W-CE-10 closed by removal. Next: re-walk Consumer Electronics on this tree to confirm, then Media and Clean Energy.
+
