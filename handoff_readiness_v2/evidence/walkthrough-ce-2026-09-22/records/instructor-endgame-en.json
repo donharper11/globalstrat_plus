@@ -1,0 +1,813 @@
+{
+ "driver": "instructor-endgame",
+ "language": "en",
+ "base": "http://127.0.0.1:33329",
+ "started": "2026-09-22T18:12:19",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "grades calculated on played rounds",
+   "outcome": "pass",
+   "detail": "Grades calculated | ['Meridian Tech34.834.860.2', 'Cipher Systems34.634.660.0', 'Stratos Electronics35.035.060.4']"
+  },
+  {
+   "name": "export after 4 rounds: Export Team Summary CSV",
+   "outcome": "pass",
+   "detail": "final-game_1_teams.csv (479 bytes)"
+  },
+  {
+   "name": "export after 4 rounds: Export Team Grades CSV",
+   "outcome": "pass",
+   "detail": "final-team_grades.csv (265 bytes)"
+  },
+  {
+   "name": "export after 4 rounds: Export Student Grades CSV",
+   "outcome": "pass",
+   "detail": "final-student_grades.csv (1331 bytes)"
+  },
+  {
+   "name": "delete refused for a game with a record (game still exists)",
+   "outcome": "pass",
+   "detail": "toast='CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted. Archive the game instead: it keeps every record, stops play, and frees the section for a new game.' round-control=200"
+  },
+  {
+   "name": "delete refused for a competition heat (game still exists)",
+   "outcome": "pass",
+   "detail": "toast='CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event. Archive the game instead: it keeps every record, stops play, and frees the section for a new game.' round-control=200"
+  },
+  {
+   "name": "reset outcome recorded",
+   "outcome": "observed",
+   "detail": "toast='Game reset to setup' status=setup current_round=0"
+  },
+  {
+   "name": "archive outcome recorded",
+   "outcome": "observed",
+   "detail": "toast='Game archived. You can now create a new game for this section.' status=archived"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "18:12:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "18:13:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "18:13:11"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "18:12:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "18:12:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "18:12:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "18:12:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "18:12:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "18:12:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "18:12:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-categories/?rubric_id=1",
+   "status": 200,
+   "at": "18:12:45"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/calculate/",
+   "status": 200,
+   "at": "18:12:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "18:12:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/teams/?instance_id=1",
+   "status": 200,
+   "at": "18:12:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/students/?instance_id=1",
+   "status": 200,
+   "at": "18:12:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "18:12:54"
+  },
+  {
+   "method": "DELETE",
+   "url": "/api/games/1/delete/",
+   "status": 409,
+   "at": "18:13:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "18:13:04"
+  },
+  {
+   "method": "DELETE",
+   "url": "/api/games/1/delete/",
+   "status": 409,
+   "at": "18:13:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "18:13:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "18:13:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "18:13:24"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/reset/",
+   "status": 200,
+   "at": "18:13:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "18:13:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "18:13:30"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/archive/",
+   "status": 200,
+   "at": "18:13:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "18:13:40"
+  }
+ ],
+ "refused": [
+  {
+   "method": "DELETE",
+   "url": "/api/games/1/delete/",
+   "status": 409,
+   "at": "18:13:01",
+   "body": "{\"error\":\"CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted.\",\"code\":\"game_has_record\",\"guidance\":\"Archive the game instead: it keeps every record, stops play, and frees the section for a new game.\",\"request_id\":\"srv-62ee3080-e96b-4598-9cef-e5bafdb3b362\"}",
+   "request": "{\"reason\":\"Walkthrough: attempting to delete a game that has a record.\"}"
+  },
+  {
+   "method": "DELETE",
+   "url": "/api/games/1/delete/",
+   "status": 409,
+   "at": "18:13:11",
+   "body": "{\"error\":\"CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event.\",\"code\":\"competition_game_not_deletable\",\"guidance\":\"Archive the game instead: it keeps every record, stops play, and frees the section for a new game.\",\"request_id\":\"srv-7c227c3f-a8b8-4437-b3dc-e99f27df5187\"}",
+   "request": "{\"reason\":\"Walkthrough: attempting to delete a competition heat.\"}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "end-grading-after-4-rounds",
+   "url": "/instructor",
+   "screenshot": "end-grading-after-4-rounds-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-categories/?rubric_id=1",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/grades/calculate/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-delete-has-record-modal",
+   "url": "/instructor",
+   "screenshot": "end-delete-has-record-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grades/export/teams/?instance_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grades/export/students/?instance_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-delete-has-record-after",
+   "url": "/instructor",
+   "screenshot": "end-delete-has-record-after-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "DELETE",
+     "u": "/api/games/1/delete/",
+     "s": 409
+    }
+   ]
+  },
+  {
+   "screen": "end-delete-competition-modal",
+   "url": "/instructor",
+   "screenshot": "end-delete-competition-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-delete-competition-after",
+   "url": "/instructor",
+   "screenshot": "end-delete-competition-after-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "DELETE",
+     "u": "/api/games/1/delete/",
+     "s": 409
+    }
+   ]
+  },
+  {
+   "screen": "end-operator-log-refusals",
+   "url": "/instructor",
+   "screenshot": "end-operator-log-refusals-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": "8:00:00+00:00\",\"round_id\":6,\"closed_at\":null,\"opened_at\":\"2026-09-22T18:06:53.41"
+    },
+    {
+     "field_name": "round_number",
+     "context": "at\":\"2026-09-22T18:05:52.213228+00:00\",\"round_number\":4,\"teams_locked\":8,\"teams_"
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"active\",\"game_id\":1,\"current_round\":5} → {}\n\tsrv-"
+    },
+    {
+     "field_name": "processing_status",
+     "context": ",\"phase_2_duration\":0.6248843669891357,\"processing_status\":\"FULLY_COMPLETE\",\"sec"
+    },
+    {
+     "field_name": "RESULTS_AVAILABLE",
+     "context": "e_2_duration\":null,\"processing_status\":\"RESULTS_AVAILABLE\",\"seconds_remaining\":6"
+    },
+    {
+     "field_name": "FULLY_COMPLETE",
+     "context": "0.6248843669891357,\"processing_status\":\"FULLY_COMPLETE\",\"seconds_remaining\":6907"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-reset-modal",
+   "url": "/instructor",
+   "screenshot": "end-reset-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-reset-after",
+   "url": "/instructor",
+   "screenshot": "end-reset-after-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/reset/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-archive-modal",
+   "url": "/instructor",
+   "screenshot": "end-archive-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-archive-after",
+   "url": "/instructor",
+   "screenshot": "end-archive-after-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/archive/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "end-courses-after-archive",
+   "url": "/instructor",
+   "screenshot": "end-courses-after-archive-en.jpg",
+   "note": "the section after archiving its game",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "end-operator-log-refusals",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": "8:00:00+00:00\",\"round_id\":6,\"closed_at\":null,\"opened_at\":\"2026-09-22T18:06:53.41"
+    },
+    {
+     "field_name": "round_number",
+     "context": "at\":\"2026-09-22T18:05:52.213228+00:00\",\"round_number\":4,\"teams_locked\":8,\"teams_"
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"active\",\"game_id\":1,\"current_round\":5} → {}\n\tsrv-"
+    },
+    {
+     "field_name": "processing_status",
+     "context": ",\"phase_2_duration\":0.6248843669891357,\"processing_status\":\"FULLY_COMPLETE\",\"sec"
+    },
+    {
+     "field_name": "RESULTS_AVAILABLE",
+     "context": "e_2_duration\":null,\"processing_status\":\"RESULTS_AVAILABLE\",\"seconds_remaining\":6"
+    },
+    {
+     "field_name": "FULLY_COMPLETE",
+     "context": "0.6248843669891357,\"processing_status\":\"FULLY_COMPLETE\",\"seconds_remaining\":6907"
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "calc_toast": "Grades calculated",
+  "grade_rows": [
+   "Meridian Tech34.834.860.2",
+   "Cipher Systems34.634.660.0",
+   "Stratos Electronics35.035.060.4",
+   "Titan Micro34.734.760.1",
+   "Aurora Devices60.160.186.1",
+   "Prism Tech63.963.990.0",
+   "Nova Circuit59.059.085.0",
+   "Eclipse Gadgets34.934.960.3"
+  ],
+  "dashboard_teams": [
+   [
+    "Aurora Devices",
+    60.07
+   ],
+   [
+    "Prism Tech",
+    63.85
+   ],
+   [
+    "Nova Circuit",
+    58.95
+   ],
+   [
+    "Eclipse Gadgets",
+    34.85
+   ],
+   [
+    "Meridian Tech",
+    34.78
+   ],
+   [
+    "Cipher Systems",
+    34.6
+   ],
+   [
+    "Stratos Electronics",
+    34.98
+   ],
+   [
+    "Titan Micro",
+    34.74
+   ]
+  ],
+  "delete-has-record_modal": "Delete GamePermanently delete this game and all of its data? Only a game that was never started can be deleted; archive any other game instead. This cannot be undone.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelDelete Forever",
+  "delete-has-record_toast": "CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted. Archive the game instead: it keeps every record, stops play, and frees the section for a new game.",
+  "mark_competition": "{\"instance_id\": 1, \"settings\": {\"is_competition\": true}, \"is_competition_game\": true}\n",
+  "delete-competition_modal": "Delete GamePermanently delete this game and all of its data? Only a game that was never started can be deleted; archive any other game instead. This cannot be undone.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelDelete Forever",
+  "delete-competition_toast": "CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event. Archive the game instead: it keeps every record, stops play, and frees the section for a new game.",
+  "reset_modal": "Reset game to setup?Reset game to setup? All round progress will be lost.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelReset",
+  "reset_toast": "Game reset to setup",
+  "game_after_reset": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "scenario_name": "Consumer Electronics 2026",
+   "scenario_id": 1,
+   "section_id": 1,
+   "status": "setup",
+   "current_round": 0,
+   "num_rounds": 10,
+   "team_count": 8,
+   "created_at": "2026-09-22T16:26:28.856913+00:00"
+  },
+  "archive_modal": "Archive GameArchive this game? It will be disabled but data preserved for reports.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelArchive",
+  "archive_toast": "Game archived. You can now create a new game for this section.",
+  "game_after_archive": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "scenario_name": "Consumer Electronics 2026",
+   "scenario_id": 1,
+   "section_id": 1,
+   "status": "archived",
+   "current_round": 0,
+   "num_rounds": 10,
+   "team_count": 8,
+   "created_at": "2026-09-22T16:26:28.856913+00:00"
+  }
+ },
+ "summary": {
+  "passed": 7,
+  "failed": 0,
+  "observed": 2,
+  "screens": 11,
+  "screens_with_leaks": 1,
+  "console_errors": 8,
+  "api_calls": 41,
+  "api_refused": 2
+ }
+}

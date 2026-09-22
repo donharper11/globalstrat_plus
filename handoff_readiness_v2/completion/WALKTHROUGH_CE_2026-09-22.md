@@ -116,6 +116,35 @@ Records: `student-play-t{1,2}-r{2,3,4}-en.json`, `student-play-t3-r{2,3,4}-zh-CN
 | r2-10 | Advance | popconfirm *CE 2026 Heat A: advance to round 3? Students will start the next round.* → round 3 open | `r2-10-advance-confirm-en.jpg` |
 | check | cross-check | leaderboard ordered, ranks 1..8; index on results == leaderboard for all three teams; statement revenue == results revenue; Research 50,000 and Compliance investment 250,000 on every played team's statement | `records/check-round2.json` |
 
+**Round 3 (played by teams 1–3; the Game Lifecycle card's *Advance Round* tried first, then the round console).**
+
+| # | screen | what happened | evidence |
+|---|---|---|---|
+| p1-r3 | every decision screen | team 1 (cash −$5.2M after round 2) is refused the report purchase, the org switch (*Insufficient cash… against $-5,229,467 of cash*) and the **lock** (*Committed spend of $6,750,000.00 exceeds available cash…*, *Projected ending cash is $-7,479,467.05*) — W-CE-23; the summary shows three different spend figures — W-CE-18b; teams 2 and 3 lock normally | `p1-r3-95-summary-en.jpg`, `p3-r3-97-locked-zh-CN.jpg` |
+| r3-01 | Game Lifecycle › Advance Round | modal *6 team(s) have not locked… Proceed?* → OK → **400 `reason_required`**, round unchanged — W-CE-24; the driver was stopped and the round resolved through the console instead | `r3-01-lifecycle-advance-modal-en.jpg`, `records/advance-round-legacy-refusal.txt` |
+| r3 console | Close round now → Run post-round processing → Advance to round 4 | processed `FULLY_COMPLETE` 4.4 s; round 4 open | `r3-01-close-confirm-en.jpg`, `r3-04-processed-en.jpg`, `r3-11-next-round-open-en.jpg` |
+| check | cross-check | all pass (leaderboard order, index equality, statement == results, R47 rows) | `records/check-round3.json` |
+
+**Round 4 (played by teams 1–3; resolved through the console).**
+
+| # | screen | what happened | evidence |
+|---|---|---|---|
+| p*-r4 | every decision screen | teams 1 and 2 (cash −$19.9M / −$16.2M) again cannot lock; team 3 (zh-CN) is **refused the lock with a reason the summary never showed**: summary `can_lock: true, lock_blockers: []`, button enabled, then `POST …/lock/` 400 *预计资产负债率 2.35 超过上限 2.0。请调整融资。* — W-CE-25 (the refusal itself is correctly in Chinese) | `p3-r4-95-summary-zh-CN.jpg`, `records/student-play-t3-r4-zh-CN.json` (`refused`, `observed.lock_modal_after`) |
+| r4 | close → process → advance | processed `FULLY_COMPLETE` 4.3 s; round 5 open; Operator Log on record | `r4-04-processed-en.jpg`, `r4-12-operator-log-en.jpg` |
+| check | cross-check | all pass | `records/check-round4.json` |
+| s-after-r4 | every student screen, EN team 1 and zh-CN team 3, results tabs | on record; the zh-CN leak list is the same set as after round 1 plus the dashboard's *Strategic Signals* sentences and the news headlines | `s-after-r4-*-en.jpg`, `s-after-r4-*-zh-CN.jpg` |
+| i-final | every console tab and confirmation, EN and zh-CN | on record; the zh-CN console leak list is unchanged (W-CE-17) | `en-final-*-en.jpg`, `zh-final-*-zh-CN.jpg` |
+
+**End of game (`records/instructor-endgame-en.json`).**
+
+| # | screen | what happened | evidence |
+|---|---|---|---|
+| end-grading | Grading & Export | *Calculate Grades* on four resolved rounds: index 34.6–63.9 → grades 60.0–90.0 (60–90 stretch); Team Performance Summary shows the three played teams at **cash −$30M to −$33M** (calibration, see verdict); the three exports downloaded again | `end-grading-after-4-rounds-en.jpg`, `exports/final-*.csv` |
+| end-delete-has-record | Delete Game (reason) | **refused**: *CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted. Archive the game instead…* | `end-delete-has-record-modal-en.jpg`, `end-delete-has-record-after-en.jpg` |
+| end-delete-competition | Delete Game after `mark_competition.py` | **refused**: *CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event. Archive the game instead…*; both refusals in the Operator Log | `end-delete-competition-after-en.jpg`, `end-operator-log-refusals-en.jpg` |
+| end-reset | Reset to Setup (reason) | **accepted** on a competition heat with four resolved rounds: *Game reset to setup*, `status setup, current_round 0` while rounds 1–4 stay `processed` and every result stays readable — W-CE-26 | `end-reset-modal-en.jpg`, `end-reset-after-en.jpg` |
+| end-archive | Archive Game (reason) | accepted: *Game archived. You can now create a new game for this section.*; status `archived` | `end-archive-after-en.jpg`, `end-courses-after-archive-en.jpg` |
+
 ---
 
 ## (c) Defects
@@ -149,6 +178,8 @@ Severity: **P0** data loss / cannot proceed / wrong number shown to a player · 
 | W-CE-22 | Market Strategy › Production Capacity / Partnerships | student | EN, zh | *Build Plant — $0, 2 rounds, 50000 units* (a plant for nothing); partnership buttons read *+ Distribution Partner — $2.0M + $0/round* while the stored decision is `annual_investment: 2,000,000` (a $2.0M **per-round** charge), and `VERY_HIGH` is shown as a raw enum | one cost, stated the way it is charged; a translated distance label | P2 (the $0 plant is calibration-adjacent) | Market Strategy, home tab | `p1-r1-52-market-home-en.jpg`, `records/student-play-t1-r1-en.json` (`partnerships`) |
 | W-CE-23 | Decision Summary & Submit (round after an over-spend) | student | EN, zh | round 2 let team 1 lock while **$16.6M over budget** (warning only) and closed it with cash **−$5.2M**; in round 3 the same team is refused the lock: *Committed spend of $6,750,000.00 exceeds available cash of $-5,229,467.05…* — the spend it cannot undo is the reason it can no longer play; the team is then deadline-locked with whatever it had | refuse (or warn hard) at the moment the spend is committed, not one round later; a team should never be shown negative cash as a lock blocker for money already gone | P1 | acquire an $18M target with $5M of budget in round 2, lock, next round try to lock | `p1-r2-72-communications-submitted-en.jpg` (*Over budget by $16.6M*), `p1-r3-95-summary-en.jpg`, `records/student-play-t1-r3-en.json` `observed.summary` |
 | W-CE-24 | Instructor › Game Control › Game Lifecycle › **Advance Round** | instructor | EN, zh | with teams still pending the modal says *6 team(s) have not locked decisions. Their previous round's decisions will carry forward. Proceed?* with only Cancel/OK; OK sends `force: true` to the legacy one-step route and is **refused 400 `reason_required`** (*This action overrides an integrity check, so it requires a written reason of at least 10 characters*) — the modal has no reason box, so this button **cannot advance a round with pending teams at all**; the instructor gets an error dialog and must find the Round Control card below | either a reason box (as *Close & process now* has) or no second advance control | P1 | Game Control → Advance Round → OK while any team is pending | `r3-01-lifecycle-advance-modal-en.jpg`, `records/advance-round-legacy-refusal.txt`, `runtime/backend.log` `POST /api/games/1/instructor/advance-round/ 400` |
+| W-CE-25 | Decision Summary & Submit (round 4, team 3, zh-CN) | student | EN, zh | the checklist shows every requirement complete, the summary API says `can_lock: true` with no blockers, the lock button is enabled — and the lock is then **refused** (400: *预计资产负债率 2.35 超过上限 2.0。请调整融资。* / projected D/E 2.35 above the 2.0 cap) inside the confirmation dialog; nothing on the page warned of it before the click | the D/E check as a blocker on the page, like the cash check is | P1 | borrow until projected D/E > 2.0, open Review & Submit, lock | `p3-r4-95-summary-zh-CN.jpg`, `records/student-play-t3-r4-zh-CN.json` |
+| W-CE-26 | Instructor › Game Control › Reset to Setup | instructor | EN, zh | on a **competition heat with four resolved rounds**, *Reset to Setup* is offered and **accepted** with a written reason: *Game reset to setup*; the game is left `status setup, current_round 0` while rounds 1–4 remain `processed` and every team's results are still served — a state the console cannot then activate cleanly (activation needs round 1 pending). The `reset_simulation` command refuses a heat; the console route does not | refuse a reset once any round is processed on a heat (or make it a real reset) | P1 | mark a heat, resolve a round, Reset to Setup with a reason | `end-reset-modal-en.jpg`, `end-reset-after-en.jpg`, `records/instructor-endgame-en.json` `observed.game_after_reset` |
 | W-CE-19 | R&D Investment › Create New R&D Platform | student | EN, zh | with the scenario's round-1 R&D budget ($4.0M) the cheapest platform costs $7.6M; the modal shows *Over Budget: $3.6M* and *Required: Cost exceeds R&D budget* and cannot be submitted; together with W-CE-03 no team can make any R&D decision in round 1 and the checklist keeps *R&D Investment: Not started* | either an affordable action or guidance that says R&D starts later | P1 (calibration-adjacent, recorded per R48 as a behaviour a player feels) | R&D Investment → Create New R&D Platform | `p1-r1-22-rd-create-platform-modal-en.jpg` |
 
 ---
@@ -173,6 +204,18 @@ Severity: **P0** data loss / cannot proceed / wrong number shown to a player · 
 
 ---
 
+### Console and network, whole walkthrough (`harness/records_summary.py`)
+
+27 recorded runs, **770 screens**, **4,753 API calls**, 254 driver checks passed / 41 failed / 49 observed. Every failed check is either a defect above or a harness limitation named in (d) (re-run guards, the zh-CN tax card, the uppercase *Submitted This Round* comparison, the round-3 lifecycle path).
+
+* **Console errors (excluding the harness's 3–26 aborted Google-Fonts requests per run):** 46, all of them the browser's own line for a 4xx response: 36 × 400, 5 × 409, 5 × 403. No JavaScript exception, no `pageerror`, on any screen in either language.
+* **API responses ≥ 400:** 46 distinct-by-run, all accounted for: 16 × analyst refusals (deliberate, shown), 12 × `PATCH …/rd/` 400 (W-CE-03 — offered then refused), 3 × 409 `lifecycle_in_progress` (deliberate, shown, retried), 5 × 403 `…/changes/` (W-CE-09 — never shown), 2 × 409 delete (deliberate, shown), 3 × org-structure 400 and 3 × report-purchase 400 (cash refusals, shown), 1 × advance-round 400 (W-CE-24 — shown as an error dialog), 1 × lock 400 (W-CE-25 — shown in the dialog). **No 5xx at any point.**
+* **Leak scans:** no raw catalogue key, `undefined`, `NaN` or `[object Object]` on any screen in either language. `None` appears on English screens as the word (*Tax benefit: None*, *IP Exposure: None*), which is copy, not a leak. Storage field names reach the screen only in the Operator Log's *Before → after* column and the drill-down's payload column (W-CE-07, W-CE-20).
+
+Screens not cited above were pruned to the round-1 set plus summaries (248 near-duplicate per-round screens removed) and the rest downscaled, to keep the evidence at 34 MB; every record still names the screen it took.
+
+---
+
 ## (e) Verdict
 
-_Pending._
+**Playable end to end, yes — bug-free, no.** An instructor can build a course, a section, an eight-team game, a roster and every password from the console, activate it, schedule it, resolve four rounds and grade them; three student teams, one in Chinese, made every kind of decision, locked, and saw results, statements and a leaderboard that agree with each other and with what they decided (out-of-band and blank prices were adjusted with a notice, research and compliance spend appear on the statements, the index on the results page is the leaderboard's). Nothing crashed and the server never answered 5xx. But a player cannot type a loan amount and get the number typed (W-CE-02), the results page shows a shareholder return of 999,966 % (W-CE-14), the R&D page offers five buttons that the server always refuses so no team can do any R&D in round 1 (W-CE-03/19), the instructor's Advance Round button cannot advance a round with pending teams (W-CE-24) and every round-control action throws the instructor back to the Courses tab (W-CE-01), a team's home market is not where it starts (W-CE-21), spending that is allowed in one round locks the team out in the next (W-CE-23/25), a heat can be reset from the console (W-CE-26), and the Chinese interface carries a long list of English (W-CE-15/16/17). Two of these are P0 and about a dozen are P1; none is a calibration question — the calibration questions (three played teams ending four rounds at −$30M cash, a $0 plant, a $7.6M platform against a $4.0M budget) are noted but, per R48, left for the clean games. Fix the P0s and the P1s marked *cannot proceed* (W-CE-02, 14, 03, 24, 01, 25), re-run these drivers, and then the platform is ready for the clean games the owner asked for.
