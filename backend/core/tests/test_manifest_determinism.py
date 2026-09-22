@@ -875,12 +875,36 @@ class ManifestSnapshotIntegrationTests(TestCase):
         from core.engine.advance_round import _run_phase_1
         from core.models import Game, RoundResultProductDemand
 
+        from core.engine.rng import get_rng
+        from core.models import Team
+
+        def all_three_would_have_frozen(first):
+            return all(
+                get_rng(FIXTURE_SECTION_ID, 1,
+                        f'compliance_enforcement:uflpa:{team_id}:NA').random()
+                < 0.15
+                for team_id in range(first, first + 3))
+
+        # 135-137 is the observed triple, but `setUp` has already built one
+        # fixture game, and whenever the modules before this one leave the
+        # sequence at 134 its teams sit on exactly those ids. So take the
+        # lowest triple at or above 135 that is free AND that the old fixture
+        # would have frozen -- the property the test is about -- and assert
+        # that premise rather than assume it.
+        first = 135
+        while (Team.objects.filter(id__in=range(first, first + 3)).exists()
+               or not all_three_would_have_frozen(first)):
+            first += 1
+        self.assertTrue(all_three_would_have_frozen(first))
+
         Game.objects.filter(pk=self.game.pk).update(name='superseded fixture')
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT setval(pg_get_serial_sequence('team', 'id'), 135, false)")
+                "SELECT setval(pg_get_serial_sequence('team', 'id'), %s, false)",
+                [first])
         self._build_fixture_game()
-        self.assertEqual([team.id for team in self.teams], [135, 136, 137])
+        self.assertEqual([team.id for team in self.teams],
+                         [first, first + 1, first + 2])
 
         self._write_decisions()
         with transaction.atomic():
