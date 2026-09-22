@@ -1178,8 +1178,16 @@ class DecisionSummaryView(APIView):
             FXHedgeDecision as _FX, InventoryDecision as _INV, ContingencyPlan as _CP,
         )
 
+        # None of the four is a precondition of the lock (the lock checks
+        # budget, products, marketing and strategy below), so each says so:
+        # the Summary listed them as requirements to 'fix' (W-CE-13).
         def _sc_cfg(exists):
-            return {'status': 'configured' if exists else 'empty', 'warnings': []}
+            return {
+                'status': 'configured' if exists else 'empty',
+                'warnings': [] if exists else [participant_message(
+                    'summary_section_optional', language=language)],
+                'optional': True,
+            }
         sc_categories = {
             'sourcing': _sc_cfg(_SA.objects.filter(team_id=team_id, round=rnd).exists()),
             'logistics': _sc_cfg(_LD.objects.filter(team_id=team_id, round=rnd).exists()),

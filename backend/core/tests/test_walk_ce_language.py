@@ -274,3 +274,68 @@ class PlantCostContextTests(WalkCEBase):
         self.assertIn('plant_build_cost', payload)
         self.assertIsNone(payload['plant_build_cost'])
         self.assertIsNone(payload['plant_capacity_units'])
+
+
+# ---------------------------------------------------------------------------
+# W-CE-13 -- the supply-chain sections of the Summary are not lock requirements
+# ---------------------------------------------------------------------------
+
+class SummaryOptionalSectionTests(WalkCEBase):
+
+    SUPPLY_CHAIN = ('sourcing', 'logistics', 'trade_finance', 'inventory')
+
+    def _summary(self, language):
+        response = self.client_for(self.student, language).get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/decisions/'
+            f'round/1/summary/')
+        self.assertEqual(response.status_code, 200, response.data)
+        return response.data
+
+    def test_each_supply_chain_section_is_marked_optional_and_says_so(self):
+        from core.models import DecisionSubmission
+        DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        for language in ('en', 'zh-CN'):
+            with self.subTest(language=language):
+                categories = self._summary(language)['categories']
+                for key in self.SUPPLY_CHAIN:
+                    category = categories[key]
+                    self.assertTrue(category.get('optional'), key)
+                    self.assertEqual(category['status'], 'empty')
+                    self.assertEqual(len(category['warnings']), 1, category)
+                    self.assertEqual(has_cjk(category['warnings'][0]),
+                                     language == 'zh-CN', category)
+
+    def test_the_optional_sections_are_exactly_the_ones_the_lock_ignores(self):
+        """The lock's own preconditions, read from the view: whatever it
+        requires is not optional, and whatever it never mentions is."""
+        import ast
+        from pathlib import Path
+        source = (Path(__file__).resolve().parents[1]
+                  / 'views/decisions.py').read_text(encoding='utf-8')
+        summary = next(node for node in ast.walk(ast.parse(source))
+                       if isinstance(node, ast.ClassDef)
+                       and node.name == 'DecisionSummaryView')
+        required = next(
+            ast.literal_eval(node.value) for node in ast.walk(summary)
+            if isinstance(node, ast.Assign)
+            and getattr(node.targets[0], 'id', '') == 'required_lock_categories')
+        self.assertEqual(set(required), {'products', 'marketing', 'strategy'})
+        from core.models import DecisionSubmission
+        DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        categories = self._summary('en')['categories']
+        optional = {key for key, value in categories.items() if value.get('optional')}
+        self.assertEqual(optional & set(required), set())
+        self.assertEqual(set(self.SUPPLY_CHAIN) - optional, set())
+
+    def test_a_saved_supply_chain_decision_reads_configured_and_still_optional(self):
+        from core.models import DecisionSubmission
+        from core.models.sc_decisions import ContingencyPlan
+        DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        ContingencyPlan.objects.create(team=self.team, round=self.round)
+        category = self._summary('en')['categories']['inventory']
+        self.assertEqual(category['status'], 'configured')
+        self.assertTrue(category['optional'])
+        self.assertEqual(category['warnings'], [])

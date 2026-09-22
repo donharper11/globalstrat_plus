@@ -79,7 +79,9 @@ const SummaryPage = () => {
   const guidanceFor = (item, cat) => {
     const messages = [...(cat.errors || []), ...(cat.warnings || [])];
     if (messages.length > 0) return messages;
-    if (cat.optional && cat.status === 'configured') return cat.warnings?.length ? cat.warnings : ['No action required this round.'];
+    // An optional section is never a requirement to open (W-CE-13): the
+    // server marks it and says so in its own sentence.
+    if (cat.optional) return [];
     if (cat.status === 'configured') return ['This requirement has draft work saved.'];
     if (item.key === 'rd') return ['Open R&D Investment and either upgrade an existing feature or create an affordable platform.'];
     if (item.key === 'budget') return ['Open Finance and allocate R&D, Marketing, and Strategy budgets.'];
@@ -142,7 +144,7 @@ const SummaryPage = () => {
                     cat.status === 'partial' ? 'orange' :
                     cat.status === 'error' ? 'red' : 'default'
                   }>
-                    {statusLabel(cat.status)}
+                    {cat.optional && cat.status !== 'configured' ? t('summary_page.optional') : statusLabel(cat.status)}
                   </Tag>
                 ]}
               >

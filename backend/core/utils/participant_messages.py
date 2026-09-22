@@ -608,6 +608,13 @@ MESSAGES = {
         'en': 'No financing changes this round. No action is required.',
         'zh-CN': '本回合没有融资变动，无需操作。',
     },
+    # The supply-chain sections of the Summary (W-CE-13, 2026-09-22): the lock
+    # never required them, and the checklist said 'Open Sourcing to complete
+    # this requirement'.
+    'summary_section_optional': {
+        'en': 'Optional this round. Locking your decisions does not require it.',
+        'zh-CN': '本回合为可选项，锁定决策时无需完成。',
+    },
     # The same rule as `equity_exceeds_funding_need`, in the detailed form the
     # engine already recorded. The English rendering is byte-identical to the
     # sentence `funding_need.describe` built before CRV2-12, so the refusal an
