@@ -3330,3 +3330,14 @@ Full backend suite on the merged tree: `Ran 1377 tests`, OK.
 | DRF numeric-overflow text reaching a student | **Repaired, pending closure** (`6d634eb`, `8b6ed22`). All 37 student `InputNumber`s bounded from one module keyed to the backend field, none tighter than the server accepts; a scan test re-derives each bound from the backend source. DRF numeric refusals are rewritten by `ErrorDetail.code` into bilingual sentences naming the business label, across all 14 decision-write views. "A valid integer is required." was reachable after all, by typing `1000.5`. |
 | Supply-chain write serializers' own validation messages are English-only, one naming a storage path (the builder's F2) | **Open.** |
 
+### V2-137 repaired and merged 2026-09-22; the sweep found more
+
+**Full backend suite on the merged tree: `Ran 1489 tests`, OK. Jest 26 suites / 289 tests. Participant-string gate PASS at 5,216 units.** Not the freeze-candidate run.
+
+| Item | State |
+|---|---|
+| V2-137 — talent allocation and compliance investment could never be saved | **Repaired, pending closure** (`4ac2f3f`, `b3fcdbb`). Both types added to the per-type path with the server's shape; the pages send and read that shape. Engine consumption proven in one resolved round (`cumulative_investment` 2.5M, `compliance_level` 0.39, allocation multipliers ordered as saved, zero control). **Wider than registered:** the talent allocation rules had never run on *any* route — the whole-submission route stored anything; the Summary page sent notes to the budget section, so **any team that typed a note could not lock**; product, R&D, ESG, acquisition, market-entry, plant, partnership, tax-structure and communication-draft saves were accepted but swallowed failures, and one page-wide timer cancelled a pending section save when a second section was edited within two seconds. All routed through the V2-064 path; an AST scan fails on any decision save that discards its error; a section-name guard is held equal to `_TYPE_MAP` by a backend test. **Evidence consequence:** every playthrough, calibration and screening run to date had both levers at zero for every team; `evidence/adversarial-balance/dimension-inventory.json` is stale. |
+| Compliance investment is charged nowhere | **Open against the owner.** Now that the lever works, a team may invest up to $10M per market per round at no cost (`funding_need`, `costs.py`). No rule was created. |
+| Editing an existing product | **Open, P2.** The page sends `existing_product_id`, which the serializer drops, so an edit is treated as a new product; it is now shown as a refusal rather than silently misfiled. Needs a product-edit decision the serializer lacks. |
+| Two new zh-CN sentences | Unreviewed. |
+
