@@ -63,17 +63,17 @@ const SummaryPage = () => {
     { key: 'marketing', label: t('summary_page.marketing_mix'), path: `${base}/decisions/marketing` },
     { key: 'strategy', label: t('summary_page.strategy_mix'), path: `${base}/decisions/corporate-strategy` },
     { key: 'financing', label: t('summary_page.financing'), path: `${base}/decisions/finance` },
-    { key: 'sourcing', label: 'Sourcing', path: `${base}/decisions/sourcing` },
-    { key: 'logistics', label: 'Logistics', path: `${base}/decisions/logistics` },
-    { key: 'trade_finance', label: 'Trade Finance', path: `${base}/decisions/trade-finance` },
-    { key: 'inventory', label: 'Inventory', path: `${base}/decisions/inventory` },
+    { key: 'sourcing', label: t('nav.sourcing'), path: `${base}/decisions/sourcing` },
+    { key: 'logistics', label: t('nav.logistics'), path: `${base}/decisions/logistics` },
+    { key: 'trade_finance', label: t('nav.trade_finance'), path: `${base}/decisions/trade-finance` },
+    { key: 'inventory', label: t('nav.inventory'), path: `${base}/decisions/inventory` },
   ];
 
   const statusLabel = (status) => {
-    if (status === 'configured') return 'Complete';
-    if (status === 'partial') return 'Needs review';
-    if (status === 'error') return 'Blocked';
-    return 'Not started';
+    if (status === 'configured') return t('summary_page.status_complete');
+    if (status === 'partial') return t('summary_page.status_needs_review');
+    if (status === 'error') return t('summary_page.status_blocked');
+    return t('summary_page.status_not_started');
   };
 
   const guidanceFor = (item, cat) => {
@@ -82,10 +82,10 @@ const SummaryPage = () => {
     // An optional section is never a requirement to open (W-CE-13): the
     // server marks it and says so in its own sentence.
     if (cat.optional) return [];
-    if (cat.status === 'configured') return ['This requirement has draft work saved.'];
-    if (item.key === 'rd') return ['Open R&D Investment and either upgrade an existing feature or create an affordable platform.'];
-    if (item.key === 'budget') return ['Open Finance and allocate R&D, Marketing, and Strategy budgets.'];
-    return [`Open ${item.label} to complete this requirement.`];
+    if (cat.status === 'configured') return [t('summary_page.guidance_draft_saved')];
+    if (item.key === 'rd') return [t('summary_page.guidance_rd')];
+    if (item.key === 'budget') return [t('summary_page.guidance_budget')];
+    return [t('summary_page.guidance_open_section', { section: item.label })];
   };
 
   const handleLock = async () => {
@@ -173,7 +173,7 @@ const SummaryPage = () => {
                       )}
                       {cat.status !== 'configured' && !cat.optional && (
                         <Button size="small" onClick={() => navigate(item.path)}>
-                          Fix in {item.label}
+                          {t('summary_page.fix_in', { section: item.label })}
                         </Button>
                       )}
                     </Space>
@@ -223,8 +223,8 @@ const SummaryPage = () => {
         <Alert
           type="info"
           showIcon
-          message="Finish the blocked items above before locking this round."
-          description="Use each Fix button to jump to the page where that decision is completed."
+          message={t('summary_page.finish_blocked_title')}
+          description={t('summary_page.finish_blocked_desc')}
           style={{ marginBottom: 12 }}
         />
       )}
