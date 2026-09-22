@@ -60,3 +60,33 @@ replaced by `$SCRATCH` and `$REPO`.
 
 `MANIFEST.sha256` lists every file; verify with `sha256sum -c MANIFEST.sha256`
 from this directory.
+
+
+---
+
+## v7 — the own-line column, 2026-09-22 (integrator)
+
+The owner ruled the presentation ("Show its own line on the income statement"),
+which puts `compliance_expense` on `RoundResultFinancials`, a hashed output
+section, so the envelope moved **6 → 7** (`manifest_version.py`; migration
+`0089_r47_compliance_expense_line`, default 0 — the true historical value, since
+V2-137 means no round ever carried an investment). Three runs on a fresh
+disposable stack, same isolation as above; evidence under `v7/`, hashed in
+`v7/MANIFEST.sha256`. Runtime tree at `58d150b` (later commits on the branch are
+tests, evidence, report and generated inventory only).
+
+| Run | Recorded at | Replayed at | Lever | Competitive hash | Narrative hash | Result |
+|---|---|---|---|---|---|---|
+| 1 | v7 commit | same | used | `95c85bc7fd3a827bea62a14a0cee4e882135a4721e9bfcc4f9393170d1254d93` | `f255c7838dbe2346b714fab6334e98cf377d1c418b14876b69a0438b94299760` | **exact**, exit 0 |
+| 2 (control) | v7 commit | same | unused (`--no-compliance-investment`) | `520a1a6fdd320f4e7373e24b1cb4c21aed46271d6c9c386e5237e83de65ea3ad` | `7f770aa96b747ea892268ed0a9ee71bbca0e8b9e497666a5bd4fd670fbf40ea5` | **exact**, exit 0 |
+| 3 (cross-version) | `90b2dea` (v6) | v7 commit, `--allow-source-mismatch` | unused | recorded `f2dd97a9dc6a…` | — | **refused before the engine ran**, exit 1 |
+
+Run 3 is the point of the bump and reads exactly as the version rule says it
+must: `CommandError: Manifest is schema version 6; replay requires version 7. A version-1 manifest does not describe the full envelope and its hashes are not comparable.` (wording repaired the same day; it used to say
+"version-1" whatever the versions were). A v6 recording is not comparable under
+v7 — not "differs by a field", but not comparable — so **every replay
+comparison across this point is refused, and every stored v6 manifest can be
+replayed only by v6 code.** No stored v6 round carries a compliance investment
+(V2-137), and nothing has been live (R41).
+
+Source tree digest of the v7 runtime: `(see source-identity.json)`.

@@ -139,9 +139,10 @@ class Command(BaseCommand):
         if rm.envelope_schema_version(expected) != rm.MANIFEST_SCHEMA_VERSION:
             raise CommandError(
                 f'Manifest is schema version {expected.get("schema_version")}; '
-                f'replay requires version {rm.MANIFEST_SCHEMA_VERSION}. A '
-                f'version-1 manifest does not describe the full envelope and '
-                f'its hashes are not comparable.')
+                f'replay requires version {rm.MANIFEST_SCHEMA_VERSION}. Two '
+                f'envelope definitions cannot share a hash comparison: a round '
+                f'recorded under another version replays only under the code '
+                f'that defines that version.')
         manifest_path = self._write(evidence, 'expected-manifest.json', expected)
         self.stdout.write(f'Recorded manifest exported to {manifest_path}')
         if options['export_only']:

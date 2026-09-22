@@ -349,3 +349,46 @@ Only what I could not resolve here:
 3. **Whether `compliance_committed` should be rendered as its own row on the
    Summary and Finance pages, and under which label** — a GSP-CRV2-12 wording
    decision; the payload carries it, no page reads it.
+
+
+---
+
+## 12. The mismatch resolved — own column, envelope v7 (2026-09-22, integrator)
+
+The owner's ruling won over the brief's "stay at v6", which was the
+integrator's constraint and not the owner's. The builder's session was killed
+twice by API errors while doing this; its uncommitted work was committed as
+`58d150b` and finished by the integrator.
+
+**What changed.** `compliance_expense` column on `RoundResultFinancials`
+(`0089`, default 0, no existing migration altered); no longer folded into
+`strategy_expense` anywhere; `MANIFEST_SCHEMA_VERSION` 6 → 7 with a history line
+and `manifest_schema_v7.json` + `PROVENANCE.json`; the row rendered on the
+statement students and instructors read (`FinancialReportsPage.js` through the
+new `incomeStatementRows.js`, "Compliance investment" / 合规投入 via the
+catalogues, and `research_expense` rendered too — it had a column since v6 and
+was never shown, recorded here as a defect and repaired in the same pattern);
+`DETERMINISM_BOUNDARY.md` updated.
+
+**Two test findings, both test-side.** (1) `test_ledger_rows_exist_at_the_team_ids_that_used_to_freeze_them`
+forced the team sequence to 135 after its own `setUp` had built a fixture game;
+R47's new tests moved the count so that setUp's teams sat on 135–137 and the
+insert collided. It now takes the lowest free triple at or above 135 whose three
+UFLPA draws all fall under 0.15, and asserts that premise. (2) The string
+inventory was stale; regenerated in its own commit.
+
+**Runs.** Focused batch 240 → 1 error (the test above) → fixed → 78 OK on the
+two modules together. **Full backend suite: `Ran 1506 tests`, OK, 116 s.** Full
+Jest: 27 suites / 296 tests. Inventory `--check` clean. Replay evidence in §7's
+README, v7 section: charged round `95c85bc7fd3a…` exact; control `520a1a6fdd32…`
+exact; a v6 recording is **refused** under v7 (exit 1), which is the version
+rule doing its job. The replay gate's refusal wording said "version-1" whatever
+the versions; repaired after the full run above, so the certifying full run is
+the one on the merged integration tree.
+
+**Production.** `manage.py migrate core 0089` joins the `0088` maintenance
+action already on the launch checklist; it adds a column, no privilege change.
+
+**Unresolved, genuinely.** The Summary/Finance pages carry `compliance_committed`
+in their payload but no row reads it (a CRV2-12 wording decision); no browser
+pass; 合规投入 unreviewed by a native speaker.
