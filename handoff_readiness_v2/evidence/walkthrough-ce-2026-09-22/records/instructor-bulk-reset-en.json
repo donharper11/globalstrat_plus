@@ -1,0 +1,388 @@
+{
+ "driver": "instructor-bulk-reset",
+ "language": "en",
+ "base": "http://127.0.0.1:33329",
+ "started": "2026-09-22T16:42:31",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "bulk reset control offered",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "every enrolled student can now log in",
+   "outcome": "fail",
+   "detail": "0 accounts, 0 still without a password; toast=None"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:39"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:42:39"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:42:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:42:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "16:42:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "16:42:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:42:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:42:49"
+  },
+  {
+   "method": "POST",
+   "url": "/api/instructor/student-accounts/bulk-reset/",
+   "status": 200,
+   "at": "16:43:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:43:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:43:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:43:08"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "i24b-bulk-password-reset",
+   "url": "/instructor",
+   "screenshot": "i24b-bulk-password-reset-en.jpg",
+   "note": "after Set all to student ID",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/instructor/student-accounts/bulk-reset/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "popconfirm": "Set 26 passwords?Each student's password becomes their own student ID. Existing passwords are left alone.CancelOK",
+  "toast": null,
+  "modal": ""
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 28,
+  "api_refused": 0
+ }
+}

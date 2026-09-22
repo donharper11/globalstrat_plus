@@ -1,0 +1,1867 @@
+{
+ "driver": "instructor-setup",
+ "language": "en",
+ "base": "http://127.0.0.1:33329",
+ "started": "2026-09-22T16:38:13",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "resumed on the existing game",
+   "outcome": "observed",
+   "detail": "game 1; creation steps were recorded by the first run"
+  },
+  {
+   "name": "round schedule generated and saved for every playable round",
+   "outcome": "pass",
+   "detail": "Schedule saved for 10 round(s)."
+  },
+  {
+   "name": "round 1 deadline set from the console",
+   "outcome": "pass",
+   "detail": "deadline=2026-09-25T18:00:00+00:00 toast='CE 2026 Heat A: deadline updated.'"
+  },
+  {
+   "name": "console stays on Game Control after a round-control action",
+   "outcome": "fail",
+   "detail": "active tab after Save deadline: 'Courses & Sections'"
+  },
+  {
+   "name": "extend deadline moved the round 1 deadline",
+   "outcome": "pass",
+   "detail": "before=2026-09-25T18:00:00+00:00 after=2026-09-26T18:00:00+00:00 modal=None"
+  },
+  {
+   "name": "pause is reflected by the server",
+   "outcome": "pass",
+   "detail": "paused"
+  },
+  {
+   "name": "resume is reflected by the server",
+   "outcome": "pass",
+   "detail": "active"
+  },
+  {
+   "name": "operator event injected from the console",
+   "outcome": "pass",
+   "detail": "template='Major Competitor Product Launch (medium)' toast='Event injected'"
+  },
+  {
+   "name": "operator log lists the actions taken",
+   "outcome": "pass",
+   "detail": "11 rows"
+  },
+  {
+   "name": "student passwords issued in bulk from the console",
+   "outcome": "pass",
+   "detail": "Password setGive these to the student:Username: s2601Password: s2601This is the only time the password is shown. If it's lost, reset it again.Done"
+  },
+  {
+   "name": "export: Export Team Summary CSV",
+   "outcome": "pass",
+   "detail": "game_1_teams.csv (428 bytes)"
+  },
+  {
+   "name": "export: Export Team Grades CSV",
+   "outcome": "pass",
+   "detail": "team_grades.csv (265 bytes)"
+  },
+  {
+   "name": "export: Export Student Grades CSV",
+   "outcome": "pass",
+   "detail": "student_grades.csv (1331 bytes)"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:13"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:13"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:14"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:14"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "16:38:23"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:38:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:38:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/",
+   "status": 200,
+   "at": "16:38:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "16:38:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "16:38:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:38:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "16:38:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:38:42"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:38:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:38:51"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/deadline/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:38:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:38:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:38:57"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/extend-deadline/",
+   "status": 200,
+   "at": "16:39:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:39:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:39:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:39:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:39:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:39:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:39:07"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/pause/",
+   "status": 200,
+   "at": "16:39:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:39:22"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/resume/",
+   "status": 200,
+   "at": "16:39:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:39:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "16:39:37"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/inject-event/",
+   "status": 201,
+   "at": "16:39:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "16:39:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "16:39:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "16:39:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "16:39:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "16:39:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:39:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:39:51"
+  },
+  {
+   "method": "POST",
+   "url": "/api/instructor/student-accounts/2/password/",
+   "status": 200,
+   "at": "16:39:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:40:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:40:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/1/decisions/?round=1",
+   "status": 200,
+   "at": "16:40:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "16:40:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "16:40:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:40:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:40:21"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/seed-rubric/",
+   "status": 200,
+   "at": "16:40:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "16:40:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-categories/?rubric_id=1",
+   "status": 200,
+   "at": "16:40:27"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/calculate/",
+   "status": 200,
+   "at": "16:40:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/teams/?instance_id=1",
+   "status": 200,
+   "at": "16:40:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/students/?instance_id=1",
+   "status": 200,
+   "at": "16:40:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "16:40:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "16:40:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-event-catalog/",
+   "status": 200,
+   "at": "16:40:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/resilience-weight-overrides/",
+   "status": 200,
+   "at": "16:40:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-panel/",
+   "status": 200,
+   "at": "16:40:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "16:40:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "16:40:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "16:40:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "16:40:58"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "i00-instructor-login",
+   "url": "/instructor/login",
+   "screenshot": "i00-instructor-login-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i09-game-control-setup",
+   "url": "/instructor",
+   "screenshot": "i09-game-control-setup-en.jpg",
+   "note": "game in setup, before activation",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i12b-game-control-active",
+   "url": "/instructor",
+   "screenshot": "i12b-game-control-active-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i13-round-schedule",
+   "url": "/instructor",
+   "screenshot": "i13-round-schedule-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i14-set-deadline-modal",
+   "url": "/instructor",
+   "screenshot": "i14-set-deadline-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i14b-after-set-deadline",
+   "url": "/instructor",
+   "screenshot": "i14b-after-set-deadline-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i15-extend-deadline-modal",
+   "url": "/instructor",
+   "screenshot": "i15-extend-deadline-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i16-after-extend",
+   "url": "/instructor",
+   "screenshot": "i16-after-extend-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/extend-deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i17-paused",
+   "url": "/instructor",
+   "screenshot": "i17-paused-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/pause/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i18-resumed",
+   "url": "/instructor",
+   "screenshot": "i18-resumed-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/resume/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i19-event-manager",
+   "url": "/instructor",
+   "screenshot": "i19-event-manager-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i20-inject-event-modal",
+   "url": "/instructor",
+   "screenshot": "i20-inject-event-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i21-event-injected",
+   "url": "/instructor",
+   "screenshot": "i21-event-injected-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/inject-event/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i22-operator-log",
+   "url": "/instructor",
+   "screenshot": "i22-operator-log-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i23-students-logins",
+   "url": "/instructor",
+   "screenshot": "i23-students-logins-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i24-passwords-issued",
+   "url": "/instructor",
+   "screenshot": "i24-passwords-issued-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/instructor/student-accounts/2/password/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i25-team-overview",
+   "url": "/instructor",
+   "screenshot": "i25-team-overview-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "i26-team-decisions-drill",
+   "url": "/instructor",
+   "screenshot": "i26-team-decisions-drill-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/1/decisions/?round=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i27-grading-before-rubric",
+   "url": "/instructor",
+   "screenshot": "i27-grading-before-rubric-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i28-grading-rubric",
+   "url": "/instructor",
+   "screenshot": "i28-grading-rubric-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/grades/seed-rubric/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-categories/?rubric_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i29-grading-calculated-round0",
+   "url": "/instructor",
+   "screenshot": "i29-grading-calculated-round0-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/grades/calculate/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i30-grading-exports",
+   "url": "/instructor",
+   "screenshot": "i30-grading-exports-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/grades/export/teams/?instance_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grades/export/students/?instance_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i31-briefings",
+   "url": "/instructor",
+   "screenshot": "i31-briefings-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "i32-research-monitor",
+   "url": "/instructor",
+   "screenshot": "i32-research-monitor-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "i33-ai-coach",
+   "url": "/instructor",
+   "screenshot": "i33-ai-coach-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i34-supply-chain",
+   "url": "/instructor",
+   "screenshot": "i34-supply-chain-en.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-event-catalog/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/resilience-weight-overrides/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-panel/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "i22-operator-log",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i23-students-logins",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i24-passwords-issued",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i25-team-overview",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i26-team-decisions-drill",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i27-grading-before-rubric",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i28-grading-rubric",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i29-grading-calculated-round0",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i30-grading-exports",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i31-briefings",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i32-research-monitor",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i33-ai-coach",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  },
+  {
+   "screen": "i34-supply-chain",
+   "leaks": [
+    {
+     "junk": "null,",
+     "context": ":1} → {\"round_number\":1,\"target_market\":null,\"event_template\":\"Major Competitor "
+    },
+    {
+     "field_name": "round_number",
+     "context": "requested inject_event{\"status\":\"open\",\"round_number\":1} → {\"round_number\":1,\"ta"
+    },
+    {
+     "field_name": "team_id",
+     "context": "config{\"teams\":[{\"name\":\"Apex Devices\",\"team_id\":1,\"home_market\":\"NA\"},{\"name\":\""
+    },
+    {
+     "field_name": "game_id",
+     "context": "me\":\"CE 2026 Heat A\",\"status\":\"paused\",\"game_id\":1,\"current_round\":1} → {\"name\":"
+    },
+    {
+     "field_name": "processing_status",
+     "context": "duration\":null,\"phase_2_duration\":null,\"processing_status\":\"PENDING\",\"seconds_re"
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "resumed": true,
+  "schedule_toast": "Schedule saved for 10 round(s).",
+  "deadline_modal": "Set round deadline — CE 2026 Heat AThe round closes automatically at this time and students are locked out. Clear it to let the round run until you close it by hand.Times are in your local timezone. Server time is currently 9/22/2026, 4:38:35 PM.CancelSave deadline",
+  "deadline_toast": "CE 2026 Heat A: deadline updated.",
+  "tab_after_set_deadline": "Courses & Sections",
+  "extend_modal": "Extend round deadline — CE 2026 Heat AExtend deadline by:hoursCancelOK",
+  "extend_result_modal": null,
+  "tab_after_extend": "Courses & Sections",
+  "pause_toast": "Game paused",
+  "resume_toast": "Game resumed",
+  "inject_toast": "Event injected",
+  "bulk_reset_modal": "Password setGive these to the student:Username: s2601Password: s2601This is the only time the password is shown. If it's lost, reset it again.Done",
+  "drill_modal": "Team Decisions — Aurora DevicesRound: Round 1no_submissionNo submissionSubmission audit evidenceNo dataNo recorded saves for this round",
+  "rubric_toast": "Default rubric created",
+  "calculate_grades_enabled": true,
+  "calc_toast_round0": "Default rubric created",
+  "section_lookup": {
+   "courses": 200,
+   "sections": 200,
+   "section_id": 1
+  }
+ },
+ "summary": {
+  "passed": 12,
+  "failed": 1,
+  "observed": 1,
+  "screens": 26,
+  "screens_with_leaks": 13,
+  "console_errors": 10,
+  "api_calls": 81,
+  "api_refused": 0
+ }
+}
