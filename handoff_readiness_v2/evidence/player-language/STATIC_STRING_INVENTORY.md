@@ -4,14 +4,14 @@ This is a reproducible Stage 1 candidate inventory, not a claim that every
 candidate is reachable. Reviewers must classify each candidate before changing
 wording; `operator-or-log-only` rows require an explicit exemption rationale.
 
-Source fingerprint: `743498d09ee40af9ada05c937142db2504744a381364bce265e379e70b8ee3e0`
-Candidate strings: **2469**
+Source fingerprint: `a2d8e41e8a24f3d06b25d3835388539b27d83c4074a6b2681fe7381fc023e7af`
+Candidate strings: **2479**
 
 | Audience | Candidate count |
 | --- | ---: |
 | instructor-facing | 201 |
 | operator-or-log-only | 240 |
-| participant-facing | 2028 |
+| participant-facing | 2038 |
 
 | Workstream | Candidate count |
 | --- | ---: |
@@ -20,7 +20,7 @@ Candidate strings: **2469**
 | instructor UI | 154 |
 | instructor coaching alerts | 29 |
 | participant decision UI | 243 |
-| participant supporting UI | 925 |
+| participant supporting UI | 935 |
 | service-to-route boundary review | 242 |
 | templated/player generated content | 173 |
 
@@ -646,12 +646,12 @@ Candidate strings: **2469**
 | participant-facing | templated/player generated content | backend-response-or-generated-content | `backend/core/engine/events.py:567` | Currency strengthening benefits importers but may hurt local pricing competitiveness. | review EN/ZH wording and route through shared catalogue |
 | participant-facing | templated/player generated content | backend-response-or-generated-content | `backend/core/engine/events.py:683` | f'Event response: {team.name} chose "{response_def.name}" for "{template.name}"' | review EN/ZH wording and route through shared catalogue |
 | participant-facing | templated/player generated content | backend-response-or-generated-content | `backend/core/engine/events.py:690` | f'Event no-response penalty: {team.name} did not respond to "{template.name}"' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:208` | f'{team.name}: new debt of ${new_debt:,.0f} refused - team is in financial distress' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:222` | f'{team.name}: debt repayment capped at ${outstanding:,.0f} (requested ${debt_repayment:,.0f})' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:264` | f'Dividend capped for {team.name}: requested ${dividends:,.0f}, capped to ${cash_opening:,.0f} (available cash)' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:270` | f'Dividend blocked for {team.name}: no cash available' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:322` | f'WARNING: Balance sheet off by ${bs_diff} for {team.name}' | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:527` | Financial statements generated | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:201` | f'{team.name}: new debt of ${new_debt:,.0f} refused - team is in financial distress' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:215` | f'{team.name}: debt repayment capped at ${outstanding:,.0f} (requested ${debt_repayment:,.0f})' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:257` | f'Dividend capped for {team.name}: requested ${dividends:,.0f}, capped to ${cash_opening:,.0f} (available cash)' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:263` | f'Dividend blocked for {team.name}: no cash available' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:315` | f'WARNING: Balance sheet off by ${bs_diff} for {team.name}' | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/financials.py:518` | Financial statements generated | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/fx_engine.py:79` | f'FX: no market trades {foreign}; {dec.currency_pair} hedge has no basis, skipped.' | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/fx_engine.py:128` | f'FX hedges processed; {settled} settled, realized P&L for {len(context.sc_fx_hedge_pnl)} team(s); premium={premium_bps} bps.' | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/engine/leaderboard.py:292` | Leaderboard:  | review EN/ZH wording and route through shared catalogue |
@@ -1315,11 +1315,11 @@ Candidate strings: **2469**
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/research_reports.py:814` | f'${price:,.2f}' | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/research_reports.py:815` | f"${Decimal(assessment['committed_total']):,.2f}" | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/research_reports.py:816` | f"${Decimal(assessment['cash_on_hand']):,.2f}" | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:221` | Global | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:513` | Appears to be expanding aggressively | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:515` | Pricing reportedly competitive — may be undercutting | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:517` | Focused on protecting existing market position | review EN/ZH wording and route through shared catalogue |
-| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:519` | Investing heavily in product innovation | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:224` | Global | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:516` | Appears to be expanding aggressively | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:518` | Pricing reportedly competitive — may be undercutting | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:520` | Focused on protecting existing market position | review EN/ZH wording and route through shared catalogue |
+| participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/results_api.py:522` | Investing heavily in product innovation | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/scorecard.py:157` | Global | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/scorecard.py:231` | f"R&D investment is {growth['rd_as_pct_of_revenue']}% of revenue. Competitors may be outpacing your innovation." | review EN/ZH wording and route through shared catalogue |
 | participant-facing | API response review | backend-response-or-generated-content | `backend/core/views/scorecard.py:237` | f"Technology capability at {capability['technology_rating_pct']}%. A next-generation platform is available for development." | review EN/ZH wording and route through shared catalogue |
@@ -1868,94 +1868,94 @@ Candidate strings: **2469**
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancePage.js:703` | #DC2626 | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancePage.js:709` | #16A34A | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancePage.js:743` | : saving ? | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:41` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:41` | 6px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | AA+ | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | AAA | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | BB+ | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | BBB | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | BBB+ | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:92` | CCC | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | DISTRESS | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | ELEVATED | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | ELEVATED | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | HIGH | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | HIGH | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | MODERATE | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | MODERATE | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | VERY HIGH | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | VERY LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | VERY LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:95` | HIGH | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:198` | LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:198` | MODERATE | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:198` | VERY LOW | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:315` | N/A | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:383` | \u25B2 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:383` | \u25BC | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:388` | \u25B2 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:389` | \u25BC | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:393` | OVERWEIGHT | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:393` | UNDERWEIGHT | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:395` | #10B981 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:395` | #3B82F6 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:395` | #8B5CF6 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:395` | #CBD5E1 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:400` | 16px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:400` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:450` | \u25B2 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:451` | \u25BC | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:471` | 12px 16px | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:478` | {s.trade_reason} | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:495` | #3B82F6 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:496` | #94A3B8 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:512` | Velocity Capital | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:513` | Granite Investments | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:514` | GreenHorizon Partners | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:580` | ACCESS_RESTORED | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:580` | INCENTIVE_GRANT | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:580` | PROCUREMENT_AWARD | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:580` | REGULATORY_RELAXATION | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | REGULATORY_TIGHTENING | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | TARIFF_ADJUSTMENT | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | WARNING_ISSUED | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:582` | ACCESS_RESTRICTION | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:597` | 0 4px | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:670` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:670` | 4px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:672` | c.toUpperCase())} | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:713` | c.toUpperCase())} | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:726` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:726` | 4px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:739` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:739` | 6px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:786` | 0 ? 'success' : Number(n) | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:796` | Open FX hedge positions | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:803` | 12px 0 | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:803` | No FX hedge positions yet — set a hedge ratio on the Trade Finance page and advance a round. | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:808` | Pair | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:809` | Notional | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:810` | Locked rate | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:811` | Mark-to-market | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:812` | (v == null ? | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:812` | Realized P&L | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:813` | Status | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:817` | Payment & export-credit posture | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:820` | Buyer payment instruments | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:822` | None set. | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:826` | Export-credit (Sinosure) coverage | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:830` | No export-credit insurance set. | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:865` | 0 auto | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:953` | Net Income | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:994` | Trade Finance & FX | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1010` | 0 auto | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1040` | Revenue | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1041` | Net Income | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1057` | USD | move to en.json and zh-CN.json, then call t() |
-| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1058` | 6px 8px | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:42` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:42` | 6px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | AA+ | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | AAA | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | BB+ | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | BBB | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | BBB+ | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:93` | CCC | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | DISTRESS | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | ELEVATED | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | ELEVATED | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | HIGH | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | HIGH | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | MODERATE | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | MODERATE | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | VERY HIGH | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | VERY LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:94` | VERY LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:96` | HIGH | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:199` | LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:199` | MODERATE | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:199` | VERY LOW | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:316` | N/A | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:384` | \u25B2 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:384` | \u25BC | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:389` | \u25B2 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:390` | \u25BC | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:394` | OVERWEIGHT | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:394` | UNDERWEIGHT | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:396` | #10B981 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:396` | #3B82F6 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:396` | #8B5CF6 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:396` | #CBD5E1 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:401` | 16px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:401` | 1px solid #f0f0f0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:451` | \u25B2 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:452` | \u25BC | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:472` | 12px 16px | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:479` | {s.trade_reason} | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:496` | #3B82F6 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:497` | #94A3B8 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:513` | Velocity Capital | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:514` | Granite Investments | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:515` | GreenHorizon Partners | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | ACCESS_RESTORED | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | INCENTIVE_GRANT | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | PROCUREMENT_AWARD | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:581` | REGULATORY_RELAXATION | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:582` | REGULATORY_TIGHTENING | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:582` | TARIFF_ADJUSTMENT | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:582` | WARNING_ISSUED | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:583` | ACCESS_RESTRICTION | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:598` | 0 4px | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:671` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:671` | 4px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:673` | c.toUpperCase())} | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:714` | c.toUpperCase())} | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:727` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:727` | 4px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:740` | 1px solid #f5f5f5 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:740` | 6px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:787` | 0 ? 'success' : Number(n) | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:797` | Open FX hedge positions | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:804` | 12px 0 | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:804` | No FX hedge positions yet — set a hedge ratio on the Trade Finance page and advance a round. | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:809` | Pair | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:810` | Notional | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:811` | Locked rate | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:812` | Mark-to-market | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:813` | (v == null ? | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:813` | Realized P&L | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:814` | Status | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:818` | Payment & export-credit posture | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:821` | Buyer payment instruments | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:823` | None set. | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:827` | Export-credit (Sinosure) coverage | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:831` | No export-credit insurance set. | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:866` | 0 auto | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:934` | Net Income | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:975` | Trade Finance & FX | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:991` | 0 auto | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1021` | Revenue | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1022` | Net Income | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1038` | USD | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/FinancialReportsPage.js:1039` | 6px 8px | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/GameDashboard.js:44` | #4CAF50 | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/GameDashboard.js:45` | #FF9800 | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant decision UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/GameDashboard.js:46` | #F44336 | move to en.json and zh-CN.json, then call t() |
@@ -2348,6 +2348,16 @@ Candidate strings: **2469**
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/bilingualServerReason.test.js:97` | InstructorDashboard.js | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/bilingualServerReason.test.js:99` | both ways of saving a schedule show a bilingual refusal when there is one | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/bilingualServerReason.test.js:105` | instructor\.msg_schedule_(save_failed\|generated_not_saved) | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:12` | the income statement a student reads (R47) | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:13` | compliance investment is its own line, after strategy and before admin | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:21` | research, which had a statement column and no row, is rendered too | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:27` | every line has a title in both catalogues, and the new ones are named | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:32` | Compliance investment | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:34` | Research | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:37` | a row carries the server field under the column key | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:48` | the columns are built from the same lines, with the right formatter | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:52` | Round | move to en.json and zh-CN.json, then call t() |
+| participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/incomeStatementRows.test.js:54` | <financial_reports.compliance_label> | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/instructorDashboardMessages.test.js:22` | InstructorDashboard.js | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/instructorDashboardMessages.test.js:37` |  \|\| ch ===  | move to en.json and zh-CN.json, then call t() |
 | participant-facing | participant supporting UI | frontend-non-t-literal | `frontend/globalstrat-frontend/src/pages/instructorDashboardMessages.test.js:63` | t[KEY] | move to en.json and zh-CN.json, then call t() |
