@@ -109,9 +109,9 @@
       CREATEDB, still the credential V2-048 exposed, still owner of the
       database and all 193 tables, and still shared with GlobalStrat v1 and
       BECSR, whose access history remains unreviewable.
-- [ ] Migration `0088_game_deletion_audit_event` applied on production and the
+- [ ] Migrations `0088_game_deletion_audit_event` and `0089_r47_compliance_expense_line` applied on production and the
       application role re-provisioned, in this order, as the database owner:
-      `manage.py migrate core 0088`; `ops/provision-app-role.sh`;
+      `manage.py migrate core`; `ops/provision-app-role.sh`;
       `ops/provision-app-role.sh --check` (must PASS); `manage.py
       install_audit_guards --check`. Running `--check` before the re-run fails
       by design. Until done, the application role holds UPDATE and DELETE on
@@ -194,8 +194,10 @@
       the focused replay R18 asks for; it is **not** certification, and this
       gate stays open until GSP-CRV2-09 regenerates the integrated
       four-environment evidence against the release-candidate commit (V2-086).
-      Note V2-116: `determinism_fixture.py` does not run at head, so CRV2-01's
-      evidence cannot currently be regenerated.
+      V2-116 repaired 2026-09-21: the fixture runs. **2026-09-22: the envelope
+      moved again, 6 → 7 (R47's `compliance_expense` line), so every stored
+      v6 recording is refused by v7 code, not diffed. All replay evidence is
+      taken afresh from the freeze candidate, as this gate already requires.**
 - [ ] R28 starting-field **balance** measurement. The authoring half is done —
       eight distinct profiles per scenario at `d94d6b1` (V2-109) — but the
       measurement R28 requires, that no profile carries an advantage play

@@ -3341,3 +3341,12 @@ Full backend suite on the merged tree: `Ran 1377 tests`, OK.
 | Editing an existing product | **Open, P2.** The page sends `existing_product_id`, which the serializer drops, so an edit is treated as a new product; it is now shown as a refusal rather than silently misfiled. Needs a product-edit decision the serializer lacks. |
 | Two new zh-CN sentences | Unreviewed. |
 
+### R47 implemented and merged 2026-09-22 — manifest envelope v6 → v7
+
+**Full backend suite on the merged tree: `Ran 1506 tests`, OK. Jest 27 suites / 296 tests. Participant-string gate PASS at 5,220 units.** Not the freeze-candidate run.
+
+| Item | State |
+|---|---|
+| R47 — compliance investment charged from cash, its own income-statement line | **Implemented, pending closure.** One shared line (`funding_need.compliance_investment_total`) read by `decision_outlays` and booked by `costs.calculate_operating_expenses`, with the V2-024 assertion widened to cover it — falsified both ways (engine side only removed: the round stops; both removed: no charge). Counts as committed spend, so the lock affordability refusal and the equity funding rule see it. **Its own column** `compliance_expense` on `RoundResultFinancials` (`0089`, default 0 — the true historical value, since V2-137 means no round ever carried one), rendered on the statement students and instructors read as "Compliance investment" / 合规投入; `research_expense` had a column since v6 and was never rendered — repaired in the same pattern. **The envelope moved to v7** by the project's own rule (`manifest_version.py`, precedent 2→3). Replay at v7: charged round exact, control exact; a v6 recording is **refused** under v7 before the engine runs, which is the version rule working. **Consequence:** every stored v6 replay comparison across this point is refused, not diffed; all replay evidence is regenerated at the freeze in any case. The builder's session was killed twice by API errors; its uncommitted column work was committed by the integrator and finished (one id-pinned test made order-independent; the replay gate's refusal said "version-1" whatever the versions). |
+| Summary/Finance rows for committed compliance spend | **Open, CRV2-12 wording.** The payload carries `compliance_committed`; no page row reads it. |
+
