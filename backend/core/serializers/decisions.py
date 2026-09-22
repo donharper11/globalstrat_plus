@@ -713,56 +713,169 @@ class DecisionResearchAllocationSerializer(serializers.ModelSerializer):
 # CC-31A: Talent Allocation & Compliance Investment serializers
 # ---------------------------------------------------------------------------
 
+TALENT_POOLS = ('rd', 'commercial', 'operations')
+
+
+def talent_headcounts(talent):
+    """{pool: headcount} from a stored staffing decision or a validated one.
+
+    A validated payload may omit a headcount; the per-type route then stores
+    the model's default for it, so that default is the headcount to total
+    against.
+    """
+    from core.models.talent import DecisionTalent
+    counts = {}
+    for pool in TALENT_POOLS:
+        name = f'{pool}_headcount'
+        if isinstance(talent, dict):
+            counts[pool] = talent.get(
+                name, DecisionTalent._meta.get_field(name).default)
+        else:
+            counts[pool] = getattr(talent, name)
+    return counts
+
+
+def validate_talent_allocations(rows, submission, language='en',
+                                headcounts=None):
+    """The staff-allocation rules, for every route that stores an allocation.
+
+    These rules were written inside `TalentAllocationSerializer.validate`,
+    which read the submission from the serializer context -- and no route ever
+    put one there, so they ran nowhere: the whole-submission route stored any
+    allocation at all, and the per-type route had no such section. They are one
+    function now so both routes apply the same rule to the same rows.
+
+    `rows` are validated allocation dicts (or stored rows reduced to the same
+    keys). `headcounts` overrides the stored staffing decision, for a request
+    that changes staffing and allocation together.
+    """
+    rows = list(rows or [])
+    if not rows:
+        return
+
+    pools = [row.get('talent_pool') for row in rows]
+    if len(set(pools)) != len(pools):
+        # Not reachable from the page. Refused here because the table is
+        # unique on (submission, pool): the alternative is a 500.
+        raise serializers.ValidationError({'talent_allocations': [
+            participant_message('request_incomplete', language=language)]})
+
+    if headcounts is None:
+        from core.models.talent import DecisionTalent
+        try:
+            if submission is None:
+                raise DecisionTalent.DoesNotExist
+            headcounts = talent_headcounts(submission.talent)
+        except DecisionTalent.DoesNotExist:
+            raise serializers.ValidationError({'talent_allocations': [
+                participant_message('talent_decision_required',
+                                    language=language)]})
+
+    from core.models.team_state import TeamMarketPresence
+    active_codes = set()
+    if submission is not None:
+        active_codes = set(
+            TeamMarketPresence.objects.filter(
+                team=submission.team, status='active',
+            ).values_list('market__code', flat=True))
+
+    for row in rows:
+        total_headcount = headcounts.get(row.get('talent_pool'), 0)
+        market_allocation = row.get('market_allocation') or {}
+        hq_count = row.get('hq_count', 0)
+
+        # Sum must equal total headcount
+        allocated = hq_count + sum(market_allocation.values())
+        if allocated != total_headcount:
+            raise serializers.ValidationError({'talent_allocations': [
+                participant_message(
+                    'talent_allocation_total', language=language,
+                    allocated=allocated, headcount=total_headcount)]})
+
+        # Cannot allocate to markets the team hasn't entered
+        for code, count in market_allocation.items():
+            if code not in active_codes and count > 0:
+                raise serializers.ValidationError({'talent_allocations': [
+                    participant_message('talent_market_inactive',
+                                        language=language)]})
+
+        # HQ minimum: at least 20% of headcount
+        min_hq = max(1, int(total_headcount * 0.2))
+        if total_headcount > 0 and hq_count < min_hq:
+            raise serializers.ValidationError({'talent_allocations': [
+                participant_message('talent_hq_minimum', language=language,
+                                    minimum=min_hq)]})
+
+
+def validate_compliance_investments(rows, team, language='en'):
+    """Compliance is invested in a market the team operates in, once each.
+
+    `strategy_effects._process_compliance` reads a row only for an active
+    market presence, so a row for any other market is a decision the engine
+    would silently not act on. It is refused on the write instead.
+    """
+    rows = list(rows or [])
+    if not rows:
+        return
+    market_ids = [getattr(row.get('market'), 'id', row.get('market'))
+                  for row in rows]
+    if len(set(market_ids)) != len(market_ids):
+        # Unique on (submission, market); see the pool check above.
+        raise serializers.ValidationError({'compliance_investments': [
+            participant_message('request_incomplete', language=language)]})
+    if team is None:
+        return
+    from core.models.team_state import TeamMarketPresence
+    active_ids = set(TeamMarketPresence.objects.filter(
+        team=team, status='active').values_list('market_id', flat=True))
+    if any(market_id not in active_ids for market_id in market_ids):
+        raise serializers.ValidationError({'compliance_investments': [
+            participant_message('compliance_market_inactive',
+                                language=language)]})
+
+
 class TalentAllocationSerializer(serializers.ModelSerializer):
     class Meta:
         from core.models.cc31_models import TalentAllocation
         model = TalentAllocation
         fields = ['id', 'talent_pool', 'hq_count', 'market_allocation']
 
+    def validate_hq_count(self, value):
+        if value < 0:
+            raise serializers.ValidationError(non_negative_message(
+                'hq_count', serializer_language(self)))
+        return value
+
+    def validate_market_allocation(self, value):
+        """{market code: whole, non-negative headcount}.
+
+        The column is JSON, so nothing else checks its contents, and the
+        engine reads each value as a number. A negative count would also let a
+        total balance that is not an allocation (60 at HQ, -10 in a market).
+        """
+        language = serializer_language(self)
+        if not isinstance(value, dict):
+            raise serializers.ValidationError(participant_message(
+                'request_incomplete', language=language))
+        for code, count in value.items():
+            if isinstance(count, bool) or not isinstance(count, int):
+                raise serializers.ValidationError(participant_message(
+                    'whole_number_required', language=language,
+                    field=field_label('market_allocation', language)))
+            if count < 0:
+                raise serializers.ValidationError(non_negative_message(
+                    'market_allocation', language))
+        return value
+
     def validate(self, data):
+        # Kept for a caller that validates one row with the submission in its
+        # context. The routes call `validate_talent_allocations` themselves,
+        # because the rules span rows and need the staffing decision.
         submission = self.context.get('submission')
         if not submission:
             return data
-
-        from core.models.talent import DecisionTalent
-        try:
-            talent_decision = submission.talent
-        except DecisionTalent.DoesNotExist:
-            raise serializers.ValidationError(participant_message(
-                'talent_decision_required',
-                language=serializer_language(self)))
-
-        pool = data.get('talent_pool', '')
-        prefix_map = {'rd': 'rd', 'commercial': 'commercial', 'operations': 'operations'}
-        prefix = prefix_map.get(pool, pool)
-        total_headcount = getattr(talent_decision, f'{prefix}_headcount', 0)
-
-        # Sum must equal total headcount
-        allocated = data.get('hq_count', 0) + sum(data.get('market_allocation', {}).values())
-        if allocated != total_headcount:
-            raise serializers.ValidationError(participant_message(
-                'talent_allocation_total', language=serializer_language(self),
-                allocated=allocated, headcount=total_headcount))
-
-        # Cannot allocate to markets the team hasn't entered
-        from core.models.team_state import TeamMarketPresence
-        active_codes = set(
-            TeamMarketPresence.objects.filter(
-                team=submission.team, status='active',
-            ).values_list('market__code', flat=True)
-        )
-        for code, count in data.get('market_allocation', {}).items():
-            if code not in active_codes and count > 0:
-                raise serializers.ValidationError(participant_message(
-                    'talent_market_inactive', language=serializer_language(self)))
-
-        # HQ minimum: at least 20% of headcount
-        min_hq = max(1, int(total_headcount * 0.2))
-        if data.get('hq_count', 0) < min_hq:
-            raise serializers.ValidationError(participant_message(
-                'talent_hq_minimum', language=serializer_language(self),
-                minimum=min_hq))
-
+        validate_talent_allocations(
+            [data], submission, serializer_language(self))
         return data
 
 
@@ -881,6 +994,21 @@ class DecisionSubmissionSerializer(serializers.ModelSerializer):
                 validate_product_names(creates, team, serializer_language(self))
             except serializers.ValidationError as error:
                 raise serializers.ValidationError({'product_creates': error.detail})
+
+        # The same two checks the per-type route makes. On this route the
+        # allocation rules had never run at all (see
+        # `validate_talent_allocations`). A staffing decision cannot be written
+        # here, so a submission that does not exist yet cannot have one.
+        staff_rows = attrs.get('talent_allocations')
+        if staff_rows:
+            validate_talent_allocations(
+                staff_rows, self.instance, serializer_language(self))
+        compliance_rows = attrs.get('compliance_investments')
+        if compliance_rows:
+            validate_compliance_investments(
+                compliance_rows,
+                attrs.get('team') or getattr(self.instance, 'team', None),
+                serializer_language(self))
         return attrs
 
     # ------------------------------------------------------------------

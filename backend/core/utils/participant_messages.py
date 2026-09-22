@@ -70,6 +70,7 @@ FIELD_LABELS = {
     'buffer_days': {'en': 'inventory buffer in days', 'zh-CN': '库存缓冲天数'},
     'safety_stock_trigger_pct': {'en': 'reorder point', 'zh-CN': '补货触发点'},
     'hq_count': {'en': 'headquarters staff', 'zh-CN': '总部人数'},
+    'market_allocation': {'en': 'staff assigned to a market', 'zh-CN': '派驻市场的人数'},
 }
 
 
@@ -249,6 +250,10 @@ MESSAGES = {
     'talent_hq_minimum': {
         'en': 'Keep at least {minimum} staff at headquarters (20% of the team headcount).',
         'zh-CN': '总部至少应保留 {minimum} 名员工（团队人数的 20%）。',
+    },
+    'compliance_market_inactive': {
+        'en': 'You can invest in compliance only in a market your company operates in. Remove the other market and try again.',
+        'zh-CN': '只能在公司已进入的市场进行合规投入。请移除其他市场后重试。',
     },
     'compliance_maximum': {
         'en': 'Compliance investment cannot exceed $10M per market in one round.',
