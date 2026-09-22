@@ -607,6 +607,11 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             validated_items = []
             for item in nested_data:
                 ser = serializer_cls(data=item, context={'request': request})
+                if decision_type == 'marketing' and not ser.is_valid():
+                    raise serializers.ValidationError(
+                        _name_refused_marketing_row(
+                            item, ser.errors, team,
+                            get_user_language(request)))
                 ser.is_valid(raise_exception=True)
                 validated_items.append(ser.validated_data)
             if decision_type == 'rd':
@@ -674,6 +679,45 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
         record_decision_event(request, team.game, team, rnd, 'save', request.data)
         return Response(DecisionSubmissionSerializer(
             submission, context={'request': request}).data)
+
+
+def _name_refused_marketing_row(item, errors, team, language):
+    """The refused row's product and market, in front of the server's sentence.
+
+    The marketing save replaces the whole section, and every row is judged
+    before any is stored, so one bad row refuses the request -- by contract.
+    But the refusal said only "Choose one to three campaign focus features",
+    and a team with two products read it on the tab of the product whose
+    focus was set (W-CE-04). A row that cannot be identified keeps the
+    original refusal.
+    """
+    if not isinstance(item, dict):
+        return errors
+    product = TeamProduct.objects.filter(
+        team=team, pk=item.get('team_product')).first()
+    market = MarketDefinition.objects.filter(pk=item.get('market')).first()
+    if product is None or market is None:
+        return errors
+    sentences = []
+
+    def walk(value):
+        if isinstance(value, (list, tuple)):
+            for entry in value:
+                walk(entry)
+        elif isinstance(value, dict):
+            for entry in value.values():
+                walk(entry)
+        elif value is not None:
+            sentences.append(str(value))
+
+    walk(errors)
+    return {'marketing_decisions': [
+        participant_message(
+            'marketing_row_refused', language=language,
+            product=product.name,
+            market=get_localized_field(market, 'name', language),
+            reason=sentence)
+        for sentence in sentences]}
 
 
 class ProductRebaseView(CompetitionDecisionWriteMixin, APIView):
