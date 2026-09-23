@@ -3393,3 +3393,24 @@ Record: `completion/WALKTHROUGH_CE_2026-09-22.md` (the authoritative defects tab
 
 **Full backend suite on the fully merged tree at `b890976`: `Ran 1584 tests`, OK, 191 s (the disk stall had eased). Jest 48 suites / 478 tests. Participant-string gate PASS at 5,718 units; inventory clean.** Not the freeze-candidate run. Of W-CE-01..26: every P0 and P1 repaired pending closure except the second half of W-CE-23 (a rules question) and W-CE-19 (calibration, deferred); W-CE-09 and W-CE-10 closed by removal. Next: re-walk Consumer Electronics on this tree to confirm, then Media and Clean Energy.
 
+## Second Consumer Electronics walkthrough, 2026-09-23 — W-CE verification and W-CE2-01..10
+
+Record: `completion/WALKTHROUGH_CE_2_2026-09-22.md`; evidence `evidence/walkthrough-ce-2-2026-09-22/` (835 screens, 5,707 API calls, 632 screenshots at 28 MB against the first pass's 62 MB). Driven on the fully repaired tree at `b890976`; `backend/`, `frontend/` and `specs/` have zero diff against that base. Merged at `6a25436`.
+
+**Verification of the first pass: 23 of 27 rows VERIFIED FIXED**, including both P0s — a typed loan now stores 5,000,000, and shareholder return reads −22.2% with the index matching the leaderboard. Three rows CHANGED rather than fixed, one (W-CE-19) is the deferred calibration item.
+
+| ID | Sev | What the user sees | Status |
+|---|---|---|---|
+| W-CE2-01 | **P0** | A plant built in the same market as a completed acquisition writes two `team_plant` rows; **post-round processing 500s, the round sticks at `closed/FAILED` and the game cannot advance.** No screen can undo either decision. The walkthrough could only continue by deleting a row from the database (`harness/unstick_plant_collision.py`, disclosed). | Open — assigned `walk-ce2-round-blockers` |
+| W-CE2-02 | P1 | A queued acquisition, plant or partnership can never be withdrawn; unaffordable ones are still offered and then refused at lock. | Open — assigned |
+| W-CE2-03 | P1 | The deadline close executes the spend the lock refused: one team ended round 3 at −$12.4M. | Open — assigned |
+| W-CE2-10 | P1 | The first round-control action after Activate is always refused until the page is refreshed. | Open — assigned |
+| W-CE2-05 | P1 | A team's language is its **first** enrolment's, so a Chinese player is answered in English if a team-mate enrolled first. (This is R43's rule meeting reality; the first pass raised it as a caveat.) | Open — assigned `walk-ce2-language` |
+| W-CE2-08 | P1 | AI Coach alerts are always English, because an instructor has no enrolment to read a language from. | Open — assigned |
+| W-CE2-04/06/07/09 | P2 | Raw `SnapshotError` in the Operator Log; English market names on Chinese screens; English Strategic Scorecard sentences; two round totals on the Summary and an unformatted `Unallocated: $-12553689`. | Open — assigned |
+| W-CE-18b | P1→P2 | Figures now agree; two round totals remain and one is unformatted. Folded into W-CE2-09. | Open — assigned |
+| W-CE-23 | P1 | The refusal moved to the right round, but a team cannot clear it and the deadline spends anyway. Folded into W-CE2-02/03. | Open — assigned |
+| W-CE-24 | P1 | The reason box was added, but the route now refuses `round_not_ready`, so the button still cannot advance. | Open — assigned |
+
+**Verdict, in the auditor's words:** "Playable end to end — but not reliably finishable." Four rounds were set up, played by three teams (one in Chinese), resolved, graded and archived; results, statements and leaderboard cross-checked clean in both languages, with no 5xx except one and no JavaScript error. That one exception is the answer: round 2 could not be processed at all.
+
