@@ -46,6 +46,23 @@ const ScoreBar = ({ label, score, feedback }) => {
   );
 };
 
+// W-CE3-17. The server sends `criterion_label` beside each criterion; the
+// prettified token is kept only as a fallback for a scenario that authors a
+// criterion the label table has not been taught, so a row is never lost to a
+// missing name.
+const prettifyCriterion = (key) => String(key || '')
+  .replace(/_/g, ' ')
+  .replace(/\b\w/g, (c) => c.toUpperCase());
+
+const criterionLabel = (criterion) => (
+  criterion?.criterion_label || prettifyCriterion(criterion?.criterion));
+
+const criterionLabelFor = (assignment, key) => {
+  const match = (assignment?.evaluation_criteria || [])
+    .find((c) => c.criterion === key);
+  return match ? criterionLabel(match) : prettifyCriterion(key);
+};
+
 const CommunicationEditor = ({ assignment, gameId, teamId, onSubmitted }) => {
   const { t } = useTranslation();
   const [content, setContent] = useState(assignment.draft_content || '');
@@ -144,9 +161,17 @@ const CommunicationEditor = ({ assignment, gameId, teamId, onSubmitted }) => {
         label: <Text type="secondary" style={{ fontSize: 11 }}>{t("communications_page.evaluation_criteria")}</Text>,
         children: (
           <div style={{ fontSize: 11 }}>
+            {/* W-CE3-17: the criterion was the storage token with its
+                underscores removed, and the weight carried a hard-coded
+                English `(weight: N%)`. The server now sends the criterion's
+                authored name in the reader's language beside the token it
+                is keyed by; the weight comes from the catalogue. */}
             {(assignment.evaluation_criteria || []).map((c, i) => (
               <div key={i} style={{ marginBottom: 4 }}>
-                <Text strong>{c.criterion.replace(/_/g, ' ')}</Text> (weight: {(c.weight * 100).toFixed(0)}%)
+                <Text strong>{criterionLabel(c)}</Text>{' '}
+                {t('communications_page.criterion_weight', {
+                  weight: (c.weight * 100).toFixed(0),
+                })}
                 <br />
                 <Text type="secondary">{c.description}</Text>
               </div>
@@ -173,10 +198,15 @@ const EvaluationDisplay = ({ assignment, evaluation, content }) => {
         </div>
 
         {/* Per-criterion scores */}
+        {/* W-CE3-17: these five labels were `criteria_scores`' own storage
+            keys, prettified -- *Framework Grounding*, *Risk Acknowledgment*
+            -- on a screen whose feedback prose is otherwise in the reader's
+            language. The authored name arrives with the assignment, keyed by
+            the same token. */}
         {Object.entries(evaluation.criteria_scores || {}).map(([key, val]) => (
           <ScoreBar
             key={key}
-            label={key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+            label={criterionLabelFor(assignment, key)}
             score={val.score}
             feedback={val.feedback}
           />

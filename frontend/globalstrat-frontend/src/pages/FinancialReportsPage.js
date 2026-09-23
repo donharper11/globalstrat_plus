@@ -972,7 +972,10 @@ const FinancialReportsPage = () => {
     },
     {
       key: 'trade_finance',
-      label: 'Trade Finance & FX',
+      // W-CE3-12: a hard-coded English literal where the eight sibling
+      // tabs all use the catalogue, so it was English on a Chinese
+      // screen.
+      label: t('financial_reports.trade_finance_fx'),
       children: <TradeFinanceFXTab gameId={gameId} teamId={teamId} round={selectedRound} />,
     },
     {

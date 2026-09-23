@@ -46,8 +46,20 @@ const OperatorChange = ({ row, t }) => {
         <div>
           <Text type="danger">{t('instructor.oplog_refused_because')}</Text>{' '}
           {row.conflict?.detail || '—'}
-          {row.conflict?.code ? <Text code style={{ marginLeft: 4 }}>{row.conflict.code}</Text> : null}
         </div>
+        {/* W-CE3-18: the code sat inline after the sentence with only a CSS
+            margin between them, so the row's own text read
+            `…at least 10 characters.reason_required`. It is a separate fact
+            about the refusal, on its own line, with a label that says what
+            it is. */}
+        {row.conflict?.code ? (
+          <div>
+            <Text type="secondary" style={{ fontSize: 11 }}>
+              {t('instructor.oplog_refusal_code')}
+            </Text>{' '}
+            <Text code>{row.conflict.code}</Text>
+          </div>
+        ) : null}
         {copy}
       </div>
     );

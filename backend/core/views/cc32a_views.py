@@ -12,7 +12,9 @@ Endpoints:
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.response import Response
-from core.utils.participant_messages import participant_refusal
+from core.utils.participant_messages import (
+    communication_criterion_label, participant_message,
+    participant_refusal)
 from rest_framework.views import APIView
 from core.views.decisions import (
     CompetitionDecisionWriteMixin, IsTeamMember, IsCurrentRoundOpen)
@@ -85,10 +87,20 @@ class CommunicationAssignmentsView(APIView):
             if team.home_market:
                 prompt_text = prompt_text.replace('{home_market}', get_localized_field(team.home_market, 'name', language))
             from core.models.team_state import TeamMarketPresence
-            active_markets = list(TeamMarketPresence.objects.filter(
-                team=team, status='active',
-            ).values_list('market__name', flat=True))
-            prompt_text = prompt_text.replace('{active_markets}', ', '.join(active_markets) if active_markets else 'N/A')
+            # The market names go into prose the student reads, so they follow
+            # the reader like every other market name (W-CE2-06 / W-CE3-09);
+            # and a team with no active market gets a sentence rather than the
+            # English literal `N/A`.
+            active_markets = [
+                get_localized_field(presence.market, 'name', language)
+                for presence in TeamMarketPresence.objects.filter(
+                    team=team, status='active',
+                ).select_related('market')]
+            prompt_text = prompt_text.replace(
+                '{active_markets}',
+                ', '.join(active_markets) if active_markets
+                else participant_message('communication_no_active_market',
+                                         language=language))
             if event_context:
                 prompt_text = prompt_text.replace('{event_name}', event_context.get('event_name', ''))
                 prompt_text = prompt_text.replace('{event_description}', event_context.get('event_description', ''))
@@ -101,7 +113,16 @@ class CommunicationAssignmentsView(APIView):
                 'audience_display': ca.get_audience_display(),
                 'prompt_text': prompt_text,
                 'word_limit': ca.word_limit,
-                'evaluation_criteria': ca.evaluation_criteria,
+                # W-CE3-17: the criterion's authored name beside the token
+                # the page used to prettify, so the screen shows a name and
+                # the storage key stays a storage key. The token is still
+                # served: it is what `evaluation.criteria_scores` is keyed by.
+                'evaluation_criteria': [
+                    dict(criterion,
+                         criterion_label=communication_criterion_label(
+                             criterion.get('criterion'), language))
+                    for criterion in (ca.evaluation_criteria or [])
+                    if isinstance(criterion, dict)],
                 'is_mandatory': ca.is_mandatory,
                 'coherence_weight': float(ca.coherence_weight),
                 'status': 'submitted' if tc and not tc.is_draft else ('draft' if tc else 'new'),

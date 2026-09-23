@@ -90,6 +90,48 @@ ROUND_STATUS_LABELS = {
 }
 
 
+# ---------------------------------------------------------------------------
+# W-CE3-17 — the communication evaluation's criterion names
+# ---------------------------------------------------------------------------
+# The scenario authors each criterion as a storage token
+# (`evaluation_criteria[].criterion`), and `CommunicationsPage.js` printed the
+# token prettified: `framework_grounding` -> *Framework Grounding*, and
+# likewise *Risk Acknowledgment*, *Stakeholder Awareness*, *Strategic
+# Consistency*, *Clarity And Persuasion*. So a Chinese student read five
+# English storage keys on a screen whose feedback prose was otherwise
+# correctly Chinese.
+#
+# A label table rather than authored scenario content, because the five
+# tokens are the same in every scenario this repository ships, and a token
+# the table has not been taught keeps the prettified fallback rather than
+# losing the row.
+COMMUNICATION_CRITERION_LABELS = {
+    'strategic_consistency': {
+        'en': 'Strategic consistency', 'zh-CN': '战略一致性'},
+    'stakeholder_awareness': {
+        'en': 'Stakeholder awareness', 'zh-CN': '利益相关者意识'},
+    'clarity_and_persuasion': {
+        'en': 'Clarity and persuasion', 'zh-CN': '表达清晰与说服力'},
+    'risk_acknowledgment': {
+        'en': 'Risk acknowledgment', 'zh-CN': '风险认识'},
+    'framework_grounding': {
+        'en': 'Framework grounding', 'zh-CN': '理论框架运用'},
+}
+
+
+def communication_criterion_label(criterion, language='en'):
+    """A criterion's authored name, or its token prettified.
+
+    The fallback is what the page did for every criterion; keeping it here
+    means a scenario that authors a new token still renders a readable row
+    rather than an empty one.
+    """
+    labels = COMMUNICATION_CRITERION_LABELS.get(criterion)
+    if labels is None:
+        return (criterion or '').replace('_', ' ').title()
+    return labels.get(language, labels['en'])
+
+
 MESSAGES = {
     'non_negative': {
         'en': '{field} cannot be negative. Enter zero or a positive value.',
@@ -202,6 +244,13 @@ MESSAGES = {
     'platform_none_held': {
         'en': 'None',
         'zh-CN': '无',
+    },
+    # W-CE3-17. `cc32a_views` interpolated the literal `N/A` into the memo
+    # prompt for a team with no active market -- a storage-shaped placeholder
+    # in the middle of prose a student is asked to write from.
+    'communication_no_active_market': {
+        'en': 'no market yet',
+        'zh-CN': '尚无市场',
     },
     'inactivity_rank_marker': {
         'en': 'Did not compete',

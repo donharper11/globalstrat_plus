@@ -612,3 +612,61 @@ class TheNamesLeftInEnglish(TestCase):
 
         self.assertEqual([p['name'] for p in data['active_platforms']],
                          ['Aurora Core'])
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-17 — five English storage keys on a Chinese evaluation screen
+# ---------------------------------------------------------------------------
+
+class TheCommunicationCriteriaHaveNames(SimpleTestCase):
+    """`framework_grounding` -> *Framework Grounding*, and four more.
+
+    `CommunicationsPage.js` prettified the scenario's storage token, so a
+    Chinese student read five English keys on a screen whose feedback prose
+    was otherwise correctly Chinese. The name now comes from the catalogue
+    and is served beside the token the evaluation is keyed by.
+    """
+
+    def label(self, criterion, language='en'):
+        from core.utils.participant_messages import (
+            communication_criterion_label)
+        return communication_criterion_label(criterion, language)
+
+    def test_every_criterion_the_shipped_scenarios_author_is_named(self):
+        """The set is read from the scenario files, so a new criterion in a
+        scenario fails here rather than reaching a screen as a storage key."""
+        import pathlib
+        import re
+        from core.utils.participant_messages import (
+            COMMUNICATION_CRITERION_LABELS)
+
+        scenarios = (pathlib.Path(__file__).resolve().parents[2]
+                     / 'scenarios')
+        authored = set()
+        for path in scenarios.glob('*.yaml'):
+            authored.update(re.findall(
+                r'^\s*-?\s*criterion:\s*(\S+)\s*$',
+                path.read_text(encoding='utf-8'), re.MULTILINE))
+
+        self.assertTrue(authored, 'no criterion was found in any scenario')
+        self.assertEqual(authored - set(COMMUNICATION_CRITERION_LABELS), set())
+
+    def test_the_name_follows_the_reader(self):
+        self.assertEqual(self.label('framework_grounding'),
+                         'Framework grounding')
+        self.assertEqual(self.label('framework_grounding', 'zh-CN'),
+                         '理论框架运用')
+
+    def test_a_criterion_the_table_has_not_been_taught_keeps_a_readable_name(self):
+        self.assertEqual(self.label('tone_of_voice', 'zh-CN'),
+                         'Tone Of Voice')
+
+    def test_no_label_is_a_storage_key(self):
+        from core.utils.participant_messages import (
+            COMMUNICATION_CRITERION_LABELS)
+
+        for criterion, labels in COMMUNICATION_CRITERION_LABELS.items():
+            with self.subTest(criterion=criterion):
+                self.assertEqual(set(labels), {'en', 'zh-CN'})
+                for text in labels.values():
+                    self.assertNotIn('_', text)
