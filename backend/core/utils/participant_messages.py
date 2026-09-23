@@ -1025,6 +1025,52 @@ def language_for_team(team, request):
     return stated if stated in SUPPORTED_LANGUAGES else language_for_request(request)
 
 
+def language_for_participant(team, request):
+    """The language of the one student a sentence is addressed to (W-CE2-05).
+
+    R43 ruled that the team's language governs what a student is told, so one
+    screen never speaks two languages. It did not settle *whose* language the
+    team's is when members differ, and `language_for_team` answers "the first
+    active enrolment's" -- which leaves the choice unreachable for every member
+    but the first. In the second walkthrough a Chinese-reading student whose
+    team-mate had enrolled first was answered in English however often they
+    chose 中文.
+
+    So a sentence addressed to **one** student -- a refusal, the answer to that
+    student's own action -- follows that student's own stated language where
+    the request identifies them. A sentence written once for the **whole team**
+    (stored narrative prose, round briefings, persona messages) keeps
+    `language_for_team`.
+
+    What is read is the student's own *enrolment*, which the in-game switch and
+    the sign-in record through `PUT /api/user/preferences/`; the request's
+    header still does not govern, as R43 decided. Where the request identifies
+    no student, where that student has no active enrolment on this team, or
+    where they state no supported language, this is exactly
+    `language_for_team` -- so when a team's members agree, nothing changes.
+    """
+    from core.models.course import Enrollment
+    from django.db import transaction
+    user = getattr(request, 'user', None)
+    user_id = getattr(user, 'id', None) or getattr(user, 'user_id', None)
+    if user_id is not None:
+        try:
+            # Savepoint for the same reason `language_for_team` takes one: a
+            # query failure must not poison the caller's transaction, and a
+            # refusal must never become a 500 over its own language.
+            with transaction.atomic():
+                stated = (Enrollment.objects
+                          .filter(user_id=user_id, team_id=team.id,
+                                  is_active=True)
+                          .exclude(language='').order_by('pk')
+                          .values_list('language', flat=True).first())
+        except Exception:
+            stated = None
+        if stated in SUPPORTED_LANGUAGES:
+            return stated
+    return language_for_team(team, request)
+
+
 def participant_message(key, *, language='en', **values):
     """Render a reviewed participant-facing message in the requested language."""
     try:
