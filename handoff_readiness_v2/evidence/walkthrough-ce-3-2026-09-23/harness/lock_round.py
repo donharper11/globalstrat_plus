@@ -82,6 +82,7 @@ def complete_marketing(page):
         tabs = page.locator('.ant-tabs-tab')
         labels = [(tabs.nth(i).text_content() or '').strip() for i in range(tabs.count())]
         ix = next((i for i, l in enumerate(labels) if pname and pname in l), None)
+        reached = False
         if ix is None:
             # a market tab first, then its product tabs
             mix = next((i for i, l in enumerate(labels) if mname and mname in l), None)
@@ -90,11 +91,24 @@ def complete_marketing(page):
                 tabs = page.locator('.ant-tabs-tab')
                 labels = [(tabs.nth(i).text_content() or '').strip() for i in range(tabs.count())]
                 ix = next((i for i, l in enumerate(labels) if pname and pname in l), None)
-        if ix is None:
+                # MarketingPage renders the product card DIRECTLY, with no
+                # inner product tab, when a market holds exactly one product
+                # (`items.length === 1`), and the product's name is printed
+                # ONLY in that inner tab label -- so with one product the name
+                # is nowhere on the page and cannot be matched. The market tab
+                # is then itself the row. (That missing name is a finding of
+                # its own; see the report's new-defects table.)
+                if ix is None:
+                    reached = True
+                    R.observe('row_reached_without_product_name',
+                              (R.record['observed'].get('row_reached_without_product_name') or [])
+                              + [[pname, mname]])
+        if ix is None and not reached:
             R.step('reach the row %s / %s' % (pname, mname), 'fail',
                    json.dumps(labels, ensure_ascii=False)[:250])
             continue
-        tabs.nth(ix).click(); page.wait_for_timeout(2500)
+        if not reached:
+            tabs.nth(ix).click(); page.wait_for_timeout(2500)
         band = bands.get('%s_%s' % (pm.get('product_id'), mk.get('market_id'))) or {}
         price = int(band.get('anchor') or 300)
         p = pane(page)

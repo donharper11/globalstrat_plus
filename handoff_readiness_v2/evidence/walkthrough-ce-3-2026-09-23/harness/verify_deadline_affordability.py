@@ -54,21 +54,27 @@ def before(page):
     affordable = [t for t in targets
                   if float(t.get('base_acquisition_cost') or 0) <= float(aff0.get('unallocated') or 0)]
     R.observe('available_targets', [(t.get('target_name'), t.get('base_acquisition_cost')) for t in targets])
-    R.step('an acquisition the team CAN fund is available this round',
-           'pass' if affordable else 'fail',
-           '%s against unallocated %s' % ([t.get('target_name') for t in affordable],
-                                          aff0.get('unallocated')))
-    if not affordable:
-        return
-    target = affordable[-1]
-    saved = api(page, 'PATCH', DEC + 'acquisitions/', {'acquisitions': [
-        {'acquisition_target': target['id']}]})
-    R.observe('acquisition_saved', {'target': target.get('target_name'),
-                                    'cost': target.get('base_acquisition_cost'),
-                                    'response': saved['status']})
-    R.step('the affordable acquisition is queued',
-           'pass' if saved['status'] < 400 and (draft(page).get('acquisitions') or []) else 'fail',
-           '%s %s' % (target.get('target_name'), json.dumps(saved)[:200]))
+    queued = draft(page).get('acquisitions') or []
+    R.observe('acquisitions_already_queued', queued)
+    if queued:
+        R.step('an acquisition is already queued from this round\'s play', 'pass',
+               '%s; unallocated now %s' % (json.dumps(queued)[:200], aff0.get('unallocated')))
+    else:
+        R.step('an acquisition the team CAN fund is available this round',
+               'pass' if affordable else 'fail',
+               '%s against unallocated %s' % ([t.get('target_name') for t in affordable],
+                                              aff0.get('unallocated')))
+        if not affordable:
+            return
+        target = affordable[-1]
+        saved = api(page, 'PATCH', DEC + 'acquisitions/', {'acquisitions': [
+            {'acquisition_target': target['id']}]})
+        R.observe('acquisition_saved', {'target': target.get('target_name'),
+                                        'cost': target.get('base_acquisition_cost'),
+                                        'response': saved['status']})
+        R.step('the affordable acquisition is queued',
+               'pass' if saved['status'] < 400 and (draft(page).get('acquisitions') or []) else 'fail',
+               '%s %s' % (target.get('target_name'), json.dumps(saved)[:200]))
 
     # Now raise the outlays that are typed rather than offered, the way a team
     # that changed its mind after queuing would: promotion budgets and the
@@ -157,7 +163,7 @@ def after(page):
            'pass' if row and float(row.get('cash_closing') or 0) >= 0 else 'fail',
            'cash_closing=%s strategy_expense=%s' % (row and row.get('cash_closing'),
                                                     row and row.get('strategy_expense')))
-    notes = api(page, 'GET', '/api/games/%d/teams/%d/notifications/' % (GID, TID))['body']
+    notes = api(page, 'GET', '/api/team-notifications/?team_id=%d' % TID)['body']
     R.observe('notifications', notes)
     text = json.dumps(notes, ensure_ascii=False)
     R.step('the team is told why, and that nothing was charged',

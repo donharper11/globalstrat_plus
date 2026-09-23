@@ -460,9 +460,18 @@ def market_strategy(page):
     plus = pane(page).locator('button', has_text='+ ')
     if plus.count():
         R.observe('partnership_label', plus.first.text_content())
+    # W-CE2-02: an offer the team cannot fund is now rendered DISABLED with the
+    # figures beside it rather than left clickable, so a disabled offer is
+    # recorded rather than clicked (the walkthrough-2 driver clicked blindly
+    # and timed out here).
+    plus_enabled = plus.count() and plus.first.is_enabled()
+    if plus.count() and not plus_enabled:
+        R.observe('partnership_offer_disabled_text', pane(page).inner_text()[:800])
+        R.step('market strategy: an unaffordable partnership offer is disabled, not clickable (W-CE2-02)',
+               'pass', 'label=%r' % (R.record['observed'].get('partnership_label')))
     if d0.get('partnerships'):
         R.step('market strategy: partnership already in this draft (re-run)', 'observed')
-    elif plus.count():
+    elif plus_enabled:
         plus.first.click(); page.wait_for_timeout(3500)
         pt = draft(page).get('partnerships') or []
         R.observe('partnerships', pt)
@@ -471,6 +480,9 @@ def market_strategy(page):
                'pass' if pt and any(w in (R.record['observed'].get('partnership_label') or '').lower()
                                     for w in ('round', '每轮', '每回合')) else 'fail',
                'label=%r stored=%s' % (R.record['observed'].get('partnership_label'), json.dumps(pt)[:160]))
+    elif plus.count():
+        R.step('market strategy: partnership options offered', 'observed',
+               'offered but disabled this round')
     else:
         R.step('market strategy: partnership options offered', 'fail', 'no + option button')
     R.screen(page, '%s-r%d-52-market-home' % (P, ROUND))

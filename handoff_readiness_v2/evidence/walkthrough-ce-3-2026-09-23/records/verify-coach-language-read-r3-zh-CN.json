@@ -1,0 +1,1173 @@
+{
+ "driver": "verify-coach-language-read-r3",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:31:05",
+ "steps": [
+  {
+   "name": "instructor signs in (in English)",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the AI Coach wrote alerts for round 3",
+   "outcome": "pass",
+   "detail": "34 alerts; api=200"
+  },
+  {
+   "name": "the alerts a Chinese-reading instructor reads are Chinese (W-CE2-08)",
+   "outcome": "fail",
+   "detail": "32 of 34 alerts carry Chinese; first='Lumen Devices 的绩效指数下降了 5.1 点 指数：39.79（此前为 44.85）。满意度得分：0.247。'"
+  },
+  {
+   "name": "the panel itself is Chinese",
+   "outcome": "pass",
+   "detail": "3305 Han characters on the panel"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:17"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:31:17"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "05:31:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "05:31:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "05:31:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "05:31:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "05:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "05:31:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "05:31:42"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-coach-panel-r3",
+   "url": "/instructor",
+   "screenshot": "v-coach-panel-r3-zh-CN.jpg",
+   "note": "the AI Coach panel, console in Chinese",
+   "leaks": [
+    {
+     "english": "Nova Circuit",
+     "n": 17
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 17
+    },
+    {
+     "english": "consecutive rounds\n\nTheir technology capability is stagnating while competitors may be advancing",
+     "n": 16
+    },
+    {
+     "english": "This will erode fit scores with technology",
+     "n": 16
+    },
+    {
+     "english": "sensitive segments",
+     "n": 16
+    },
+    {
+     "english": "Classic short",
+     "n": 16
+    },
+    {
+     "english": "term thinking trap",
+     "n": 16
+    },
+    {
+     "english": "Teams sacrifice long",
+     "n": 16
+    },
+    {
+     "english": "term capability for short",
+     "n": 16
+    },
+    {
+     "english": "term profits",
+     "n": 16
+    },
+    {
+     "english": "established firms underinvest in innovation",
+     "n": 16
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 15
+    },
+    {
+     "english": "Helix Digital",
+     "n": 15
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 15
+    },
+    {
+     "english": "Apex Devices",
+     "n": 15
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 15
+    },
+    {
+     "english": "coherence score of",
+     "n": 14
+    },
+    {
+     "english": "Their strategy is internally consistent",
+     "n": 14
+    },
+    {
+     "english": "Pricing aligns with positioning",
+     "n": 14
+    },
+    {
+     "english": "distribution matches segments",
+     "n": 14
+    },
+    {
+     "english": "entry modes match risk profiles",
+     "n": 14
+    },
+    {
+     "english": "Highlight this in debrief as an example of strategic alignment",
+     "n": 14
+    },
+    {
+     "english": "What specific choices created this coherence",
+     "n": 14
+    },
+    {
+     "english": "Solaris Consumer",
+     "n": 13
+    },
+    {
+     "english": "points\n\nIndex",
+     "n": 8
+    },
+    {
+     "english": "Satisfaction score",
+     "n": 8
+    },
+    {
+     "english": "sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously",
+     "n": 8
+    },
+    {
+     "english": "This team may be spreading too thin or making contradictory decisions",
+     "n": 8
+    },
+    {
+     "english": "This market has",
+     "n": 8
+    },
+    {
+     "english": "growth rate and",
+     "n": 8
+    },
+    {
+     "english": "tariff rate",
+     "n": 8
+    },
+    {
+     "english": "Discuss entry mode choice",
+     "n": 8
+    },
+    {
+     "english": "this the right fit for the market",
+     "n": 8
+    },
+    {
+     "english": "risk profile",
+     "n": 8
+    },
+    {
+     "english": "framework for entry mode selection",
+     "n": 8
+    },
+    {
+     "english": "this round\n\nRevenue",
+     "n": 8
+    },
+    {
+     "english": "Check if this is due to pricing",
+     "n": 8
+    },
+    {
+     "english": "market share loss",
+     "n": 8
+    },
+    {
+     "english": "currency effects",
+     "n": 8
+    },
+    {
+     "english": "Revenue decline in",
+     "n": 8
+    },
+    {
+     "english": "growing market suggests competitive pressure",
+     "n": 8
+    },
+    {
+     "english": "What changed in your competitive position",
+     "n": 8
+    },
+    {
+     "english": "competitors improve or did you stand still",
+     "n": 8
+    },
+    {
+     "english": "Total debt",
+     "n": 3
+    },
+    {
+     "english": "force from the next round until the company returns to positive cash and profitability",
+     "n": 2
+    },
+    {
+     "english": "talent turnover",
+     "n": 2
+    },
+    {
+     "english": "share price floor at",
+     "n": 2
+    },
+    {
+     "english": "book value",
+     "n": 2
+    },
+    {
+     "english": "new debt",
+     "n": 2
+    },
+    {
+     "english": "and no acquisitions",
+     "n": 2
+    },
+    {
+     "english": "Distress is assessed from this round",
+     "n": 2
+    },
+    {
+     "english": "closing position",
+     "n": 2
+    },
+    {
+     "english": "the restrictions bite from round",
+     "n": 2
+    },
+    {
+     "english": "This team is in financial distress",
+     "n": 2
+    },
+    {
+     "english": "teaching moment about cash management",
+     "n": 2
+    },
+    {
+     "english": "debt sustainability",
+     "n": 2
+    },
+    {
+     "english": "and the downward spiral that can result from over",
+     "n": 2
+    },
+    {
+     "english": "leveraging or under",
+     "n": 2
+    },
+    {
+     "english": "Lumen Devices performance index dropped",
+     "n": 2
+    },
+    {
+     "english": "Lumen Devices achieved",
+     "n": 2
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v-coach-panel-r3",
+   "leaks": [
+    {
+     "english": "Nova Circuit",
+     "n": 17
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 17
+    },
+    {
+     "english": "consecutive rounds\n\nTheir technology capability is stagnating while competitors may be advancing",
+     "n": 16
+    },
+    {
+     "english": "This will erode fit scores with technology",
+     "n": 16
+    },
+    {
+     "english": "sensitive segments",
+     "n": 16
+    },
+    {
+     "english": "Classic short",
+     "n": 16
+    },
+    {
+     "english": "term thinking trap",
+     "n": 16
+    },
+    {
+     "english": "Teams sacrifice long",
+     "n": 16
+    },
+    {
+     "english": "term capability for short",
+     "n": 16
+    },
+    {
+     "english": "term profits",
+     "n": 16
+    },
+    {
+     "english": "established firms underinvest in innovation",
+     "n": 16
+    },
+    {
+     "english": "Lumen Devices",
+     "n": 15
+    },
+    {
+     "english": "Helix Digital",
+     "n": 15
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 15
+    },
+    {
+     "english": "Apex Devices",
+     "n": 15
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 15
+    },
+    {
+     "english": "coherence score of",
+     "n": 14
+    },
+    {
+     "english": "Their strategy is internally consistent",
+     "n": 14
+    },
+    {
+     "english": "Pricing aligns with positioning",
+     "n": 14
+    },
+    {
+     "english": "distribution matches segments",
+     "n": 14
+    },
+    {
+     "english": "entry modes match risk profiles",
+     "n": 14
+    },
+    {
+     "english": "Highlight this in debrief as an example of strategic alignment",
+     "n": 14
+    },
+    {
+     "english": "What specific choices created this coherence",
+     "n": 14
+    },
+    {
+     "english": "Solaris Consumer",
+     "n": 13
+    },
+    {
+     "english": "points\n\nIndex",
+     "n": 8
+    },
+    {
+     "english": "Satisfaction score",
+     "n": 8
+    },
+    {
+     "english": "sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously",
+     "n": 8
+    },
+    {
+     "english": "This team may be spreading too thin or making contradictory decisions",
+     "n": 8
+    },
+    {
+     "english": "This market has",
+     "n": 8
+    },
+    {
+     "english": "growth rate and",
+     "n": 8
+    },
+    {
+     "english": "tariff rate",
+     "n": 8
+    },
+    {
+     "english": "Discuss entry mode choice",
+     "n": 8
+    },
+    {
+     "english": "this the right fit for the market",
+     "n": 8
+    },
+    {
+     "english": "risk profile",
+     "n": 8
+    },
+    {
+     "english": "framework for entry mode selection",
+     "n": 8
+    },
+    {
+     "english": "this round\n\nRevenue",
+     "n": 8
+    },
+    {
+     "english": "Check if this is due to pricing",
+     "n": 8
+    },
+    {
+     "english": "market share loss",
+     "n": 8
+    },
+    {
+     "english": "currency effects",
+     "n": 8
+    },
+    {
+     "english": "Revenue decline in",
+     "n": 8
+    },
+    {
+     "english": "growing market suggests competitive pressure",
+     "n": 8
+    },
+    {
+     "english": "What changed in your competitive position",
+     "n": 8
+    },
+    {
+     "english": "competitors improve or did you stand still",
+     "n": 8
+    },
+    {
+     "english": "Total debt",
+     "n": 3
+    },
+    {
+     "english": "force from the next round until the company returns to positive cash and profitability",
+     "n": 2
+    },
+    {
+     "english": "talent turnover",
+     "n": 2
+    },
+    {
+     "english": "share price floor at",
+     "n": 2
+    },
+    {
+     "english": "book value",
+     "n": 2
+    },
+    {
+     "english": "new debt",
+     "n": 2
+    },
+    {
+     "english": "and no acquisitions",
+     "n": 2
+    },
+    {
+     "english": "Distress is assessed from this round",
+     "n": 2
+    },
+    {
+     "english": "closing position",
+     "n": 2
+    },
+    {
+     "english": "the restrictions bite from round",
+     "n": 2
+    },
+    {
+     "english": "This team is in financial distress",
+     "n": 2
+    },
+    {
+     "english": "teaching moment about cash management",
+     "n": 2
+    },
+    {
+     "english": "debt sustainability",
+     "n": 2
+    },
+    {
+     "english": "and the downward spiral that can result from over",
+     "n": 2
+    },
+    {
+     "english": "leveraging or under",
+     "n": 2
+    },
+    {
+     "english": "Lumen Devices performance index dropped",
+     "n": 2
+    },
+    {
+     "english": "Lumen Devices achieved",
+     "n": 2
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "coach_panel_text": "所有严重程度\n所有团队\n所有回合\n刷 新\nLumen Devices\nR3\nLumen Devices 的绩效指数下降了 5.1 点\n\n指数：39.79（此前为 44.85）。满意度得分：0.247。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nLumen Devices\nR3\nLumen Devices 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nLumen Devices\nR3\nLumen Devices 仍只在 1 个市场运营（第 3 回合）\n\n停留在单一市场会限制收入增长潜力，并增加集中度风险。\n教学备注: 讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。\n确认\n观察\nLumen Devices\nR3\nLumen Devices 已连续 4 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nHelix Digital\nR3\nHelix Digital 的绩效指数下降了 5.0 点\n\n指数：39.98（此前为 44.98）。满意度得分：0.250。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nHelix Digital\nR3\nHelix Digital 的战略一致性得分达到 100/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nHelix Digital\nR3\nHelix Digital 仍只在 1 个市场运营（第 3 回合）\n\n停留在单一市场会限制收入增长潜力，并增加集中度风险。\n教学备注: 讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。\n确认\n观察\nHelix Digital\nR3\nHelix Digital 已连续 4 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nZenith Hardware\nR3\nZenith Hardware 的绩效指数下降了 5.1 点\n\n指数：39.69（此前为 44.78）。满意度得分：0.245。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nZenith Hardware\nR3\nZenith Hardware 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nZenith Hardware\nR3\nZenith Hardware 仍只在 1 个市场运营（第 3 回合）\n\n停留在单一市场会限制收入增长潜力，并增加集中度风险。\n教学备注: 讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。\n确认\n观察\nZenith Hardware\nR3\nZenith Hardware 已连续 4 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nApex Devices\nR3\nApex Devices 的绩效指数下降了 5.0 点\n\n指数：39.83（此前为 44.88）。满意度得分：0.247。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nApex Devices\nR3\nApex Devices 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nApex Devices\nR3\nApex Devices 仍只在 1 个市场运营（第 3 回合）\n\n停留在单一市场会限制收入增长潜力，并增加集中度风险。\n教学备注: 讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。\n确认\n观察\nApex Devices\nR3\nApex Devices 已连续 4 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nSolaris Consumer\nR3\nSolaris Consumer 通过从母国市场出口进入了西欧\n\n投资：$500,000。该市场增长率为 0%，关税率为 8%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nSolaris Consumer\nR3\nSolaris Consumer 已连续 4 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nSolaris Consumer\nR3\nSolaris Consumer 的资产负债率达到 9.66\n\n总负债：$19,000,000，权益：$1,966,400。利息支出：每回合 $840,000。这一杠杆水平会限制未来的借款能力并增加风险。\n教学备注: 讨论债务融资与股权融资的权衡。参考：莫迪利安尼-米勒定理及现实中的资本结构决策。\n确认\n关注\nMeridian Tech\nR3\nMeridian Tech 通过从母国市场出口进入了非洲\n\n投资：$500,000。该市场增长率为 0%，关税率为 15%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nMeridian Tech\nR3\nMeridian Tech 的战略一致性得分达到 81",
+  "coach_api_status": 200,
+  "alerts_for_round": [
+   {
+    "id": 90,
+    "team_id": 8,
+    "team_name": "Lumen Devices",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Lumen Devices 的绩效指数下降了 5.1 点",
+    "detail": "指数：39.79（此前为 44.85）。满意度得分：0.247。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102662+00:00"
+   },
+   {
+    "id": 89,
+    "team_id": 8,
+    "team_name": "Lumen Devices",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Lumen Devices 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102648+00:00"
+   },
+   {
+    "id": 88,
+    "team_id": 8,
+    "team_name": "Lumen Devices",
+    "round_number": 3,
+    "alert_type": "missed_opportunity",
+    "severity": "watch",
+    "title": "Lumen Devices 仍只在 1 个市场运营（第 3 回合）",
+    "detail": "停留在单一市场会限制收入增长潜力，并增加集中度风险。",
+    "teaching_note": "讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102634+00:00"
+   },
+   {
+    "id": 87,
+    "team_id": 8,
+    "team_name": "Lumen Devices",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Lumen Devices 已连续 4 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102624+00:00"
+   },
+   {
+    "id": 86,
+    "team_id": 7,
+    "team_name": "Helix Digital",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Helix Digital 的绩效指数下降了 5.0 点",
+    "detail": "指数：39.98（此前为 44.98）。满意度得分：0.250。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102614+00:00"
+   },
+   {
+    "id": 85,
+    "team_id": 7,
+    "team_name": "Helix Digital",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Helix Digital 的战略一致性得分达到 100/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102604+00:00"
+   },
+   {
+    "id": 84,
+    "team_id": 7,
+    "team_name": "Helix Digital",
+    "round_number": 3,
+    "alert_type": "missed_opportunity",
+    "severity": "watch",
+    "title": "Helix Digital 仍只在 1 个市场运营（第 3 回合）",
+    "detail": "停留在单一市场会限制收入增长潜力，并增加集中度风险。",
+    "teaching_note": "讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102595+00:00"
+   },
+   {
+    "id": 83,
+    "team_id": 7,
+    "team_name": "Helix Digital",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Helix Digital 已连续 4 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102585+00:00"
+   },
+   {
+    "id": 82,
+    "team_id": 6,
+    "team_name": "Zenith Hardware",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware 的绩效指数下降了 5.1 点",
+    "detail": "指数：39.69（此前为 44.78）。满意度得分：0.245。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102568+00:00"
+   },
+   {
+    "id": 81,
+    "team_id": 6,
+    "team_name": "Zenith Hardware",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Zenith Hardware 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102559+00:00"
+   },
+   {
+    "id": 80,
+    "team_id": 6,
+    "team_name": "Zenith Hardware",
+    "round_number": 3,
+    "alert_type": "missed_opportunity",
+    "severity": "watch",
+    "title": "Zenith Hardware 仍只在 1 个市场运营（第 3 回合）",
+    "detail": "停留在单一市场会限制收入增长潜力，并增加集中度风险。",
+    "teaching_note": "讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102549+00:00"
+   },
+   {
+    "id": 79,
+    "team_id": 6,
+    "team_name": "Zenith Hardware",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware 已连续 4 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102539+00:00"
+   },
+   {
+    "id": 78,
+    "team_id": 5,
+    "team_name": "Apex Devices",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Apex Devices 的绩效指数下降了 5.0 点",
+    "detail": "指数：39.83（此前为 44.88）。满意度得分：0.247。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102529+00:00"
+   },
+   {
+    "id": 77,
+    "team_id": 5,
+    "team_name": "Apex Devices",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Apex Devices 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102519+00:00"
+   },
+   {
+    "id": 76,
+    "team_id": 5,
+    "team_name": "Apex Devices",
+    "round_number": 3,
+    "alert_type": "missed_opportunity",
+    "severity": "watch",
+    "title": "Apex Devices 仍只在 1 个市场运营（第 3 回合）",
+    "detail": "停留在单一市场会限制收入增长潜力，并增加集中度风险。",
+    "teaching_note": "讨论市场进入时机。参考：乌普萨拉国际化模型——企业常因不确定性而推迟进入海外市场，但推迟也有代价。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102509+00:00"
+   },
+   {
+    "id": 75,
+    "team_id": 5,
+    "team_name": "Apex Devices",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Apex Devices 已连续 4 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102499+00:00"
+   },
+   {
+    "id": 74,
+    "team_id": 4,
+    "team_name": "Solaris Consumer",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Solaris Consumer 通过从母国市场出口进入了西欧",
+    "detail": "投资：$500,000。该市场增长率为 0%，关税率为 8%。",
+    "teaching_note": "讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102490+00:00"
+   },
+   {
+    "id": 73,
+    "team_id": 4,
+    "team_name": "Solaris Consumer",
+    "round_number": 3,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Solaris Consumer 已连续 4 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102480+00:00"
+   },
+   {
+    "id": 72,
+    "team_id": 4,
+    "team_name": "Solaris Consumer",
+    "round_number": 3,
+    "alert_type": "financial",
+    "severity": "concern",
+    "title": "Solaris Consumer 的资产负债率达到 9.66",
+    "detail": "总负债：$19,000,000，权益：$1,966,400。利息支出：每回合 $840,000。这一杠杆水平会限制未来的借款能力并增加风险。",
+    "teaching_note": "讨论债务融资与股权融资的权衡。参考：莫迪利安尼-米勒定理及现实中的资本结构决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102470+00:00"
+   },
+   {
+    "id": 71,
+    "team_id": 3,
+    "team_name": "Meridian Tech",
+    "round_number": 3,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Meridian Tech 通过从母国市场出口进入了非洲",
+    "detail": "投资：$500,000。该市场增长率为 0%，关税率为 15%。",
+    "teaching_note": "讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T05:28:49.102460+00:00"
+   }
+  ]
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 1,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 1,
+  "console_errors": 8,
+  "api_calls": 30,
+  "api_refused": 0
+ }
+}

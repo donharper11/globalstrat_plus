@@ -1,0 +1,594 @@
+{
+ "driver": "verify-plant-after-acquisition-t1-r3-queue",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:08:55",
+ "steps": [
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the page does not offer a second plant in a market that already holds one",
+   "outcome": "pass",
+   "detail": "0 Build Plant controls"
+  },
+  {
+   "name": "a plant build in the market of the completed acquisition is accepted",
+   "outcome": "pass",
+   "detail": "200 [{\"id\": 12, \"market\": 4, \"action\": \"build\", \"capacity_units\": 0, \"contract_mfg_volume\": 0}]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:08:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:08:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:08:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:08:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:09:03"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:09:03"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:08:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/2/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/2/",
+   "status": 200,
+   "at": "05:08:59"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/alliances/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/compliance/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/markets/NA/localization/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/alliances/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/compliance/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "05:09:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/markets/AFR/localization/",
+   "status": 200,
+   "at": "05:09:09"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/3/plants/",
+   "status": 200,
+   "at": "05:09:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "05:09:12"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-paa-t1-r3-home-market",
+   "url": "/games/1/teams/1/decisions/market-strategy",
+   "screenshot": "v-paa-t1-r3-home-market-en.jpg",
+   "note": "the home market, where the acquisition already brought a plant",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/markets/NA/localization/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/markets/AFR/localization/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "home_market": {
+   "id": 4,
+   "code": "AFR",
+   "name": "Africa",
+   "is_home_market": true,
+   "entry_status": "active",
+   "entry_mode": "Export from Home Market",
+   "allows_manufacturing": true,
+   "contract_mfg_available": true,
+   "plant_build_cost": 8000000,
+   "plant_build_rounds": 3,
+   "plant_capacity_units": 40000
+  },
+  "acquisitions_this_team_owns": [
+   [
+    "AfriConnect Mobile",
+    "Africa",
+    true
+   ]
+  ],
+  "home_pane_text": "MARKET ENTRY\nActive\nEntry Mode: Export from Home Market\nExit Market\nPRODUCTION CAPACITY\nOWN PLANT\n25000 units\nOperational\nContract manufacturing: 30000 units available (+25% cost premium)\nPARTNERSHIPS & ALLIANCES\nDistribution Partner — $2.0M/roundDistribution Partner — $2.0M/round\nDistribution Partner — $2.0M/round\nQueued\nWithdraw\n+ Distribution Partner — $2.0M/round\n+ Technology Partner — $3.0M/round\n+ Government & Regulatory Advisor — $1.0M/round\n+ Local Brand Ambassador — $1.5M/round\n+ Apex Business Alliance — $3.0M/round\n+ Zhongguancun Innovation Group — $2.5M/round\n+ European Commerce Partners — $3.5M/round\n+ Grupo Alvorada Negócios — $2.0M/round\n+ Sahel Gateway Enterprises — $1.5M/round\nPARTNERSHIP HEALTH — AFRICA\nAfriConnect Distribution (DISTRIBUTION)\n✓ Healthy\nSatisfaction: 52%\n52%\nBenefit delivery: 60%\nMARKET OPERATIONS\nLocalization Overview — Africa\nHOME\nThis is your headquarters market. All talent pools operate at full effectiveness. No cultural distance penalty applies.\nR&D 5.0\nCommercial 4.8\nOps 5.4\nThese reflect your global talent levels from Corporate Strategy.",
+  "build_plant_offered_where_a_plant_exists": 0,
+  "plant_saved": {
+   "status": 200,
+   "body": {
+    "id": 17,
+    "team": 1,
+    "round": 4,
+    "status": "draft",
+    "locked_at": null,
+    "locked_by": null,
+    "team_notes": null,
+    "budget_allocation": {
+     "id": 33,
+     "rd_budget": "2500000.00",
+     "marketing_budget": "2500000.00",
+     "strategy_budget": "1500000.00",
+     "warnings": []
+    },
+    "financing": {
+     "id": 22,
+     "new_debt": "5000000.00",
+     "debt_repayment": "0.00",
+     "new_equity": "0.00",
+     "dividend_per_share": "0.5000"
+    },
+    "esg": {
+     "id": 9,
+     "environmental_investment": "500000.00",
+     "social_investment": "250000.00",
+     "governance_commitments": [
+      "board_diversity"
+     ]
+    },
+    "rd_investments": [],
+    "platform_developments": [],
+    "product_creates": [
+     {
+      "id": 9,
+      "team_platform": 1,
+      "product_name": "Nova Aurora R3",
+      "positioning": "mainstream",
+      "target_market_ids": [
+       1
+      ]
+     }
+    ],
+    "product_retires": [
+     {
+      "id": 9,
+      "team_product": 21,
+      "timing": "end_of_round"
+     }
+    ],
+    "marketing_decisions": [
+     {
+      "id": 37,
+      "team_product": 1,
+      "market": 4,
+      "retail_price": "760.00",
+      "promotion_budget": "200000.00",
+      "campaign_focus_feature_ids": [
+       1
+      ],
+      "channel_digital_pct": "0.3400",
+      "channel_traditional_pct": "0.3300",
+      "channel_trade_pct": "0.3300",
+      "distribution_strategy": "mass_retail",
+      "distribution_investment": "0.00",
+      "sales_team_count": 0,
+      "distribution_channel_detail": {},
+      "production_volume": 5000,
+      "production_source_market": 4,
+      "demand_estimate": 0,
+      "warnings": []
+     }
+    ],
+    "market_entries": [
+     {
+      "id": 9,
+      "market": 3,
+      "entry_mode": 1,
+      "initial_investment": "500000.00",
+      "action": "enter",
+      "integration_strategy": "FULL"
+     }
+    ],
+    "plant_decisions": [
+     {
+      "id": 12,
+      "market": 4,
+      "action": "build",
+      "capacity_units": 0,
+      "contract_mfg_volume": 0
+     }
+    ],
+    "partnerships": [
+     {
+      "id": 11,
+      "market": 4,
+      "strategy_option": 1,
+      "annual_investment": "2000000.00",
+      "action": "establish"
+     }
+    ],
+    "acquisitions": [],
+    "event_responses": [],
+    "research_allocations": [],
+    "talent_allocations": [
+     {
+      "id": 9,
+      "talent_pool": "rd",
+      "hq_count": 55,
+      "market_allocation": {
+       "NA": 5
+      }
+     }
+    ],
+    "compliance_investments": [
+     {
+      "id": 5,
+      "market": 1,
+      "investment_amount": "250000.00"
+     }
+    ]
+   }
+  }
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 34,
+  "api_refused": 0
+ }
+}

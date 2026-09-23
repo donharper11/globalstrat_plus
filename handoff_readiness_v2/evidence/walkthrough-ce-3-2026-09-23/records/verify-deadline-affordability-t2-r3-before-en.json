@@ -1,0 +1,542 @@
+{
+ "driver": "verify-deadline-affordability-t2-r3-before",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:15:19",
+ "steps": [
+  {
+   "name": "student s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "an acquisition is already queued from this round's play",
+   "outcome": "pass",
+   "detail": "[{\"id\": 8, \"acquisition_target\": 2}]; unallocated now -13212809.09"
+  },
+  {
+   "name": "the Summary names the cash blocker with the figures, before the click (W-CE-25)",
+   "outcome": "pass",
+   "detail": "can_lock=False blockers=[\"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\", \"Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.\", \"Set the marketing mix for every active product-market combination before locking.\", \"Projected ending cash is $-25,499,999.09. Reduce spending or raise financing before locking.\"]"
+  },
+  {
+   "name": "no unformatted negative figure on the Decision Summary (W-CE2-09)",
+   "outcome": "pass",
+   "detail": "found []; the money-shaped lines on the page are: [\"Budget $42.5M/$5.0M over budget\", \"R&D, marketing and strategy spending totals $42.5M, which is $37.5M over the operating budget of $5.0M\", \"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\", \"Committed this round: $49.3M of $19.3M cash \\u2014 $-30.0M not yet committed\", \"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\", \"Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.\"]"
+  },
+  {
+   "name": "the screen states one total for what the round costs (W-CE-18b)",
+   "outcome": "observed",
+   "detail": "[\"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\", \"Committed this round: $49.3M of $19.3M cash \\u2014 $-30.0M not yet committed\", \"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\"]"
+  },
+  {
+   "name": "the server refuses the lock for the same reason the page gave",
+   "outcome": "pass",
+   "detail": "{\"status\": 400, \"body\": {\"detail\": \"Review and correct the listed decision items before locking.\", \"errors\": [\"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\", \"Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.\", \"Set the marketing mix for every active pr"
+  },
+  {
+   "name": "the submission is left a draft for the deadline to close",
+   "outcome": "pass",
+   "detail": "draft"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:15:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "05:15:34"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:15:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/2/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/2/",
+   "status": 200,
+   "at": "05:15:23"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/strategy/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/3/marketing/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/strategy/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:15:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=8&section_id=1",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:15:28"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/2/decisions/round/3/lock/",
+   "status": 400,
+   "at": "05:15:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:15:34"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/2/decisions/round/3/lock/",
+   "status": 400,
+   "at": "05:15:34",
+   "body": "{\"detail\":\"Review and correct the listed decision items before locking.\",\"errors\":[\"Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\",\"Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.\",\"Set the marketing mix for every active product-market combination before locking.\",\"Projected ending cash is $-25,499,999.09. Reduce spending or raise financing before locking.\"]}",
+   "request": "{}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-deadline-t2-r3-summary",
+   "url": "/games/1/teams/2/decisions/summary",
+   "screenshot": "v-deadline-t2-r3-summary-en.jpg",
+   "note": "an acquisition is queued and the round no longer fits the cash",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/3/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=8&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Nova Circuit",
+  "affordability_before": {
+   "cash_on_hand": 19287190.91,
+   "committed_total": 32500000,
+   "unallocated": -13212809.09
+  },
+  "available_targets": [
+   [
+    "AsiaElec Manufacturing",
+    18000000
+   ],
+   [
+    "TechSul Eletrônicos",
+    20000000
+   ],
+   [
+    "PioneerTech Solutions",
+    25000000
+   ]
+  ],
+  "acquisitions_already_queued": [
+   {
+    "id": 8,
+    "acquisition_target": 2
+   }
+  ],
+  "marketing_rows": 1,
+  "affordability_after_bump": {
+   "cash_on_hand": 19287190.91,
+   "committed_total": 49287190,
+   "unallocated": -29999999.09
+  },
+  "summary": {
+   "can_lock": false,
+   "lock_blockers": [
+    "Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.",
+    "Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.",
+    "Set the marketing mix for every active product-market combination before locking.",
+    "Projected ending cash is $-25,499,999.09. Reduce spending or raise financing before locking."
+   ]
+  },
+  "summary_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 10DRAFT OPEN\nBudget $42.5M/$5.0M over budget\nR&D $0/$2.5M\nMktg $19.3M/$2.5M\nStrat $23.3M/$1.5M\n中文\nGK\nGrace Kim · Nova Circuit\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n⚠️\nGovernment warning in East Asia — improve compliance or face restrictions\n│\n💱\nCNY weakened 2.0% against BRL — East Asia revenue converts to fewer BRL\n│\n💱\nNGN weakened 3.0% against BRL — Africa revenue converts to fewer BRL\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📉\nEast Asia growth slowing — demand cooling\n│\n📈\nWestern Europe tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📉\nSouth America growth slowing — demand cooling\n│\n📈\nSouth America tariffs increased — import costs rising\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n⚠️\nGovernment warning in East Asia — improve compliance or face restrictions\n│\n💱\nCNY weakened 2.0% against BRL — East Asia revenue converts to fewer BRL\n│\n💱\nNGN weakened 3.0% against BRL — Africa revenue converts to fewer BRL\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📉\nEast Asia growth slowing — demand cooling\n│\n📈\nWestern Europe tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📉\nSouth America growth slowing — demand cooling\n│\n📈\nSouth America tariffs increased — import costs rising\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\nNOVA CIRCUIT\nSOUTH AMERICA\nRound 3\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit \nRESULTS\nRound Results\nLeaderboard\nR&D, marketing and strategy spending totals $42.5M, which is $37.5M over the operating budget of $5.0M\nDecision Summary & Submit\nRound 3 · Review and lock your decisions\nIn Progress\nDECISION CHECKLIST\nBudget Allocation\nCommitted spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.\nFix in Budget Allocation\nBlocked\nR&D Investment\nNo R&D investment is planned this ro",
+  "lock_controls": [
+   {
+    "label": "Lock & Submit Decisions for Round 3",
+    "enabled": false
+   }
+  ],
+  "raw_negative_money": [],
+  "round_cost_totals": [
+   "Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.",
+   "Committed this round: $49.3M of $19.3M cash — $-30.0M not yet committed",
+   "Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development."
+  ],
+  "lock_response": {
+   "status": 400,
+   "body": {
+    "detail": "Review and correct the listed decision items before locking.",
+    "errors": [
+     "Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91. This includes $0.00 of platform development.",
+     "Marketing spend of $19,287,190.00 exceeds the marketing budget of $2,500,000.00. Reduce spending or increase the budget.",
+     "Set the marketing mix for every active product-market combination before locking.",
+     "Projected ending cash is $-25,499,999.09. Reduce spending or raise financing before locking."
+    ]
+   }
+  },
+  "final_draft_acquisitions": [
+   {
+    "id": 8,
+    "acquisition_target": 2
+   }
+  ]
+ },
+ "summary": {
+  "passed": 6,
+  "failed": 0,
+  "observed": 1,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 7,
+  "api_calls": 34,
+  "api_refused": 1
+ }
+}
