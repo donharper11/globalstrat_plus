@@ -51,6 +51,20 @@ def _dec(v):
     return float(v)
 
 
+def _market_name_map(scenario, language):
+    """{stored English market name -> the name this reader should see}.
+
+    Empty for an English reader and for a scenario with no markets, so the
+    caller's stored values are served untouched (W-CE3-07).
+    """
+    if language != 'zh-CN':
+        return {}
+    return {
+        market.name: get_localized_field(market, 'name', language)
+        for market in MarketDefinition.objects.filter(scenario=scenario)
+    }
+
+
 # The label for each submission origin lives with the other operator wording
 # (`operator_messages.SUBMISSION_ORIGIN_LABELS`) and is rendered in the
 # instructor's language (W-CE-08).
@@ -239,8 +253,15 @@ class RoundResultsView(APIView):
                 # field of the `coherence` manifest section, so a scoring
                 # artefact cannot follow the reader. The sentences are
                 # rendered into a copy for the response; the row is untouched.
+                #
+                # W-CE3-07: the same is true of the market names inside the
+                # criterion detail tables, which stored the English
+                # `MarketDefinition.name`. The row carries no market id, so
+                # the mapping is keyed on the stored name; the view builds it
+                # because the view holds the scenario.
                 'breakdown': coherence_feedback.localised_breakdown(
-                    coh.breakdown or {}, language),
+                    coh.breakdown or {}, language,
+                    market_names=_market_name_map(game.scenario, language)),
             }
 
         # Strategy feature levels (includes ESG)

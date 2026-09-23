@@ -4,6 +4,7 @@ One file per walkthrough pass, as `test_walk_ce2_language.py` is for the
 second. Each class names the defect it holds closed and fails on the
 unmodified tree.
 """
+import json
 from decimal import Decimal as D
 
 from django.test import SimpleTestCase, TestCase
@@ -372,3 +373,116 @@ class TheGradesExportSaysWhatWasSetByHand(CohortCapTestBase):
         row = next(r for r in rows[1:] if r[0] == '1')
 
         self.assertEqual(float(row[rows[0].index('Performance Index')]), 88.0)
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-06 / W-CE3-07 — the Strategic Scorecard's last two English leaks
+# ---------------------------------------------------------------------------
+
+class TheScorecardReadsWhollyInOneLanguage(SimpleTestCase):
+    """W-CE2-07 translated the leverage and budget sentences and left two.
+
+    The governance/tax sentence stayed English on a Chinese screen beside two
+    Chinese siblings, and the market's English name stayed inside the
+    criterion detail tables while the same market read 非洲 / 北美 everywhere
+    else in the same response.
+
+    Both are rendered into a copy for the reader; the stored row -- a hashed
+    field of the competitive `coherence` section -- is never written.
+    """
+
+    def setUp(self):
+        from core.services import coherence_feedback
+        self.mod = coherence_feedback
+
+    # -- W-CE3-06 --------------------------------------------------------
+
+    def stored(self):
+        """A breakdown shaped exactly as `engine/coherence.py` writes it."""
+        return {
+            'financial_prudence': {
+                'score': 1.0, 'debt_to_equity': 0.4,
+                'feedback': 'Conservative leverage. Strong financial position.',
+            },
+            'governance_tax': {
+                'score': 1.0,
+                'feedback': 'No governance-tax conflict detected.',
+            },
+            'entry_mode_risk': {
+                'score': 0.8,
+                'details': [{'market': 'Africa', 'risk': 5, 'control': 6,
+                             'score': 0.8}],
+            },
+            'positioning_price': {
+                'score': 0.5,
+                'details': [{'product': 'Nexus One', 'market': 'North America',
+                             'price': 400, 'range': '300-500',
+                             'aligned': True}],
+            },
+        }
+
+    def test_the_governance_sentence_follows_the_reader(self):
+        rendered = self.mod.localised_breakdown(self.stored(), 'zh-CN')
+
+        self.assertEqual(rendered['governance_tax']['feedback'],
+                         '未发现治理与税务之间的冲突。')
+
+    def test_the_governance_sentence_is_placed_under_either_name(self):
+        """The scoring function is `_score_governance_tax_consistency`; the
+        stored key is `governance_tax`. A row under either is placed."""
+        for name in self.mod.GOVERNANCE_TAX_NAMES:
+            with self.subTest(name=name):
+                rendered = self.mod.localised_breakdown(
+                    {name: {'score': 0.0, 'feedback': 'x'}}, 'zh-CN')
+                self.assertNotEqual(rendered[name]['feedback'], 'x')
+
+    def test_the_english_reader_still_gets_the_stored_bytes(self):
+        stored = self.stored()
+
+        self.assertEqual(self.mod.localised_breakdown(stored, 'en'), stored)
+
+    # -- W-CE3-07 --------------------------------------------------------
+
+    def names(self):
+        return {'Africa': '非洲', 'North America': '北美'}
+
+    def test_the_detail_tables_name_the_market_for_the_reader(self):
+        rendered = self.mod.localised_breakdown(
+            self.stored(), 'zh-CN', market_names=self.names())
+
+        self.assertEqual(
+            rendered['entry_mode_risk']['details'][0]['market'], '非洲')
+        self.assertEqual(
+            rendered['positioning_price']['details'][0]['market'], '北美')
+
+    def test_the_product_name_is_the_team_s_own_and_is_not_translated(self):
+        rendered = self.mod.localised_breakdown(
+            self.stored(), 'zh-CN', market_names=self.names())
+
+        self.assertEqual(
+            rendered['positioning_price']['details'][0]['product'],
+            'Nexus One')
+
+    def test_a_market_the_mapping_does_not_hold_keeps_its_stored_name(self):
+        rendered = self.mod.localised_breakdown(
+            self.stored(), 'zh-CN', market_names={'North America': '北美'})
+
+        self.assertEqual(
+            rendered['entry_mode_risk']['details'][0]['market'], 'Africa')
+
+    def test_the_stored_row_is_never_written(self):
+        stored = self.stored()
+        before = json.dumps(stored, sort_keys=True, ensure_ascii=False)
+
+        self.mod.localised_breakdown(stored, 'zh-CN',
+                                     market_names=self.names())
+
+        self.assertEqual(
+            json.dumps(stored, sort_keys=True, ensure_ascii=False), before)
+
+    def test_no_mapping_serves_the_details_exactly_as_stored(self):
+        rendered = self.mod.localised_breakdown(self.stored(), 'zh-CN')
+
+        self.assertEqual(
+            rendered['entry_mode_risk']['details'],
+            self.stored()['entry_mode_risk']['details'])

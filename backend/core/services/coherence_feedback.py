@@ -20,9 +20,18 @@ from core.utils.participant_messages import participant_message
 
 
 # Criterion name in `breakdown` -> the numbers its key is derived from.
+#
+# W-CE3-06: the governance/tax sentence stayed English on a Chinese screen
+# while its two siblings were translated, because the name written here was
+# the scoring function's (`_score_governance_tax_consistency`) and not the
+# key the engine stores the entry under (`breakdown['governance_tax']`).
+# `_key_and_values` therefore never matched it and every read fell through to
+# "keep the stored sentence". Both names are accepted, so a row written under
+# either is placed.
 FINANCIAL_PRUDENCE = 'financial_prudence'
 BUDGET_DISCIPLINE = 'budget_discipline'
-GOVERNANCE_TAX = 'governance_tax_consistency'
+GOVERNANCE_TAX = 'governance_tax'
+GOVERNANCE_TAX_NAMES = ('governance_tax', 'governance_tax_consistency')
 
 ALL_KEYS = (
     'coherence_leverage_conservative',
@@ -124,7 +133,7 @@ def _key_and_values(criterion, entry):
         values = ({'over': over_pct_text(entry.get('over_pct'))}
                   if key in KEYS_TAKING_OVER_PCT else {})
         return key, values
-    if criterion == GOVERNANCE_TAX:
+    if criterion in GOVERNANCE_TAX_NAMES:
         if 'score' not in entry:
             return None, {}
         return governance_tax_key(entry.get('score')), {}
@@ -151,19 +160,57 @@ def feedback_for_reader(criterion, entry, language='en'):
         return stored
 
 
-def localised_breakdown(breakdown, language='en'):
+def _localised_details(details, market_names):
+    """A copy of one criterion's detail rows with the market named for the
+    reader (W-CE3-07).
+
+    `entry_mode_risk`, `positioning_price` and `distribution_positioning`
+    each store `market` as the stored English `MarketDefinition.name`, so a
+    Chinese read of Round Results carried *Africa*, *North America*, *East
+    Asia* inside the scorecard's own tables while the same market was 非洲 /
+    北美 everywhere else in the same response.
+
+    The stored row cannot carry the reader's language -- `breakdown` is a
+    hashed field of the competitive `coherence` section -- and it carries no
+    market id to look up, so the English name it does carry is the key. A
+    name the mapping does not hold keeps the stored value: a market renamed
+    or removed since the round was resolved loses nothing.
+
+    The product name is deliberately left alone. It is the team's own name,
+    as `platform_display_name` treats a platform the team named.
+    """
+    if not market_names:
+        return details
+    rendered = []
+    for row in details:
+        name = row.get('market') if isinstance(row, dict) else None
+        if name in market_names:
+            rendered.append(dict(row, market=market_names[name]))
+        else:
+            rendered.append(row)
+    return rendered
+
+
+def localised_breakdown(breakdown, language='en', market_names=None):
     """A copy of a stored breakdown with every sentence in `language`.
 
     The stored row is never written: this builds a new dict for the response.
+
+    `market_names` maps a stored English market name to the name this reader
+    should see; the caller builds it because it is the caller that holds the
+    scenario. Omitted, the detail tables are served exactly as stored.
     """
     if language == 'en' or not isinstance(breakdown, dict):
         return breakdown or {}
     rendered = {}
     for criterion, entry in breakdown.items():
-        if isinstance(entry, dict) and 'feedback' in entry:
-            rendered[criterion] = dict(
-                entry,
-                feedback=feedback_for_reader(criterion, entry, language))
-        else:
+        if not isinstance(entry, dict):
             rendered[criterion] = entry
+            continue
+        row = dict(entry)
+        if 'feedback' in row:
+            row['feedback'] = feedback_for_reader(criterion, entry, language)
+        if isinstance(row.get('details'), list):
+            row['details'] = _localised_details(row['details'], market_names)
+        rendered[criterion] = row
     return rendered
