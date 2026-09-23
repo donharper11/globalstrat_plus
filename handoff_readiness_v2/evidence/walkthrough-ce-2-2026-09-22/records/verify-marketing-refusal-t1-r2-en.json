@@ -1,0 +1,431 @@
+{
+ "driver": "verify-marketing-refusal-t1-r2",
+ "language": "en",
+ "base": "http://127.0.0.1:53495",
+ "started": "2026-09-22T22:17:30",
+ "steps": [
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the refused marketing row names its product (W-CE-04)",
+   "outcome": "pass",
+   "detail": "product='Nova Aurora R1' refusal=[\"{\\\"marketing_decisions\\\":[\\\"Nova Aurora R1 in Africa: Choose one to three campaign focus features.\\\"]}\"] notice=[\"Your last change was not saved\", \"Nova Aurora R1 in Africa: Choose one to three campaign focus features.\", \"Focus:\"]"
+  },
+  {
+   "name": "the refusal is shown once, not twice (W-CE-04)",
+   "outcome": "fail",
+   "detail": "2 notices on the page"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:17:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "22:17:53"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/1/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/1/",
+   "status": 200,
+   "at": "22:17:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "22:17:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:17:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:17:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "22:17:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/marketing/",
+   "status": 200,
+   "at": "22:17:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "22:17:41"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+   "status": 400,
+   "at": "22:17:53"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+   "status": 400,
+   "at": "22:17:53",
+   "body": "{\"marketing_decisions\":[\"Nova Aurora R1 in Africa: Choose one to three campaign focus features.\"]}",
+   "request": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":4,\"retail_price\":500,\"promotion_budget\":150000,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":6000},{\"team_product\":2,\"market\":4,\"retail_price\":null,\"promotion_budget\":50000,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.3"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-wce04-1-r2-00-row-before",
+   "url": "/games/1/teams/1/decisions/marketing",
+   "screenshot": "v-wce04-1-r2-00-row-before-en.jpg",
+   "note": "a product-market row with no campaign focus chosen yet",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wce04-1-r2-01-refusal",
+   "url": "/games/1/teams/1/decisions/marketing",
+   "screenshot": "v-wce04-1-r2-01-refusal-en.jpg",
+   "note": "what the student is told about the refused row",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/marketing/",
+     "s": 400
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "rows_stored": 2,
+  "target_row": {
+   "product": "Nova Aurora R1",
+   "market": "Africa"
+  },
+  "tab_labels": [
+   "Africa (3)",
+   "Nexus OneMainstream",
+   "Nexus LiteBudget",
+   "Nova Aurora R1Mainstream"
+  ],
+  "product_tab": "Nova Aurora R1Mainstream",
+  "inputs_on_row": 5,
+  "server_refusals": [
+   {
+    "method": "PATCH",
+    "url": "/api/games/1/teams/1/decisions/round/2/marketing/",
+    "status": 400,
+    "at": "22:17:53",
+    "body": "{\"marketing_decisions\":[\"Nova Aurora R1 in Africa: Choose one to three campaign focus features.\"]}",
+    "request": "{\"marketing_decisions\":[{\"team_product\":1,\"market\":4,\"retail_price\":500,\"promotion_budget\":150000,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.33,\"distribution_strategy\":\"mass_retail\",\"distribution_investment\":0,\"sales_team_count\":0,\"distribution_channel_detail\":{},\"production_volume\":4000,\"production_source_market\":1,\"demand_estimate\":6000},{\"team_product\":2,\"market\":4,\"retail_price\":null,\"promotion_budget\":50000,\"campaign_focus_feature_ids\":[1],\"channel_digital_pct\":0.34,\"channel_traditional_pct\":0.33,\"channel_trade_pct\":0.3"
+   }
+  ],
+  "notice_lines": [
+   "Your last change was not saved",
+   "Nova Aurora R1 in Africa: Choose one to three campaign focus features.",
+   "Focus:"
+  ]
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 7,
+  "api_calls": 27,
+  "api_refused": 1
+ }
+}

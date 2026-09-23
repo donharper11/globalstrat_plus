@@ -1,0 +1,621 @@
+{
+ "driver": "lock-t3-r3",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:53495",
+ "started": "2026-09-22T23:05:48",
+ "steps": [
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "reach the row Nova Vertex R2 / 北美",
+   "outcome": "fail",
+   "detail": "[\"西欧 (1)\", \"北美 (1)\"]"
+  },
+  {
+   "name": "the rows the lock asks for were completed from the page",
+   "outcome": "fail",
+   "detail": "[]"
+  },
+  {
+   "name": "the supply-chain sections are marked optional on the Summary (W-CE-13)",
+   "outcome": "pass",
+   "detail": "{\"sourcing\": true, \"logistics\": true, \"trade_finance\": true, \"inventory\": true, \"budget\": null, \"rd\": null, \"products\": null, \"marketing\": null, \"strategy\": null, \"financing\": null}"
+  },
+  {
+   "name": "lock offered after the required decisions",
+   "outcome": "fail",
+   "detail": "blockers={\"can_lock\": false, \"lock_blockers\": [\"承诺支出 $39,500,000.00 超过可用现金 $38,999,243.75，其中包括 $0.00 的平台开发支出。\", \"锁定前，请为每个活跃的产品—市场组合设置营销组合。\"]}"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:49"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:49"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:05:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:06:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "23:06:07"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/2/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/2/",
+   "status": 200,
+   "at": "23:05:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "23:05:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "23:05:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "23:05:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:05:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:05:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "23:05:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:06:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "23:06:13"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x-t3-r3-marketing-completed",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "x-t3-r3-marketing-completed-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r3-95-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "x-t3-r3-95-summary-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "x-t3-r3-marketing-completed",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r3-95-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Vertex Electronics",
+  "rows_to_complete": [
+   [
+    "Nova Vertex R2",
+    "北美"
+   ]
+  ],
+  "rows_completed": [],
+  "summary": {
+   "can_lock": false,
+   "lock_blockers": [
+    "承诺支出 $39,500,000.00 超过可用现金 $38,999,243.75，其中包括 $0.00 的平台开发支出。",
+    "锁定前，请为每个活跃的产品—市场组合设置营销组合。"
+   ]
+  },
+  "summary_spend_lines": [
+   "预算 $30.4M/$5.0M 超出预算",
+   "超出预算 $25.4M — 总支出 $30.4M 超过可用预算 $5.0M",
+   "承诺支出 $39,500,000.00 超过可用现金 $38,999,243.75，其中包括 $0.00 的平台开发支出。",
+   "承诺支出 $39,500,000.00 超过可用现金 $38,999,243.75，其中包括 $0.00 的平台开发支出。"
+  ],
+  "summary_optional_lines": [
+   "前往预算分配修正",
+   "前往研发投资修正",
+   "前往营销组合修正",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。"
+  ],
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "error",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "partial",
+   "strategy": "configured",
+   "financing": "configured"
+  },
+  "summary_optional_flags": {
+   "sourcing": true,
+   "logistics": true,
+   "trade_finance": true,
+   "inventory": true,
+   "budget": null,
+   "rd": null,
+   "products": null,
+   "marketing": null,
+   "strategy": null,
+   "financing": null
+  },
+  "lock_button_enabled": false
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 3,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 2,
+  "console_errors": 8,
+  "api_calls": 37,
+  "api_refused": 0
+ }
+}

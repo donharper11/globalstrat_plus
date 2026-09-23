@@ -1,0 +1,783 @@
+{
+ "driver": "lock-t3-r2",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:53495",
+ "started": "2026-09-22T22:31:15",
+ "steps": [
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the rows the lock asks for were completed from the page",
+   "outcome": "pass",
+   "detail": "[[\"Nova Vertex R1\", \"西欧\", true]]"
+  },
+  {
+   "name": "the supply-chain sections are marked optional on the Summary (W-CE-13)",
+   "outcome": "pass",
+   "detail": "{\"sourcing\": true, \"logistics\": true, \"trade_finance\": true, \"inventory\": true, \"budget\": null, \"rd\": null, \"products\": null, \"marketing\": null, \"strategy\": null, \"financing\": null}"
+  },
+  {
+   "name": "round 2 locked from the screen",
+   "outcome": "pass",
+   "detail": "status=locked"
+  },
+  {
+   "name": "the page never offers a lock the server then refuses (W-CE-25)",
+   "outcome": "pass",
+   "detail": "[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:16"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:44"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "22:31:44"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/1/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/1/",
+   "status": 200,
+   "at": "22:31:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "22:31:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "22:31:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:31:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:26"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:31:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:36"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:31:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:38"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/2/marketing/",
+   "status": 200,
+   "at": "22:31:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:50"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/2/lock/",
+   "status": 200,
+   "at": "22:31:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "22:31:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "22:31:57"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "x-t3-r2-marketing-completed",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "x-t3-r2-marketing-completed-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    },
+    {
+     "english": "Nova Vertex",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/2/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r2-95-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "x-t3-r2-95-summary-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r2-97-locked",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "x-t3-r2-97-locked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/2/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "x-t3-r2-marketing-completed",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    },
+    {
+     "english": "Nova Vertex",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r2-95-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "x-t3-r2-97-locked",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Vertex Electronics",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Vertex Electronics",
+  "rows_to_complete": [
+   [
+    "Nova Vertex R1",
+    "西欧"
+   ]
+  ],
+  "rows_completed": [
+   [
+    "Nova Vertex R1",
+    "西欧",
+    true
+   ]
+  ],
+  "summary": {
+   "can_lock": true,
+   "lock_blockers": []
+  },
+  "summary_spend_lines": [
+   "预算 $3.5M/$5.0M"
+  ],
+  "summary_optional_lines": [
+   "前往研发投资修正",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选",
+   "本回合为可选项，锁定决策时无需完成。",
+   "可选"
+  ],
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "configured",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "configured"
+  },
+  "summary_optional_flags": {
+   "sourcing": true,
+   "logistics": true,
+   "trade_finance": true,
+   "inventory": true,
+   "budget": null,
+   "rd": null,
+   "products": null,
+   "marketing": null,
+   "strategy": null,
+   "financing": null
+  },
+  "lock_button_enabled": true,
+  "lock_modal": "确认提交确定锁定第2回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策",
+  "lock_modal_after": null,
+  "lock_refusals": []
+ },
+ "summary": {
+  "passed": 5,
+  "failed": 0,
+  "observed": 0,
+  "screens": 3,
+  "screens_with_leaks": 3,
+  "console_errors": 8,
+  "api_calls": 48,
+  "api_refused": 0
+ }
+}
