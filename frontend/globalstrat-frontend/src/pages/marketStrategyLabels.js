@@ -42,10 +42,14 @@ export const perRoundCharge = (amount, t, fmt) => (
  * authored `plant_build_cost`; when none is authored the label says so rather
  * than showing $0, and no figure is invented for it.
  */
-export const plantBuildLabel = (market, t, fmt) => {
-  const cost = market.plant_build_cost == null
+export const plantCostLabel = (market, t, fmt) => (
+  market.plant_build_cost == null
     ? t('market_strategy.plant_cost_not_available')
-    : fmt(market.plant_build_cost);
+    : fmt(market.plant_build_cost)
+);
+
+export const plantBuildLabel = (market, t, fmt) => {
+  const cost = plantCostLabel(market, t, fmt);
   const rounds = market.plant_build_rounds == null ? '—' : market.plant_build_rounds;
   const detail = market.plant_capacity_units
     ? t('market_strategy.build_plant_detail', { rounds, units: market.plant_capacity_units })

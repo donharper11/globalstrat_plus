@@ -248,10 +248,15 @@ const TalentPoolCard = ({ pool, poolKey, talent, locked, onChange, prev, markets
   );
 };
 
-const AcquisitionTargetCard = ({ target, locked, onAcquire, pendingAcquire }) => {
+const AcquisitionTargetCard = ({ target, locked, onAcquire, onWithdraw, pendingAcquire, unallocated }) => {
   const { t } = useTranslation();
   const isAvailable = target.available;
   const isAcquiredBySelf = target.acquired_by_self;
+  // W-CE2-02: the same money the lock counts. `unallocated` is cash less
+  // everything already committed this round, from `rd_costs.budget_assessment`
+  // -- an older server that does not send it offers everything, as before.
+  const affordable = unallocated == null
+    || Number(unallocated) >= Number(target.base_acquisition_cost || 0);
 
   return (
     <Card
@@ -309,17 +314,48 @@ const AcquisitionTargetCard = ({ target, locked, onAcquire, pendingAcquire }) =>
 
       {isAvailable && !isAcquiredBySelf && (
         <div style={{ marginTop: 12, textAlign: 'right' }}>
-          <Text type="warning" style={{ fontSize: 11, marginRight: 12 }}>
-            {t('corporate_strategy.first_team_warning')}
-          </Text>
-          <Button
-            type="primary"
-            size="small"
-            disabled={locked || pendingAcquire}
-            onClick={() => onAcquire(target.id)}
-          >
-            {pendingAcquire ? t('corporate_strategy.queued_acquisition') : `${t('corporate_strategy.acquire')} — ${fmt(target.base_acquisition_cost)}`}
-          </Button>
+          {/* W-CE2-02. A queued acquisition could be added and never taken
+              back: the button turned into a disabled "Queued" tag and no
+              screen offered a cancel, so a team that queued more than it
+              could fund was refused the lock and had no way to clear the
+              blocker. The decision rows are drafts until the lock, and the
+              acquisitions save replaces the whole section, so withdrawing is
+              the same save with the target left out. */}
+          {pendingAcquire ? (
+            <>
+              <Tag color="blue" style={{ marginRight: 8 }}>{t('corporate_strategy.queued_acquisition')}</Tag>
+              <Button
+                size="small"
+                danger
+                disabled={locked}
+                onClick={() => onWithdraw(target.id)}
+              >
+                {t('corporate_strategy.withdraw')}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Text type="warning" style={{ fontSize: 11, marginRight: 12 }}>
+                {t('corporate_strategy.first_team_warning')}
+              </Text>
+              {!affordable && (
+                <Text type="danger" style={{ fontSize: 11, marginRight: 12 }}>
+                  {t('corporate_strategy.not_affordable', {
+                    cost: fmt(target.base_acquisition_cost),
+                    available: fmt(unallocated),
+                  })}
+                </Text>
+              )}
+              <Button
+                type="primary"
+                size="small"
+                disabled={locked || !affordable}
+                onClick={() => onAcquire(target.id)}
+              >
+                {`${t('corporate_strategy.acquire')} — ${fmt(target.base_acquisition_cost)}`}
+              </Button>
+            </>
+          )}
         </div>
       )}
     </Card>
@@ -345,6 +381,13 @@ const MnATab = ({ context, locked, autoSave, draft }) => {
     autoSave('acquisitions', { acquisitions: newAcquisitions });
   };
 
+  const handleWithdraw = (targetId) => {
+    const newAcquisitions = draftAcquisitions.filter(
+      a => a.acquisition_target !== targetId);
+    setDraftAcquisitions(newAcquisitions);
+    autoSave('acquisitions', { acquisitions: newAcquisitions });
+  };
+
   return (
     <PanelCard headerColor="decision" title={t('corporate_strategy.mergers_acquisitions')}>
       <Title level={5} style={{ marginBottom: 12 }}>{t('corporate_strategy.available_targets')}</Title>
@@ -357,7 +400,9 @@ const MnATab = ({ context, locked, autoSave, draft }) => {
             target={t}
             locked={locked}
             onAcquire={handleAcquire}
+            onWithdraw={handleWithdraw}
             pendingAcquire={pendingTargetIds.has(t.id)}
+            unallocated={context.affordability?.unallocated}
           />
         ))
       )}

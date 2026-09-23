@@ -2416,6 +2416,7 @@ class StrategyContextView(APIView):
         # Strategy budget remaining
         strategy_budget_remaining = None
         rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
+        sub = None
         if rnd:
             sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
             if sub:
@@ -2432,6 +2433,26 @@ class StrategyContextView(APIView):
                     strategy_budget_remaining = float(budget.strategy_budget - strat_spent)
                 except DecisionBudgetAllocation.DoesNotExist:
                     pass
+
+        # W-CE2-02: what the team can still commit, from the calculator the
+        # lock refuses on -- not a private sum. The M&A card offered
+        # "Acquire -- $25.0M" to a team holding $23.4M, the team queued it,
+        # and the lock then refused the whole submission for exactly that
+        # money. A screen that offers what the server will refuse is the
+        # defect; `unallocated` is what is left after everything already
+        # committed this round.
+        from core.services.rd_costs import budget_assessment
+        cash_on_hand = Decimal(team.cash_on_hand or 0)
+        committed_total = Decimal('0')
+        if sub is not None:
+            assessment = budget_assessment(sub, team)
+            committed_total = Decimal(assessment['committed_total'])
+            cash_on_hand = Decimal(assessment['cash_on_hand'])
+        affordability = {
+            'cash_on_hand': float(cash_on_hand),
+            'committed_total': float(committed_total),
+            'unallocated': float(cash_on_hand - committed_total),
+        }
 
         # Acquisition targets
         current_round = game.current_round
@@ -2515,6 +2536,7 @@ class StrategyContextView(APIView):
             'strategy_options': strategy_options,
             'financial': financial,
             'strategy_budget_remaining': strategy_budget_remaining,
+            'affordability': affordability,
             'acquisition_targets': acquisition_targets,
             'team_acquisitions': team_acquisitions,
         })
