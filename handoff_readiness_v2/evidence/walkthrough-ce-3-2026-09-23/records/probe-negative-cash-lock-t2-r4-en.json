@@ -1,0 +1,621 @@
+{
+ "driver": "probe-negative-cash-lock-t2-r4",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:49:03",
+ "steps": [
+  {
+   "name": "student s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the team starts the probe unable to lock",
+   "outcome": "pass",
+   "detail": "[\"Committed spend of $14,500,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.\", \"Total dividends of $500,000.00 exceed projected equity. Reduce the dividend.\", \"Projected ending cash is $-17,431,324.09. Reduce spending or raise financing before locking.\"]"
+  },
+  {
+   "name": "with nothing committed at all, the lock is offered",
+   "outcome": "fail",
+   "detail": "[\"Committed spend of $8,800,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.\", \"Marketing spend of $300,000.00 exceeds the marketing budget of $0.00. Reduce spending or increase the budget.\", \"Total dividends of $0.00 exceed projected equity. Reduce the dividend.\", \"Projected ending cash is $-16,231,324.09. Reduce spending or raise financing before locking.\"]"
+  },
+  {
+   "name": "raising the financing the sentence asks for clears the cash blocker",
+   "outcome": "fail",
+   "detail": "[\"Committed spend of $8,800,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.\", \"Marketing spend of $300,000.00 exceeds the marketing budget of $0.00. Reduce spending or increase the budget.\", \"Total dividends of $0.00 exceed projected equity. Reduce the dividend.\"]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:12"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:49:18"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/3/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/3/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/3/",
+   "status": 200,
+   "at": "05:49:07"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "05:49:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:11"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/budget/",
+   "status": 200,
+   "at": "05:49:11"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/financing/",
+   "status": 200,
+   "at": "05:49:11"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/plants/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/partnerships/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/acquisitions/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/esg/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/compliance-investments/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=8&section_id=1",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:12"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/2/decisions/round/4/financing/",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=8&section_id=1",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "05:49:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:49:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:49:19"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-negcash-t2-r4-stripped",
+   "url": "/games/1/teams/2/decisions/summary",
+   "screenshot": "v-negcash-t2-r4-stripped-en.jpg",
+   "note": "negative cash, nothing committed",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/results/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/competitors/round/3/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/budget/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/financing/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/plants/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/esg/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/compliance-investments/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=8&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-negcash-t2-r4-after-financing",
+   "url": "/games/1/teams/2/decisions/summary",
+   "screenshot": "v-negcash-t2-r4-after-financing-en.jpg",
+   "note": "after raising $30M of debt",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/2/decisions/round/4/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=8&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Nova Circuit",
+  "cash_on_hand": null,
+  "blockers_as_played": [
+   "Committed spend of $14,500,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.",
+   "Total dividends of $500,000.00 exceed projected equity. Reduce the dividend.",
+   "Projected ending cash is $-17,431,324.09. Reduce spending or raise financing before locking."
+  ],
+  "blockers_with_nothing_committed": [
+   "Committed spend of $8,800,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.",
+   "Marketing spend of $300,000.00 exceeds the marketing budget of $0.00. Reduce spending or increase the budget.",
+   "Total dividends of $0.00 exceed projected equity. Reduce the dividend.",
+   "Projected ending cash is $-16,231,324.09. Reduce spending or raise financing before locking."
+  ],
+  "summary_text_stripped": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 10DRAFT OPEN\nBudget $4.8M/$5.0M\nR&D $0/$0\nMktg $300K/$0\nStrat $4.5M/$0\n中文\nGK\nGrace Kim · Nova Circuit\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n💱\nUSD weakened 1.0% against BRL — North America revenue converts to fewer BRL\n│\n💱\nNGN strengthened 3.1% against BRL — Africa revenue converts to more BRL\n│\n📈\nNorth America growth accelerating — demand rising\n│\n📉\nEast Asia tariffs reduced — trade barriers easing\n│\n📉\nWestern Europe tariffs reduced — trade barriers easing\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📉\nAfrica tariffs reduced — trade barriers easing\n│\n📈\nSouth America growth accelerating — demand rising\n│\n📉\nSouth America tariffs reduced — trade barriers easing\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n💱\nUSD weakened 1.0% against BRL — North America revenue converts to fewer BRL\n│\n💱\nNGN strengthened 3.1% against BRL — Africa revenue converts to more BRL\n│\n📈\nNorth America growth accelerating — demand rising\n│\n📉\nEast Asia tariffs reduced — trade barriers easing\n│\n📉\nWestern Europe tariffs reduced — trade barriers easing\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📉\nAfrica tariffs reduced — trade barriers easing\n│\n📈\nSouth America growth accelerating — demand rising\n│\n📉\nSouth America tariffs reduced — trade barriers easing\n│\nNOVA CIRCUIT\nSOUTH AMERICA\nRound 4\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit",
+  "blockers_after_raising_debt": [
+   "Committed spend of $8,800,000.00 exceeds available cash of $-7,431,324.09. This includes $0.00 of platform development.",
+   "Marketing spend of $300,000.00 exceeds the marketing budget of $0.00. Reduce spending or increase the budget.",
+   "Total dividends of $0.00 exceed projected equity. Reduce the dividend."
+  ],
+  "summary_text_after_financing": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR4 of 10DRAFT OPEN\nBudget $4.8M/$5.0M\nR&D $0/$0\nMktg $300K/$0\nStrat $4.5M/$0\n中文\nGK\nGrace Kim · Nova Circuit\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n💱\nUSD weakened 1.0% against BRL — North America revenue converts to fewer BRL\n│\n💱\nNGN strengthened 3.1% against BRL — Africa revenue converts to more BRL\n│\n📈\nNorth America growth accelerating — demand rising\n│\n📉\nEast Asia tariffs reduced — trade barriers easing\n│\n📉\nWestern Europe tariffs reduced — trade barriers easing\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📉\nAfrica tariffs reduced — trade barriers easing\n│\n📈\nSouth America growth accelerating — demand rising\n│\n📉\nSouth America tariffs reduced — trade barriers easing\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n💱\nUSD weakened 1.0% against BRL — North America revenue converts to fewer BRL\n│\n💱\nNGN strengthened 3.1% against BRL — Africa revenue converts to more BRL\n│\n📈\nNorth America growth accelerating — demand rising\n│\n📉\nEast Asia tariffs reduced — trade barriers easing\n│\n📉\nWestern Europe tariffs reduced — trade barriers easing\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📉\nAfrica tariffs reduced — trade barriers easing\n│\n📈\nSouth America growth accelerating — demand rising\n│\n📉\nSouth America tariffs reduced — trade barriers easing\n│\nNOVA CIRCUIT\nSOUTH AMERICA\nRound 4\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit"
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 2,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 45,
+  "api_refused": 0
+ }
+}

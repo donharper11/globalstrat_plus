@@ -104,17 +104,29 @@ def main():
         R.screen(page, 'v-r5-t%d-logistics' % TEAM_IX, 'Logistics at round %d' % ROUND)
         text = visible_text(page)
         R.observe('logistics_text', text[:2500])
-        selects = page.locator('.ant-select')
-        R.observe('logistics_selects', selects.count())
         before = api(page, 'GET', '/api/games/%d/teams/%d/sc/round/%d/logistics/' % (GID, TID, ROUND))
         R.observe('logistics_before', before['body'] if before['status'] == 200 else before)
+        # The customs classification lives in the panel titled
+        # `sc.logistics.customs_returns`; the first select in each of its rows
+        # is the classification, disabled until round 5.
+        panel = page.locator('.panel-card, .ant-card').filter(
+            has_text=T('sc.logistics.customs_returns')).last
+        R.observe('customs_panel_found', panel.count())
+        R.observe('customs_panel_text', (panel.inner_text()[:900] if panel.count() else None))
+        rows = panel.locator('tbody tr')
+        R.observe('customs_rows', rows.count())
         picked = None
-        for i in range(selects.count()):
-            sel = selects.nth(i)
+        for i in range(rows.count()):
+            sel = rows.nth(i).locator('.ant-select').first
+            if not sel.count():
+                continue
             try:
-                if not sel.is_enabled():
-                    continue
+                disabled = sel.locator('.ant-select-disabled').count() or \
+                    'ant-select-disabled' in (sel.get_attribute('class') or '')
             except Exception:
+                disabled = False
+            R.observe('customs_row_%d_disabled' % i, bool(disabled))
+            if disabled:
                 continue
             label = pick_select(page, sel)
             if label:
@@ -122,11 +134,12 @@ def main():
                 page.wait_for_timeout(2500)
                 break
         R.observe('customs_classification_picked', picked)
-        R.step('a customs classification can be chosen at round %d' % ROUND,
+        R.step('a customs classification can be chosen at round %d, and not before' % ROUND,
                'pass' if picked else 'fail', 'picked=%r' % picked)
-        save = page.locator('button', has_text=T('common.save'))
+        save = page.locator('button', has_text=T('sc.common.save'))
+        R.observe('save_controls', save.count())
         if save.count() and save.first.is_enabled():
-            save.first.click(); page.wait_for_timeout(4000)
+            save.first.click(); page.wait_for_timeout(5000)
         after = api(page, 'GET', '/api/games/%d/teams/%d/sc/round/%d/logistics/' % (GID, TID, ROUND))
         R.observe('logistics_after', after['body'] if after['status'] == 200 else after)
         stored = (after['body'] or {}).get('customs') if after['status'] == 200 else None
