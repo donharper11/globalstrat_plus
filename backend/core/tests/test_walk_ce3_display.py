@@ -4,7 +4,10 @@ One file per walkthrough pass, as `test_walk_ce2_language.py` is for the
 second. Each class names the defect it holds closed and fails on the
 unmodified tree.
 """
-from django.test import SimpleTestCase
+from decimal import Decimal as D
+
+from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 
 from core.tests.test_demotion_team_notice import DemotionNoticeFixture
 
@@ -100,3 +103,77 @@ class TheLeaderboardSentencesAreInTheCatalogue(SimpleTestCase):
                 self.assertEqual(set(MESSAGES[key]), {'en', 'zh-CN'})
                 for text in MESSAGES[key].values():
                     self.assertNotIn('_', text)
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-16 — a dividend of $0.00 reported as exceeding projected equity
+# ---------------------------------------------------------------------------
+
+class AZeroDividendIsNotADistribution(TestCase):
+    """*Total dividends of $0.00 exceed projected equity. Reduce the dividend.*
+
+    It fired for every team whose projected equity was negative, in both
+    languages, and it could not be cleared: there is nothing below zero to
+    reduce a zero dividend to. It sat in the same blocker list as the cash
+    blocker, so a team that had stripped every decision back to nothing still
+    could not lock.
+    """
+
+    def setUp(self):
+        from core.engine.utils import _config_cache
+        from core.models import DecisionSubmission, Round
+        from core.models.decisions import (DecisionBudgetAllocation,
+                                           DecisionFinancing)
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        _config_cache.clear()
+        self.addCleanup(_config_cache.clear)
+        self.game, teams = build_minimal_game(f'ce3div-{id(self)}')
+        self.team = teams[0]
+        self.round, _ = Round.objects.get_or_create(
+            game=self.game, round_number=1,
+            defaults={'status': 'open', 'opened_at': timezone.now(),
+                      'deadline': timezone.now()})
+        self.submission = DecisionSubmission.objects.create(
+            team=self.team, round=self.round, status='draft')
+        DecisionBudgetAllocation.objects.create(
+            submission=self.submission, rd_budget=D('0'),
+            marketing_budget=D('0'), strategy_budget=D('0'),
+            research_budget=D('0'))
+        self.financing = DecisionFinancing.objects.create(
+            submission=self.submission)
+        # The state the walkthrough reached: equity driven below zero.
+        self.team.total_equity = D('-5000000')
+        self.team.shares_outstanding = 1000000
+        self.team.save(update_fields=['total_equity', 'shares_outstanding'])
+
+    def blockers(self, language='en'):
+        from core.views.decisions import lock_blockers_for
+        return lock_blockers_for(self.submission, language=language)
+
+    def dividend_blockers(self, language='en'):
+        """Blockers that are the dividend sentence, found by its own stem."""
+        from core.utils.participant_messages import MESSAGES
+        stem = MESSAGES['dividends_exceed_equity'][language].split('{')[0]
+        return [b for b in self.blockers(language) if stem and stem in b]
+
+    def test_a_zero_dividend_raises_no_blocker(self):
+        self.assertEqual(self.dividend_blockers(), [])
+
+    def test_a_zero_dividend_raises_no_blocker_in_chinese(self):
+        self.assertEqual(self.dividend_blockers('zh-CN'), [])
+
+    def test_a_real_dividend_above_equity_is_still_refused(self):
+        """The rule itself is unchanged: only the zero case stops firing."""
+        self.financing.dividend_per_share = D('1.0000')
+        self.financing.save(update_fields=['dividend_per_share'])
+
+        self.assertEqual(len(self.dividend_blockers()), 1)
+
+    def test_a_real_dividend_within_equity_is_allowed(self):
+        self.team.total_equity = D('5000000')
+        self.team.save(update_fields=['total_equity'])
+        self.financing.dividend_per_share = D('1.0000')
+        self.financing.save(update_fields=['dividend_per_share'])
+
+        self.assertEqual(self.dividend_blockers(), [])

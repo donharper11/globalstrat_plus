@@ -1056,8 +1056,16 @@ def lock_blockers_for(submission, language='en'):
                 ratio=f'{projected_debt / projected_equity:.2f}',
                 maximum=max_ratio))
         total_dividends = fin.dividend_per_share * team.shares_outstanding
-        # Simple check: dividends shouldn't exceed equity
-        if total_dividends > projected_equity:
+        # Simple check: dividends shouldn't exceed equity.
+        #
+        # W-CE3-16: `> projected_equity` alone fires on a dividend of zero
+        # whenever projected equity is negative, and then tells the team
+        # *Total dividends of $0.00 exceed projected equity. Reduce the
+        # dividend.* -- a blocker that cannot be cleared, because there is
+        # nothing below zero to reduce a zero dividend to. A team that is
+        # paying nothing out is not paying out more than its equity; the rule
+        # this states is about a distribution, and there is none.
+        if total_dividends > 0 and total_dividends > projected_equity:
             errors.append(participant_message(
                 'dividends_exceed_equity', language=language,
                 dividends=f'${total_dividends:,.2f}'))
