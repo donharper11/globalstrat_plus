@@ -1,0 +1,1153 @@
+{
+ "driver": "verify-plant-collision-t1-r2",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T04:29:55",
+ "steps": [
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "a target that brings a plant in the home market is available this round",
+   "outcome": "pass",
+   "detail": "home=Africa target=AfriConnect Mobile"
+  },
+  {
+   "name": "A: a plant build in the home market is saved",
+   "outcome": "pass",
+   "detail": "{\"status\": 200, \"body\": {\"id\": 9, \"team\": 1, \"round\": 3, \"status\": \"draft\", \"locked_at\": null, \"locked_by\": null, \"team_notes\": null, \"budget_allocation\": null, \"financing\": null, \"esg\": null, \"rd_investments\": [], \"platform_developments\": [], \"product_creates\": [], \"product_retires\": [], \"marketing"
+  },
+  {
+   "name": "A: the acquisition save is refused while a plant is queued in that market",
+   "outcome": "pass",
+   "detail": "400 The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two."
+  },
+  {
+   "name": "A: the refusal names the market and the target",
+   "outcome": "pass",
+   "detail": "The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two."
+  },
+  {
+   "name": "A: the refused save changed nothing (E)",
+   "outcome": "pass",
+   "detail": "plants=[{\"id\": 5, \"market\": 4, \"action\": \"build\", \"capacity_units\": 0, \"contract_mfg_volume\": 0}] acquisitions=[]"
+  },
+  {
+   "name": "D: two plant builds in one market are refused, naming the market",
+   "outcome": "pass",
+   "detail": "400 Your company has already queued a plant in Africa. One plant per market in a round."
+  },
+  {
+   "name": "C: the same refusal is Chinese for a Chinese-reading student",
+   "outcome": "pass",
+   "detail": "收购非洲互联移动已在非洲带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。"
+  },
+  {
+   "name": "C: the Chinese refusal names the market in Chinese",
+   "outcome": "pass",
+   "detail": "market='非洲' target='非洲互联移动' refusal='收购非洲互联移动已在非洲带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。'"
+  },
+  {
+   "name": "C: two builds in one market are refused in Chinese, naming the market",
+   "outcome": "pass",
+   "detail": "贵公司本回合已在非洲安排建设工厂。每个市场每回合只能建设一座工厂。"
+  },
+  {
+   "name": "B: the queued plant is withdrawn (W-CE2-02)",
+   "outcome": "pass",
+   "detail": "{\"status\": 200, \"body\": {\"id\": 9, \"team\": 1, \"round\": 3, \"status\": \"draft\", \"locked_at\": null, \"locked_by\": null, \"team_notes\": null, \"budget_allocation\": null, \"financing\": null, \"esg\": null, \"rd_inv"
+  },
+  {
+   "name": "B: with no plant queued the acquisition saves",
+   "outcome": "pass",
+   "detail": "{\"status\": 200, \"body\": {\"id\": 9, \"team\": 1, \"round\": 3, \"status\": \"draft\", \"locked_at\": null, \"locked_by\": null, \"team_notes\": null, \"budget_allocation\": null, \"financing\": null, \"esg\": null, \"rd_investments\": [], \"platform_developments\": [], \"product_creates\": [], \"product_retires\": [], \"marketing"
+  },
+  {
+   "name": "B: the plant build is then refused, naming the market",
+   "outcome": "pass",
+   "detail": "400 The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two."
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:29:55"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:29:55"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:29:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:29:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "04:30:03"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "04:30:03"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "04:30:03"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "04:30:03"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "04:30:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:30:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:30:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:30:09"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:30:09"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "04:29:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:29:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "04:29:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "04:29:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/1/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/1/",
+   "status": 200,
+   "at": "04:29:59"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 400,
+   "at": "04:30:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 400,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 200,
+   "at": "04:30:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/alliances/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/compliance/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/markets/NA/localization/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/compliance/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/alliances/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/talent/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/talent-allocation/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/org-structure/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=3&section_id=1",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/governance/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/talent/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/org-structure/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/talent-allocation/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/strategy/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/governance/",
+   "status": 200,
+   "at": "04:30:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/2/",
+   "status": 200,
+   "at": "04:30:14"
+  }
+ ],
+ "refused": [
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 400,
+   "at": "04:30:03",
+   "body": "{\"plant_decisions\":[\"The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two.\"]}",
+   "request": "{\"acquisitions\":[{\"acquisition_target\":4}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:03",
+   "body": "{\"plant_decisions\":[\"Your company has already queued a plant in Africa. One plant per market in a round.\"]}",
+   "request": "{\"plant_decisions\":[{\"market\":4,\"action\":\"build\",\"capacity_units\":0,\"contract_mfg_volume\":0},{\"market\":4,\"action\":\"build\",\"capacity_units\":0,\"contract_mfg_volume\":0}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+   "status": 400,
+   "at": "04:30:03",
+   "body": "{\"plant_decisions\":[\"收购非洲互联移动已在非洲带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。\"]}",
+   "request": "{\"acquisitions\":[{\"acquisition_target\":4}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:03",
+   "body": "{\"plant_decisions\":[\"贵公司本回合已在非洲安排建设工厂。每个市场每回合只能建设一座工厂。\"]}",
+   "request": "{\"plant_decisions\":[{\"market\":4,\"action\":\"build\",\"capacity_units\":0,\"contract_mfg_volume\":0},{\"market\":4,\"action\":\"build\",\"capacity_units\":0,\"contract_mfg_volume\":0}]}"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/1/decisions/round/2/plants/",
+   "status": 400,
+   "at": "04:30:04",
+   "body": "{\"plant_decisions\":[\"The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two.\"]}",
+   "request": "{\"plant_decisions\":[{\"market\":4,\"action\":\"build\",\"capacity_units\":0,\"contract_mfg_volume\":0}]}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-collision-t1-r2-market-strategy",
+   "url": "/games/1/teams/1/decisions/market-strategy",
+   "screenshot": "v-collision-t1-r2-market-strategy-en.jpg",
+   "note": "an acquisition bringing a plant in this market is queued",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/1/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 400
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+     "s": 400
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 400
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/1/decisions/round/2/plants/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/markets/NA/localization/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-collision-t1-r2-corporate",
+   "url": "/games/1/teams/1/decisions/corporate-strategy",
+   "screenshot": "v-collision-t1-r2-corporate-en.jpg",
+   "note": "the queued acquisition",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=3&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/governance/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "student": "s2602",
+  "home_market": {
+   "id": 4,
+   "code": "AFR",
+   "name": "Africa",
+   "is_home_market": true,
+   "entry_status": "active",
+   "entry_mode": "Export from Home Market",
+   "allows_manufacturing": true,
+   "contract_mfg_available": true,
+   "plant_build_cost": 8000000,
+   "plant_build_rounds": 3,
+   "plant_capacity_units": 40000
+  },
+  "targets": [
+   {
+    "id": 1,
+    "target_name": "PioneerTech Solutions",
+    "market_id": 1,
+    "market_name": "North America",
+    "includes_plant": true,
+    "base_acquisition_cost": 25000000,
+    "available": false,
+    "locked_reasons": [
+     "Available from Round 3"
+    ]
+   },
+   {
+    "id": 2,
+    "target_name": "AsiaElec Manufacturing",
+    "market_id": 2,
+    "market_name": "East Asia",
+    "includes_plant": true,
+    "base_acquisition_cost": 18000000,
+    "available": false,
+    "locked_reasons": [
+     "Requires presence in East Asia"
+    ]
+   },
+   {
+    "id": 3,
+    "target_name": "EuroGreen Devices",
+    "market_id": 3,
+    "market_name": "Western Europe",
+    "includes_plant": false,
+    "base_acquisition_cost": 30000000,
+    "available": false,
+    "locked_reasons": [
+     "Available from Round 3",
+     "Requires presence in Western Europe"
+    ]
+   },
+   {
+    "id": 4,
+    "target_name": "AfriConnect Mobile",
+    "market_id": 4,
+    "market_name": "Africa",
+    "includes_plant": true,
+    "base_acquisition_cost": 10000000,
+    "available": true,
+    "locked_reasons": []
+   },
+   {
+    "id": 5,
+    "target_name": "TechSul Eletrônicos",
+    "market_id": 5,
+    "market_name": "South America",
+    "includes_plant": true,
+    "base_acquisition_cost": 20000000,
+    "available": false,
+    "locked_reasons": [
+     "Available from Round 3",
+     "Requires presence in South America"
+    ]
+   }
+  ],
+  "A_plant_saved": {
+   "status": 200,
+   "body": {
+    "id": 9,
+    "team": 1,
+    "round": 3,
+    "status": "draft",
+    "locked_at": null,
+    "locked_by": null,
+    "team_notes": null,
+    "budget_allocation": null,
+    "financing": null,
+    "esg": null,
+    "rd_investments": [],
+    "platform_developments": [],
+    "product_creates": [],
+    "product_retires": [],
+    "marketing_decisions": [],
+    "market_entries": [],
+    "plant_decisions": [
+     {
+      "id": 5,
+      "market": 4,
+      "action": "build",
+      "capacity_units": 0,
+      "contract_mfg_volume": 0
+     }
+    ],
+    "partnerships": [],
+    "acquisitions": [],
+    "event_responses": [],
+    "research_allocations": [],
+    "talent_allocations": [],
+    "compliance_investments": []
+   }
+  },
+  "A_acquisition_refused": {
+   "status": 400,
+   "body": {
+    "plant_decisions": [
+     "The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two."
+    ]
+   }
+  },
+  "D_two_builds_refused": {
+   "status": 400,
+   "body": {
+    "plant_decisions": [
+     "Your company has already queued a plant in Africa. One plant per market in a round."
+    ]
+   }
+  },
+  "home_market_zh": {
+   "id": 4,
+   "code": "AFR",
+   "name": "非洲",
+   "is_home_market": true,
+   "entry_status": "active",
+   "entry_mode": "从母国市场出口",
+   "allows_manufacturing": true,
+   "contract_mfg_available": true,
+   "plant_build_cost": 8000000,
+   "plant_build_rounds": 3,
+   "plant_capacity_units": 40000
+  },
+  "C_acquisition_refused_zh": {
+   "status": 400,
+   "body": {
+    "plant_decisions": [
+     "收购非洲互联移动已在非洲带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。"
+    ]
+   }
+  },
+  "C_two_builds_refused_zh": {
+   "status": 400,
+   "body": {
+    "plant_decisions": [
+     "贵公司本回合已在非洲安排建设工厂。每个市场每回合只能建设一座工厂。"
+    ]
+   }
+  },
+  "B_acquisition_saved": {
+   "status": 200,
+   "body": {
+    "id": 9,
+    "team": 1,
+    "round": 3,
+    "status": "draft",
+    "locked_at": null,
+    "locked_by": null,
+    "team_notes": null,
+    "budget_allocation": null,
+    "financing": null,
+    "esg": null,
+    "rd_investments": [],
+    "platform_developments": [],
+    "product_creates": [],
+    "product_retires": [],
+    "marketing_decisions": [],
+    "market_entries": [],
+    "plant_decisions": [],
+    "partnerships": [],
+    "acquisitions": [
+     {
+      "id": 3,
+      "acquisition_target": 4
+     }
+    ],
+    "event_responses": [],
+    "research_allocations": [],
+    "talent_allocations": [],
+    "compliance_investments": []
+   }
+  },
+  "B_plant_refused": {
+   "status": 400,
+   "body": {
+    "plant_decisions": [
+     "The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two."
+    ]
+   }
+  },
+  "market_strategy_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR2 of 10DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\n中文\nBO\nBen Okafor · Aurora Devices\nLIVE\n⚠️\nGovernment warning in North America — improve compliance or face restrictions\n│\n💱\nBRL weakened 2.0% against NGN — South America revenue converts to fewer NGN\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📈\nSouth America growth accelerating — demand rising\n│\n⏰\nRound 2 deadline: 3 days remaining — 0 of 8 teams submitted\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n💱\nUSD strengthened 1.0% against NGN — North America revenue converts to more NGN\n│\n⚠️\nGovernment warning in North America — improve compliance or face restrictions\n│\n💱\nBRL weakened 2.0% against NGN — South America revenue converts to fewer NGN\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nAfrica growth accelerating — demand rising\n│\n📈\nSouth America growth accelerating — demand rising\n│\n⏰\nRound 2 deadline: 3 days remaining — 0 of 8 teams submitted\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n💱\nUSD strengthened 1.0% against NGN — North America revenue converts to more NGN\n│\nAURORA DEVICES\nAFRICA\nRound 2\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\n",
+  "final_draft": {
+   "plant_decisions": [],
+   "acquisitions": [
+    {
+     "id": 3,
+     "acquisition_target": 4
+    }
+   ]
+  }
+ },
+ "summary": {
+  "passed": 13,
+  "failed": 0,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 13,
+  "api_calls": 67,
+  "api_refused": 5
+ }
+}

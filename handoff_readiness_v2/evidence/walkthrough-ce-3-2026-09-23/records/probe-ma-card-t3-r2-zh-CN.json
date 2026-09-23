@@ -1,0 +1,567 @@
+{
+ "driver": "probe-ma-card-t3-r2",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T04:50:01",
+ "steps": [
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "an acquisition the team cannot fund is offered disabled, not enabled (W-CE2-02)",
+   "outcome": "pass",
+   "detail": "unallocated=10504950 unaffordable=['亚洲电子制造'] buttons=[{\"label\": \"收购 — $18.0M\", \"enabled\": false}]"
+  },
+  {
+   "name": "the card states the figures beside the disabled offer",
+   "outcome": "pass",
+   "detail": "looking for '需要'; card says: 先收购的团队获得独家权限。需要 $18.0M；未分配资金 $10.5M / 要求：第 3 回合起可用需要先进入西欧 / 要求：需要先进入非洲 / 要求：第 3 回合起可用需要先进入南美"
+  },
+  {
+   "name": "unavailable target '先锋科技' says why",
+   "outcome": "pass",
+   "detail": "[\"第 3 回合起可用\"]"
+  },
+  {
+   "name": "unavailable target '欧洲绿色设备' says why",
+   "outcome": "pass",
+   "detail": "[\"第 3 回合起可用\", \"需要先进入西欧\"]"
+  },
+  {
+   "name": "unavailable target '非洲互联移动' says why",
+   "outcome": "pass",
+   "detail": "[\"需要先进入非洲\"]"
+  },
+  {
+   "name": "unavailable target '南方科技电子' says why",
+   "outcome": "pass",
+   "detail": "[\"第 3 回合起可用\", \"需要先进入南美\"]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:09"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:50:09"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/1/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/1/",
+   "status": 200,
+   "at": "04:50:04"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "04:50:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "04:50:18"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-ma-card-t3-r2",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "v-ma-card-t3-r2-zh-CN.jpg",
+   "note": "the M&A card as it stands",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/1/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/1/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/2/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v-ma-card-t3-r2",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Meridian Tech",
+  "affordability": {
+   "cash_on_hand": 23054950,
+   "committed_total": 12550000,
+   "unallocated": 10504950
+  },
+  "targets": [
+   {
+    "target_name": "先锋科技",
+    "market_name": "北美",
+    "base_acquisition_cost": 25000000,
+    "available": false,
+    "min_round_available": 3,
+    "locked_reasons": [
+     "第 3 回合起可用"
+    ]
+   },
+   {
+    "target_name": "亚洲电子制造",
+    "market_name": "东亚",
+    "base_acquisition_cost": 18000000,
+    "available": true,
+    "min_round_available": 2,
+    "locked_reasons": []
+   },
+   {
+    "target_name": "欧洲绿色设备",
+    "market_name": "西欧",
+    "base_acquisition_cost": 30000000,
+    "available": false,
+    "min_round_available": 3,
+    "locked_reasons": [
+     "第 3 回合起可用",
+     "需要先进入西欧"
+    ]
+   },
+   {
+    "target_name": "非洲互联移动",
+    "market_name": "非洲",
+    "base_acquisition_cost": 10000000,
+    "available": false,
+    "min_round_available": 2,
+    "locked_reasons": [
+     "需要先进入非洲"
+    ]
+   },
+   {
+    "target_name": "南方科技电子",
+    "market_name": "南美",
+    "base_acquisition_cost": 20000000,
+    "available": false,
+    "min_round_available": 3,
+    "locked_reasons": [
+     "第 3 回合起可用",
+     "需要先进入南美"
+    ]
+   }
+  ],
+  "acquire_buttons": [
+   {
+    "label": "收购 — $18.0M",
+    "enabled": false
+   }
+  ],
+  "ma_pane_text": "并购\n可用收购目标\n先锋科技北美\n$25.0M\n中型北美电子公司，拥有强大的零售分销和忠实的企业客户群。产品线老化但品牌声誉良好。\n获得：\n6% 市场份额（整合后）\n工厂: 30,000 单位产能（立即生效）\n分销覆盖: +12%\nCommercial 人才: +0.5 等级\nOperations 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.0M/回合 整合成本\n总成本: $29.0M\n要求：第 3 回合起可用\n亚洲电子制造东亚\n$18.0M\n东亚区域制造商，拥有现代化生产设施和成熟的供应商关系。品牌弱但运营效率出色。\n获得：\n5% 市场份额（整合后）\n工厂: 50,000 单位产能（立即生效）\nOperations 人才: +1 等级\n整合：\n2 回合完成整合\n$1.5M/回合 整合成本\n总成本: $21.0M\n先收购的团队获得独家权限。需要 $18.0M；未分配资金 $10.5M\n收购 — $18.0M\n欧洲绿色设备西欧\n$30.0M\n小型欧洲可持续电子品牌。强大的ESG资质，高端定位，完善的合规基础设施。\n获得：\n4% 市场份额（整合后）\n分销覆盖: +8%\nCommercial 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.5M/回合 整合成本\n总成本: $35.0M\n要求：第 3 回合起可用需要先进入西欧\n非洲互联移动非洲\n$10.0M\n快速增长的非洲移动设备组装商，分销网络覆盖西非和东非。与电信运营商和移动支付平台关系密切。\n获得：\n5% 市场份额（整合后）\n工厂: 25,000 单位产能（立即生效）\n分销覆盖: +15%\nCommercial 人才: +0.4 等级\nOperations 人才: +0.5 等级\n整合：\n3 回合完成整合\n$1.0M/回合 整合成本\n总成本: $13.0M\n要求：需要先进入非洲\n南方科技电子南美\n$20.0M\n巴西电子制造商，在玛瑙斯自由贸易区运营。享有税收优惠，拥有成熟的零售合作和在巴西及阿根廷的强大品牌知名度。\n获得：\n6% 市场份额（整合后）\n工厂: 35,000 单位产能（立即生效）\n分销覆盖: +10%\nCommercial 人才: +0.3 等级\nOperations 人才: +0.6 等级\n整合：\n2 回合完成整合\n$1.8M/回合 整合成本\n总成本: $23.6M\n要求：第 3 回合起可用需要先进入南美",
+  "unaffordable_available": [
+   "亚洲电子制造"
+  ]
+ },
+ "summary": {
+  "passed": 7,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 1,
+  "console_errors": 6,
+  "api_calls": 34,
+  "api_refused": 0
+ }
+}
