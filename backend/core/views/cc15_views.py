@@ -40,6 +40,54 @@ def _dec(v):
     return float(v)
 
 
+# W-CE3-04: every expense column the statement stores, in the order the
+# statement prints them. Named once so the residual below and the page's own
+# line list cannot drift from each other.
+STORED_OPERATING_EXPENSE_FIELDS = (
+    'rd_expense', 'marketing_expense', 'strategy_expense', 'research_expense',
+    'compliance_expense', 'admin_overhead', 'logistics_tariff_expense',
+    'inventory_expense', 'platform_amortization',
+    'platform_switch_write_off',
+)
+
+
+def _other_operating_expense(fin):
+    """What operating income charges that no stored column carries.
+
+    The engine subtracts five more things inside `operating_income` than the
+    `financials` table has columns for -- depreciation at 10 % of plant book
+    value, the tax structure's `annual_maintenance_cost`, product-retirement
+    cost, supply-chain disruption cost and compliance enforcement cost -- so
+    `gross_profit` minus every expense field the API served differed from the
+    served `operating_income` by $0.58M to $2.40M for a playing team, and a
+    team that built a plant could not find its depreciation anywhere
+    (W-CE3-04).
+
+    This is the difference itself, computed from the served figures, so the
+    statement is complete and self-consistent without a new stored column.
+    It is deliberately a residual and not a guess at the split: naming the
+    five would mean five new fields on `financials`, which is a hashed section
+    with no exclusions, and that moves `MANIFEST_SCHEMA_VERSION`. That is a
+    decision for the owner, not a side effect of a presentation repair; the
+    completion report states it.
+    """
+    stored = sum(_dec(getattr(fin, name, 0))
+                 for name in STORED_OPERATING_EXPENSE_FIELDS)
+    return round(_dec(fin.gross_profit) - stored
+                 - _dec(fin.operating_income), 2)
+
+
+def _other_non_operating(fin):
+    """The same question, below operating income.
+
+    `net_income = operating_income - interest + fx_hedge_pnl - tax
+    - tax_audit_penalty`, and neither the audit penalty nor the hedge result
+    has a column. Positive means a net charge.
+    """
+    return round(_dec(fin.operating_income) - _dec(fin.interest_expense)
+                 - _dec(fin.tax_expense) - _dec(fin.net_income), 2)
+
+
 # ---------------------------------------------------------------------------
 # 1. Industry News & Market Report
 # ---------------------------------------------------------------------------
@@ -420,10 +468,28 @@ class FinancialReportsHistoryView(APIView):
                 'admin_overhead': _dec(fin.admin_overhead),
                 'logistics_tariff_expense': _dec(fin.logistics_tariff_expense),
                 'inventory_expense': _dec(fin.inventory_expense),
+                # W-CE3-04: stored since the platform work and served by
+                # nothing, so a team that capitalised a platform or re-based a
+                # product could not find either charge anywhere.
+                'platform_amortization': _dec(fin.platform_amortization),
+                'platform_switch_write_off': _dec(
+                    fin.platform_switch_write_off),
+                # The charges the engine books inside operating income that
+                # have no column of their own: depreciation at 10 % of plant
+                # book value, the tax structure's annual maintenance,
+                # product-retirement cost, supply-chain disruption cost and
+                # compliance enforcement cost. Published as one residual so
+                # the served statement is at least complete and adds up.
+                # Naming them one by one needs six columns on a hashed
+                # section; see the completion report.
+                'other_operating_expense': _other_operating_expense(fin),
                 'operating_income': _dec(fin.operating_income),
                 'interest_expense': _dec(fin.interest_expense),
                 'pre_tax_income': _dec(fin.pre_tax_income),
                 'tax_expense': _dec(fin.tax_expense),
+                # Below operating income and on no column either: the tax
+                # audit penalty and the realised FX hedge result.
+                'other_non_operating_expense': _other_non_operating(fin),
                 'net_income': _dec(fin.net_income),
                 'net_margin_pct': _dec(fin.net_margin_pct),
                 # Balance sheet
