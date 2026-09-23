@@ -1,0 +1,76 @@
+  PASS      student s2610 signs in
+  LEAK      p3-r1-10-finance-budget: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      finance: budget allocation saved as entered -- {"id": 15, "rd_budget": "2500000.00", "marketing_budget": "2500000.00", "strategy_budget": "1500000.00", "warnings": []}
+  LEAK      p3-r1-11-finance-budget-saved: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      finance: a typed loan amount stores the number typed (W-CE-02) -- box='$ 5,000,000' stored=5000000.00
+  PASS      finance: loan and dividend saved as entered -- {"id": 10, "new_debt": "5000000.00", "debt_repayment": "0.00", "new_equity": "0.00", "dividend_per_share": "0.5000"}
+  LEAK      p3-r1-13-finance-capital: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-14-finance-tax: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      finance: tax structure switched from the screen -- direct -> regional_hub
+  LEAK      p3-r1-15-finance-tax-switched: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-20-rd: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      R&D offers no feature-level upgrade button (W-CE-03) -- 0 english + 0 localised upgrade buttons
+  LEAK      p3-r1-21-rd-after-upgrade: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-22-rd-create-platform-modal: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  OBSERVED  rd: platform creation blocked (reason shown in modal) -- 0 级或以上 — 3 项中已有 1 项符合功能配置最多设置5个功能等级。设为0可排除。处理器性能0147$2.6M电池续航0120—耐用性0140—应用生态0100—产品设计0120—可持续性080—开发方式自主研发 — 基础成本，1 回合许可引进 — 2.5倍功能成本，即时完成合作开发 — 1.6倍功能成本，1 回合代次基础成本: $5.0M处理器性能 → 等级 7: $2.6M合计: $7.6M就绪: 1 回合研发预算: $4.1M
+  LEAK      p3-r1-23-rd-after-platform: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-30-products: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-31-products-create-modal: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}, {"english": "Meridian Tech Base Platform", "n": 1}]
+  PASS      products: new product saved from the modal -- [{"id": 4, "team_platform": 3, "product_name": "Nova Meridian R1", "positioning": "mainstream", "target_market_ids": [1]}] modal=''
+  LEAK      p3-r1-32-products-after-create: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-40-marketing: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      marketing: in-band price, volume, promotion saved -- {"id": 13, "team_product": 5, "market": 1, "retail_price": "400.00", "promotion_budget": "200000.00", "campaign_focus_feature_ids": [1], "channel_digital_pct": "0.3400", "channel_traditional_pct": "0.3300", "channel_trad
+  LEAK      p3-r1-41-marketing-in-band: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-44-marketing-final: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-50-market-strategy: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      market strategy: market entry saved -- [{"id": 4, "market": 2, "entry_mode": 1, "initial_investment": "500000.00", "action": "enter", "integration_strategy": "FULL"}]
+  LEAK      p3-r1-51-market-entry: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      market strategy: the home market is entered and active (W-CE-21) -- home=NA state=active tab='北美 已进入'
+  PASS      market strategy: plant build saved -- [{"id": 4, "market": 1, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: the Build Plant control states a real cost, not $0 (W-CE-22) -- label='建设工厂 — $20.0M, 2回合，50000台产能' stored row=[{"id": 4, "market": 1, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: the Build Plant control names the capacity the scenario authors -- label='建设工厂 — $20.0M, 2回合，50000台产能' stored=[{"id": 4, "market": 1, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: partnership saved -- [{"id": 4, "market": 1, "strategy_option": 1, "annual_investment": "2000000.00", "action": "establish"}]
+  PASS      market strategy: the partnership button states the charge the way it is charged (W-CE-22) -- label='+ 分销合作伙伴 — 每回合 $2.0M' stored=[{"id": 4, "market": 1, "strategy_option": 1, "annual_investment": "2000000.00", "action": "establish"}]
+  LEAK      p3-r1-52-market-home: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  OBSERVED  market strategy: compliance investment control reachable -- no foreign market is entered yet, so the control is not offered this round
+  LEAK      p3-r1-60-corporate-talent: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      corporate: talent headcount and training saved -- {"rd_headcount": 60, "rd_salary_level": 3, "rd_training_budget": 100000, "commercial_headcount": 30, "commercial_salary_level": 3, "commercial_training_budget": 0, "operations_headcount": 40, "operati
+  PASS      corporate: talent allocation saved -- [{"id": 4, "talent_pool": "rd", "hq_count": 55, "market_allocation": {"NA": 5}}]
+  LEAK      p3-r1-61-corporate-allocation: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-62-corporate-ma: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      corporate: no acquisition target is available yet, and each says why -- 5 targets, none available; reasons=[["第 3 回合起可用"], ["第 2 回合起可用", "需要先进入东亚"], ["第 3 回合起可用", "需要先进入西欧"], ["第 2 回合起可用", "需要先进入非洲"], ["第 3 回合起可用", "需要先进入南美"]]
+  PASS      corporate: ESG investment and a commitment saved -- {"id": 4, "environmental_investment": "500000.00", "social_investment": "250000.00", "governance_commitments": ["board_diversity"]}
+  LEAK      p3-r1-63-corporate-esg: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-64-corporate-org: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-65-corporate-org-modal: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      corporate: org structure switch accepted -- {"current_structure": {"id": 2, "code": "regional", "name": "\u533a\u57df\u5f0f", "adopted_round": 1}, "transitioning": true, "transition_to": null, "pending_structure": null}
+  LEAK      p3-r1-66-corporate-org-after: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-70-communications: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  OBSERVED  communications: an assignment is offered -- no assignment this round
+  LEAK      p3-r1-80-research-segments: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      research: report bought and delivered
+  LEAK      p3-r1-81-research-bought: [{"english": "Nova Circuit", "n": 4}, {"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}, {"english": "Aurora Devices", "n": 1}]
+  LEAK      p3-r1-82-research-analyst: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      research: analyst answers or refuses visibly (no model behind this stack) -- 本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。
+  PASS      research: a question that finds nothing is not charged -- {"queries_used": null, "charged": null, "queries": []}
+  LEAK      p3-r1-83-research-analyst-asked: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-33-products-edit-modal: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      products: retire at end of round saved -- [{"id": 4, "team_product": 6, "timing": "end_of_round"}]
+  LEAK      p3-r1-34-products-after-retire: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-95-summary: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  LEAK      p3-r1-96-lock-confirm: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+  PASS      summary: decisions locked from the screen -- status=locked modal_after=''
+  PASS      summary: the page never offers a lock the server then refuses (W-CE-25) -- blockers the page listed=[]; refusal=[]
+  LEAK      p3-r1-97-locked: [{"english": "Jonas Berg", "n": 1}, {"english": "Meridian Tech", "n": 1}]
+
+{
+  "passed": 26,
+  "failed": 0,
+  "observed": 3,
+  "screens": 35,
+  "screens_with_leaks": 35,
+  "console_errors": 25,
+  "api_calls": 210,
+  "api_refused": 1
+}
+record: /home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-a80ba111041f886bb/handoff_readiness_v2/evidence/walkthrough-ce-3-2026-09-23/records/student-play-t3-r1-zh-CN.json
