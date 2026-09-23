@@ -2598,6 +2598,11 @@ class FinanceContextView(APIView):
                         'compliance_committed': float(
                             Decimal(lines['compliance_investment'])),
                         'committed_total': float(committed_total),
+                        # W-CE2-09: the cash the committed total is committed
+                        # from, so the shared bar can state the one total and
+                        # its headroom in one sentence rather than a bare
+                        # "Unallocated". Same key the summary endpoint uses.
+                        'total_available': float(team.cash_on_hand),
                         'total_spent': total_spent,
                         'over_budget': over_budget,
                         'remaining': total_budget_available - total_spent,

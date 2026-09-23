@@ -4,11 +4,15 @@ import { useTranslation } from 'react-i18next';
 
 const { Text } = Typography;
 
+// W-CE2-09: this tested `n >= 1e6`, so a negative figure fell through to
+// `toFixed(0)` and the Summary printed `Unallocated: $-12553689` while every
+// other figure on the page was `$28.5M`-style. Magnitude decides the unit;
+// the sign is carried. Same shape as the formatter in `BudgetAlert`.
 const fmt = (v) => {
   if (v == null) return '$0';
   const n = Number(v);
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+  if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (Math.abs(n) >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
 };
 
@@ -68,9 +72,21 @@ const BudgetBar = ({ budgets }) => {
             <Text style={{ fontSize: 12 }}>{fmt(row.amount)}</Text>
           </div>
         ))}
+        {/* W-CE2-09: one total per concept. This panel states the
+            authoritative one -- `committed_total` from
+            `rd_costs.budget_assessment`, the same figure the lock blocker
+            quotes -- against the cash it is committed from, so "unallocated"
+            cannot be read as headroom on its own. An older payload without
+            the total keeps the plain line. */}
         {budgets.unallocated != null && (
           <Text type="secondary" style={{ fontSize: 11 }}>
-            {t('budget.unallocated', { amount: fmt(budgets.unallocated) })}
+            {budgets.committed_total != null
+              ? t('budget.committed_of_cash', {
+                committed: fmt(budgets.committed_total),
+                cash: fmt(budgets.total_available),
+                unallocated: fmt(budgets.unallocated),
+              })
+              : t('budget.unallocated', { amount: fmt(budgets.unallocated) })}
           </Text>
         )}
       </Space>
