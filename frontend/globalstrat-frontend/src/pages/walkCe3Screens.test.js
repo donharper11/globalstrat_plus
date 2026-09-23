@@ -40,3 +40,30 @@ describe('the leaderboard explains an inversion it shows', () => {
     expect(source()).not.toMatch(/未参与竞争/);
   });
 });
+
+// W-CE3-19 -----------------------------------------------------------------
+// The end-of-game team export read `Status: No decisions saved` for every
+// team, including four that played all six rounds: the column reads the
+// currently open round, which the advance past round 6 had just created.
+describe('the team summary export says which round its status describes', () => {
+  const source = () => read('pages/InstructorDashboard.js');
+
+  test('the status header names the round', () => {
+    expect(source()).toMatch(/export_status_round/);
+  });
+
+  test('the bare status label is no longer the export header', () => {
+    const exportBlock = source().split('const exportAllTeams')[1]
+      .split('const statusColor')[0];
+    expect(exportBlock).not.toMatch(/t\('instructor\.status'\)/);
+  });
+
+  test('the sentence exists in both catalogues, with the same placeholder', () => {
+    const en = JSON.parse(fs.readFileSync(
+      path.join(SRC, 'locales/en.json'), 'utf8'));
+    const zh = JSON.parse(fs.readFileSync(
+      path.join(SRC, 'locales/zh-CN.json'), 'utf8'));
+    expect(en.instructor.export_status_round).toMatch(/\{\{round\}\}/);
+    expect(zh.instructor.export_status_round).toMatch(/\{\{round\}\}/);
+  });
+});

@@ -9,6 +9,7 @@ from decimal import Decimal as D
 from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 
+from core.tests.test_cohort_caps import CohortCapTestBase
 from core.tests.test_demotion_team_notice import DemotionNoticeFixture
 
 
@@ -292,3 +293,82 @@ class ALockedGenerationNamesItsRequirement(TestCase):
 
         row = self.generation_row(self.context(), 3)
         self.assertIsNotNone(row)
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-20 — a hand-set score exported with nothing saying so
+# ---------------------------------------------------------------------------
+
+class TheGradesExportSaysWhatWasSetByHand(CohortCapTestBase):
+    """The grades CSV carried **88.0** beside a real performance index of
+    52.86 -- a score overridden from the console before a single round was
+    played -- and had no column saying it was an override, though the
+    console's own Team Grades table tags the row *Overridden* and shows the
+    computed score it replaced.
+    """
+
+    def setUp(self):
+        super().setUp()
+        from django.utils import timezone as tz
+        from core.models.course import SimulationInstance
+        from core.models.grading import (GradingRubric,
+                                         GradingRubricCategory, TeamGrade)
+
+        self.instructor = self._instructor('ce3ex')
+        course, section = self._make_section(
+            instructor_id=self.instructor.pk, tag='CE3EX')
+        self.instance = SimulationInstance.objects.create(
+            section_id=section.section_id, current_round=7, total_rounds=10,
+            status='active', settings={})
+        rubric = GradingRubric.objects.create(
+            course_id=course.course_id, rubric_name='CE3', is_active=True,
+            created_at=tz.now(), updated_at=tz.now())
+        self.category = GradingRubricCategory.objects.create(
+            rubric_id=rubric.rubric_id, category_name='Performance Index',
+            weight=D('100.00'), sort_order=1)
+        self.overridden = TeamGrade.objects.create(
+            instance_id=self.instance.instance_id, team_id=1,
+            category_id=self.category.category_id,
+            computed_score=D('52.86'), override_score=D('88.00'),
+            final_score=D('88.00'))
+        TeamGrade.objects.create(
+            instance_id=self.instance.instance_id, team_id=2,
+            category_id=self.category.category_id,
+            computed_score=D('61.40'), override_score=None,
+            final_score=D('61.40'))
+
+    def rows(self):
+        import csv
+        import io as _io
+        response = self._client(self.instructor).get(
+            f'/api/grades/export/teams/?instance_id='
+            f'{self.instance.instance_id}')
+        self.assertEqual(response.status_code, 200, response.content)
+        return list(csv.reader(_io.StringIO(
+            response.content.decode('utf-8'))))
+
+    def test_the_file_has_a_column_for_it(self):
+        self.assertIn('Overridden Categories', self.rows()[0])
+
+    def test_the_overridden_row_names_the_category_and_the_computed_score(self):
+        rows = self.rows()
+        column = rows[0].index('Overridden Categories')
+        row = next(r for r in rows[1:] if r[0] == '1')
+
+        self.assertIn('Performance Index', row[column])
+        self.assertIn('52.9', row[column])
+
+    def test_a_row_nobody_touched_says_nothing(self):
+        rows = self.rows()
+        column = rows[0].index('Overridden Categories')
+        row = next(r for r in rows[1:] if r[0] == '2')
+
+        self.assertEqual(row[column], '')
+
+    def test_the_score_columns_stay_numeric(self):
+        """One trailing column, not a companion per category: a spreadsheet
+        still sums the scores."""
+        rows = self.rows()
+        row = next(r for r in rows[1:] if r[0] == '1')
+
+        self.assertEqual(float(row[rows[0].index('Performance Index')]), 88.0)

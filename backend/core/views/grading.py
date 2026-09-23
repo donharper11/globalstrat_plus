@@ -284,6 +284,15 @@ class ExportTeamGradesCsvView(APIView):
 
         grades = TeamGrade.objects.filter(instance_id=instance_id)
         team_data = {}
+        # W-CE3-20: the file carried 88.0 for a team beside a real
+        # performance index of 52.86 -- a score an instructor had set by hand
+        # from the console before a single round was played -- and no column
+        # said so, though the console's own Team Grades table tags the row
+        # *Overridden* and shows the computed score it replaced. An
+        # instructor grading from the file could not see that the number was
+        # not the platform's. `override_score` is non-null exactly when the
+        # score was set by hand, which is the same fact the screen reads.
+        overrides = {}
         for g in grades:
             tid = g.team_id
             if tid not in team_data:
@@ -294,6 +303,10 @@ class ExportTeamGradesCsvView(APIView):
                 for cat in categories:
                     if cat.category_id == g.category_id:
                         team_data[tid][cat.category_name] = float(g.final_score or 0)
+                        if g.override_score is not None:
+                            overrides.setdefault(tid, []).append(
+                                f'{cat.category_name} '
+                                f'(computed {float(g.computed_score or 0):.1f})')
 
         team_map = {t.team_id: t.team_name for t in Team.objects.all()}
 
@@ -301,12 +314,18 @@ class ExportTeamGradesCsvView(APIView):
         response['Content-Disposition'] = 'attachment; filename="team_grades.csv"'
 
         writer = csv.writer(response)
-        writer.writerow(['Team ID', 'Team Name'] + cat_names + ['Overall'])
+        # The marker is one trailing column rather than a companion column
+        # per category: the category columns stay numeric, so a spreadsheet
+        # still sums them, and the fact plus the score it replaced are both
+        # on the row. Empty when nothing on that row was set by hand.
+        writer.writerow(['Team ID', 'Team Name'] + cat_names
+                        + ['Overall', 'Overridden Categories'])
         for tid in sorted(team_data.keys()):
             row = [tid, team_map.get(tid, '')]
             for cn in cat_names:
                 row.append(f'{team_data[tid].get(cn, 0):.1f}')
             row.append(f'{team_data[tid].get("overall", 0):.1f}')
+            row.append('; '.join(overrides.get(tid, [])))
             writer.writerow(row)
 
         return response
