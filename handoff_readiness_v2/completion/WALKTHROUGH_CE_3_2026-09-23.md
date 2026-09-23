@@ -74,6 +74,11 @@ Drivers, in the order they were first run:
 | `verify_results_language.py` | **new** — W-CE-14, W-CE2-06, W-CE2-07 read by two members of one team, one English, one Chinese | `verify_results_language.py <round>` |
 | `probe_scorecard.py` | **new** — the Strategic Scorecard read en → zh → en, to show a read does not mutate a hashed field | `probe_scorecard.py <round> [team-id…]` |
 | `verify_coach_language.py` | **new** — W-CE2-08: the console's own switch, then the alerts it produces | `verify_coach_language.py set` / `read <round>` |
+| `verify_operator_log_refusal.py` | **new** — W-CE2-04: two refusals an operator can still cause, then the Operator Log | `verify_operator_log_refusal.py <lang>` |
+| `verify_round5_unlocks.py` | **new** — the progressive disclosure round 5 opens: the customs classification and the Gen 3 platform | `verify_round5_unlocks.py <lang> <team> <round>` |
+| `probe_negative_cash_lock.py` | **new** — W-CE-23's remainder: what a team with negative cash can lock | `probe_negative_cash_lock.py <team> <round>` |
+| `probe_irreducible_commitment.py` | **new** — what a team cannot take out of its round, and whether financing helps | `probe_irreducible_commitment.py <lang> <team> <round>` |
+| `lock_within_cash.py` | **new** — cut the round back to what the cash allows, the way a player would, then lock | `lock_within_cash.py <lang> <team> <round>` |
 | `dbq.py`, `apicall.py`, `hold_lock.py`, `mark_competition.py`, `instructor_endgame.py`, `leak_summary.py`, `records_summary.py`, `shrink_screenshots.py`, `prune_screenshots.py` | as in walkthrough 2 | — |
 
 **Harness changes, all recorded (no runtime code was touched):**
@@ -104,10 +109,27 @@ Drivers, in the order they were first run:
    conclusion from it. The driver now reads the same round twice, as two
    different members of the same team, each having stated their language
    through `PUT /api/user/preferences/` — the route the switch itself calls.
-6. `verify_plant_collision.py`, `verify_plant_after_acquisition.py`,
+6. `shrink_screenshots.py` was run between sections and finally at
+   **760 px / quality 28**, and `prune_screenshots.py` — widened from
+   walkthrough 2's rounds 3–4 to **rounds 3 onwards** — dropped 488
+   near-duplicate per-round decision screens (13.9 MB). 741 screenshots
+   remain, 19.4 MB; every screen that was ever taken is still named in its
+   run's JSON record, which keeps the full list.
+7. `verify_plant_collision.py`, `verify_plant_after_acquisition.py`,
    `verify_withdraw.py`, `probe_ma_card.py`,
    `verify_deadline_affordability.py`, `probe_scorecard.py`,
-   `verify_coach_language.py`, `readers.json` — new, described above.
+   `verify_coach_language.py`, `verify_operator_log_refusal.py`,
+   `verify_round5_unlocks.py`, `probe_negative_cash_lock.py`,
+   `probe_irreducible_commitment.py`, `lock_within_cash.py`, `readers.json`
+   — new, described above and in (e).
+8. `lock_round.py` — a marketing row in a market holding exactly one product
+   could not be reached, because `MarketingPage` renders that product's card
+   directly with no inner tab and prints the product's name **only** in the
+   tab label it therefore does not draw. The driver now takes the market tab
+   as the row and records the fact; the missing name is W-CE3-05.
+9. `student_play.py` — it clicked the partnership *+* offer unconditionally
+   and timed out once the affordability gate started disabling it; it now
+   records a disabled offer instead of clicking it.
 
 **The money reconciliation** is recorded per team per round in
 `records/check-round<N>.json` under `reconciliation`, in two forms:
@@ -144,7 +166,7 @@ stack, in the language(s) it was found in. Screenshots are under
 | **W-CE2-01** | **P0** | a team builds a plant in its home market and acquires a target whose market is the same and `includes_plant`; close and process | **VERIFIED FIXED** | Both halves hold. **At the save**, in either order, the boundary refuses and names the market and the target: *The acquisition of AfriConnect Mobile already brings a plant in Africa, so a plant build there cannot be queued as well. Withdraw one of the two.* — and in Chinese, *收购非洲互联移动已在非洲带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。* Two builds in one market are refused too (*Your company has already queued a plant in Africa. One plant per market in a round.* / *贵公司本回合已在非洲安排建设工厂。每个市场每回合只能建设一座工厂。*), and a refused save leaves the draft untouched. **At the round**, Aurora Devices completed the AFR acquisition in round 2 and then built a plant in AFR in round 3: the round processed `FULLY_COMPLETE`, and the team holds three AFR plant rows with construction starts 1, 2 and 3 — three different natural keys, so the snapshot cannot collide. 13 of 13 checks | `v-collision-t1-r2-market-strategy-en.jpg`, `v-collision-t1-r2-corporate-en.jpg`, `v-paa-t1-r3-home-market-en.jpg`, `records/verify-plant-collision-t1-r2-en.json` |
 | **W-CE2-02** | P1 | queue an acquisition costing more than the team's cash, then open Review & Submit | **VERIFIED FIXED** | Each queued commitment is shown where it was made, with a **Withdraw** control that empties the stored row: a plant (*Plant build queued* → Withdraw → the Build Plant offer is back), a partnership and an acquisition, all three driven on the real pages and read back from the draft. The strategy context publishes `affordability` (`cash_on_hand`, `committed_total`, `unallocated`). An offer the team cannot fund is **disabled with the figures beside it**, in Chinese too: *收购 — $18.0M* disabled, *需要 $18.0M；未分配资金 $10.5M*; the partnership *+* offer is likewise disabled once cash is short. Every unavailable target states its reason (*第 3 回合起可用*, *需要先进入西欧*, *已被 … 收购*). 14 of 14 checks | `v-wd-t1-r2-01-plant-queued-en.jpg` … `v-wd-t1-r2-07-acquisition-withdrawn-en.jpg`, `v-ma-card-t3-r2-zh-CN.jpg` |
 | **W-CE2-03** | P1 | let a team with a refused lock be deadline-closed, then read its statement | **VERIFIED FIXED for the acquisition; the rest of the draft is still executed** | Nova Circuit went into round 3's close as a **draft** the lock had refused (*Committed spend of $49,287,190.00 exceeds available cash of $19,287,190.91.*). After the close its bid was **withheld**: no `team_acquisition` row, nothing charged, the decision row kept, and the team told in those words — *Your bid for AsiaElec Manufacturing was not fulfilled: Nova Circuit has committed more this round than its available cash, which is the same reason the round's decisions could not be locked. No cost has been charged.* **But the rest of the draft was executed anyway**, and the team closed at **−$7,431,324.09**; Aurora Devices, whose over-cash draft carried a plant build rather than an acquisition, closed at **−$6,468,269.34**. That is the remainder the repair discloses in its §7.1, and it is what starts W-CE3-02 | `v-deadline-t2-r3-summary-en.jpg`, `v-deadline-t2-r3-after-statement-en.jpg`, `records/verify-deadline-affordability-t2-r3-*.json` |
-| **W-CE2-04** | P2 | make an action fail or be refused; read the Operator Log | **VERIFIED FIXED** | The P0 that produced the raw `SnapshotError` cannot be reached any more, so two refusals an operator can still cause were driven — processing an already-processed round, and the lifecycle override with no written reason. The Operator Log carries no storage field name, no Python argument, no raw exception and no `engine_failure` token; the rows read as sentences, and the *Before → after* column is labelled words throughout, so W-CE-07 still holds as well | `v-oplog-refusals-en.jpg`, `records/verify-operator-log-refusal-en.json` |
+| **W-CE2-04** | P2 | make an action fail or be refused; read the Operator Log | **VERIFIED FIXED** | The P0 that produced the raw `SnapshotError` cannot be reached any more, so two refusals an operator can still cause were driven — processing an already-processed round, and the lifecycle override with no written reason. The Operator Log carries no storage field name, no Python argument, no raw exception and no `engine_failure` token; the rows read as sentences, and the *Before → after* column is labelled words throughout, so W-CE-07 still holds as well | `v-oplog-refusals-en-en.jpg`, `records/verify-operator-log-refusal-en.json` |
 | **W-CE2-05** | P1 | sign in as the second member of a team in zh-CN, ask the analyst | **VERIFIED FIXED** | In **round 1** — the round it failed in before — Meridian Tech's first enrolment was English (`s2609 → en`, which is what the team rule would answer) and its second member signed in in Chinese (`s2610 → zh-CN`). The analyst answered the student who asked: *本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。* No second sign-in by the first member was needed | `p3-r1-83-research-analyst-asked-zh-CN.jpg`, `harness/dbq.py enrollments` |
 | **W-CE2-06** | P2 | any zh-CN team with a market, Products or Round Results | **VERIFIED FIXED where it was found; two places it did not reach** | Market names are Chinese on Market Strategy (北美 / 东亚 / 西欧 / 非洲 / 南美), on Products, on Round Results (`.markets[].market_name`, `.products[].market_name`), on the events ticker (全球) and **inside the price-adjustment notice**: *非洲 中的 Nexus One：您输入的价格为 $1,755，超出本回合允许的区间…*. `Western Europe`, which walkthrough 2 counted 51 times, appears **0 times** on a Chinese screen. Still English: the market names inside the Strategic Scorecard's detail tables (W-CE3-06) and on the Logistics and Trade Finance pages (W-CE3-08) | `p3-r1-30-products-zh-CN.jpg`, `records/verify-results-r1.json`, `records/verify-results-r3.json` |
 | **W-CE2-07** | P2 | zh-CN team, Round Results → Strategic Scorecard | **VERIFIED FIXED for two of the three criteria** | On a Chinese read `budget_discipline` and `financial_prudence` come back in Chinese — *支出未超出经营预算。财务纪律良好。*, *杠杆水平保守。财务状况稳健。* — while the **English reader still gets the byte-identical stored English**, and a Chinese read does **not** mutate the stored row (driven en → zh → en on four teams, `probe_scorecard.py`). The third criterion, `governance_tax`, is still *No governance-tax conflict detected.* on a Chinese screen — W-CE3-05 | `records/verify-results-r1.json`, `records/verify-results-r3.json` |
@@ -198,6 +220,19 @@ Operator Log read; every password issued in bulk; the Team Overview
 drill-down opened on the decisions; a grading rubric created, grades
 calculated, **a category score overridden** (*Aurora Devices: Performance
 Index score overridden.*) and three CSVs exported.
+
+### The end of the game — `records/instructor-endgame-en.json`
+
+| # | screen | what happened | evidence |
+|---|---|---|---|
+| end-grading | Grading & Export | *Calculate Grades* on six resolved rounds: *Grades calculated*; the Team Grades table shows Aurora Devices **88.0 Overridden** (the score overridden from the console before round 1), Nova Circuit 54.6, Meridian Tech 60.3, and an *Override* control on every row. The three CSVs downloaded again | `end-grading-after-4-rounds-en.jpg`, `exports/final-*.csv` |
+| end-delete-has-record | Delete Game (reason) | **refused**: *CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted. Archive the game instead…* | `end-delete-has-record-after-en.jpg` |
+| end-delete-competition | Delete Game after `mark_competition.py` | **refused**: *CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event…* | `end-delete-competition-after-en.jpg` |
+| end-reset | Reset to Setup (reason) | **refused** — W-CE-26 still holds: *CE 2026 Heat A is a competition game, so it cannot be reset to setup. Its rounds, results and records have to stay as they were played…* | `end-reset-modal-en.jpg`, `end-reset-after-en.jpg` |
+| end-archive | Archive Game (reason) | **accepted**: *Game archived. You can now create a new game for this section.*; status `archived` | `end-archive-after-en.jpg` |
+| after archive | results, statements, leaderboard | still readable: round 1 and round 6 results both `200` with their index values, and the round-6 leaderboard still serves all eight teams | `records/instructor-endgame-en.json` |
+
+*Finish game* itself was not reached — see (e).
 
 ### Rounds 1–6
 
@@ -349,17 +384,23 @@ equals revenue minus COGS.
 
 ### Console and network, the whole walkthrough
 
-`harness/records_summary.py` over every record: **815+ screens**, **5,779+ API
-calls**, 528 driver checks passed.
+`harness/records_summary.py` over every record: **67 recorded runs**,
+**1,252 screens**, **8,547 API calls**, **734 driver checks passed**, 53
+failed and 121 observed. The 53 failures are the defects in (d) and the
+correct refusals in (b) — 24 lock refusals the server was right to give and
+the page had already shown, the statement-arithmetic checks that fail by
+design once W-CE3-03/04 are open, the cash-carry checks that fail once
+W-CE3-01 is open, the five language checks that fail on the residues, and the
+Gen 3 generation that is not offered.
 
 * **No 5xx of any kind**, on any route, in any round — against walkthrough 2's
   one 500 that stopped a round dead.
 * **No JavaScript exception and no `pageerror` on any screen in either
   language.**
 * Console errors, excluding the harness's own aborted Google-Fonts requests:
-  **50**, every one the browser's line for a non-2xx response — 42 × 400,
-  6 × 409, 2 × 404 (one of which is the harness's own probe of `/api/grades/`,
-  a route that does not exist).
+  **79**, every one the browser's line for a non-2xx response — 67 × 400,
+  10 × 409, 2 × 404 (one the harness's own probe of `/api/grades/`, a route
+  that does not exist, and one a harness path since corrected).
 * Every 4xx is accounted for: analyst refusals (deliberate, shown, nothing
   charged), `409 lifecycle_in_progress` (deliberate, shown, retried), the
   plant-collision refusals this pass drove on purpose, cash refusals for
@@ -393,16 +434,166 @@ wrong number shown to a player · **P1** wrong or missing behaviour ·
 | **W-CE3-11** | the post-login modal, Strategic Briefing | student | zh | The **Strategic Briefing is English only**. `core/engine/briefing.py` builds every sentence as an f-string with no catalogue entry — 21 `parts.append(f"…")` calls and 90 distinct English literals, none of them passing through `participant_message` — so a Chinese student's first screen after signing in reads *Revenue declined 55% to $0.5M — investigate segment performance.* and *Cash reserves critically low at $-7.4M. Immediate action required.* It is the same class as W-CE2-07, on a bigger surface | the briefing in the team's language | P2 | zh-CN student, sign in after a processed round | `s-after-r1-01-post-login-modal-zh-CN.jpg`, `backend/core/engine/briefing.py` |
 | **W-CE3-12** | Financial Reports, the tab bar | student | zh | The tab label **`Trade Finance & FX` is a hard-coded English string** — `pages/FinancialReportsPage.js:975` has `label: 'Trade Finance & FX'` where every sibling tab uses `t(...)` — so it is English on a Chinese screen | the label from the catalogue, like the eight tabs around it | P2 | zh-CN team → Financial Reports | `s-after-r1-10-financial-reports-zh-CN.jpg` |
 | **W-CE3-13** | Decision Summary › Budget Summary | student | EN, zh | A team that is **over**-committed is told the amount it is over by is *not yet committed*: *Committed this round: $49.3M of $19.3M cash — **$-30.0M not yet committed***. The figure is correctly abbreviated now (W-CE2-09's repair), but the sign is written `$-30.0M` rather than −$30.0M and the label contradicts it | a sentence that says the team is over by $30.0M | P2 | commit past the cash, open Review & Submit | `v-deadline-t2-r3-summary-en.jpg` |
-| **W-CE3-14** | R&D Investment › Create New R&D Platform | student | EN, zh | The scenario's third platform generation carries `unlock_round: 5`, but at round 5 it is **not listed at all and no reason is given**: `views/decisions.py:1910-1917` `continue`s past Gen 3 unless the team already holds an **active Gen 2 platform**, so the generation simply is not there. Every other gate on the platform now names itself — the M&A card says *第 3 回合起可用*, the platform round check says *available from round N* — and this one does not | the generation listed with its requirement stated, like every other locked offer | P2 | round 5, a team with no Gen 2 platform, R&D → Create New R&D Platform | `v-r5-t4-rd-create-modal-en.jpg`, `records/verify-round5-unlocks-t4-r5-en.json` |
+| **W-CE3-14** | R&D Investment › Create New R&D Platform | student | EN, zh | The scenario's third platform generation carries `unlock_round: 5`, but at round 5 it is **not listed at all and no reason is given**: `views/decisions.py:1910-1917` `continue`s past Gen 3 unless the team already holds an **active Gen 2 platform**, so the generation simply is not there. Every other gate on the platform now names itself — the M&A card says *第 3 回合起可用*, the platform round check says *available from round N* — and this one does not | the generation listed with its requirement stated, like every other locked offer | P2 | round 5, a team with no Gen 2 platform, R&D → Create New R&D Platform | `v-r5-t4-rd-en.jpg`, `records/verify-round5-unlocks-t4-r5-en.json` |
+| **W-CE3-15** | Leaderboard | student, instructor | EN, zh | **The top score is shown in fourth place with nothing to explain it.** Round 6: *1 Nova Circuit 54.59 · 2 Aurora Devices 52.86 · 3 Solaris Consumer 52.83 · **4 Meridian Tech 60.34***. The ordering is R32 working as ruled — a commercially inactive firm ranks below every active one, and Meridian Tech had $0 of revenue — and the team's own **Round Results** screen explains it fully and in Chinese (*…未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后…绩效指数本身并未被扣减，受影响的只是排名。*). But the leaderboard payload has no field for it (`rank, team_name, team_id, performance_index, index_change, total_revenue, net_income, shareholder_return, market_share, share_price, investor_confidence`) and `pages/LeaderboardPage.js` contains no mention of inactivity or demotion. The leaderboard is the screen a competition is read from, and on it the standings contradict the numbers beside them | a marker on the row, or the rule named under the table | **P1** | let a team be resolved with no sales while others sell, then open the Leaderboard | `records/check-round6.json` (`leaderboard_entries`), `s-after-r6-10-leaderboard-en.jpg`, `backend/core/engine/leaderboard.py:215-244` |
+| **W-CE3-16** | Decision Summary | student | EN, zh | **A dividend of $0.00 is reported as exceeding projected equity**: *Total dividends of $0.00 exceed projected equity. Reduce the dividend.* — and in Chinese, *股利总额 $0.00 超过预计股东权益。请降低每股股利。* It fires for every team whose projected equity is negative, and it is un-clearable, because there is nothing below zero to reduce it to. It sits in the same blocker list as the cash blocker of W-CE3-02 | no dividend blocker when the dividend is zero | P1 | a team with negative projected equity, dividend set to 0, open Review & Submit | `records/probe-irreducible-commitment-t4-r5-en.json` (`zero_dividend_blocker`), `v-negcash-t2-r4-stripped-en.jpg` |
+| **W-CE3-17** | Stakeholder Communications › the evaluation | student | EN, zh | The evaluation's criterion names are the **storage keys**, prettified: `framework_grounding` → *Framework Grounding*, and likewise *Risk Acknowledgment*, *Stakeholder Awareness*, *Strategic Consistency*, *Clarity And Persuasion*. `pages/CommunicationsPage.js:179` does `key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())`, and `:149` prints a hard-coded English *(weight: N%)* beside it. So a Chinese student reads five English storage keys on a screen whose feedback prose is otherwise correctly Chinese (*自动评估不可用。得分基于提交内容的完整性。*) | the criterion's authored name from the catalogue, in the reader's language | P2 | zh-CN team → Stakeholder Communications → submit a memo → read the evaluation | `p3-r2-72-communications-submitted-zh-CN.jpg` |
+| **W-CE3-18** | Instructor › Operator Log | instructor | EN, zh | The refusal code is **run onto the end of the sentence with no separator**: *Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.**reason_required*** and *Refused: The game has moved to round 5; this request was for round 4.**state_moved***. W-CE2-04 moved the raw exception out of this row; the code beside it is what is left of walkthrough 2's *`engine_failure`* | the code in its own column, or not on the row at all | P2 | cause any refusal, open the Operator Log | `v-oplog-refusals-en-en.jpg`, `records/verify-operator-log-refusal-en.json` (`refused_rows`) |
+| **W-CE3-19** | Grading & Export › Export Team Summary CSV | instructor | EN | The end-of-game team export says **`Status: No decisions saved`** for every team, including the four that played all six rounds. The column reads the **currently open** round — round 7, which had just been opened by the advance after round 6 — so in an export taken at the end of a game it states the opposite of what happened. The same file's `Cash` column is right (−$49,051,474 for Aurora Devices) | the status of the game that was played, or a column heading that says which round it describes | P2 | play a game, advance past the last played round, Grading & Export → Export Team Summary CSV | `exports/final-game_1_teams.csv` |
+| **W-CE3-20** | Grading & Export › Export Team Grades CSV | instructor | EN | The grades export carries **88.0** for Aurora Devices, a score overridden from the console before a single round was played, beside a real performance index of 52.86 — and the CSV has **no column saying it is an override**, though the console's own Team Grades table tags the row *Overridden*. An instructor grading from the file cannot see that the number was set by hand | an override marked in the export, as it is on the screen | P2 | override a category score, play the game, export the grades | `exports/final-team_grades.csv`, `i29c-grading-after-override-en.jpg` |
+
 
 ---
 
-## (e) What could not be driven
+## (e) What could not be driven, and why
 
-*(filled in below as the run proceeds)*
+| item | why |
+|---|---|
+| **A lock in rounds 4, 5 and 6 — for any team** | W-CE3-02. The affordability blocker counts $4,000,000 of payroll and about $6,000,000 of standing commitments that no screen can reduce, and compares them with cash that the deadline has already driven negative. Stripping every reachable decision to zero did not clear it and raising $25,000,000 of debt did not move the figure. Those rounds were resolved by the operator, which is on record; "every team locks every round" was achieved for rounds 1 and 2 only. |
+| **The Gen 3 platform, the scenario's round-5 unlock** | `views/decisions.py:1910-1917` hides the third generation until the team holds an **active Gen 2** platform, and Gen 2 costs $15,000,000 against an R&D budget of $1.5–4.2M (W-CE-19, deferred calibration under R48). No team could reach it, and the screen gives no reason for its absence — recorded as W-CE3-14. The **customs classification**, the other round-5 unlock, was driven and stored. |
+| **The *Finish game* control** | `components/RoundControlCard.js:277-293` renders *Finish game* in place of *Advance* only when `current_round >= total_rounds`. This scenario authors **10** rounds and the brief asked for six, so the button never appeared. What the end of a game does was driven through the flows that are reachable — final grading, the three exports, and the delete / reset / archive refusals. |
+| **Marking a competition heat from the console** | unchanged from both earlier passes: nothing in the frontend writes `SimulationInstance.settings['is_competition']`. `harness/mark_competition.py` does it (disclosed), so that the delete and reset refusals for a heat can be driven at all. |
+| **Phase 2 narratives and the memo evaluation from a model** | by design of this stack: every LLM URL points at an unreachable port, so the round narrative and the memo evaluation use the template/heuristic fallback. That fallback is what is on record, and it is correctly localised (*模型评估不可用——未生成详细反馈*). |
+| **An answer from Ask the Analyst** | the scenario has no analyst, so only the refusal path exists. It was driven 24 times across the game, with the quota untouched and nothing charged — and, this time, **in the asking student's own language from round 1** (W-CE2-05). |
+| **The engine's plant-merge path (`engine/plants.record_plant`)** | it exists for a game that already carries the walkthrough-2 collision. The decision boundary now refuses both collisions before they can be stored, so a game started on this tree cannot reach the merge. The boundary was driven instead, in both orders and both languages. |
+| **Chinese glyphs** | no CJK font in the sandbox and no route to a font CDN; every zh-CN claim in this report is about the rendered DOM text, not the pixels. |
+| **8 teams actively deciding** | four teams (1, 2, 4 EN; 3 zh-CN) played every round, which is the brief's minimum; teams 5–8 made no decision in any round and were deadline-closed every time. |
+| **Rounds 7–10** | six rounds were played end to end (the brief's minimum); the remaining four were not. |
+| **The supply-chain pages other than Logistics** | Sourcing, Trade Finance and Inventory were opened and photographed in both languages every round and read for leaks, but only Logistics was edited (the round-5 customs classification). They are optional to the lock (W-CE-13). |
+
+### Disclosed interventions by the auditor
+
+Everything below is an auditor's action on a disposable database, named here
+so that nothing in the record is taken for the platform's own behaviour.
+
+1. `harness/mark_competition.py` marks the game a competition heat, because
+   the console cannot (as in both earlier passes).
+2. `verify_deadline_affordability.py` raised one of Nova Circuit's promotion
+   budgets to $19,287,190 in round 3 to push the round past the team's cash.
+   That is a figure a student can type on the Marketing page, and the point
+   was to reach the state W-CE2-03 describes; the resulting −$7.4M close is
+   the platform's, not the harness's.
+3. `probe_negative_cash_lock.py` and `probe_irreducible_commitment.py` zero a
+   team's budgets and then raise debt on a **draft**, to ask what the platform
+   will allow. The budgets were restored to what the team had decided before
+   round 5 was resolved.
+4. `verify_operator_log_refusal.py` signs the instructor in and states
+   **English**, which is why round 5's AI Coach alerts are English while
+   rounds 3, 4 and 6 are Chinese. The preference was set back to Chinese
+   before round 6 and the result is on record (30 of 30 Chinese).
+5. `verify_plant_after_acquisition.py` queued Aurora Devices' round-3 plant
+   through the decision route the page saves with, because the Market Strategy
+   page does not offer Build Plant in a market that already holds a plant.
+
+### Harness limits, not defects
+
+* `student_play.py`'s M&A step reported *unaffordable notice on the card=False*
+  because it searched for the raw catalogue template (`需要 {{cost}}；…`)
+  rather than its stem. `probe_ma_card.py` checks the stem and finds the
+  sentence; the notice is there.
+* The `decision_plant.capacity_units` assertion (see (a) §4) was mis-specified
+  in walkthrough 2 and is re-specified here.
+* `verify_operator_log_refusal.py`'s first version scanned the **structured**
+  before/after payload of an audit row, which legitimately carries storage
+  keys. Scoped to the prose fields, it passes.
 
 ---
 
-## (f) Verdict
+## (f) Verdict, in plain language
 
-*(filled in below as the run proceeds)*
+### Can a full 6+ round game be played start to finish with no intervention?
+
+**No. An instructor can get to the end of round 6, but from round 4 onward
+the game only moves because the instructor makes it move.**
+
+The good news first, and it is real. Every one of walkthrough 2's ten new
+defects is either fixed or fixed with a named residue, and the P0 that
+stopped a round dead is gone: a team built a plant in the same market as an
+acquisition it completed, the round processed, and the two ways of creating
+that collision are now refused at the save with a sentence that names the
+market — in English and in Chinese. **Six rounds processed. Not one 5xx on
+any route. Not one JavaScript exception on any screen in either language.**
+The instructor built the whole game from the console and never had to refresh
+a page to make a control work. The lifecycle *Advance Round* button, refused
+in both earlier passes, advanced a round with four teams pending. A queued
+acquisition, plant or partnership can now be taken back, and one the team
+cannot fund is offered disabled with the figures beside it. A Chinese-speaking
+student was answered in Chinese from round 1.
+
+**But no team locked a round after round 3.** The Decision Summary refuses the
+lock because committed spend exceeds cash — and committed spend includes
+$4,000,000 of payroll and about $6,000,000 of commitments made in earlier
+rounds that no screen can withdraw. Setting every budget, every promotion
+budget, the dividend, the plant, the partnership, the acquisition and the ESG
+investment to zero still leaves $10,250,000 committed. Raising $25,000,000 of
+new debt — which is what the blocker's own sentence asks for — does not change
+the figure by a cent. Solaris Consumer hit that wall with **positive** cash of
+$1,269,790.55, so this is not only a negative-cash problem. From round 4 the
+instructor resolved every round with every playing team pending, and the teams
+were deadline-locked with drafts they had been told they could not submit.
+
+In a competition heat, that is four teams who stop being able to press the
+button, in front of the room, with nothing they can do about it.
+
+### Is anything a player sees wrong?
+
+**Yes — three things, and one of them is money.**
+
+1. **Money leaves a team between rounds and appears on no screen.** Aurora
+   Devices' round-2 statement closes at $13,523,631.84 and its round-3
+   statement opens at $11,523,631.84. It happens to every team that switches
+   its tax structure, every round it switches, and the amount is always
+   exactly the structure's setup cost. The statement's own cash-flow identity
+   still closes perfectly, because the charge is taken before the opening
+   figure is read — so nothing on the page is inconsistent, the money is
+   simply gone. Solaris Consumer was carried from +$1,269,790.55 to
+   −$730,209.45 by it. The same class of defect was found and fixed for the
+   **organisation structure's** transition cost under R36 / V2-088, and the
+   code that did it says so in a comment; the tax structure's setup cost was
+   not moved with it.
+
+2. **The income statement does not add up.** Revenue minus COGS minus the six
+   expense lines the page prints does not reach the Net Income printed beside
+   them — every team, every round, by $0.36M to $3.03M. Part of that is
+   interest, tax, logistics/tariff and inventory, which the server sends and
+   the page does not draw. The rest — up to $2.4M for a team that built a
+   plant — is depreciation and the tax structure's maintenance cost, which are
+   inside operating income and are not a field of anything.
+
+3. **The leaderboard shows the top score in fourth place with no reason
+   given.** Round 6 ranks Meridian Tech fourth on 60.34, below three firms on
+   54.59, 52.86 and 52.83. That is R32 working — a firm with no sales ranks
+   below every firm that sold — and the team's own Round Results page explains
+   it at length and in Chinese. The Leaderboard, which is the screen everybody
+   in the room looks at, says nothing at all.
+
+Beyond those, the language work has held up well. The market names, the price
+notices, the analyst refusal, the coach alerts and two of the three scorecard
+sentences are all in the reader's language now. What is still English on a
+Chinese screen is a list of small, findable places: one scorecard sentence,
+the market names inside the scorecard's own tables, the Logistics and Trade
+Finance market names, the platform's *Base Platform* suffix, the
+`Trade Finance & FX` tab label, the memo evaluation's five criterion keys, the
+financial-distress coach alert, and the whole Strategic Briefing — which is
+ninety English f-strings and no catalogue at all.
+
+### What I would fix before the first clean game
+
+1. **W-CE3-02** — a team must be able to submit a round. Whatever the ruling
+   on the affordability rule, the present behaviour ends a team's game.
+2. **W-CE3-01** — the tax structure's setup cost must be booked where the
+   org structure's transition cost already is, so that closing cash equals
+   opening cash.
+3. **W-CE3-03 and W-CE3-04** together — the income statement must add up on
+   the page a student reads it on.
+4. **W-CE3-15** — the leaderboard must say why a firm is below a lower score.
+5. **W-CE3-16** — a dividend of $0.00 cannot be a blocker.
+6. **W-CE3-05** — a decision screen must name the product being decided.
+
+Everything else on the list is wording. **What is now true, and was asked for
+by the first walkthrough's verdict and again by the second, is that the
+platform's numbers agree with each other and its rounds always process**: six
+rounds of results, statements and leaderboards cross-checked on every line, in
+both languages, with the identity the platform publishes closing to the cent
+on all eight teams every round. What is still not true is that a game can be
+relied on to be *played* to the end — it can only be *driven* to the end.
