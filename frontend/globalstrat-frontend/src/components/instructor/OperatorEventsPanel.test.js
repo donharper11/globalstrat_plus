@@ -50,6 +50,22 @@ const EVENTS = [
   },
 ];
 
+// W-CE2-04: the row a failed processing leaves behind. `detail` is the
+// server's sentence in the reader's language; `cause` is the technical text it
+// quotes, kept so a dispute can read it.
+const FAULT_EVENT = {
+  id: 14, server_timestamp: '2026-09-22T18:20:00+00:00', actor: 'Walkthrough Instructor',
+  action: 'process_round', outcome: 'rejected', round_number: 2, reason: null,
+  before: { status: 'closed', round_number: 2 },
+  after: {},
+  conflict: {
+    code: 'processing_failed', status: 500, message_key: 'processing_failed',
+    cause: 'Natural key (\'team_id\', \'market_id\') is not unique in section "team_plant".',
+    detail: 'Post-round processing failed: Natural key (\'team_id\', \'market_id\') is not unique in section "team_plant".',
+  },
+  request_id: 'srv-4',
+};
+
 afterEach(() => jest.clearAllMocks());
 
 describe('the Operator Log column', () => {
@@ -80,6 +96,25 @@ describe('the Operator Log column', () => {
     // The refusal: the server's recorded reason and the code.
     expect(text).toContain('instructor.oplog_refused_because CE 2026 Heat A is a competition game, so it cannot be deleted.');
     expect(text).toContain('competition_game_not_deletable');
+  });
+
+  test('an engine fault reads as the server\u2019s sentence, not a Python string', async () => {
+    // W-CE2-04 (second walkthrough). `record_fault` used to store the raw
+    // exception -- storage names, a Python argument, an instruction addressed
+    // to a developer -- and this panel printed it verbatim. The server now
+    // stores and serves the catalogue sentence, with the technical cause
+    // carried inside it; the panel shows exactly what the server wrote, so a
+    // Chinese console reads a Chinese sentence.
+    getOperatorEvents.mockResolvedValue({ data: { events: [FAULT_EVENT] } });
+    render(<OperatorEventsPanel gameId={1} />);
+    await screen.findByText(/Post-round processing failed/);
+    const text = document.querySelector('.ant-table').textContent;
+    expect(text).toContain('instructor.oplog_refused_because Post-round processing failed:');
+    // The cause is kept for the operator, inside the server's sentence.
+    expect(text).toContain('Natural key');
+    // The panel composes no English of its own around it.
+    expect(text).not.toMatch(/engine_failure/);
+    expect(text).toContain('processing_failed');
   });
 
   test('the raw record is still one click away for a dispute', async () => {

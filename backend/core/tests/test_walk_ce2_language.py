@@ -518,3 +518,85 @@ class ScorecardSentenceTests(WalkCEBase):
         self.assertEqual(
             row.breakdown['financial_prudence']['feedback'],
             'Conservative leverage. Strong financial position.')
+
+
+# ---------------------------------------------------------------------------
+# W-CE2-04 -- the Operator Log printed the server's internal error verbatim.
+# ---------------------------------------------------------------------------
+
+SNAPSHOT_ERROR = (
+    "Natural key ('team_id', 'market_id', 'construction_started_round') is "
+    'not unique in section "team_plant": team_plant(team(game("CE 2026 Heat A")'
+    '|"Aurora Devices")|…)|"2") appears twice. Declare a key that identifies '
+    'a row, or set key=None to use a content key.')
+
+
+class OperatorLogFaultSentenceTests(WalkCEBase):
+
+    def _fault_conflict(self, message_key='processing_failed'):
+        from core.authentication import JWTUser
+        from core.services.lifecycle import operator_action
+        from django.test import RequestFactory
+        request = RequestFactory().post('/')
+        request.user = JWTUser(self.instructor)
+        request.data = {}
+        with operator_action(request, self.game.id, 'process_round') as action:
+            action.require_round()
+            event = action.record_fault(
+                SNAPSHOT_ERROR, message_key=message_key)
+        return event.conflict
+
+    def test_the_stored_row_carries_a_sentence_not_a_python_string(self):
+        conflict = self._fault_conflict()
+        self.assertEqual(conflict['cause'], SNAPSHOT_ERROR)
+        self.assertTrue(conflict['detail'].startswith(
+            'Post-round processing failed:'), conflict['detail'])
+        self.assertEqual(conflict['message_key'], 'processing_failed')
+        self.assertEqual(conflict['code'], 'processing_failed')
+
+    def test_the_stored_sentence_is_english_r44(self):
+        conflict = self._fault_conflict()
+        self.assertFalse(has_cjk(conflict['detail']), conflict)
+
+    def test_the_log_serves_the_sentence_in_the_operators_language(self):
+        self._fault_conflict()
+        self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        response = self.client_for(self.instructor, 'zh-CN').get(
+            f'/api/games/{self.game.id}/instructor/operator-events/')
+        self.assertEqual(response.status_code, 200, response.data)
+        rejected = [e for e in response.data['events']
+                    if e['outcome'] == 'rejected']
+        self.assertTrue(rejected, response.data)
+        detail = rejected[0]['conflict']['detail']
+        self.assertTrue(has_cjk(detail), detail)
+        # The technical cause is kept for the operator, labelled as English by
+        # the sentence itself.
+        self.assertIn('Natural key', detail)
+        self.assertIn('（英文）', detail)
+        self.assertEqual(rejected[0]['conflict']['cause'], SNAPSHOT_ERROR)
+
+    def test_the_english_log_reads_exactly_what_is_stored(self):
+        conflict = self._fault_conflict()
+        response = self.client_for(self.instructor, 'en').get(
+            f'/api/games/{self.game.id}/instructor/operator-events/')
+        rejected = [e for e in response.data['events']
+                    if e['outcome'] == 'rejected']
+        self.assertEqual(rejected[0]['conflict']['detail'],
+                         conflict['detail'])
+
+    def test_a_conflict_with_no_message_key_is_served_unchanged(self):
+        """A lifecycle refusal's row keeps the English sentence it stored."""
+        from core.utils.operator_messages import localise_conflict
+        stored = {'code': 'round_not_open', 'detail': 'Round 1 is closed.',
+                  'status': 409}
+        self.assertEqual(localise_conflict(stored, 'zh-CN'), stored)
+        self.assertEqual(localise_conflict(None, 'zh-CN'), None)
+
+    def test_every_fault_key_a_call_site_uses_is_bilingual(self):
+        from core.utils.operator_messages import MESSAGES
+        for key in ('processing_failed', 'advance_failed',
+                    'legacy_advance_failed'):
+            with self.subTest(key=key):
+                self.assertTrue(has_cjk(MESSAGES[key]['zh-CN']))
+                self.assertIn('{detail}', MESSAGES[key]['zh-CN'])

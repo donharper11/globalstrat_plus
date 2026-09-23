@@ -30,8 +30,8 @@ from core.models.decisions import DecisionSubmission
 from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
 from core.utils.operator_messages import (
-    language_for_request, lifecycle_refusal, operator_message,
-    operator_refusal,
+    language_for_request, lifecycle_refusal, localise_conflict,
+    operator_message, operator_refusal,
     submission_origin_label)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
@@ -816,8 +816,8 @@ class InstructorAdvanceRoundView(APIView):
                     LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
                 logger.exception('Legacy advance failed for game %s', game_id)
-                action.record_fault(f'Round advance failed: {e}',
-                                    code='advance_failed')
+                action.record_fault(
+                    e, message_key='legacy_advance_failed')
                 return Response(
                     {'error': operator_message(
                         'legacy_advance_failed',
@@ -1119,6 +1119,7 @@ class InstructorOperatorEventsView(APIView):
         except (TypeError, ValueError):
             limit = 200
 
+        event_language = language_for_request(request)
         rows = list(events.order_by('-created_at', '-id')[:limit])
         return Response({
             'game_id': game.id,
@@ -1138,7 +1139,9 @@ class InstructorOperatorEventsView(APIView):
                 # to look for when reading a race after the fact.
                 'before': event.before,
                 'after': event.after,
-                'conflict': event.conflict,
+                # W-CE2-04: a fault row's sentence is rendered in the
+                # operator's language; the stored row stays English (R44).
+                'conflict': localise_conflict(event.conflict, event_language),
                 'reason': event.reason,
                 'request_id': event.request_id,
             } for event in rows],
