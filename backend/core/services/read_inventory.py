@@ -42,9 +42,15 @@ AUDIT_MODELS = ('DecisionAuditEvent', 'OperatorAuditEvent', 'ResolutionManifest'
 # re-exemption.
 EXEMPTIONS = {
     'round_control.RoundControlView':
-        'Reads OperatorAuditEvent only to count operator actions for the '
-        'round-status block. No audit row, payload or decision is serialized; '
-        'the lifecycle boundary already records the writes it reports.',
+        'Reads OperatorAuditEvent to count operator actions for the '
+        'round-status block, and — when the round is in a FAILED state — to '
+        'say why on the console (W-CE4-01): the reviewed catalogue sentence, '
+        'its refusal code and the request id, rendered in the reader\'s '
+        'language. No audit before/after payload, actor or decision row is '
+        'serialized, the three fields are already shown to the same '
+        'instructor by the logged Operator Log route, and this endpoint is '
+        'polled every few seconds by the console, so logging it would bury '
+        'the disclosure record it belongs to.',
 }
 
 

@@ -186,10 +186,21 @@ class OperatorAction:
         W-CE2-04: this used to store the raw exception text, and the Operator
         Log printed it verbatim -- storage names, a Python argument and an
         instruction addressed to a developer. It now stores the same catalogue
-        sentence the failing route returns, with the technical cause carried
-        inside it and kept separately as `cause`. The stored sentence is
-        English (R44: one record, one language); `localise_conflict` renders
-        it in the reader's language when the log is read.
+        sentence the failing route returns, with the technical cause kept
+        separately as `cause`. The stored sentence is English (R44: one record,
+        one language); `localise_conflict` renders it in the reader's language
+        when the log is read.
+
+        W-CE4-01 finished that repair. The catalogue sentence still ended in
+        the exception -- round 8 of the fourth walkthrough put
+        `ActiveModifier() got unexpected keyword arguments: 'team',
+        'modifier_key', 'source', 'round_applied'` in front of an instructor,
+        in Chinese, mid-round. The sentence now carries a `reference` instead:
+        the request id, which is already on this row, already in the failing
+        response and already in the server log line, so an operator can quote
+        one string and a technical contact can find the traceback from it. The
+        exception itself stays in `cause`, which is the copyable raw record the
+        dispute runbook reads, and in the server log.
         """
         from core.services.competition_audit import record_operator_event
         from core.utils.operator_messages import operator_code, operator_message
@@ -200,8 +211,10 @@ class OperatorAction:
             conflict={'code': code or operator_code(message_key),
                       'message_key': message_key,
                       'detail': operator_message(
-                          message_key, language='en', detail=cause),
+                          message_key, language='en', detail=cause,
+                          reference=self.request_id),
                       'cause': cause,
+                      'reference': self.request_id,
                       'status': 500})
 
     def rejection_record(self, error):

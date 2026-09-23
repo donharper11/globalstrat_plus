@@ -589,7 +589,7 @@ class OperatorLogFaultSentenceTests(WalkCEBase):
         conflict = self._fault_conflict()
         self.assertEqual(conflict['cause'], SNAPSHOT_ERROR)
         self.assertTrue(conflict['detail'].startswith(
-            'Post-round processing failed:'), conflict['detail'])
+            'Post-round processing failed'), conflict['detail'])
         self.assertEqual(conflict['message_key'], 'processing_failed')
         self.assertEqual(conflict['code'], 'processing_failed')
 
@@ -597,8 +597,26 @@ class OperatorLogFaultSentenceTests(WalkCEBase):
         conflict = self._fault_conflict()
         self.assertFalse(has_cjk(conflict['detail']), conflict)
 
+    def test_the_sentence_quotes_a_reference_and_not_the_exception(self):
+        """W-CE4-01. The cause is kept; it is no longer read to the operator.
+
+        Round 8 of the fourth walkthrough put `ActiveModifier() got unexpected
+        keyword arguments: 'team', 'modifier_key', 'source', 'round_applied'`
+        in front of an instructor, in Chinese, mid-round. The sentence now
+        carries the request id, which is on this row, in the failing response
+        and in the server log line.
+        """
+        conflict = self._fault_conflict()
+        self.assertNotIn(SNAPSHOT_ERROR, conflict['detail'])
+        self.assertNotIn('Natural key', conflict['detail'])
+        self.assertTrue(conflict['reference'], conflict)
+        self.assertIn(conflict['reference'], conflict['detail'])
+        # ...and the developer's copy is still on the row, for the raw record
+        # the dispute runbook reads.
+        self.assertEqual(conflict['cause'], SNAPSHOT_ERROR)
+
     def test_the_log_serves_the_sentence_in_the_operators_language(self):
-        self._fault_conflict()
+        stored = self._fault_conflict()
         self.client_for(self.instructor).put(
             '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
         response = self.client_for(self.instructor, 'zh-CN').get(
@@ -609,10 +627,10 @@ class OperatorLogFaultSentenceTests(WalkCEBase):
         self.assertTrue(rejected, response.data)
         detail = rejected[0]['conflict']['detail']
         self.assertTrue(has_cjk(detail), detail)
-        # The technical cause is kept for the operator, labelled as English by
-        # the sentence itself.
-        self.assertIn('Natural key', detail)
-        self.assertIn('（英文）', detail)
+        # The reference travels into the Chinese sentence; the exception does
+        # not travel into either (W-CE4-01).
+        self.assertIn(stored['reference'], detail)
+        self.assertNotIn('Natural key', detail)
         self.assertEqual(rejected[0]['conflict']['cause'], SNAPSHOT_ERROR)
 
     def test_the_english_log_reads_exactly_what_is_stored(self):
@@ -638,4 +656,8 @@ class OperatorLogFaultSentenceTests(WalkCEBase):
                     'legacy_advance_failed'):
             with self.subTest(key=key):
                 self.assertTrue(has_cjk(MESSAGES[key]['zh-CN']))
-                self.assertIn('{detail}', MESSAGES[key]['zh-CN'])
+                # W-CE4-01: a reference in both languages, an exception in
+                # neither.
+                for language in ('en', 'zh-CN'):
+                    self.assertIn('{reference}', MESSAGES[key][language])
+                    self.assertNotIn('{detail}', MESSAGES[key][language])

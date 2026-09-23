@@ -377,7 +377,53 @@ def _update_benefit_delivery(alliance, partner):
 # ---------------------------------------------------------------------------
 
 def _process_dissolution(alliance, team, game, round_number, context):
-    """Handle partnership dissolution — benefits lost, penalties applied."""
+    """Handle partnership dissolution — this team loses this partner's benefits.
+
+    W-CE4-01. Until 2026-09-23 this function ended the round rather than the
+    partnership. It called ``ActiveModifier.objects.create`` with eight
+    keywords, four of which — ``team``, ``modifier_key``, ``source`` and
+    ``round_applied`` — are not fields on the model, so Phase 1 raised
+    ``TypeError: ActiveModifier() got unexpected keyword arguments`` the first
+    time any partner walked away. The alliance row was never saved, so the
+    crash recurred on every retry and the game could not pass the round.
+
+    **What the dissolution expresses, and why it is not an ``ActiveModifier``.**
+    The consequence is per team: *this* team, in *this* market, from *this*
+    round, permanently loses *this* partner's benefits. ``ActiveModifier`` has
+    no team: its fields are ``game, modifier_type, source_event,
+    target_segment, target_feature, target_market, target_field,
+    modifier_value, started_round, expires_round, is_cumulative``, and every
+    consumer — ``engine/costs.py`` logistics, ``engine/events.py`` market and
+    preference, ``engine/agents/state.py``, which says so in its own comment —
+    applies a row to every team in the game or in the market. Writing the two
+    intended penalties there would have charged the teams that kept their
+    partners, which is a new competitive effect rather than a repair, and
+    nothing in the codebase reads ``channel_penalty_dissolution`` or
+    ``regulator_penalty_dissolution`` in any case: they were written and never
+    consumed.
+
+    So the effect is expressed on the model that does carry a team, in the
+    fields the engine already reads:
+
+    * ``benefit_delivery_pct = 0`` — ``strategic_economics.get_partnership_effects``
+      scales the distribution, technology, government and brand benefits by it;
+    * the underlying ``TeamPartnership`` rows are terminated, which removes the
+      logistics, R&D, tariff, admin and promotion effects the partnership was
+      buying, and stops ``funding_need.decision_outlays`` charging the team for
+      an annual investment in a partner that has gone;
+    * ``status = 'DISSOLVED'`` with ``dissolved_round`` already set — the
+      model's own terminal state, which is what makes the loss permanent
+      (``_get_benefit_delivery_pct`` and ``process_alliances`` both exclude it)
+      and what stops the dissolution being processed again in every later
+      round. ``_update_status`` returns early only for ``DISSOLVED``; a row left
+      ``DISSOLVING`` re-enters this function each round, re-terminating rows
+      that are already terminated and re-logging the departure for ever.
+
+    The two penalties are therefore *not* implemented. They cannot be expressed
+    for one team with the fields that exist, and inventing a team-scoped
+    modifier would be a new rule, which R48 reserves for the recalibration.
+    Recorded so no later builder restores the call.
+    """
     alliance.benefit_delivery_pct = Decimal('0')
 
     # Terminate the underlying TeamPartnership
@@ -386,31 +432,6 @@ def _process_dissolution(alliance, team, game, round_number, context):
         team=team, market=alliance.market, status='active',
         strategy_option__code__icontains=_code_fragment(profile.partnership_code),
     ).update(status='terminated', terminated_round=round_number)
-
-    # Channel penalty: apply via ActiveModifier
-    from core.models.results import ActiveModifier
-    ActiveModifier.objects.create(
-        game=game,
-        team=team,
-        modifier_type='cost',
-        modifier_key='channel_penalty_dissolution',
-        modifier_value=Decimal('-0.15'),
-        source=f'CC-32D: {profile.name} dissolution',
-        round_applied=round_number,
-        expires_round=round_number + 2,
-    )
-
-    # Regulator penalty
-    ActiveModifier.objects.create(
-        game=game,
-        team=team,
-        modifier_type='preference',
-        modifier_key='regulator_penalty_dissolution',
-        modifier_value=Decimal('-0.05'),
-        source=f'CC-32D: {profile.name} dissolution',
-        round_applied=round_number,
-        expires_round=round_number + 1,
-    )
 
     # 40% chance dissolved partner joins AI competitor
     class_id = game.section_id or game.id
@@ -426,6 +447,10 @@ def _process_dissolution(alliance, team, game, round_number, context):
             context.log.append(
                 f'CC-32D: {profile.name} now partnering with {ai_comp.name} in {alliance.market.code}'
             )
+
+    # The terminal state, set last so that everything above has happened
+    # before the row stops being reconsidered.
+    alliance.status = 'DISSOLVED'
 
     context.log.append(
         f'CC-32D: Partnership dissolved — {profile.name} in {alliance.market.code}'

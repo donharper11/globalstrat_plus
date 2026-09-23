@@ -162,9 +162,17 @@ MESSAGES = {
         'en': 'Re-lock the team, or close the round, then process again.',
         'zh-CN': '请重新锁定该团队的决策，或关闭该回合，然后再次结算。',
     },
+    # W-CE4-01. The sentence used to end in `{detail}` -- `str(exception)`,
+    # which on 2026-09-23 read `ActiveModifier() got unexpected keyword
+    # arguments: 'team', 'modifier_key', 'source', 'round_applied'`. That is a
+    # Python argument list addressed to a developer, and it reached an
+    # instructor's Operator Log in the middle of a round. The technical cause
+    # is kept on the audit row as `cause` -- the copyable raw record the
+    # dispute runbook reads -- and in the server log; what the operator is
+    # shown is this sentence and a reference they can quote.
     'processing_failed': {
-        'en': 'Post-round processing failed: {detail}',
-        'zh-CN': '回合结算失败。系统给出的原因（英文）：{detail}',
+        'en': 'Post-round processing failed. The round was not scored and nothing was charged. Quote reference {reference} when reporting this; the technical detail is in the server log.',
+        'zh-CN': '回合结算失败：本回合未计分，也未产生任何费用。上报此问题时请提供参考编号 {reference}；技术细节已记录在服务器日志中。',
     },
     'round_not_processed': {
         'en': 'Round {round} is {status}, not processed.',
@@ -183,8 +191,8 @@ MESSAGES = {
         'zh-CN': '请刷新控制台。',
     },
     'advance_failed': {
-        'en': 'Advance failed: {detail}',
-        'zh-CN': '进入下一回合失败。系统给出的原因（英文）：{detail}',
+        'en': 'Advance failed. The game did not move on. Quote reference {reference} when reporting this; the technical detail is in the server log.',
+        'zh-CN': '进入下一回合失败：本局未推进。上报此问题时请提供参考编号 {reference}；技术细节已记录在服务器日志中。',
     },
     'round_not_open': {
         'en': 'Round {round} is {status}; deadline changes are refused unless the round is open.',
@@ -221,8 +229,8 @@ MESSAGES = {
         'zh-CN': '请先锁定决策或关闭该回合；或使用强制选项并填写书面理由。',
     },
     'legacy_advance_failed': {
-        'en': 'Round advance failed: {detail}',
-        'zh-CN': '回合推进失败。系统给出的原因（英文）：{detail}',
+        'en': 'Round advance failed. The game did not move on. Quote reference {reference} when reporting this; the technical detail is in the server log.',
+        'zh-CN': '回合推进失败：本局未推进。上报此问题时请提供参考编号 {reference}；技术细节已记录在服务器日志中。',
     },
     'inject_already_processed': {
         'en': 'Round {round} has already been processed; an event injected now would not be part of it.',
@@ -771,7 +779,8 @@ def localise_conflict(conflict, language='en'):
         return conflict
     try:
         return dict(conflict, detail=operator_message(
-            key, language=language, detail=conflict.get('cause', '')))
+            key, language=language, detail=conflict.get('cause', ''),
+            reference=conflict.get('reference', '')))
     except Exception:
         return conflict
 

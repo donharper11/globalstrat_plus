@@ -878,13 +878,16 @@ class InstructorAdvanceRoundView(APIView):
                 raise lifecycle_refusal(
                     LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
-                logger.exception('Legacy advance failed for game %s', game_id)
+                logger.exception(
+                    'Legacy advance failed for game %s (reference %s)',
+                    game_id, action.request_id)
                 action.record_fault(
                     e, message_key='legacy_advance_failed')
                 return Response(
                     {'error': operator_message(
                         'legacy_advance_failed',
-                        language=language_for_request(request), detail=str(e)),
+                        language=language_for_request(request),
+                        detail=str(e), reference=action.request_id),
                      'code': 'advance_failed',
                      'request_id': action.request_id},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,

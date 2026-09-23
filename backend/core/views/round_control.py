@@ -136,6 +136,53 @@ def _narrative_job_payload(round_obj):
     }
 
 
+def _processing_failure_payload(game, round_obj, language):
+    """Why this round says FAILED, for the console, in the reader's language.
+
+    W-CE4-01. When Phase 1 broke, the console showed the operator nothing: the
+    sentence existed only in the body of a 500 that a toast may or may not have
+    caught, and a page reload left `processing_status: FAILED` as a four-letter
+    tag with no reason anywhere on the screen. The Operator Log had the reason
+    but is a different panel, and an instructor mid-round does not know to go
+    and read it.
+
+    This is the durable half. It is derived rather than stored: the audit row
+    `OperatorAction.record_fault` already writes is the record of the attempt,
+    so the console reads the latest one for this round instead of a second copy
+    on `Round` that could disagree with it. `None` when the round is not in a
+    failed state, or when no audited fault explains it.
+
+    Deliberately not part of `_round_payload`: that payload is written into the
+    `before`/`after` of operator audit rows, which are English and immutable
+    (R44), and a sentence rendered in the reader's language has no business
+    there.
+    """
+    from core.models.competition_audit import OperatorAuditEvent
+    from core.utils.operator_messages import localise_conflict
+
+    if round_obj is None or round_obj.processing_status != 'FAILED':
+        return None
+    event = (OperatorAuditEvent.objects
+             .filter(game=game, round=round_obj, outcome='rejected')
+             .order_by('-id').first())
+    if event is None:
+        return None
+    conflict = event.conflict or {}
+    if conflict.get('message_key') not in _PROCESSING_FAULT_KEYS:
+        return None
+    localised = localise_conflict(conflict, language)
+    return {
+        'code': conflict.get('code') or '',
+        'reference': conflict.get('reference') or event.request_id or '',
+        'message': (localised or {}).get('detail') or '',
+    }
+
+
+# The catalogue keys that mean "the engine tried to resolve this round and
+# broke", as opposed to a refusal the operator can act on directly.
+_PROCESSING_FAULT_KEYS = ('processing_failed',)
+
+
 class RoundControlView(APIView):
     """
     GET /api/games/<game_id>/round-control/
@@ -166,6 +213,9 @@ class RoundControlView(APIView):
             # Why the prose for this round is missing, late or template-written.
             'narratives': (_narrative_job_payload(round_obj)
                            if round_obj else None),
+            # Why this round could not be scored, if it could not (W-CE4-01).
+            'processing_failure': _processing_failure_payload(
+                game, round_obj, language_for_request(request)),
         })
 
 
@@ -335,7 +385,14 @@ class RoundProcessView(APIView):
                 raise lifecycle_refusal(
                     LifecyclePrecondition, 'round_not_ready', detail=str(e))
             except Exception as e:
-                logger.exception('Processing failed for game %s', game_id)
+                # W-CE4-01: the reference the operator is given is this id, so
+                # the log line, the audit row and the sentence on the screen
+                # are findable from one string. The exception text goes here
+                # and to the audit row's `cause`; it is not put in front of an
+                # instructor.
+                logger.exception(
+                    'Processing failed for game %s (reference %s)',
+                    game_id, action.request_id)
                 # The engine marks the round FAILED outside its own rolled-back
                 # savepoint; returning a response rather than re-raising is what
                 # lets that record — and this audit row — commit.
@@ -343,7 +400,8 @@ class RoundProcessView(APIView):
                 return Response(
                     {'error': operator_message(
                         'processing_failed',
-                        language=language_for_request(request), detail=str(e)),
+                        language=language_for_request(request),
+                        detail=str(e), reference=action.request_id),
                      'code': 'processing_failed',
                      'request_id': action.request_id},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -401,12 +459,14 @@ class RoundAdvanceView(APIView):
                 raise lifecycle_refusal(
                     LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
-                logger.exception('Advance failed for game %s', game_id)
+                logger.exception('Advance failed for game %s (reference %s)',
+                                 game_id, action.request_id)
                 action.record_fault(e, message_key='advance_failed')
                 return Response(
                     {'error': operator_message(
                         'advance_failed',
-                        language=language_for_request(request), detail=str(e)),
+                        language=language_for_request(request),
+                        detail=str(e), reference=action.request_id),
                      'code': 'advance_failed',
                      'request_id': action.request_id},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR)

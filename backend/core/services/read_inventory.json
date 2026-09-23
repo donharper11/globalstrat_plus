@@ -4,7 +4,7 @@
     "OperatorAuditEvent",
     "ResolutionManifest"
   ],
-  "audit_routes": 4,
+  "audit_routes": 5,
   "decision_models": [
     "CustomsClassificationDecision",
     "Decision",
@@ -33,7 +33,7 @@
     "SourcingDecision",
     "TradeFinanceDecision"
   ],
-  "decision_routes": 30,
+  "decision_routes": 29,
   "exempt": 1,
   "logged": 33,
   "routes": [
@@ -167,13 +167,14 @@
       "view": "results_api.InstructorTeamDecisionsView"
     },
     {
-      "category": "decisions",
-      "exempt_reason": "Reads OperatorAuditEvent only to count operator actions for the round-status block. No audit row, payload or decision is serialized; the lifecycle boundary already records the writes it reports.",
+      "category": "audit",
+      "exempt_reason": "Reads OperatorAuditEvent to count operator actions for the round-status block, and \u2014 when the round is in a FAILED state \u2014 to say why on the console (W-CE4-01): the reviewed catalogue sentence, its refusal code and the request id, rendered in the reader's language. No audit before/after payload, actor or decision row is serialized, the three fields are already shown to the same instructor by the logged Operator Log route, and this endpoint is polled every few seconds by the console, so logging it would bury the disclosure record it belongs to.",
       "logged": false,
       "methods": [
         "get"
       ],
       "models": [
+        "OperatorAuditEvent",
         "DecisionSubmission"
       ],
       "route": "api/games/<int:game_id>/round-control/",

@@ -126,6 +126,14 @@ export default function RoundControlCard({ gameId, onChanged, reloadKey }) {
         onChanged?.();
       } else {
         message.error(text, 6);
+        // W-CE4-01: a 5xx leaves the round in a state the card is no longer
+        // showing (FAILED), and the durable explanation is served by the read,
+        // not by this response. Re-read so the alert appears whether or not
+        // the toast was seen.
+        if (err.response?.status >= 500) {
+          await load();
+          onChanged?.();
+        }
       }
     } finally {
       setBusy(null);
@@ -148,6 +156,10 @@ export default function RoundControlCard({ gameId, onChanged, reloadKey }) {
   }
 
   const next = round.next_action;
+  // Only shown when the server says this round is in a failed state and can
+  // say why; it is cleared by the next successful read, not by a timer.
+  const failure = data.processing_failure?.message
+    ? data.processing_failure : null;
   const remaining = formatRemaining(round.seconds_remaining, t);
   const gamePaused = data.game_status === 'paused';
   // One t() per key: the string gate cannot resolve a key chosen at run time.
@@ -179,6 +191,24 @@ export default function RoundControlCard({ gameId, onChanged, reloadKey }) {
         <Alert type="warning" showIcon style={{ marginBottom: 12 }}
           message={t('instructor.rc_paused')}
           description={t('instructor.rc_paused_hint')} />
+      )}
+
+      {/* W-CE4-01. A failed Phase 1 used to reach the operator only as a
+          toast built from the body of a 500 -- in the fourth walkthrough the
+          operator was shown nothing at all, and a reload left `FAILED` as a
+          one-word tag with the reason nowhere on the screen. The server now
+          serves the sentence and the reference it wrote to the Operator Log,
+          in the reader's language, so the card can say it and keep saying it.
+          The toast stays; this is what survives the reload. */}
+      {failure && (
+        <Alert type="error" showIcon style={{ marginBottom: 12 }}
+          message={t('instructor.rc_processing_failed_alert')}
+          description={(
+            <div>
+              <div>{failure.message}</div>
+              <Text type="secondary">{t('instructor.rc_processing_failed_hint')}</Text>
+            </div>
+          )} />
       )}
 
       <Descriptions size="small" column={{ xs: 1, sm: 2, md: 3 }} bordered
