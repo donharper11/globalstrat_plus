@@ -118,6 +118,55 @@ def org_transition_charge(team, current_round):
     return D(str(row.current_structure.transition_cost or 0))
 
 
+def tax_structure_setup_charge(team, current_round):
+    """The tax-structure setup cost this team owes for this round.
+
+    W-CE3-01 / decision 15, and it is R36 / V2-088 again in a second place:
+    `engine/costs.process_tax_structure_costs` did
+    `team.cash_on_hand -= structure.setup_cost` during Phase 1, **before**
+    `engine/financials` reads `cash_opening = team.cash_on_hand`. The
+    statement's own identity therefore closed perfectly on every team in every
+    round while $2,000,000 was simply not there any more: Aurora Devices'
+    round-2 statement closed at $13,523,631.84 and its round-3 statement opened
+    at $11,523,631.84, and no line, tab or figure on any screen accounted for
+    the difference. No calculator could see it either -- not `decision_outlays`,
+    not `rd_costs.budget_assessment`, not the engine's own opex.
+
+    Derived from the row the team's own decision already writes --
+    `adopted_round` is this round and `current_structure` is what it switched
+    to (`views/cc32c_views.py`) -- rather than from a new field, so:
+
+    * the charge and the decision that caused it cannot disagree, because
+      there is only one row and it is the decision;
+    * a round with no switch costs nothing, and a switch made in an earlier
+      round is not charged again;
+    * re-resolving the round recomputes the same figure rather than a
+      cumulative one, which `setup_cost_paid` alone could not promise;
+    * **no hashed field is added**, so the manifest envelope is unchanged and
+      `MANIFEST_SCHEMA_VERSION` stays where it is.
+
+    The recurring `annual_maintenance_cost` is deliberately NOT here. It does
+    not have this defect: the engine books it inside `operating_income`, so it
+    reaches net income, operating cash flow and the closing cash a student
+    reads. Moving it into an opex line would also move it inside
+    `calculate_tax`'s deduction total, which changes a team's tax and so a
+    published result -- calibration, not a bug (R48). What it lacks is a line
+    of its own on the served statement, which is W-CE3-04.
+    """
+    from core.models.cc32c_models import TeamTaxStructure
+
+    row = (TeamTaxStructure.objects
+           .filter(game_id=team.game_id, team=team,
+                   adopted_round=current_round,
+                   current_structure__isnull=False)
+           .select_related('current_structure')
+           .order_by('id')
+           .first())
+    if row is None:
+        return D('0')
+    return D(str(row.current_structure.setup_cost or 0))
+
+
 def compliance_investment_total(submission):
     """Everything this submission has committed to compliance this round.
 
@@ -170,7 +219,7 @@ def decision_outlays(scenario, team, submission, current_round,
     lines = {'rd': D('0'), 'platform_capex': D('0'), 'marketing': D('0'),
              'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0'),
              'research': D('0'), 'org_structure': D('0'),
-             'compliance': D('0')}
+             'compliance': D('0'), 'tax_setup': D('0')}
     # R36: computed *before* the submission guard below, because a structure
     # switch writes no decision row of its own -- a team can switch in a round
     # it never otherwise submitted in, and the charge is owed either way.
@@ -179,6 +228,11 @@ def decision_outlays(scenario, team, submission, current_round,
     # reason; counting it on one side only is the divergence the one-calculator
     # rule exists to prevent (V2-037/V2-038).
     lines['org_structure'] = org_transition_charge(team, current_round)
+    # W-CE3-01 / decision 15: the same shape, for the same reason. A tax
+    # structure is switched from Finance > Tax Structure and writes no decision
+    # row of its own, so the charge is owed in a round the team may never
+    # otherwise have submitted in, and it is computed here before the guard.
+    lines['tax_setup'] = tax_structure_setup_charge(team, current_round)
     if submission is None:
         return lines
 

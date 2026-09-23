@@ -349,6 +349,13 @@ def committed_outlay(submission, team=None):
     # existing `committed_spend_exceeds_cash` sentence.
     from core.services.funding_need import compliance_investment_total
     lines['compliance_investment'] = compliance_investment_total(submission)
+    # W-CE3-01 / decision 15: a tax-structure switch made this round. Money the
+    # team has committed that the budget lines do not contain, in exactly the
+    # position the structure switch occupies, read through the same function
+    # the engine books from so the screens and the charge cannot disagree.
+    from core.services.funding_need import tax_structure_setup_charge
+    lines['tax_setup'] = tax_structure_setup_charge(
+        team or submission.team, submission.round.round_number)
     # W-CE-18 / W-CE-23: the decision outlays the engine charges from cash
     # under each budget line, read through the calculator the engine books
     # from (`funding_need.decision_outlays`, V2-024) rather than restated.
@@ -473,7 +480,7 @@ def budget_assessment(submission, team=None):
     committed = (budget_total + over_budget_spend
                  + lines['platform_development']
                  + lines['research_purchases'] + lines['org_transition']
-                 + lines['compliance_investment']
+                 + lines['compliance_investment'] + lines['tax_setup']
                  + lines['talent'] + lines['plant_capex'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
     funds, effect = available_funds(
