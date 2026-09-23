@@ -177,3 +177,118 @@ class AZeroDividendIsNotADistribution(TestCase):
         self.financing.save(update_fields=['dividend_per_share'])
 
         self.assertEqual(self.dividend_blockers(), [])
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-14 — a generation that is not listed and gives no reason
+# ---------------------------------------------------------------------------
+
+class ALockedGenerationNamesItsRequirement(TestCase):
+    """The scenario's third generation carries `unlock_round: 5`.
+
+    At round 5 it was not listed at all and no reason was given:
+    `RDContextView` `continue`d past it unless the team already held an
+    active Generation 2 platform. Every other gate on the platform names
+    itself; this one was simply absent, and a team could not tell an unbuilt
+    offer from one that does not exist.
+    """
+
+    def setUp(self):
+        from core.engine.utils import _config_cache
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        from core.models.scenario import PlatformGenerationDefinition
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        _config_cache.clear()
+        self.addCleanup(_config_cache.clear)
+        self.game, teams = build_minimal_game(f'ce3gen-{id(self)}')
+        self.team = teams[0]
+        self.scenario = self.game.scenario
+        self.game.current_round = 5
+        self.game.save(update_fields=['current_round'])
+
+        self.generations = {}
+        for order, unlock in ((1, 0), (2, 3), (3, 5)):
+            self.generations[order] = (
+                PlatformGenerationDefinition.objects.create(
+                    scenario=self.scenario, name=f'Generation {order}',
+                    name_zh=f'第 {order} 代平台', description='d',
+                    generation_order=order, unlock_round=unlock,
+                    development_cost=D('1000000'), license_cost=D('2000000'),
+                    development_rounds=1))
+
+        course = Course.objects.create(
+            course_code=f'CE3G{id(self) % 100000}', course_name='Gen',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        self.student = User.objects.create(
+            username=f'ce3gen-{id(self)}', role='student', password_hash='x')
+        Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+
+    def context(self, language=None):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.student)}')
+        headers = ({'HTTP_ACCEPT_LANGUAGE': language} if language else {})
+        response = client.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/context/rd/',
+            **headers)
+        self.assertEqual(response.status_code, 200, response.data)
+        return response.data
+
+    def generation_row(self, data, order):
+        return next((g for g in data['available_generations']
+                     if g['generation_order'] == order), None)
+
+    def test_the_third_generation_is_listed_at_its_unlock_round(self):
+        row = self.generation_row(self.context(), 3)
+
+        self.assertIsNotNone(
+            row, 'the third generation is not listed at all')
+
+    def test_it_is_listed_as_not_yet_buildable(self):
+        row = self.generation_row(self.context(), 3)
+
+        self.assertFalse(row['prerequisites_met'])
+
+    def test_the_requirement_it_fails_is_stated(self):
+        row = self.generation_row(self.context(), 3)
+
+        unmet = [p for p in row['prerequisites'] if not p['met']]
+        self.assertTrue(unmet, 'no requirement is named')
+        self.assertIn('Generation 2 must be active',
+                      [p['requirement'] for p in unmet])
+
+    def test_the_requirement_reads_in_chinese(self):
+        row = self.generation_row(self.context(language='zh-CN'), 3)
+
+        unmet = [p['requirement'] for p in row['prerequisites'] if not p['met']]
+        self.assertIn('第 2 代平台必须处于活跃状态', unmet)
+
+    def test_the_round_requirement_is_met_at_round_five(self):
+        """No unlock rule and no price changes: round 5 is round 5."""
+        row = self.generation_row(self.context(), 3)
+
+        rounds = [p for p in row['prerequisites']
+                  if 'Round 5' in p['requirement']]
+        self.assertEqual([p['met'] for p in rounds], [True])
+        self.assertEqual(row['development_cost'], 1000000.0)
+
+    def test_a_team_holding_generation_two_still_sees_it(self):
+        from core.models.team_state import TeamPlatform
+
+        TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.generations[2],
+            name='Held', status='active', development_method='in_house',
+            development_started_round=0, funded_round=0,
+            development_rounds_remaining=0)
+
+        row = self.generation_row(self.context(), 3)
+        self.assertIsNotNone(row)

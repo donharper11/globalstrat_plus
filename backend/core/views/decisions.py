@@ -1915,15 +1915,29 @@ class RDContextView(APIView):
         for gen_def in PlatformGenerationDefinition.objects.filter(
             scenario=scenario,
         ).order_by('generation_order'):
-            # Gen 3 hidden until Gen 2 is active
-            if gen_def.generation_order == 3:
-                has_gen2_active = TeamPlatform.objects.filter(
-                    team=team,
-                    platform_generation__generation_order=2,
-                    status='active',
-                ).exists()
-                if not has_gen2_active:
-                    continue
+            # W-CE3-14: Gen 3 was `continue`d past entirely unless the team
+            # already held an active Gen 2 platform, so at round 5 -- the
+            # generation's own `unlock_round` -- it was not listed and no
+            # reason was given. Every other gate on this page names itself:
+            # the M&A card says *available from round 3*, the platform round
+            # check says *available from round N*. This one said nothing, and
+            # a team could not tell an unbuilt offer from an absent one.
+            #
+            # The requirement it was enforcing is already computed, in the
+            # reader's language, by `_check_generation_prerequisites` -- "a
+            # Generation 2 platform must be active" is one of the rows it
+            # returns. So the generation is listed like every other locked
+            # offer, with `prerequisites_met` false and the rows stating why;
+            # `RDPage.js` already disables a generation whose prerequisites
+            # are unmet and renders each row beneath it.
+            #
+            # NO RULE CHANGES. This `continue` was the only place the
+            # "Gen 2 must be active" requirement was applied at all -- neither
+            # the decision write (`serializers/decisions.py`, which gates on
+            # `unlock_round`) nor the lock validator has ever enforced it --
+            # so removing it neither opens nor closes anything the server
+            # would accept. That gap is reported as a finding rather than
+            # closed here: enforcing it would be a new rule, which R48 forbids.
 
             # Check prerequisites for Gen 2+
             prereqs_met = True
