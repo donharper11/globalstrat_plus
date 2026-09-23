@@ -18,9 +18,9 @@ import sys
 SHOTS = pathlib.Path(__file__).resolve().parent.parent / 'screenshots'
 APPLY = '--apply' in sys.argv
 
-# p<team>-r<round>-<nn>-… screens from rounds 3 and 4: keep only these steps.
+# p<team>-r<round>-<nn>-… screens from rounds 3 onwards: keep only these steps.
 KEEP_STEPS = {'53', '62', '95', '96', '97', '71', '72'}
-LATER_ROUND = re.compile(r'^p(\d)-r([34])-(\d\d)[a-z]?-')
+LATER_ROUND = re.compile(r'^p(\d)-r([3456])-(\d\d)[a-z]?-')
 
 
 def main():

@@ -66,6 +66,8 @@ for team in G['teams']:
     rounds = (fin.get('rounds') or []) if isinstance(fin, dict) else []
     row = next((r for r in rounds if r.get('round_number') == ROUND or r.get('round') == ROUND), rounds[-1] if rounds else None)
     t['statement_round'] = row
+    t['statement_previous'] = next(
+        (r for r in rounds if r.get('round_number') == ROUND - 1), None)
     out['teams'][team['team_name']] = t
     name = team['team_name']
     check('%s: results for round %d served' % (name, ROUND), s2 == 200 and isinstance(res, dict) and res.get('performance') is not None, 'HTTP %s keys=%s' % (s2, t['results_keys']))
@@ -140,6 +142,24 @@ for name, t in out['teams'].items():
     entry['net_income_residual'] = round(
         g('net_income') - (g('operating_income') - g('interest_expense') - g('tax_expense')), 2)
     out['reconciliation'][name] = entry
+    # Cash continuity BETWEEN rounds. The statement's own identity can close
+    # perfectly and money still disappear, because `cash_opening` is read from
+    # the team AFTER Phase 1 has already taken charges straight out of
+    # `team.cash_on_hand`. So the closing cash of round N-1 is compared with
+    # the opening cash of round N: they are the same money and nothing happens
+    # between the two.
+    prev = t.get('statement_previous') or {}
+    if prev:
+        gp = lambda k: (num(prev.get(k)) or 0.0)
+        carry = round(opening - gp('cash_closing'), 2)
+        entry['previous_cash_closing'] = gp('cash_closing')
+        entry['cash_carried_between_rounds'] = carry
+        check("%s: this round's opening cash == last round's closing cash" % name,
+              abs(carry) < 0.02,
+              'round %d closed at %.2f and round %d opened at %.2f, a difference of %.2f '
+              'that appears on no statement line' % (ROUND - 1, gp('cash_closing'), ROUND,
+                                                     opening, carry))
+
     check('%s: cash identity opening + OCF + ICF + FCF == closing' % name,
           abs(entry['identity_residual']) < 0.02,
           'opening=%.2f ocf=%.2f icf=%.2f fcf=%.2f closing=%.2f residual=%.2f'
