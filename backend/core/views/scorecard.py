@@ -21,7 +21,8 @@ from core.models.results_financials import (
 )
 from core.models.talent import TeamTalentState
 from core.utils.localization import get_localized_field, get_user_language
-from core.utils.participant_messages import participant_message
+from core.utils.participant_messages import (
+    participant_message, platform_display_name)
 
 
 class BalancedScorecardView(APIView):
@@ -172,9 +173,15 @@ class BalancedScorecardView(APIView):
         # === Capability Perspective ===
         platform = TeamPlatform.objects.filter(team=team, status='active').order_by('-platform_generation__generation_order').first()
         tech_rating = 0
-        platform_name = 'None'
+        # W-CE3-10: this read `platform.name` raw, so the generated default
+        # *<Team> Base Platform* reached a Chinese dashboard in English, and
+        # it hard-coded the English literal 'None' for a team holding no
+        # platform at all.
+        platform_name = participant_message(
+            'platform_none_held', language=language)
         if platform:
-            platform_name = platform.name or platform.platform_generation.name
+            platform_name = platform_display_name(
+                platform, language, team_name=team.name)
             feature_levels = TeamPlatformFeatureLevel.objects.filter(team_platform=platform)
             ceilings = PlatformFeatureCeiling.objects.filter(
                 platform_generation=platform.platform_generation,

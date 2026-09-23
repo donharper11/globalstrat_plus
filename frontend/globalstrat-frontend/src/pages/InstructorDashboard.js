@@ -376,9 +376,17 @@ const InstructorDashboard = () => {
   };
 
   const exportAllTeams = () => {
+    // W-CE3-19: the Status column reads each team's submission state for the
+    // *currently open* round. Taken at the end of a game, after the advance
+    // past the last played round, that is the round nobody has decided in
+    // yet, so every team -- including four that played all six rounds --
+    // exported as "No decisions saved". The column now says which round it
+    // describes, so the file cannot be read as the game's outcome.
     const headers = [
       t('instructor.team'), t('instructor.index'), t('instructor.cash'), t('instructor.revenue'),
-      t('instructor.coherence'), t('instructor.status'), t('instructor.markets'),
+      t('instructor.coherence'),
+      t('instructor.export_status_round', { round: dashboard?.current_round ?? '' }),
+      t('instructor.markets'),
     ];
     const rows = teams.map(tm => [
       tm.team_name, tm.performance_index, tm.cash_on_hand, tm.total_revenue,

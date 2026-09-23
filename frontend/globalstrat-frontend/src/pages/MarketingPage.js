@@ -373,6 +373,22 @@ const MarketingPage = () => {
 
     return (
       <div key={`${d.team_product}-${d.market}`}>
+        {/* W-CE3-05: the product was named only in the inner product tab
+            label, and that inner `Tabs` is rendered only when a market holds
+            more than one product. A team with one product per market saw two
+            tabs named only *Africa (1)* and *North America (1)* and set a
+            price, a volume, a campaign focus and a channel split without
+            being told which product it was deciding for. The name is on the
+            card now, so it is there whatever the market holds. */}
+        <div style={{ marginBottom: 6 }}>
+          <Text strong style={{ fontSize: 13 }}>{d.product_name}</Text>
+          <Tag
+            color={d.positioning === 'premium' ? 'purple' : d.positioning === 'budget' ? 'green' : 'blue'}
+            style={{ fontSize: 10, marginLeft: 6 }}
+          >
+            {positioningLabel(d.positioning, t)}
+          </Tag>
+        </div>
         {/* PRICING — single inline row */}
         <PanelCard title={t('marketing.pricing').toUpperCase()} headerColor="decision">
           <Row gutter={12} align="middle">

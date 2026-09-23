@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from core.models.core import Game, Team, User
 from core.models.cc27_models import StrategicBriefing, BriefingReadStatus
+from core.utils.localization import get_user_language
 
 
 class LatestBriefingView(APIView):
@@ -32,7 +33,7 @@ class LatestBriefingView(APIView):
             ).exists()
 
         return Response({
-            'briefing': _serialize(briefing),
+            'briefing': _serialize(briefing, get_user_language(request)),
             'is_read': is_read,
         })
 
@@ -59,7 +60,7 @@ class RoundBriefingView(APIView):
             ).exists()
 
         return Response({
-            'briefing': _serialize(briefing),
+            'briefing': _serialize(briefing, get_user_language(request)),
             'is_read': is_read,
         })
 
@@ -81,16 +82,29 @@ class BriefingReadView(APIView):
         return Response({'status': 'ok'})
 
 
-def _serialize(briefing):
+def _serialize(briefing, language='en'):
+    """The stored briefing, with its prose in this reader's language.
+
+    W-CE3-11: a briefing is Phase-2 prose written in the language
+    `get_team_language` returned at processing time, so a student who chose
+    中文 after a round was resolved could never read that round's briefing.
+    `narratives.briefing_for_reader` re-derives the template sentences from
+    the figures they came from and returns the stored text untouched for
+    anything it cannot place -- a summary a model wrote, above all. The
+    stored row is never written.
+    """
+    from core.engine.narratives import briefing_for_reader
+
+    fields = briefing_for_reader(briefing, language)
     return {
         'id': briefing.id,
         'round_number': briefing.round_number,
-        'executive_summary': briefing.executive_summary,
-        'performance_analysis': briefing.performance_analysis,
-        'investment_returns': briefing.investment_returns,
-        'investor_sentiment': briefing.investor_sentiment,
-        'competitive_landscape': briefing.competitive_landscape,
-        'strategic_recommendations': briefing.strategic_recommendations,
-        'risk_alerts': briefing.risk_alerts,
+        'executive_summary': fields['executive_summary'],
+        'performance_analysis': fields['performance_analysis'],
+        'investment_returns': fields['investment_returns'],
+        'investor_sentiment': fields['investor_sentiment'],
+        'competitive_landscape': fields['competitive_landscape'],
+        'strategic_recommendations': fields['strategic_recommendations'],
+        'risk_alerts': fields['risk_alerts'],
         'generated_at': briefing.generated_at.isoformat() if briefing.generated_at else None,
     }

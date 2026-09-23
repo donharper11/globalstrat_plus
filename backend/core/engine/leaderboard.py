@@ -110,6 +110,50 @@ def demotion_notice(event_payload, language='en'):
         index=event_payload.get('performance_index'))
 
 
+# W-CE3-15. The leaderboard is the screen a competition is read from, and on
+# it the standings contradicted the numbers beside them: round 6 showed the
+# top score, 60.34, in fourth place with nothing on the page to explain it.
+# R34 records the firing and R35 tells the demoted team on its own results
+# screen; neither reaches the table every team and every instructor reads.
+#
+# These two are the third-person half of R35's sentences, rendered the same
+# way -- from the stored audit payload -- so the marker on the row, the
+# sentence on the team's own screen and the row an instructor produces in a
+# dispute are one fact. They publish nothing the leaderboard does not already
+# publish: the row's own revenue is on the same line, and no rival's score is
+# named. Which sentence applies is decided here, beside the payload, for the
+# same reason `demotion_notice` is.
+
+def rank_marker(language='en'):
+    """The marker on a demoted firm's own row in the standings."""
+    from core.utils.participant_messages import participant_message
+
+    return participant_message('inactivity_rank_marker', language=language)
+
+
+def rank_rule_note(language='en'):
+    """The rule, stated under a table that carries at least one marker."""
+    from core.utils.participant_messages import participant_message
+
+    return participant_message('inactivity_rank_rule', language=language)
+
+
+def demoted_team_ids(game, round_number):
+    """Team ids R34 recorded as ranked below every active firm in a round.
+
+    Read from the audit trail rather than recomputed, so a screen cannot
+    disagree with the record about who was demoted. A round whose receipts
+    were never written -- the round-zero bootstrap, or a game resolved before
+    R34 -- yields nothing and the standings render exactly as before.
+    """
+    from core.models import DecisionAuditEvent
+
+    return set(DecisionAuditEvent.objects.filter(
+        game=game, round__round_number=round_number,
+        action=ACTION_INACTIVITY_DEMOTION,
+    ).values_list('team_id', flat=True))
+
+
 def _record_demotions(game, round_number, ranked_pairs, inactive_team_ids):
     """R34. Write one audit event per demoted team per round.
 

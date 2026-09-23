@@ -482,31 +482,35 @@ def generate_financial_statements(context):
         team.save()
 
         # Generate instructor alert on distress entry
+        #
+        # W-CE3-08: this was three f-strings, so the alert an instructor most
+        # needs to read was English in every round while its 32 siblings were
+        # Chinese. The wording now comes from the alert catalogue
+        # (`engine/instructor_alerts._ALERT_TEXT`), in the instructor's
+        # language, and carries its rendering inputs so it can be said again
+        # in the other language at read time.
         if team.is_in_distress and not was_in_distress:
             try:
                 from core.models.cc21_models import InstructorAlert
+                from core.engine import instructor_alerts as alert_text
+                from core.utils.localization import get_instructor_language
+                language = get_instructor_language(game)
+                values = dict(
+                    team=team.name, cash=cash_closing, net_income=net_income,
+                    debt=total_debt, next_round=current_round + 1)
+                title, detail, note = alert_text._alert_text(
+                    language, 'distress', **values)
                 InstructorAlert.objects.create(
                     game=game,
                     team=team,
                     round_number=current_round,
                     alert_type='distress',
                     severity='critical',
-                    title=f'{team.name} has entered financial distress',
-                    detail=(
-                        f'Cash closing: ${cash_closing:,.0f}. '
-                        f'Net income: ${net_income:,.0f}. '
-                        f'Total debt: ${total_debt:,.0f}. '
-                        f'Consequences, in force from the next round until the company '
-                        f'returns to positive cash and profitability: +10% talent turnover, '
-                        f'share price floor at 0.7x book value, no new debt, and no '
-                        f'acquisitions. (Distress is assessed from this round\'s closing '
-                        f'position, so the restrictions bite from round {current_round + 1}.)'
-                    ),
-                    teaching_note=(
-                        'This team is in financial distress. Use this as a teaching moment about '
-                        'cash management, debt sustainability, and the downward spiral that can '
-                        'result from over-leveraging or under-pricing.'
-                    ),
+                    title=title,
+                    detail=detail,
+                    teaching_note=note,
+                    render_context=alert_text.render_context(
+                        language, 'distress', **values),
                 )
             except Exception:
                 pass  # Alert generation is non-critical

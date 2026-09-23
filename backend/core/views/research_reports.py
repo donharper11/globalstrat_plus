@@ -14,7 +14,8 @@ from rest_framework.views import APIView
 
 from core.services import research_catalogue
 from core.utils.participant_messages import (
-    field_label, participant_message, participant_refusal)
+    field_label, participant_message, participant_refusal,
+    platform_display_name)
 # The same membership rule and write boundary every other team-scoped decision
 # write uses.
 from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember
@@ -448,7 +449,10 @@ class ResearchReportsView(APIView):
 
             products_data.append({
                 'name': p.name,
-                'platform': p.team_platform.name or get_localized_field(p.team_platform.platform_generation, 'name', language),
+                # W-CE3-10: the generated default *<Team> Base Platform*
+                # reached this report in English on a Chinese read.
+                'platform': platform_display_name(
+                    p.team_platform, language, team_name=team.name),
                 'positioning': p.positioning,
                 'features': features,
                 'markets': markets,

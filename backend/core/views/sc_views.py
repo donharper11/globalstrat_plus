@@ -42,6 +42,7 @@ from core.serializers.sc_serializers import (
     SCEventInstanceSerializer, HedgePositionSerializer,
     ResilienceScoreHistorySerializer,
 )
+from core.utils.localization import get_localized_field, get_user_language
 from core.views.decisions import CompetitionDecisionWriteMixin, IsTeamMember, IsRoundOpen
 
 
@@ -357,12 +358,23 @@ class ScenarioComplianceRegimesView(APIView):
 
 class ScenarioMarketsView(APIView):
     """CC-12/14 enablement: lightweight market list (id/code/name) so the SC
-    decision pages can populate destination-market selectors."""
+    decision pages can populate destination-market selectors.
+
+    W-CE3-09: this served the stored English `name` with no
+    `get_localized_field`, so *North America*, *East Asia*, *Western Europe*,
+    *Africa* and *South America* were the names on the Logistics and Trade
+    Finance decision screens whatever the reader's language -- the one read
+    W-CE2-06's repair did not cover. The `code` beside the name is a stable
+    identifier (`NA`, `APAC`), shown in a tag and used as an option value;
+    it is a code in both languages and stays as it is.
+    """
     def get(self, request, scenario_id):
+        language = get_user_language(request)
         markets = MarketDefinition.objects.filter(
             scenario_id=scenario_id).order_by('display_order')
         return Response([
-            {'id': m.id, 'code': m.code, 'name': m.name,
+            {'id': m.id, 'code': m.code,
+             'name': get_localized_field(m, 'name', language),
              'currency_code': m.currency_code}
             for m in markets
         ])

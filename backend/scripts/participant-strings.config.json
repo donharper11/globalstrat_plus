@@ -29,6 +29,7 @@
     "backend/core/services/price_band.py": "CRV2-10 Stage 5 price-band alerts and adjustment notices, shown on the marketing and results surfaces.",
     "backend/core/engine/leaderboard.py": "R35 (2026-09-17) — the inactivity-demotion notice a demoted team reads on its own results screen. The sentence is chosen and rendered here, from the stored R34 audit payload and beside the payload builder, so the wording and the recorded fact cannot drift apart. That puts a participant-facing renderer in this module, so the module belongs in this check's scope; its `context.log` lines are operator/log copy and stay technical.",
     "backend/core/services/rd_costs.py": "Budget refusals rendered into the lock response and the Decision Summary.",
+    "backend/core/engine/briefing.py": "W-CE3-11 — the Strategic Briefing, the first screen a student sees after signing in: the executive summary, the performance, investment and investor narratives, every recommendation and every risk alert.",
     "backend/core/services/funding_need.py": "The V2-024 equity refusal, shown on the Decision Summary and recorded by the engine."
   },
   "scope_source": "The participant decision path as CRV2-12 swept it, taken from evidence/player-language/README.md's stated implementation sequence (step 1 and step 2) rather than from a tree-wide glob. Files outside this list are inventoried by generate_inventory.py and are not claimed by this check; widening the scope is a deliberate, reviewable edit here.",

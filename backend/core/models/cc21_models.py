@@ -29,6 +29,21 @@ class InstructorAlert(models.Model):
     acknowledged = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # W-CE2-08's residue, closed as W-CE3-08's second half. An alert is
+    # written in the language stored at processing time, so every alert
+    # written before an instructor set their language stayed English for
+    # ever and the panel was permanently mixed. The alert cannot be
+    # re-rendered from what it stores -- unlike a coherence breakdown, the
+    # row keeps no numbers, only the finished sentence -- so the inputs are
+    # stored here: {'key': …, 'language': …, 'values': {…}}.
+    #
+    # It is a rendering input, not a computed outcome, and it is excluded
+    # from both manifest sections with that justification, so no hashed value
+    # changes and the envelope stays where it is. Empty for an alert written
+    # before this field existed, and for one whose text a model wrote; both
+    # are then served exactly as stored.
+    render_context = models.JSONField(blank=True, null=True, default=None)
+
     # Which side of the Phase-1/Phase-2 boundary wrote this row. Engine alerts
     # are part of the round's deterministic output and are hashed; narrative
     # alerts are Phase-2 prose and are not. Before this they shared one table

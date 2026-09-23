@@ -72,14 +72,21 @@ test('the row is shown, not summed: unallocated is still the server figure', () 
  * `n >= 1e6`, so a negative fell through to `toFixed(0)`.
  */
 test('a negative figure is formatted like every other figure on the page', () => {
-  render(<BudgetBar budgets={budgets({ unallocated: -12553689 })} />);
+  // The plain `unallocated` line -- an older payload with no committed total
+  // -- is where a negative figure still prints with its sign; the line above
+  // it now states over-commitment as a magnitude (W-CE3-13).
+  render(<BudgetBar budgets={budgets({
+    committed_total: undefined, unallocated: -12553689,
+  })} />);
   const text = document.body.textContent;
   expect(text).toContain('$-12.6M');
   expect(text).not.toContain('-12553689');
 });
 
 test('a negative thousands figure is formatted too', () => {
-  render(<BudgetBar budgets={budgets({ unallocated: -45000 })} />);
+  render(<BudgetBar budgets={budgets({
+    committed_total: undefined, unallocated: -45000,
+  })} />);
   expect(document.body.textContent).toContain('$-45K');
 });
 
@@ -91,13 +98,37 @@ test('a negative thousands figure is formatted too', () => {
  */
 test('the panel states the one authoritative total, against cash', () => {
   render(<BudgetBar budgets={budgets({
-    committed_total: 38000000, total_available: 25446311, unallocated: -12553689,
+    committed_total: 38000000, total_available: 42000000, unallocated: 4000000,
   })} />);
   const text = document.body.textContent;
   expect(text).toContain('budget.committed_of_cash');
   expect(text).toContain('$38.0M');
-  expect(text).toContain('$25.4M');
-  expect(text).toContain('$-12.6M');
+  expect(text).toContain('$42.0M');
+  expect(text).toContain('$4.0M');
+});
+
+/**
+ * W-CE3-13 (third walkthrough). A team $30.0M over-committed read
+ * *Committed this round: $49.3M of $19.3M cash -- $-30.0M not yet committed*:
+ * the label contradicts its own figure, and the sign was written into the
+ * amount. Over-commitment is its own state and says so.
+ */
+test('a team that is over-committed is told it is over, by how much', () => {
+  render(<BudgetBar budgets={budgets({
+    committed_total: 49300000, total_available: 19300000, unallocated: -30000000,
+  })} />);
+  const text = document.body.textContent;
+  expect(text).toContain('budget.committed_over_cash');
+  expect(text).not.toContain('budget.committed_of_cash');
+  expect(text).toContain('$30.0M');
+  expect(text).not.toContain('$-30.0M');
+});
+
+test('the over-committed sentence exists in both catalogues', () => {
+  expect(en.budget.committed_over_cash).toBeTruthy();
+  expect(zh.budget.committed_over_cash).toBeTruthy();
+  // It must not repeat the phrase that made the old line contradictory.
+  expect(en.budget.committed_over_cash).not.toMatch(/not yet committed/i);
 });
 
 test('an older server without the committed total falls back to the plain line', () => {

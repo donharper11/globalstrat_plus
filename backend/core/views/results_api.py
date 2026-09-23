@@ -51,6 +51,20 @@ def _dec(v):
     return float(v)
 
 
+def _market_name_map(scenario, language):
+    """{stored English market name -> the name this reader should see}.
+
+    Empty for an English reader and for a scenario with no markets, so the
+    caller's stored values are served untouched (W-CE3-07).
+    """
+    if language != 'zh-CN':
+        return {}
+    return {
+        market.name: get_localized_field(market, 'name', language)
+        for market in MarketDefinition.objects.filter(scenario=scenario)
+    }
+
+
 # The label for each submission origin lives with the other operator wording
 # (`operator_messages.SUBMISSION_ORIGIN_LABELS`) and is rendered in the
 # instructor's language (W-CE-08).
@@ -239,8 +253,15 @@ class RoundResultsView(APIView):
                 # field of the `coherence` manifest section, so a scoring
                 # artefact cannot follow the reader. The sentences are
                 # rendered into a copy for the response; the row is untouched.
+                #
+                # W-CE3-07: the same is true of the market names inside the
+                # criterion detail tables, which stored the English
+                # `MarketDefinition.name`. The row carries no market id, so
+                # the mapping is keyed on the stored name; the view builds it
+                # because the view holds the scenario.
                 'breakdown': coherence_feedback.localised_breakdown(
-                    coh.breakdown or {}, language),
+                    coh.breakdown or {}, language,
+                    market_names=_market_name_map(game.scenario, language)),
             }
 
         # Strategy feature levels (includes ESG)
@@ -349,6 +370,21 @@ class LeaderboardView(APIView):
             game=game, round_number=round_number,
         ).select_related('team').order_by('rank')
 
+        # W-CE3-15. Under R32 a commercially inactive firm is placed below
+        # every firm that competed, whatever its score, so this table can show
+        # the highest index in last place. The payload had no field for it and
+        # the page had no mention of it, so the standings contradicted the
+        # numbers beside them with nothing to explain it.
+        #
+        # Read from R34's stored receipts, and rendered by the same module
+        # that renders the demoted team's own notice, so the marker, the
+        # sentence on that team's results screen and the row an instructor
+        # produces in a dispute cannot drift apart.
+        from core.engine import leaderboard as rank_rules
+        language = get_user_language(request)
+        msg_language = 'zh-CN' if language == 'zh-CN' else 'en'
+        demoted = rank_rules.demoted_team_ids(game, round_number)
+
         rankings = []
         for e in entries:
             # Get index change from performance table
@@ -377,12 +413,22 @@ class LeaderboardView(APIView):
                 'market_share': e.market_share_summary or {},
                 'share_price': share_price,
                 'investor_confidence': investor_confidence,
+                # Present on every row, true on the demoted ones, so a page
+                # renders "nothing happened" rather than branching on a
+                # missing key.
+                'commercially_inactive': e.team_id in demoted,
+                'rank_marker': (rank_rules.rank_marker(msg_language)
+                                if e.team_id in demoted else None),
             }
             rankings.append(entry)
 
         return Response({
             'round_number': round_number,
             'rankings': rankings,
+            # The rule itself, stated once under the table, and only when the
+            # table actually carries a marker.
+            'rank_rule_note': (rank_rules.rank_rule_note(msg_language)
+                               if demoted else None),
         })
 
 

@@ -534,7 +534,13 @@ RESULT_SECTIONS = (
             filters={'source': 'engine'},
             exclude={'acknowledged': 'Operator UI state set after publication.',
                      'teaching_note': 'Template-authored coaching text.',
-                     'detail': 'Template-authored alert body.'},
+                     'detail': 'Template-authored alert body.',
+                     'render_context': (
+                         'Catalogue key and format values, so the stored '
+                         'sentence can be re-rendered in the reader language '
+                         '(W-CE3-08). A rendering input, not a computed '
+                         'outcome: the title it produces is hashed, this is '
+                         'not.')},
             why='Alerts raised by the deterministic alert pass.'),
 )
 
@@ -556,7 +562,12 @@ NARRATIVE_SECTIONS = (
     Section('narrative_alert', 'core.InstructorAlert', GAME, 'game_id', key=None,
             filters={'source': 'narrative'},
             narrative_fields=('title', 'detail', 'teaching_note'),
-            exclude={'acknowledged': 'Operator UI state set after publication.'},
+            exclude={'acknowledged': 'Operator UI state set after publication.',
+                     'render_context': (
+                         'Catalogue key and format values, so the stored '
+                         'sentence can be re-rendered in the reader language '
+                         '(W-CE3-08). A rendering input, not prose: the prose '
+                         'it produces is the narrative hash, this is not.')},
             in_output=False,
             why='Phase-2 coaching notes and RAG commentary for instructors.'),
 )
