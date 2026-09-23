@@ -215,6 +215,59 @@ def _withdraw_declared_budgets(submission, team):
     return ('declared_budgets', [])
 
 
+def _resize_equity_to_funding_need(submission):
+    """W-CE4-02: the raise must be sized against what is left, not what was.
+
+    A withdrawal above lowers `funding_need.decision_outlays`, which lowers
+    `eligible_uses`, which lowers `maximum_new_equity`. The equity raise on the
+    submission was sized against the commitments this close has just removed,
+    so leaving it alone produces a draft that fits the affordability rule and
+    breaks V2-024 -- and `advance_round` then refuses to score the round:
+
+        Round 6 cannot be scored: 4 equity raise(s) exceed the funding
+        shortfall they claim to finance ... Aurora Devices: equity raise of
+        $23,433,933.40 exceeds the funding shortfall of $23,283,933.40
+
+    Six team-rounds of the fourth walkthrough ended that way, for teams that
+    did nothing between the two measurements: immediately before the close
+    every team was inside the cap by $100,000, immediately after all four were
+    outside it by $150,000. The operator's only way out was a hand-written
+    reopen, resize, re-lock, re-close loop.
+
+    The raise is resized **down to the maximum the reduced draft justifies**,
+    from `funding_need` -- the same calculator that produced the reduction, so
+    the two cannot answer differently -- and never up. That is exactly the
+    figure the Decision Summary quotes to a team standing at this draft, and
+    exactly what the team would have had to type to lock that draft itself:
+    V2-024 rejects rather than clamps, so a student with the reduced draft in
+    front of them could have locked at this number and at no higher one.
+
+    Nothing else about the raise changes. It is still *requested*, not
+    received: `financing_effect` still subscribes it at investor sentiment and
+    still refuses it in distress, so the close cannot promise money the round
+    then declines.
+
+    Returns `(before, after)` when the raise moved, otherwise `None`.
+    """
+    from core.models.decisions import DecisionFinancing
+    from core.services.funding_need import assess_submission
+
+    assessment = assess_submission(submission)
+    if assessment['within_limit']:
+        return None
+    financing = DecisionFinancing.objects.filter(submission=submission).first()
+    if financing is None:
+        # No row means nothing was requested, so the rule cannot be broken.
+        return None
+    before = D(str(financing.new_equity or 0))
+    after = D(assessment['maximum_new_equity'])
+    if after >= before:
+        return None
+    financing.new_equity = after
+    financing.save(update_fields=['new_equity'])
+    return (before, after)
+
+
 _STEPS = {
     'plant_builds': lambda s, t: _withdraw_plant_builds(s),
     'platform_developments': lambda s, t: _withdraw_platform_developments(s),
@@ -254,11 +307,20 @@ def bring_draft_within_available_funds(game, round_obj):
             'available_funds': assessment['available_funds'],
         }
         withdrawn = []
+        equity = None
         for name in WITHDRAWAL_ORDER:
             result = _STEPS[name](submission, team)
             if result is None:
                 continue
             withdrawn.append(result)
+            # W-CE4-02: before asking whether the draft fits again. The raise
+            # is part of available funds, so resizing it changes the answer,
+            # and asking first would stop the loop on a draft the round then
+            # refuses to score. Re-asked after every step because a later
+            # withdrawal can lower the maximum again.
+            moved = _resize_equity_to_funding_need(submission)
+            if moved is not None:
+                equity = (equity[0] if equity else moved[0], moved[1])
             fits, assessment = _fits(submission, team)
             if fits:
                 break
@@ -275,6 +337,9 @@ def bring_draft_within_available_funds(game, round_obj):
                       'available_funds': assessment['available_funds']},
             'within_available_funds': fits,
         }
+        if equity is not None:
+            record['equity_resized'] = {'from': str(equity[0]),
+                                        'to': str(equity[1])}
         applied.append(record)
         _record(game, team, round_obj, submission, record)
         _notify(game, team, round_obj, record)
@@ -319,3 +384,14 @@ def _notify(game, team, round_obj, record):
             committed=f'${D(record["before"]["committed_total"]):,.2f}',
             available=f'${D(record["before"]["available_funds"]):,.2f}',
             withdrawn=steps))
+    # W-CE4-02: a resized raise is a change to the team's own financing
+    # decision, so it is said separately rather than folded into the list of
+    # things that were withdrawn -- the money was not withdrawn, the request
+    # was reduced to what the smaller draft can justify.
+    if record.get('equity_resized'):
+        notify_team(
+            game.id, team, round_obj.round_number,
+            participant_message(
+                'deadline_resized_equity', language=language,
+                requested=f'${D(record["equity_resized"]["from"]):,.2f}',
+                allowed=f'${D(record["equity_resized"]["to"]):,.2f}'))

@@ -945,6 +945,10 @@ MESSAGES = {
         'en': 'The round closed while {committed} was committed against available funds of {available}, which is the same reason the round could not be locked. These commitments were withdrawn and nothing was charged for them: {withdrawn}. Every other decision was resolved as submitted.',
         'zh-CN': '本回合结束时，已承诺支出 {committed}，而可用资金为 {available}，这也是本回合无法锁定的原因。以下承诺已撤回，且未产生任何费用：{withdrawn}。其余决策均按提交内容结算。',
     },
+    'deadline_resized_equity': {
+        'en': 'Because those commitments were withdrawn, the new equity of {requested} was larger than the funding shortfall it was raised to cover. The raise was reduced to {allowed}, which is the most this round can finance with equity. Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.',
+        'zh-CN': '由于上述承诺已撤回，原定 {requested} 的新增股权已超出其所要弥补的资金缺口。该笔融资已下调至 {allowed}，这是本回合可用股权融资的上限。股权可用于弥补本回合真实存在的资金缺口，但不得用于形成多余现金或发放股利。',
+    },
     'withdrawn_plant_builds': {'en': 'plant construction',
                                'zh-CN': '工厂建设'},
     'withdrawn_platform_developments': {'en': 'platform development requests',
