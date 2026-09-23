@@ -791,6 +791,23 @@ class InstructorAdvanceRoundView(APIView):
                 # Overriding the all-teams-locked check resolves the round with
                 # whatever a team had at that moment, so it needs a reason.
                 reason = action.require_reason()
+                # W-CE-24: and it has to actually do it. `force` skipped this
+                # view's precondition, but `_run_phase_1` checks the same
+                # thing again -- deliberately, so the engine entry point never
+                # silently creates or locks a submission -- so every reasoned
+                # override was refused `round_not_ready` and this control
+                # could not advance a round with pending teams at all.
+                #
+                # Closing the round is the step the engine's own sentence
+                # names ("Re-lock the team, or close the round") and what a
+                # one-step advance means: it locks each team's draft as it
+                # stands, records a `deadline_lock` per team, and applies the
+                # deadline price rule. `RoundProcessView` already does this
+                # with `force`; nothing here is bypassed that was not.
+                if round_obj.status == 'open':
+                    from core.engine.advance_round import close_round
+                    close_round(game.id, reason='manual')
+                    round_obj = action.require_round()
             else:
                 unlocked = _first_unlocked_team(game, round_obj)
                 if unlocked is not None:
