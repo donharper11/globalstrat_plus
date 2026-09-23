@@ -81,11 +81,22 @@ const BudgetBar = ({ budgets }) => {
         {budgets.unallocated != null && (
           <Text type="secondary" style={{ fontSize: 11 }}>
             {budgets.committed_total != null
-              ? t('budget.committed_of_cash', {
-                committed: fmt(budgets.committed_total),
-                cash: fmt(budgets.total_available),
-                unallocated: fmt(budgets.unallocated),
-              })
+              ? (Number(budgets.unallocated) < 0
+                // W-CE3-13: a team $30.0M OVER-committed read *$49.3M of
+                // $19.3M cash — $-30.0M not yet committed*: a sentence that
+                // contradicts its own figure, with the sign written into the
+                // amount. Over-commitment is its own state and gets its own
+                // sentence, stating the shortfall as a magnitude.
+                ? t('budget.committed_over_cash', {
+                  committed: fmt(budgets.committed_total),
+                  cash: fmt(budgets.total_available),
+                  over: fmt(Math.abs(Number(budgets.unallocated))),
+                })
+                : t('budget.committed_of_cash', {
+                  committed: fmt(budgets.committed_total),
+                  cash: fmt(budgets.total_available),
+                  unallocated: fmt(budgets.unallocated),
+                }))
               : t('budget.unallocated', { amount: fmt(budgets.unallocated) })}
           </Text>
         )}
