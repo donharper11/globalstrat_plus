@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 
 from core.models.core import Game
 from core.models.cc21_models import InstructorAlert
+from core.utils.operator_messages import language_for_request
 
 
 class InstructorAlertsView(APIView):
@@ -45,24 +46,39 @@ class InstructorAlertsView(APIView):
 
         alerts = alerts.select_related('team')[:100]
 
-        return Response({
-            'alerts': [
-                {
-                    'id': a.id,
-                    'team_id': a.team_id,
-                    'team_name': a.team.name,
-                    'round_number': a.round_number,
-                    'alert_type': a.alert_type,
-                    'severity': a.severity,
-                    'title': a.title,
-                    'detail': a.detail,
-                    'teaching_note': a.teaching_note,
-                    'acknowledged': a.acknowledged,
-                    'created_at': a.created_at.isoformat(),
-                }
-                for a in alerts
-            ],
-        })
+        # W-CE3-08 / W-CE2-08's residue. An alert is written in the language
+        # stored at processing time, so every alert written before an
+        # instructor set their language stayed English for ever and the panel
+        # was permanently mixed -- rounds 1 and 2 of the third walkthrough
+        # were 0 of 56 Chinese and could never become Chinese.
+        #
+        # The `coherence_feedback` precedent applies, with one difference: a
+        # coherence breakdown stores the numbers its sentence was derived
+        # from, and an alert stores only the finished sentence. So the alert
+        # carries its rendering inputs (`render_context`, excluded from both
+        # manifest sections) and the panel says the sentence again in the
+        # reader's language. The stored row is never written; an alert with
+        # no context, or one a model wrote, is served exactly as stored.
+        from core.engine.instructor_alerts import reader_text
+        language = language_for_request(request)
+
+        rows = []
+        for a in alerts:
+            title, detail, teaching_note = reader_text(a, language)
+            rows.append({
+                'id': a.id,
+                'team_id': a.team_id,
+                'team_name': a.team.name,
+                'round_number': a.round_number,
+                'alert_type': a.alert_type,
+                'severity': a.severity,
+                'title': title,
+                'detail': detail,
+                'teaching_note': teaching_note,
+                'acknowledged': a.acknowledged,
+                'created_at': a.created_at.isoformat(),
+            })
+        return Response({'alerts': rows})
 
 
 class InstructorAlertAcknowledgeView(APIView):

@@ -670,3 +670,152 @@ class TheCommunicationCriteriaHaveNames(SimpleTestCase):
                 self.assertEqual(set(labels), {'en', 'zh-CN'})
                 for text in labels.values():
                     self.assertNotIn('_', text)
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-08 — the alert an instructor most needs to read, in English for ever
+# ---------------------------------------------------------------------------
+
+class TheDistressAlertIsInTheCatalogue(SimpleTestCase):
+    """*X has entered financial distress · Cash closing: …* was built as
+    f-strings inside `engine/financials.py`, so it was English in every round
+    while its 32 siblings were Chinese."""
+
+    def text(self, language):
+        from core.engine.instructor_alerts import _alert_text
+        return _alert_text(
+            language, 'distress', team='Aurora Devices', cash=-6468269.0,
+            net_income=-1000000.0, debt=20000000.0, next_round=4)
+
+    def test_the_alert_has_a_chinese_rendering(self):
+        title, detail, note = self.text('zh-CN')
+
+        self.assertIn('已进入财务困境', title)
+        self.assertIn('Aurora Devices', title)
+        self.assertIn('期末现金', detail)
+        self.assertTrue(note)
+
+    def test_the_english_wording_is_what_shipped(self):
+        title, detail, _note = self.text('en')
+
+        self.assertEqual(title, 'Aurora Devices has entered financial distress')
+        self.assertIn('Cash closing: $-6,468,269.', detail)
+        self.assertIn('restrictions bite from round 4', detail)
+
+    def test_the_engine_no_longer_writes_the_sentence_itself(self):
+        import pathlib
+
+        source = (pathlib.Path(__file__).resolve().parents[1]
+                  / 'engine' / 'financials.py').read_text(encoding='utf-8')
+        # The comment explaining the repair quotes nothing; the f-strings are
+        # gone, so the phrase appears nowhere in that module.
+        self.assertNotIn('has entered financial distress', source)
+
+
+class AStoredAlertCanBeSaidAgain(SimpleTestCase):
+    """W-CE2-08's recorded residue: an alert is written in the language
+    stored at processing time, so alerts written before an instructor set
+    their language stayed English for ever and the panel was permanently
+    mixed. It keeps no numbers to re-derive from, so it carries its
+    rendering inputs instead.
+    """
+
+    def alert(self, **overrides):
+        from core.engine.instructor_alerts import _alert_text, render_context
+        from core.models.cc21_models import InstructorAlert
+
+        values = dict(team='Aurora Devices', cash=-6468269.0,
+                      net_income=-1000000.0, debt=20000000.0, next_round=4)
+        title, detail, note = _alert_text('en', 'distress', **values)
+        fields = dict(
+            title=title, detail=detail, teaching_note=note,
+            render_context=render_context('en', 'distress', **values))
+        fields.update(overrides)
+        return InstructorAlert(**fields)
+
+    def read(self, alert, language):
+        from core.engine.instructor_alerts import reader_text
+        return reader_text(alert, language)
+
+    def test_an_english_alert_reads_in_chinese(self):
+        title, detail, _note = self.read(self.alert(), 'zh-CN')
+
+        self.assertIn('已进入财务困境', title)
+        self.assertIn('期末现金', detail)
+
+    def test_the_stored_row_is_never_written(self):
+        alert = self.alert()
+        before = (alert.title, alert.detail, alert.teaching_note)
+
+        self.read(alert, 'zh-CN')
+
+        self.assertEqual((alert.title, alert.detail, alert.teaching_note),
+                         before)
+
+    def test_the_reader_s_own_language_returns_the_stored_bytes(self):
+        alert = self.alert()
+
+        self.assertEqual(self.read(alert, 'en'),
+                         (alert.title, alert.detail, alert.teaching_note))
+
+    def test_an_alert_written_before_this_field_is_served_as_stored(self):
+        alert = self.alert(render_context=None)
+
+        self.assertEqual(self.read(alert, 'zh-CN'),
+                         (alert.title, alert.detail, alert.teaching_note))
+
+    def test_a_teaching_note_a_model_wrote_is_not_replaced(self):
+        """The RAG pass overwrites `teaching_note` with its own prose; that is
+        Phase-2 text of its own and the template must not reclaim it."""
+        alert = self.alert(teaching_note='A note the model wrote.')
+
+        _title, _detail, note = self.read(alert, 'zh-CN')
+
+        self.assertEqual(note, 'A note the model wrote.')
+
+    def test_a_key_the_catalogue_no_longer_holds_is_served_as_stored(self):
+        alert = self.alert(render_context={
+            'key': 'retired_alert', 'language': 'en', 'values': {}})
+
+        self.assertEqual(self.read(alert, 'zh-CN'),
+                         (alert.title, alert.detail, alert.teaching_note))
+
+    def test_the_render_context_is_json_storable(self):
+        from decimal import Decimal
+        from core.engine.instructor_alerts import render_context
+
+        context = render_context('en', 'distress', cash=Decimal('-6468269.00'))
+
+        json.dumps(context)  # raises if a Decimal survived
+        self.assertEqual(context['values']['cash'], -6468269.0)
+
+
+class TheAlertRenderContextIsOutsideEveryHash(SimpleTestCase):
+    """The field is a rendering input, not a computed outcome. It is
+    excluded from both sections that claim `InstructorAlert`, with a reason,
+    so no hashed or narrative value changes and the envelope does not move.
+    """
+
+    def sections(self):
+        from core.services import manifest_sections as ms
+        return {s.name: s for s in ms.ALL_SECTIONS}
+
+    def test_both_sections_exclude_it_with_a_reason(self):
+        for name in ('instructor_alert', 'narrative_alert'):
+            with self.subTest(section=name):
+                reason = self.sections()[name].exclude.get('render_context')
+                self.assertTrue(reason and len(reason) > 15)
+
+    def test_it_reaches_no_hashed_or_narrative_field_list(self):
+        from core.services.manifest_snapshot import (
+            _model, section_field_plan)
+
+        for name, mode in (('instructor_alert', 'input'),
+                           ('instructor_alert', 'output'),
+                           ('narrative_alert', 'output')):
+            section = self.sections()[name]
+            plan = section_field_plan(section, _model(section.model), mode)
+            with self.subTest(section=name, mode=mode):
+                self.assertNotIn('render_context', plan['hashed'])
+                self.assertNotIn('render_context', plan['narrative'])
+                self.assertIn('render_context', plan['dropped'])

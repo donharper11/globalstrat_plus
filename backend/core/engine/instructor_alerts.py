@@ -30,11 +30,13 @@ except ImportError:
     DecisionESG = None
 
 
-def _create_alert(game, team, round_number, alert_type, severity, title, detail, teaching_note=''):
+def _create_alert(game, team, round_number, alert_type, severity, title,
+                  detail, teaching_note='', render_context=None):
     return InstructorAlert(
         game=game, team=team, round_number=round_number,
         alert_type=alert_type, severity=severity,
         title=title, detail=detail, teaching_note=teaching_note,
+        render_context=render_context,
     )
 
 
@@ -99,6 +101,23 @@ _ALERT_TEXT = {
             'and {tariff:.0f}% tariff rate.',
             "Discuss entry mode choice. Was this the right fit for the market's risk profile? "
             "Reference: Dunning's OLI framework for entry mode selection."),
+        # W-CE3-08: the distress alert was built as f-strings inside
+        # `engine/financials.py` and was therefore English in every round,
+        # whatever the console's language -- the one alert that matters most
+        # and the one an instructor could not read. Moved here so it is
+        # chosen, worded and rendered exactly like its 32 siblings.
+        'distress': (
+            '{team} has entered financial distress',
+            'Cash closing: ${cash:,.0f}. Net income: ${net_income:,.0f}. '
+            'Total debt: ${debt:,.0f}. '
+            'Consequences, in force from the next round until the company '
+            'returns to positive cash and profitability: +10% talent turnover, '
+            'share price floor at 0.7x book value, no new debt, and no '
+            'acquisitions. (Distress is assessed from this round\'s closing '
+            'position, so the restrictions bite from round {next_round}.)',
+            'This team is in financial distress. Use this as a teaching moment about '
+            'cash management, debt sustainability, and the downward spiral that can '
+            'result from over-leveraging or under-pricing.'),
         'overproduction': (
             '{team} producing 2x+ last round sales for {product} in {market}',
             'Production: {volume:,} units. Last round sold: {sold:,}. '
@@ -158,6 +177,16 @@ _ALERT_TEXT = {
             '投资：${investment:,.0f}。该市场增长率为 {growth:.0f}%，关税率为 {tariff:.0f}%。',
             '讨论进入模式的选择：它是否与该市场的风险特征相匹配？'
             '参考：邓宁的 OLI 框架（进入模式选择）。'),
+        'distress': (
+            '{team} 已进入财务困境',
+            '期末现金：${cash:,.0f}。净利润：${net_income:,.0f}。'
+            '负债总额：${debt:,.0f}。'
+            '自下一回合起生效、直至公司恢复正现金与盈利为止的后果：'
+            '人才流失率上升 10%、股价下限为账面价值的 0.7 倍、'
+            '不得新增借款、不得进行收购。'
+            '（财务困境依据本回合期末状况判定，因此各项限制自第 {next_round} 回合起生效。）',
+            '该团队正处于财务困境。可借此讲解现金管理、债务可持续性，'
+            '以及过度举债或定价过低可能引发的恶性循环。'),
         'overproduction': (
             '{team} 在{market}的 {product} 产量超过上回合销量的两倍',
             '生产：{volume:,} 台。上回合销量：{sold:,} 台。'
@@ -175,6 +204,70 @@ def _alert_text(language, key, **values):
     if isinstance(entry, str):
         return entry.format(**values)
     return tuple(part.format(**values) for part in entry)
+
+
+def _storable(value):
+    """A format value in a form a JSON column can hold.
+
+    Decimals are the only non-JSON type these alerts interpolate; they become
+    floats, which format identically under the `{:,.0f}` and `{:.2f}` specs
+    the templates use.
+    """
+    if isinstance(value, Decimal):
+        return float(value)
+    return value
+
+
+def render_context(language, key, **values):
+    """What a stored alert needs to be said again in another language.
+
+    Stored on the row (W-CE3-08) because an alert keeps no numbers of its own
+    to re-derive the sentence from, unlike a coherence breakdown -- only the
+    finished sentence.
+    """
+    return {'key': key, 'language': language,
+            'values': {name: _storable(value)
+                       for name, value in values.items()}}
+
+
+def _alert_parts(language, key, **values):
+    """(title, detail, teaching_note, render_context) for `key`."""
+    title, detail, note = _alert_text(language, key, **values)
+    return title, detail, note, render_context(language, key, **values)
+
+
+def reader_text(alert, language):
+    """(title, detail, teaching_note) for `alert`, as `language` reads it.
+
+    Falls back to the stored strings whenever the alert cannot be re-rendered
+    -- written before `render_context` existed, written by a model, or a key
+    this table no longer holds -- so a panel never loses an alert to this.
+    The stored row is never written.
+
+    Known limit, recorded rather than hidden: a value that is itself a name
+    resolved at write time (a market, an entry mode, a product) stays in the
+    language it was written in. Those are `market_entry` and
+    `overproduction`; every other alert interpolates only numbers and the
+    team's own name.
+    """
+    stored = (alert.title, alert.detail, alert.teaching_note)
+    context = getattr(alert, 'render_context', None) or {}
+    key = context.get('key')
+    if not key or language == context.get('language'):
+        return stored
+    try:
+        title, detail, note = _alert_text(
+            language, key, **(context.get('values') or {}))
+    except Exception:
+        return stored
+    # A teaching note a model wrote is Phase-2 prose of its own and is not
+    # replaced by the template's: only a note still equal to what the
+    # template produced in the stored language is re-rendered.
+    written = _alert_text(context.get('language') or 'en', key,
+                          **(context.get('values') or {}))
+    if (alert.teaching_note or '') != (written[2] or ''):
+        note = alert.teaching_note
+    return title, detail, note
 
 
 def _count_rounds_without_rd(team, current_round):
@@ -225,7 +318,7 @@ def generate_post_round_alerts(game, round_number):
         if financials.cash_closing < 5_000_000:
             alerts.append(_create_alert(
                 game, team, round_number, 'financial', 'critical',
-                *_alert_text(language, 'cash_crisis', team=team.name,
+                *_alert_parts(language, 'cash_crisis', team=team.name,
                              cash=financials.cash_closing, debt=financials.total_debt,
                              net_income=financials.net_income)))
 
@@ -234,7 +327,7 @@ def generate_post_round_alerts(game, round_number):
         if de_ratio > 1.5:
             alerts.append(_create_alert(
                 game, team, round_number, 'financial', 'concern',
-                *_alert_text(language, 'leverage', team=team.name, ratio=de_ratio,
+                *_alert_parts(language, 'leverage', team=team.name, ratio=de_ratio,
                              debt=financials.total_debt, equity=financials.total_equity,
                              interest=financials.interest_expense)))
 
@@ -244,7 +337,7 @@ def generate_post_round_alerts(game, round_number):
                 decline_pct = (1 - float(financials.total_revenue / prev_financials.total_revenue)) * 100
                 alerts.append(_create_alert(
                     game, team, round_number, 'strategic', 'watch',
-                    *_alert_text(language, 'revenue_decline', team=team.name, pct=decline_pct,
+                    *_alert_parts(language, 'revenue_decline', team=team.name, pct=decline_pct,
                                  revenue=financials.total_revenue,
                                  previous=prev_financials.total_revenue)))
 
@@ -255,7 +348,7 @@ def generate_post_round_alerts(game, round_number):
         if rounds_without_rd >= 2:
             alerts.append(_create_alert(
                 game, team, round_number, 'strategic', 'concern',
-                *_alert_text(language, 'no_rd', team=team.name, rounds=rounds_without_rd)))
+                *_alert_parts(language, 'no_rd', team=team.name, rounds=rounds_without_rd)))
 
         # Only in home market after Round 3
         market_count = TeamMarketPresence.objects.filter(
@@ -264,21 +357,21 @@ def generate_post_round_alerts(game, round_number):
         if round_number >= 3 and market_count <= 1:
             alerts.append(_create_alert(
                 game, team, round_number, 'missed_opportunity', 'watch',
-                *_alert_text(language, 'single_market', team=team.name,
+                *_alert_parts(language, 'single_market', team=team.name,
                              count=market_count, round=round_number)))
 
         # High coherence score (positive)
         if coherence and float(coherence.blended_score) >= 80:
             alerts.append(_create_alert(
                 game, team, round_number, 'notable_move', 'info',
-                *_alert_text(language, 'coherence_high', team=team.name,
+                *_alert_parts(language, 'coherence_high', team=team.name,
                              score=float(coherence.blended_score))))
 
         # Performance index dropped significantly
         if performance and float(performance.index_change) < -3:
             alerts.append(_create_alert(
                 game, team, round_number, 'strategic', 'concern',
-                *_alert_text(language, 'index_drop', team=team.name,
+                *_alert_parts(language, 'index_drop', team=team.name,
                              drop=abs(float(performance.index_change)),
                              index=float(performance.index_value),
                              previous=float(performance.index_value - performance.index_change),
@@ -295,7 +388,7 @@ def generate_post_round_alerts(game, round_number):
                 if new_acquisition:
                     alerts.append(_create_alert(
                         game, team, round_number, 'notable_move', 'info',
-                        *_alert_text(language, 'acquisition', team=team.name,
+                        *_alert_parts(language, 'acquisition', team=team.name,
                                      target=new_acquisition.acquisition_target.target_name,
                                      cost=new_acquisition.total_cost_paid,
                                      rounds=new_acquisition.integration_rounds_remaining)))
@@ -316,7 +409,7 @@ def generate_post_round_alerts(game, round_number):
             tariff_rate = float(market.tariff_rate) * 100 if hasattr(market, 'tariff_rate') else 0
             alerts.append(_create_alert(
                 game, team, round_number, 'notable_move', 'info',
-                *_alert_text(language, 'market_entry', team=team.name,
+                *_alert_parts(language, 'market_entry', team=team.name,
                              market=get_localized_field(market, 'name', language),
                              mode=mode_name, investment=entry.initial_investment,
                              growth=growth_rate, tariff=tariff_rate)))
@@ -346,7 +439,7 @@ def generate_pre_lock_alerts(game, team, submission):
             if mktg.production_volume > float(prev_result.units_sold) * 2:
                 alerts.append(_create_alert(
                     game, team, game.current_round, 'financial', 'watch',
-                    *_alert_text(language, 'overproduction', team=team.name,
+                    *_alert_parts(language, 'overproduction', team=team.name,
                                  product=mktg.team_product.name,
                                  market=get_localized_field(mktg.market, 'name', language),
                                  volume=mktg.production_volume,

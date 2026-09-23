@@ -279,19 +279,58 @@ class CoachAlertLanguageTests(WalkCEBase):
             self.assertTrue(has_cjk(alert.title), alert.title)
             self.assertTrue(has_cjk(alert.detail), alert.detail)
 
-    def test_the_alerts_a_view_serves_are_the_stored_ones(self):
-        """Read time changes nothing: the stored row is what the panel shows,
-        so the language is the one fixed when the alert was written.
+    def test_the_view_serves_the_alerts_in_the_readers_language(self):
+        """Re-specified by W-CE3-08.
+
+        This test used to hold the opposite: "read time changes nothing; the
+        stored row is what the panel shows". That was W-CE2-08's deliberate
+        choice, and the third walkthrough recorded its cost as a defect --
+        every alert written before an instructor set their language stayed
+        English for ever, so rounds 1 and 2 were 0 of 56 Chinese and the
+        panel was permanently mixed.
+
+        An alert now carries its rendering inputs (`render_context`, excluded
+        from both manifest sections) and is said again in the reader's
+        language. The stored row is still never written, which the next test
+        holds.
         """
         self.client_for(self.instructor).put(
             '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
         self._alerts()
         response = self.client_for(self.instructor).get(
-            f'/api/games/{self.game.id}/instructor/alerts/')
+            f'/api/games/{self.game.id}/instructor/alerts/',
+            HTTP_ACCEPT_LANGUAGE='zh-CN')
         self.assertEqual(response.status_code, 200, response.data)
         self.assertTrue(response.data['alerts'])
         for served in response.data['alerts']:
             self.assertTrue(has_cjk(served['title']), served)
+
+    def test_an_alert_written_in_the_other_language_is_still_readable(self):
+        """The half W-CE2-08 could not give: an English alert read by a
+        Chinese console, and the reverse."""
+        self._alerts()  # written with the console in English
+        response = self.client_for(self.instructor).get(
+            f'/api/games/{self.game.id}/instructor/alerts/',
+            HTTP_ACCEPT_LANGUAGE='zh-CN')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(response.data['alerts'])
+        self.assertTrue(
+            any(has_cjk(served['title'])
+                for served in response.data['alerts']),
+            response.data['alerts'])
+
+    def test_reading_an_alert_never_writes_it(self):
+        from core.models.cc21_models import InstructorAlert
+
+        alerts = self._alerts()
+        stored = {a.id: (a.title, a.detail) for a in alerts}
+
+        self.client_for(self.instructor).get(
+            f'/api/games/{self.game.id}/instructor/alerts/',
+            HTTP_ACCEPT_LANGUAGE='zh-CN')
+
+        for alert in InstructorAlert.objects.filter(game=self.game):
+            self.assertEqual((alert.title, alert.detail), stored[alert.id])
 
 
 # ---------------------------------------------------------------------------
