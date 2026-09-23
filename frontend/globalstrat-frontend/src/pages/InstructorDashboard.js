@@ -595,7 +595,18 @@ const InstructorDashboard = () => {
       </Card>
 
       {/* Round lifecycle: close -> process -> advance */}
-      {hasGame && <RoundControlCard gameId={gameId} onChanged={() => { loadData(); loadRoundScheduleData(gameId); }} />}
+      {hasGame && (
+        <RoundControlCard
+          gameId={gameId}
+          /* W-CE2-10: the card holds the round it last read and sends it as
+             `expected_round_number`. Activating the game moves it to round 1
+             without remounting the card, so the operator's next round-control
+             action was refused for a round that no longer existed until the
+             page was reloaded. */
+          reloadKey={`${displayGameStatus}:${dashboard?.current_round ?? ''}`}
+          onChanged={() => { loadData(); loadRoundScheduleData(gameId); }}
+        />
+      )}
 
       {/* Round schedule */}
       {roundSchedule && (

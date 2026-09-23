@@ -10,7 +10,7 @@ import { complianceRows, complianceByCode } from './sectionPayloads';
 import { PageHeader, PanelCard } from '../components/design-system';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { DECISION_INPUT_LIMITS } from '../decisionInputLimits';
-import { distanceLabel, plantStatusLabel, perRoundCharge, plantBuildLabel } from './marketStrategyLabels';
+import { distanceLabel, plantStatusLabel, perRoundCharge, plantBuildLabel, plantCostLabel } from './marketStrategyLabels';
 
 const { Title, Text } = Typography;
 
@@ -442,10 +442,39 @@ const MarketStrategyPage = () => {
   const existingPartnerships = context.partnerships || [];
   const plants = context.plants || [];
 
+  // W-CE2-02: what the team can still commit, from the calculator the lock
+  // refuses on (`rd_costs.budget_assessment`). An older server that does not
+  // send it offers everything, as before.
+  const unallocated = context.affordability?.unallocated;
+  const canFund = (cost) => (
+    unallocated == null || Number(unallocated) >= Number(cost || 0));
+
   const renderMarketContent = (m) => {
     const hasPresence = m.entry_status === 'active';
     const plant = plants.find(p => p.market_id === m.id);
     const marketPartnerships = existingPartnerships.filter(p => p.market_id === m.id);
+    // A plant this team has queued this round but does not own yet. The card
+    // read `context.plants` -- plants the team OWNS -- so a queued build was
+    // invisible and the Build Plant button stayed: pressing it twice stored
+    // two decision rows that stop the round before it is even scored
+    // (W-CE2-01), and nothing on any screen could take the build back.
+    const queuedBuild = plantDecisions.some(
+      pd => pd.market === m.id && pd.action === 'build');
+    const queuedPartnerships = partnerships
+      .map((pn, index) => ({ ...pn, index }))
+      .filter(pn => pn.market === m.id && pn.action === 'establish');
+
+    const withdrawPlant = () => {
+      const pd = plantDecisions.filter(
+        x => !(x.market === m.id && x.action === 'build'));
+      setPlantDecisions(pd);
+      autoSave('plants', { plant_decisions: pd });
+    };
+    const withdrawPartnership = (index) => {
+      const updated = partnerships.filter((_, i) => i !== index);
+      setPartnerships(updated);
+      autoSave('partnerships', { partnerships: updated });
+    };
 
     if (!hasPresence) {
       // Market entry section
@@ -621,21 +650,43 @@ const MarketStrategyPage = () => {
                   </Col>
                 </Row>
               </div>
+            ) : queuedBuild ? (
+              <div>
+                <Tag color="blue">{t('market_strategy.plant_queued')}</Tag>
+                {!locked && (
+                  <Button size="small" danger onClick={withdrawPlant}>
+                    {t('market_strategy.withdraw')}
+                  </Button>
+                )}
+              </div>
             ) : (
               <div>
                 <Text type="secondary">{t('market_strategy.no_plant')} — </Text>
                 {!locked && (
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={() => {
-                      const pd = [...plantDecisions, { market: m.id, action: 'build', capacity_units: 0, contract_mfg_volume: 0 }];
-                      setPlantDecisions(pd);
-                      autoSave('plants', { plant_decisions: pd });
-                    }}
-                  >
-                    {plantBuildLabel(m, t, fmt)}
-                  </Button>
+                  <>
+                    {!canFund(m.plant_build_cost) && (
+                      <Text type="danger" style={{ fontSize: 11, marginRight: 8 }}>
+                        {t('market_strategy.not_affordable', {
+                          // W-CE-22's floor: a cost the scenario does not
+                          // author is named, never rendered as $0.
+                          cost: plantCostLabel(m, t, fmt),
+                          available: fmt(unallocated),
+                        })}
+                      </Text>
+                    )}
+                    <Button
+                      size="small"
+                      type="primary"
+                      disabled={!canFund(m.plant_build_cost)}
+                      onClick={() => {
+                        const pd = [...plantDecisions, { market: m.id, action: 'build', capacity_units: 0, contract_mfg_volume: 0 }];
+                        setPlantDecisions(pd);
+                        autoSave('plants', { plant_decisions: pd });
+                      }}
+                    >
+                      {plantBuildLabel(m, t, fmt)}
+                    </Button>
+                  </>
                 )}
               </div>
             )}
@@ -660,12 +711,37 @@ const MarketStrategyPage = () => {
               ))}
             </div>
           )}
+          {/* Queued this round, and withdrawable until the lock (W-CE2-02).
+              Only active partnerships were listed here, so a partnership the
+              team had just committed to appeared nowhere and could not be
+              taken back. */}
+          {queuedPartnerships.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              {queuedPartnerships.map(pn => {
+                const option = strategyOptions.find(so => so.id === pn.strategy_option);
+                return (
+                  <Space key={pn.index} style={{ marginBottom: 4 }}>
+                    <Tag color="blue">
+                      {(option?.name || '')} — {perRoundCharge(pn.annual_investment, t, fmt)}
+                    </Tag>
+                    <Tag>{t('market_strategy.queued')}</Tag>
+                    {!locked && (
+                      <Button size="small" danger onClick={() => withdrawPartnership(pn.index)}>
+                        {t('market_strategy.withdraw')}
+                      </Button>
+                    )}
+                  </Space>
+                );
+              })}
+            </div>
+          )}
           {!locked && (
             <Space wrap>
               {strategyOptions.map(so => (
                 <Button
                   key={so.id}
                   size="small"
+                  disabled={!canFund(so.capital_cost_base)}
                   onClick={() => {
                     const updated = [...partnerships, {
                       market: m.id,

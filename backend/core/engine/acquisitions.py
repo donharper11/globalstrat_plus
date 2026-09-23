@@ -8,9 +8,10 @@ in-progress acquisitions.
 import logging
 from decimal import Decimal
 
+from core.engine.plants import record_plant
 from core.models.decisions import DecisionSubmission, DecisionAcquisition
 from core.models.team_state import (
-    TeamAcquisition, TeamPlant, TeamMarketModifier,
+    TeamAcquisition, TeamMarketModifier,
 )
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,26 @@ def process_acquisitions(context):
         # now it was announced but never enforced.
         distressed = team.is_in_distress
 
+        # W-CE2-03: neither can a team that cannot pay for what it has
+        # committed this round. `_lock_all_submissions` locks a team's draft
+        # at the deadline exactly as it stands, so a submission the lock had
+        # refused -- "Committed spend of $38,000,000.00 exceeds available
+        # cash of $25,446,310.88" -- was resolved anyway and the acquisition
+        # charged in full, ending the walkthrough's team at -$12.4M.
+        #
+        # The rule is the lock's own affordability check, read from the same
+        # calculator (`rd_costs.budget_assessment`, which counts a queued
+        # acquisition at its authored price), applied in the one place the
+        # engine already withholds an acquisition for a team's financial
+        # condition. It is uniform rather than a deadline special case: a
+        # team that locked its own submission passed this check at the lock,
+        # so it can only fire on a draft the lock would have refused. The
+        # decision row is kept -- it is the team's record -- and nothing is
+        # charged, because `costs.calculate_operating_expenses` charges the
+        # base acquisition cost only for an acquisition actually fulfilled.
+        from core.services.rd_costs import budget_assessment
+        affordable = budget_assessment(submission, team)['within_cash']
+
         for decision in DecisionAcquisition.objects.filter(
             submission=submission,
         ).select_related('acquisition_target__market').order_by(
@@ -44,6 +65,10 @@ def process_acquisitions(context):
 
             if distressed:
                 _notify_distress_blocked(context, team, target)
+                continue
+
+            if not affordable:
+                _notify_unaffordable(context, team, target)
                 continue
 
             # Already acquired by this or another team — skip
@@ -61,11 +86,16 @@ def process_acquisitions(context):
                 total_cost_paid=target.base_acquisition_cost,
             )
 
-            # Immediate benefit: plant (operational immediately)
+            # Immediate benefit: plant (operational immediately).
+            #
+            # W-CE2-01: through `record_plant`, because the team may also have
+            # built a plant in this market this round. Two rows share the
+            # hashed section's natural key and the round becomes
+            # unsnapshotable -- a 500 that leaves the round `closed / FAILED`
+            # with nothing on any screen able to undo either decision.
             if target.includes_plant and target.plant_capacity > 0:
-                TeamPlant.objects.create(
-                    team=team,
-                    market=target.market,
+                record_plant(
+                    team, target.market,
                     capacity_units=target.plant_capacity,
                     status='operational',
                     construction_started_round=context.round_number,
@@ -124,6 +154,26 @@ def _notify_distress_blocked(context, team, target):
     )
     from core.engine.utils import notify_team
     notify_team(context.game.id, team, context.round_number, message)
+
+def _notify_unaffordable(context, team, target):
+    """Tell the team its bid was withheld because it cannot fund the round.
+
+    Worded like its two siblings above, because it is the same event from
+    the student's side: the bid was not fulfilled and no money left.
+    """
+    message = (
+        f"Your bid for {target.target_name} was not fulfilled: {team.name} "
+        f"has committed more this round than its available cash, which is "
+        f"the same reason the round's decisions could not be locked. No cost "
+        f"has been charged."
+    )
+    context.log.append(
+        f"Acquisition withheld (committed spend exceeds cash) for "
+        f"{team.name}: {target.target_name}"
+    )
+    from core.engine.utils import notify_team
+    notify_team(context.game.id, team, context.round_number, message)
+
 
 def _notify_rejected_bid(context, team, target):
     """Create a TeamNotification when a competing bid is rejected."""

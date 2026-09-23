@@ -22,6 +22,7 @@ from core.models.cc31_models import (
     ComplianceInvestment, TeamMarketCompliance, OriginTrustModifier,
     GovernanceCommitmentType, TeamGovernanceCommitment,
 )
+from core.engine.plants import record_plant
 from core.engine.utils import clamp, get_config
 
 
@@ -277,11 +278,15 @@ def _process_plants(team, submission, current_round):
             except Exception:
                 pass
 
-            TeamPlant.objects.create(
-                team=team,
-                market=market,
-                status='under_construction',
+            # W-CE2-01: through `record_plant`. A second plant started by
+            # this team in this market in this round -- another build row, or
+            # the plant an acquired target brings in `acquisitions.py` --
+            # would share the hashed `team_plant` section's natural key and
+            # make the round unsnapshotable.
+            record_plant(
+                team, market,
                 capacity_units=market.plant_capacity_units or 0,
+                status='under_construction',
                 construction_started_round=current_round,
                 completion_round=current_round + build_rounds,
             )

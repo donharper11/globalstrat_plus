@@ -454,6 +454,16 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
         # together, so the assessment runs on the saved rows. Raising here
         # unwinds the enclosing atomic block, which is what makes this a
         # rejection rather than a partial write followed by an error.
+        # W-CE2-01, at the other supported write path, on the saved rows for
+        # the same reason V2-024 is judged here: raising unwinds the
+        # enclosing atomic block, which makes it a rejection rather than a
+        # partial write followed by an error.
+        from core.engine.plants import plant_collisions
+        collisions = plant_collisions(
+            saved, language=get_user_language(request))
+        if collisions:
+            raise serializers.ValidationError({'plant_decisions': collisions})
+
         from core.services import funding_need
         assessment = funding_need.assess_submission(saved)
         if not assessment['within_limit']:
@@ -642,6 +652,20 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             if validated_items:
                 objs = [model_cls(submission=submission, **v) for v in validated_items]
                 model_cls.objects.bulk_create(objs)
+
+        # W-CE2-01: two plants started in one market in one round make the
+        # round unsnapshotable, and no screen can undo either decision once
+        # it is stored. Judged on the rows now persisted -- both halves of
+        # the collision are written by this view, from two different pages,
+        # in either order -- and raised inside the view's atomic block, so a
+        # refused save leaves the team's decisions exactly as they were.
+        if decision_type in ('plants', 'acquisitions'):
+            from core.engine.plants import plant_collisions
+            collisions = plant_collisions(
+                submission, language=get_user_language(request))
+            if collisions:
+                raise serializers.ValidationError(
+                    {'plant_decisions': collisions})
 
         # Log the change for team notifications
         try:
@@ -1002,6 +1026,12 @@ def lock_blockers_for(submission, language='en'):
     if not strategy_configured:
         errors.append(participant_message(
             'strategy_mix_required', language=language))
+
+    # W-CE2-01: a draft assembled before the saves refused this -- or by an
+    # import, the admin or a shell -- still cannot be locked into a round
+    # that would then refuse to process.
+    from core.engine.plants import plant_collisions
+    errors.extend(plant_collisions(submission, language=language))
 
     # Financing: debt ceiling
     try:
@@ -2386,6 +2416,7 @@ class StrategyContextView(APIView):
         # Strategy budget remaining
         strategy_budget_remaining = None
         rnd = Round.objects.filter(game=game, round_number=game.current_round).first()
+        sub = None
         if rnd:
             sub = DecisionSubmission.objects.filter(team=team, round=rnd).first()
             if sub:
@@ -2402,6 +2433,26 @@ class StrategyContextView(APIView):
                     strategy_budget_remaining = float(budget.strategy_budget - strat_spent)
                 except DecisionBudgetAllocation.DoesNotExist:
                     pass
+
+        # W-CE2-02: what the team can still commit, from the calculator the
+        # lock refuses on -- not a private sum. The M&A card offered
+        # "Acquire -- $25.0M" to a team holding $23.4M, the team queued it,
+        # and the lock then refused the whole submission for exactly that
+        # money. A screen that offers what the server will refuse is the
+        # defect; `unallocated` is what is left after everything already
+        # committed this round.
+        from core.services.rd_costs import budget_assessment
+        cash_on_hand = Decimal(team.cash_on_hand or 0)
+        committed_total = Decimal('0')
+        if sub is not None:
+            assessment = budget_assessment(sub, team)
+            committed_total = Decimal(assessment['committed_total'])
+            cash_on_hand = Decimal(assessment['cash_on_hand'])
+        affordability = {
+            'cash_on_hand': float(cash_on_hand),
+            'committed_total': float(committed_total),
+            'unallocated': float(cash_on_hand - committed_total),
+        }
 
         # Acquisition targets
         current_round = game.current_round
@@ -2485,6 +2536,7 @@ class StrategyContextView(APIView):
             'strategy_options': strategy_options,
             'financial': financial,
             'strategy_budget_remaining': strategy_budget_remaining,
+            'affordability': affordability,
             'acquisition_targets': acquisition_targets,
             'team_acquisitions': team_acquisitions,
         })
