@@ -2050,10 +2050,17 @@ class ProductContextView(APIView):
         scenario = game.scenario
 
         # Active platforms
+        #
+        # W-CE3-10: this is the Create Product modal's platform selector, and
+        # it read `tp.name` raw -- so the name `game_creation` generates and
+        # stores for a starting platform, *<Team> Base Platform*, reached a
+        # Chinese screen in English. `platform_display_name` renders that
+        # generated default in the reader's language and leaves a name the
+        # team chose alone; nothing stored changes.
         active_platforms = [
             {
                 'id': tp.id,
-                'name': tp.name or get_localized_field(tp.platform_generation, 'name', language),
+                'name': platform_display_name(tp, language, team_name=team.name),
                 'status': tp.status,
             }
             for tp in TeamPlatform.objects.filter(

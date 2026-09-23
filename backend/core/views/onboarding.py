@@ -3,7 +3,8 @@ Onboarding API — data for the student first-login walkthrough.
 """
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from core.utils.participant_messages import participant_refusal
+from core.utils.participant_messages import (
+    participant_refusal, platform_display_name)
 from rest_framework import status
 
 from django.db.models import Sum
@@ -56,7 +57,11 @@ class OnboardingDataView(APIView):
         platform = TeamPlatform.objects.filter(
             team=team, status='active',
         ).select_related('platform_generation').first()
-        platform_name = (platform.name or platform.platform_generation.name) if platform else None
+        # W-CE3-10: the post-login modal read `platform.name` raw, so the
+        # generated default *<Team> Base Platform* was the first thing a
+        # Chinese student saw after signing in, in English.
+        platform_name = (platform_display_name(
+            platform, language, team_name=team.name) if platform else None)
 
         # Total talent headcount
         talent_count = (

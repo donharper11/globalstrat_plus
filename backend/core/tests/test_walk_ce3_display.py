@@ -486,3 +486,129 @@ class TheScorecardReadsWhollyInOneLanguage(SimpleTestCase):
         self.assertEqual(
             rendered['entry_mode_risk']['details'],
             self.stored()['entry_mode_risk']['details'])
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-09 / W-CE3-10 — the reads W-CE2-06's repair did not cover
+# ---------------------------------------------------------------------------
+
+class TheNamesLeftInEnglish(TestCase):
+    """Two names that stayed English on a Chinese screen after W-CE2-06.
+
+    The market's name on the supply-chain decision screens, which read
+    `MarketDefinition.name` with no `get_localized_field`; and the English
+    suffix of the platform name `game_creation` generates, on three reads
+    beside the one `platform_display_name` already covered.
+    """
+
+    def setUp(self):
+        from core.engine.utils import _config_cache
+        from core.models import User
+        from core.models.course import Course, Enrollment, Section
+        from core.models.scenario import (MarketDefinition,
+                                          PlatformGenerationDefinition)
+        from core.models.team_state import TeamPlatform
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        _config_cache.clear()
+        self.addCleanup(_config_cache.clear)
+        self.game, teams = build_minimal_game(f'ce3names-{id(self)}')
+        self.team = teams[0]
+        self.scenario = self.game.scenario
+        MarketDefinition.objects.filter(scenario=self.scenario).update(
+            name='North America', name_zh='北美')
+
+        self.generation = PlatformGenerationDefinition.objects.create(
+            scenario=self.scenario, name='Generation 1', name_zh='第 1 代平台',
+            description='d', generation_order=1, unlock_round=0,
+            development_cost=D('1000000'), license_cost=D('2000000'),
+            development_rounds=1)
+        # Exactly the name `game_creation` writes for a starting platform.
+        self.platform = TeamPlatform.objects.create(
+            team=self.team, platform_generation=self.generation,
+            name=f'{self.team.name} Base Platform', status='active',
+            development_method='in_house', development_started_round=0,
+            funded_round=0, development_rounds_remaining=0)
+
+        course = Course.objects.create(
+            course_code=f'CE3N{id(self) % 100000}', course_name='Names',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        self.student = User.objects.create(
+            username=f'ce3names-{id(self)}', role='student', password_hash='x')
+        Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True)
+
+    def get(self, path, language=None):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.student)}')
+        headers = ({'HTTP_ACCEPT_LANGUAGE': language} if language else {})
+        response = client.get(path, **headers)
+        self.assertEqual(response.status_code, 200, response.data)
+        return response.data
+
+    # -- W-CE3-09 --------------------------------------------------------
+
+    def markets(self, language=None):
+        return self.get(f'/api/scenarios/{self.scenario.id}/markets/',
+                        language)
+
+    def test_the_supply_chain_market_list_names_the_market_for_the_reader(self):
+        self.assertEqual([m['name'] for m in self.markets('zh-CN')], ['北美'])
+
+    def test_the_english_reader_is_unchanged(self):
+        self.assertEqual([m['name'] for m in self.markets()],
+                         ['North America'])
+
+    def test_the_market_code_stays_a_code(self):
+        """`NA` / `APAC` are stable identifiers shown in a tag and used as an
+        option value; they are codes in both languages."""
+        self.assertEqual([m['code'] for m in self.markets('zh-CN')], ['HM'])
+
+    # -- W-CE3-10 --------------------------------------------------------
+
+    def test_the_create_product_platform_selector_renders_the_default(self):
+        data = self.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}'
+            f'/context/products/', 'zh-CN')
+
+        names = [p['name'] for p in data['active_platforms']]
+        self.assertEqual(names, [f'{self.team.name}基础平台'])
+
+    def test_the_dashboard_scorecard_renders_the_default(self):
+        data = self.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/dashboard/scorecard/',
+            'zh-CN')
+
+        self.assertNotIn('Base Platform', json.dumps(data, ensure_ascii=False))
+
+    def test_a_team_with_no_platform_reads_a_sentence_not_the_literal_None(self):
+        from core.models.team_state import TeamPlatform
+        TeamPlatform.objects.filter(pk=self.platform.pk).update(
+            status='retired')
+
+        data = self.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/dashboard/scorecard/',
+            'zh-CN')
+
+        blob = json.dumps(data, ensure_ascii=False)
+        self.assertNotIn('"None"', blob)
+        self.assertIn('无', blob)
+
+    def test_a_name_the_team_chose_is_never_translated(self):
+        from core.models.team_state import TeamPlatform
+        TeamPlatform.objects.filter(pk=self.platform.pk).update(
+            name='Aurora Core')
+
+        data = self.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}'
+            f'/context/products/', 'zh-CN')
+
+        self.assertEqual([p['name'] for p in data['active_platforms']],
+                         ['Aurora Core'])

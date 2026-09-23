@@ -195,6 +195,14 @@ MESSAGES = {
     #
     # They say no more than the leaderboard already publishes: the row's own
     # revenue is on the same line. No rival's score is named (R35's standard).
+    # W-CE3-10. `views/scorecard.py` hard-coded the English literal 'None'
+    # as the capability perspective's platform name for a team that holds no
+    # platform, so a Chinese dashboard read `None`. It is a stated absence,
+    # not a storage value, so it is a sentence like any other.
+    'platform_none_held': {
+        'en': 'None',
+        'zh-CN': '无',
+    },
     'inactivity_rank_marker': {
         'en': 'Did not compete',
         'zh-CN': '未参与竞争',
