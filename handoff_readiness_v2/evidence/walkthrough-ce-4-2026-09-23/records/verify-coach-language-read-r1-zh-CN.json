@@ -1,0 +1,805 @@
+{
+ "driver": "verify-coach-language-read-r1",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:19:51",
+ "steps": [
+  {
+   "name": "the console is being read in zh-CN",
+   "outcome": "pass",
+   "detail": "server says 'zh-CN'"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the AI Coach wrote alerts for round 1",
+   "outcome": "pass",
+   "detail": "31 alerts; api=200"
+  },
+  {
+   "name": "every alert is in the language of the instructor reading them (W-CE2-08, W-CE3-08)",
+   "outcome": "pass",
+   "detail": "reading as zh-CN: 31 of 31 alerts carry Chinese; the ones in the wrong language: []"
+  },
+  {
+   "name": "the panel itself is Chinese",
+   "outcome": "pass",
+   "detail": "4791 Han characters on the panel"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:19:59"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:04"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:19:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:19:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:20:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "10:20:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "10:20:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:20:28"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-coach-panel-r1",
+   "url": "/instructor",
+   "screenshot": "v-coach-panel-r1-zh-CN.jpg",
+   "note": "the AI Coach panel, console in Chinese",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 16
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 14
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 14
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 14
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 14
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 14
+    },
+    {
+     "english": "Photon Labs",
+     "n": 12
+    },
+    {
+     "english": "Prism Tech",
+     "n": 10
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v-coach-panel-r1",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 16
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 14
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 14
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 14
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 14
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 14
+    },
+    {
+     "english": "Photon Labs",
+     "n": 12
+    },
+    {
+     "english": "Prism Tech",
+     "n": 10
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "language_switch_clicks": [],
+  "language_after_switch": "zh-CN",
+  "coach_panel_text": "所有严重程度\n所有团队\n所有回合\n刷 新\nZenith Hardware\nR2\nZenith Hardware 的绩效指数下降了 5.1 点\n\n指数：44.86（此前为 49.92）。满意度得分：0.247。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nZenith Hardware\nR2\nZenith Hardware 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nZenith Hardware\nR2\nZenith Hardware 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nQuantum Edge\nR2\nQuantum Edge 的绩效指数下降了 5.0 点\n\n指数：44.99（此前为 49.99）。满意度得分：0.250。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nQuantum Edge\nR2\nQuantum Edge 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nQuantum Edge\nR2\nQuantum Edge 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nPrism Tech\nR2\nPrism Tech 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nPrism Tech\nR2\nPrism Tech 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nEclipse Gadgets\nR2\nEclipse Gadgets 的绩效指数下降了 3.5 点\n\n指数：48.09（此前为 51.54）。满意度得分：0.327。\n教学备注: 指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。\n确认\n关注\nEclipse Gadgets\nR2\nEclipse Gadgets 的战略一致性得分达到 95/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nEclipse Gadgets\nR2\nEclipse Gadgets 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nNova Circuit\nR2\nNova Circuit 通过从母国市场出口进入了东亚\n\n投资：$500,000。该市场增长率为 0%，关税率为 12%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nNova Circuit\nR2\nNova Circuit 的战略一致性得分达到 83/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nNova Circuit\nR2\nNova Circuit 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nCobalt Innovations\nR2\nCobalt Innovations 通过从母国市场出口进入了东亚\n\n投资：$500,000。该市场增长率为 0%，关税率为 12%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nCobalt Innovations\nR2\nCobalt Innovations 的战略一致性得分达到 83/100\n\n其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。\n教学备注: 在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？\n确认\n信息\nCobalt Innovations\nR2\nCobalt Innovations 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nPhoton Labs\nR2\nPhoton Labs 通过从母国市场出口进入了东亚\n\n投资：$500,000。该市场增长率为 0%，关税率为 12%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nPhoton Labs\nR2\nPhoton Labs 已连续 3 个回合未投入研发\n\n其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。\n教学备注: 典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。\n确认\n关注\nAurora Devices\nR2\nAurora Devices 通过从母国市场出口进入了东亚\n\n投资：$500,000。该市场增长率为 0%，关税率为 12%。\n教学备注: 讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。\n确认\n信息\nAurora Devices\nR2\nAurora Devices 收购了 AfriConnec",
+  "coach_api_status": 200,
+  "alerts_for_round": [
+   {
+    "id": 31,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware 的绩效指数下降了 5.1 点",
+    "detail": "指数：49.92（此前为 55.00）。满意度得分：0.246。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660945+00:00"
+   },
+   {
+    "id": 30,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Zenith Hardware 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660935+00:00"
+   },
+   {
+    "id": 29,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware 已连续 2 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660924+00:00"
+   },
+   {
+    "id": 28,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Zenith Hardware 本回合收入下降 100.0%",
+    "detail": "收入：$0（上回合为 $19,840,000）。请检查原因是定价、生产、市场份额流失还是汇率影响。",
+    "teaching_note": "在增长的市场中收入下降，说明存在竞争压力。可以问：\"你们的竞争地位发生了什么变化？是竞争对手进步了，还是你们停滞不前？\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660914+00:00"
+   },
+   {
+    "id": 27,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Quantum Edge 的绩效指数下降了 5.0 点",
+    "detail": "指数：49.99（此前为 55.00）。满意度得分：0.249。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660904+00:00"
+   },
+   {
+    "id": 26,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Quantum Edge 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660894+00:00"
+   },
+   {
+    "id": 25,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Quantum Edge 已连续 2 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660883+00:00"
+   },
+   {
+    "id": 24,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Quantum Edge 本回合收入下降 100.0%",
+    "detail": "收入：$0（上回合为 $11,990,000）。请检查原因是定价、生产、市场份额流失还是汇率影响。",
+    "teaching_note": "在增长的市场中收入下降，说明存在竞争压力。可以问：\"你们的竞争地位发生了什么变化？是竞争对手进步了，还是你们停滞不前？\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660873+00:00"
+   },
+   {
+    "id": 23,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Prism Tech 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660862+00:00"
+   },
+   {
+    "id": 22,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Prism Tech 已连续 2 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660852+00:00"
+   },
+   {
+    "id": 21,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Prism Tech 本回合收入下降 92.6%",
+    "detail": "收入：$1,407,000（上回合为 $19,140,000）。请检查原因是定价、生产、市场份额流失还是汇率影响。",
+    "teaching_note": "在增长的市场中收入下降，说明存在竞争压力。可以问：\"你们的竞争地位发生了什么变化？是竞争对手进步了，还是你们停滞不前？\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660841+00:00"
+   },
+   {
+    "id": 20,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Eclipse Gadgets 的绩效指数下降了 3.5 点",
+    "detail": "指数：51.54（此前为 55.00）。满意度得分：0.327。",
+    "teaching_note": "指数骤降表明多个利益相关者群体同时感到不满。该团队可能摊子铺得太开，或做出了相互矛盾的决策。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660823+00:00"
+   },
+   {
+    "id": 19,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Eclipse Gadgets 的战略一致性得分达到 95/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660813+00:00"
+   },
+   {
+    "id": 18,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Eclipse Gadgets 已连续 2 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660803+00:00"
+   },
+   {
+    "id": 17,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Eclipse Gadgets 本回合收入下降 99.2%",
+    "detail": "收入：$173,460（上回合为 $21,740,000）。请检查原因是定价、生产、市场份额流失还是汇率影响。",
+    "teaching_note": "在增长的市场中收入下降，说明存在竞争压力。可以问：\"你们的竞争地位发生了什么变化？是竞争对手进步了，还是你们停滞不前？\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660793+00:00"
+   },
+   {
+    "id": 16,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Nova Circuit 通过从母国市场出口进入了北美",
+    "detail": "投资：$500,000。该市场增长率为 0%，关税率为 0%。",
+    "teaching_note": "讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660782+00:00"
+   },
+   {
+    "id": 15,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Nova Circuit 的战略一致性得分达到 93/100",
+    "detail": "其战略内部一致：定价与定位相符，分销与细分市场匹配，进入模式与风险特征相称。",
+    "teaching_note": "在复盘中将此作为战略协同的范例加以强调。是哪些具体选择造就了这种一致性？",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660772+00:00"
+   },
+   {
+    "id": 14,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Nova Circuit 已连续 2 个回合未投入研发",
+    "detail": "其技术能力停滞不前，而竞争对手可能正在进步。这将削弱其在技术敏感型细分市场中的契合度得分。",
+    "teaching_note": "典型的短视思维陷阱：团队为了短期利润牺牲长期能力。参考：《创新者的窘境》——成熟企业在创新上投入不足。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660762+00:00"
+   },
+   {
+    "id": 13,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Nova Circuit 本回合收入下降 97.4%",
+    "detail": "收入：$405,720（上回合为 $15,400,000）。请检查原因是定价、生产、市场份额流失还是汇率影响。",
+    "teaching_note": "在增长的市场中收入下降，说明存在竞争压力。可以问：\"你们的竞争地位发生了什么变化？是竞争对手进步了，还是你们停滞不前？\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660751+00:00"
+   },
+   {
+    "id": 12,
+    "team_id": 3,
+    "team_name": "Cobalt Innovations",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Cobalt Innovations 通过从母国市场出口进入了北美",
+    "detail": "投资：$500,000。该市场增长率为 0%，关税率为 0%。",
+    "teaching_note": "讨论进入模式的选择：它是否与该市场的风险特征相匹配？参考：邓宁的 OLI 框架（进入模式选择）。",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660741+00:00"
+   }
+  ]
+ },
+ "summary": {
+  "passed": 5,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 1,
+  "console_errors": 8,
+  "api_calls": 33,
+  "api_refused": 0
+ }
+}

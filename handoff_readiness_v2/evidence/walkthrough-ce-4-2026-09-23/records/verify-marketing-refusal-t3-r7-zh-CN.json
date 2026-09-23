@@ -1,0 +1,171 @@
+{
+ "driver": "verify-marketing-refusal-t3-r7",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T12:43:18",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "a product-market row with no decision yet is available",
+   "outcome": "fail",
+   "detail": "every row already has a decision; the refusal path needs a fresh row"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:18"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:18"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/6/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/6/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/6/",
+   "status": 200,
+   "at": "12:43:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:43:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "12:43:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:28"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "team": "Cobalt Innovations",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "rows_stored": 2
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 0,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 17,
+  "api_refused": 0
+ }
+}

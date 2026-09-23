@@ -1,0 +1,164 @@
+{
+ "driver": "lock-t1-r8",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T13:01:24",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2602 = en"
+  },
+  {
+   "name": "student s2602 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 8 already locked for this team",
+   "outcome": "observed",
+   "detail": ""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:01:24"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:01:24"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:01:25"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:01:25"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "13:01:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:01:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=3",
+   "status": 200,
+   "at": "13:01:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "13:01:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/7/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/7/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/8/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/8/summary/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/8/summary/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/7/",
+   "status": 200,
+   "at": "13:01:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:01:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/8/",
+   "status": 200,
+   "at": "13:01:35"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "server_language_after_sign_in": {
+   "user": "s2602",
+   "asked": "en",
+   "server": "en"
+  }
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 0,
+  "observed": 1,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 16,
+  "api_refused": 0
+ }
+}

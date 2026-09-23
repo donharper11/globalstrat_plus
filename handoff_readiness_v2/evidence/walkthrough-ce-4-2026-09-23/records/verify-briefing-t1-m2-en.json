@@ -1,0 +1,262 @@
+{
+ "driver": "verify-briefing-t1-m2",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:25:27",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2603 = en"
+  },
+  {
+   "name": "s2603 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "W-CE3-11 the Strategic Briefing is English for an English team",
+   "outcome": "pass",
+   "detail": "0 Chinese characters on an English screen"
+  },
+  {
+   "name": "no Markdown is printed raw in the briefing",
+   "outcome": "pass",
+   "detail": "printed verbatim: []"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:25:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:25:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:25:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:25:28"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=4",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/2/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/onboarding/?game_id=1&team_id=1",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/3/summary/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/2/",
+   "status": 200,
+   "at": "10:25:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:25:35"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-briefing-t1-m2",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m2-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=4",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/onboarding/?game_id=1&team_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "student": "s2603",
+  "server_language_after_sign_in": {
+   "user": "s2603",
+   "asked": "en",
+   "server": "en"
+  },
+  "briefing_modal": "Your Global ChallengeYou've just been appointed CEO of Aurora Devices, a Consumer Electronics company headquartered in Africa.Your mission: take this company global. Expand into new markets, build technology platforms, compete against rivals, and earn the confidence of investors, governments, and customers across 5 regions — each with different cultures, regulations, currencies, and competitive dynamics.But going global isn't just about selling in more places. Your company carries its origin with it. Where you're from affects how customers trust you, how governments treat you, and how easily your talent operates abroad. Navigating these institutional barriers is the real challenge — and the real learning.SkipNext",
+  "raw_markdown": []
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 16,
+  "api_refused": 0
+ }
+}

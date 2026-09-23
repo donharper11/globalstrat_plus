@@ -1,0 +1,776 @@
+{
+ "driver": "instructor-tour-en-final",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T14:25:30",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "observed",
+   "detail": "asked en, server zh-CN -- an instructor has no enrolment, so signing in does not restate the language; the console is in en and the server still holds zh-CN"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "i11-pause-confirm control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  },
+  {
+   "name": "i12-extend-modal control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  },
+  {
+   "name": "i13-advance-modal control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  },
+  {
+   "name": "i14-reset-modal control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  },
+  {
+   "name": "i17-close-round-confirm control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  },
+  {
+   "name": "i18-close-and-process-modal control offered",
+   "outcome": "observed",
+   "detail": "not offered in this state"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:31"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "14:25:43"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "14:25:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "14:25:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "14:25:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "14:25:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "14:25:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "14:25:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "14:26:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "14:26:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "14:26:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "14:26:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "14:26:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "14:26:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-categories/?rubric_id=1",
+   "status": 200,
+   "at": "14:26:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/component-labels/",
+   "status": 200,
+   "at": "14:26:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/1/decisions/?round=10",
+   "status": 200,
+   "at": "14:26:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "14:26:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "14:26:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "14:26:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/resilience-weight-overrides/",
+   "status": 200,
+   "at": "14:26:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-event-catalog/",
+   "status": 200,
+   "at": "14:26:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-panel/",
+   "status": 200,
+   "at": "14:26:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "14:26:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "14:27:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "14:27:19"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "en-final-i00-login",
+   "url": "/instructor/login",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i01-courses",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i02-section-roster",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i03-roster-bulk-upload",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i04-assign-picker-open",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i10-game-control",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i15-archive-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "confirmation opened and cancelled",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i16-delete-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "confirmation opened and cancelled",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i19-change-deadline-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "confirmation opened and cancelled",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i20-team-configuration",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i21-students-logins",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i22-grading",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-categories/?rubric_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i22b-rubric-editor",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/grades/component-labels/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i23-team-overview",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i23b-decision-drill",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/1/decisions/?round=10",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i24-operator-log",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i25-supply-chain",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/resilience-weight-overrides/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-event-catalog/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-panel/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i26-event-manager",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i26b-inject-event-modal",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "confirmation opened and cancelled",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i27-briefings",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "en-final-i28-research-monitor",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "en-final-i29-ai-coach",
+   "url": "/instructor",
+   "screenshot": "not-captured",
+   "note": "",
+   "leaks": [],
+   "api": []
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "zh-CN"
+  },
+  "confirm:i15-archive-modal": "Archive GameArchive this game? It will be disabled but data preserved for reports.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelArchive",
+  "confirm:i16-delete-modal": "Delete GamePermanently delete this game and all of its data? Only a game that was never started can be deleted; archive any other game instead. This cannot be undone.Write why this is the right thing to do. Your reason is kept permanently with the record of this action.CancelDelete Forever",
+  "confirm:i19-change-deadline-modal": "Set round deadline — CE 2026 Heat AThe round closes automatically at this time and students are locked out. Clear it to let the round run until you close it by hand.Times are in your local timezone. Server time is currently 9/23/2026, 2:25:57 PM.CancelSave deadline",
+  "confirm:i26b-inject-event-modal": "Inject EventEvent Template:Select event templateTarget Market (optional):All marketsCancelOK"
+ },
+ "summary": {
+  "passed": 1,
+  "failed": 0,
+  "observed": 7,
+  "screens": 22,
+  "screens_with_leaks": 0,
+  "console_errors": 10,
+  "api_calls": 42,
+  "api_refused": 0
+ }
+}

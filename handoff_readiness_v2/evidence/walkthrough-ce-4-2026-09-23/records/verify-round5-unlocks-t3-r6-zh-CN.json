@@ -1,0 +1,980 @@
+{
+ "driver": "verify-round5-unlocks-t3-r6",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T11:42:02",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the round-5 platform generation appears once round 5 is open",
+   "outcome": "pass",
+   "detail": "3 generations offered: [\"第一代——标准电子产品\", \"第二代——智能互联平台\", \"第三代——AI原生可持续平台\"]"
+  },
+  {
+   "name": "the newly opened generation states its round prerequisite as met",
+   "outcome": "observed",
+   "detail": "[{\"requirement\": \"第 5 回合或之后\", \"met\": true, \"detail\": \"当前回合：6\"}, {\"requirement\": \"第 2 代平台必须处于活跃状态\", \"met\": false, \"detail\": \"尚未开发\"}, {\"requirement\": \"至少 4 项功能达到 14 级或以上\", \"met\": false, \"detail\": \"4 项中已有 0 项符合\"}]"
+  },
+  {
+   "name": "a customs classification can be chosen at round 6, and not before",
+   "outcome": "pass",
+   "detail": "picked='加工贸易'"
+  },
+  {
+   "name": "the customs classification is stored",
+   "outcome": "pass",
+   "detail": "[{\"id\": 2, \"round_number\": 6, \"classification\": \"processing_trade\", \"reverse_logistics_capacity_pct\": 0, \"team\": 3, \"round\": 7, \"destination_market\": 1, \"reverse_logistics_hub_market\": null}]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:02"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:02"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:02"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:02"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:20"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:42:37"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/5/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/5/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/5/",
+   "status": 200,
+   "at": "11:42:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/rd/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/rd/",
+   "status": 200,
+   "at": "11:42:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/sc/round/6/logistics/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/sc/round/6/logistics/",
+   "status": 200,
+   "at": "11:42:27"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/sc/round/6/logistics/",
+   "status": 201,
+   "at": "11:42:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "11:42:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "11:42:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/sc/round/6/logistics/",
+   "status": 200,
+   "at": "11:42:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/sc/round/6/logistics/",
+   "status": 200,
+   "at": "11:42:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/suppliers/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/sc/round/6/inventory/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "11:42:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/6/summary/",
+   "status": 200,
+   "at": "11:42:37"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-r5-t3-rd",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "v-r5-t3-rd-zh-CN.jpg",
+   "note": "R&D at round 6",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/rd/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/rd/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-rd-create-modal",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "v-r5-t3-rd-create-modal-zh-CN.jpg",
+   "note": "the platform modal at round 6, with the Gen 3 generation offered",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-logistics",
+   "url": "/games/1/teams/3/decisions/logistics",
+   "screenshot": "v-r5-t3-logistics-zh-CN.jpg",
+   "note": "Logistics at round 6",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/sc/round/6/logistics/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-logistics-saved",
+   "url": "/games/1/teams/3/decisions/logistics",
+   "screenshot": "v-r5-t3-logistics-saved-zh-CN.jpg",
+   "note": "after the customs classification was set",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/sc/round/6/logistics/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/sc/round/6/logistics/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/sc/round/6/logistics/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/sc/round/6/logistics/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-inventory",
+   "url": "/games/1/teams/3/decisions/inventory",
+   "screenshot": "v-r5-t3-inventory-zh-CN.jpg",
+   "note": "Inventory at round 6",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/suppliers/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/sc/round/6/inventory/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/6/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v-r5-t3-rd",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-rd-create-modal",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-logistics",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-logistics-saved",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t3-inventory",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Cobalt Innovations",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "available_generations": [
+   {
+    "name": "第一代——标准电子产品",
+    "generation_order": 1,
+    "development_cost": 5000000,
+    "team_already_owns": true,
+    "prerequisites_met": true,
+    "prerequisites": []
+   },
+   {
+    "name": "第二代——智能互联平台",
+    "generation_order": 2,
+    "development_cost": 15000000,
+    "team_already_owns": false,
+    "prerequisites_met": false,
+    "prerequisites": [
+     {
+      "requirement": "第 2 回合或之后",
+      "met": true,
+      "detail": "当前回合：6"
+     },
+     {
+      "requirement": "至少 3 项功能达到 10 级或以上",
+      "met": false,
+      "detail": "3 项中已有 1 项符合"
+     }
+    ]
+   },
+   {
+    "name": "第三代——AI原生可持续平台",
+    "generation_order": 3,
+    "development_cost": 25000000,
+    "team_already_owns": false,
+    "prerequisites_met": false,
+    "prerequisites": [
+     {
+      "requirement": "第 5 回合或之后",
+      "met": true,
+      "detail": "当前回合：6"
+     },
+     {
+      "requirement": "第 2 代平台必须处于活跃状态",
+      "met": false,
+      "detail": "尚未开发"
+     },
+     {
+      "requirement": "至少 4 项功能达到 14 级或以上",
+      "met": false,
+      "detail": "4 项中已有 0 项符合"
+     }
+    ]
+   }
+  ],
+  "create_platform_modal": "GS\nGLOBALSTRAT\n消费电子模拟\nR6 / 10草稿开放\n预算 $7.0M/$5.0M 超出预算\n研发 $0/$2.5M\n营销 $200K/$2.5M\n战略 $6.8M/$1.5M\nEN\nJB\nJonas Berg · Cobalt Innovations\n实时\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nCOBALT INNOVATIONS\n南美\n回合 6\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n研发、营销与战略支出合计 $7.0M，比经营预算 $5.0M 高出 $1.9M\n研发投资\n回合 6 · 研发预算: $1.5M上一回合净利润的 20%（0）+ 基础拨款（1,500,000）\n进行中\n创建新研发平台\n本回合的研发行动\n研发预算剩余 $1.5M。\n功能级研发投入现已不可用。请开发新的平台，并将产品迁移到该平台以改进产品。\n您的平台\n\t平台\t技术自主权\t应用生态\t电池续航\t耐用性\t处理器性能\t产品设计\t新增成本\n\tCobalt Innovations基础平台 active\t\n100%\n5 功能 | 100% 自研\n\t2/10\t9/12\t12/14\t5/14\t2/12\t—\n投资槽位\n\t平台\t技术自主权\t应用生态\t电池续航\t耐用性\t处理器性能\t产品设计\t新增成本\n暂无待投资项目。创建平台以分配研发预算。\n创建新研发平台\n平台名称\n技术基础\n第一代——标准电子产品基础: $5.0M\n第二代——智能互联平台基础: $15.0M\n 第 2 回合或之后 — 当前回合：6\n 至少 3 项功能达到 10 级或以上 — 3 项中已有 1 项符合\n第三代——AI原生可持续平台基础: $25.0M\n 第 5 回合或之后 — 当前回合：6\n 第 2 代平台必须处于活跃状态 — 尚未开发\n 至少 4 项功能达到 14 级或以上 — 4 项中已有 0 项符合\n功能配置\n最多设置5个功能等级。设为0可排除。\n处理器性能\n0\n14\n0\n—\n电池续航\n0\n12\n0\n—\n耐用性\n0\n14\n0\n—\n应用生态\n0\n10\n0\n—\n产品设计\n0\n12\n0\n—\n可持续性\n0\n8\n0\n—\n开发方式\n自主研发 — 基础成本，1 回合\n许可引进 — 2.5倍功能成本，即时完成\n合作开发 — 1.6倍功能成本，1 回合\n代次基础成本: $5.0M\n合计: $5.0M\n就绪: 1 回合\n研发预算: $1.5M\n超出预算: $3.5M\n必填: 平台名称, 成本超出研发预算\n取 消\n创建平台",
+  "logistics_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR6 / 10草稿开放\n预算 $7.0M/$5.0M 超出预算\n研发 $0/$2.5M\n营销 $200K/$2.5M\n战略 $6.8M/$1.5M\nEN\nJB\nJonas Berg · Cobalt Innovations\n实时\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nCOBALT INNOVATIONS\n南美\n回合 6\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n研发、营销与战略支出合计 $7.0M，比经营预算 $5.0M 高出 $1.9M\n物流与分销\n回合 6 · 设定每条路线的运输方式，以及各市场的贸易条款与清关方式。\n进行中\n已保存\n重新加载\n保存\n运输路线\n选择路线并设定海运、空运、铁路或公路运输比例。每条路线的总和必须为100%。\n添加路线\n尚未设置运输路线——请点击“添加路线”。\n各市场运输条款\n市场\tINCOTERMS\t保险比例 %\n北美 NA\t\n—\n\t\n\n东亚 APAC\t\n—\n\t\n\n西欧 EU\t\n—\n\t\n\n非洲 AFR\t\n—\n\t\n\n南美 LATAM\t\n—\n\t\n各市场清关与退货\n市场\t清关类型\t退货处理能力 %\t退货中心\n北美 NA\t\n—\n\t\n\t\n—\n\n东亚 APAC\t\n—\n\t\n\t\n—\n\n西欧 EU\t\n—\n\t\n\t\n—\n\n非洲 AFR\t\n—\n\t\n\t\n—\n\n南美 LATAM\t\n—\n\t\n\t\n—",
+  "logistics_before": {
+   "logistics": [],
+   "incoterms": [],
+   "customs": []
+  },
+  "customs_panel_found": 1,
+  "customs_panel_text": "各市场清关与退货\n市场\t清关类型\t退货处理能力 %\t退货中心\n北美 NA\t\n—\n\t\n\t\n—\n\n东亚 APAC\t\n—\n\t\n\t\n—\n\n西欧 EU\t\n—\n\t\n\t\n—\n\n非洲 AFR\t\n—\n\t\n\t\n—\n\n南美 LATAM\t\n—\n\t\n\t\n—",
+  "customs_rows": 5,
+  "customs_row_0_disabled": false,
+  "customs_classification_picked": "加工贸易",
+  "save_controls": 1,
+  "logistics_after": {
+   "logistics": [],
+   "incoterms": [],
+   "customs": [
+    {
+     "id": 2,
+     "round_number": 6,
+     "classification": "processing_trade",
+     "reverse_logistics_capacity_pct": 0,
+     "team": 3,
+     "round": 7,
+     "destination_market": 1,
+     "reverse_logistics_hub_market": null
+    }
+   ]
+  },
+  "inventory_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR6 / 10草稿开放\n预算 $7.0M/$5.0M 超出预算\n研发 $0/$2.5M\n营销 $200K/$2.5M\n战略 $6.8M/$1.5M\nEN\nJB\nJonas Berg · Cobalt Innovations\n实时\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n⚠️\n非洲政府警告 — 改善合规性否则面临限制\n│\n💱\nNGN 兑 BRL 贬值 2.0% — 非洲收入兑换减少\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n东亚关税上调 — 进口成本上升\n│\n📉\n西欧增长放缓 — 需求降温\n│\n📈\n非洲关税上调 — 进口成本上升\n│\n📉\n南美增长放缓 — 需求降温\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nCOBALT INNOVATIONS\n南美\n回合 6\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n研发、营销与战略支出合计 $7.0M，比经营预算 $5.0M 高出 $1.9M\n库存与韧性\n回合 6 · 设定库存缓冲，并为中断准备自动备用计划。\n进行中\n已保存\n重新加载\n保存\n库存缓冲\n尚未设置缓冲\n添加缓冲\n备用计划（中断时自动执行）\n备用供应商规则\n如果某项投入的供应商受到冲击，自动将部分采购转移至备用供应商。中断发生时这些规则会自动执行。\n尚无备用供应商规则\n添加备用规则\n运输方式切换规则\n如果路线变慢或中断，自动将部分货运转移到更快的运输方式。\n尚无运输方式切换规则\n添加运输方式切换规则"
+ },
+ "summary": {
+  "passed": 5,
+  "failed": 0,
+  "observed": 1,
+  "screens": 5,
+  "screens_with_leaks": 5,
+  "console_errors": 10,
+  "api_calls": 57,
+  "api_refused": 0
+ }
+}

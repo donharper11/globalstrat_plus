@@ -1,0 +1,1027 @@
+{
+ "driver": "fresh-browser-s2609",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:22:30",
+ "steps": [
+  {
+   "name": "s2609 signs in on a clean browser",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the server still holds this person's language",
+   "outcome": "pass",
+   "detail": "server says 'zh-CN', expected 'zh-CN'"
+  },
+  {
+   "name": "the first screen after sign-in is in the language the server holds for this person",
+   "outcome": "pass",
+   "detail": "18 Chinese characters in the modal; it begins \"Round 2 Strategic BriefingYour team's performance summary and strategic outlook**第 2 回合业绩** 收入增长 20.2%，达到 $454,406。净利润：$-13,179,296。现金状况：$19,482,944。Continue to\""
+  },
+  {
+   "name": "the interface is in the language the server holds",
+   "outcome": "pass",
+   "detail": "336 Chinese characters on the screen; localStorage.gs_language is 'en-US', and nothing in the product ever sets it from the language the server holds"
+  },
+  {
+   "name": "the prose the server renders comes back in that language too",
+   "outcome": "pass",
+   "detail": "451 Chinese characters in the served payload"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:22:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:22:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:22:41"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:22:41"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=10",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/2/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/2/",
+   "status": 200,
+   "at": "10:22:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:22:39"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/briefing/11/read/",
+   "status": 200,
+   "at": "10:22:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=10&section_id=1",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:22:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/1/",
+   "status": 200,
+   "at": "10:22:47"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-fresh-s2609-01-login",
+   "url": "/login",
+   "screenshot": "v4-fresh-s2609-01-login-zh-CN.jpg",
+   "note": "a browser that has never been used, nothing in localStorage",
+   "leaks": [
+    {
+     "english": "Advanced Strategic Management Simulation\nUsername\nPassword\nIf you have not been given",
+     "n": 1
+    },
+    {
+     "english": "try your student ID",
+     "n": 1
+    },
+    {
+     "english": "Built for Real Work",
+     "n": 1
+    },
+    {
+     "english": "Just Coursework\nTry the demo",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "v4-fresh-s2609-02-post-login-modal",
+   "url": "/",
+   "screenshot": "v4-fresh-s2609-02-post-login-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Consumer Electronics Sim",
+     "n": 1
+    },
+    {
+     "english": "over budget",
+     "n": 1
+    },
+    {
+     "english": "Iris Novak",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations\nLIVE",
+     "n": 1
+    },
+    {
+     "english": "Sourcing \nLogistics \nTrade Finance \nInventory",
+     "n": 1
+    },
+    {
+     "english": "Stakeholder Communications\nReview",
+     "n": 1
+    },
+    {
+     "english": "Round Results\nLeaderboard",
+     "n": 1
+    },
+    {
+     "english": "marketing and strategy spending totals",
+     "n": 1
+    },
+    {
+     "english": "which is",
+     "n": 1
+    },
+    {
+     "english": "over the operating budget of",
+     "n": 1
+    },
+    {
+     "english": "Dashboard\nBalanced Scorecard\nPerformance\nMarket Results\nEvents",
+     "n": 1
+    },
+    {
+     "english": "Intelligence\nStrategic Scorecard\nSupply Chain\nStrategic Briefing",
+     "n": 1
+    },
+    {
+     "english": "View Round\nRound",
+     "n": 1
+    },
+    {
+     "english": "loss\nCash",
+     "n": 1
+    },
+    {
+     "english": "limited\nDebt",
+     "n": 1
+    },
+    {
+     "english": "low\nShare Price",
+     "n": 1
+    },
+    {
+     "english": "Investor Sentiment",
+     "n": 1
+    },
+    {
+     "english": "Investors selling",
+     "n": 1
+    },
+    {
+     "english": "Satisfaction\nlow\nTop",
+     "n": 1
+    },
+    {
+     "english": "Tech Rating",
+     "n": 1
+    },
+    {
+     "english": "Markets Entered",
+     "n": 1
+    },
+    {
+     "english": "Platform Generation\nGen",
+     "n": 1
+    },
+    {
+     "english": "Product Count",
+     "n": 1
+    },
+    {
+     "english": "Margin Trend",
+     "n": 1
+    },
+    {
+     "english": "Compliance investment",
+     "n": 1
+    },
+    {
+     "english": "Platform development",
+     "n": 1
+    },
+    {
+     "english": "Payroll and talent",
+     "n": 1
+    },
+    {
+     "english": "Plant construction",
+     "n": 1
+    },
+    {
+     "english": "Committed this round",
+     "n": 1
+    },
+    {
+     "english": "available funds",
+     "n": 1
+    },
+    {
+     "english": "not yet committed\nNEXT REQUIRED ACTION",
+     "n": 1
+    },
+    {
+     "english": "Investment\nContinue here first",
+     "n": 1
+    },
+    {
+     "english": "checklist below updates as each draft decision is saved",
+     "n": 1
+    },
+    {
+     "english": "Continue to",
+     "n": 1
+    },
+    {
+     "english": "Investment\nNot started",
+     "n": 1
+    },
+    {
+     "english": "Product Portfolio\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Marketing Mix\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Strategy Mix\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Finance\nComplete\nReview",
+     "n": 1
+    },
+    {
+     "english": "Submit\nNot started\nRound",
+     "n": 1
+    },
+    {
+     "english": "Strategic Briefing\nYour team",
+     "n": 1
+    },
+    {
+     "english": "performance summary and strategic outlook",
+     "n": 1
+    },
+    {
+     "english": "Continue to Dashboard\nFull briefing available in the",
+     "n": 1
+    },
+    {
+     "english": "Strategic Briefing",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=10",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-fresh-s2609-03-interface",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "v4-fresh-s2609-03-interface-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Consumer Electronics Sim",
+     "n": 1
+    },
+    {
+     "english": "over budget",
+     "n": 1
+    },
+    {
+     "english": "Iris Novak",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations\nLIVE",
+     "n": 1
+    },
+    {
+     "english": "Sourcing \nLogistics \nTrade Finance \nInventory",
+     "n": 1
+    },
+    {
+     "english": "Stakeholder Communications\nReview",
+     "n": 1
+    },
+    {
+     "english": "Round Results\nLeaderboard",
+     "n": 1
+    },
+    {
+     "english": "marketing and strategy spending totals",
+     "n": 1
+    },
+    {
+     "english": "which is",
+     "n": 1
+    },
+    {
+     "english": "over the operating budget of",
+     "n": 1
+    },
+    {
+     "english": "Finance\nRound",
+     "n": 1
+    },
+    {
+     "english": "Capital Management",
+     "n": 1
+    },
+    {
+     "english": "Budget Allocation\nLocked\nCASH ON HAND",
+     "n": 1
+    },
+    {
+     "english": "Budget Allocation\nTax Structure\nCapital Management\nCURRENT BUDGET STATUS\nAvailable Budget",
+     "n": 1
+    },
+    {
+     "english": "Total Spent",
+     "n": 1
+    },
+    {
+     "english": "Compliance investment",
+     "n": 1
+    },
+    {
+     "english": "Platform development",
+     "n": 1
+    },
+    {
+     "english": "Payroll and talent",
+     "n": 1
+    },
+    {
+     "english": "Plant construction",
+     "n": 1
+    },
+    {
+     "english": "Committed this round",
+     "n": 1
+    },
+    {
+     "english": "available funds",
+     "n": 1
+    },
+    {
+     "english": "not yet committed\nBUDGET ALLOCATION\nAllocated budget",
+     "n": 1
+    },
+    {
+     "english": "exceeds the Round",
+     "n": 1
+    },
+    {
+     "english": "operating budget",
+     "n": 1
+    },
+    {
+     "english": "Budget\nMarketing Budget\nStrategy Budget\nTotal Allocated",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/briefing/11/read/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=10&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-fresh-s2609-01-login",
+   "leaks": [
+    {
+     "english": "Advanced Strategic Management Simulation\nUsername\nPassword\nIf you have not been given",
+     "n": 1
+    },
+    {
+     "english": "try your student ID",
+     "n": 1
+    },
+    {
+     "english": "Built for Real Work",
+     "n": 1
+    },
+    {
+     "english": "Just Coursework\nTry the demo",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-fresh-s2609-02-post-login-modal",
+   "leaks": [
+    {
+     "english": "Consumer Electronics Sim",
+     "n": 1
+    },
+    {
+     "english": "over budget",
+     "n": 1
+    },
+    {
+     "english": "Iris Novak",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations\nLIVE",
+     "n": 1
+    },
+    {
+     "english": "Sourcing \nLogistics \nTrade Finance \nInventory",
+     "n": 1
+    },
+    {
+     "english": "Stakeholder Communications\nReview",
+     "n": 1
+    },
+    {
+     "english": "Round Results\nLeaderboard",
+     "n": 1
+    },
+    {
+     "english": "marketing and strategy spending totals",
+     "n": 1
+    },
+    {
+     "english": "which is",
+     "n": 1
+    },
+    {
+     "english": "over the operating budget of",
+     "n": 1
+    },
+    {
+     "english": "Dashboard\nBalanced Scorecard\nPerformance\nMarket Results\nEvents",
+     "n": 1
+    },
+    {
+     "english": "Intelligence\nStrategic Scorecard\nSupply Chain\nStrategic Briefing",
+     "n": 1
+    },
+    {
+     "english": "View Round\nRound",
+     "n": 1
+    },
+    {
+     "english": "loss\nCash",
+     "n": 1
+    },
+    {
+     "english": "limited\nDebt",
+     "n": 1
+    },
+    {
+     "english": "low\nShare Price",
+     "n": 1
+    },
+    {
+     "english": "Investor Sentiment",
+     "n": 1
+    },
+    {
+     "english": "Investors selling",
+     "n": 1
+    },
+    {
+     "english": "Satisfaction\nlow\nTop",
+     "n": 1
+    },
+    {
+     "english": "Tech Rating",
+     "n": 1
+    },
+    {
+     "english": "Markets Entered",
+     "n": 1
+    },
+    {
+     "english": "Platform Generation\nGen",
+     "n": 1
+    },
+    {
+     "english": "Product Count",
+     "n": 1
+    },
+    {
+     "english": "Margin Trend",
+     "n": 1
+    },
+    {
+     "english": "Compliance investment",
+     "n": 1
+    },
+    {
+     "english": "Platform development",
+     "n": 1
+    },
+    {
+     "english": "Payroll and talent",
+     "n": 1
+    },
+    {
+     "english": "Plant construction",
+     "n": 1
+    },
+    {
+     "english": "Committed this round",
+     "n": 1
+    },
+    {
+     "english": "available funds",
+     "n": 1
+    },
+    {
+     "english": "not yet committed\nNEXT REQUIRED ACTION",
+     "n": 1
+    },
+    {
+     "english": "Investment\nContinue here first",
+     "n": 1
+    },
+    {
+     "english": "checklist below updates as each draft decision is saved",
+     "n": 1
+    },
+    {
+     "english": "Continue to",
+     "n": 1
+    },
+    {
+     "english": "Investment\nNot started",
+     "n": 1
+    },
+    {
+     "english": "Product Portfolio\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Marketing Mix\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Strategy Mix\nComplete",
+     "n": 1
+    },
+    {
+     "english": "Finance\nComplete\nReview",
+     "n": 1
+    },
+    {
+     "english": "Submit\nNot started\nRound",
+     "n": 1
+    },
+    {
+     "english": "Strategic Briefing\nYour team",
+     "n": 1
+    },
+    {
+     "english": "performance summary and strategic outlook",
+     "n": 1
+    },
+    {
+     "english": "Continue to Dashboard\nFull briefing available in the",
+     "n": 1
+    },
+    {
+     "english": "Strategic Briefing",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-fresh-s2609-03-interface",
+   "leaks": [
+    {
+     "english": "Consumer Electronics Sim",
+     "n": 1
+    },
+    {
+     "english": "over budget",
+     "n": 1
+    },
+    {
+     "english": "Iris Novak",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations\nLIVE",
+     "n": 1
+    },
+    {
+     "english": "Sourcing \nLogistics \nTrade Finance \nInventory",
+     "n": 1
+    },
+    {
+     "english": "Stakeholder Communications\nReview",
+     "n": 1
+    },
+    {
+     "english": "Round Results\nLeaderboard",
+     "n": 1
+    },
+    {
+     "english": "marketing and strategy spending totals",
+     "n": 1
+    },
+    {
+     "english": "which is",
+     "n": 1
+    },
+    {
+     "english": "over the operating budget of",
+     "n": 1
+    },
+    {
+     "english": "Finance\nRound",
+     "n": 1
+    },
+    {
+     "english": "Capital Management",
+     "n": 1
+    },
+    {
+     "english": "Budget Allocation\nLocked\nCASH ON HAND",
+     "n": 1
+    },
+    {
+     "english": "Budget Allocation\nTax Structure\nCapital Management\nCURRENT BUDGET STATUS\nAvailable Budget",
+     "n": 1
+    },
+    {
+     "english": "Total Spent",
+     "n": 1
+    },
+    {
+     "english": "Compliance investment",
+     "n": 1
+    },
+    {
+     "english": "Platform development",
+     "n": 1
+    },
+    {
+     "english": "Payroll and talent",
+     "n": 1
+    },
+    {
+     "english": "Plant construction",
+     "n": 1
+    },
+    {
+     "english": "Committed this round",
+     "n": 1
+    },
+    {
+     "english": "available funds",
+     "n": 1
+    },
+    {
+     "english": "not yet committed\nBUDGET ALLOCATION\nAllocated budget",
+     "n": 1
+    },
+    {
+     "english": "exceeds the Round",
+     "n": 1
+    },
+    {
+     "english": "operating budget",
+     "n": 1
+    },
+    {
+     "english": "Budget\nMarketing Budget\nStrategy Budget\nTotal Allocated",
+     "n": 1
+    },
+    {
+     "english": "budget remaining",
+     "n": 1
+    },
+    {
+     "english": "Enter dollar amounts directly",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "gs_language_before_sign_in": "en-US",
+  "server_language": "zh-CN",
+  "gs_language_after_sign_in": "en-US",
+  "post_login_modal": "Round 2 Strategic BriefingYour team's performance summary and strategic outlook**第 2 回合业绩** 收入增长 20.2%，达到 $454,406。净利润：$-13,179,296。现金状况：$19,482,944。Continue to DashboardFull briefing available in the \"Strategic Briefing\" tab",
+  "interface_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR3 of 10LOCKED\nBudget $5.5M/$5.0M over budget\nR&D $0/$2.5M\nMktg $300K/$2.5M\nStrat $5.3M/$1.5M\n中文\nIN\nIris Novak · Cobalt Innovations\nLIVE\n🚫\n北美运营限制生效 — 销售受限\n│\n⚠️\n东亚政府警告 — 改善合规性否则面临限制\n│\n💱\nCNY 兑 BRL 贬值 2.0% — 东亚收入兑换减少\n│\n💱\nNGN 兑 BRL 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n🚫\n北美运营限制生效 — 销售受限\n│\n⚠️\n东亚政府警告 — 改善合规性否则面临限制\n│\n💱\nCNY 兑 BRL 贬值 2.0% — 东亚收入兑换减少\n│\n💱\nNGN 兑 BRL 贬值 3.0% — 非洲收入兑换减少\n│\n📉\n北美增长放缓 — 需求降温\n│\n📉\n东亚增长放缓 — 需求降温\n│\n📈\n西欧关税上调 — 进口成本上升\n│\n📉\n非洲增长放缓 — 需求降温\n│\n📉\n南美增长放缓 — 需求降温\n│\n📈\n南美关税上调 — 进口成本上升\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nCOBALT INNOVATIONS\n南美\nRound 3\nDashboard\nINFORMATION\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务 \n公司预测\nStakeholder Communications\nReview & Submit \nRESULTS\nRound Results\nLeaderboard\nR&D, marketing and strategy spending totals $5.5M, which is $550K over the operating budget of $5.0M\nFinance\nRound 3 · Capital Management & Budget Allocation\nLocked\nCASH ON HAND\n$19.5M\nTOTAL DEBT\n$12.0M\nTOTAL EQUITY\n$18.8M\nDEBT / EQUITY",
+  "served_prose_sample": "{\"round_number\": 1, \"performance\": {\"index_value\": 54.52, \"index_change\": -0.48, \"satisfaction_score\": 0.4761, \"previous_index\": 55}, \"financials\": {\"total_revenue\": 378000, \"total_cogs\": 539550, \"gross_profit\": -161550, \"gross_margin_pct\": -0.4274, \"operating_income\": -14877760, \"net_income\": -14997760, \"cash_opening\": 50000000, \"cash_closing\": 26902240, \"total_debt\": 7000000, \"total_equity\": 32502240, \"roe\": -0.3726, \"debt_to_equity\": 0.2154, \"shareholder_return_cumulative\": -0.3125, \"rd_expense\": 0, \"platform_switch_write_off\": 0, \"marketing_expense\": 300000, \"strategy_expense\": 11550000, \"research_expense\": 50000, \"compliance_expense\": 0, \"interest_expense\": 120000, \"tax_expense\": 0, \"logistics_tariff_expense\": 504870, \"inventory_expense\": 0}, \"markets\": [{\"market_code\": \"LATAM\", \"mark"
+ },
+ "summary": {
+  "passed": 5,
+  "failed": 0,
+  "observed": 0,
+  "screens": 3,
+  "screens_with_leaks": 3,
+  "console_errors": 4,
+  "api_calls": 28,
+  "api_refused": 0
+ }
+}

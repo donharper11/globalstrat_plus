@@ -1,0 +1,446 @@
+{
+ "driver": "round-wont-process-r8",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T13:29:50",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "observed",
+   "detail": "asked en, server zh-CN -- an instructor has no enrolment, so signing in does not restate the language; the console is in en and the server still holds zh-CN"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 8 is closed with every team locked",
+   "outcome": "pass",
+   "detail": "status=closed locked=8/8 next_action=process"
+  },
+  {
+   "name": "the round processes when every team has locked it",
+   "outcome": "fail",
+   "detail": "status is still 'closed'; the route answered [400]; the operator was shown: ''"
+  },
+  {
+   "name": "the refusal names what has to change",
+   "outcome": "observed",
+   "detail": "{\"error\":\"Round 8 cannot be scored: 3 equity raise(s) exceed the funding shortfall they claim to finance. Correct the row(s) and retry. Aurora Devices: equity raise of $25,490,185.59 exceeds the funding shortfall of $19,490,185.59 (eligible uses $5,400,000.00 less available funding $-14,090,185.59: opening cash $-14,090,185.59 plus new debt $0.00). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.; Photon Labs: equity raise of $25,354,758.70 exceeds the funding shortfall of $17,354,758.70 (eligible uses $5,400,000.00 less available funding "
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:29:50"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:29:50"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:29:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:29:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:30:00"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:30:00"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "13:30:16"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "13:29:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:29:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:30:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "13:30:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "13:30:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "13:30:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "13:30:12"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 400,
+   "at": "13:30:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "13:30:32"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 400,
+   "at": "13:30:16",
+   "body": "{\"error\":\"Round 8 cannot be scored: 3 equity raise(s) exceed the funding shortfall they claim to finance. Correct the row(s) and retry. Aurora Devices: equity raise of $25,490,185.59 exceeds the funding shortfall of $19,490,185.59 (eligible uses $5,400,000.00 less available funding $-14,090,185.59: opening cash $-14,090,185.59 plus new debt $0.00). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.; Photon Labs: equity raise of $25,354,758.70 exceeds the funding shortfall of $17,354,758.70 (eligible uses $5,400,000.00 less available funding ",
+   "request": "{\"force\":false,\"expected_round_number\":8,\"expected_status\":\"closed\"}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v4-wont-process-00-closed",
+   "url": "/instructor",
+   "screenshot": "v4-wont-process-00-closed-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-wont-process-01-confirm",
+   "url": "/instructor",
+   "screenshot": "v4-wont-process-01-confirm-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "v4-wont-process-02-refused",
+   "url": "/instructor",
+   "screenshot": "v4-wont-process-02-refused-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/process/",
+     "s": 400
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "en",
+   "server": "zh-CN"
+  },
+  "round_control": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 8,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T13:30:12.572355+00:00",
+   "round": {
+    "round_id": 9,
+    "round_number": 8,
+    "status": "closed",
+    "processing_status": "FAILED",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T12:51:42.118337+00:00",
+    "deadline": "2026-10-31T18:00:00+00:00",
+    "closed_at": "2026-09-23T13:13:17.282445+00:00",
+    "close_reason": "manual",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 3299387,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 8,
+    "teams_pending": 0,
+    "next_action": "process"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "what_the_operator_is_shown": "",
+  "page_text": "GLOBALSTRAT — Instructor Portal\nWalkthrough Instructor\n中文\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n99+\nGAME\nCE 2026 Heat A#1\nDECISION ROUND\n8of 10\nROUND STATUS\nClosed; awaiting processing\nGAME STATUS\nactive\nTEAMS\n8(8 locked)\nMonitoring CE 2026 Heat A (#1)\nDecision round 8 of 10 is closed; awaiting processing. Game status: active. Latest processed results round: 7.\nGame Lifecycle\nAdvance Round\nExtend Deadline\nPause Game\nReset to Setup\nArchive Game\nDelete Game\nCurrent deadline: 10/31/2026, 6:00:00 PM\n8 of 8 teams have locked decisions.\nRound Control — CE 2026 Heat A · Round 8 of 10\nRefresh\nRound status\tclosedclosed by instructor\tDeadline\t\n10/31/2026, 6:00:00 PM\n38d 4h 29m remaining\n\tDecisions in\t8 / 8\nProcessing\tFailed\nA round closes at its deadline (or when you close it), then you run post-round processing, then you advance. Processing and advancing are separate so you can check the results before the game moves on.\nChange deadline\nRun post-round processing\nReopen round\nRound Schedule\nRefresh\nSave Schedule\nROUND\tSTATUS\tDEADLINE\nRound 1\tprocessed\t\nRound 2\tprocessed\t\nRound 3\tprocessed\t\nRound 4\tprocessed\t\nRound 5\tprocessed\t\nRound 6\tprocessed\t\nRound 7\tprocessed\t\nRound 8\tclosed\t\nRound 9\tpending\t\nRound 10\tpending\t\nQuick Schedule\nRound 1 starts:\nHours per round:\nGap (hrs):\nGenerate & Save\nTEAM CONFIGURATION\nExpand\nAssign home markets to teams before Round 1. Click \"Expand\" to open the team configuration panel.",
+  "process_refusals": [
+   {
+    "method": "POST",
+    "url": "/api/games/1/round-control/process/",
+    "status": 400,
+    "at": "13:30:16",
+    "body": "{\"error\":\"Round 8 cannot be scored: 3 equity raise(s) exceed the funding shortfall they claim to finance. Correct the row(s) and retry. Aurora Devices: equity raise of $25,490,185.59 exceeds the funding shortfall of $19,490,185.59 (eligible uses $5,400,000.00 less available funding $-14,090,185.59: opening cash $-14,090,185.59 plus new debt $0.00). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.; Photon Labs: equity raise of $25,354,758.70 exceeds the funding shortfall of $17,354,758.70 (eligible uses $5,400,000.00 less available funding ",
+    "request": "{\"force\":false,\"expected_round_number\":8,\"expected_status\":\"closed\"}"
+   }
+  ],
+  "round_control_after": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 8,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T13:30:32.198595+00:00",
+   "round": {
+    "round_id": 9,
+    "round_number": 8,
+    "status": "closed",
+    "processing_status": "FAILED",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T12:51:42.118337+00:00",
+    "deadline": "2026-10-31T18:00:00+00:00",
+    "closed_at": "2026-09-23T13:13:17.282445+00:00",
+    "close_reason": "manual",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 3299367,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 8,
+    "teams_pending": 0,
+    "next_action": "process"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  }
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 1,
+  "observed": 2,
+  "screens": 3,
+  "screens_with_leaks": 0,
+  "console_errors": 7,
+  "api_calls": 21,
+  "api_refused": 1
+ }
+}

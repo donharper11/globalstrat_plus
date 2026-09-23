@@ -1,0 +1,134 @@
+{
+ "checks": [
+  {
+   "name": "every alert reads in the language of the instructor reading them (zh-CN)",
+   "outcome": "pass",
+   "detail": "100 alerts, 0 in the other language; e.g. []"
+  },
+  {
+   "name": "no sentinel figure is printed to the instructor as a number (zh-CN)",
+   "outcome": "fail",
+   "detail": "12 alerts carry 99999; e.g. [{\"round\": 10, \"title\": \"Nova Circuit 的资产负债率达到 99999.00\"}, {\"round\": 10, \"title\": \"Cobalt Innovations 的资产负债率达到 99999.00\"}, {\"round\": 10, \"title\": \"Photon Labs 的资产负债率达到 99999.00\"}]"
+  },
+  {
+   "name": "every alert reads in the language of the instructor reading them (en)",
+   "outcome": "pass",
+   "detail": "100 alerts, 0 in the other language; e.g. []"
+  },
+  {
+   "name": "no sentinel figure is printed to the instructor as a number (en)",
+   "outcome": "fail",
+   "detail": "12 alerts carry 99999; e.g. [{\"round\": 10, \"title\": \"Nova Circuit debt-to-equity ratio at 99999.00\"}, {\"round\": 10, \"title\": \"Cobalt Innovations debt-to-equity ratio at 99999.00\"}, {\"round\": 10, \"title\": \"Photon Labs debt-to-equity ratio at 99999.00\"}]"
+  }
+ ],
+ "by_language": {
+  "zh-CN": {
+   "alerts": 100,
+   "wrong_language": [],
+   "sentinel_figures": [
+    {
+     "round": 10,
+     "title": "Nova Circuit 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Cobalt Innovations 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Photon Labs 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Aurora Devices 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Nova Circuit 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Cobalt Innovations 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Photon Labs 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Aurora Devices 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Nova Circuit 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Cobalt Innovations 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Photon Labs 的资产负债率达到 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Aurora Devices 的资产负债率达到 99999.00"
+    }
+   ]
+  },
+  "en": {
+   "alerts": 100,
+   "wrong_language": [],
+   "sentinel_figures": [
+    {
+     "round": 10,
+     "title": "Nova Circuit debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Cobalt Innovations debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Photon Labs debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 10,
+     "title": "Aurora Devices debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Nova Circuit debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Cobalt Innovations debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Photon Labs debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 9,
+     "title": "Aurora Devices debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Nova Circuit debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Cobalt Innovations debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Photon Labs debt-to-equity ratio at 99999.00"
+    },
+    {
+     "round": 8,
+     "title": "Aurora Devices debt-to-equity ratio at 99999.00"
+    }
+   ]
+  }
+ }
+}

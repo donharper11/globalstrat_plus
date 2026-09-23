@@ -1,0 +1,567 @@
+{
+ "driver": "leaderboard-marker-t1",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T13:47:04",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2601 = en"
+  },
+  {
+   "name": "s2601 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the round the page is showing has a score ranked below a lower one",
+   "outcome": "observed",
+   "detail": "round 8: [[\"Prism Tech\", 33.08, \"Nova Circuit\", 46.64], [\"Eclipse Gadgets\", 21.2, \"Nova Circuit\", 46.64]]"
+  },
+  {
+   "name": "the Leaderboard opens on the latest PROCESSED round",
+   "outcome": "fail",
+   "detail": "it opened on 'Round 0 · Team Rankings'; the latest processed round is 8"
+  },
+  {
+   "name": "W-CE3-15 the marker the route serves is on the row",
+   "outcome": "pass",
+   "detail": "markers served: [\"Did not compete\"]; found on the page: [\"Did not compete\"]"
+  },
+  {
+   "name": "W-CE3-15 the rule is printed under the table",
+   "outcome": "pass",
+   "detail": "note served: 'A company that sold nothing in a round did not compete in it, and is placed below every company that did, whatever its score. The performance index itself is not reduced; only the placing.'; on the page: True"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:04"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:05"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:47:15"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=2",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/9/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "13:47:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/8/",
+   "status": 200,
+   "at": "13:47:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/8/",
+   "status": 200,
+   "at": "13:47:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:47:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:47:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/8/",
+   "status": 200,
+   "at": "13:47:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:47:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=2&section_id=1",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/0/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/9/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/history/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:47:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/12/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/11/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/10/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/9/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/8/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/8/",
+   "status": 200,
+   "at": "13:47:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/8/",
+   "status": 200,
+   "at": "13:47:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/history/",
+   "status": 200,
+   "at": "13:47:29"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-leaderboard-as-opened",
+   "url": "/games/1/leaderboard",
+   "screenshot": "v4-leaderboard-as-opened-en.jpg",
+   "note": "the Leaderboard as it opens, before anything is chosen",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=2",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=2&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/0/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/9/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-leaderboard-round8",
+   "url": "/games/1/leaderboard",
+   "screenshot": "v4-leaderboard-round8-en.jpg",
+   "note": "the Leaderboard with round 8 chosen",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/12/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/11/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/10/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/history/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "s2601",
+   "asked": "en",
+   "server": "en"
+  },
+  "page_text_as_opened": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR9 of 10LOCKED\nBudget $1.3M/$5.0M\nR&D $0/$0\nMktg $500K/$500K\nStrat $750K/$750K\n中文\nAC\nAva Chen · Aurora Devices\nLIVE\n❌\nAfriConnect Distribution terminated partnership in Africa — all benefits suspended\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n🚫\nOperating restrictions active in South America — sales capped\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n❌\nAfriConnect Distribution terminated partnership in Africa — all benefits suspended\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n🚫\nOperating restrictions active in South America — sales capped\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\nAURORA DEVICES\nAFRICA\nRound 9\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit \nRESULTS\nRound Results\nLeaderboard\nLeaderboard\nRound 0 · Team Rankings\nView Round\nRound 0\nRANKINGS\nRANK\n\tTEAM\t\nINDEX\n\t\nCHANGE\n\t\nREVENUE\n\t\nNET INCOME\n\t\nRETURN\n\tEU SHARE\n1\tPhoton Labs\t55.00\t+0.00\t$22.6M\t$14.4M\t0.0%\t13%\n1\tEclipse Gadgets\t55.00\t+0.00\t$21.7M\t$14.0M\t0.0%\t—\n1\tCobalt Innovations\t55.00\t+0.00\t$20.8M\t$11.7M\t0.0%\t—\n1\tAurora Devices\t55.00\t+0.00\t$20.1M\t$12.3M\t0.0%\t—\n1\tZenith Hardware\t55.00\t+0.00\t$19.8M\t$12.3M\t0.0%\t10%\n1\tPrism Tech\t55.00\t+0.00\t$19.1M\t$11.9M\t0.0%\t—\n1\tNova Circuit\t55.00\t+0.00\t$15.4M\t$8.6M\t0.0%\t—\n1\tQuantum Edge\t55.00\t+0.00\t$12.0M\t$8.5M\t0.0%\t—\nPERFORMANCE INDEX TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n0\n20\n40\n60\n80\nREVENUE TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n$0\n$20.0M\n$40.0M\n$60.0M\n$80.0M\nSHARE PRICE TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n$0.00\n$15.00\n$30.00\n$45.00\n$60.00\n$0.00",
+  "round_the_page_opened_on": "Round 0 · Team Rankings",
+  "round_the_page_shows": 8,
+  "rank_rule_note": "A company that sold nothing in a round did not compete in it, and is placed below every company that did, whatever its score. The performance index itself is not reduced; only the placing.",
+  "marked_rows": [
+   "Nova Circuit",
+   "Quantum Edge",
+   "Zenith Hardware"
+  ],
+  "markers": [
+   "Did not compete"
+  ],
+  "rows": [
+   {
+    "rank": 1,
+    "team_name": "Photon Labs",
+    "performance_index": 68.81,
+    "total_revenue": 3822000,
+    "commercially_inactive": false,
+    "rank_marker": null
+   },
+   {
+    "rank": 2,
+    "team_name": "Cobalt Innovations",
+    "performance_index": 54.81,
+    "total_revenue": 3822000,
+    "commercially_inactive": false,
+    "rank_marker": null
+   },
+   {
+    "rank": 3,
+    "team_name": "Aurora Devices",
+    "performance_index": 51.62,
+    "total_revenue": 3822000,
+    "commercially_inactive": false,
+    "rank_marker": null
+   },
+   {
+    "rank": 4,
+    "team_name": "Prism Tech",
+    "performance_index": 33.08,
+    "total_revenue": 1407000,
+    "commercially_inactive": false,
+    "rank_marker": null
+   },
+   {
+    "rank": 5,
+    "team_name": "Eclipse Gadgets",
+    "performance_index": 21.2,
+    "total_revenue": 173460,
+    "commercially_inactive": false,
+    "rank_marker": null
+   },
+   {
+    "rank": 6,
+    "team_name": "Nova Circuit",
+    "performance_index": 46.64,
+    "total_revenue": 0,
+    "commercially_inactive": true,
+    "rank_marker": "Did not compete"
+   },
+   {
+    "rank": 7,
+    "team_name": "Quantum Edge",
+    "performance_index": 14.91,
+    "total_revenue": 0,
+    "commercially_inactive": true,
+    "rank_marker": "Did not compete"
+   },
+   {
+    "rank": 8,
+    "team_name": "Zenith Hardware",
+    "performance_index": 14.31,
+    "total_revenue": 0,
+    "commercially_inactive": true,
+    "rank_marker": "Did not compete"
+   }
+  ],
+  "inversions": [
+   [
+    "Prism Tech",
+    33.08,
+    "Nova Circuit",
+    46.64
+   ],
+   [
+    "Eclipse Gadgets",
+    21.2,
+    "Nova Circuit",
+    46.64
+   ]
+  ],
+  "page_text_on_round_8": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR9 of 10LOCKED\nBudget $1.3M/$5.0M\nR&D $0/$0\nMktg $500K/$500K\nStrat $750K/$750K\n中文\nAC\nAva Chen · Aurora Devices\nLIVE\n❌\nAfriConnect Distribution terminated partnership in Africa — all benefits suspended\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n🚫\nOperating restrictions active in South America — sales capped\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n❌\nAfriConnect Distribution terminated partnership in Africa — all benefits suspended\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n🚫\nOperating restrictions active in South America — sales capped\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\nAURORA DEVICES\nAFRICA\nRound 9\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit \nRESULTS\nRound Results\nLeaderboard\nLeaderboard\nRound 8 · Team Rankings\nView Round\nRound 8\nRANKINGS\nRANK\n\tTEAM\t\nINDEX\n\t\nCHANGE\n\t\nREVENUE\n\t\nNET INCOME\n\t\nRETURN\n\tEU SHARE\tNA SHARE\tAFR SHARE\tAPAC SHARE\tLATAM SHARE\n1\tPhoton Labs\t68.81\t+1.53\t$3.8M\t$-4.7M\t-99.9%\t0%\t29%\t0%\t0%\t0%\n2\tCobalt Innovations\t54.81\t+1.48\t$3.8M\t$-5.7M\t-99.9%\t0%\t29%\t0%\t0%\t0%\n3\tAurora Devices\t51.62\t+0.75\t$3.8M\t$-5.2M\t-99.9%\t0%\t29%\t0%\t0%\t0%\n4\tPrism Tech\t33.08\t-2.39\t$1.4M\t$-516K\t-13.6%\t0%\t13%\t0%\t0%\t0%\n5\tEclipse Gadgets\t21.20\t-3.50\t$173K\t$-1.7M\t-30.1%\t0%\t0%\t0%\t100%\t0%\n6\tNova CircuitDid not compete\t46.64\t-5.00\t$0\t$-8.0M\t-99.9%\t0%\t0%\t0%\t0%\t0%\n7\tQuantum EdgeDid not compete\t14.91\t-5.04\t$0\t$-650K\t-10.4%\t0%\t0%\t0%\t0%\t0%\n8\tZenith HardwareDid not compete\t14.31\t-5.13\t$0\t$-1.1M\t-20.2%\t0%\t0%\t0%\t0%\t0%\nA company that sold nothing in a round did not compete in it, and is placed below every company that did, whatever its score. The performance index itself is not reduced; only the placing.\nPERFORMANCE INDEX TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n0\n20\n40\n60\n80\nREVENUE TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n$0\n$20.0M\n$40.0M\n$60.0M\n$80.0M\nSHARE PRICE TREND\nAurora DevicesCobalt InnovationsEclipse GadgetsNova CircuitPhoton LabsPrism TechQuantum EdgeZenith Hardware\nR0\nR1\nR2\nR3\nR4\nR5\nR6\nR7\nR8\n$0.00\n$15.00\n$30.00\n$45.00\n$60.00\n$0.00"
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 1,
+  "observed": 1,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 33,
+  "api_refused": 0
+ }
+}

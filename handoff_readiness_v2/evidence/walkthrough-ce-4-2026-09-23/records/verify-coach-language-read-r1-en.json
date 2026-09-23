@@ -1,0 +1,790 @@
+{
+ "driver": "verify-coach-language-read-r1",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:20:36",
+ "steps": [
+  {
+   "name": "the console is being read in en",
+   "outcome": "pass",
+   "detail": "server says 'en'"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the AI Coach wrote alerts for round 1",
+   "outcome": "pass",
+   "detail": "31 alerts; api=200"
+  },
+  {
+   "name": "every alert is in the language of the instructor reading them (W-CE2-08, W-CE3-08)",
+   "outcome": "fail",
+   "detail": "reading as en: 4 of 31 alerts carry Chinese; the ones in the wrong language: [\"Nova Circuit entered 北美 via 从母国市场出口 Investment: $500,000. This market has 0% growth rate and 0% tariff rate.\", \"Cobalt Innovations entered 北美 via 从母国市场出口 Investment: $500,000. This market has 0% growth rate and 0% tariff rate.\", \"Photon Labs entered 北美 via 从母国市场出口 Investment: $500,000. This market has 0% growth rate and 0% tariff rate.\", \"Aurora Devices entered 北美 via 从母国市场出口 Investment: $500,00"
+  },
+  {
+   "name": "the panel itself is Chinese",
+   "outcome": "pass",
+   "detail": "72 Han characters on the panel"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:37"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:49"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:49"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:54"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:20:54"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:20:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:44"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:47"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:20:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "10:20:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:20:55"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "10:21:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "10:21:04"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:21:18"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-coach-panel-r1",
+   "url": "/instructor",
+   "screenshot": "v-coach-panel-r1-en.jpg",
+   "note": "the AI Coach panel, console in Chinese",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "language_switch_clicks": [
+   {
+    "label": "中文",
+    "server_after": "zh-CN"
+   },
+   {
+    "label": "EN",
+    "server_after": "en"
+   }
+  ],
+  "language_after_switch": "en",
+  "coach_panel_text": "All Severities\nAll Teams\nAll Rounds\nRefresh\nZenith Hardware\nR2\nZenith Hardware performance index dropped 5.1 points\n\nIndex: 44.86 (was 49.92). Satisfaction score: 0.247.\nTeaching note: A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.\nAcknowledge\nConcern\nZenith Hardware\nR2\nZenith Hardware achieved a coherence score of 95/100\n\nTheir strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.\nTeaching note: Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?\nAcknowledge\nInfo\nZenith Hardware\nR2\nZenith Hardware has not invested in R&D for 3 consecutive rounds\n\nTheir technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.\nTeaching note: Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.\nAcknowledge\nConcern\nQuantum Edge\nR2\nQuantum Edge performance index dropped 5.0 points\n\nIndex: 44.99 (was 49.99). Satisfaction score: 0.250.\nTeaching note: A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.\nAcknowledge\nConcern\nQuantum Edge\nR2\nQuantum Edge achieved a coherence score of 95/100\n\nTheir strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.\nTeaching note: Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?\nAcknowledge\nInfo\nQuantum Edge\nR2\nQuantum Edge has not invested in R&D for 3 consecutive rounds\n\nTheir technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.\nTeaching note: Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.\nAcknowledge\nConcern\nPrism Tech\nR2\nPrism Tech achieved a coherence score of 95/100\n\nTheir strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.\nTeaching note: Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?\nAcknowledge\nInfo\nPrism Tech\nR2\nPrism Tech has not invested in R&D for 3 consecutive rounds\n\nTheir technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.\nTeaching note: Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovatio",
+  "coach_api_status": 200,
+  "alerts_for_round": [
+   {
+    "id": 31,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware performance index dropped 5.1 points",
+    "detail": "Index: 49.92 (was 55.00). Satisfaction score: 0.246.",
+    "teaching_note": "A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660945+00:00"
+   },
+   {
+    "id": 30,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Zenith Hardware achieved a coherence score of 95/100",
+    "detail": "Their strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.",
+    "teaching_note": "Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660935+00:00"
+   },
+   {
+    "id": 29,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Zenith Hardware has not invested in R&D for 2 consecutive rounds",
+    "detail": "Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.",
+    "teaching_note": "Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660924+00:00"
+   },
+   {
+    "id": 28,
+    "team_id": 8,
+    "team_name": "Zenith Hardware",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Zenith Hardware revenue declined 100.0% this round",
+    "detail": "Revenue: $0 (was $19,840,000). Check if this is due to pricing, production, market share loss, or currency effects.",
+    "teaching_note": "Revenue decline in a growing market suggests competitive pressure. Ask: \"What changed in your competitive position? Did competitors improve or did you stand still?\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660914+00:00"
+   },
+   {
+    "id": 27,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Quantum Edge performance index dropped 5.0 points",
+    "detail": "Index: 49.99 (was 55.00). Satisfaction score: 0.249.",
+    "teaching_note": "A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660904+00:00"
+   },
+   {
+    "id": 26,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Quantum Edge achieved a coherence score of 95/100",
+    "detail": "Their strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.",
+    "teaching_note": "Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660894+00:00"
+   },
+   {
+    "id": 25,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Quantum Edge has not invested in R&D for 2 consecutive rounds",
+    "detail": "Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.",
+    "teaching_note": "Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660883+00:00"
+   },
+   {
+    "id": 24,
+    "team_id": 7,
+    "team_name": "Quantum Edge",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Quantum Edge revenue declined 100.0% this round",
+    "detail": "Revenue: $0 (was $11,990,000). Check if this is due to pricing, production, market share loss, or currency effects.",
+    "teaching_note": "Revenue decline in a growing market suggests competitive pressure. Ask: \"What changed in your competitive position? Did competitors improve or did you stand still?\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660873+00:00"
+   },
+   {
+    "id": 23,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Prism Tech achieved a coherence score of 95/100",
+    "detail": "Their strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.",
+    "teaching_note": "Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660862+00:00"
+   },
+   {
+    "id": 22,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Prism Tech has not invested in R&D for 2 consecutive rounds",
+    "detail": "Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.",
+    "teaching_note": "Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660852+00:00"
+   },
+   {
+    "id": 21,
+    "team_id": 6,
+    "team_name": "Prism Tech",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Prism Tech revenue declined 92.6% this round",
+    "detail": "Revenue: $1,407,000 (was $19,140,000). Check if this is due to pricing, production, market share loss, or currency effects.",
+    "teaching_note": "Revenue decline in a growing market suggests competitive pressure. Ask: \"What changed in your competitive position? Did competitors improve or did you stand still?\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660841+00:00"
+   },
+   {
+    "id": 20,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Eclipse Gadgets performance index dropped 3.5 points",
+    "detail": "Index: 51.54 (was 55.00). Satisfaction score: 0.327.",
+    "teaching_note": "A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660823+00:00"
+   },
+   {
+    "id": 19,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Eclipse Gadgets achieved a coherence score of 95/100",
+    "detail": "Their strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.",
+    "teaching_note": "Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660813+00:00"
+   },
+   {
+    "id": 18,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Eclipse Gadgets has not invested in R&D for 2 consecutive rounds",
+    "detail": "Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.",
+    "teaching_note": "Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660803+00:00"
+   },
+   {
+    "id": 17,
+    "team_id": 5,
+    "team_name": "Eclipse Gadgets",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Eclipse Gadgets revenue declined 99.2% this round",
+    "detail": "Revenue: $173,460 (was $21,740,000). Check if this is due to pricing, production, market share loss, or currency effects.",
+    "teaching_note": "Revenue decline in a growing market suggests competitive pressure. Ask: \"What changed in your competitive position? Did competitors improve or did you stand still?\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660793+00:00"
+   },
+   {
+    "id": 16,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Nova Circuit entered 北美 via 从母国市场出口",
+    "detail": "Investment: $500,000. This market has 0% growth rate and 0% tariff rate.",
+    "teaching_note": "Discuss entry mode choice. Was this the right fit for the market's risk profile? Reference: Dunning's OLI framework for entry mode selection.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660782+00:00"
+   },
+   {
+    "id": 15,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Nova Circuit achieved a coherence score of 93/100",
+    "detail": "Their strategy is internally consistent. Pricing aligns with positioning, distribution matches segments, entry modes match risk profiles.",
+    "teaching_note": "Highlight this in debrief as an example of strategic alignment. What specific choices created this coherence?",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660772+00:00"
+   },
+   {
+    "id": 14,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "concern",
+    "title": "Nova Circuit has not invested in R&D for 2 consecutive rounds",
+    "detail": "Their technology capability is stagnating while competitors may be advancing. This will erode fit scores with technology-sensitive segments.",
+    "teaching_note": "Classic short-term thinking trap. Teams sacrifice long-term capability for short-term profits. Reference: The Innovator's Dilemma — established firms underinvest in innovation.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660762+00:00"
+   },
+   {
+    "id": 13,
+    "team_id": 4,
+    "team_name": "Nova Circuit",
+    "round_number": 1,
+    "alert_type": "strategic",
+    "severity": "watch",
+    "title": "Nova Circuit revenue declined 97.4% this round",
+    "detail": "Revenue: $405,720 (was $15,400,000). Check if this is due to pricing, production, market share loss, or currency effects.",
+    "teaching_note": "Revenue decline in a growing market suggests competitive pressure. Ask: \"What changed in your competitive position? Did competitors improve or did you stand still?\"",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660751+00:00"
+   },
+   {
+    "id": 12,
+    "team_id": 3,
+    "team_name": "Cobalt Innovations",
+    "round_number": 1,
+    "alert_type": "notable_move",
+    "severity": "info",
+    "title": "Cobalt Innovations entered 北美 via 从母国市场出口",
+    "detail": "Investment: $500,000. This market has 0% growth rate and 0% tariff rate.",
+    "teaching_note": "Discuss entry mode choice. Was this the right fit for the market's risk profile? Reference: Dunning's OLI framework for entry mode selection.",
+    "acknowledged": false,
+    "created_at": "2026-09-23T10:02:42.660741+00:00"
+   }
+  ]
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 1,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 38,
+  "api_refused": 0
+ }
+}
