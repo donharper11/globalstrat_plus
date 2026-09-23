@@ -102,8 +102,14 @@ def main():
         R.observe('operator_log_api', api_rows['status'])
         if isinstance(api_rows.get('body'), dict):
             rows = api_rows['body'].get('events') or api_rows['body'].get('results') or []
-            bad = [r for r in rows if any(s in json.dumps(r, ensure_ascii=False)
-                                          for s in DEVELOPER_SHAPES)]
+            # Only the PROSE fields an operator reads. The structured
+            # before/after payload of an audit row legitimately carries
+            # storage keys -- that is the record, not a sentence -- and the
+            # walkthrough-2 defect was about the sentence.
+            def prose(row):
+                return ' | '.join(str(row.get(k) or '') for k in
+                                  ('detail', 'message', 'reason', 'summary', 'error'))
+            bad = [r for r in rows if any(s in prose(r) for s in DEVELOPER_SHAPES)]
             R.observe('rows_with_developer_text', bad[:5])
             R.step('nothing in the served log carries developer text either',
                    'pass' if not bad else 'fail', json.dumps(bad[:2], ensure_ascii=False)[:600])
