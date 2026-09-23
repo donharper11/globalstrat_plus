@@ -404,3 +404,117 @@ class MarketNameOnChineseScreensTests(WalkCEBase):
         self.assertEqual(market_label(self.market, 'en'), 'Western Europe')
         self.assertEqual(market_label(None, 'en'), 'Global')
         self.assertEqual(market_label(None, 'zh-CN'), '全球')
+
+
+# ---------------------------------------------------------------------------
+# W-CE2-07 -- the Strategic Scorecard's sentences were English f-strings in
+# `engine/coherence.py` with no catalogue entry. What the engine STORES may
+# not change: `breakdown` is a hashed field of the `coherence` manifest
+# section. The stored sentence stays English and the reader re-derives the
+# same key from the same stored numbers, through the same function.
+# ---------------------------------------------------------------------------
+
+class ScorecardSentenceTests(WalkCEBase):
+
+    def test_the_english_stored_by_the_engine_is_byte_identical(self):
+        from core.services import coherence_feedback as fb
+        self.assertEqual(
+            fb.feedback_text(fb.financial_prudence_key(0.5), 'en'),
+            'Conservative leverage. Strong financial position.')
+        self.assertEqual(
+            fb.feedback_text(fb.financial_prudence_key(1.5), 'en'),
+            'Moderate leverage. Manageable but watch debt growth.')
+        self.assertEqual(
+            fb.feedback_text(fb.financial_prudence_key(3.0), 'en'),
+            'High leverage. Risk of financial distress.')
+        self.assertEqual(
+            fb.feedback_text(fb.budget_discipline_key(0, 5000000), 'en'),
+            'Spending within operating budget. Good fiscal discipline.')
+        self.assertEqual(
+            fb.feedback_text(fb.budget_discipline_key(0.12, 5000000), 'en',
+                             over='12%'),
+            'Over budget by 12%. Spending discipline is weak.')
+        self.assertEqual(
+            fb.feedback_text(fb.budget_discipline_key(0, 0), 'en'),
+            'No operating budget baseline (first round).')
+
+    def test_every_key_has_both_languages(self):
+        from core.services import coherence_feedback as fb
+        from core.utils.participant_messages import MESSAGES
+        for key in fb.ALL_KEYS:
+            with self.subTest(key=key):
+                self.assertIn(key, MESSAGES)
+                self.assertTrue(MESSAGES[key]['zh-CN'])
+                self.assertTrue(has_cjk(MESSAGES[key]['zh-CN']))
+
+    def test_the_reader_renders_a_stored_entry_in_chinese(self):
+        from core.services import coherence_feedback as fb
+        entry = {'score': 1.0, 'debt_to_equity': 0.4,
+                 'feedback': 'Conservative leverage. Strong financial position.'}
+        rendered = fb.feedback_for_reader('financial_prudence', entry, 'zh-CN')
+        self.assertTrue(has_cjk(rendered), rendered)
+        self.assertIsNone(LATIN_WORD.search(rendered), rendered)
+        self.assertEqual(
+            fb.feedback_for_reader('financial_prudence', entry, 'en'),
+            entry['feedback'])
+
+    def test_a_percentage_is_kept_in_the_translated_sentence(self):
+        from core.services import coherence_feedback as fb
+        entry = {'score': 0.5, 'over_pct': 0.12, 'operating_budget': 5000000,
+                 'feedback': 'Over budget by 12%. Spending discipline is weak.'}
+        rendered = fb.feedback_for_reader('budget_discipline', entry, 'zh-CN')
+        self.assertIn('12%', rendered)
+        self.assertTrue(has_cjk(rendered), rendered)
+
+    def test_an_entry_the_reader_cannot_place_keeps_its_stored_sentence(self):
+        """A breakdown written by an older engine, or a criterion with no
+        rule here, must not lose the sentence it already has.
+        """
+        from core.services import coherence_feedback as fb
+        entry = {'score': 0.5, 'feedback': 'Something older.'}
+        self.assertEqual(
+            fb.feedback_for_reader('rd_market_alignment', entry, 'zh-CN'),
+            'Something older.')
+        self.assertEqual(
+            fb.feedback_for_reader('financial_prudence', {}, 'zh-CN'), '')
+
+    def test_the_governance_sentence_is_placed_by_its_score(self):
+        from core.services import coherence_feedback as fb
+        for score, fragment in ((1.0, '未发现'), (0.0, '反腐败'), (0.7, '激进')):
+            entry = {'score': score, 'feedback': 'x'}
+            rendered = fb.feedback_for_reader(
+                'governance_tax_consistency', entry, 'zh-CN')
+            self.assertIn(fragment, rendered)
+
+    def test_the_results_route_serves_the_scorecard_in_chinese(self):
+        from core.models.results_financials import RoundResultCoherence
+        Enrollment.objects.filter(pk=self.enrollment.pk).update(
+            language='zh-CN')
+        RoundResultCoherence.objects.create(
+            game=self.game, team=self.team, round_number=1,
+            formula_score=80, blended_score=80,
+            breakdown={'financial_prudence': {
+                'score': 1.0, 'debt_to_equity': 0.4,
+                'feedback': 'Conservative leverage. Strong financial position.'}})
+        response = self.client_for(self.student, 'zh-CN').get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/results/round/1/')
+        self.assertEqual(response.status_code, 200, response.data)
+        served = (response.data['coherence']['breakdown']
+                  ['financial_prudence']['feedback'])
+        self.assertTrue(has_cjk(served), served)
+        self.assertNotIn('Conservative leverage', served)
+
+    def test_the_stored_row_is_untouched_by_a_chinese_read(self):
+        from core.models.results_financials import RoundResultCoherence
+        row = RoundResultCoherence.objects.create(
+            game=self.game, team=self.team, round_number=1,
+            formula_score=80, blended_score=80,
+            breakdown={'financial_prudence': {
+                'score': 1.0, 'debt_to_equity': 0.4,
+                'feedback': 'Conservative leverage. Strong financial position.'}})
+        self.client_for(self.student, 'zh-CN').get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/results/round/1/')
+        row.refresh_from_db()
+        self.assertEqual(
+            row.breakdown['financial_prudence']['feedback'],
+            'Conservative leverage. Strong financial position.')

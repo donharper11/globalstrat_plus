@@ -39,6 +39,7 @@ from core.engine.events import (
     event_narrative_for_reader, generate_event_narrative)
 from core.utils.localization import get_localized_field, get_user_language
 from core.utils.participant_messages import market_label
+from core.services import coherence_feedback
 
 logger = logging.getLogger(__name__)
 
@@ -234,7 +235,12 @@ class RoundResultsView(APIView):
             coherence = {
                 'formula_score': _dec(coh.formula_score),
                 'blended_score': _dec(coh.blended_score),
-                'breakdown': coh.breakdown or {},
+                # W-CE2-07: the stored breakdown is English -- it is a hashed
+                # field of the `coherence` manifest section, so a scoring
+                # artefact cannot follow the reader. The sentences are
+                # rendered into a copy for the response; the row is untouched.
+                'breakdown': coherence_feedback.localised_breakdown(
+                    coh.breakdown or {}, language),
             }
 
         # Strategy feature levels (includes ESG)

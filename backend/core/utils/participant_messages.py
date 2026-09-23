@@ -694,6 +694,65 @@ MESSAGES = {
     'research_channel_hybrid': {'en': 'Hybrid', 'zh-CN': '混合渠道'},
     'research_all_markets': {'en': 'All Markets', 'zh-CN': '所有市场'},
     'research_global': {'en': 'Global', 'zh-CN': '全球'},
+    # -----------------------------------------------------------------------
+    # W-CE2-07 — the Strategic Scorecard's sentences (2026-09-23)
+    # -----------------------------------------------------------------------
+    # English byte-identical to the f-strings `engine/coherence.py` stored, so
+    # the row a replay compares is unchanged. `core/services/coherence_feedback`
+    # picks the key; a test asserts the English still matches.
+    'coherence_leverage_conservative': {
+        'en': 'Conservative leverage. Strong financial position.',
+        'zh-CN': '杠杆水平保守。财务状况稳健。',
+    },
+    'coherence_leverage_moderate': {
+        'en': 'Moderate leverage. Manageable but watch debt growth.',
+        'zh-CN': '杠杆水平适中。尚在可控范围，但需关注债务增长。',
+    },
+    'coherence_leverage_high': {
+        'en': 'High leverage. Risk of financial distress.',
+        'zh-CN': '杠杆水平过高。存在财务困境风险。',
+    },
+    'coherence_budget_no_baseline': {
+        'en': 'No operating budget baseline (first round).',
+        'zh-CN': '尚无经营预算基准（首个回合）。',
+    },
+    'coherence_budget_within': {
+        'en': 'Spending within operating budget. Good fiscal discipline.',
+        'zh-CN': '支出未超出经营预算。财务纪律良好。',
+    },
+    'coherence_budget_slightly_over': {
+        'en': 'Slightly over budget ({over}). Minor overspend.',
+        'zh-CN': '略微超出预算（{over}）。属小幅超支。',
+    },
+    'coherence_budget_over': {
+        'en': 'Over budget by {over}. Spending discipline is weak.',
+        'zh-CN': '超出预算 {over}。支出纪律薄弱。',
+    },
+    'coherence_budget_significantly_over': {
+        'en': 'Significantly over budget ({over}). Reckless spending erodes '
+              'stakeholder confidence.',
+        'zh-CN': '显著超出预算（{over}）。无节制的支出会削弱利益相关者的信心。',
+    },
+    'coherence_budget_massively_over': {
+        'en': 'Massively over budget ({over}). No spending discipline.',
+        'zh-CN': '大幅超出预算（{over}）。毫无支出纪律。',
+    },
+    'coherence_governance_tax_clear': {
+        'en': 'No governance-tax conflict detected.',
+        'zh-CN': '未发现治理与税务之间的冲突。',
+    },
+    'coherence_governance_tax_conflict': {
+        'en': 'Anti-corruption commitment conflicts with aggressive tax '
+              'optimization. Stakeholders view this as hypocritical — '
+              'coherence heavily penalized.',
+        'zh-CN': '反腐败承诺与激进的税务筹划相互冲突。利益相关者视之为言行不一，'
+                 '战略协同性因此被大幅扣分。',
+    },
+    'coherence_governance_tax_aggressive': {
+        'en': 'Aggressive tax optimization without governance commitments — '
+              'raises moderate stakeholder concerns.',
+        'zh-CN': '激进的税务筹划缺乏相应的治理承诺——引发利益相关者的中度关切。',
+    },
     # W-CE2-06: `game_creation` names every team's starting platform
     # "<team> Base Platform" in English and stores it. The stored name is left
     # alone -- this is how the generated default reads to a Chinese student.
