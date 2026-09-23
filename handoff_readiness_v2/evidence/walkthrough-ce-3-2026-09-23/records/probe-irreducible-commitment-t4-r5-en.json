@@ -1,0 +1,538 @@
+{
+ "driver": "probe-irreducible-commitment-t4-r5",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T06:18:45",
+ "steps": [
+  {
+   "name": "student s2613 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "with every reachable decision at zero the round still commits money",
+   "outcome": "observed",
+   "detail": "committed_total=10250000 of which strategy=6000000 talent=4000000 compliance=250000; cash=1269790.55"
+  },
+  {
+   "name": "the lock is still refused with nothing a student can reduce left",
+   "outcome": "pass",
+   "detail": "[\"Committed spend of $10,250,000.00 exceeds available cash of $1,269,790.55. This includes $0.00 of platform development.\", \"Total dividends of $0.00 exceed projected equity. Reduce the dividend.\", \"Projected ending cash is $-8,980,209.45. Reduce spending or raise financing before locking.\"]"
+  },
+  {
+   "name": "a dividend of $0.00 is not reported as exceeding anything",
+   "outcome": "fail",
+   "detail": "[\"Total dividends of $0.00 exceed projected equity. Reduce the dividend.\"]"
+  },
+  {
+   "name": "raising $25,000,000 of new debt changes the available-cash figure",
+   "outcome": "fail",
+   "detail": "available before=1269790.55 after=1269790.55; committed before=10250000 after=10250000"
+  },
+  {
+   "name": "with the financing raised, the lock is offered",
+   "outcome": "fail",
+   "detail": "[\"Committed spend of $10,250,000.00 exceeds available cash of $1,269,790.55. This includes $0.00 of platform development.\", \"Total dividends of $0.00 exceed projected equity. Reduce the dividend.\"]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:53"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:18:53"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/financial-reports/history/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/dashboard/scorecard/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/results/round/4/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/investor-relations/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/4/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/competitors/round/4/",
+   "status": 200,
+   "at": "06:18:48"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "06:18:52"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/budget/",
+   "status": 200,
+   "at": "06:18:52"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/financing/",
+   "status": 200,
+   "at": "06:18:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:18:52"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/marketing/",
+   "status": 200,
+   "at": "06:18:52"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/plants/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/partnerships/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/acquisitions/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/esg/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/financing/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:18:53"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/5/financing/",
+   "status": 200,
+   "at": "06:18:59"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-irreducible-t4-r5",
+   "url": "/games/1/teams/4/decisions/summary",
+   "screenshot": "v-irreducible-t4-r5-en.jpg",
+   "note": "everything a student can reach set to zero, then $25M of debt raised",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/results/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/competitors/round/4/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/budget/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/marketing/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/plants/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/esg/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/5/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Solaris Consumer",
+  "budget_summary_stripped": {
+   "rd_allocated": 0,
+   "research_allocated": 0,
+   "research_spent": 0,
+   "rd_spent": 0,
+   "marketing_allocated": 0,
+   "marketing_spent": 0,
+   "strategy_allocated": 0,
+   "strategy_spent": 6000000,
+   "talent_committed": 4000000,
+   "plant_committed": 0,
+   "total_available": 1269790.55,
+   "total_allocated": 0,
+   "platform_development_committed": 0,
+   "compliance_committed": 250000,
+   "committed_total": 10250000,
+   "unallocated": -8980209.45
+  },
+  "blockers_stripped": [
+   "Committed spend of $10,250,000.00 exceeds available cash of $1,269,790.55. This includes $0.00 of platform development.",
+   "Total dividends of $0.00 exceed projected equity. Reduce the dividend.",
+   "Projected ending cash is $-8,980,209.45. Reduce spending or raise financing before locking."
+  ],
+  "zero_dividend_blocker": [
+   "Total dividends of $0.00 exceed projected equity. Reduce the dividend."
+  ],
+  "budget_summary_after_debt": {
+   "rd_allocated": 0,
+   "research_allocated": 0,
+   "research_spent": 0,
+   "rd_spent": 0,
+   "marketing_allocated": 0,
+   "marketing_spent": 0,
+   "strategy_allocated": 0,
+   "strategy_spent": 6000000,
+   "talent_committed": 4000000,
+   "plant_committed": 0,
+   "total_available": 1269790.55,
+   "total_allocated": 0,
+   "platform_development_committed": 0,
+   "compliance_committed": 250000,
+   "committed_total": 10250000,
+   "unallocated": -8980209.45
+  },
+  "blockers_after_debt": [
+   "Committed spend of $10,250,000.00 exceeds available cash of $1,269,790.55. This includes $0.00 of platform development.",
+   "Total dividends of $0.00 exceed projected equity. Reduce the dividend."
+  ],
+  "summary_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 10DRAFT OPEN\nBudget $6.0M/$5.0M over budget\nR&D $0/$0\nMktg $0/$0\nStrat $6.0M/$0\n中文\nMR\nMarco Ruiz · Solaris Consumer\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\nSOLARIS CONSUMER\nAFRICA\nRound 5\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Commu"
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 3,
+  "observed": 1,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 6,
+  "api_calls": 36,
+  "api_refused": 0
+ }
+}

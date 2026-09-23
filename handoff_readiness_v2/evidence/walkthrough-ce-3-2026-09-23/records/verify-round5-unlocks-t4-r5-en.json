@@ -1,0 +1,841 @@
+{
+ "driver": "verify-round5-unlocks-t4-r5",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T06:00:39",
+ "steps": [
+  {
+   "name": "student s2613 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the round-5 platform generation appears once round 5 is open",
+   "outcome": "fail",
+   "detail": "2 generations offered: [\"Gen 1 — Standard Electronics\", \"Gen 2 — Smart Connected Platform\"]"
+  },
+  {
+   "name": "a customs classification can be chosen at round 5, and not before",
+   "outcome": "pass",
+   "detail": "picked='Processing trade'"
+  },
+  {
+   "name": "the customs classification is stored",
+   "outcome": "pass",
+   "detail": "[{\"id\": 1, \"round_number\": 5, \"classification\": \"processing_trade\", \"reverse_logistics_capacity_pct\": 0, \"team\": 4, \"round\": 6, \"destination_market\": 1, \"reverse_logistics_hub_market\": null}]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:00:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:01:14"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:01:14"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "06:00:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:00:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+   "status": 200,
+   "at": "06:00:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:00:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/financial-reports/history/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/dashboard/scorecard/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/investor-relations/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/4/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/results/round/4/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/competitors/round/4/",
+   "status": 200,
+   "at": "06:00:43"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/rd/",
+   "status": 200,
+   "at": "06:00:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/rd/",
+   "status": 200,
+   "at": "06:00:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/sc/round/5/logistics/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:00:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/sc/round/5/logistics/",
+   "status": 200,
+   "at": "06:01:05"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/4/sc/round/5/logistics/",
+   "status": 201,
+   "at": "06:01:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "06:01:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "06:01:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/sc/round/5/logistics/",
+   "status": 200,
+   "at": "06:01:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/sc/round/5/logistics/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/lanes/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/markets/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/suppliers/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/summary/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/sc/round/5/inventory/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/5/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "06:01:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/products/",
+   "status": 200,
+   "at": "06:01:14"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-r5-t4-rd",
+   "url": "/games/1/teams/4/decisions/rd",
+   "screenshot": "v-r5-t4-rd-en.jpg",
+   "note": "R&D at round 5",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/results/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/competitors/round/4/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/rd/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/rd/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t4-rd-create-modal",
+   "url": "/games/1/teams/4/decisions/rd",
+   "screenshot": "v-r5-t4-rd-create-modal-en.jpg",
+   "note": "the platform modal at round 5, with the Gen 3 generation offered",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t4-logistics",
+   "url": "/games/1/teams/4/decisions/logistics",
+   "screenshot": "v-r5-t4-logistics-en.jpg",
+   "note": "Logistics at round 5",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/sc/round/5/logistics/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t4-logistics-saved",
+   "url": "/games/1/teams/4/decisions/logistics",
+   "screenshot": "v-r5-t4-logistics-saved-en.jpg",
+   "note": "after the customs classification was set",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/sc/round/5/logistics/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/4/sc/round/5/logistics/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/sc/round/5/logistics/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/sc/round/5/logistics/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-r5-t4-inventory",
+   "url": "/games/1/teams/4/decisions/inventory",
+   "screenshot": "v-r5-t4-inventory-en.jpg",
+   "note": "Inventory at round 5",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/lanes/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/suppliers/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/sc/round/5/inventory/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/products/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Solaris Consumer",
+  "available_generations": [
+   {
+    "name": "Gen 1 — Standard Electronics",
+    "generation_order": 1,
+    "development_cost": 5000000,
+    "team_already_owns": true,
+    "prerequisites_met": true,
+    "prerequisites": []
+   },
+   {
+    "name": "Gen 2 — Smart Connected Platform",
+    "generation_order": 2,
+    "development_cost": 15000000,
+    "team_already_owns": false,
+    "prerequisites_met": false,
+    "prerequisites": [
+     {
+      "requirement": "Round 2 or later",
+      "met": true,
+      "detail": "Current round: 5"
+     },
+     {
+      "requirement": "At least 3 features at level 10 or higher",
+      "met": false,
+      "detail": "0 of 3 features qualify"
+     }
+    ]
+   }
+  ],
+  "create_platform_modal": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 10DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\n中文\nMR\nMarco Ruiz · Solaris Consumer\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\nSOLARIS CONSUMER\nAFRICA\nRound 5\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview &",
+  "logistics_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 10DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\n中文\nMR\nMarco Ruiz · Solaris Consumer\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\nSOLARIS CONSUMER\nAFRICA\nRound 5\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview & Submit \nRESULTS\nRound Results\nLeaderboard\nLogistics & Distribution\nRound 5 · Set how you ship on each route, and your terms and customs by market.\nIn Progress\nSaved\nReload\nSave\nSHIPPING ROUTES\nPick a route and choose how much ships by sea, air, rail or road. Each route must total 100%.\nAdd route\nNo shipping routes set up yet — click “Add route”.\nSHIPPING TERMS BY MARKET\nMARKET\tINCOTERMS\tINSURANCE %\nNorth America NA\t\n—\n\t\n\nEast Asia APAC\t\n—\n\t\n\nWestern Europe EU\t\n—\n\t\n\nAfrica AFR\t\n—\n\t\n\nSouth Americ",
+  "logistics_before": {
+   "logistics": [],
+   "incoterms": [],
+   "customs": []
+  },
+  "customs_panel_found": 1,
+  "customs_panel_text": "CUSTOMS & RETURNS BY MARKET\nMARKET\tCUSTOMS TYPE\tRETURNS CAPACITY %\tRETURNS HUB\nNorth America NA\t\n—\n\t\n\t\n—\n\nEast Asia APAC\t\n—\n\t\n\t\n—\n\nWestern Europe EU\t\n—\n\t\n\t\n—\n\nAfrica AFR\t\n—\n\t\n\t\n—\n\nSouth America LATAM\t\n—\n\t\n\t\n—",
+  "customs_rows": 5,
+  "customs_row_0_disabled": false,
+  "customs_classification_picked": "Processing trade",
+  "save_controls": 1,
+  "logistics_after": {
+   "logistics": [],
+   "incoterms": [],
+   "customs": [
+    {
+     "id": 1,
+     "round_number": 5,
+     "classification": "processing_trade",
+     "reverse_logistics_capacity_pct": 0,
+     "team": 4,
+     "round": 6,
+     "destination_market": 1,
+     "reverse_logistics_hub_market": null
+    }
+   ]
+  },
+  "inventory_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR5 of 10DRAFT OPEN\nBudget $0/$5.0M\nR&D $0/$0\nMktg $0/$0\nStrat $0/$0\n中文\nMR\nMarco Ruiz · Solaris Consumer\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n⚠️\nGovernment warning in Western Europe — improve compliance or face restrictions\n│\n⚠️\nGovernment warning in South America — improve compliance or face restrictions\n│\n💱\nEUR weakened 2.0% against NGN — Western Europe revenue converts to fewer NGN\n│\n📉\nNorth America growth slowing — demand cooling\n│\n📈\nEast Asia growth accelerating — demand rising\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nAfrica growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\nSOLARIS CONSUMER\nAFRICA\nRound 5\nDashboard\nINFORMATION\nFinancial Reports\nIndustry News\nMarket Research\nCompetitive Intelligence\nStrategy Tools\nDECISIONS\nSourcing \nLogistics \nTrade Finance \nInventory \nR&D Investment \nProduct Portfolio \nMarketing Mix \nCorporate Strategy \nMarket Strategy \nFinance \nCompany Forecast\nStakeholder Communications\nReview &"
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 1,
+  "observed": 0,
+  "screens": 5,
+  "screens_with_leaks": 0,
+  "console_errors": 10,
+  "api_calls": 58,
+  "api_refused": 0
+ }
+}

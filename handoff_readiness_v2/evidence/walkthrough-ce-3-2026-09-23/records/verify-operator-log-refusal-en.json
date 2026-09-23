@@ -1,0 +1,582 @@
+{
+ "driver": "verify-operator-log-refusal",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T06:20:15",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "processing an already-processed round is refused",
+   "outcome": "pass",
+   "detail": "{\"status\": 409, \"body\": {\"error\": \"The game has moved to round 5; this request was for round 4.\", \"code\": \"state_moved\", \"guidance\": \"Refresh the console and repeat the action if it is still what you want.\", \"request_id\": \"srv-bd02ce32-92b9-4fff-a4ed-06b287acbd3e\"}}"
+  },
+  {
+   "name": "the lifecycle override with no written reason is refused",
+   "outcome": "pass",
+   "detail": "{\"status\": 400, \"body\": {\"error\": \"This action overrides an integrity check, so it requires a written reason of at least 10 characters.\", \"code\": \"reason_required\", \"guidance\": \"Repeat the action with a written reason explaining why this override is correct.\", \"request_id\": \"srv-fa662551-6e6f-4a32-9211-c594ed473d29\"}}"
+  },
+  {
+   "name": "no storage name, Python argument or raw exception in the Operator Log (W-CE2-04)",
+   "outcome": "pass",
+   "detail": "found []; the refused rows read: [\"Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\", \"Refused: The game has moved to round 5; this request was for round 4.state_moved\", \"Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\", \"Refused: The game has moved to round 5; this request was for round 4.state_moved\"]"
+  },
+  {
+   "name": "the log carries a row for the refusals just made",
+   "outcome": "pass",
+   "detail": "[\"Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\", \"Refused: The game has moved to round 5; this request was for round 4.state_moved\", \"Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\", \"Refused: The game has moved to round 5; this request was for round 4.state_moved\"]"
+  },
+  {
+   "name": "nothing in the served log carries developer text either",
+   "outcome": "pass",
+   "detail": "[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:15"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+   "at": "06:20:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "06:20:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:28"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "06:20:28"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "06:20:18"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "06:20:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 409,
+   "at": "06:20:28"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/advance-round/",
+   "status": 400,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "06:20:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "06:20:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "06:20:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "06:20:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "06:20:51"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/process/",
+   "status": 409,
+   "at": "06:20:28",
+   "body": "{\"error\":\"The game has moved to round 5; this request was for round 4.\",\"code\":\"state_moved\",\"guidance\":\"Refresh the console and repeat the action if it is still what you want.\",\"request_id\":\"srv-bd02ce32-92b9-4fff-a4ed-06b287acbd3e\"}",
+   "request": "{\"expected_round_number\":4}"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/advance-round/",
+   "status": 400,
+   "at": "06:20:28",
+   "body": "{\"error\":\"This action overrides an integrity check, so it requires a written reason of at least 10 characters.\",\"code\":\"reason_required\",\"guidance\":\"Repeat the action with a written reason explaining why this override is correct.\",\"request_id\":\"srv-fa662551-6e6f-4a32-9211-c594ed473d29\"}",
+   "request": "{\"force\":true}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-oplog-refusals-en",
+   "url": "/instructor",
+   "screenshot": "v-oplog-refusals-en-en.jpg",
+   "note": "the Operator Log after two refused actions",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/process/",
+     "s": 409
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/advance-round/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "round_control": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 5,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T06:20:28.212269+00:00",
+   "round": {
+    "round_id": 6,
+    "round_number": 5,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T05:50:43.181024+00:00",
+    "deadline": "2026-10-02T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 819571,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "already_processed_round": 4,
+  "reprocess_refusal": {
+   "status": 409,
+   "body": {
+    "error": "The game has moved to round 5; this request was for round 4.",
+    "code": "state_moved",
+    "guidance": "Refresh the console and repeat the action if it is still what you want.",
+    "request_id": "srv-bd02ce32-92b9-4fff-a4ed-06b287acbd3e"
+   }
+  },
+  "advance_no_reason_refusal": {
+   "status": 400,
+   "body": {
+    "error": "This action overrides an integrity check, so it requires a written reason of at least 10 characters.",
+    "code": "reason_required",
+    "guidance": "Repeat the action with a written reason explaining why this override is correct.",
+    "request_id": "srv-fa662551-6e6f-4a32-9211-c594ed473d29"
+   }
+  },
+  "operator_log_text": "Operator actions\nAll outcomes\nTIME (SERVER)\tACTOR\tACTION\tOUTCOME\tROUND\tREASON\tBEFORE → AFTER\tREQUEST ID\n\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\t\n \n\n9/23/2026, 6:20:28 AM\tWalkthrough Instructor\tadvance_round_legacy\trejected\t5\tOperator requested advance_round_legacy\t\nRefused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\nCopy the raw record\n\tsrv-fa662551-6e6f-4a32-9211-c594ed473d29\n\n9/23/2026, 6:20:28 AM\tWalkthrough Instructor\tprocess_round\trejected\t5\tOperator requested process_round\t\nRefused: The game has moved to round 5; this request was for round 4.state_moved\nCopy the raw record\n\tsrv-bd02ce32-92b9-4fff-a4ed-06b287acbd3e\n\n9/23/2026, 6:19:37 AM\tWalkthrough Instructor\tadvance_round_legacy\trejected\t5\tOperator requested advance_round_legacy\t\nRefused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required\nCopy the raw record\n\tsrv-2a10d891-e7ab-4075-b356-f82ea7234b57\n\n9/23/2026, 6:19:37 AM\tWalkthrough Instructor\tprocess_round\trejected\t5\tOperator requested process_round\t\nRefused: The game has moved to round 5; this request was for round 4.state_moved\nCopy the raw record\n\tsrv-782b8646-efeb-40cd-b4cc-1ed8d7d19dc9\n\n9/23/2026, 5:50:43 AM\tWalkthrough Instructor\tadvance_round_legacy\tcommitted\t5\tWalkthrough: advancing round 4 with teams still pending.\t\nCurrent round: 4 → 5\nCopy the raw record\n\tsrv-e255164e-7edf-4a52-b1a4-61625168245f\n\n9/23/2026, 5:29:47 AM\tWalkthrough Instructor\tadvance_round\tcommitted\t4\tOperator requested advance_round\t\nStatus: processed → open\nDeadline: 9/28/2026, 6:00:00 PM → 9/30/2026, 6:00:00 PM\nClosed at: 9/23/2026, 5:28:43 AM → —\nOpened at: 9/23/2026, 4:53:28 AM → 9/23/2026, 5:29:47 AM\nClosed by: closed by instructor → —\nProcessed at: 9/23/2026, 5:28:49 AM → —\nRound: 3 → 4\nTeams locked: 8 → 0\nTeams pending: 0 → 8\nProcessing: Complete → Not yet processed\nCopy the raw record\n\tsrv-36d1f89f-ae07-4521-b263-2543aa94ac0e\n\n9/23/2026, 5:28:49 AM\tWalkthrough Instructor\tprocess_round\tcommitted\t3\tWalkthrough: closing round 3 early for the audit.\t\nStatus: open → processed\nClosed at: — → 9/23/2026, 5:28:43 AM\nClosed by: — → closed by instructor\nProcessed at: — → 9/23/2026, 5:28:49 AM\nTeams locked: 2 → 8\nTeams pending: 6 → 0\nProcessing: Not yet processed → Results ready — narratives generating\nCopy the raw record\n\tsrv-4e6f72e3-ba67-4953-8397-e8e7c119fb75\n\n9/23/2026, 4:53:28 AM\tWalkthrough Instructor\tadvance_round\tcommitted\t3\tOperator requested advance_round\t\nStatus: processed → open\nDeadline: 9/26/2026, 6:00:00 PM → 9/28/2026, 6:00:00 PM\nClosed at: 9/23/2026, 4:52:24 AM → —\nOpened at: 9/23/2026, 4:07:36 AM → 9/23/2026, 4:53:28 AM\nClosed by: closed by instructor → —\nProcessed at: 9/23/2026, 4:52:30 AM → —\nRound: 2 → 3\nTeams locked: 8 → 0\nTeams pending: 0 → 8\nProcessing: Complete → Not yet processed\nCopy the raw record\n\tsrv-1fa39360-9564-4d7a-8512-ebc5ebc1b13d\n\n9/23/2026, 4:52:30 AM\tWalkthrough Instructor\tprocess_round\tcommitted\t2\tWalkthrough: closing round 2 early for the audit.\t\nStatus: open → processed\nClosed at: — → 9/23/2026, 4:52:24 AM\nClosed by: — → closed by instructor\nProcessed at: — → 9/23/2026, 4:52:30 AM\nTeams locked: 4 → 8\nTeams pending: 4 → 0\nProcessing: Not yet processed → Results ready — narratives generating\nCopy the raw record\n\tsrv-b9c122ba-028c-4dc1-8251-cb62784d0e09\n\n9/23/2026, 4:07:36 AM\tWalkthrough Instructor\tadvance_round\tcommitted\t2\tOperator requested advance_round\t\nStatus: processed → open\nClosed at: 9/23/2026, 4:06:17 AM → —\nOpened at: 9/23/2026, 3:32:57 AM → 9/23/2026, 4:07:36 AM\nClosed by: closed by instructor → —\nProcessed at: 9/23/2026, 4:06:39 AM → —\nRound: 1 → 2\nTeams locked: 8 → 0\nTeams pending: 0 → 8\nProcessing: Complete → Not yet processed\nCopy the raw record\n\tsrv-2c42f920-fe9b-480d-9235-532e0b0e3486\n1\n2",
+  "refused_rows": [
+   "Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required",
+   "Refused: The game has moved to round 5; this request was for round 4.state_moved",
+   "Refused: This action overrides an integrity check, so it requires a written reason of at least 10 characters.reason_required",
+   "Refused: The game has moved to round 5; this request was for round 4.state_moved"
+  ],
+  "operator_log_api": 200,
+  "rows_with_developer_text": []
+ },
+ "summary": {
+  "passed": 6,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 10,
+  "api_calls": 35,
+  "api_refused": 2
+ }
+}

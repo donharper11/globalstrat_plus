@@ -1,0 +1,38 @@
+  PASS      instructor signs in
+  PASS      course created and selected -- Course created
+  PASS      section created and selected -- Section created
+  PASS      scenario picked -- Consumer Electronics 2026 — Consumer Electronics
+  PASS      game created with 8 teams from the console -- toast='Game "CE 2026 Heat A" created with 8 teams.' game={"game_id": 1, "game_name": "CE 2026 Heat A", "scenario_name": "Consumer Electronics 2026", "scenario_id": 1, "section_id": 1, "status": "setup", "current_round": 
+  PASS      the roster upload announces its outcome -- panel='Added 27 student(s) to the roster. File: roster.csv | Game: CE 2026 Heat A 8 teams · Status: setup | Round schedule, activation, and game lifecycle controls are on the Game Control tab.' modal='' toast=None
+  PASS      roster CSV upload enrolled 27 students -- enrolled=27 modal='' toast=None
+  PASS      sixth member refused; team 1 holds 5, others 3 -- {"1": 5, "2": 3, "3": 3, "4": 3, "5": 3, "6": 3, "7": 3, "8": 3, "null": 1}
+  PASS      the refusal is shown to the instructor in business language -- {"toast": "1 student(s) assigned", "modal": "No students were assignedTitan Micro already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.OK"}
+  PASS      team 1 home market set to Africa from the console -- team 1 -> AFR / Africa
+  PASS      team configuration saved (home markets + rename) -- [["Aurora Devices", "AFR"], ["Nova Circuit", "LATAM"], ["Meridian Tech", "NA"], ["Solaris Consumer", "AFR"], ["Apex Devices", "APAC"], ["Zenith Hardware", "APAC"], ["Helix Digital", "AFR"], ["Lumen Devices", "EU"]]
+  PASS      game activated; round 1 open -- {"game_id": 1, "game_name": "CE 2026 Heat A", "game_status": "active", "current_round": 1, "total_rounds": 10, "server_time": "2026-09-23T03:33:07.531982+00:00", "round": {"round_id": 2, "round_number": 1, "status": "ope
+  PASS      console stays on Game Control after Activate -- active tab after Activate: 'Game Control'
+  PASS      round schedule generated and saved for every playable round -- Schedule saved for 10 round(s).
+  PASS      round 1 deadline set from the console -- deadline=2026-09-25T18:00:00+00:00 toast='CE 2026 Heat A: deadline updated.'
+  PASS      console stays on Game Control after a round-control action -- active tab after Save deadline: 'Game Control'
+  PASS      extend deadline moved the round 1 deadline -- before=2026-09-25T18:00:00+00:00 after=2026-09-26T18:00:00+00:00 modal=None
+  PASS      pause is reflected by the server -- paused
+  PASS      resume is reflected by the server -- active
+  PASS      operator event injected from the console -- template='Major Competitor Product Launch (medium)' toast='Event injected'
+  PASS      operator log lists the actions taken -- 9 rows
+  PASS      student passwords issued in bulk from the console -- Password setGive these to the student:Username: s2601Password: s2601This is the only time the password is shown. If it's lost, reset it again.Done
+  PASS      grading override saved from the console -- Aurora Devices: Performance Index score overridden.
+  PASS      export: Export Team Summary CSV -- game_1_teams.csv (542 bytes)
+  PASS      export: Export Team Grades CSV -- team_grades.csv (265 bytes)
+  PASS      export: Export Student Grades CSV -- student_grades.csv (1331 bytes)
+
+{
+  "passed": 26,
+  "failed": 0,
+  "observed": 0,
+  "screens": 39,
+  "screens_with_leaks": 0,
+  "console_errors": 11,
+  "api_calls": 271,
+  "api_refused": 1
+}
+record: /home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-a80ba111041f886bb/handoff_readiness_v2/evidence/walkthrough-ce-3-2026-09-23/records/instructor-setup-en.json

@@ -1,0 +1,22 @@
+  PASS      instructor signs in
+  PASS      grades calculated on played rounds -- Grades calculated | ['Aurora Devices88.0Overridden88.090.0Override', 'Nova Circuit54.654.674.4Override', 'Meridian Tech60.360.377.1Override']
+  PASS      export after 4 rounds: Export Team Summary CSV -- final-game_1_teams.csv (611 bytes)
+  PASS      export after 4 rounds: Export Team Grades CSV -- final-team_grades.csv (265 bytes)
+  PASS      export after 4 rounds: Export Student Grades CSV -- final-student_grades.csv (1331 bytes)
+  PASS      delete refused for a game with a record (game still exists) -- toast='CE 2026 Heat A already has a record of instructor actions or team decisions. That record is permanent, so the game cannot be deleted. Archive the game instead: it keeps every record, stops play, and frees the sect
+  PASS      delete refused for a competition heat (game still exists) -- toast='CE 2026 Heat A is a competition game, so it cannot be deleted. Its results and records have to stay available after the event. Archive the game instead: it keeps every record, stops play, and frees the section for
+  OBSERVED  reset outcome recorded -- toast='CE 2026 Heat A is a competition game, so it cannot be reset to setup. Its rounds, results and records have to stay as they were played. Archive the game instead: it keeps every record, stops play, and frees the se
+  PASS      reset refused on a competition heat with processed rounds (W-CE-26) -- toast='CE 2026 Heat A is a competition game, so it cannot be reset to setup. Its rounds, results and records have to stay as they were played. Archive the game instead: it keeps every record, stops play, and frees the se
+  OBSERVED  archive outcome recorded -- toast='Game archived. You can now create a new game for this section.' status=archived
+
+{
+  "passed": 8,
+  "failed": 0,
+  "observed": 2,
+  "screens": 11,
+  "screens_with_leaks": 0,
+  "console_errors": 9,
+  "api_calls": 41,
+  "api_refused": 3
+}
+record: /home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-a80ba111041f886bb/handoff_readiness_v2/evidence/walkthrough-ce-3-2026-09-23/records/instructor-endgame-en.json

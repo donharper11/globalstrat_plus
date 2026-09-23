@@ -1,0 +1,4408 @@
+{
+ "driver": "student-play-t3-r3",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:03:09",
+ "steps": [
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "finance: budget allocation saved as entered",
+   "outcome": "pass",
+   "detail": "{\"id\": 39, \"rd_budget\": \"2500000.00\", \"marketing_budget\": \"2500000.00\", \"strategy_budget\": \"1500000.00\", \"warnings\": []}"
+  },
+  {
+   "name": "finance: a typed loan amount stores the number typed (W-CE-02)",
+   "outcome": "pass",
+   "detail": "box='$ 5,000,000' stored=5000000.00"
+  },
+  {
+   "name": "finance: loan and dividend saved as entered",
+   "outcome": "pass",
+   "detail": "{\"id\": 26, \"new_debt\": \"5000000.00\", \"debt_repayment\": \"0.00\", \"new_equity\": \"0.00\", \"dividend_per_share\": \"0.5000\"}"
+  },
+  {
+   "name": "finance: tax structure switched from the screen",
+   "outcome": "pass",
+   "detail": "direct -> regional_hub"
+  },
+  {
+   "name": "R&D offers no feature-level upgrade button (W-CE-03)",
+   "outcome": "pass",
+   "detail": "0 english + 0 localised upgrade buttons"
+  },
+  {
+   "name": "rd: platform creation blocked (reason shown in modal)",
+   "outcome": "observed",
+   "detail": "0 级或以上 — 3 项中已有 1 项符合功能配置最多设置5个功能等级。设为0可排除。处理器性能0147$2.6M电池续航0120—耐用性0140—应用生态0100—产品设计0120—可持续性080—开发方式自主研发 — 基础成本，1 回合许可引进 — 2.5倍功能成本，即时完成合作开发 — 1.6倍功能成本，1 回合代次基础成本: $5.0M处理器性能 → 等级 7: $2.6M合计: $7.6M就绪: 1 回合研发预算: $1.5M超出预算: $6.1M必填: 成本超出研发预算取 消创建平台"
+  },
+  {
+   "name": "products: new product saved from the modal",
+   "outcome": "pass",
+   "detail": "[{\"id\": 11, \"team_platform\": 3, \"product_name\": \"Nova Meridian R3\", \"positioning\": \"mainstream\", \"target_market_ids\": [1]}] modal=''"
+  },
+  {
+   "name": "marketing: in-band price, volume, promotion saved",
+   "outcome": "pass",
+   "detail": "{\"id\": 39, \"team_product\": 5, \"market\": 1, \"retail_price\": \"400.00\", \"promotion_budget\": \"200000.00\", \"campaign_focus_feature_ids\": [1], \"channel_digital_pct\": \"0.3400\", \"channel_traditional_pct\": \"0.3300\", \"channel_trade_pct\": \"0.3300\", \"distribution_strategy\": \"mass_retail\", \"distribution_investme"
+  },
+  {
+   "name": "market strategy: market entry saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 11, \"market\": 4, \"entry_mode\": 1, \"initial_investment\": \"500000.00\", \"action\": \"enter\", \"integration_strategy\": \"FULL\"}]"
+  },
+  {
+   "name": "market strategy: the home market is entered and active (W-CE-21)",
+   "outcome": "pass",
+   "detail": "home=NA state=active tab='北美 已进入'"
+  },
+  {
+   "name": "market strategy: build-plant control offered on the home market",
+   "outcome": "observed",
+   "detail": "not offered (plant may already exist)"
+  },
+  {
+   "name": "market strategy: partnership saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 13, \"market\": 1, \"strategy_option\": 1, \"annual_investment\": \"2000000.00\", \"action\": \"establish\"}]"
+  },
+  {
+   "name": "market strategy: the partnership button states the charge the way it is charged (W-CE-22)",
+   "outcome": "pass",
+   "detail": "label='+ 分销合作伙伴 — 每回合 $2.0M' stored=[{\"id\": 13, \"market\": 1, \"strategy_option\": 1, \"annual_investment\": \"2000000.00\", \"action\": \"establish\"}]"
+  },
+  {
+   "name": "market strategy: compliance investment saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 7, \"market\": 2, \"investment_amount\": \"250000.00\"}]"
+  },
+  {
+   "name": "corporate: talent headcount and training saved",
+   "outcome": "pass",
+   "detail": "{\"rd_headcount\": 60, \"rd_salary_level\": 3, \"rd_training_budget\": 100000, \"commercial_headcount\": 30, \"commercial_salary_level\": 3, \"commercial_training_budget\": 0, \"operations_headcount\": 40, \"operati"
+  },
+  {
+   "name": "corporate: talent allocation saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 11, \"talent_pool\": \"rd\", \"hq_count\": 55, \"market_allocation\": {\"NA\": 5}}]"
+  },
+  {
+   "name": "corporate: every offered acquisition is disabled and says why",
+   "outcome": "observed",
+   "detail": "buttons=3; unaffordable notice on the card=False"
+  },
+  {
+   "name": "corporate: ESG investment and a commitment saved",
+   "outcome": "pass",
+   "detail": "{\"id\": 11, \"environmental_investment\": \"500000.00\", \"social_investment\": \"250000.00\", \"governance_commitments\": [\"board_diversity\"]}"
+  },
+  {
+   "name": "corporate: org structure switch accepted",
+   "outcome": "pass",
+   "detail": "{\"current_structure\": {\"id\": 2, \"code\": \"regional\", \"name\": \"\\u533a\\u57df\\u5f0f\", \"adopted_round\": 3}, \"transitioning\": true, \"transition_to\": null, \"pending_structure\": null}"
+  },
+  {
+   "name": "communications: an assignment is offered",
+   "outcome": "observed",
+   "detail": "no assignment this round"
+  },
+  {
+   "name": "research: report bought and delivered",
+   "outcome": "pass",
+   "detail": "None"
+  },
+  {
+   "name": "research: analyst answers or refuses visibly (no model behind this stack)",
+   "outcome": "pass",
+   "detail": "本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。"
+  },
+  {
+   "name": "research: a question that finds nothing is not charged",
+   "outcome": "pass",
+   "detail": "{\"queries_used\": null, \"charged\": null, \"queries\": []}"
+  },
+  {
+   "name": "products: retire at end of round saved",
+   "outcome": "pass",
+   "detail": "[{\"id\": 11, \"team_product\": 23, \"timing\": \"end_of_round\"}]"
+  },
+  {
+   "name": "summary: decisions locked from the screen",
+   "outcome": "pass",
+   "detail": "status=locked modal_after=''"
+  },
+  {
+   "name": "summary: the page never offers a lock the server then refuses (W-CE-25)",
+   "outcome": "pass",
+   "detail": "blockers the page listed=[]; refusal=[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:09"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:09"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:21"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:21"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:47"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:03:56"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:10"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:52"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:04:52"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:05:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:05:27"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:05:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:05:32"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+   "at": "05:05:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:06:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:06:01"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:06:11"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:06:11"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/2/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/2/",
+   "status": 200,
+   "at": "05:03:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "05:03:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/2/",
+   "status": 200,
+   "at": "05:03:13"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/briefing/11/read/",
+   "status": 200,
+   "at": "05:03:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:03:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:26"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 200,
+   "at": "05:03:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:27"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 200,
+   "at": "05:03:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:28"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/budget/",
+   "status": 200,
+   "at": "05:03:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:33"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/financing/",
+   "status": 200,
+   "at": "05:03:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:37"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/financing/",
+   "status": 200,
+   "at": "05:03:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "05:03:44"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "05:03:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "05:03:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "05:03:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/rd/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:03:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:01"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/products/",
+   "status": 200,
+   "at": "05:04:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "05:04:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "05:04:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/marketing/",
+   "status": 200,
+   "at": "05:04:15"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/marketing/",
+   "status": 200,
+   "at": "05:04:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:22"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/marketing/",
+   "status": 200,
+   "at": "05:04:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/alliances/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/compliance/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/markets/NA/localization/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/alliances/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/compliance/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:04:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:35"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/market-entry/",
+   "status": 200,
+   "at": "05:04:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:04:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:41"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/partnerships/",
+   "status": 200,
+   "at": "05:04:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/markets/APAC/localization/",
+   "status": 200,
+   "at": "05:04:46"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/compliance-investments/",
+   "status": 200,
+   "at": "05:04:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "05:04:52"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/talent/",
+   "status": 200,
+   "at": "05:05:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "05:05:01"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/talent/",
+   "status": 200,
+   "at": "05:05:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:05:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:05:10"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/esg/",
+   "status": 200,
+   "at": "05:05:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:05:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:05:22"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/talent-allocation/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/strategy/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/governance/",
+   "status": 200,
+   "at": "05:05:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/org-structure/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/communications/history/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/communications/assignments/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:27"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/markets/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=2",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:32"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/reports/segments/purchase/",
+   "status": 201,
+   "at": "05:05:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:05:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=2",
+   "status": 200,
+   "at": "05:05:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/queries/",
+   "status": 200,
+   "at": "05:05:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:05:47"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/query/",
+   "status": 400,
+   "at": "05:05:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/research/queries/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:01"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:06"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/3/product-retires/",
+   "status": 200,
+   "at": "05:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/products/",
+   "status": 200,
+   "at": "05:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:06:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "05:06:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:12"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:17"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:18"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/3/lock/",
+   "status": 200,
+   "at": "05:06:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/summary/",
+   "status": 200,
+   "at": "05:06:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/3/",
+   "status": 200,
+   "at": "05:06:23"
+  }
+ ],
+ "refused": [
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/research/query/",
+   "status": 400,
+   "at": "05:05:48",
+   "body": "{\"error\":\"本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。\"}",
+   "request": "{\"query\":\"Which segment in our home market is growing fastest and what price do they expect?\"}"
+  }
+ ],
+ "screens": [
+  {
+   "screen": "p3-r3-10-finance-budget",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r3-10-finance-budget-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/2/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/2/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/briefing/11/read/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-11-finance-budget-saved",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r3-11-finance-budget-saved-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-13-finance-capital",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r3-13-finance-capital-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-14-finance-tax",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r3-14-finance-tax-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-15-finance-tax-switched",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "p3-r3-15-finance-tax-switched-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-20-rd",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r3-20-rd-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/rd/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-21-rd-after-upgrade",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r3-21-rd-after-upgrade-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r3-22-rd-create-platform-modal",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r3-22-rd-create-platform-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-23-rd-after-platform",
+   "url": "/games/1/teams/3/decisions/rd",
+   "screenshot": "p3-r3-23-rd-after-platform-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "p3-r3-30-products",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r3-30-products-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-31-products-create-modal",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r3-31-products-create-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech Base Platform",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-32-products-after-create",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r3-32-products-after-create-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-40-marketing",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r3-40-marketing-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-41-marketing-in-band",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r3-41-marketing-in-band-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/marketing/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-44-marketing-final",
+   "url": "/games/1/teams/3/decisions/marketing",
+   "screenshot": "p3-r3-44-marketing-final-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/marketing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-50-market-strategy",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r3-50-market-strategy-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/markets/NA/localization/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-51-market-entry",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r3-51-market-entry-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/market-entry/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-52-market-home",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r3-52-market-home-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-53-compliance-investment",
+   "url": "/games/1/teams/3/decisions/market-strategy",
+   "screenshot": "p3-r3-53-compliance-investment-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/markets/APAC/localization/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/compliance-investments/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-60-corporate-talent",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-60-corporate-talent-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-61-corporate-allocation",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-61-corporate-allocation-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-62-corporate-ma",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-62-corporate-ma-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-63-corporate-esg",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-63-corporate-esg-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/esg/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-64-corporate-org",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-64-corporate-org-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-65-corporate-org-modal",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-65-corporate-org-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-66-corporate-org-after",
+   "url": "/games/1/teams/3/decisions/corporate-strategy",
+   "screenshot": "p3-r3-66-corporate-org-after-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/org-structure/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-70-communications",
+   "url": "/games/1/teams/3/decisions/communications",
+   "screenshot": "p3-r3-70-communications-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Board of Directors",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/communications/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/communications/assignments/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-80-research-segments",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r3-80-research-segments-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/markets/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=2",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-81-research-bought",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r3-81-research-bought-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Circuit",
+     "n": 4
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/research/reports/segments/purchase/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/reports/segments/?market=NA&round=2",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-82-research-analyst",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r3-82-research-analyst-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-83-research-analyst-asked",
+   "url": "/games/1/teams/3/research",
+   "screenshot": "p3-r3-83-research-analyst-asked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/research/query/",
+     "s": 400
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/research/queries/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-33-products-edit-modal",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r3-33-products-edit-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-34-products-after-retire",
+   "url": "/games/1/teams/3/decisions/products",
+   "screenshot": "p3-r3-34-products-after-retire-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/3/product-retires/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/products/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-95-summary",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r3-95-summary-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-96-lock-confirm",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r3-96-lock-confirm-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-97-locked",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "p3-r3-97-locked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/3/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/3/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "p3-r3-10-finance-budget",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-11-finance-budget-saved",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-13-finance-capital",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-14-finance-tax",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-15-finance-tax-switched",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-20-rd",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-21-rd-after-upgrade",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-22-rd-create-platform-modal",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-23-rd-after-platform",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-30-products",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-31-products-create-modal",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech Base Platform",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-32-products-after-create",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-40-marketing",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-41-marketing-in-band",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-44-marketing-final",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Nova Meridian",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-50-market-strategy",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-51-market-entry",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-52-market-home",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-53-compliance-investment",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-60-corporate-talent",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-61-corporate-allocation",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-62-corporate-ma",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-63-corporate-esg",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-64-corporate-org",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-65-corporate-org-modal",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-66-corporate-org-after",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-70-communications",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Board of Directors",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-80-research-segments",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-81-research-bought",
+   "leaks": [
+    {
+     "english": "Nova Circuit",
+     "n": 4
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-82-research-analyst",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-83-research-analyst-asked",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-33-products-edit-modal",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-34-products-after-retire",
+   "leaks": [
+    {
+     "english": "Nova Meridian",
+     "n": 2
+    },
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-95-summary",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-96-lock-confirm",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "p3-r3-97-locked",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Meridian Tech",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "student": "s2610",
+  "team": "Meridian Tech",
+  "profile": "plain",
+  "finance_context": {
+   "operating_budget": null,
+   "operating_budget_available": null,
+   "cash_on_hand": null,
+   "total_debt": null,
+   "budget_source": null
+  },
+  "finance_budget_inputs": 3,
+  "budget_saved": {
+   "id": 39,
+   "rd_budget": "2500000.00",
+   "marketing_budget": "2500000.00",
+   "strategy_budget": "1500000.00",
+   "warnings": []
+  },
+  "capital_inputs": 4,
+  "loan_box_after_typing": "$ 5,000,000",
+  "capital_preview_after_loan": [
+   "债务 / 权益",
+   "基于2倍权益限额：最高$49.0M − 当前债务$12.0M",
+   "新总债务:",
+   "新债务/权益比:"
+  ],
+  "dividend_box_after_typing": "$ 0.5",
+  "financing_saved": {
+   "id": 26,
+   "new_debt": "5000000.00",
+   "debt_repayment": "0.00",
+   "new_equity": "0.00",
+   "dividend_per_share": "0.5000"
+  },
+  "tax_cards": 3,
+  "tax_after": {
+   "code": "regional_hub",
+   "adopted_round": 3,
+   "setup_cost_paid": false,
+   "times_audited": 0,
+   "cumulative_audit_penalties": 0,
+   "cumulative_tax_savings": 0,
+   "last_audit_round": null
+  },
+  "rd_upgrade_buttons": 0,
+  "rd_upgrade_buttons_localised": 0,
+  "rd_guidance": [],
+  "platform_modal": "创建新研发平台平台名称技术基础第一代——标准电子产品基础: $5.0M第二代——智能互联平台基础: $15.0M 第 2 回合或之后 — 当前回合：3 至少 3 项功能达到 10 级或以上 — 3 项中已有 1 项符合功能配置最多设置5个功能等级。设为0可排除。处理器性能0147$2.6M电池续航0120—耐用性0140—应用生态0100—产品设计0120—可持续性080—开发方式自主研发 — 基础成本，1 回合许可引进 — 2.5倍功能成本，即时完成合作开发 — 1.6倍功能成本，1 回合代次基础成本: $5.0M处理器性能 → 等级 7: $2.6M合计: $7.6M就绪: 1 回合研发预算: $1.5M超出预算: $6.1M必填: 成本超出研发预算取 消创建平台",
+  "platform_create_enabled": false,
+  "product_modal_after": null,
+  "product_creates": [
+   {
+    "id": 11,
+    "team_platform": 3,
+    "product_name": "Nova Meridian R3",
+    "positioning": "mainstream",
+    "target_market_ids": [
+     1
+    ]
+   }
+  ],
+  "price_bands": {
+   "5_1": {
+    "min": 280,
+    "max": 520,
+    "band_pct": 0.3,
+    "anchor": 400,
+    "anchor_source": "previous_round",
+    "anchor_round_number": 2
+   },
+   "23_1": {
+    "min": 294,
+    "max": 546,
+    "band_pct": 0.3,
+    "anchor": 420,
+    "anchor_source": "positioning_reference",
+    "anchor_round_number": null
+   }
+  },
+  "product_markets": [
+   {
+    "product_id": 5,
+    "product_name": "IronClad X",
+    "positioning": "mainstream",
+    "platform_name": "Meridian Tech基础平台",
+    "markets": [
+     {
+      "market_id": 1,
+      "market__name": "北美"
+     }
+    ],
+    "feature_levels": [
+     {
+      "feature_id": 1,
+      "feature__name": "处理器性能",
+      "current_level": 5
+     },
+     {
+      "feature_id": 2,
+      "feature__name": "电池续航",
+      "current_level": 9
+     },
+     {
+      "feature_id": 3,
+      "feature__name": "耐用性",
+      "current_level": 12
+     },
+     {
+      "feature_id": 4,
+      "feature__name": "应用生态",
+      "current_level": 2
+     },
+     {
+      "feature_id": 6,
+      "feature__name": "产品设计",
+      "current_level": 2
+     }
+    ]
+   },
+   {
+    "product_id": 23,
+    "product_name": "Nova Meridian R2",
+    "positioning": "mainstream",
+    "platform_name": "Meridian Tech基础平台",
+    "markets": [
+     {
+      "market_id": 1,
+      "market__name": "北美"
+     }
+    ],
+    "feature_levels": [
+     {
+      "feature_id": 1,
+      "feature__name": "处理器性能",
+      "current_level": 5
+     },
+     {
+      "feature_id": 2,
+      "feature__name": "电池续航",
+      "current_level": 9
+     },
+     {
+      "feature_id": 3,
+      "feature__name": "耐用性",
+      "current_level": 12
+     },
+     {
+      "feature_id": 4,
+      "feature__name": "应用生态",
+      "current_level": 2
+     },
+     {
+      "feature_id": 6,
+      "feature__name": "产品设计",
+      "current_level": 2
+     }
+    ]
+   }
+  ],
+  "inner_product_tabs": 2,
+  "marketing_row_in_band": {
+   "id": 39,
+   "team_product": 5,
+   "market": 1,
+   "retail_price": "400.00",
+   "promotion_budget": "200000.00",
+   "campaign_focus_feature_ids": [
+    1
+   ],
+   "channel_digital_pct": "0.3400",
+   "channel_traditional_pct": "0.3300",
+   "channel_trade_pct": "0.3300",
+   "distribution_strategy": "mass_retail",
+   "distribution_investment": "0.00",
+   "sales_team_count": 0,
+   "distribution_channel_detail": {},
+   "production_volume": 5000,
+   "production_source_market": 1,
+   "demand_estimate": 0,
+   "warnings": []
+  },
+  "market_tabs": [
+   "北美 已进入",
+   "东亚 已进入",
+   "西欧 已进入",
+   "非洲 未进入",
+   "南美 未进入"
+  ],
+  "entry_mode_cards": 5,
+  "market_entries": [
+   {
+    "id": 11,
+    "market": 4,
+    "entry_mode": 1,
+    "initial_investment": "500000.00",
+    "action": "enter",
+    "integration_strategy": "FULL"
+   }
+  ],
+  "markets_seen": [
+   {
+    "code": "NA",
+    "name": "北美",
+    "status": null,
+    "entry_status": "active",
+    "entry_mode": "从母国市场出口",
+    "is_home_market": true
+   },
+   {
+    "code": "APAC",
+    "name": "东亚",
+    "status": null,
+    "entry_status": "active",
+    "entry_mode": "从母国市场出口",
+    "is_home_market": false
+   },
+   {
+    "code": "EU",
+    "name": "西欧",
+    "status": null,
+    "entry_status": "active",
+    "entry_mode": "从母国市场出口",
+    "is_home_market": false
+   },
+   {
+    "code": "AFR",
+    "name": "非洲",
+    "status": null,
+    "entry_status": "not_entered",
+    "entry_mode": null,
+    "is_home_market": false
+   },
+   {
+    "code": "LATAM",
+    "name": "南美",
+    "status": null,
+    "entry_status": "not_entered",
+    "entry_mode": null,
+    "is_home_market": false
+   }
+  ],
+  "home_market_context": {
+   "id": 1,
+   "code": "NA",
+   "name": "北美",
+   "is_home_market": true,
+   "entry_status": "active",
+   "entry_mode": "从母国市场出口",
+   "allows_manufacturing": true,
+   "contract_mfg_available": true,
+   "plant_build_cost": 20000000,
+   "plant_build_rounds": 2,
+   "plant_capacity_units": 50000
+  },
+  "home_tab_index": 0,
+  "market_tab_labels": [
+   "北美 已进入",
+   "东亚 已进入",
+   "西欧 已进入",
+   "非洲 未进入",
+   "南美 未进入"
+  ],
+  "home_tab_text": "市场进入\n已进入\n进入模式: 从母国市场出口\n退出市场\n生产能力\n自有工厂\n建设中\n建设中\n代工产能：30000台可用（+25%成本溢价）\n合作伙伴与联盟\n分销合作伙伴 — 每回合 $2.0M分销合作伙伴 — 每回合 $2.0M\n+ 分销合作伙伴 — 每回合 $2.0M\n+ 技术合作伙伴 — 每回合 $3.0M\n+ 政府与监管顾问 — 每回合 $1.0M\n+ 本地品牌大使 — 每回合 $1.5M\n+ 顶点商业联盟 — 每回合 $3.0M\n+ 中关村创新集团 — 每回合 $2.5M\n+ 欧洲商务伙伴 — 每回合 $3.5M\n+ 阿尔沃拉达商业集团 — 每回合 $2.0M\n+ 萨赫勒门户企业 — 每回合 $1.5M\n合作伙伴关系状况 — 北美\n大陆物流网络 (DISTRIBUTION)\n✓ 良好\n满意度: 68%\n68%\n收益交付: 68%\n市场运营\n本地化概览 — 北美\nHOME\n这是您的总部市场。所有人才池以完全效率运作。无文化距离惩罚。\n研发 5.0\n商务 4.4\n运营 4.9\n反映您在公司战略中的全球人才水平。",
+  "partnership_label": "+ 分销合作伙伴 — 每回合 $2.0M",
+  "partnerships": [
+   {
+    "id": 13,
+    "market": 1,
+    "strategy_option": 1,
+    "annual_investment": "2000000.00",
+    "action": "establish"
+   }
+  ],
+  "compliance_investments": [
+   {
+    "id": 7,
+    "market": 2,
+    "investment_amount": "250000.00"
+   }
+  ],
+  "talent_inputs": 6,
+  "talent_saved": {
+   "rd_headcount": 60,
+   "rd_salary_level": 3,
+   "rd_training_budget": 100000,
+   "commercial_headcount": 30,
+   "commercial_salary_level": 3,
+   "commercial_training_budget": 0,
+   "operations_headcount": 40,
+   "operations_salary_level": 3,
+   "operations_training_budget": 0
+  },
+  "allocation_inputs": 4,
+  "talent_allocations": [
+   {
+    "id": 11,
+    "talent_pool": "rd",
+    "hq_count": 55,
+    "market_allocation": {
+     "NA": 5
+    }
+   }
+  ],
+  "acquisition_targets": [
+   {
+    "target_name": "先锋科技",
+    "market_name": "北美",
+    "base_acquisition_cost": 25000000,
+    "min_round_available": 3,
+    "available": true,
+    "locked_reasons": []
+   },
+   {
+    "target_name": "亚洲电子制造",
+    "market_name": "东亚",
+    "base_acquisition_cost": 18000000,
+    "min_round_available": 2,
+    "available": true,
+    "locked_reasons": []
+   },
+   {
+    "target_name": "欧洲绿色设备",
+    "market_name": "西欧",
+    "base_acquisition_cost": 30000000,
+    "min_round_available": 3,
+    "available": true,
+    "locked_reasons": []
+   },
+   {
+    "target_name": "非洲互联移动",
+    "market_name": "非洲",
+    "base_acquisition_cost": 10000000,
+    "min_round_available": 2,
+    "available": false,
+    "locked_reasons": [
+     "需要先进入非洲",
+     "已被Aurora Devices收购"
+    ]
+   },
+   {
+    "target_name": "南方科技电子",
+    "market_name": "南美",
+    "base_acquisition_cost": 20000000,
+    "min_round_available": 3,
+    "available": false,
+    "locked_reasons": [
+     "需要先进入南美"
+    ]
+   }
+  ],
+  "ma_pane_text": "并购\n可用收购目标\n先锋科技北美\n$25.0M\n中型北美电子公司，拥有强大的零售分销和忠实的企业客户群。产品线老化但品牌声誉良好。\n获得：\n6% 市场份额（整合后）\n工厂: 30,000 单位产能（立即生效）\n分销覆盖: +12%\nCommercial 人才: +0.5 等级\nOperations 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.0M/回合 整合成本\n总成本: $29.0M\n先收购的团队获得独家权限。需要 $25.0M；未分配资金 $8.5M\n收购 — $25.0M\n亚洲电子制造东亚\n$18.0M\n东亚区域制造商，拥有现代化生产设施和成熟的供应商关系。品牌弱但运营效率出色。\n获得：\n5% 市场份额（整合后）\n工厂: 50,000 单位产能（立即生效）\nOperations 人才: +1 等级\n整合：\n2 回合完成整合\n$1.5M/回合 整合成本\n总成本: $21.0M\n先收购的团队获得独家权限。需要 $18.0M；未分配资金 $8.5M\n收购 — $18.0M\n欧洲绿色设备西欧\n$30.0M\n小型欧洲可持续电子品牌。强大的ESG资质，高端定位，完善的合规基础设施。\n获得：\n4% 市场份额（整合后）\n分销覆盖: +8%\nCommercial 人才: +0.3 等级\n整合：\n2 回合完成整合\n$2.5M/回合 整合成本\n总成本: $35.0M\n先收购的团队获得独家权限。需要 $30.0M；未分配资金 $8.5M\n收购 — $30.0M\n非洲互联移动非洲被Aurora Devices收购\n$10.0M\n快速增长的非洲移动设备组装商，分销网络覆盖西非和东非。与电信运营商和移动支付平台关系密切。\n获得：\n5% 市场份额（整合后）\n工厂: 25,000 单位产能（立即生效）\n分销覆盖: +15%\nCommercial 人才: +0.4 等级\nOperations 人才: +0.5 等级\n整合：\n3 回合完成整合\n$1.0M/回合 整合成本\n总成本: $13.0M\n要求：需要先进入非洲已被Aurora Devices收购\n南方科技电子南美\n$20.0M\n巴西电子制造商，在玛瑙斯自由贸易区运营。享有税收优惠，拥有成熟的零售合作和在巴西及阿根廷的强大品牌知名度。\n获得：\n6% 市场份额（整合后）\n工厂: 35,000 单位产能（立即生效）\n分销覆盖: +10%\nCommercial 人才: +0.3 等级\nOperations 人才: +0.6 等级\n整合：\n2 回合完成整合\n$1.8M/回合 整合成本\n总成本: $23.6M\n要求：需要先进入南美",
+  "esg_saved": {
+   "id": 11,
+   "environmental_investment": "500000.00",
+   "social_investment": "250000.00",
+   "governance_commitments": [
+    "board_diversity"
+   ]
+  },
+  "org_modal": "切换到区域式?一次性成本： $1.5M干扰: 1 round转型后：总部人才: -10%本地人才: +20%创新: -10%协调: -15%速度: +5%这是一项重大组织变革。请仔细考虑时机。集权式切换到区域式 — $1.5M",
+  "org_after_modal": null,
+  "org_context_after": {
+   "current_structure": {
+    "id": 2,
+    "code": "regional",
+    "name": "区域式",
+    "adopted_round": 3
+   },
+   "transitioning": true,
+   "transition_to": null,
+   "pending_structure": null
+  },
+  "buy_label": "购买报告 — $50,000",
+  "buy_toast": null,
+  "analyst_refusal": "本游戏未开放分析师服务，因此您的问题未提交，也未产生费用。",
+  "analyst_toast": null,
+  "analyst_queries": "{\"round_number\": 3, \"queries\": [], \"query_count\": 0, \"analyst_query\": {\"price\": \"50000\", \"max_queries_per_round\": 5, \"queries_remaining\": 5}}",
+  "analyst_quota_state": {
+   "queries_used": null,
+   "charged": null,
+   "queries": []
+  },
+  "product_rows": 4,
+  "retire_row_buttons": [
+   "退役产品"
+  ],
+  "edit_modal": "",
+  "retire_confirm": "Nova Meridian R2\n平台\nMeridian Tech基础平台\n\t\n预计单位成本\n$45\n\n\n活跃市场\n北美\n\t\n功能\n处理器性能: 5.0\n电池续航: 9.0\n耐用性: 12.0\n应用生态: 2.0\n产品设计: 2.0\n取 消\n立即退役\n回合结束退役",
+  "retire_modal_buttons": [
+   "",
+   "取 消",
+   "立即退役",
+   "回合结束退役"
+  ],
+  "product_retires": [
+   {
+    "id": 11,
+    "team_product": 23,
+    "timing": "end_of_round"
+   }
+  ],
+  "summary": {
+   "can_lock": true,
+   "lock_blockers": []
+  },
+  "summary_categories": {
+   "sourcing": "empty",
+   "logistics": "empty",
+   "trade_finance": "empty",
+   "inventory": "empty",
+   "budget": "configured",
+   "rd": "empty",
+   "products": "configured",
+   "marketing": "configured",
+   "strategy": "configured",
+   "financing": "configured"
+  },
+  "summary_spend_lines": [
+   "预算 $5.5M/$5.0M 超出预算",
+   "研发、营销与战略支出合计 $5.5M，比经营预算 $5.0M 高出 $550K",
+   "本回合已承诺支出：$16.1M，现金共 $18.3M；尚未承诺 $2.2M"
+  ],
+  "summary_blocker_lines": [],
+  "lock_button_enabled": true,
+  "lock_modal": "确认提交确定锁定第3回合的决策？此操作无法撤销。所有决策页面将变为只读。取 消锁定决策",
+  "lock_modal_after": null,
+  "lock_refusals": [],
+  "final_draft": {
+   "id": 19,
+   "team": 3,
+   "round": 4,
+   "status": "locked",
+   "locked_at": "2026-09-23T05:06:18.514242Z",
+   "locked_by": 11,
+   "team_notes": "Round 3: platform first, one new market, prices inside the band.",
+   "budget_allocation": {
+    "id": 39,
+    "rd_budget": "2500000.00",
+    "marketing_budget": "2500000.00",
+    "strategy_budget": "1500000.00",
+    "warnings": []
+   },
+   "financing": {
+    "id": 26,
+    "new_debt": "5000000.00",
+    "debt_repayment": "0.00",
+    "new_equity": "0.00",
+    "dividend_per_share": "0.5000"
+   },
+   "esg": {
+    "id": 11,
+    "environmental_investment": "500000.00",
+    "social_investment": "250000.00",
+    "governance_commitments": [
+     "board_diversity"
+    ]
+   },
+   "rd_investments": [],
+   "platform_developments": [],
+   "product_creates": [
+    {
+     "id": 11,
+     "team_platform": 3,
+     "product_name": "Nova Meridian R3",
+     "positioning": "mainstream",
+     "target_market_ids": [
+      1
+     ]
+    }
+   ],
+   "product_retires": [
+    {
+     "id": 11,
+     "team_product": 23,
+     "timing": "end_of_round"
+    }
+   ],
+   "marketing_decisions": [
+    {
+     "id": 40,
+     "team_product": 5,
+     "market": 1,
+     "retail_price": "400.00",
+     "promotion_budget": "200000.00",
+     "campaign_focus_feature_ids": [
+      1
+     ],
+     "channel_digital_pct": "0.3400",
+     "channel_traditional_pct": "0.3300",
+     "channel_trade_pct": "0.3300",
+     "distribution_strategy": "mass_retail",
+     "distribution_investment": "0.00",
+     "sales_team_count": 0,
+     "distribution_channel_detail": {},
+     "production_volume": 5000,
+     "production_source_market": 1,
+     "demand_estimate": 0,
+     "warnings": []
+    },
+    {
+     "id": 41,
+     "team_product": 23,
+     "market": 1,
+     "retail_price": "420.00",
+     "promotion_budget": "100000.00",
+     "campaign_focus_feature_ids": [
+      1
+     ],
+     "channel_digital_pct": "0.3400",
+     "channel_traditional_pct": "0.3300",
+     "channel_trade_pct": "0.3300",
+     "distribution_strategy": "mass_retail",
+     "distribution_investment": "0.00",
+     "sales_team_count": 0,
+     "distribution_channel_detail": {},
+     "production_volume": 4000,
+     "production_source_market": 1,
+     "demand_estimate": 0,
+     "warnings": []
+    }
+   ],
+   "market_entries": [
+    {
+     "id": 11,
+     "market": 4,
+     "entry_mode": 1,
+     "initial_investment": "500000.00",
+     "action": "enter",
+     "integration_strategy": "FULL"
+    }
+   ],
+   "plant_decisions": [],
+   "partnerships": [
+    {
+     "id": 13,
+     "market": 1,
+     "strategy_option": 1,
+     "annual_investment": "2000000.00",
+     "action": "establish"
+    }
+   ],
+   "acquisitions": [],
+   "event_responses": [],
+   "research_allocations": [],
+   "talent_allocations": [
+    {
+     "id": 11,
+     "talent_pool": "rd",
+     "hq_count": 55,
+     "market_allocation": {
+      "NA": 5
+     }
+    }
+   ],
+   "compliance_investments": [
+    {
+     "id": 7,
+     "market": 2,
+     "investment_amount": "250000.00"
+    }
+   ]
+  }
+ },
+ "summary": {
+  "passed": 23,
+  "failed": 0,
+  "observed": 4,
+  "screens": 36,
+  "screens_with_leaks": 36,
+  "console_errors": 25,
+  "api_calls": 213,
+  "api_refused": 1
+ }
+}

@@ -1,0 +1,311 @@
+{
+ "driver": "verify-coach-language-set",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T04:58:06",
+ "steps": [
+  {
+   "name": "instructor signs in (in English)",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the console header carries the language switch",
+   "outcome": "pass",
+   "detail": "1 controls"
+  },
+  {
+   "name": "the switch changes the interface",
+   "outcome": "pass",
+   "detail": "zh-CN"
+  },
+  {
+   "name": "the switch is recorded on the SERVER for an instructor with no enrolment (W-CE2-08)",
+   "outcome": "pass",
+   "detail": "{\"status\": 200, \"body\": {\"language\": \"zh-CN\"}}"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:14"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:58:14"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "04:58:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "04:58:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:58:19"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:58:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "04:58:23"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-coach-console-switched",
+   "url": "/instructor",
+   "screenshot": "v-coach-console-switched-zh-CN.jpg",
+   "note": "the console after the switch to 中文",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v-coach-console-switched",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "preference_before": {
+   "status": 200,
+   "body": {
+    "language": "en"
+   }
+  },
+  "switch_controls": 1,
+  "preference_after": {
+   "status": 200,
+   "body": {
+    "language": "zh-CN"
+   }
+  },
+  "gs_language": "zh-CN"
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 1,
+  "console_errors": 6,
+  "api_calls": 17,
+  "api_refused": 0
+ }
+}

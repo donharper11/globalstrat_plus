@@ -1,0 +1,45 @@
+  PASS      student s2607 signs in
+  PASS      finance: budget allocation saved as entered -- {"id": 9, "rd_budget": "2500000.00", "marketing_budget": "2500000.00", "strategy_budget": "1500000.00", "warnings": []}
+  PASS      finance: a typed loan amount stores the number typed (W-CE-02) -- box='$ 5,000,000' stored=5000000.00
+  PASS      finance: loan and dividend saved as entered -- {"id": 6, "new_debt": "5000000.00", "debt_repayment": "0.00", "new_equity": "0.00", "dividend_per_share": "0.5000"}
+  LEAK      p2-r1-14-finance-tax: [{"junk": "None", "context": "prove of the transparency.\nTax benefit: None\nRepatriation: No improvement\nAudit "}]
+  PASS      finance: tax structure switched from the screen -- direct -> regional_hub
+  LEAK      p2-r1-15-finance-tax-switched: [{"junk": "None", "context": "prove of the transparency.\nTax benefit: None\nRepatriation: No improvement\nAudit "}]
+  PASS      R&D offers no feature-level upgrade button (W-CE-03) -- 0 english + 0 localised upgrade buttons
+  OBSERVED  rd: platform creation blocked (reason shown in modal) -- e — 2.5x feature cost, immediatePartnership — 1.6x feature cost, 1 roundGeneration Base Cost: $5.0MProcessing Power → Level 7: $2.6MTotal: $7.6MReady: 1 round(s)R&D Budget: $4.2MOver Budget: $3.4MRequired: Cost exceeds R
+  PASS      products: new product saved from the modal -- [{"id": 2, "team_platform": 2, "product_name": "Nova Nova R1", "positioning": "mainstream", "target_market_ids": [5]}] modal=''
+  PASS      marketing: in-band price, volume, promotion saved -- {"id": 7, "team_product": 3, "market": 5, "retail_price": "750.00", "promotion_budget": "200000.00", "campaign_focus_feature_ids": [1], "channel_digital_pct": "0.3400", "channel_traditional_pct": "0.3300", "channel_trade
+  LEAK      p2-r1-50-market-strategy: [{"junk": "None", "context": "ontrol: 3/10\nRisk: 2/10\n⚠️ IP Exposure: None\n🛡️ Trust Shield: None — products ca"}]
+  PASS      market strategy: market entry saved -- [{"id": 2, "market": 1, "entry_mode": 1, "initial_investment": "500000.00", "action": "enter", "integration_strategy": "FULL"}]
+  LEAK      p2-r1-51-market-entry: [{"junk": "None", "context": "ontrol: 3/10\nRisk: 2/10\n⚠️ IP Exposure: None\n🛡️ Trust Shield: None — products ca"}]
+  PASS      market strategy: the home market is entered and active (W-CE-21) -- home=LATAM state=active tab='South America Active'
+  PASS      market strategy: plant build saved -- [{"id": 2, "market": 5, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: the Build Plant control states a real cost, not $0 (W-CE-22) -- label='Build Plant — $14.0M, 2 rounds, 55000 units' stored row=[{"id": 2, "market": 5, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: the Build Plant control names the capacity the scenario authors -- label='Build Plant — $14.0M, 2 rounds, 55000 units' stored=[{"id": 2, "market": 5, "action": "build", "capacity_units": 0, "contract_mfg_volume": 0}]
+  PASS      market strategy: partnership saved -- [{"id": 2, "market": 5, "strategy_option": 1, "annual_investment": "2000000.00", "action": "establish"}]
+  PASS      market strategy: the partnership button states the charge the way it is charged (W-CE-22) -- label='+ Distribution Partner — $2.0M/round' stored=[{"id": 2, "market": 5, "strategy_option": 1, "annual_investment": "2000000.00", "action": "establish"}]
+  OBSERVED  market strategy: compliance investment control reachable -- no foreign market is entered yet, so the control is not offered this round
+  PASS      corporate: talent headcount and training saved -- {"rd_headcount": 60, "rd_salary_level": 3, "rd_training_budget": 100000, "commercial_headcount": 30, "commercial_salary_level": 3, "commercial_training_budget": 0, "operations_headcount": 40, "operati
+  PASS      corporate: talent allocation saved -- [{"id": 2, "talent_pool": "rd", "hq_count": 55, "market_allocation": {"LATAM": 5}}]
+  PASS      corporate: no acquisition target is available yet, and each says why -- 5 targets, none available; reasons=[["Available from Round 3", "Requires presence in North America"], ["Available from Round 2", "Requires presence in East Asia"], ["Available from Round 3", "Requires presence in Western
+  PASS      corporate: ESG investment and a commitment saved -- {"id": 2, "environmental_investment": "500000.00", "social_investment": "250000.00", "governance_commitments": ["board_diversity"]}
+  PASS      corporate: org structure switch accepted -- {"current_structure": {"id": 2, "code": "regional", "name": "Regional", "adopted_round": 1}, "transitioning": true, "transition_to": null, "pending_structure": null}
+  OBSERVED  communications: an assignment is offered -- no assignment this round
+  PASS      research: report bought and delivered
+  PASS      research: analyst answers or refuses visibly (no model behind this stack) -- The research analyst is not part of this game, so your question was not asked and nothing was charged.
+  PASS      research: a question that finds nothing is not charged -- {"queries_used": null, "charged": null, "queries": []}
+  PASS      products: retire at end of round saved -- [{"id": 2, "team_product": 4, "timing": "end_of_round"}]
+  PASS      summary: decisions locked from the screen -- status=locked modal_after=''
+  PASS      summary: the page never offers a lock the server then refuses (W-CE-25) -- blockers the page listed=[]; refusal=[]
+
+{
+  "passed": 26,
+  "failed": 0,
+  "observed": 3,
+  "screens": 35,
+  "screens_with_leaks": 4,
+  "console_errors": 25,
+  "api_calls": 209,
+  "api_refused": 1
+}
+record: /home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-a80ba111041f886bb/handoff_readiness_v2/evidence/walkthrough-ce-3-2026-09-23/records/student-play-t2-r1-en.json

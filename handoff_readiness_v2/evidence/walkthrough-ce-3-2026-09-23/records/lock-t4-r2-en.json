@@ -1,0 +1,148 @@
+{
+ "driver": "lock-t4-r2",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T04:51:18",
+ "steps": [
+  {
+   "name": "student s2613 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 2 already locked for this team",
+   "outcome": "observed",
+   "detail": ""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:51:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:51:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:51:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "04:51:19"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "04:51:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/financial-reports/history/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/dashboard/scorecard/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/investor-relations/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/results/round/1/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/2/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/2/summary/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/competitors/round/1/",
+   "status": 200,
+   "at": "04:51:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/2/",
+   "status": 200,
+   "at": "04:51:29"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "team": "Solaris Consumer"
+ },
+ "summary": {
+  "passed": 1,
+  "failed": 0,
+  "observed": 1,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 15,
+  "api_refused": 0
+ }
+}

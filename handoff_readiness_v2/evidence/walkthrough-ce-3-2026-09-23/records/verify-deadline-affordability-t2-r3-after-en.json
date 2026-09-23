@@ -1,0 +1,508 @@
+{
+ "driver": "verify-deadline-affordability-t2-r3-after",
+ "language": "en",
+ "base": "http://127.0.0.1:49979",
+ "started": "2026-09-23T05:30:22",
+ "steps": [
+  {
+   "name": "student s2607 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the decision row the team made survives the round (it is the record)",
+   "outcome": "pass",
+   "detail": "[{\"id\": 8, \"acquisition_target\": 2}]"
+  },
+  {
+   "name": "the acquisition the lock refused was NOT fulfilled (W-CE2-03)",
+   "outcome": "pass",
+   "detail": "this team now owns: []"
+  },
+  {
+   "name": "cash did not close negative",
+   "outcome": "fail",
+   "detail": "cash_closing=-7431324.09 strategy_expense=9950000"
+  },
+  {
+   "name": "the team is told why, and that nothing was charged",
+   "outcome": "fail",
+   "detail": "\"\\n<!doctype html>\\n<html lang=\\\"en\\\">\\n<head>\\n  <title>Not Found</title>\\n</head>\\n<body>\\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\\n</body>\\n</html>\\n\""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "at": "05:30:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:30"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "05:30:30"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "05:30:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:30:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+   "status": 200,
+   "at": "05:30:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:30:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/dashboard/scorecard/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/investor-relations/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/results/round/3/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/3/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/competitors/round/3/",
+   "status": 200,
+   "at": "05:30:26"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/3/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/strategy/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/notifications/",
+   "status": 404,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=8&section_id=1",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/financial-reports/history/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/context/finance/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/decisions/round/4/summary/",
+   "status": 200,
+   "at": "05:30:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/ticker/",
+   "status": 200,
+   "at": "05:30:30"
+  }
+ ],
+ "refused": [
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/2/notifications/",
+   "status": 404,
+   "at": "05:30:30",
+   "body": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n",
+   "request": ""
+  }
+ ],
+ "screens": [
+  {
+   "screen": "v-deadline-t2-r3-after-statement",
+   "url": "/games/1/teams/2/financial-reports",
+   "screenshot": "v-deadline-t2-r3-after-statement-en.jpg",
+   "note": "the statement of the round the deadline closed",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/briefing/latest/?user_id=8",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/results/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/competitors/round/3/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/notifications/",
+     "s": 404
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=8&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/2/ticker/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Nova Circuit",
+  "draft_after": {
+   "status": "locked",
+   "acquisitions": [
+    {
+     "id": 8,
+     "acquisition_target": 2
+    }
+   ]
+  },
+  "statement": {
+   "round_number": 3,
+   "total_revenue": 472500,
+   "total_cogs": 299750,
+   "gross_profit": 172750,
+   "gross_margin_pct": 0.3656,
+   "rd_expense": 0,
+   "marketing_expense": 19287190,
+   "strategy_expense": 9950000,
+   "research_expense": 0,
+   "compliance_expense": 250000,
+   "admin_overhead": 514175,
+   "logistics_tariff_expense": 609900,
+   "inventory_expense": 0,
+   "operating_income": -31572515,
+   "interest_expense": 780000,
+   "pre_tax_income": -32352515,
+   "tax_expense": 0,
+   "net_income": -32352515,
+   "net_margin_pct": -68.4709,
+   "cash_opening": 19287190.91,
+   "cash_closing": -7431324.09,
+   "total_assets": 2774675.91,
+   "total_debt": 18000000,
+   "total_equity": -13225324.09,
+   "plant_book_value": 10206000,
+   "inventory_value": 0,
+   "operating_cash_flow": -31218515,
+   "investing_cash_flow": 0,
+   "financing_cash_flow": 4500000,
+   "dividends_paid": 500000,
+   "share_price": 0.01,
+   "roe": -10.1072,
+   "debt_to_equity": 99999,
+   "shareholder_return_cumulative": -0.9681,
+   "markets": [
+    {
+     "market_code": "LATAM",
+     "market_name": "South America",
+     "home_revenue": 472500,
+     "market_profit": -31218515,
+     "market_share_pct": 1,
+     "currency_code": "BRL",
+     "exchange_rate": 0.18,
+     "exchange_rate_change_pct": 0.125,
+     "tariff_rate": 0.15
+    }
+   ],
+   "products": [
+    {
+     "product_name": "Aura Pro",
+     "positioning": "premium",
+     "market_name": "South America",
+     "market_code": "LATAM",
+     "units_produced": 5000,
+     "units_sold": 5000,
+     "units_unsold": 0,
+     "retail_price": 750,
+     "revenue": 472500,
+     "unit_cost": 59.95,
+     "total_cogs": 299750,
+     "gross_margin": 172750,
+     "gross_margin_pct": 0.3656084656084656,
+     "inventory_holding_cost": 0,
+     "inventory_value": 0,
+     "inventory_turnover": null,
+     "logistics_cost": 47400,
+     "tariff_cost": 562500
+    }
+   ]
+  },
+  "acquired_by_this_team": [],
+  "notifications": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n"
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 2,
+  "observed": 0,
+  "screens": 1,
+  "screens_with_leaks": 0,
+  "console_errors": 7,
+  "api_calls": 29,
+  "api_refused": 1
+ }
+}
