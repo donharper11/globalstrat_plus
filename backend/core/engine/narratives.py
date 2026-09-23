@@ -757,7 +757,8 @@ def _store_outlook_results(game, round_number, results, outlook_calls):
 # Fallbacks
 # ---------------------------------------------------------------------------
 
-def _build_briefing_fields(game, round_number, team, llm_text=None):
+def _build_briefing_fields(game, round_number, team, llm_text=None,
+                           language_override=None):
     """
     Build the structured dict that matches StrategicBriefing model fields.
     If llm_text is provided, use it as the executive_summary and populate
@@ -787,7 +788,9 @@ def _build_briefing_fields(game, round_number, team, llm_text=None):
 
     # Executive summary, in the team's language (the same the model path is
     # asked for; W-CE-16).
-    language = get_team_language(team)
+    # `language_override` is how a READER asks for the same fields in their
+    # own language; the writer never passes it (W-CE3-11).
+    language = language_override or get_team_language(team)
     if llm_text:
         executive_summary = llm_text
     else:
@@ -882,6 +885,81 @@ def _build_briefing_fields(game, round_number, team, llm_text=None):
         'strategic_recommendations': strategic_recommendations,
         'risk_alerts': risk_alerts,
     }
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-11 — the stored briefing, in the reader's own language
+# ---------------------------------------------------------------------------
+#
+# The third walkthrough photographed a Chinese student's post-login modal
+# reading *Quarter 1 Results · Revenue declined 89.9% to $2,100,000. Net
+# income: $-11,445,050. Cash position: $23,054,950.* inside Chinese page
+# chrome. The record attributed it to `core/engine/briefing.py`; that module
+# has no caller anywhere in the tree and would raise if it had one, so it is
+# not what the student read. What the student read is the fallback this
+# module writes, rendered through `_fallback_text` in the language
+# `get_team_language` returned AT PROCESSING TIME -- 'en' for that team,
+# because nothing had written zh-CN to its enrolment yet.
+#
+# So the briefing has the same shape of defect as the coach alerts: stored
+# Phase-2 prose frozen in the language of the moment it was written. It is
+# repaired the way `coherence_feedback` repairs the scorecard rather than the
+# way the alerts are repaired, because it needs no new storage: every
+# template sentence is derived from figures the reader can read back, so the
+# same builder is run again for the reader and the result is used ONLY where
+# the stored text is recognisably that builder's own output in one of the
+# shipped languages. Model-written prose is never replaced, and a briefing
+# this module cannot place keeps exactly what it has.
+
+
+def _template_briefings(game, round_number, team):
+    """{language -> the fields this module would write with no model text}."""
+    return {language: _build_briefing_fields(
+        game, round_number, team, llm_text=None,
+        language_override=language) for language in ('en', 'zh-CN')}
+
+
+def _rendered_in(stored, by_language):
+    """The language whose template rendering equals `stored`, or None."""
+    for language, value in by_language.items():
+        if stored == value:
+            return language
+    return None
+
+
+def briefing_for_reader(briefing, language):
+    """A copy of a stored briefing's prose in `language`.
+
+    The stored row is never written. Anything the template cannot account
+    for -- a summary a model wrote, an older row, a rendering that raises --
+    is returned exactly as stored.
+    """
+    fields = {
+        'executive_summary': briefing.executive_summary,
+        'performance_analysis': briefing.performance_analysis,
+        'investment_returns': briefing.investment_returns,
+        'investor_sentiment': briefing.investor_sentiment,
+        'competitive_landscape': briefing.competitive_landscape,
+        'strategic_recommendations': briefing.strategic_recommendations,
+        'risk_alerts': briefing.risk_alerts,
+    }
+    if language not in ('en', 'zh-CN'):
+        return fields
+    try:
+        templates = _template_briefings(
+            briefing.game, briefing.round_number, briefing.team)
+    except Exception:
+        return fields
+
+    wanted = templates[language]
+    for name in ('executive_summary', 'strategic_recommendations',
+                 'risk_alerts'):
+        written_in = _rendered_in(
+            fields[name],
+            {lang: value[name] for lang, value in templates.items()})
+        if written_in is not None and written_in != language:
+            fields[name] = wanted[name]
+    return fields
 
 
 def _generate_fallback_briefing(game, round_number, team):

@@ -819,3 +819,233 @@ class TheAlertRenderContextIsOutsideEveryHash(SimpleTestCase):
                 self.assertNotIn('render_context', plan['hashed'])
                 self.assertNotIn('render_context', plan['narrative'])
                 self.assertIn('render_context', plan['dropped'])
+
+
+# ---------------------------------------------------------------------------
+# W-CE3-11 — the Strategic Briefing a Chinese student could not read
+# ---------------------------------------------------------------------------
+#
+# The walkthrough recorded the defect against `core/engine/briefing.py`. That
+# module has no caller anywhere in the tree and raises if it is called
+# (`_compile_briefing` returns an `agent_narratives` key `StrategicBriefing`
+# has no field for), so it is not what the student read. What the student
+# read -- `records/student-tour-t3-after-r1-zh-CN.json` -- is
+# *Quarter 1 Results · Revenue declined 89.9% to $2,100,000. …* inside
+# Chinese page chrome: `narratives._build_briefing_fields`, rendered in the
+# language `get_team_language` returned AT PROCESSING TIME.
+
+class TheStoredBriefingReadsInTheReadersLanguage(TestCase):
+    """Phase-2 prose frozen in the language of the moment it was written.
+
+    A student who chose 中文 after a round was resolved could never read that
+    round's briefing. The template sentences are re-derived from the figures
+    they came from and served in the reader's language; the stored row is
+    never written and model prose is never replaced.
+    """
+
+    def setUp(self):
+        from core.engine.utils import _config_cache
+        from core.models import User
+        from core.models.core import Round
+        from core.models.course import Course, Enrollment, Section
+        from core.models.results_financials import RoundResultFinancials
+        from core.tests.test_operator_concurrency import build_minimal_game
+
+        _config_cache.clear()
+        self.addCleanup(_config_cache.clear)
+        self.game, teams = build_minimal_game(f'ce3brief-{id(self)}')
+        self.team = teams[0]
+        self.round, _ = Round.objects.get_or_create(
+            game=self.game, round_number=1,
+            defaults={'status': 'processed', 'opened_at': timezone.now(),
+                      'deadline': timezone.now()})
+        for number, revenue in ((0, D('20000000')), (1, D('2100000'))):
+            RoundResultFinancials.objects.create(
+                game=self.game, team=self.team, round_number=number,
+                total_revenue=revenue, net_income=D('-11445050'),
+                cash_closing=D('500000'), total_equity=D('1000000'),
+                total_debt=D('4000000'), share_price=D('35'),
+                gross_margin_pct=D('0.1'), net_margin_pct=D('-5.0'),
+                roe=D('-1.0'))
+
+        course = Course.objects.create(
+            course_code=f'CE3B{id(self) % 100000}', course_name='Briefing',
+            instructor_id=None, is_active=True)
+        section = Section.objects.create(
+            course_id=course.course_id, section_code='S', section_name='S',
+            max_teams=4, team_size_min=1, team_size_max=4, is_active=True)
+        self.student = User.objects.create(
+            username=f'ce3brief-{id(self)}', role='student', password_hash='x')
+        self.enrolment = Enrollment.objects.create(
+            user_id=self.student.user_id, section_id=section.section_id,
+            team_id=self.team.id, is_active=True, language='en')
+
+    def write_briefing(self):
+        """The round is resolved while the team's stored language is English
+        -- the state the walkthrough was in."""
+        from core.engine.narratives import _build_briefing_fields
+        from core.models.cc27_models import StrategicBriefing
+
+        fields = _build_briefing_fields(
+            self.game, 1, self.team, llm_text=None)
+        return StrategicBriefing.objects.create(
+            game=self.game, team=self.team, round_number=1, **fields)
+
+    def speak(self, language):
+        self.enrolment.language = language
+        self.enrolment.save(update_fields=['language'])
+
+    def read(self, language=None):
+        from rest_framework.test import APIClient
+        from core.authentication import create_access_token
+        client = APIClient()
+        client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.student)}')
+        headers = ({'HTTP_ACCEPT_LANGUAGE': language} if language else {})
+        response = client.get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}'
+            f'/briefing/round/1/', **headers)
+        self.assertEqual(response.status_code, 200, response.data)
+        return response.data['briefing']
+
+    def test_the_stored_briefing_is_english_as_the_walkthrough_found_it(self):
+        stored = self.write_briefing()
+
+        self.assertIn('Revenue declined', stored.executive_summary)
+
+    def test_a_chinese_reader_gets_it_in_chinese(self):
+        self.write_briefing()
+
+        summary = self.read('zh-CN')['executive_summary']
+
+        self.assertIn('收入下降', summary)
+        self.assertNotIn('Revenue declined', summary)
+
+    def test_the_recommendations_and_risk_alerts_follow_too(self):
+        self.write_briefing()
+
+        briefing = self.read('zh-CN')
+
+        blob = json.dumps(briefing, ensure_ascii=False)
+        self.assertNotIn('Reduce operating costs', blob)
+        self.assertNotIn('financial distress imminent', blob)
+        self.assertIn('削减运营成本', blob)
+
+    def test_an_english_reader_gets_the_stored_bytes(self):
+        stored = self.write_briefing()
+
+        self.assertEqual(self.read('en')['executive_summary'],
+                         stored.executive_summary)
+
+    def test_reading_never_writes_the_stored_row(self):
+        from core.models.cc27_models import StrategicBriefing
+
+        stored = self.write_briefing()
+        before = stored.executive_summary
+
+        self.read('zh-CN')
+
+        self.assertEqual(
+            StrategicBriefing.objects.get(pk=stored.pk).executive_summary,
+            before)
+
+    def test_a_summary_a_model_wrote_is_never_replaced(self):
+        """Only text this module can recognise as its own is re-rendered."""
+        from core.models.cc27_models import StrategicBriefing
+
+        stored = self.write_briefing()
+        StrategicBriefing.objects.filter(pk=stored.pk).update(
+            executive_summary='A summary the model wrote, in English.')
+
+        self.assertEqual(self.read('zh-CN')['executive_summary'],
+                         'A summary the model wrote, in English.')
+
+
+class TheDeadBriefingModuleIsRecorded(SimpleTestCase):
+    """`core/engine/briefing.py` is not what a student reads.
+
+    It is named by the walkthrough, it carries about 90 participant-facing
+    English literals, and it has no caller. Its sentences were moved onto the
+    catalogue anyway -- the module is now inside the static check's scope, so
+    a literal cannot be added back -- but the fact that nothing calls it is
+    recorded here rather than left to be rediscovered.
+    """
+
+    def source(self, relative):
+        import pathlib
+        return (pathlib.Path(__file__).resolve().parents[1] / relative
+                ).read_text(encoding='utf-8')
+
+    def test_nothing_in_the_runtime_tree_calls_it(self):
+        import pathlib
+
+        root = pathlib.Path(__file__).resolve().parents[1]
+        callers = []
+        for path in root.rglob('*.py'):
+            if path.name == 'briefing.py' and path.parent.name == 'engine':
+                continue
+            if 'tests' in path.parts or 'migrations' in path.parts:
+                continue
+            text = path.read_text(encoding='utf-8')
+            if ('generate_strategic_briefings' in text
+                    or 'engine.briefing' in text
+                    or 'engine import briefing' in text):
+                callers.append(str(path.relative_to(root)))
+        self.assertEqual(callers, [])
+
+    def test_no_english_sentence_is_left_in_it(self):
+        text = self.source('engine/briefing.py')
+
+        for english in ('Cash reserves critically low', 'Reduce Leverage',
+                        'No owned plants', 'Very Weak',
+                        'investigate segment performance'):
+            with self.subTest(english=english):
+                self.assertNotIn(english, text)
+
+    def test_it_is_inside_the_static_check_scope(self):
+        import json as _json
+        import pathlib
+
+        config = _json.loads(
+            (pathlib.Path(__file__).resolve().parents[2] / 'scripts'
+             / 'participant-strings.config.json').read_text(encoding='utf-8'))
+
+        self.assertIn('backend/core/engine/briefing.py', config['scope'])
+
+
+class TheBriefingCatalogueIsComplete(SimpleTestCase):
+
+    def keys(self):
+        from core.utils.participant_messages import MESSAGES
+        return {k: v for k, v in MESSAGES.items()
+                if k.startswith('briefing_')}
+
+    def test_every_briefing_sentence_carries_both_languages(self):
+        self.assertGreater(len(self.keys()), 80)
+        for key, entry in self.keys().items():
+            with self.subTest(key=key):
+                self.assertEqual(set(entry), {'en', 'zh-CN'})
+
+    def test_both_languages_interpolate_the_same_values(self):
+        import re
+
+        for key, entry in self.keys().items():
+            placeholders = {
+                language: set(re.findall(r'\{(\w+)\}', text))
+                for language, text in entry.items()}
+            with self.subTest(key=key):
+                self.assertEqual(placeholders['en'], placeholders['zh-CN'])
+
+    def test_the_phase_two_fallback_catalogue_is_complete_too(self):
+        """The sentences a student actually reads: both languages, same
+        placeholders."""
+        import re
+        from core.engine.narratives import _FALLBACK_TEXT
+
+        english = _FALLBACK_TEXT['en']
+        chinese = _FALLBACK_TEXT['zh-CN']
+        self.assertEqual(set(english), set(chinese))
+        for key, text in english.items():
+            with self.subTest(key=key):
+                self.assertEqual(set(re.findall(r'\{(\w+)\}', text)),
+                                 set(re.findall(r'\{(\w+)\}', chinese[key])))

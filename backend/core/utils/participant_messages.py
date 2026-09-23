@@ -252,6 +252,378 @@ MESSAGES = {
         'en': 'no market yet',
         'zh-CN': '尚无市场',
     },
+    # -----------------------------------------------------------------------
+    # W-CE3-11 — the Strategic Briefing (2026-09-23)
+    # -----------------------------------------------------------------------
+    # `core/engine/briefing.py` built every sentence as an f-string with no
+    # catalogue entry -- 21 `parts.append(f"…")` calls and about 90 distinct
+    # English literals -- so a Chinese student's first screen after signing in
+    # read *Revenue declined 55% to $0.5M — investigate segment performance.*
+    # and *Cash reserves critically low at $-7.4M. Immediate action required.*
+    #
+    # `StrategicBriefing` is a NARRATIVE section (`in_output=False`, every
+    # field a `narrative_field`): Phase-2 prose, never part of the competitive
+    # hash. The sibling writer of the same rows,
+    # `engine/narratives._build_briefing_fields`, already writes them in the
+    # team's language through `get_team_language`. So these are stored in the
+    # team's language at generation time, exactly as that writer does -- not
+    # re-rendered at read time as `coherence_feedback` must be, because
+    # nothing here is inside the competitive envelope.
+    #
+    # Numbers are formatted by the caller and passed as strings, the way every
+    # other entry in this catalogue takes them, so a format spec never has to
+    # be duplicated across two languages.
+    'briefing_no_data': {
+        'en': 'Round data not yet available.',
+        'zh-CN': '本回合数据尚未生成。',
+    },
+    'briefing_perf_strong': {
+        'en': 'Strong quarter. Your Performance Index rose {change} points to {index}, placing you #{rank} of {total} teams.',
+        'zh-CN': '本回合表现强劲。绩效指数上升 {change} 点至 {index}，在 {total} 家公司中排名第 {rank}。',
+    },
+    'briefing_perf_steady': {
+        'en': 'Steady progress. Your Performance Index edged up {change} to {index} (#{rank}).',
+        'zh-CN': '稳步前进。绩效指数小幅上升 {change} 至 {index}（第 {rank} 位）。',
+    },
+    'briefing_perf_flat': {
+        'en': 'Flat quarter. Your Performance Index dipped slightly to {index} ({change}, #{rank}).',
+        'zh-CN': '本回合表现平淡。绩效指数小幅回落至 {index}（{change}，第 {rank} 位）。',
+    },
+    'briefing_perf_weak': {
+        'en': 'Challenging quarter. Your Performance Index fell {change} to {index}, dropping you to #{rank}.',
+        'zh-CN': '本回合颇为艰难。绩效指数下降 {change} 至 {index}，排名降至第 {rank} 位。',
+    },
+    'briefing_revenue_surged': {
+        'en': 'Revenue surged {pct}% to {revenue}.',
+        'zh-CN': '营收大幅增长 {pct}%，达到 {revenue}。',
+    },
+    'briefing_revenue_grew': {
+        'en': 'Revenue grew {pct}% to {revenue}.',
+        'zh-CN': '营收增长 {pct}%，达到 {revenue}。',
+    },
+    'briefing_revenue_softened': {
+        'en': 'Revenue softened {pct}% to {revenue}.',
+        'zh-CN': '营收下滑 {pct}%，至 {revenue}。',
+    },
+    'briefing_revenue_declined': {
+        'en': 'Revenue declined {pct}% to {revenue} — investigate segment performance.',
+        'zh-CN': '营收下降 {pct}%，至 {revenue}——请检视各细分市场的表现。',
+    },
+    'briefing_revenue_established': {
+        'en': 'Revenue of {revenue} established.',
+        'zh-CN': '本回合实现营收 {revenue}。',
+    },
+    'briefing_cash_critical': {
+        'en': 'Cash reserves critically low at {cash}. Immediate action required.',
+        'zh-CN': '现金储备严重不足，仅有 {cash}。需立即采取行动。',
+    },
+    'briefing_leverage_elevated': {
+        'en': 'Leverage elevated at {ratio}x D/E. Conservative investors may be concerned.',
+        'zh-CN': '杠杆偏高，债务与股东权益之比为 {ratio} 倍。稳健型投资者可能会感到担忧。',
+    },
+    'briefing_net_income_positive': {
+        'en': 'Net income of {net_income} ({margin}% margin) — a profitable quarter.',
+        'zh-CN': '净利润 {net_income}（净利率 {margin}%）——本回合实现盈利。',
+    },
+    'briefing_net_loss': {
+        'en': 'Net loss of {loss}. Monitor cash runway closely.',
+        'zh-CN': '净亏损 {loss}。请密切关注现金还能支撑多少回合。',
+    },
+    # The stakeholder groups, named as a person names them rather than by the
+    # segment type stored beside them.
+    'briefing_group_investors': {'en': 'investors', 'zh-CN': '投资者'},
+    'briefing_group_regulators': {'en': 'regulators', 'zh-CN': '监管机构'},
+    'briefing_group_channel_partners': {
+        'en': 'channel partners', 'zh-CN': '渠道伙伴'},
+    'briefing_stake_satisfied': {
+        'en': 'Your {group} are satisfied with your current direction.',
+        'zh-CN': '贵公司的{group}对当前方向感到满意。',
+    },
+    'briefing_stake_warming': {
+        'en': 'Your {group} are warming to your strategy.',
+        'zh-CN': '贵公司的{group}开始认同贵公司的战略。',
+    },
+    'briefing_stake_moderate': {
+        'en': 'Your {group} have moderate confidence.',
+        'zh-CN': '贵公司的{group}信心一般。',
+    },
+    'briefing_stake_declining': {
+        'en': 'Your {group} are losing confidence. Review what changed.',
+        'zh-CN': '贵公司的{group}信心正在下降。请检视是什么发生了变化。',
+    },
+    'briefing_stake_low': {
+        'en': 'Your {group} have low confidence in your current strategy.',
+        'zh-CN': '贵公司的{group}对当前战略信心不足。',
+    },
+    'briefing_trend_improved': {'en': 'improved', 'zh-CN': '有所改善'},
+    'briefing_trend_declined': {'en': 'declined', 'zh-CN': '有所下降'},
+    'briefing_trend_stable': {'en': 'stable', 'zh-CN': '保持稳定'},
+    'briefing_fit_strong': {'en': 'Strong', 'zh-CN': '强'},
+    'briefing_fit_moderate': {'en': 'Moderate', 'zh-CN': '中等'},
+    'briefing_fit_weak': {'en': 'Weak', 'zh-CN': '弱'},
+    'briefing_fit_very_weak': {'en': 'Very Weak', 'zh-CN': '很弱'},
+    'briefing_metric_revenue': {'en': 'Revenue', 'zh-CN': '营收'},
+    'briefing_metric_debt_to_equity': {
+        'en': 'Debt-to-Equity', 'zh-CN': '债务与股东权益之比'},
+    'briefing_metric_cash_position': {
+        'en': 'Cash Position', 'zh-CN': '现金状况'},
+    'briefing_esg_return': {
+        'en': 'Your ESG investment of {invested} generated {savings} in economic benefits ({roi}% quarterly return).',
+        'zh-CN': '贵公司投入的 {invested} ESG 资金带来了 {savings} 的经济收益（本回合回报率 {roi}%）。',
+    },
+    'briefing_esg_building': {
+        'en': 'Returns are building — ESG investments compound over time.',
+        'zh-CN': '回报正在累积——ESG 投入的效果会随时间叠加。',
+    },
+    'briefing_esg_solid': {'en': 'Solid returns.', 'zh-CN': '回报稳健。'},
+    'briefing_esg_excellent': {
+        'en': 'Excellent returns. Your ESG leadership is a competitive advantage.',
+        'zh-CN': '回报出色。贵公司在 ESG 方面的领先已成为竞争优势。',
+    },
+    'briefing_esg_none': {
+        'en': "No ESG investment this round. You're missing potential tariff and tax benefits.",
+        'zh-CN': '本回合没有 ESG 投入，因而错过了潜在的关税与税收优惠。',
+    },
+    'briefing_talent_rd_savings': {
+        'en': 'R&D cost reduction', 'zh-CN': '研发成本下降'},
+    'briefing_talent_cogs_savings': {
+        'en': 'Operations efficiency', 'zh-CN': '运营效率提升'},
+    'briefing_talent_campaign_uplift': {
+        'en': 'Marketing effectiveness', 'zh-CN': '营销效果提升'},
+    'briefing_talent_positive': {
+        'en': 'Talent investment of {invested} generated {savings} in benefits. Net positive ROI.',
+        'zh-CN': '人才投入 {invested} 带来了 {savings} 的收益，净回报为正。',
+    },
+    'briefing_talent_building': {
+        'en': 'Talent costs {invested} with {savings} in benefits. Building momentum.',
+        'zh-CN': '人才成本 {invested}，带来收益 {savings}。势头正在形成。',
+    },
+    'briefing_talent_baseline': {
+        'en': 'Talent at baseline levels. Invest above 3.0 to unlock cost reductions.',
+        'zh-CN': '人才水平处于基准线。投入使其高于 3.0 才能带来成本下降。',
+    },
+    'briefing_partnerships_active': {
+        'en': '{count} active partnership(s) generating {value} in value.',
+        'zh-CN': '{count} 项有效合作，创造价值 {value}。',
+    },
+    'briefing_partnerships_none': {
+        'en': 'No active partnerships.', 'zh-CN': '暂无有效合作。'},
+    'briefing_plants_operational': {
+        'en': '{count} operational plant(s). Local manufacturing eliminates tariffs and reduces logistics costs.',
+        'zh-CN': '{count} 座工厂已投产。本地生产可免除关税并降低物流成本。',
+    },
+    'briefing_plants_none': {
+        'en': 'No owned plants.', 'zh-CN': '尚未拥有工厂。'},
+    'briefing_strategic_totals': {
+        'en': 'Total strategic investment: {cost}. Returns: {returns} ({roi}% quarterly).',
+        'zh-CN': '战略投入合计：{cost}。回报：{returns}（本回合 {roi}%）。',
+    },
+    'briefing_strategic_none': {
+        'en': 'No significant strategic investments this round.',
+        'zh-CN': '本回合没有重要的战略投入。',
+    },
+    'briefing_investor_bought_growth': {
+        'en': '{name} added {shares} shares. Your growth trajectory is attracting growth capital.',
+        'zh-CN': '{name} 增持 {shares} 股。贵公司的增长态势正在吸引成长型资本。',
+    },
+    'briefing_investor_bought_value': {
+        'en': '{name} added {shares} shares. Your financial discipline appeals to value investors.',
+        'zh-CN': '{name} 增持 {shares} 股。贵公司的财务纪律受到价值型投资者青睐。',
+    },
+    'briefing_investor_bought_esg': {
+        'en': '{name} added {shares} shares. Your ESG investments are attracting responsible capital.',
+        'zh-CN': '{name} 增持 {shares} 股。贵公司的 ESG 投入正在吸引责任投资资本。',
+    },
+    'briefing_investor_bought': {
+        'en': '{name} added {shares} shares.',
+        'zh-CN': '{name} 增持 {shares} 股。',
+    },
+    'briefing_investor_sold_growth': {
+        'en': '{name} sold {shares} shares. They may see insufficient growth momentum.',
+        'zh-CN': '{name} 减持 {shares} 股。他们可能认为增长动能不足。',
+    },
+    'briefing_investor_sold_value': {
+        'en': '{name} sold {shares} shares. Rising leverage or declining margins may concern them.',
+        'zh-CN': '{name} 减持 {shares} 股。上升的杠杆或下滑的利润率可能令其担忧。',
+    },
+    'briefing_investor_sold_esg': {
+        'en': '{name} sold {shares} shares. Your ESG profile may not meet their criteria.',
+        'zh-CN': '{name} 减持 {shares} 股。贵公司的 ESG 表现可能未达到其标准。',
+    },
+    'briefing_investor_sold': {
+        'en': '{name} sold {shares} shares.',
+        'zh-CN': '{name} 减持 {shares} 股。',
+    },
+    'briefing_investor_held': {
+        'en': '{name} maintained position. No change in confidence.',
+        'zh-CN': '{name} 维持持仓。信心没有变化。',
+    },
+    'briefing_share_price_rose': {
+        'en': 'Your share price rose to {price} ({pct}%).',
+        'zh-CN': '贵公司股价上涨至 {price}（{pct}%）。',
+    },
+    'briefing_share_price_fell': {
+        'en': 'Your share price fell to {price} ({pct}%).',
+        'zh-CN': '贵公司股价下跌至 {price}（{pct}%）。',
+    },
+    'briefing_share_price_steady': {
+        'en': 'Your share price held steady at {price} ({pct}%).',
+        'zh-CN': '贵公司股价保持在 {price}（{pct}%）。',
+    },
+    'briefing_investors_increased': {
+        'en': '{names} increased positions.',
+        'zh-CN': '{names} 增加了持仓。',
+    },
+    'briefing_investors_reduced': {
+        'en': '{names} reduced exposure.',
+        'zh-CN': '{names} 减少了持仓。',
+    },
+    'briefing_move_entered': {
+        'en': 'Entered {market} via {mode}',
+        'zh-CN': '通过{mode}进入{market}',
+    },
+    'briefing_move_acquired': {
+        'en': 'Acquired {target}', 'zh-CN': '收购了 {target}'},
+    'briefing_unknown_mode': {'en': 'unknown mode', 'zh-CN': '未知模式'},
+    'briefing_rank_climbed': {
+        'en': 'You climbed {places} position(s) to #{rank}.',
+        'zh-CN': '贵公司上升 {places} 位，现居第 {rank} 位。',
+    },
+    'briefing_rank_dropped': {
+        'en': 'You dropped {places} position(s) to #{rank}.',
+        'zh-CN': '贵公司下降 {places} 位，现居第 {rank} 位。',
+    },
+    'briefing_rank_held': {
+        'en': 'You maintained position #{rank}.',
+        'zh-CN': '贵公司保持在第 {rank} 位。',
+    },
+    'briefing_competitor_moves': {
+        'en': '{team}: {moves}.', 'zh-CN': '{team}：{moves}。'},
+    'briefing_rec_first_mover_title': {
+        'en': 'First-Mover Opportunity: {segment}',
+        'zh-CN': '先发机会：{segment}',
+    },
+    'briefing_rec_first_mover_detail': {
+        'en': 'No competitor currently serves {segment} well — this is an industry-wide gap. Investing in the features this segment values could give you first-mover advantage. Check Market Research to identify which platform capabilities they prioritize.',
+        'zh-CN': '目前没有竞争对手能很好地服务{segment}——这是全行业的空白。投入该细分市场看重的功能，有机会取得先发优势。可在市场研究中查看他们最看重哪些平台能力。',
+    },
+    'briefing_rec_improve_fit_title': {
+        'en': 'Improve {segment} Appeal',
+        'zh-CN': '提升对{segment}的吸引力',
+    },
+    'briefing_rec_improve_fit_detail': {
+        'en': 'Your fit with {segment} in {market} is {fit}, but competitors are doing better. Review Market Research to identify which features this segment values most.',
+        'zh-CN': '贵公司在{market}对{segment}的契合度为“{fit}”，而竞争对手表现更好。可在市场研究中查看该细分市场最看重哪些功能。',
+    },
+    'briefing_rec_reduce_leverage_title': {
+        'en': 'Reduce Leverage', 'zh-CN': '降低杠杆'},
+    'briefing_rec_reduce_leverage_detail': {
+        'en': 'Your debt-to-equity ratio is {ratio}. Conservative investors are concerned. Consider using cash flow to repay debt or issuing equity.',
+        'zh-CN': '贵公司的债务与股东权益之比为 {ratio}。稳健型投资者对此感到担忧。可考虑用经营现金流偿还债务，或增发股权。',
+    },
+    'briefing_rec_deploy_cash_title': {
+        'en': 'Deploy Excess Cash', 'zh-CN': '动用闲置现金'},
+    'briefing_rec_deploy_cash_detail': {
+        'en': 'Holding {cash} in cash — {ratio}x revenue. Consider R&D, market entry, marketing, or dividends.',
+        'zh-CN': '持有现金 {cash}，相当于营收的 {ratio} 倍。可考虑用于研发、进入新市场、营销或分红。',
+    },
+    'briefing_rec_esg_critical_title': {
+        'en': 'ESG Investment Critical for Highly Regulated Market',
+        'zh-CN': '在强监管市场，ESG 投入至关重要',
+    },
+    'briefing_rec_esg_critical_detail': {
+        'en': 'Operating in a highly regulated market without ESG investment. Regulators heavily weight sustainability.',
+        'zh-CN': '贵公司在强监管市场经营，却没有 ESG 投入。监管机构对可持续发展的权重很高。',
+    },
+    'briefing_rec_esg_consider_title': {
+        'en': 'Consider ESG Investment', 'zh-CN': '考虑进行 ESG 投入'},
+    'briefing_rec_esg_consider_detail': {
+        'en': 'ESG generates tariff reductions, tax incentives, and improves regulator satisfaction.',
+        'zh-CN': 'ESG 投入可带来关税减免与税收优惠，并提升监管机构的满意度。',
+    },
+    'briefing_rec_rd_talent_title': {
+        'en': 'Invest in R&D Talent', 'zh-CN': '加大研发人才投入'},
+    'briefing_rec_rd_talent_detail': {
+        'en': 'R&D team at baseline (3.0). Each level above 3.0 saves 5% on R&D costs.',
+        'zh-CN': '研发团队处于基准水平（3.0）。高于 3.0 的每一级可使研发成本下降 5%。',
+    },
+    'briefing_rec_expansion_title': {
+        'en': 'Consider International Expansion', 'zh-CN': '考虑开拓国际市场'},
+    'briefing_rec_expansion_detail': {
+        'en': 'Operating in one market with {cash} cash. Export entry costs only $500K.',
+        'zh-CN': '贵公司只在一个市场经营，却持有现金 {cash}。以出口方式进入新市场仅需 $500K。',
+    },
+    'briefing_rec_investor_title': {
+        'en': 'Address {name} Concerns', 'zh-CN': '回应 {name} 的关切'},
+    'briefing_rec_investor_detail': {
+        'en': '{name} reduced their position. Check Investor Relations to understand their criteria.',
+        'zh-CN': '{name} 减持了贵公司股份。可在投资者关系页面了解其评判标准。',
+    },
+    # The page a recommendation points at, named as the interface names it.
+    'briefing_page_market_research_segments': {
+        'en': 'Market Research → Segments', 'zh-CN': '市场研究 → 细分市场'},
+    'briefing_page_finance_capital': {
+        'en': 'Finance → Capital Management', 'zh-CN': '财务管理 → 资本管理'},
+    'briefing_page_finance_budget': {
+        'en': 'Finance → Budget Allocation', 'zh-CN': '财务管理 → 预算分配'},
+    'briefing_page_corporate_esg': {
+        'en': 'Corporate Strategy → ESG', 'zh-CN': '公司战略 → ESG'},
+    'briefing_page_corporate_talent': {
+        'en': 'Corporate Strategy → Talent', 'zh-CN': '公司战略 → 人才'},
+    'briefing_page_market_strategy': {
+        'en': 'Market Strategy', 'zh-CN': '市场战略'},
+    'briefing_page_investor_relations': {
+        'en': 'Financial Reports → Investor Relations',
+        'zh-CN': '财务报告 → 投资者关系'},
+    'briefing_risk_runway_critical_title': {
+        'en': 'Cash Runway: {runway} rounds remaining',
+        'zh-CN': '现金可支撑 {runway} 个回合',
+    },
+    'briefing_risk_runway_critical_detail': {
+        'en': 'At current burn of {burn}/round, cash depletes in ~{runway} rounds.',
+        'zh-CN': '按当前每回合 {burn} 的消耗速度，现金将在约 {runway} 个回合后耗尽。',
+    },
+    'briefing_risk_runway_warning_title': {
+        'en': 'Cash runway declining: {runway} rounds',
+        'zh-CN': '现金可支撑的回合数正在下降：{runway} 个回合',
+    },
+    'briefing_risk_runway_warning_detail': {
+        'en': 'Monitor closely. Consider revenue acceleration or cost reduction.',
+        'zh-CN': '请密切关注。可考虑加快营收增长或压缩成本。',
+    },
+    'briefing_risk_interest_title': {
+        'en': 'Interest coverage critically low: {coverage}x',
+        'zh-CN': '利息保障倍数过低：{coverage} 倍',
+    },
+    'briefing_risk_interest_detail': {
+        'en': 'Operating income barely covers interest. Consider debt repayment.',
+        'zh-CN': '营业利润勉强覆盖利息支出。可考虑偿还债务。',
+    },
+    'briefing_risk_concentration_title': {
+        'en': 'Single-market concentration risk', 'zh-CN': '单一市场集中风险'},
+    'briefing_risk_concentration_detail': {
+        'en': 'All revenue from one market. Consider geographic diversification.',
+        'zh-CN': '全部营收来自一个市场。可考虑地域多元化。',
+    },
+    'briefing_pool_rd': {'en': 'R&D', 'zh-CN': '研发'},
+    'briefing_pool_commercial': {'en': 'Commercial', 'zh-CN': '商业'},
+    'briefing_pool_operations': {'en': 'Operations', 'zh-CN': '运营'},
+    'briefing_risk_turnover_title': {
+        'en': '{pool} talent turnover at {pct}%',
+        'zh-CN': '{pool}人才流失率达到 {pct}%',
+    },
+    'briefing_risk_turnover_detail': {
+        'en': 'High turnover erodes institutional knowledge.',
+        'zh-CN': '高流失率会侵蚀组织的知识积累。',
+    },
+    'briefing_risk_inventory_title': {
+        'en': '{product} inventory buildup in {market}',
+        'zh-CN': '{product} 在{market}出现库存积压',
+    },
+    'briefing_risk_inventory_detail': {
+        'en': '{pct}% of production unsold. Reduce production or lower price.',
+        'zh-CN': '{pct}% 的产量未能售出。请减少产量或下调价格。',
+    },
     'inactivity_rank_marker': {
         'en': 'Did not compete',
         'zh-CN': '未参与竞争',
