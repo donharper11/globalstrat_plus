@@ -136,16 +136,28 @@ def close_round(game_id, reason='manual'):
     # actually be scored.
     _apply_price_band(game, round_obj)
 
+    # Decision 14: the deadline may not spend what the lock would refuse.
+    # Deliberately before the freeze below and after the price band, for the
+    # same reason the band is: the submission snapshot each lock event records
+    # has to be the submission the round will actually be resolved from.
+    # Only a draft is touched -- a team that locked its own submission passed
+    # this same check at the lock.
+    from core.services.deadline_affordability import (
+        bring_draft_within_available_funds)
+    trimmed = bring_draft_within_available_funds(game, round_obj)
+
     # Freeze whatever each team had at the moment of close, so late edits
     # can't slip in and so processing sees a stable snapshot.
     locked = _lock_all_submissions(game, round_obj)
 
     logger.info(
-        'Closed round %s of game %s (reason=%s, %s submissions locked)',
-        round_obj.round_number, game_id, reason, locked,
+        'Closed round %s of game %s (reason=%s, %s submissions locked, '
+        '%s drafts brought within available funds)',
+        round_obj.round_number, game_id, reason, locked, len(trimmed),
     )
     return {'changed': True, 'round': round_obj.round_number,
             'status': 'closed', 'submissions_locked': locked,
+            'unaffordable_drafts_trimmed': trimmed,
             'reason': reason}
 
 

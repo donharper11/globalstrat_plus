@@ -177,8 +177,12 @@ class AcquisitionAffordabilityTests(CommittedSpendBase):
 
         lock = self.client.post(f'{self.url()}lock/', format='json')
         self.assertEqual(lock.status_code, 400, lock.data)
+        # W-CE3-02 reworded this refusal: the comparison is against available
+        # funds (cash plus the financing decided this round) and it names the
+        # line the team can cut. The figures are the same figures.
         self.assertIn('Committed spend of $1,500,000.00 exceeds available '
-                      'cash of $1,000,000.00', str(lock.data))
+                      'funds of $1,000,000.00', str(lock.data))
+        self.assertIn('the strategy budget at $1,500,000.00', str(lock.data))
         self.submission.refresh_from_db()
         self.assertEqual(self.submission.status, 'draft')
 
@@ -190,7 +194,7 @@ class AcquisitionAffordabilityTests(CommittedSpendBase):
         summary = self.summary()
         self.assertFalse(summary['can_lock'])
         self.assertIn('Committed spend of $1,500,000.00 exceeds available '
-                      'cash of $1,000,000.00', str(summary['lock_blockers']))
+                      'funds of $1,000,000.00', str(summary['lock_blockers']))
         bar = summary['budget_summary']
         self.assertEqual(bar['strategy_spent'], float(ACQUISITION))
         self.assertEqual(bar['strategy_allocated'], float(STRATEGY_BUDGET))

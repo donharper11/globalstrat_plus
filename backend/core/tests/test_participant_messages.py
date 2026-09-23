@@ -62,13 +62,37 @@ class ParticipantMessageTests(SimpleTestCase):
         )
 
     def test_budget_refusal_is_localised_for_a_zh_participant(self):
+        # W-CE3-02: the refusal compares committed spend with available funds
+        # -- cash plus the financing decided this round -- and names the line
+        # the team can still cut, in the reader's language.
         assessment = {
             'within_cash': False, 'within_rd_budget': True,
             'committed_total': '1000', 'cash_on_hand': '900',
+            'available_funds': '900', 'financing_decided': '0',
+            'debt_refused_in_distress': False,
+            'largest_reducible_line': 'budget_marketing',
+            'largest_reducible_amount': '600',
             'lines': {'platform_development': '0'},
         }
         self.assertEqual(describe_budget_problems(assessment, language='zh-CN'), [
-            '承诺支出 $1,000.00 超过可用现金 $900.00，其中包括 $0.00 的平台开发支出。',
+            '承诺支出 $1,000.00 超过可用资金 $900.00——现金 $900.00 加上本回合已决定的融资 $0.00。'
+            '需要削减 $100.00：目前可削减的最大承诺是营销预算，金额 $600.00。'
+            '增加债务或股权融资也可达到同样效果。',
+        ])
+
+    def test_the_nothing_left_to_cut_refusal_is_localised(self):
+        assessment = {
+            'within_cash': False, 'within_rd_budget': True,
+            'committed_total': '0', 'cash_on_hand': '-900',
+            'available_funds': '-900', 'financing_decided': '0',
+            'debt_refused_in_distress': False,
+            'largest_reducible_line': None, 'largest_reducible_amount': '0',
+            'lines': {'platform_development': '0'},
+        }
+        self.assertEqual(describe_budget_problems(assessment, language='zh-CN'), [
+            '可用资金为 $-900.00——现金 $-900.00 加上本回合已决定的融资 $0.00——'
+            '本回合仍承诺支出 $0.00。已承诺的支出无法再削减，'
+            '请在财务页面至少增加 $900.00 的债务或股权融资后再锁定。',
         ])
 
     def test_financing_error_uses_business_wording_in_both_languages(self):

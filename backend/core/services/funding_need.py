@@ -118,6 +118,55 @@ def org_transition_charge(team, current_round):
     return D(str(row.current_structure.transition_cost or 0))
 
 
+def tax_structure_setup_charge(team, current_round):
+    """The tax-structure setup cost this team owes for this round.
+
+    W-CE3-01 / decision 15, and it is R36 / V2-088 again in a second place:
+    `engine/costs.process_tax_structure_costs` did
+    `team.cash_on_hand -= structure.setup_cost` during Phase 1, **before**
+    `engine/financials` reads `cash_opening = team.cash_on_hand`. The
+    statement's own identity therefore closed perfectly on every team in every
+    round while $2,000,000 was simply not there any more: Aurora Devices'
+    round-2 statement closed at $13,523,631.84 and its round-3 statement opened
+    at $11,523,631.84, and no line, tab or figure on any screen accounted for
+    the difference. No calculator could see it either -- not `decision_outlays`,
+    not `rd_costs.budget_assessment`, not the engine's own opex.
+
+    Derived from the row the team's own decision already writes --
+    `adopted_round` is this round and `current_structure` is what it switched
+    to (`views/cc32c_views.py`) -- rather than from a new field, so:
+
+    * the charge and the decision that caused it cannot disagree, because
+      there is only one row and it is the decision;
+    * a round with no switch costs nothing, and a switch made in an earlier
+      round is not charged again;
+    * re-resolving the round recomputes the same figure rather than a
+      cumulative one, which `setup_cost_paid` alone could not promise;
+    * **no hashed field is added**, so the manifest envelope is unchanged and
+      `MANIFEST_SCHEMA_VERSION` stays where it is.
+
+    The recurring `annual_maintenance_cost` is deliberately NOT here. It does
+    not have this defect: the engine books it inside `operating_income`, so it
+    reaches net income, operating cash flow and the closing cash a student
+    reads. Moving it into an opex line would also move it inside
+    `calculate_tax`'s deduction total, which changes a team's tax and so a
+    published result -- calibration, not a bug (R48). What it lacks is a line
+    of its own on the served statement, which is W-CE3-04.
+    """
+    from core.models.cc32c_models import TeamTaxStructure
+
+    row = (TeamTaxStructure.objects
+           .filter(game_id=team.game_id, team=team,
+                   adopted_round=current_round,
+                   current_structure__isnull=False)
+           .select_related('current_structure')
+           .order_by('id')
+           .first())
+    if row is None:
+        return D('0')
+    return D(str(row.current_structure.setup_cost or 0))
+
+
 def compliance_investment_total(submission):
     """Everything this submission has committed to compliance this round.
 
@@ -170,7 +219,7 @@ def decision_outlays(scenario, team, submission, current_round,
     lines = {'rd': D('0'), 'platform_capex': D('0'), 'marketing': D('0'),
              'strategy': D('0'), 'plant_capex': D('0'), 'talent': D('0'),
              'research': D('0'), 'org_structure': D('0'),
-             'compliance': D('0')}
+             'compliance': D('0'), 'tax_setup': D('0')}
     # R36: computed *before* the submission guard below, because a structure
     # switch writes no decision row of its own -- a team can switch in a round
     # it never otherwise submitted in, and the charge is owed either way.
@@ -179,6 +228,11 @@ def decision_outlays(scenario, team, submission, current_round,
     # reason; counting it on one side only is the divergence the one-calculator
     # rule exists to prevent (V2-037/V2-038).
     lines['org_structure'] = org_transition_charge(team, current_round)
+    # W-CE3-01 / decision 15: the same shape, for the same reason. A tax
+    # structure is switched from Finance > Tax Structure and writes no decision
+    # row of its own, so the charge is owed in a round the team may never
+    # otherwise have submitted in, and it is computed here before the guard.
+    lines['tax_setup'] = tax_structure_setup_charge(team, current_round)
     if submission is None:
         return lines
 
@@ -257,6 +311,168 @@ def decision_outlays(scenario, team, submission, current_round,
     return lines
 
 
+def financing_decided(submission, financing_override=None):
+    """The financing row this round, as submitted, read in one place.
+
+    Both the equity funding rule (`funding_requirement`) and the affordability
+    rule (`rd_costs.budget_assessment`) have to know what a team has decided to
+    raise and to pay out. Before W-CE3-02 only the first of them did: the
+    affordability check compared committed spend with cash on hand alone, so
+    once a team's cash was negative no spend could ever be small enough, and
+    raising $30,000,000 of new debt did not move the figure by a cent. One
+    reader of the row, so the two cannot answer differently again.
+
+    `financing_override` lets the API judge a financing row it has not written
+    yet using this same arithmetic. Without it the API would need its own copy
+    of the rule, and a second copy is what the disposition forbids.
+    """
+    from core.models.decisions import DecisionFinancing
+
+    if financing_override is not None:
+        get = financing_override.get
+        return {
+            'new_debt': D(str(get('new_debt', 0) or 0)),
+            'debt_repayment': D(str(get('debt_repayment', 0) or 0)),
+            'new_equity': D(str(get('new_equity', 0) or 0)),
+            'dividend_per_share': D(str(get('dividend_per_share', 0) or 0)),
+        }
+    financing = (DecisionFinancing.objects.filter(submission=submission).first()
+                 if submission is not None else None)
+    if financing is None:
+        return {'new_debt': D('0'), 'debt_repayment': D('0'),
+                'new_equity': D('0'), 'dividend_per_share': D('0')}
+    return {
+        'new_debt': D(str(financing.new_debt or 0)),
+        'debt_repayment': D(str(financing.debt_repayment or 0)),
+        'new_equity': D(str(financing.new_equity or 0)),
+        'dividend_per_share': D(str(financing.dividend_per_share or 0)),
+    }
+
+
+def financing_effect(team, submission, financing_override=None,
+                     round_number=None):
+    """What this round's financing decision will actually do to the cash.
+
+    Decision 13 asks the affordability rule to count "the financing the team
+    has already decided this round". *Decided* is not the same as *received*,
+    and the difference is the whole reason this function exists rather than a
+    sum of four submitted fields:
+
+    * a team already in financial distress **cannot** raise new debt -- the
+      engine refuses it at resolution (`engine/financials`), so counting it
+      would let a team lock against money it will never see, which is the same
+      class of defect as not counting financing at all;
+    * an equity raise is **subscribed**, not granted: the engine multiplies it
+      by the investor-sentiment subscription rate, which is derived from the
+      *previous* round's holdings and is therefore knowable while the round is
+      open;
+    * a repayment larger than the debt outstanding is capped, and a dividend is
+      capped at opening cash and blocked entirely when opening cash is not
+      positive.
+
+    So this is the engine's own financing arithmetic, extracted whole.
+    `engine/financials.generate_financial_statements` calls it and applies the
+    side effects (the log lines, the refusal notice, the share issue) around
+    it, so there is one calculator and the lock cannot promise what the round
+    then declines. The caller may pass `round_number` when it already knows it;
+    otherwise the submission's own round is used.
+    """
+    from core.engine.financials import subscription_rate
+
+    raw = financing_decided(submission, financing_override)
+    cash_opening = D(str(team.cash_on_hand or 0))
+
+    new_debt = raw['new_debt']
+    debt_refused_in_distress = bool(
+        getattr(team, 'is_in_distress', False) and new_debt > 0)
+    if debt_refused_in_distress:
+        new_debt = D('0')
+
+    outstanding = D(str(team.total_debt or 0)) + new_debt
+    debt_repayment = raw['debt_repayment']
+    debt_repayment_capped = debt_repayment > outstanding
+    if debt_repayment_capped:
+        debt_repayment = max(outstanding, D('0'))
+
+    requested_equity = raw['new_equity']
+    rate = D('1')
+    new_equity = D('0')
+    new_shares = 0
+    if requested_equity > 0:
+        if round_number is None:
+            round_number = submission.round.round_number
+        rate = D(str(subscription_rate(team, team.game, round_number)))
+        new_equity = (requested_equity * rate).quantize(
+            D('0.01'), rounding=ROUND_HALF_UP)
+        opening_equity = D(str(team.total_equity or 0))
+        share_price_est = (
+            opening_equity / max(D(str(team.shares_outstanding)), D('1'))
+            if team.shares_outstanding > 0 else D('1'))
+        new_shares = int(new_equity / max(share_price_est, D('1')))
+
+    shares_outstanding = team.shares_outstanding + new_shares
+    dividends = (raw['dividend_per_share']
+                 * D(str(shares_outstanding))).quantize(
+        D('0.01'), rounding=ROUND_HALF_UP)
+    dividends_requested = dividends
+    dividends_capped = False
+    dividends_blocked = False
+    if dividends > cash_opening and cash_opening > 0:
+        dividends_capped = True
+        dividends = cash_opening
+    elif dividends > 0 and cash_opening <= 0:
+        dividends_blocked = True
+        dividends = D('0')
+
+    return {
+        'cash_opening': cash_opening,
+        'requested_new_debt': raw['new_debt'],
+        'new_debt': new_debt,
+        'debt_refused_in_distress': debt_refused_in_distress,
+        'debt_repayment': debt_repayment,
+        'requested_debt_repayment': raw['debt_repayment'],
+        'debt_repayment_capped': debt_repayment_capped,
+        'requested_new_equity': requested_equity,
+        'subscription_rate': rate,
+        'new_equity': new_equity,
+        'new_shares': new_shares,
+        'shares_outstanding': shares_outstanding,
+        'dividend_per_share': raw['dividend_per_share'],
+        'dividends_requested': dividends_requested,
+        'dividends': dividends,
+        'dividends_capped': dividends_capped,
+        'dividends_blocked': dividends_blocked,
+        # What the engine will actually move through `financing_cf`.
+        'net_financing': new_debt - debt_repayment + new_equity - dividends,
+        # What the team has DECIDED, which is what the affordability rule
+        # counts. The difference is the equity subscription: an equity raise
+        # is not refused, it is subscribed at a rate investor sentiment sets,
+        # and netting that haircut here would put a team in distress back in a
+        # dead end -- V2-024 caps the raise at the shortfall itself, so a raise
+        # that arrives at 80 % can never close the gap it is capped by, and
+        # grossing the cap up instead would widen V2-024. A raise refused
+        # outright in distress yields nothing and is excluded above; a raise
+        # subscribed down yields most of itself and is counted.
+        'net_financing_decided': (new_debt - debt_repayment
+                                  + requested_equity - dividends),
+    }
+
+
+def available_funds(team, submission, financing_override=None,
+                    round_number=None):
+    """Cash on hand plus the financing this team has decided this round.
+
+    The figure the affordability rule compares committed spend with. A team
+    whose cash is negative can therefore still reach a state the lock accepts,
+    by deciding the financing that covers it -- which is what decision 13
+    requires and what the sentence beside the blocker has always told the team
+    to do.
+    """
+    effect = financing_effect(team, submission, financing_override,
+                              round_number)
+    return (effect['cash_opening'] + effect['net_financing_decided']), effect
+
+
 def funding_requirement(scenario, team, submission, current_round,
                         capitalize_platform=False, financing_override=None):
     """`eligible_uses`, `available_funding` and the resulting maximum.
@@ -264,25 +480,19 @@ def funding_requirement(scenario, team, submission, current_round,
     Returned whole rather than as a bare number so a refusal can say which
     side of the comparison put it there, and so the manifest can carry the
     inputs the decision was made on.
-    """
-    from core.models.decisions import DecisionFinancing
 
+    Deliberately unchanged by W-CE3-02: `available_funding` here is opening
+    cash plus new debt *as submitted*, and equity is the quantity being sized,
+    so it cannot appear on the funds side without making the rule circular.
+    Widening it would raise every team's maximum raise, which is the opposite
+    of what V2-024 exists to do.
+    """
     outlays = decision_outlays(scenario, team, submission, current_round,
                                capitalize_platform)
-    # `financing_override` lets the API judge a financing row it has not
-    # written yet, against the outlays already persisted, using this same
-    # arithmetic. Without it the API would need its own copy of the rule, and a
-    # second copy is what the disposition forbids.
-    if financing_override is not None:
-        new_debt = D(str(financing_override.get('new_debt', 0) or 0))
-        debt_repayment = D(str(financing_override.get('debt_repayment', 0) or 0))
-        requested = D(str(financing_override.get('new_equity', 0) or 0))
-    else:
-        financing = (DecisionFinancing.objects.filter(submission=submission)
-                     .first() if submission is not None else None)
-        new_debt = D(str(financing.new_debt)) if financing else D('0')
-        debt_repayment = D(str(financing.debt_repayment)) if financing else D('0')
-        requested = D(str(financing.new_equity)) if financing else D('0')
+    decided = financing_decided(submission, financing_override)
+    new_debt = decided['new_debt']
+    debt_repayment = decided['debt_repayment']
+    requested = decided['new_equity']
 
     eligible_uses = sum(outlays.values(), D('0')) + debt_repayment
     available_funding = D(str(team.cash_on_hand)) + new_debt

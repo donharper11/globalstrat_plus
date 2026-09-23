@@ -907,6 +907,57 @@ MESSAGES = {
         'en': 'Committed spend of {committed} exceeds available cash of {cash}. This includes {platform} of platform development.',
         'zh-CN': '承诺支出 {committed} 超过可用现金 {cash}，其中包括 {platform} 的平台开发支出。',
     },
+    # W-CE3-02 / decision 13: the affordability refusal, worded so a team can
+    # act on it. "Available funds" is cash plus the financing already decided
+    # this round, and the sentence names the largest commitment still open to
+    # the team so the lock is always reachable.
+    'committed_spend_exceeds_available_funds': {
+        'en': 'Committed spend of {committed} exceeds available funds of {available} — {cash} of cash plus {financing} of financing decided this round. Cut {shortfall}: your largest reducible commitment is {line} at {amount}. Raising more debt or equity has the same effect.',
+        'zh-CN': '承诺支出 {committed} 超过可用资金 {available}——现金 {cash} 加上本回合已决定的融资 {financing}。需要削减 {shortfall}：目前可削减的最大承诺是{line}，金额 {amount}。增加债务或股权融资也可达到同样效果。',
+    },
+    'available_funds_short_with_nothing_to_cut': {
+        'en': 'Available funds are {available} — {cash} of cash plus {financing} of financing decided this round — and this round still commits {committed}. Nothing committed can be cut any further, so raise at least {shortfall} of debt or equity on the Finance page before locking.',
+        'zh-CN': '可用资金为 {available}——现金 {cash} 加上本回合已决定的融资 {financing}——本回合仍承诺支出 {committed}。已承诺的支出无法再削减，请在财务页面至少增加 {shortfall} 的债务或股权融资后再锁定。',
+    },
+    'new_debt_refused_in_distress': {
+        'en': 'New debt of {requested} is not counted: lenders will not extend credit while the company is in financial distress. Raise equity instead.',
+        'zh-CN': '新增债务 {requested} 不计入可用资金：公司处于财务困境期间，贷款方不会继续授信。请改为进行股权融资。',
+    },
+    # The names the affordability refusal uses for the line a team should cut.
+    # One key per committed line, so the sentence reads the same way in both
+    # languages and no key is assembled at run time.
+    'budget_rd': {'en': 'the R&D budget', 'zh-CN': '研发预算'},
+    'budget_marketing': {'en': 'the marketing budget', 'zh-CN': '营销预算'},
+    'budget_strategy': {'en': 'the strategy budget', 'zh-CN': '战略预算'},
+    'budget_research': {'en': 'the market-research budget',
+                        'zh-CN': '市场调研预算'},
+    'committed_platform_development': {
+        'en': 'platform development', 'zh-CN': '平台开发支出'},
+    'committed_plant': {'en': 'plant construction', 'zh-CN': '工厂建设支出'},
+    'committed_acquisitions': {'en': 'the queued acquisition',
+                               'zh-CN': '已排队的收购'},
+    'committed_compliance': {'en': 'compliance investment',
+                             'zh-CN': '合规投入'},
+    'committed_talent': {'en': 'payroll and talent', 'zh-CN': '薪酬与人才支出'},
+    # Decision 14: what the deadline did to a draft the lock would have
+    # refused, told to the team in its own language.
+    'deadline_withdrew_commitments': {
+        'en': 'The round closed while {committed} was committed against available funds of {available}, which is the same reason the round could not be locked. These commitments were withdrawn and nothing was charged for them: {withdrawn}. Every other decision was resolved as submitted.',
+        'zh-CN': '本回合结束时，已承诺支出 {committed}，而可用资金为 {available}，这也是本回合无法锁定的原因。以下承诺已撤回，且未产生任何费用：{withdrawn}。其余决策均按提交内容结算。',
+    },
+    'withdrawn_plant_builds': {'en': 'plant construction',
+                               'zh-CN': '工厂建设'},
+    'withdrawn_platform_developments': {'en': 'platform development requests',
+                                        'zh-CN': '平台开发申请'},
+    'withdrawn_compliance_investments': {'en': 'compliance investment',
+                                         'zh-CN': '合规投入'},
+    'withdrawn_esg': {'en': 'environmental and social investment',
+                      'zh-CN': '环境与社会投入'},
+    'withdrawn_market_entries': {'en': 'market entries', 'zh-CN': '市场进入'},
+    'withdrawn_promotion_budgets': {'en': 'promotion, distribution and sales teams',
+                                    'zh-CN': '促销、渠道与销售团队支出'},
+    'withdrawn_declared_budgets': {'en': 'the unused part of the declared budgets',
+                                   'zh-CN': '已申报预算中未动用的部分'},
     'rd_commitments_exceed_budget': {
         'en': 'R&D commitments of {committed} exceed the R&D budget of {budget}. Platform development counts against the R&D budget.',
         'zh-CN': '研发承诺 {committed} 超过研发预算 {budget}。平台开发计入研发预算。',

@@ -399,6 +399,13 @@ def calculate_operating_expenses(context):
         research_expense = D('0')
         compliance_expense = D('0')
         platform_capex = D('0')
+        # Initialised here rather than inside the `if submission:` block below.
+        # Two charges are owed in a round a team never submitted in -- the
+        # organisational-structure switch (R36) and now the tax-structure
+        # switch (decision 15) -- so this function runs to the end with no
+        # submission, and the write-off was read on the way out while it was
+        # still unbound.
+        platform_switch_write_off = D('0')
 
         if submission:
             # V2-024: the decision-driven outlay lines come from
@@ -591,6 +598,19 @@ def calculate_operating_expenses(context):
         org_transition = org_transition_charge(team, current_round)
         strategy_expense += org_transition
 
+        # W-CE3-01 / decision 15: the tax structure's setup cost, booked here
+        # with every other decision-driven outlay instead of being taken
+        # straight out of `team.cash_on_hand` in `process_tax_structure_costs`
+        # -- which ran *before* `financials` read `cash_opening`, so the
+        # statement balanced and $2,000,000 was simply gone. Same rows, same
+        # function `funding_need.decision_outlays` totals, outside the
+        # submission guard for the same reason the structure switch is: a tax
+        # structure is switched from a Finance screen and writes no decision
+        # row of its own.
+        from core.services.funding_need import tax_structure_setup_charge
+        tax_setup = tax_structure_setup_charge(team, current_round)
+        strategy_expense += tax_setup
+
         # The shared calculator must agree with the lines this function just
         # built. It is the same arithmetic by construction; asserting it means
         # a future edit to either side that breaks the equality stops the round
@@ -621,13 +641,15 @@ def calculate_operating_expenses(context):
             # still resolve, which is the V2-037/V2-038 divergence this
             # assertion exists to stop.
             #
-            # R47 widens it again over `compliance`, for the same reason.
+            # R47 widens it again over `compliance`, and decision 15 over
+            # `tax_setup`, each for the same reason.
             _shared = (_outlays['rd'] + _outlays['platform_capex']
                        + _outlays['marketing'] + _outlays['research']
-                       + _outlays['org_structure'] + _outlays['compliance'])
+                       + _outlays['org_structure'] + _outlays['compliance']
+                       + _outlays['tax_setup'])
             _engine = (rd_expense + platform_capex + marketing_expense
                        + research_expense + org_transition
-                       + compliance_expense)
+                       + compliance_expense + tax_setup)
             if _shared != _engine:
                 raise AssertionError(
                     f'funding_need.decision_outlays disagrees with the cost '
@@ -1160,9 +1182,20 @@ def process_tax_structure_costs(context):
             context.tax_audit_penalties[team.id] = D('0')
             continue
 
-        # Setup cost: deduct in the round it was adopted (if not already paid)
+        # Setup cost: recorded as paid in the round it was adopted.
+        #
+        # W-CE3-01 / decision 15: the money no longer leaves here. This line
+        # used to take the setup cost straight out of the team's cash, and it
+        # runs before `financials` reads `cash_opening`, so the statement's
+        # identity closed perfectly while $2,000,000 left the company between
+        # rounds with no line on any statement and no calculator able to see
+        # it. The charge is now booked at resolution with every other
+        # decision-driven outlay, through
+        # `funding_need.tax_structure_setup_charge`, which reads this same row.
+        # The flag is still written: it is what the Finance screen shows, and
+        # the charge is derived from `adopted_round` rather than from it, so
+        # re-resolving the round recomputes the same figure either way.
         if not tts.setup_cost_paid and structure.setup_cost > 0:
-            team.cash_on_hand -= structure.setup_cost
             tts.setup_cost_paid = True
             tts.save(update_fields=['setup_cost_paid'])
             context.log.append(

@@ -308,13 +308,13 @@ class AuthoritativePriceTests(RDCostFixture):
             f'{base}/decisions/round/{self.round.round_number}/lock/',
             format='json')
         self.assertEqual(lock.status_code, 400, lock.data)
-        self.assertIn('Committed spend of $1,000.00 exceeds available cash',
+        self.assertIn('Committed spend of $1,000.00 exceeds available funds',
                       str(lock.data))
 
         summary = client.get(
             f'{base}/decisions/round/{self.round.round_number}/summary/')
         self.assertEqual(summary.status_code, 200, summary.data)
-        self.assertIn('Committed spend of $1,000.00 exceeds available cash',
+        self.assertIn('Committed spend of $1,000.00 exceeds available funds',
                       str(summary.data['lock_blockers']))
         self.assertEqual(summary.data['budget_summary']['total_allocated'],
                          1000.0)

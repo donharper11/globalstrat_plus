@@ -256,6 +256,10 @@ SERVICES_ROOT = pathlib.Path(__file__).resolve().parent.parent / 'services'
 # `test_the_scanned_service_list_is_what_the_engine_actually_calls`.
 RESOLUTION_SERVICES = {
     'coherence_feedback.py', 'competition_backup.py', 'competition_locks.py',
+    # Decision 14: reached from `close_round`, and it deletes and rewrites
+    # decision rows before the input snapshot is taken, so its iteration order
+    # is squarely inside the envelope.
+    'deadline_affordability.py',
     'funding_need.py',
     'price_band.py', 'product_platform.py', 'product_rebase.py',
     'rd_costs.py', 'research_catalogue.py', 'resolution_manifest.py',
