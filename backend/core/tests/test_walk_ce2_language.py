@@ -165,3 +165,130 @@ class TeamWideProseKeepsTheTeamRuleTests(WalkCEBase):
     def test_the_team_resolver_is_unchanged(self):
         from core.utils.localization import get_team_language
         self.assertEqual(get_team_language(self.team), 'en')
+
+
+# ---------------------------------------------------------------------------
+# W-CE2-08 -- the AI Coach alerts were always English, whatever the console's
+# language. Two causes: a game created from the console is recorded against the
+# first superuser, not the instructor, and an instructor created from the
+# console has no `Enrollment`, so `PUT /api/user/preferences/` had nothing to
+# write to and `get_instructor_language` could only answer 'en'.
+# ---------------------------------------------------------------------------
+
+class InstructorLanguagePreferenceTests(WalkCEBase):
+    """The console's language switch must reach the coach."""
+
+    def test_the_preference_route_stores_a_language_for_an_unenrolled_user(self):
+        from core.models.preferences import UserLanguagePreference
+        self.assertFalse(
+            Enrollment.objects.filter(
+                user_id=self.instructor.user_id).exists())
+        response = self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            UserLanguagePreference.objects.get(
+                user_id=self.instructor.user_id).language, 'zh-CN')
+
+    def test_the_route_reads_back_what_it_stored(self):
+        self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        read = self.client_for(self.instructor).get('/api/user/preferences/')
+        self.assertEqual(read.data['language'], 'zh-CN')
+
+    def test_an_unsupported_language_is_still_refused_and_stores_nothing(self):
+        from core.models.preferences import UserLanguagePreference
+        response = self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'fr'}, format='json')
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertFalse(UserLanguagePreference.objects.filter(
+            user_id=self.instructor.user_id).exists())
+
+    def test_a_students_enrolment_is_still_written(self):
+        """The existing behaviour the analyst repair depends on (W-CE-11)."""
+        response = self.client_for(self.student).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.enrollment.refresh_from_db()
+        self.assertEqual(self.enrollment.language, 'zh-CN')
+
+
+class InstructorOwnerLanguageTests(WalkCEBase):
+    """`get_instructor_language` must find the instructor who owns the game.
+
+    `Game.created_by` is a Django auth user, and `GameCreateView` records the
+    first superuser whenever the caller is a `JWTUser` -- which is every
+    console instructor. The owner in practice is the course instructor, found
+    through the game's section.
+    """
+
+    def test_it_follows_the_course_instructors_stored_preference(self):
+        from core.utils.localization import get_instructor_language
+        self.assertEqual(get_instructor_language(self.game), 'en')
+        self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        self.assertEqual(get_instructor_language(self.game), 'zh-CN')
+
+    def test_the_created_by_enrolment_still_answers_when_there_is_no_course(self):
+        """The path every existing caller used, unchanged."""
+        from core.models import Game
+        from core.utils.localization import get_instructor_language
+        Game.objects.filter(pk=self.game.pk).update(section_id=None)
+        self.game.refresh_from_db()
+        Enrollment.objects.update_or_create(
+            user_id=self.game.created_by_id,
+            section_id=self.section.section_id,
+            defaults={'is_active': True, 'language': 'zh-CN'})
+        self.assertEqual(get_instructor_language(self.game), 'zh-CN')
+
+    def test_an_unsupported_stored_language_reads_as_english(self):
+        from core.models.preferences import UserLanguagePreference
+        from core.utils.localization import get_instructor_language
+        UserLanguagePreference.objects.create(
+            user_id=self.instructor.user_id, language='fr')
+        self.assertEqual(get_instructor_language(self.game), 'en')
+
+
+class CoachAlertLanguageTests(WalkCEBase):
+    """The panel the walkthrough could not read in Chinese."""
+
+    def setUp(self):
+        super().setUp()
+        from core.models.results_financials import RoundResultFinancials
+        RoundResultFinancials.objects.create(
+            game=self.game, team=self.team, round_number=1)
+
+    def _alerts(self):
+        from core.engine.instructor_alerts import generate_post_round_alerts
+        from core.models.cc21_models import InstructorAlert
+        InstructorAlert.objects.filter(game=self.game).delete()
+        generate_post_round_alerts(self.game, 1)
+        return list(InstructorAlert.objects.filter(game=self.game))
+
+    def test_the_alerts_are_english_for_an_english_console(self):
+        alerts = self._alerts()
+        self.assertTrue(alerts)
+        self.assertFalse(any(has_cjk(a.title) for a in alerts), alerts)
+
+    def test_the_alerts_follow_the_consoles_recorded_language(self):
+        self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        alerts = self._alerts()
+        self.assertTrue(alerts)
+        for alert in alerts:
+            self.assertTrue(has_cjk(alert.title), alert.title)
+            self.assertTrue(has_cjk(alert.detail), alert.detail)
+
+    def test_the_alerts_a_view_serves_are_the_stored_ones(self):
+        """Read time changes nothing: the stored row is what the panel shows,
+        so the language is the one fixed when the alert was written.
+        """
+        self.client_for(self.instructor).put(
+            '/api/user/preferences/', {'language': 'zh-CN'}, format='json')
+        self._alerts()
+        response = self.client_for(self.instructor).get(
+            f'/api/games/{self.game.id}/instructor/alerts/')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(response.data['alerts'])
+        for served in response.data['alerts']:
+            self.assertTrue(has_cjk(served['title']), served)

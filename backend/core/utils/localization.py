@@ -74,23 +74,89 @@ def get_team_language(team):
         return 'en'
 
 
-def get_instructor_language(game):
-    """Get the language preference for the instructor who created/owns the game.
+SUPPORTED_LANGUAGES = ('en', 'zh-CN')
 
-    Looks up the game creator's enrollment record (instructors are enrolled
-    with is_active=True). Falls back to 'en' if not found.
+
+def _stated_language(user_id):
+    """The language this user has stated, or None.
+
+    Two stores, because a student and an instructor state it in different
+    places: the enrolment the sign-in and the in-game switch write for an
+    enrolled user, and `UserLanguagePreference` for anyone -- including an
+    instructor created from the console, who has no enrolment at all. The
+    preference row is the explicit choice, so it is read first; the two are
+    written together by `PUT /api/user/preferences/` and cannot disagree
+    unless an older row predates that route.
     """
-    from core.models.course import Enrollment
+    if not user_id:
+        return None
     from django.db import transaction
+    from core.models.course import Enrollment
+    from core.models.preferences import UserLanguagePreference
     try:
-        # Savepoint so a query failure (e.g. missing enrollment table in a test
-        # DB) is contained and cannot poison the caller's transaction.
+        # Savepoint so a query failure (e.g. a missing table in a test DB) is
+        # contained and cannot poison the caller's transaction.
         with transaction.atomic():
-            instructor_user_id = game.created_by_id
-            enrollment = Enrollment.objects.filter(
-                user_id=instructor_user_id,
-                is_active=True,
-            ).exclude(language='').first()
-            return enrollment.language if enrollment and enrollment.language else 'en'
+            stated = (UserLanguagePreference.objects
+                      .filter(user_id=user_id).exclude(language='')
+                      .values_list('language', flat=True).first())
+            if stated:
+                return stated
+            return (Enrollment.objects
+                    .filter(user_id=user_id, is_active=True)
+                    .exclude(language='')
+                    .values_list('language', flat=True).first())
+    except Exception:
+        return None
+
+
+def _game_owner_ids(game):
+    """The user ids that could hold the owning instructor's language.
+
+    `Game.created_by` is a Django auth user, and `GameCreateView` records the
+    first superuser whenever the caller is a `JWTUser` -- which is every
+    instructor signing in to the console. So the creator row does not identify
+    the instructor for a console-created game (W-CE2-08). The instructor who
+    owns the game in practice is the one who owns its course, reached through
+    the game's section; the creator id stays as the fallback, so every game
+    recorded the older way answers exactly as before.
+    """
+    ids = []
+    try:
+        from django.db import transaction
+        from core.models.course import Course, Section
+        if game.section_id:
+            with transaction.atomic():
+                course_id = (Section.objects
+                             .filter(section_id=game.section_id)
+                             .values_list('course_id', flat=True).first())
+                if course_id:
+                    owner = (Course.objects.filter(course_id=course_id)
+                             .values_list('instructor_id', flat=True).first())
+                    if owner:
+                        ids.append(owner)
+    except Exception:
+        pass
+    created_by = getattr(game, 'created_by_id', None)
+    if created_by and created_by not in ids:
+        ids.append(created_by)
+    return ids
+
+
+def get_instructor_language(game):
+    """Get the language preference for the instructor who owns the game.
+
+    Read at generation time: the AI Coach alerts and the Phase-2 instructor
+    narratives are stored prose, written once with no request in scope, so
+    they follow the stored preference of the instructor who owns the game
+    rather than the language of whoever later opens the panel. Falls back to
+    'en' when nobody has stated one, and never raises.
+    """
+    try:
+        for user_id in _game_owner_ids(game):
+            stated = _stated_language(user_id)
+            if stated in SUPPORTED_LANGUAGES:
+                return stated
+        return 'en'
     except Exception:
         return 'en'
