@@ -38,6 +38,7 @@ from core.services.lifecycle import (
 from core.engine.events import (
     event_narrative_for_reader, generate_event_narrative)
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import market_label
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +220,7 @@ class RoundResultsView(APIView):
                 'narrative': event_narrative_for_reader(ev, language),
                 'category': tmpl.category,
                 'severity': tmpl.severity,
-                'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',
+                'market': market_label(ev.target_market, language),
                 'response_required': tmpl.response_required if hasattr(tmpl, 'response_required') else False,
                 'team_response': None,
             })
@@ -270,7 +271,8 @@ class RoundResultsView(APIView):
             ).order_by('id'):
                 price_adjustments.append({
                     'product_name': event.payload.get('product_name'),
-                    'market': event.payload.get('market_name'),
+                    'market': band_rules.market_name_for_reader(
+                        event.payload, msg_language),
                     'submitted_price': event.payload.get('submitted_price'),
                     'applied_price': event.payload.get('applied_price'),
                     'rule': event.payload.get('rule'),
@@ -734,7 +736,7 @@ class InstructorDashboardView(APIView):
         events = [{
             'name': get_localized_field(ev.event_template, 'name', language),
             'severity': ev.event_template.severity,
-            'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',
+            'market': market_label(ev.target_market, language),
         } for ev in events_qs]
 
         return Response({

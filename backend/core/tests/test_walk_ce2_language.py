@@ -292,3 +292,115 @@ class CoachAlertLanguageTests(WalkCEBase):
         self.assertTrue(response.data['alerts'])
         for served in response.data['alerts']:
             self.assertTrue(has_cjk(served['title']), served)
+
+
+# ---------------------------------------------------------------------------
+# W-CE2-06 -- the market's English name on an otherwise Chinese screen.
+# The CE scenario authors `name_zh` for every market (西欧 for Western Europe),
+# so nothing here needs authored content: these are reads that skipped
+# `get_localized_field`.
+# ---------------------------------------------------------------------------
+
+class MarketNameOnChineseScreensTests(WalkCEBase):
+
+    def setUp(self):
+        super().setUp()
+        self.market.name = 'Western Europe'
+        self.market.name_zh = '西欧'
+        self.market.save(update_fields=['name', 'name_zh'])
+        # `build_minimal_game` stops short of a platform; the Products screen
+        # needs one, named the way `game_creation` names a starting platform.
+        from core.models.scenario import PlatformGenerationDefinition
+        from core.models.team_state import TeamPlatform
+        generation = PlatformGenerationDefinition.objects.create(
+            scenario=self.game.scenario, name='Gen 1', name_zh='第一代',
+            description='d', generation_order=1, development_cost=0,
+            license_cost=0, is_starting_platform=True)
+        self.platform = TeamPlatform.objects.create(
+            team=self.team, platform_generation=generation,
+            name=f'{self.team.name} Base Platform', status='active',
+            activated_round=0)
+
+    def test_the_scenario_authors_a_chinese_name_for_every_ce_market(self):
+        """Stated precisely, because the repair depends on it."""
+        from core.models.scenario import MarketDefinition
+        missing = [m.name for m in MarketDefinition.objects.filter(
+            scenario=self.game.scenario) if not m.name_zh]
+        self.assertEqual(missing, [])
+
+    def _products_context(self):
+        return self.client_for(self.student, 'zh-CN').get(
+            f'/api/games/{self.game.id}/teams/{self.team.id}/context/products/')
+
+    def test_the_products_active_markets_column_is_chinese(self):
+        from core.models.team_state import TeamProduct, TeamProductMarket
+        product = TeamProduct.objects.create(
+            team=self.team, team_platform=self.platform, name='IronClad Field',
+            positioning='mainstream', status='active', created_round=1)
+        TeamProductMarket.objects.create(
+            team_product=product, market=self.market, is_active=True,
+            first_offered_round=1)
+        response = self._products_context()
+        self.assertEqual(response.status_code, 200, response.data)
+        rows = [p for p in response.data['products'] if p['id'] == product.id]
+        self.assertTrue(rows)
+        for entry in rows[0]['markets']:
+            self.assertEqual(entry['market__name'], '西欧')
+
+    def test_the_starting_platform_name_has_no_english_suffix(self):
+        from core.utils.participant_messages import platform_display_name
+        self.assertEqual(
+            self.platform.name, f'{self.team.name} Base Platform')
+        chinese = platform_display_name(
+            self.platform, 'zh-CN', team_name=self.team.name)
+        self.assertIsNone(
+            LATIN_WORD.search(chinese.replace(self.team.name, '')), chinese)
+        self.assertEqual(
+            platform_display_name(self.platform, 'en',
+                                  team_name=self.team.name),
+            f'{self.team.name} Base Platform')
+
+    def test_a_name_the_team_chose_is_left_alone(self):
+        from core.utils.participant_messages import platform_display_name
+        self.platform.name = 'Helios'
+        self.platform.save(update_fields=['name'])
+        self.assertEqual(
+            platform_display_name(self.platform, 'zh-CN',
+                                  team_name=self.team.name), 'Helios')
+
+    def test_the_price_notice_names_the_market_in_chinese(self):
+        from core.services import price_band
+        payload = {
+            'rule': price_band.RULE_BLANK,
+            'product_name': 'IronClad Field',
+            'market_id': self.market.id, 'market_name': 'Western Europe',
+            'applied_price': '100', 'band_min': '90', 'band_max': '110',
+        }
+        notice = price_band.adjustment_notice(payload, 'zh-CN')
+        self.assertIn('西欧', notice)
+        self.assertNotIn('Western Europe', notice)
+        self.assertEqual(
+            price_band.market_name_for_reader(payload, 'zh-CN'), '西欧')
+        self.assertEqual(
+            price_band.market_name_for_reader(payload, 'en'), 'Western Europe')
+
+    def test_a_payload_without_a_market_id_still_reads(self):
+        """An adjustment recorded before the id was stored must not break."""
+        from core.services import price_band
+        payload = {
+            'rule': price_band.RULE_BLANK, 'product_name': 'P',
+            'market_name': 'Western Europe', 'applied_price': '100',
+            'band_min': '90', 'band_max': '110',
+        }
+        self.assertIn(
+            'Western Europe', price_band.adjustment_notice(payload, 'zh-CN'))
+
+    def test_an_all_markets_event_is_not_the_english_word_global(self):
+        """`results_api` printed the literal 'Global' for an event with no
+        target market, on a Chinese screen as well as an English one.
+        """
+        from core.utils.participant_messages import market_label
+        self.assertEqual(market_label(self.market, 'zh-CN'), '西欧')
+        self.assertEqual(market_label(self.market, 'en'), 'Western Europe')
+        self.assertEqual(market_label(None, 'en'), 'Global')
+        self.assertEqual(market_label(None, 'zh-CN'), '全球')

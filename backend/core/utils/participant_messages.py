@@ -694,6 +694,11 @@ MESSAGES = {
     'research_channel_hybrid': {'en': 'Hybrid', 'zh-CN': '混合渠道'},
     'research_all_markets': {'en': 'All Markets', 'zh-CN': '所有市场'},
     'research_global': {'en': 'Global', 'zh-CN': '全球'},
+    # W-CE2-06: `game_creation` names every team's starting platform
+    # "<team> Base Platform" in English and stores it. The stored name is left
+    # alone -- this is how the generated default reads to a Chinese student.
+    'platform_base_name': {'en': '{team} Base Platform',
+                           'zh-CN': '{team}基础平台'},
     'research_no_competitor': {'en': 'None', 'zh-CN': '无'},
     'research_opportunity_growing_uncaptured': {
         'en': 'Growing segment you’re not capturing. Investigate fit gaps.',
@@ -1069,6 +1074,49 @@ def language_for_participant(team, request):
         if stated in SUPPORTED_LANGUAGES:
             return stated
     return language_for_team(team, request)
+
+
+# The English suffix `game_creation` gives every team's starting platform.
+# Named here so the writer and the reader cannot drift apart (W-CE2-06).
+BASE_PLATFORM_SUFFIX_EN = 'Base Platform'
+
+
+def market_label(market, language='en'):
+    """A market's name as a participant reads it, or the all-markets label.
+
+    `results_api` printed the literal 'Global' for an event with no target
+    market, on a Chinese screen as well as an English one (W-CE2-06).
+    """
+    from core.utils.localization import get_localized_field
+    if market is None:
+        return participant_message('research_global', language=language)
+    return get_localized_field(market, 'name', language)
+
+
+def platform_display_name(team_platform, language='en', *, team_name=None):
+    """A team platform's name as a participant reads it.
+
+    A name the team chose is the team's own and is never translated. The name
+    `game_creation` generates for the starting platform is not the team's: it
+    is English text the platform wrote, and it reached a Chinese Products
+    table as "… Base Platform" (W-CE2-06). Only that generated default is
+    rendered; nothing stored changes, so no game needs migrating.
+
+    `team_name` is passed by callers that already hold the team, so reading it
+    costs no extra query per product row.
+    """
+    from core.utils.localization import get_localized_field
+    name = (getattr(team_platform, 'name', '') or '').strip()
+    generation = getattr(team_platform, 'platform_generation', None)
+    if not name:
+        return get_localized_field(generation, 'name', language) if generation else ''
+    if team_name is None:
+        team = getattr(team_platform, 'team', None)
+        team_name = getattr(team, 'name', None)
+    if team_name and name == f'{team_name} {BASE_PLATFORM_SUFFIX_EN}':
+        return participant_message(
+            'platform_base_name', language=language, team=team_name)
+    return name
 
 
 def participant_message(key, *, language='en', **values):

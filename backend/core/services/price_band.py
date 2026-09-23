@@ -341,16 +341,45 @@ def alert_for(submitted, band, *, product_name, market_name, language='en'):
         minimum=_fmt_money(band['min']), maximum=_fmt_money(band['max']))
 
 
+def market_name_for_reader(event_payload, language='en'):
+    """The market of a recorded adjustment, as this reader reads it.
+
+    The payload stores the English name, because R44 keeps the audit row in
+    one language whatever the operator works in. The sentence built from it is
+    read by a student, and it printed "Western Europe 中的 …" on a Chinese
+    screen (W-CE2-06). The stored `market_id` -- recorded since the payload
+    was first written -- is what the Chinese name is looked up from; a payload
+    without one, or a market since removed, keeps the stored English name
+    rather than losing the fact.
+    """
+    stored = event_payload.get('market_name') or ''
+    market_id = event_payload.get('market_id')
+    if not market_id or language == 'en':
+        return stored
+    try:
+        from django.db import transaction
+        from core.models.scenario import MarketDefinition
+        from core.utils.localization import get_localized_field
+        with transaction.atomic():
+            market = MarketDefinition.objects.filter(pk=market_id).first()
+        if market is not None:
+            return get_localized_field(market, 'name', language) or stored
+    except Exception:
+        pass
+    return stored
+
+
 def adjustment_notice(event_payload, language='en'):
     """How a recorded adjustment reads to the team on its results screen.
 
     Rendered from the audit payload rather than recomputed, so the sentence a
     team is shown and the row an instructor can produce in a dispute are the
-    same fact.
+    same fact. The market is named in the reader's language; every other value
+    is the stored one.
     """
     from core.utils.participant_messages import participant_message
     product = event_payload.get('product_name') or ''
-    market = event_payload.get('market_name') or ''
+    market = market_name_for_reader(event_payload, language)
     applied = event_payload.get('applied_price')
     submitted = event_payload.get('submitted_price')
     minimum = event_payload.get('band_min')
