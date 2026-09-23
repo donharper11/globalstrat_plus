@@ -3420,3 +3420,29 @@ Record: `completion/WALKTHROUGH_CE_2_2026-09-22.md`; evidence `evidence/walkthro
 
 **Owner questions accumulated from these two branches** (all about money or language, none blocking): the deadline overspend made of plant or marketing outlays rather than an acquisition; which reconciliation a game already carrying a plant collision should get; the negative-cash team that can never lock; and what language a team-wide document uses when members differ.
 
+## Third Consumer Electronics walkthrough, 2026-09-23 — W-CE3-01..20
+
+Record: `completion/WALKTHROUGH_CE_3_2026-09-23.md`; evidence `evidence/walkthrough-ce-3-2026-09-23/` (25 MB). Six rounds, eight teams, four deciding, one in zh-CN; driven on the tree at `29da1c8`, zero diff to `backend/`, `frontend/`, `specs/`. Merged at `094859d`.
+
+**Verification of walkthrough 2: 9 of 13 rows VERIFIED FIXED, 4 fixed with a named residue, 1 still present.** The walkthrough-2 P0 is genuinely gone: a plant built in the market of a completed acquisition processed cleanly, and the collision is refused at the save in both orders and both languages.
+
+**Verdict, in the auditor's words:** "Can a 6+ round game be played start to finish with no intervention? **No.**" Six rounds processed with no server error and no failed round, but **no team locked a round after round 3**; rounds 4, 5 and 6 moved only because the operator forced them, and the four playing teams finished between −$26.4M and −$49.1M. "Is anything a player sees wrong? **Yes** — money that disappears between rounds, an income statement that doesn't add up, and a leaderboard that contradicts the numbers beside it."
+
+| ID | Sev | What the user sees | Status |
+|---|---|---|---|
+| W-CE3-01 | **P0** | **$2,000,000 leaves a team between rounds with no line on any statement.** The tax structure's setup cost is taken before `cash_opening` is read — the same defect R36/V2-088 already fixed for the organisational structure. | Open — assigned `walk-ce3-lock-and-money` (decision 15) |
+| W-CE3-02 | **P0** | **A team can never lock again once committed spend exceeds cash**, because that spend includes $4M of payroll and ~$6M of standing commitments no screen can reduce, and raising $25M of debt does not move the figure. **This is why no team locked after round 3.** | Open — assigned (decision 13) |
+| W-CE-23 | P1 | **Still present, and in a long game it stops the team** — the same dead end as W-CE3-02. | Open — assigned (decision 13) |
+| W-CE3-03 / W-CE3-04 | P1 | The income statement does not add up, on the page or in the API: depreciation, tax-structure maintenance, retirement cost and others are on no served field. | Open — assigned |
+| W-CE2-03 residue | P1 | The acquisition is withheld and the team told, but the rest of an unaffordable draft is still executed; teams closed at −$6.5M and −$7.4M. | Open — assigned (decision 14) |
+| W-CE3-15 | P1 | **The top score is shown in fourth place with nothing to explain it.** | Open — assigned `walk-ce3-display-and-language` |
+| W-CE3-16 | P1 | A dividend of $0.00 is reported as exceeding projected equity. | Open — assigned |
+| W-CE3-05 | P1 | The Marketing page never names the product in a market holding exactly one. | Open — assigned |
+| W-CE3-13 | P1 | An over-committed team is told the amount it is over by is "not yet committed". | Open — assigned |
+| W-CE3-14 | P1 | The third platform generation unlocks at round 5 but is not listed and no reason is given. | Open — assigned |
+| W-CE3-19 | P1 | The end-of-game export says "No decisions saved" for every team, including those that played all six rounds. | Open — assigned |
+| W-CE3-11 | P1 | The Strategic Briefing is English only: every sentence is an f-string with no catalogue entry. | Open — assigned |
+| W-CE3-06..10, 12, 17, 18, 20 and the W-CE2-06/07/08/09 residues | P2 | Scorecard governance sentence, market names in scorecard tables and on supply-chain screens, the distress coach alert, the platform name's English suffix, a hard-coded tab label, criteria shown as storage keys, a refusal code run onto its sentence. Coach alerts written before an instructor set their language stay English for ever. | Open — assigned |
+
+**Not drivable, recorded:** a lock in rounds 4–6 (W-CE3-02); the Gen 3 platform (W-CE3-14); *Finish game* (offered only at round 10); rounds 7–10; 8 teams deciding (4 did). Five auditor interventions are disclosed in the record.
+
