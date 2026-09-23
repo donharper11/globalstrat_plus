@@ -121,12 +121,30 @@ def main():
             popconfirm_ok(page, 3000)
             R.observe('process_toast', toast(page, 10))
         elif PATH == 'lifecycle':
-            A(page).locator('button', has_text=L['lifecycle_advance']).first.click(); page.wait_for_timeout(1000)
+            A(page).locator('button', has_text=L['lifecycle_advance']).first.click(); page.wait_for_timeout(1500)
             R.observe('advance_modal', modal_text(page))
+            # W-CE-24: with teams still pending this modal must ask for a written
+            # reason (the route refuses an override without one).
+            ta = page.locator('.ant-modal-wrap:visible textarea')
+            R.observe('advance_modal_has_reason_box', ta.count())
+            ok = page.locator('.ant-modal-wrap:visible .ant-modal-footer .ant-btn-primary').last
+            R.observe('advance_ok_enabled_without_reason',
+                      ok.is_enabled() if ok.count() else None)
+            if ta.count():
+                ta.first.fill('Walkthrough: advancing round %d with teams still pending.' % ROUND)
+                page.wait_for_timeout(600)
             R.screen(page, 'r%d-01-lifecycle-advance-modal' % ROUND)
-            page.locator('.ant-modal-footer .ant-btn-primary').last.click()
-            page.wait_for_timeout(4000)
+            ok = page.locator('.ant-modal-wrap:visible .ant-modal-footer .ant-btn-primary').last
+            if ok.count() and ok.is_enabled():
+                ok.click()
+            page.wait_for_timeout(6000)
             R.observe('advance_result_modal', modal_text(page))
+            refused = [x for x in R.record['refused'] if 'advance-round' in x['url']]
+            R.observe('advance_refusals', refused)
+            R.step('the lifecycle Advance Round can advance a round with pending teams (W-CE-24)',
+                   'pass' if ta.count() and not refused else 'fail',
+                   'reason box=%s refusals=%s' % (ta.count(),
+                                                  json.dumps([x['body'][:200] for x in refused], ensure_ascii=False)[:300]))
 
         done = wait_processed(page)
         R.observe('round_control_processed', done)
