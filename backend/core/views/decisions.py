@@ -454,6 +454,16 @@ class DecisionSubmissionView(CompetitionDecisionWriteMixin, APIView):
         # together, so the assessment runs on the saved rows. Raising here
         # unwinds the enclosing atomic block, which is what makes this a
         # rejection rather than a partial write followed by an error.
+        # W-CE2-01, at the other supported write path, on the saved rows for
+        # the same reason V2-024 is judged here: raising unwinds the
+        # enclosing atomic block, which makes it a rejection rather than a
+        # partial write followed by an error.
+        from core.engine.plants import plant_collisions
+        collisions = plant_collisions(
+            saved, language=get_user_language(request))
+        if collisions:
+            raise serializers.ValidationError({'plant_decisions': collisions})
+
         from core.services import funding_need
         assessment = funding_need.assess_submission(saved)
         if not assessment['within_limit']:
@@ -642,6 +652,20 @@ class DecisionPartialUpdateView(CompetitionDecisionWriteMixin, APIView):
             if validated_items:
                 objs = [model_cls(submission=submission, **v) for v in validated_items]
                 model_cls.objects.bulk_create(objs)
+
+        # W-CE2-01: two plants started in one market in one round make the
+        # round unsnapshotable, and no screen can undo either decision once
+        # it is stored. Judged on the rows now persisted -- both halves of
+        # the collision are written by this view, from two different pages,
+        # in either order -- and raised inside the view's atomic block, so a
+        # refused save leaves the team's decisions exactly as they were.
+        if decision_type in ('plants', 'acquisitions'):
+            from core.engine.plants import plant_collisions
+            collisions = plant_collisions(
+                submission, language=get_user_language(request))
+            if collisions:
+                raise serializers.ValidationError(
+                    {'plant_decisions': collisions})
 
         # Log the change for team notifications
         try:
@@ -1002,6 +1026,12 @@ def lock_blockers_for(submission, language='en'):
     if not strategy_configured:
         errors.append(participant_message(
             'strategy_mix_required', language=language))
+
+    # W-CE2-01: a draft assembled before the saves refused this -- or by an
+    # import, the admin or a shell -- still cannot be locked into a round
+    # that would then refuse to process.
+    from core.engine.plants import plant_collisions
+    errors.extend(plant_collisions(submission, language=language))
 
     # Financing: debt ceiling
     try:

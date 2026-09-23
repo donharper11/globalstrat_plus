@@ -8,9 +8,10 @@ in-progress acquisitions.
 import logging
 from decimal import Decimal
 
+from core.engine.plants import record_plant
 from core.models.decisions import DecisionSubmission, DecisionAcquisition
 from core.models.team_state import (
-    TeamAcquisition, TeamPlant, TeamMarketModifier,
+    TeamAcquisition, TeamMarketModifier,
 )
 
 logger = logging.getLogger(__name__)
@@ -61,11 +62,16 @@ def process_acquisitions(context):
                 total_cost_paid=target.base_acquisition_cost,
             )
 
-            # Immediate benefit: plant (operational immediately)
+            # Immediate benefit: plant (operational immediately).
+            #
+            # W-CE2-01: through `record_plant`, because the team may also have
+            # built a plant in this market this round. Two rows share the
+            # hashed section's natural key and the round becomes
+            # unsnapshotable -- a 500 that leaves the round `closed / FAILED`
+            # with nothing on any screen able to undo either decision.
             if target.includes_plant and target.plant_capacity > 0:
-                TeamPlant.objects.create(
-                    team=team,
-                    market=target.market,
+                record_plant(
+                    team, target.market,
                     capacity_units=target.plant_capacity,
                     status='operational',
                     construction_started_round=context.round_number,

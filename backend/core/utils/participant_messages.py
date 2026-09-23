@@ -255,6 +255,17 @@ MESSAGES = {
         'en': 'Keep at least {minimum} staff at headquarters (20% of the team headcount).',
         'zh-CN': '总部至少应保留 {minimum} 名员工（团队人数的 20%）。',
     },
+    # W-CE2-01: two plants started by one team in one market in one round
+    # share the hashed `team_plant` section's natural key and make the round
+    # unsnapshotable, so the collision is refused where it would be created.
+    'plant_already_queued': {
+        'en': 'Your company has already queued a plant in {market}. One plant per market in a round.',
+        'zh-CN': '贵公司本回合已在{market}安排建设工厂。每个市场每回合只能建设一座工厂。',
+    },
+    'plant_and_acquired_plant': {
+        'en': 'The acquisition of {target} already brings a plant in {market}, so a plant build there cannot be queued as well. Withdraw one of the two.',
+        'zh-CN': '收购{target}已在{market}带来一座工厂，因此不能同时安排在该市场建设工厂。请撤回其中一项。',
+    },
     'compliance_market_inactive': {
         'en': 'You can invest in compliance only in a market your company operates in. Remove the other market and try again.',
         'zh-CN': '只能在公司已进入的市场进行合规投入。请移除其他市场后重试。',
