@@ -1,0 +1,164 @@
+{
+ "driver": "lock-t3-r2",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:10:40",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "student s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 2 already locked for this team",
+   "outcome": "observed",
+   "detail": ""
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:10:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:10:40"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:10:41"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:10:41"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "10:10:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/1/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/1/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/1/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/summary/",
+   "status": 200,
+   "at": "10:10:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:10:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/2/",
+   "status": 200,
+   "at": "10:10:50"
+  }
+ ],
+ "refused": [],
+ "screens": [],
+ "leaks": [],
+ "observed": {
+  "team": "Cobalt Innovations",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  }
+ },
+ "summary": {
+  "passed": 2,
+  "failed": 0,
+  "observed": 1,
+  "screens": 0,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 16,
+  "api_refused": 0
+ }
+}

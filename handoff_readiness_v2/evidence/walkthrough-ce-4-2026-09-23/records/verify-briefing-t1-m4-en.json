@@ -1,0 +1,367 @@
+{
+ "driver": "verify-briefing-t1-m4",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:27:19",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2605 = en"
+  },
+  {
+   "name": "s2605 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "W-CE3-11 the Strategic Briefing is English for an English team",
+   "outcome": "pass",
+   "detail": "0 Chinese characters on an English screen"
+  },
+  {
+   "name": "no Markdown is printed raw in the briefing",
+   "outcome": "fail",
+   "detail": "printed verbatim: [\"**Quarter 3 Results**\"]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:27:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:27:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:27:19"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:27:19"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/context/finance/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/briefing/latest/?user_id=6",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/financial-reports/history/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/summary/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/summary/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/ticker/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/dashboard/scorecard/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/onboarding/?game_id=1&team_id=1",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/3/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/results/round/3/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/investor-relations/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/competitors/round/3/",
+   "status": 200,
+   "at": "10:27:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:27:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/summary/",
+   "status": 200,
+   "at": "10:27:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/summary/",
+   "status": 200,
+   "at": "10:27:36"
+  },
+  {
+   "method": "POST",
+   "url": "/api/onboarding/complete/",
+   "status": 200,
+   "at": "10:27:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/1/decisions/round/4/summary/",
+   "status": 200,
+   "at": "10:27:41"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-briefing-t1-m4-modal0",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal0-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/briefing/latest/?user_id=6",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/onboarding/?game_id=1&team_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/results/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/competitors/round/3/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal1",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal1-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal2",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal2-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal3",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal3-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal4",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal4-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal5",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal5-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "v4-briefing-t1-m4-modal6",
+   "url": "/",
+   "screenshot": "v4-briefing-t1-m4-modal6-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/onboarding/complete/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/1/decisions/round/4/summary/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Aurora Devices",
+  "student": "s2605",
+  "server_language_after_sign_in": {
+   "user": "s2605",
+   "asked": "en",
+   "server": "en"
+  },
+  "modals_in_order": [
+   "Your Global ChallengeYou've just been appointed CEO of Aurora Devices, a Consumer Electronics company headquartered in Africa.Your mission: take this company global. Expand into new markets, build technology platforms, compete against rivals, and earn the confidence of investors, governments, and customers across 5 regions — each with different cultures, regulations, currencies, and competitive dy",
+   "What You Must NavigateFive forces will shape your success:ORIGIN TRUSTCustomers and regulators in foreign markets may trust you less based on where you're headquartered. A company from Africa faces different barriers in each region. Trust is earned through sustained presence, local investment, compliance, and sometimes acquiring a local brand.CULTURAL DISTANCEYour talent is world-class at headquar",
+   "How to Build Your Global StrategyEach round, you make decisions across three strategic layers:1TECHNOLOGYDesign platforms, invest in R&D, choose which capabilities to build. Your technology is what you sell. Gen 1 gets you started. Gen 2 and Gen 3 unlock new markets and customer segments — but require sustained investment and prerequisite capability.2MARKET EXECUTIONPrice, promote, distribute, and",
+   "How You're ScoredYour Performance Index reflects how well you satisfy ALL stakeholders — not just customers.CUSTOMERS (55%)Do your products match what each market segment values? Is your pricing, promotion, and distribution aligned with local preferences?INVESTORS (20%)Three AI investment funds evaluate your strategy every round. Growth investors want R&D and expansion. Value investors want discip",
+   "Your Starting PositionYou inherited Aurora Devices with:Products2 product(s) on a Vertex Electronics Base Platform platformCash on Hand$-168KHome MarketAfricaEmployees510 across R&D, commercial, and operationsYour first decisions:1.Read your Dashboard and Financial Reports — understand what you have2.Study Market Research — learn what customers in your home market actually value3.Decide: optimize ",
+   "Ready to BeginRound 4 deadline: Wed, Sep 30, 06:00 PMThere's no single right strategy. But every winning strategy is coherent — every decision reinforces the others.Good luck, team Aurora Devices!SkipBackBegin",
+   "Round 3 Strategic BriefingYour team's performance summary and strategic outlook**Quarter 3 Results** Revenue grew 269.4% to $1,047,133. Net income: $-18,839,901. Cash position: $-168,269. Cash position below $1M — financial distress risk.Continue to DashboardFull briefing available in the \"Strategic Briefing\" tab"
+  ],
+  "briefing_modal": "Round 3 Strategic BriefingYour team's performance summary and strategic outlook**Quarter 3 Results** Revenue grew 269.4% to $1,047,133. Net income: $-18,839,901. Cash position: $-168,269. Cash position below $1M — financial distress risk.Continue to DashboardFull briefing available in the \"Strategic Briefing\" tab",
+  "raw_markdown": [
+   "**Quarter 3 Results**"
+  ]
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 1,
+  "observed": 0,
+  "screens": 7,
+  "screens_with_leaks": 0,
+  "console_errors": 4,
+  "api_calls": 20,
+  "api_refused": 0
+ }
+}

@@ -1,0 +1,556 @@
+{
+ "driver": "set-language-instructor",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T10:21:39",
+ "steps": [
+  {
+   "name": "the instructor signs in with the interface in English",
+   "outcome": "pass",
+   "detail": "walk_instructor"
+  },
+  {
+   "name": "before the switch, the server holds a language for walk_instructor",
+   "outcome": "observed",
+   "detail": "en"
+  },
+  {
+   "name": "the in-game switch set walk_instructor to zh-CN on the SERVER",
+   "outcome": "pass",
+   "detail": "before=en after=zh-CN clicks=[{\"label\": \"\\u4e2d\\u6587\", \"server_after\": \"zh-CN\"}]"
+  },
+  {
+   "name": "the switch now offers the other language",
+   "outcome": "pass",
+   "detail": "label='EN' clicked=True (the interface follows i18next, which the switch only changes when it is pressed; the server already held zh-CN here)"
+  },
+  {
+   "name": "the stored language row for walk_instructor holds zh-CN",
+   "outcome": "pass",
+   "detail": "stored='zh-CN' (row={\"username\": \"walk_instructor\", \"preference_language\": \"zh-CN\", \"language\": \"zh-CN\"})"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:21:39"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:21:39"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:21:39"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "10:21:39"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "10:21:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:50"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "10:21:52"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "lang-walk_instructor-before",
+   "url": "/instructor",
+   "screenshot": "lang-walk_instructor-before-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum\nDelete",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "lang-walk_instructor-after",
+   "url": "/instructor",
+   "screenshot": "lang-walk_instructor-after-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "lang-walk_instructor-before",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum\nDelete",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "lang-walk_instructor-after",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "want": "zh-CN",
+  "language_switch_clicks": [
+   {
+    "label": "中文",
+    "server_after": "zh-CN"
+   }
+  ],
+  "language_after_switch": "zh-CN",
+  "server_says": {
+   "walk_instructor": "zh-CN"
+  },
+  "enrollment_rows": [
+   {
+    "team_id": "",
+    "team_name": "",
+    "enrollment_id": "27",
+    "username": "s2627",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "1",
+    "team_name": "Aurora Devices",
+    "enrollment_id": "1",
+    "username": "s2601",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "1",
+    "team_name": "Aurora Devices",
+    "enrollment_id": "2",
+    "username": "s2602",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "1",
+    "team_name": "Aurora Devices",
+    "enrollment_id": "3",
+    "username": "s2603",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "1",
+    "team_name": "Aurora Devices",
+    "enrollment_id": "4",
+    "username": "s2604",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "1",
+    "team_name": "Aurora Devices",
+    "enrollment_id": "5",
+    "username": "s2605",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "2",
+    "team_name": "Photon Labs",
+    "enrollment_id": "6",
+    "username": "s2606",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "2",
+    "team_name": "Photon Labs",
+    "enrollment_id": "7",
+    "username": "s2607",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "2",
+    "team_name": "Photon Labs",
+    "enrollment_id": "8",
+    "username": "s2608",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "3",
+    "team_name": "Cobalt Innovations",
+    "enrollment_id": "9",
+    "username": "s2609",
+    "language": "zh-CN",
+    "is_active": "True",
+    "preference_language": "zh-CN"
+   },
+   {
+    "team_id": "3",
+    "team_name": "Cobalt Innovations",
+    "enrollment_id": "10",
+    "username": "s2610",
+    "language": "zh-CN",
+    "is_active": "True",
+    "preference_language": "zh-CN"
+   },
+   {
+    "team_id": "3",
+    "team_name": "Cobalt Innovations",
+    "enrollment_id": "11",
+    "username": "s2611",
+    "language": "zh-CN",
+    "is_active": "True",
+    "preference_language": "zh-CN"
+   },
+   {
+    "team_id": "4",
+    "team_name": "Nova Circuit",
+    "enrollment_id": "12",
+    "username": "s2612",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "4",
+    "team_name": "Nova Circuit",
+    "enrollment_id": "13",
+    "username": "s2613",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "4",
+    "team_name": "Nova Circuit",
+    "enrollment_id": "14",
+    "username": "s2614",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "5",
+    "team_name": "Eclipse Gadgets",
+    "enrollment_id": "15",
+    "username": "s2615",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "5",
+    "team_name": "Eclipse Gadgets",
+    "enrollment_id": "16",
+    "username": "s2616",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "5",
+    "team_name": "Eclipse Gadgets",
+    "enrollment_id": "17",
+    "username": "s2617",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "6",
+    "team_name": "Prism Tech",
+    "enrollment_id": "18",
+    "username": "s2618",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "6",
+    "team_name": "Prism Tech",
+    "enrollment_id": "19",
+    "username": "s2619",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "6",
+    "team_name": "Prism Tech",
+    "enrollment_id": "20",
+    "username": "s2620",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "7",
+    "team_name": "Quantum Edge",
+    "enrollment_id": "21",
+    "username": "s2621",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "7",
+    "team_name": "Quantum Edge",
+    "enrollment_id": "22",
+    "username": "s2622",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "7",
+    "team_name": "Quantum Edge",
+    "enrollment_id": "23",
+    "username": "s2623",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "8",
+    "team_name": "Zenith Hardware",
+    "enrollment_id": "24",
+    "username": "s2624",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "8",
+    "team_name": "Zenith Hardware",
+    "enrollment_id": "25",
+    "username": "s2625",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "team_id": "8",
+    "team_name": "Zenith Hardware",
+    "enrollment_id": "26",
+    "username": "s2626",
+    "language": "en",
+    "is_active": "True"
+   },
+   {
+    "username": "walk_instructor",
+    "preference_language": "zh-CN",
+    "language": "zh-CN"
+   }
+  ]
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 1,
+  "screens": 2,
+  "screens_with_leaks": 2,
+  "console_errors": 4,
+  "api_calls": 13,
+  "api_refused": 0
+ }
+}

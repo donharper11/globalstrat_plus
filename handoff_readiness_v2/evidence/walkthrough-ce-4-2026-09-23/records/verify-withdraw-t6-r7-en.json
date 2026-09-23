@@ -1,0 +1,1064 @@
+{
+ "driver": "verify-withdraw-t6-r7",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T12:42:35",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2619 = en"
+  },
+  {
+   "name": "student s2619 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the strategy context publishes an affordability block (W-CE2-02)",
+   "outcome": "pass",
+   "detail": "{\"cash_on_hand\": 46897995.8, \"available_funds\": 46897995.8, \"committed_total\": 0, \"unallocated\": 46897995.8}"
+  },
+  {
+   "name": "a market that offers Build Plant was found to drive the withdrawal on",
+   "outcome": "pass",
+   "detail": "tabs=[\"North America Active\", \"East Asia Not Entered\", \"Western Europe Not Entered\", \"Africa Not Entered\", \"South America Not Entered\"]"
+  },
+  {
+   "name": "1: a plant build is queued",
+   "outcome": "pass",
+   "detail": "[{\"id\": 5, \"market\": 1, \"action\": \"build\", \"capacity_units\": 0, \"contract_mfg_volume\": 0}]"
+  },
+  {
+   "name": "1: the card says the plant build is queued, instead of offering the button again",
+   "outcome": "pass",
+   "detail": "tag=True build_button_still_offered=0"
+  },
+  {
+   "name": "1: a Withdraw control is offered for the queued plant",
+   "outcome": "pass",
+   "detail": "1 controls"
+  },
+  {
+   "name": "1: Withdraw removes the queued plant from the stored draft",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "1: the Build Plant offer is back after the withdrawal",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "2: a partnership is queued",
+   "outcome": "pass",
+   "detail": "[{\"id\": 14, \"market\": 1, \"strategy_option\": 1, \"annual_investment\": \"2000000.00\", \"action\": \"establish\"}]"
+  },
+  {
+   "name": "2: a Withdraw control is offered for the queued partnership",
+   "outcome": "pass",
+   "detail": "1 controls"
+  },
+  {
+   "name": "2: Withdraw removes the queued partnership from the stored draft",
+   "outcome": "pass",
+   "detail": "[]"
+  },
+  {
+   "name": "4: an acquisition the team cannot fund is disabled",
+   "outcome": "observed",
+   "detail": "every available target is affordable this round (unallocated=46897995.8)"
+  },
+  {
+   "name": "3: an acquisition is queued",
+   "outcome": "fail",
+   "detail": "[]"
+  },
+  {
+   "name": "3: a Withdraw control is offered for the queued acquisition",
+   "outcome": "fail",
+   "detail": "0 controls"
+  },
+  {
+   "name": "3: Withdraw removes the queued acquisition from the stored draft",
+   "outcome": "pass",
+   "detail": "[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:35"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:35"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:36"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:36"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:42:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:08"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:43:08"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/briefing/latest/?user_id=20",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/dashboard/scorecard/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/financial-reports/history/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/ticker/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/investor-relations/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/onboarding/?game_id=1&team_id=6",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/results/round/6/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/6/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/competitors/round/6/",
+   "status": 200,
+   "at": "12:42:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/plants/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/acquisitions/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/compliance/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=20&section_id=1",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/alliances/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/ticker/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/markets/NA/localization/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/alliances/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/compliance/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:42:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:42:49"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/plants/",
+   "status": 200,
+   "at": "12:42:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:42:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:42:56"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/plants/",
+   "status": 200,
+   "at": "12:42:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:42:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:00"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+   "status": 200,
+   "at": "12:43:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:43:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:04"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+   "status": 200,
+   "at": "12:43:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:43:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/talent/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=20&section_id=1",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/talent-allocation/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/org-structure/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/summary/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/finance/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/ticker/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/talent/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/org-structure/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/talent-allocation/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/governance/",
+   "status": 200,
+   "at": "12:43:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:43:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/governance/",
+   "status": 200,
+   "at": "12:43:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/context/strategy/",
+   "status": 200,
+   "at": "12:43:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/6/decisions/round/7/",
+   "status": 200,
+   "at": "12:43:18"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v-wd-t6-r7-01-plant-queued",
+   "url": "/games/1/teams/6/decisions/market-strategy",
+   "screenshot": "v-wd-t6-r7-01-plant-queued-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/briefing/latest/?user_id=20",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/onboarding/?game_id=1&team_id=6",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/results/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/competitors/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/plants/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/acquisitions/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=20&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/markets/NA/localization/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/alliances/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/compliance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/plants/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-02-plant-withdrawn",
+   "url": "/games/1/teams/6/decisions/market-strategy",
+   "screenshot": "v-wd-t6-r7-02-plant-withdrawn-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/plants/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-03-partnership-queued",
+   "url": "/games/1/teams/6/decisions/market-strategy",
+   "screenshot": "v-wd-t6-r7-03-partnership-queued-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-04-partnership-withdrawn",
+   "url": "/games/1/teams/6/decisions/market-strategy",
+   "screenshot": "v-wd-t6-r7-04-partnership-withdrawn-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/6/decisions/round/7/partnerships/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-05-ma-offers",
+   "url": "/games/1/teams/6/decisions/corporate-strategy",
+   "screenshot": "v-wd-t6-r7-05-ma-offers-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=20&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/talent/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/org-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/talent-allocation/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/governance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/context/strategy/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-06-acquisition-queued",
+   "url": "/games/1/teams/6/decisions/corporate-strategy",
+   "screenshot": "v-wd-t6-r7-06-acquisition-queued-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v-wd-t6-r7-07-acquisition-withdrawn",
+   "url": "/games/1/teams/6/decisions/corporate-strategy",
+   "screenshot": "v-wd-t6-r7-07-acquisition-withdrawn-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/6/decisions/round/7/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Prism Tech",
+  "student": "s2619",
+  "server_language_after_sign_in": {
+   "user": "s2619",
+   "asked": "en",
+   "server": "en"
+  },
+  "affordability": {
+   "cash_on_hand": 46897995.8,
+   "available_funds": 46897995.8,
+   "committed_total": 0,
+   "unallocated": 46897995.8
+  },
+  "plant_tab": {
+   "index": 0,
+   "label": "North America Active"
+  },
+  "build_plant_offered_before": 1,
+  "plant_withdraw_controls": 1,
+  "partnership_offers": 9,
+  "unallocated": 46897995.8,
+  "targets": [
+   {
+    "target_name": "PioneerTech Solutions",
+    "base_acquisition_cost": 25000000,
+    "available": false,
+    "locked_reasons": [
+     "Already acquired by Photon Labs"
+    ]
+   },
+   {
+    "target_name": "AsiaElec Manufacturing",
+    "base_acquisition_cost": 18000000,
+    "available": false,
+    "locked_reasons": [
+     "Requires presence in East Asia"
+    ]
+   },
+   {
+    "target_name": "EuroGreen Devices",
+    "base_acquisition_cost": 30000000,
+    "available": false,
+    "locked_reasons": [
+     "Requires presence in Western Europe"
+    ]
+   },
+   {
+    "target_name": "AfriConnect Mobile",
+    "base_acquisition_cost": 10000000,
+    "available": false,
+    "locked_reasons": [
+     "Requires presence in Africa",
+     "Already acquired by Aurora Devices"
+    ]
+   },
+   {
+    "target_name": "TechSul Eletrônicos",
+    "base_acquisition_cost": 20000000,
+    "available": false,
+    "locked_reasons": [
+     "Requires presence in South America"
+    ]
+   }
+  ],
+  "acquire_buttons": {
+   "total": 0,
+   "enabled": 0,
+   "disabled": 0
+  },
+  "ma_pane_text": "MERGERS & ACQUISITIONS\nAvailable Acquisition Targets\nPioneerTech SolutionsNorth AmericaAcquired by Photon Labs\n$25.0M\nMid-size North American electronics firm with strong retail distribution and a loyal enterprise customer base. Aging product line but solid brand reputation.\nYou get:\n6% market share (after integration)\nPlant: 30,000 unit capacity (immediate)\nDistribution reach: +12%\nCommercial talent: +0.5 level\nOperations talent: +0.3 level\nIntegration:\n2 rounds to integrate\n$2.0M/round integration cost\nTotal cost: $29.0M\nRequirements:Already acquired by Photon Labs\nAsiaElec ManufacturingEast Asia\n$18.0M\nRegional East Asian manufacturer with modern production facilities and established supplier relationships. Weak brand but excellent operational efficiency.\nYou get:\n5% market share (after integration)\nPlant: 50,000 unit capacity (immediate)\nOperations talent: +1 level\nIntegration:\n2 rounds to integrate\n$1.5M/round integration cost\nTotal cost: $21.0M\nRequirements:Requires presence in East Asia\nEuroGreen DevicesWestern Europe\n$30.0M\nSmall European sustainability-focused electronics brand. Strong ESG credentials, premium positioning, and regulatory compliance infrastructure.\nYou get:\n4% market share (after integration)\nDistribution reach: +8%\nCommercial talent: +0.3 level\nIntegration:\n2 rounds to integrate\n$2.5M/round integration cost\nTotal cost: $35.0M\nRequirements:Requires presence in Western Europe\nAfriConnect MobileAfricaAcquired by Aurora Devices\n$10.0M\nFast-growing African mobile device assembler with distribution networks across West and East Africa. Strong relationships with telecom operators and mobile money platforms.\nYou get:\n5% market share (after integration)\nPlant: 25,000 unit capacity (immediate)\nDistribution reach: +15%\nCommercial talent: +0.4 level\nOperations talent: +0.5 level\nIntegration:\n3 rounds to integrate\n$1.0M/round integration cost\nTotal cost: $13.0M\nRequirements:Requires presence in AfricaAlready acquired by Aurora Devices\nTechSul EletrônicosSouth America\n$20.0M\nBrazilian electronics manufacturer operating from the Manaus Free Trade Zone. Tax-advantaged production, established retail partnerships, and strong brand recognition in Brazil and Argentina.\nYou get:\n6% market share (after integration)\nPlant: 35,000 unit capacity (immediate)\nDistribution reach: +10%\nCommercial talent: +0.3 level\nOperations talent: +0.6 level\nIntegration:\n2 rounds to integrate\n$1.8M/round integration cost\nTotal cost: $23.6M\nRequirements:Requires presence in",
+  "unaffordable_available_targets": [],
+  "final_draft": {
+   "plant_decisions": [],
+   "partnerships": [],
+   "acquisitions": []
+  }
+ },
+ "summary": {
+  "passed": 13,
+  "failed": 2,
+  "observed": 1,
+  "screens": 7,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 72,
+  "api_refused": 0
+ }
+}

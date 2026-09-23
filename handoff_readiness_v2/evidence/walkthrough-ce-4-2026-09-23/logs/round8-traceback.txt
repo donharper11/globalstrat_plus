@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-aac088247d0114f3f/backend/core/views/round_control.py", line 327, in post
+    result = process_round(game.id)
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-aac088247d0114f3f/backend/core/engine/advance_round.py", line 351, in process_round
+    context = _run_phase_1(game_id)
+  File "/usr/lib/python3.10/contextlib.py", line 79, in inner
+    return func(*args, **kwds)
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-aac088247d0114f3f/backend/core/engine/advance_round.py", line 811, in _run_phase_1
+    process_alliances(context)
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-aac088247d0114f3f/backend/core/engine/alliance_engine.py", line 70, in process_alliances
+    _process_dissolution(alliance, team, game, round_number, context)
+  File "/home/ubuntu/projects/globalstrat+/.claude/worktrees/agent-aac088247d0114f3f/backend/core/engine/alliance_engine.py", line 392, in _process_dissolution
+    ActiveModifier.objects.create(
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/query.py", line 661, in create
+    obj = self.model(**kwargs)
+  File "/home/ubuntu/.local/lib/python3.10/site-packages/django/db/models/base.py", line 569, in __init__
+    raise TypeError(
+TypeError: ActiveModifier() got unexpected keyword arguments: 'team', 'modifier_key', 'source', 'round_applied'
+2026-09-23 13:16:46,937 ERROR django.request Internal Server Error: /api/games/1/round-control/process/
+127.0.0.1 [23/Sep/2026:13:16:46 +0000] "POST /api/games/1/round-control/process/ HTTP/1.1" 500 225 3112329
+127.0.0.1 [23/Sep/2026:13:17:01 +0000] "GET /api/games/1/round-control/ HTTP/1.1" 200 742 15210
+127.0.0.1 [23/Sep/2026:13:17:05 +0000] "POST /api/auth/login/ HTTP/1.1" 200 1044 418902

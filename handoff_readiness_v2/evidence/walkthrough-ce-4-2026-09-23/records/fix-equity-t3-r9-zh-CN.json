@@ -1,0 +1,741 @@
+{
+ "driver": "fix-equity-t3-r9",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T13:58:47",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2610 = zh-CN"
+  },
+  {
+   "name": "s2610 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the Decision Summary shows nothing wrong with the round the engine refused to score",
+   "outcome": "observed",
+   "detail": "can_lock=True blockers=[] stored equity=16683543.45"
+  },
+  {
+   "name": "the equity raise is resized to the shortfall it finances",
+   "outcome": "pass",
+   "detail": "was 16683543.45, now 16683543.45, shortfall 16683543.45"
+  },
+  {
+   "name": "the team locks round 9 again",
+   "outcome": "pass",
+   "detail": "status=locked can_lock=True blockers=[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:48"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:58:58"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:59:14"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "13:59:14"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/dashboard/scorecard/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/financial-reports/history/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/investor-relations/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/8/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/results/round/8/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/competitors/round/8/",
+   "status": 200,
+   "at": "13:58:51"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "13:58:55"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:58:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:58:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:58:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/tax-structure/",
+   "status": 200,
+   "at": "13:58:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "13:58:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:58:59"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/9/financing/",
+   "status": 200,
+   "at": "13:59:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:59:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:10"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/3/decisions/round/9/financing/",
+   "status": 200,
+   "at": "13:59:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:59:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=11&section_id=1",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/ticker/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/context/finance/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:20"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/3/decisions/round/9/lock/",
+   "status": 200,
+   "at": "13:59:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/summary/",
+   "status": 200,
+   "at": "13:59:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/3/decisions/round/9/",
+   "status": 200,
+   "at": "13:59:27"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-fix-equity-t3-r9",
+   "url": "/games/1/teams/3/decisions/finance",
+   "screenshot": "v4-fix-equity-t3-r9-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/briefing/latest/?user_id=11",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/results/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/competitors/round/8/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/9/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/3/decisions/round/9/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-fix-equity-t3-r9-locked",
+   "url": "/games/1/teams/3/decisions/summary",
+   "screenshot": "v4-fix-equity-t3-r9-locked-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=11&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/3/decisions/round/9/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/3/decisions/round/9/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-fix-equity-t3-r9",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-fix-equity-t3-r9-locked",
+   "leaks": [
+    {
+     "english": "Jonas Berg",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "team": "Cobalt Innovations",
+  "server_language_after_sign_in": {
+   "user": "s2610",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "before": {
+   "financing": {
+    "id": 210,
+    "new_debt": "0.00",
+    "debt_repayment": "0.00",
+    "new_equity": "16683543.45",
+    "dividend_per_share": "0.0000"
+   },
+   "can_lock": true,
+   "blockers": [],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 500000,
+    "marketing_spent": 500000,
+    "strategy_allocated": 750000,
+    "strategy_spent": 750000,
+    "talent_committed": 4000000,
+    "plant_committed": 0,
+    "total_available": 7500000,
+    "cash_on_hand": -9183543.45,
+    "financing_decided": 16683543.45,
+    "total_allocated": 1250000,
+    "platform_development_committed": 0,
+    "compliance_committed": 250000,
+    "committed_total": 7500000,
+    "unallocated": 0
+   }
+  },
+  "shortfall_without_the_raise": 16683543.45,
+  "after": {
+   "id": 220,
+   "new_debt": "0.00",
+   "debt_repayment": "0.00",
+   "new_equity": "16683543.45",
+   "dividend_per_share": "0.0000"
+  },
+  "summary_text": "GS\nGLOBALSTRAT\n消费电子模拟\nR9 / 10草稿开放\n预算 $1.3M/$5.0M\n研发 $0/$0\n营销 $500K/$500K\n战略 $750K/$750K\nEN\nJB\nJonas Berg · Cobalt Innovations\n实时\n❌\n市场快递物流在南美终止合作 — 所有收益暂停\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n🚫\n非洲运营限制生效 — 销售受限\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\n❌\n市场快递物流在南美终止合作 — 所有收益暂停\n│\n🚫\n东亚运营限制生效 — 销售受限\n│\n🚫\n西欧运营限制生效 — 销售受限\n│\n🚫\n非洲运营限制生效 — 销售受限\n│\n🏢\n科技堡垒工业巩固地位 — 加强现有市场\n│\n🏢\n新星电子积极扩张 — 竞争加剧\n│\nCOBALT INNOVATIONS\n南美\n回合 9\n仪表板\n信息中心\n财务报告\n行业新闻\n市场研究\n竞争情报\n战略工具\n决策中心\n采购 \n物流 \n贸易融资 \n库存 \n研发投资 \n产品组合 \n营销组合 \n公司战略 \n市场战略 \n财务管理 \n公司预测\n利益相关者沟通\n审核并提交 \n结果中心\n回合结果\n排行榜\n决策总结与提交\n回合 9 · 审核并锁定您的决策\n进行中\n决策清单\n预算分配\n研发预算 已设为零。锁定前请确认。\n已完成\n研发投资\n本回合尚未安排研发投入。请打开“研发投入”页面添加。\n前往研发投资修正\n未开始\n产品组合\n此项已保存草稿。\n已完成\n营销组合\n此项已保存草稿。\n已完成\n战略组合\n您的团队已在 东亚 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 东亚 添加为目标市场。\n您的团队已在 西欧 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 西欧 添加为目标市场。\n您的团队已在 非洲 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 非洲 添加为目标市场。\n您的团队已在 南美 开展业务，但尚未在该市场投放产品。请打开“产品组合”页面，将 南美 添加为目标市场。\n已完成\n融资\n此项已保存草稿。\n已完成\n采购\n本回合为可选项，锁定决策时无需完成。\n可选\n物流\n本回合为可选项，锁定决策时无需完成。\n可选\n贸易融资\n本回合为可选项，锁定决策时无需完成。\n可选\n库存\n本回合为可选项，锁定决策时无需完成。\n可选\n预算摘要\n研发\n$0 / $0\n营销\n$500K / $500K\n战略\n$750K / $750K\n研究\n$0 / $0\n合规投入\n$250K\n平台开发\n$0\n薪酬与人才\n$4.0M\n工厂建设\n$0\n本回合已承诺支出：$7.5M，可用资金共 $7.5M；尚未承诺 $0\n团队笔记\n0 / 2000\n锁定并提交第9回合决策"
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 1,
+  "screens": 2,
+  "screens_with_leaks": 2,
+  "console_errors": 8,
+  "api_calls": 49,
+  "api_refused": 0
+ }
+}

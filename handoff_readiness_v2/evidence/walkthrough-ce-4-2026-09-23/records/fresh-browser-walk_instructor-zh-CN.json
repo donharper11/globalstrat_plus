@@ -1,0 +1,346 @@
+{
+ "driver": "fresh-browser-walk_instructor",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T11:30:51",
+ "steps": [
+  {
+   "name": "walk_instructor signs in on a clean browser",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the server still holds this person's language",
+   "outcome": "pass",
+   "detail": "server says 'zh-CN', expected 'zh-CN'"
+  },
+  {
+   "name": "the interface is in the language the server holds",
+   "outcome": "fail",
+   "detail": "2 Chinese characters on the screen; localStorage.gs_language is 'en-US', and nothing in the product ever sets it from the language the server holds"
+  },
+  {
+   "name": "the prose the server renders comes back in that language too",
+   "outcome": "pass",
+   "detail": "108 Chinese characters in the served payload"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:30:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:30:51"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:31:00"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "11:31:00"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "11:30:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "11:31:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "11:31:06"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-fresh-walk_instructor-01-login",
+   "url": "/instructor/login",
+   "screenshot": "v4-fresh-walk_instructor-01-login-zh-CN.jpg",
+   "note": "a browser that has never been used, nothing in localStorage",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nUsername\nPassword\nSign In\nStudents",
+     "n": 1
+    },
+    {
+     "english": "use the student login",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "v4-fresh-walk_instructor-03-interface",
+   "url": "/instructor",
+   "screenshot": "v4-fresh-walk_instructor-03-interface-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum\nDelete",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "v4-fresh-walk_instructor-01-login",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nUsername\nPassword\nSign In\nStudents",
+     "n": 1
+    },
+    {
+     "english": "use the student login",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "v4-fresh-walk_instructor-03-interface",
+   "leaks": [
+    {
+     "english": "Instructor Portal\nWalkthrough Instructor",
+     "n": 1
+    },
+    {
+     "english": "Switch Game\nLog Out\nCourses",
+     "n": 1
+    },
+    {
+     "english": "Sections\nGame Control\nStudents",
+     "n": 1
+    },
+    {
+     "english": "Logins\nGrading",
+     "n": 1
+    },
+    {
+     "english": "Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach",
+     "n": 1
+    },
+    {
+     "english": "Courses\nNew Course",
+     "n": 1
+    },
+    {
+     "english": "Global Strategy Practicum\nDelete",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "gs_language_before_sign_in": "en-US",
+  "server_language": "zh-CN",
+  "gs_language_after_sign_in": "en-US",
+  "interface_text": "GLOBALSTRAT — Instructor Portal\nWalkthrough Instructor\n中文\nSwitch Game\nLog Out\nCourses & Sections\nGame Control\nStudents & Logins\nGrading & Export\nTeam Overview\nOperator Log\nSupply Chain\nEvent Manager\nBriefings\nResearch Monitor\nAI Coach \n99+\nMy Courses\nNew Course:\nCreate\nCE26\nGlobal Strategy Practicum\nDelete",
+  "served_prose_sample": "{\"alerts\": [{\"id\": 121, \"team_id\": 8, \"team_name\": \"Zenith Hardware\", \"round_number\": 4, \"alert_type\": \"strategic\", \"severity\": \"concern\", \"title\": \"Zenith Hardware performance index dropped 5.1 points\", \"detail\": \"Index: 34.71 (was 39.79). Satisfaction score: 0.246.\", \"teaching_note\": \"A sharp index drop indicates multiple stakeholder groups are dissatisfied simultaneously. This team may be spreading too thin or making contradictory decisions.\", \"acknowledged\": false, \"created_at\": \"2026-09-23T10:55:10.314857+00:00\"}, {\"id\": 120, \"team_id\": 8, \"team_name\": \"Zenith Hardware\", \"round_number\": 4, \"alert_type\": \"notable_move\", \"severity\": \"info\", \"title\": \"Zenith Hardware achieved a coherence score of 95/100\", \"detail\": \"Their strategy is internally consistent. Pricing aligns with positioning"
+ },
+ "summary": {
+  "passed": 3,
+  "failed": 1,
+  "observed": 0,
+  "screens": 2,
+  "screens_with_leaks": 2,
+  "console_errors": 4,
+  "api_calls": 16,
+  "api_refused": 0
+ }
+}

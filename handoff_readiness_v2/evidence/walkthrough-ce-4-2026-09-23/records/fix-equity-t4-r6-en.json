@@ -1,0 +1,802 @@
+{
+ "driver": "fix-equity-t4-r6",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T12:34:22",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "s2613 = en"
+  },
+  {
+   "name": "s2613 signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "the Decision Summary shows nothing wrong with the round the engine refused to score",
+   "outcome": "observed",
+   "detail": "can_lock=False blockers=[\"Marketing spend of $300,000.00 exceeds the marketing budget of $200,000.00. Reduce spending or increase the budget.\", \"Nova Circuit: equity raise of $21,310,422.30 exceeds the funding shortfall of $ stored equity=21310422.30"
+  },
+  {
+   "name": "the equity raise is resized to the shortfall it finances",
+   "outcome": "pass",
+   "detail": "was 21310422.30, now 21160422.30, shortfall 21160422.30"
+  },
+  {
+   "name": "the team locks round 6 again",
+   "outcome": "pass",
+   "detail": "status=locked can_lock=True blockers=[]"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:22"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:23"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:34:33"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:35:07"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:35:07"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/financial-reports/history/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/dashboard/scorecard/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/investor-relations/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/results/round/5/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:34:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/leaderboard/round/5/",
+   "status": 200,
+   "at": "12:34:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/competitors/round/5/",
+   "status": 200,
+   "at": "12:34:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:34:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/tax-structure/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:33"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/6/financing/",
+   "status": 200,
+   "at": "12:34:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:45"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/6/financing/",
+   "status": 200,
+   "at": "12:34:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:34:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:34:49"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/6/budget/",
+   "status": 200,
+   "at": "12:34:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:34:54"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/6/financing/",
+   "status": 200,
+   "at": "12:35:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:35:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:35:04"
+  },
+  {
+   "method": "PATCH",
+   "url": "/api/games/1/teams/4/decisions/round/6/financing/",
+   "status": 200,
+   "at": "12:35:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:35:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:35:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=14&section_id=1",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/rounds/?game_id=1",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/ticker/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/context/finance/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:35:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:35:14"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/teams/4/decisions/round/6/lock/",
+   "status": 200,
+   "at": "12:35:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/summary/",
+   "status": 200,
+   "at": "12:35:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/4/decisions/round/6/",
+   "status": 200,
+   "at": "12:35:20"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "v4-fix-equity-t4-r6",
+   "url": "/games/1/teams/4/decisions/finance",
+   "screenshot": "v4-fix-equity-t4-r6-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/briefing/latest/?user_id=14",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/financial-reports/history/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/dashboard/scorecard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/investor-relations/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/results/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/leaderboard/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/competitors/round/5/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/tax-structure/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/6/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/6/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "v4-fix-equity-t4-r6-locked",
+   "url": "/games/1/teams/4/decisions/summary",
+   "screenshot": "v4-fix-equity-t4-r6-locked-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/6/budget/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/6/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "PATCH",
+     "u": "/api/games/1/teams/4/decisions/round/6/financing/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=14&section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/rounds/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/ticker/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/context/finance/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/teams/4/decisions/round/6/lock/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/summary/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/4/decisions/round/6/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "team": "Nova Circuit",
+  "server_language_after_sign_in": {
+   "user": "s2613",
+   "asked": "en",
+   "server": "en"
+  },
+  "before": {
+   "financing": {
+    "id": 123,
+    "new_debt": "0.00",
+    "debt_repayment": "0.00",
+    "new_equity": "21310422.30",
+    "dividend_per_share": "0.0000"
+   },
+   "can_lock": false,
+   "blockers": [
+    "Marketing spend of $300,000.00 exceeds the marketing budget of $200,000.00. Reduce spending or increase the budget.",
+    "Nova Circuit: equity raise of $21,310,422.30 exceeds the funding shortfall of $21,160,422.30 (eligible uses $11,050,000.00 less available funding $-10,110,422.30: opening cash $-10,110,422.30 plus new debt $0.00). Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends."
+   ],
+   "budget_summary": {
+    "rd_allocated": 0,
+    "research_allocated": 0,
+    "research_spent": 0,
+    "rd_spent": 0,
+    "marketing_allocated": 200000,
+    "marketing_spent": 300000,
+    "strategy_allocated": 6750000,
+    "strategy_spent": 6750000,
+    "talent_committed": 4000000,
+    "plant_committed": 0,
+    "total_available": 11200000,
+    "cash_on_hand": -10110422.3,
+    "financing_decided": 21310422.3,
+    "total_allocated": 6950000,
+    "platform_development_committed": 0,
+    "compliance_committed": 0,
+    "committed_total": 11050000,
+    "unallocated": 150000
+   }
+  },
+  "shortfall_without_the_raise": 21160422.3,
+  "after": {
+   "id": 137,
+   "new_debt": "0.00",
+   "debt_repayment": "0.00",
+   "new_equity": "21160422.30",
+   "dividend_per_share": "0.0000"
+  },
+  "budgets_set_to": [
+   0.0,
+   300000.0,
+   6750000.0
+  ],
+  "second_pass": {
+   "shortfall": 21160422.3,
+   "financing": {
+    "id": 139,
+    "new_debt": "0.00",
+    "debt_repayment": "0.00",
+    "new_equity": "21160422.30",
+    "dividend_per_share": "0.0000"
+   }
+  },
+  "summary_text": "GS\nGLOBALSTRAT\nConsumer Electronics Sim\nR6 of 10DRAFT OPEN\nBudget $7.0M/$5.0M over budget\nR&D $0/$0\nMktg $300K/$300K\nStrat $6.8M/$6.8M\n中文\nMR\nMarco Ruiz · Nova Circuit\nLIVE\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n⚠️\nGovernment warning in Africa — improve compliance or face restrictions\n│\n💱\nNGN weakened 2.0% against BRL — Africa revenue converts to fewer BRL\n│\n📉\nEast Asia growth slowing — demand cooling\n│\n📈\nEast Asia tariffs increased — import costs rising\n│\n📉\nWestern Europe growth slowing — demand cooling\n│\n📈\nAfrica tariffs increased — import costs rising\n│\n📉\nSouth America growth slowing — demand cooling\n│\n🏢\nTechVault Industries consolidating position — fortifying existing markets\n│\n🏢\nNovaStar Electronics expanding aggressively — competition intensifying\n│\n🚫\nOperating restrictions active in North America — sales capped\n│\n🚫\nOperating restrictions active in East Asia — sales capped\n│\n🚫\nOperating restrictions active in Western Europe — sales capped\n│\n⚠️\nGovernment warning in Africa — improve compliance or face restrictions\n│\n💱\nNGN we"
+ },
+ "summary": {
+  "passed": 4,
+  "failed": 0,
+  "observed": 1,
+  "screens": 2,
+  "screens_with_leaks": 0,
+  "console_errors": 8,
+  "api_calls": 57,
+  "api_refused": 0
+ }
+}

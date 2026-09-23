@@ -1,0 +1,3884 @@
+{
+ "driver": "instructor-setup",
+ "language": "en",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T09:43:42",
+ "steps": [
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "course created and selected",
+   "outcome": "pass",
+   "detail": "Course created"
+  },
+  {
+   "name": "section created and selected",
+   "outcome": "pass",
+   "detail": "Section created"
+  },
+  {
+   "name": "scenario picked",
+   "outcome": "pass",
+   "detail": "Consumer Electronics 2026 — Consumer Electronics"
+  },
+  {
+   "name": "game created with 8 teams from the console",
+   "outcome": "pass",
+   "detail": "toast='Game \"CE 2026 Heat A\" created with 8 teams.' game={\"game_id\": 1, \"game_name\": \"CE 2026 Heat A\", \"scenario_name\": \"Consumer Electronics 2026\", \"scenario_id\": 1, \"section_id\": 1, \"status\": \"setup\", \"current_round\": 0, \"num_rounds\": 10, \"team_count\": 8, \"created_at\": \"2026-09-23T09:44:13.354366+00:00\"}"
+  },
+  {
+   "name": "the roster upload announces its outcome",
+   "outcome": "pass",
+   "detail": "panel='Added 27 student(s) to the roster. File: roster.csv | Game: CE 2026 Heat A 8 teams · Status: setup | Round schedule, activation, and game lifecycle controls are on the Game Control tab.' modal='' toast=None"
+  },
+  {
+   "name": "roster CSV upload enrolled 27 students",
+   "outcome": "pass",
+   "detail": "enrolled=27 modal='' toast=None"
+  },
+  {
+   "name": "sixth member refused; team 1 holds 5, others 3",
+   "outcome": "pass",
+   "detail": "{\"1\": 5, \"2\": 3, \"3\": 3, \"4\": 3, \"5\": 3, \"6\": 3, \"7\": 3, \"8\": 3, \"null\": 1}"
+  },
+  {
+   "name": "the refusal is shown to the instructor in business language",
+   "outcome": "pass",
+   "detail": "{\"toast\": null, \"modal\": \"No students were assignedVertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.OK\"}"
+  },
+  {
+   "name": "team 1 home market set to Africa from the console",
+   "outcome": "pass",
+   "detail": "team 1 -> AFR / Africa"
+  },
+  {
+   "name": "team configuration saved (home markets + rename)",
+   "outcome": "pass",
+   "detail": "[[\"Aurora Devices\", \"AFR\"], [\"Photon Labs\", \"EU\"], [\"Cobalt Innovations\", \"LATAM\"], [\"Nova Circuit\", \"LATAM\"], [\"Eclipse Gadgets\", \"APAC\"], [\"Prism Tech\", \"NA\"], [\"Quantum Edge\", \"NA\"], [\"Zenith Hardware\", \"EU\"]]"
+  },
+  {
+   "name": "game activated; round 1 open",
+   "outcome": "pass",
+   "detail": "{\"game_id\": 1, \"game_name\": \"CE 2026 Heat A\", \"game_status\": \"active\", \"current_round\": 1, \"total_rounds\": 10, \"server_time\": \"2026-09-23T09:46:20.653261+00:00\", \"round\": {\"round_id\": 2, \"round_number\": 1, \"status\": \"open\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_err"
+  },
+  {
+   "name": "console stays on Game Control after Activate",
+   "outcome": "pass",
+   "detail": "active tab after Activate: 'Game Control'"
+  },
+  {
+   "name": "round schedule generated and saved for every playable round",
+   "outcome": "pass",
+   "detail": "Schedule saved for 10 round(s)."
+  },
+  {
+   "name": "round 1 deadline set from the console",
+   "outcome": "pass",
+   "detail": "deadline=2026-09-25T18:00:00+00:00 toast='CE 2026 Heat A: deadline updated.'"
+  },
+  {
+   "name": "console stays on Game Control after a round-control action",
+   "outcome": "pass",
+   "detail": "active tab after Save deadline: 'Game Control'"
+  },
+  {
+   "name": "extend deadline moved the round 1 deadline",
+   "outcome": "pass",
+   "detail": "before=2026-09-25T18:00:00+00:00 after=2026-09-26T18:00:00+00:00 modal=None"
+  },
+  {
+   "name": "pause is reflected by the server",
+   "outcome": "pass",
+   "detail": "paused"
+  },
+  {
+   "name": "resume is reflected by the server",
+   "outcome": "pass",
+   "detail": "active"
+  },
+  {
+   "name": "operator event injected from the console",
+   "outcome": "pass",
+   "detail": "template='Major Competitor Product Launch (medium)' toast='Event injected'"
+  },
+  {
+   "name": "operator log lists the actions taken",
+   "outcome": "pass",
+   "detail": "9 rows"
+  },
+  {
+   "name": "student passwords issued in bulk from the console",
+   "outcome": "pass",
+   "detail": "Password setGive these to the student:Username: s2601Password: s2601This is the only time the password is shown. If it's lost, reset it again.Done"
+  },
+  {
+   "name": "grading override saved from the console",
+   "outcome": "pass",
+   "detail": "Aurora Devices: Performance Index score overridden."
+  },
+  {
+   "name": "export: Export Team Summary CSV",
+   "outcome": "pass",
+   "detail": "game_1_teams.csv (550 bytes)"
+  },
+  {
+   "name": "export: Export Team Grades CSV",
+   "outcome": "pass",
+   "detail": "team_grades.csv (327 bytes)"
+  },
+  {
+   "name": "export: Export Student Grades CSV",
+   "outcome": "pass",
+   "detail": "student_grades.csv (1328 bytes)"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:43"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:53"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "09:43:53"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+   "at": "09:48:18"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "09:43:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "09:43:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "09:43:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "09:43:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "09:43:54"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/",
+   "status": 200,
+   "at": "09:43:57"
+  },
+  {
+   "method": "POST",
+   "url": "/api/courses/",
+   "status": 201,
+   "at": "09:43:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "09:43:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "09:44:00"
+  },
+  {
+   "method": "POST",
+   "url": "/api/sections/",
+   "status": 201,
+   "at": "09:44:02"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "09:44:03"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "09:44:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/1/",
+   "status": 200,
+   "at": "09:44:10"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/create/",
+   "status": 201,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "09:44:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "09:44:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "09:44:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:19"
+  },
+  {
+   "method": "POST",
+   "url": "/api/roster/",
+   "status": 201,
+   "at": "09:44:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:21"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:26"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:29"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:30"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:31"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:33"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:34"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:35"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:36"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:38"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:47"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:48"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:49"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:50"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:56"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:57"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:44:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:44:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:44:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:44:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:44:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:00"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:05"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:07"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:07"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:08"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:13"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:15"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:17"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:22"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:24"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:26"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:31"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:33"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:35"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:40"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:41"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/team-management/",
+   "status": 200,
+   "at": "09:45:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "09:45:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "09:45:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:45:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:45:44"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:45:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:45:46"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "09:45:53"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "09:45:53"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/randomize-home-markets/",
+   "status": 200,
+   "at": "09:45:56"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "09:46:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "09:46:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/team-config/",
+   "status": 200,
+   "at": "09:46:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:09"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/activate/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:10"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:20"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:46:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:46:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:46:30"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/round-control/deadline/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "09:46:32"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "09:46:33"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:35"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/extend-deadline/",
+   "status": 200,
+   "at": "09:46:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "09:46:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "09:46:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "09:46:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "09:46:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:45"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/pause/",
+   "status": 200,
+   "at": "09:46:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:46:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:47:01"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/resume/",
+   "status": 200,
+   "at": "09:47:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:47:06"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:47:11"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/inject-event/",
+   "status": 201,
+   "at": "09:47:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "09:47:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "09:47:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "09:47:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "09:47:20"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "09:47:23"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:47:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "09:47:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "09:47:30"
+  },
+  {
+   "method": "POST",
+   "url": "/api/instructor/student-accounts/2/password/",
+   "status": 200,
+   "at": "09:47:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "09:47:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "09:47:39"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/1/decisions/?round=1",
+   "status": 200,
+   "at": "09:47:49"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:47:56"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "09:47:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "09:47:59"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "09:48:00"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "09:48:00"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/seed-rubric/",
+   "status": 200,
+   "at": "09:48:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-rubrics/?course_id=1",
+   "status": 200,
+   "at": "09:48:05"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grading-categories/?rubric_id=1",
+   "status": 200,
+   "at": "09:48:05"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/calculate/",
+   "status": 200,
+   "at": "09:48:08"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/override/",
+   "status": 200,
+   "at": "09:48:14"
+  },
+  {
+   "method": "POST",
+   "url": "/api/grades/calculate/",
+   "status": 200,
+   "at": "09:48:14"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/?instance_id=1",
+   "status": 404,
+   "at": "09:48:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/teams/?instance_id=1",
+   "status": 200,
+   "at": "09:48:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/grades/export/students/?instance_id=1",
+   "status": 200,
+   "at": "09:48:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "09:48:26"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/active-sessions/?game_id=1",
+   "status": 200,
+   "at": "09:48:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/instructor/student-accounts/?game_id=1",
+   "status": 200,
+   "at": "09:48:30"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-event-catalog/",
+   "status": 200,
+   "at": "09:48:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/resilience-weight-overrides/",
+   "status": 200,
+   "at": "09:48:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/sc-panel/",
+   "status": 200,
+   "at": "09:48:37"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "09:48:43"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "09:48:43"
+  }
+ ],
+ "refused": [
+  {
+   "method": "GET",
+   "url": "/api/grades/?instance_id=1",
+   "status": 404,
+   "at": "09:48:18",
+   "body": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Not Found</title>\n</head>\n<body>\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\n</body>\n</html>\n",
+   "request": ""
+  }
+ ],
+ "screens": [
+  {
+   "screen": "i00-instructor-login",
+   "url": "/instructor/login",
+   "screenshot": "i00-instructor-login-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i01-console-empty",
+   "url": "/instructor",
+   "screenshot": "i01-console-empty-en.jpg",
+   "note": "no course yet",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i02-course-created",
+   "url": "/instructor",
+   "screenshot": "i02-course-created-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/courses/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i03-section-selected",
+   "url": "/instructor",
+   "screenshot": "i03-section-selected-en.jpg",
+   "note": "Step 1 create-a-game card should show",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/sections/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i04-create-game-form",
+   "url": "/instructor",
+   "screenshot": "i04-create-game-form-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/scenarios/1/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i05-game-created",
+   "url": "/instructor",
+   "screenshot": "i05-game-created-en.jpg",
+   "note": "roster + team assignment cards should appear",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/create/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i06-roster-uploaded",
+   "url": "/instructor",
+   "screenshot": "i06-roster-uploaded-en.jpg",
+   "note": "upload outcome as announced",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/roster/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i07-sixth-member-refused",
+   "url": "/instructor",
+   "screenshot": "i07-sixth-member-refused-en.jpg",
+   "note": "the refusal an instructor sees",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i08-teams-assigned",
+   "url": "/instructor",
+   "screenshot": "i08-teams-assigned-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/team-management/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i09-game-control-setup",
+   "url": "/instructor",
+   "screenshot": "i09-game-control-setup-en.jpg",
+   "note": "game in setup, before activation",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i10-team-config-edited",
+   "url": "/instructor",
+   "screenshot": "i10-team-config-edited-en.jpg",
+   "note": "random home markets previewed, team 1 renamed",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/randomize-home-markets/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i11-team-config-saved",
+   "url": "/instructor",
+   "screenshot": "i11-team-config-saved-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "PUT",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/team-config/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i12-game-activated",
+   "url": "/instructor",
+   "screenshot": "i12-game-activated-en.jpg",
+   "note": "NOTE which tab the console is on after Activate",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/activate/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i12b-game-control-active",
+   "url": "/instructor",
+   "screenshot": "i12b-game-control-active-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i13-round-schedule",
+   "url": "/instructor",
+   "screenshot": "i13-round-schedule-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i14-set-deadline-modal",
+   "url": "/instructor",
+   "screenshot": "i14-set-deadline-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i14b-after-set-deadline",
+   "url": "/instructor",
+   "screenshot": "i14b-after-set-deadline-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/round-control/deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i15-extend-deadline-modal",
+   "url": "/instructor",
+   "screenshot": "i15-extend-deadline-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i16-after-extend",
+   "url": "/instructor",
+   "screenshot": "i16-after-extend-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/extend-deadline/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i17-paused",
+   "url": "/instructor",
+   "screenshot": "i17-paused-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/pause/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i18-resumed",
+   "url": "/instructor",
+   "screenshot": "i18-resumed-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/resume/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i19-event-manager",
+   "url": "/instructor",
+   "screenshot": "i19-event-manager-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i20-inject-event-modal",
+   "url": "/instructor",
+   "screenshot": "i20-inject-event-modal-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i21-event-injected",
+   "url": "/instructor",
+   "screenshot": "i21-event-injected-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/inject-event/",
+     "s": 201
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i22-operator-log",
+   "url": "/instructor",
+   "screenshot": "i22-operator-log-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i23-students-logins",
+   "url": "/instructor",
+   "screenshot": "i23-students-logins-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i24-passwords-issued",
+   "url": "/instructor",
+   "screenshot": "i24-passwords-issued-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/instructor/student-accounts/2/password/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i25-team-overview",
+   "url": "/instructor",
+   "screenshot": "i25-team-overview-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i26-team-decisions-drill",
+   "url": "/instructor",
+   "screenshot": "i26-team-decisions-drill-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/1/decisions/?round=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i27-grading-before-rubric",
+   "url": "/instructor",
+   "screenshot": "i27-grading-before-rubric-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i28-grading-rubric",
+   "url": "/instructor",
+   "screenshot": "i28-grading-rubric-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/grades/seed-rubric/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-rubrics/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grading-categories/?rubric_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i29-grading-calculated-round0",
+   "url": "/instructor",
+   "screenshot": "i29-grading-calculated-round0-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/grades/calculate/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i29b-grading-override-modal",
+   "url": "/instructor",
+   "screenshot": "i29b-grading-override-modal-en.jpg",
+   "note": "the override an instructor is offered",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i29c-grading-after-override",
+   "url": "/instructor",
+   "screenshot": "i29c-grading-after-override-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/grades/override/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/grades/calculate/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i30-grading-exports",
+   "url": "/instructor",
+   "screenshot": "i30-grading-exports-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/grades/?instance_id=1",
+     "s": 404
+    },
+    {
+     "m": "GET",
+     "u": "/api/grades/export/teams/?instance_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/grades/export/students/?instance_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i31-briefings",
+   "url": "/instructor",
+   "screenshot": "i31-briefings-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i32-research-monitor",
+   "url": "/instructor",
+   "screenshot": "i32-research-monitor-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/active-sessions/?game_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/instructor/student-accounts/?game_id=1",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "i33-ai-coach",
+   "url": "/instructor",
+   "screenshot": "i33-ai-coach-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": []
+  },
+  {
+   "screen": "i34-supply-chain",
+   "url": "/instructor",
+   "screenshot": "i34-supply-chain-en.jpg",
+   "note": "",
+   "leaks": [],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-event-catalog/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/resilience-weight-overrides/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/sc-panel/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [],
+ "observed": {
+  "resumed": false,
+  "course_toast": "Course created",
+  "section_toast": "Section created",
+  "create_game_toast": "Game \"CE 2026 Heat A\" created with 8 teams.",
+  "section_lookup": {
+   "courses": 200,
+   "sections": 200,
+   "section_id": 1
+  },
+  "games_after_create": {
+   "status": 200,
+   "body": {
+    "games": [
+     {
+      "game_id": 1,
+      "game_name": "CE 2026 Heat A",
+      "scenario_name": "Consumer Electronics 2026",
+      "scenario_id": 1,
+      "section_id": 1,
+      "status": "setup",
+      "current_round": 0,
+      "num_rounds": 10,
+      "team_count": 8,
+      "created_at": "2026-09-23T09:44:13.354366+00:00"
+     }
+    ]
+   }
+  },
+  "roster_upload_modal": null,
+  "roster_upload_toast": null,
+  "roster_upload_panel": "Added 27 student(s) to the roster. File: roster.csv | Game: CE 2026 Heat A 8 teams · Status: setup | Round schedule, activation, and game lifecycle controls are on the Game Control tab.",
+  "teams": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "status": "setup",
+   "teams": [
+    {
+     "team_id": 1,
+     "team_name": "Vertex Electronics",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Innovator"
+    },
+    {
+     "team_id": 2,
+     "team_name": "Photon Labs",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Brand Builder"
+    },
+    {
+     "team_id": 3,
+     "team_name": "Cobalt Innovations",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Workhorse"
+    },
+    {
+     "team_id": 4,
+     "team_name": "Nova Circuit",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Green Pioneer"
+    },
+    {
+     "team_id": 5,
+     "team_name": "Eclipse Gadgets",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Volume Champion"
+    },
+    {
+     "team_id": 6,
+     "team_name": "Prism Tech",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Turnaround"
+    },
+    {
+     "team_id": 7,
+     "team_name": "Quantum Edge",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Heritage Manufacturer"
+    },
+    {
+     "team_id": 8,
+     "team_name": "Zenith Hardware",
+     "participation_status": "active",
+     "withdrawn_at": null,
+     "withdrawal_reason": "",
+     "home_market": "North America",
+     "home_market_code": "NA",
+     "profile_name": "The Ecosystem Player"
+    }
+   ]
+  },
+  "members_by_team": {
+   "1": 5,
+   "2": 3,
+   "3": 3,
+   "4": 3,
+   "5": 3,
+   "6": 3,
+   "7": 3,
+   "8": 3,
+   "null": 1
+  },
+  "sixth_member_refusal": {
+   "toast": null,
+   "modal": "No students were assignedVertex Electronics already has 5 members, the maximum this section allows. Choose another team, or raise the team size limit.OK"
+  },
+  "random_toast": "Random assignment previewed. Click \"Save Configuration\" to apply it.",
+  "home_market_picked": "Africa",
+  "team_config_toast": "Team configuration saved",
+  "team_config_after": {
+   "teams": [
+    {
+     "team_id": 1,
+     "team_name": "Aurora Devices",
+     "home_market_id": 4,
+     "home_market_code": "AFR",
+     "home_market_name": "Africa",
+     "starter_profile_name": "The Innovator"
+    },
+    {
+     "team_id": 2,
+     "team_name": "Photon Labs",
+     "home_market_id": 3,
+     "home_market_code": "EU",
+     "home_market_name": "Western Europe",
+     "starter_profile_name": "The Brand Builder"
+    },
+    {
+     "team_id": 3,
+     "team_name": "Cobalt Innovations",
+     "home_market_id": 5,
+     "home_market_code": "LATAM",
+     "home_market_name": "South America",
+     "starter_profile_name": "The Workhorse"
+    },
+    {
+     "team_id": 4,
+     "team_name": "Nova Circuit",
+     "home_market_id": 5,
+     "home_market_code": "LATAM",
+     "home_market_name": "South America",
+     "starter_profile_name": "The Green Pioneer"
+    },
+    {
+     "team_id": 5,
+     "team_name": "Eclipse Gadgets",
+     "home_market_id": 2,
+     "home_market_code": "APAC",
+     "home_market_name": "East Asia",
+     "starter_profile_name": "The Volume Champion"
+    },
+    {
+     "team_id": 6,
+     "team_name": "Prism Tech",
+     "home_market_id": 1,
+     "home_market_code": "NA",
+     "home_market_name": "North America",
+     "starter_profile_name": "The Turnaround"
+    },
+    {
+     "team_id": 7,
+     "team_name": "Quantum Edge",
+     "home_market_id": 1,
+     "home_market_code": "NA",
+     "home_market_name": "North America",
+     "starter_profile_name": "The Heritage Manufacturer"
+    },
+    {
+     "team_id": 8,
+     "team_name": "Zenith Hardware",
+     "home_market_id": 3,
+     "home_market_code": "EU",
+     "home_market_name": "Western Europe",
+     "starter_profile_name": "The Ecosystem Player"
+    }
+   ],
+   "available_markets": [
+    {
+     "id": 1,
+     "code": "NA",
+     "name": "North America",
+     "description": "Mature, high-income market. Strong brand loyalty, premium segment is large, but growth is slow. High infrastructure quality, moderate regulation. Your home market.",
+     "base_growth_rate": 0.03,
+     "tax_rate": 0.21,
+     "tariff_rate": 0,
+     "regulatory_difficulty": 4,
+     "infrastructure_quality": 9,
+     "entry_cost_base": 0,
+     "currency_code": "USD",
+     "exchange_rate_volatility": 0.02
+    },
+    {
+     "id": 2,
+     "code": "APAC",
+     "name": "East Asia",
+     "description": "High-growth, price-sensitive market with massive volume potential. Manufacturing hub with low production costs. Strong tech adoption among urban consumers, but rural penetration is challenging. Regulatory complexity is high.",
+     "base_growth_rate": 0.08,
+     "tax_rate": 0.25,
+     "tariff_rate": 0.12,
+     "regulatory_difficulty": 7,
+     "infrastructure_quality": 7,
+     "entry_cost_base": 5000000,
+     "currency_code": "CNY",
+     "exchange_rate_volatility": 0.05
+    },
+    {
+     "id": 3,
+     "code": "EU",
+     "name": "Western Europe",
+     "description": "Affluent, sustainability-conscious market. Strong premium segment, growing ESG regulation, and demanding environmental standards. High infrastructure but expensive operations. No local manufacturing — all imports.",
+     "base_growth_rate": 0.02,
+     "tax_rate": 0.25,
+     "tariff_rate": 0.08,
+     "regulatory_difficulty": 6,
+     "infrastructure_quality": 9,
+     "entry_cost_base": 8000000,
+     "currency_code": "EUR",
+     "exchange_rate_volatility": 0.03
+    },
+    {
+     "id": 4,
+     "code": "AFR",
+     "name": "Africa",
+     "description": "High-growth, price-sensitive market with enormous volume potential. Young demographics and rapid mobile adoption drive demand, but infrastructure gaps and regulatory fragmentation create operational challenges. Local manufacturing is emerging but constrained. The value segment dominates.",
+     "base_growth_rate": 0.1,
+     "tax_rate": 0.3,
+     "tariff_rate": 0.15,
+     "regulatory_difficulty": 8,
+     "infrastructure_quality": 4,
+     "entry_cost_base": 3000000,
+     "currency_code": "NGN",
+     "exchange_rate_volatility": 0.06
+    },
+    {
+     "id": 5,
+     "code": "LATAM",
+     "name": "South America",
+     "description": "Large, urbanized middle-income market with a growing middle class. High taxation and bureaucratic complexity offset lower labor costs. Strong domestic consumer culture and brand awareness, but currency volatility and import duties make pricing strategy critical. Manufacturing is viable via free trade zones.",
+     "base_growth_rate": 0.05,
+     "tax_rate": 0.34,
+     "tariff_rate": 0.14,
+     "regulatory_difficulty": 7,
+     "infrastructure_quality": 6,
+     "entry_cost_base": 6000000,
+     "currency_code": "BRL",
+     "exchange_rate_volatility": 0.07
+    }
+   ],
+   "locked": false
+  },
+  "activate_popconfirm": "Activate this game? Round 1 will open for students.CancelOK",
+  "activate_toast": null,
+  "round_control_after_activate": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 1,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T09:46:20.653261+00:00",
+   "round": {
+    "round_id": 2,
+    "round_number": 1,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T09:46:10.624002+00:00",
+    "deadline": null,
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": null,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "tab_after_activate": "Game Control",
+  "schedule_toast": "Schedule saved for 10 round(s).",
+  "deadline_modal": "Set round deadline — CE 2026 Heat AThe round closes automatically at this time and students are locked out. Clear it to let the round run until you close it by hand.Times are in your local timezone. Server time is currently 9/23/2026, 9:46:10 AM.CancelSave deadline",
+  "deadline_toast": "CE 2026 Heat A: deadline updated.",
+  "tab_after_set_deadline": "Game Control",
+  "extend_modal": "Extend round deadline — CE 2026 Heat AExtend deadline by:hoursCancelOK",
+  "extend_result_modal": null,
+  "tab_after_extend": "Game Control",
+  "pause_toast": "Game paused",
+  "resume_toast": "Game resumed",
+  "inject_toast": "Event injected",
+  "bulk_reset_modal": "Password setGive these to the student:Username: s2601Password: s2601This is the only time the password is shown. If it's lost, reset it again.Done",
+  "drill_modal": "Team Decisions — Aurora DevicesRound: Round 1No submissionSubmission audit evidence",
+  "rubric_toast": "Default rubric created",
+  "calculate_grades_enabled": true,
+  "calc_toast_round0": "Default rubric created",
+  "override_buttons": 8,
+  "override_modal": "Override a category score — Aurora DevicesThe override replaces the computed score for one category and is kept with the grade, with your reason. The final grades of every team are recalculated.CategoryPerformance Index (100%)Override score (0–100)Computed: 55.0Reason for the overrideCancelSave override",
+  "override_toast": "Aurora Devices: Performance Index score overridden.",
+  "grades_after_override": "\"\\n<!doctype html>\\n<html lang=\\\"en\\\">\\n<head>\\n  <title>Not Found</title>\\n</head>\\n<body>\\n  <h1>Not Found</h1><p>The requested resource was not found on this server.</p>\\n</body>\\n</html>\\n\""
+ },
+ "summary": {
+  "passed": 26,
+  "failed": 0,
+  "observed": 0,
+  "screens": 39,
+  "screens_with_leaks": 0,
+  "console_errors": 11,
+  "api_calls": 272,
+  "api_refused": 1
+ }
+}

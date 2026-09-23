@@ -1,0 +1,1667 @@
+{
+ "driver": "instructor-round7-lifecycle",
+ "language": "zh-CN",
+ "base": "http://127.0.0.1:44317",
+ "started": "2026-09-23T12:51:06",
+ "steps": [
+  {
+   "name": "the server holds the language this reader stated",
+   "outcome": "pass",
+   "detail": "walk_instructor = zh-CN"
+  },
+  {
+   "name": "instructor signs in",
+   "outcome": "pass",
+   "detail": ""
+  },
+  {
+   "name": "round 7 is the open round before resolve",
+   "outcome": "pass",
+   "detail": "{\"round_id\": 8, \"round_number\": 7, \"status\": \"open\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-09-23T12:37:58.551985+00:00\", \"deadline\": \""
+  },
+  {
+   "name": "the lifecycle Advance Round can advance a round with pending teams (W-CE-24)",
+   "outcome": "pass",
+   "detail": "reason box=1 refusals=[]"
+  },
+  {
+   "name": "round 7 processed",
+   "outcome": "pass",
+   "detail": "schedule=processed processing=PENDING narrative_error='' phase1=None"
+  },
+  {
+   "name": "round 8 open after advance",
+   "outcome": "pass",
+   "detail": "{\"round_id\": 9, \"round_number\": 8, \"status\": \"open\", \"processing_status\": \"PENDING\", \"narrative_generated\": false, \"narrative_error\": \"\", \"opened_at\": \"2026-09-23T12:51:42.118337+00:00\", \"deadline\": \""
+  },
+  {
+   "name": "operator log states before -> after in words (W-CE-07)",
+   "outcome": "pass",
+   "detail": "[\"  | \\t |   | \\t |   | \\t |   | \\t |   | \\t |   | \\t |   | \\t |  \", \"2026/9/23 12:51:42\\tWalkthrough Instructor\\tadvance_round_legacy\\tcommitted\\t8\\tWalkthrough: advancing round 7 with teams still pending.\\t | 当前回合: 7 → 8 | 复制原始记录 | \\tsrv-0c6dd7cf-6a87-49ea-a6a6-c865e196f3a9\"]"
+  },
+  {
+   "name": "the decision drill-down leads with the decisions (W-CE-20)",
+   "outcome": "pass",
+   "detail": "audit table at offset 32 of the modal text"
+  }
+ ],
+ "console": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:06"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:06"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:06"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:06"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:13"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:13"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:45"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: net::ERR_FAILED",
+   "at": "12:51:45"
+  }
+ ],
+ "api": [
+  {
+   "method": "POST",
+   "url": "/api/auth/login/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "PUT",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:09"
+  },
+  {
+   "method": "GET",
+   "url": "/api/user/preferences/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:13"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "12:51:16"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "12:51:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "12:51:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "12:51:18"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "12:51:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "12:51:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "12:51:19"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:25"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:31"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:40"
+  },
+  {
+   "method": "POST",
+   "url": "/api/games/1/instructor/advance-round/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:42"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/research-queries/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/courses/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/briefings/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/auth/me/?user_id=1",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/alerts/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/event-templates/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:45"
+  },
+  {
+   "method": "GET",
+   "url": "/api/sections/?course_id=1",
+   "status": 200,
+   "at": "12:51:50"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/?section_id=1",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/team-management/?section_id=1",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/roster/?section_id=1",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-schedule/",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/teams/",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/scenarios/",
+   "status": 200,
+   "at": "12:51:52"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:51:58"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/dashboard/",
+   "status": 200,
+   "at": "12:52:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/teams/1/decisions/?round=8",
+   "status": 200,
+   "at": "12:52:11"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:52:28"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/round-control/",
+   "status": 200,
+   "at": "12:52:38"
+  },
+  {
+   "method": "GET",
+   "url": "/api/games/1/instructor/operator-events/",
+   "status": 200,
+   "at": "12:52:43"
+  }
+ ],
+ "refused": [],
+ "screens": [
+  {
+   "screen": "r7-00-control-before-close",
+   "url": "/instructor",
+   "screenshot": "r7-00-control-before-close-zh-CN.jpg",
+   "note": "teams locked: 4/8",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "POST",
+     "u": "/api/auth/login/",
+     "s": 200
+    },
+    {
+     "m": "PUT",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/user/preferences/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r7-01-lifecycle-advance-modal",
+   "url": "/instructor",
+   "screenshot": "r7-01-lifecycle-advance-modal-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "r7-04-processed",
+   "url": "/instructor",
+   "screenshot": "r7-04-processed-zh-CN.jpg",
+   "note": "processing status as shown",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "POST",
+     "u": "/api/games/1/instructor/advance-round/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/research-queries/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/courses/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/briefings/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/auth/me/?user_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/alerts/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/event-templates/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/sections/?course_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/team-management/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/roster/?section_id=1",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-schedule/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/teams/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/scenarios/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r7-05-team-overview",
+   "url": "/instructor",
+   "screenshot": "r7-05-team-overview-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 1
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "r7-06-decision-drill",
+   "url": "/instructor",
+   "screenshot": "r7-06-decision-drill-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 2
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 1
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/dashboard/",
+     "s": 200
+    },
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/teams/1/decisions/?round=8",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r7-07-briefings",
+   "url": "/instructor",
+   "screenshot": "r7-07-briefings-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 7
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 7
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 7
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 7
+    },
+    {
+     "english": "Photon Labs",
+     "n": 7
+    },
+    {
+     "english": "Prism Tech",
+     "n": 7
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 7
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 7
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "r7-08-research-monitor",
+   "url": "/instructor",
+   "screenshot": "r7-08-research-monitor-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": []
+  },
+  {
+   "screen": "r7-09-ai-coach",
+   "url": "/instructor",
+   "screenshot": "r7-09-ai-coach-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Zenith Hardware",
+     "n": 32
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 32
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 32
+    },
+    {
+     "english": "Prism Tech",
+     "n": 28
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 20
+    },
+    {
+     "english": "Photon Labs",
+     "n": 20
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 18
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 18
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r7-11-next-round-open",
+   "url": "/instructor",
+   "screenshot": "r7-11-next-round-open-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/round-control/",
+     "s": 200
+    }
+   ]
+  },
+  {
+   "screen": "r7-12-operator-log",
+   "url": "/instructor",
+   "screenshot": "r7-12-operator-log-zh-CN.jpg",
+   "note": "",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor",
+     "n": 10
+    },
+    {
+     "english": "Operator requested",
+     "n": 9
+    },
+    {
+     "english": "equity raise of",
+     "n": 8
+    },
+    {
+     "english": "exceeds the funding shortfall of",
+     "n": 8
+    },
+    {
+     "english": "eligible uses",
+     "n": 8
+    },
+    {
+     "english": "less available funding",
+     "n": 8
+    },
+    {
+     "english": "opening cash",
+     "n": 8
+    },
+    {
+     "english": "plus new debt",
+     "n": 8
+    },
+    {
+     "english": "Equity may finance",
+     "n": 8
+    },
+    {
+     "english": "genuine current",
+     "n": 8
+    },
+    {
+     "english": "round shortfall",
+     "n": 8
+    },
+    {
+     "english": "may not create surplus cash or fund dividends",
+     "n": 8
+    },
+    {
+     "english": "cannot be scored",
+     "n": 2
+    },
+    {
+     "english": "equity raise",
+     "n": 2
+    },
+    {
+     "english": "exceed the funding shortfall they claim to finance",
+     "n": 2
+    },
+    {
+     "english": "Correct the row",
+     "n": 2
+    },
+    {
+     "english": "and retry",
+     "n": 2
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 2
+    },
+    {
+     "english": "Photon Labs",
+     "n": 2
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 2
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "advancing round",
+     "n": 1
+    },
+    {
+     "english": "with teams still pending",
+     "n": 1
+    }
+   ],
+   "api": [
+    {
+     "m": "GET",
+     "u": "/api/games/1/instructor/operator-events/",
+     "s": 200
+    }
+   ]
+  }
+ ],
+ "leaks": [
+  {
+   "screen": "r7-00-control-before-close",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-01-lifecycle-advance-modal",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-04-processed",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-05-team-overview",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 1
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-06-decision-drill",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 2
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "Photon Labs",
+     "n": 1
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 1
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 1
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 1
+    },
+    {
+     "english": "Prism Tech",
+     "n": 1
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 1
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-07-briefings",
+   "leaks": [
+    {
+     "english": "Aurora Devices",
+     "n": 7
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 7
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 7
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 7
+    },
+    {
+     "english": "Photon Labs",
+     "n": 7
+    },
+    {
+     "english": "Prism Tech",
+     "n": 7
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 7
+    },
+    {
+     "english": "Zenith Hardware",
+     "n": 7
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-08-research-monitor",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-09-ai-coach",
+   "leaks": [
+    {
+     "english": "Zenith Hardware",
+     "n": 32
+    },
+    {
+     "english": "Quantum Edge",
+     "n": 32
+    },
+    {
+     "english": "Eclipse Gadgets",
+     "n": 32
+    },
+    {
+     "english": "Prism Tech",
+     "n": 28
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 20
+    },
+    {
+     "english": "Photon Labs",
+     "n": 20
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 18
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 18
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-11-next-round-open",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "screen": "r7-12-operator-log",
+   "leaks": [
+    {
+     "english": "Walkthrough Instructor",
+     "n": 10
+    },
+    {
+     "english": "Operator requested",
+     "n": 9
+    },
+    {
+     "english": "equity raise of",
+     "n": 8
+    },
+    {
+     "english": "exceeds the funding shortfall of",
+     "n": 8
+    },
+    {
+     "english": "eligible uses",
+     "n": 8
+    },
+    {
+     "english": "less available funding",
+     "n": 8
+    },
+    {
+     "english": "opening cash",
+     "n": 8
+    },
+    {
+     "english": "plus new debt",
+     "n": 8
+    },
+    {
+     "english": "Equity may finance",
+     "n": 8
+    },
+    {
+     "english": "genuine current",
+     "n": 8
+    },
+    {
+     "english": "round shortfall",
+     "n": 8
+    },
+    {
+     "english": "may not create surplus cash or fund dividends",
+     "n": 8
+    },
+    {
+     "english": "cannot be scored",
+     "n": 2
+    },
+    {
+     "english": "equity raise",
+     "n": 2
+    },
+    {
+     "english": "exceed the funding shortfall they claim to finance",
+     "n": 2
+    },
+    {
+     "english": "Correct the row",
+     "n": 2
+    },
+    {
+     "english": "and retry",
+     "n": 2
+    },
+    {
+     "english": "Aurora Devices",
+     "n": 2
+    },
+    {
+     "english": "Photon Labs",
+     "n": 2
+    },
+    {
+     "english": "Cobalt Innovations",
+     "n": 2
+    },
+    {
+     "english": "Nova Circuit",
+     "n": 2
+    },
+    {
+     "english": "Walkthrough Instructor\nEN",
+     "n": 1
+    },
+    {
+     "english": "advancing round",
+     "n": 1
+    },
+    {
+     "english": "with teams still pending",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "observed": {
+  "server_language_after_sign_in": {
+   "user": "walk_instructor",
+   "asked": "zh-CN",
+   "server": "zh-CN"
+  },
+  "round_control_before": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 7,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T12:51:31.556173+00:00",
+   "round": {
+    "round_id": 8,
+    "round_number": 7,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T12:37:58.551985+00:00",
+    "deadline": "2026-10-06T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 1141708,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 4,
+    "teams_pending": 4,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "team_status_before_close": [
+   [
+    "Aurora Devices",
+    "locked"
+   ],
+   [
+    "Photon Labs",
+    "locked"
+   ],
+   [
+    "Cobalt Innovations",
+    "locked"
+   ],
+   [
+    "Nova Circuit",
+    "locked"
+   ],
+   [
+    "Eclipse Gadgets",
+    "draft"
+   ],
+   [
+    "Prism Tech",
+    "draft"
+   ],
+   [
+    "Quantum Edge",
+    "empty"
+   ],
+   [
+    "Zenith Hardware",
+    "empty"
+   ]
+  ],
+  "locked_themselves": [
+   "Aurora Devices",
+   "Photon Labs",
+   "Cobalt Innovations",
+   "Nova Circuit"
+  ],
+  "pending_at_close": [
+   "Eclipse Gadgets",
+   "Prism Tech",
+   "Quantum Edge",
+   "Zenith Hardware"
+  ],
+  "advance_modal": "推进回合 — CE 2026 Heat A4 个团队尚未锁定决策。推进将结束本回合：这些团队将以目前已填写的决策被锁定。是否继续？请写明执行此操作的理由。您填写的理由将与本次操作记录一同永久保存。取 消推 进",
+  "advance_modal_has_reason_box": 1,
+  "advance_ok_enabled_without_reason": false,
+  "advance_result_modal": "推进回合 — CE 2026 Heat A4 个团队尚未锁定决策。推进将结束本回合：这些团队将以目前已填写的决策被锁定。是否继续？请写明执行此操作的理由。您填写的理由将与本次操作记录一同永久保存。Walkthrough: advancing round 7 with teams still pending.取 消推 进",
+  "advance_refusals": [],
+  "round_control_processed": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 8,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T12:51:45.059808+00:00",
+   "round": {
+    "round_id": 9,
+    "round_number": 8,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T12:51:42.118337+00:00",
+    "deadline": "2026-10-08T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 1314494,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "schedule_row": {
+   "round_id": 8,
+   "round_number": 7,
+   "status": "processed",
+   "opened_at": "2026-09-23T12:37:58.551985+00:00",
+   "deadline": "2026-10-06T18:00:00+00:00",
+   "processed_at": "2026-09-23T12:51:41.274427+00:00"
+  },
+  "narrative_error": "",
+  "team_overview_rows": 8,
+  "dashboard_teams": [
+   [
+    "Aurora Devices",
+    50.87,
+    -14090185.59,
+    2646000,
+    "empty"
+   ],
+   [
+    "Photon Labs",
+    67.28,
+    -11954758.7,
+    2646000,
+    "empty"
+   ],
+   [
+    "Cobalt Innovations",
+    53.33,
+    -13718866.91,
+    2646000,
+    "empty"
+   ],
+   [
+    "Nova Circuit",
+    51.64,
+    -14049102.96,
+    2646000,
+    "empty"
+   ],
+   [
+    "Eclipse Gadgets",
+    24.7,
+    38453215.88,
+    0,
+    "empty"
+   ],
+   [
+    "Prism Tech",
+    35.47,
+    45087995.8,
+    0,
+    "empty"
+   ],
+   [
+    "Quantum Edge",
+    19.95,
+    45450000,
+    0,
+    "empty"
+   ],
+   [
+    "Zenith Hardware",
+    19.44,
+    42390000,
+    0,
+    "empty"
+   ]
+  ],
+  "drill_modal": "团队决策 — Aurora Devices回合: 回合 8未提交提交审计记录",
+  "round_control_after_advance": {
+   "game_id": 1,
+   "game_name": "CE 2026 Heat A",
+   "game_status": "active",
+   "current_round": 8,
+   "total_rounds": 10,
+   "server_time": "2026-09-23T12:52:38.027512+00:00",
+   "round": {
+    "round_id": 9,
+    "round_number": 8,
+    "status": "open",
+    "processing_status": "PENDING",
+    "narrative_generated": false,
+    "narrative_error": "",
+    "opened_at": "2026-09-23T12:51:42.118337+00:00",
+    "deadline": "2026-10-08T18:00:00+00:00",
+    "closed_at": null,
+    "close_reason": "",
+    "processed_at": null,
+    "phase_1_duration": null,
+    "phase_2_duration": null,
+    "seconds_remaining": 1314441,
+    "is_overdue": false,
+    "teams_total": 8,
+    "teams_locked": 0,
+    "teams_pending": 8,
+    "next_action": "await_deadline"
+   },
+   "narratives": {
+    "jobs": [],
+    "summary": {
+     "total": 0,
+     "pending": 0,
+     "claimed": 0,
+     "succeeded": 0,
+     "failed": 0,
+     "degraded": 0
+    }
+   }
+  },
+  "operator_log_rows": [
+   "  | \t |   | \t |   | \t |   | \t |   | \t |   | \t |   | \t |  ",
+   "2026/9/23 12:51:42\tWalkthrough Instructor\tadvance_round_legacy\tcommitted\t8\tWalkthrough: advancing round 7 with teams still pending.\t | 当前回合: 7 → 8 | 复制原始记录 | \tsrv-0c6dd7cf-6a87-49ea-a6a6-c865e196f3a9",
+   "2026/9/23 12:37:58\tWalkthrough Instructor\tadvance_round\tcommitted\t7\tOperator requested advance_round\t | 状态: 已结算 → 已开放 | 截止时间: 2026/10/31 18:00:00 → 2026/10/6 18:00:00 | 关闭时间: 2026/9/23 12:36:34 → — | 开放时间: 2026/9/23 11:36:23 → 2026/9/23 12:37:58 | 关闭方式: 由教师关闭 → — | 结算时间: 2026/9/23 12:36:58 → — | 回合:",
+   "2026/9/23 12:36:59\tWalkthrough Instructor\tprocess_round\tcommitted\t6\tOperator requested process_round\t | 状态: 已关闭 → 已结算 | 结算时间: — → 2026/9/23 12:36:58 | 结算状态: 尚未结算 → 结果已生成——叙述内容正在生成 | 复制原始记录 | \tsrv-a412cf9d-f76e-48b6-9449-2a57a44e72f0",
+   "2026/9/23 12:36:34\tWalkthrough Instructor\tclose_round\tcommitted\t6\tOperator requested close_round\t | 状态: 已开放 → 已关闭 | 关闭时间: — → 2026/9/23 12:36:34 | 关闭方式: — → 由教师关闭 | 已锁定的团队数: 4 → 8 | 待锁定的团队数: 4 → 0 | 复制原始记录 | \tsrv-bab79a0a-7035-4ceb-96b3-fa1fec28579b",
+   "2026/9/23 12:31:22\tWalkthrough Instructor\treopen_round\tcommitted\t6\tOperator requested reopen_round\t | 状态: 已关闭 → 已开放 | 截止时间: 2026/10/4 18:00:00 → 2026/10/31 18:00:00 | 关闭时间: 2026/9/23 11:56:24 → — | 关闭方式: 由教师关闭 → — | 已锁定的团队数: 8 → 0 | 待锁定的团队数: 0 → 8 | 复制原始记录 | \tsrv-f17121fb-6bf8-403c-a505-35e706ad4cca"
+  ],
+  "drill_audit_offset": 32
+ },
+ "summary": {
+  "passed": 8,
+  "failed": 0,
+  "observed": 0,
+  "screens": 10,
+  "screens_with_leaks": 10,
+  "console_errors": 8,
+  "api_calls": 58,
+  "api_refused": 0
+ }
+}
