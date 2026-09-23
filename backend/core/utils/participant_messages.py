@@ -490,6 +490,25 @@ MESSAGES = {
     'committed_compliance': {'en': 'compliance investment',
                              'zh-CN': '合规投入'},
     'committed_talent': {'en': 'payroll and talent', 'zh-CN': '薪酬与人才支出'},
+    # Decision 14: what the deadline did to a draft the lock would have
+    # refused, told to the team in its own language.
+    'deadline_withdrew_commitments': {
+        'en': 'The round closed while {committed} was committed against available funds of {available}, which is the same reason the round could not be locked. These commitments were withdrawn and nothing was charged for them: {withdrawn}. Every other decision was resolved as submitted.',
+        'zh-CN': '本回合结束时，已承诺支出 {committed}，而可用资金为 {available}，这也是本回合无法锁定的原因。以下承诺已撤回，且未产生任何费用：{withdrawn}。其余决策均按提交内容结算。',
+    },
+    'withdrawn_plant_builds': {'en': 'plant construction',
+                               'zh-CN': '工厂建设'},
+    'withdrawn_platform_developments': {'en': 'platform development requests',
+                                        'zh-CN': '平台开发申请'},
+    'withdrawn_compliance_investments': {'en': 'compliance investment',
+                                         'zh-CN': '合规投入'},
+    'withdrawn_esg': {'en': 'environmental and social investment',
+                      'zh-CN': '环境与社会投入'},
+    'withdrawn_market_entries': {'en': 'market entries', 'zh-CN': '市场进入'},
+    'withdrawn_promotion_budgets': {'en': 'promotion, distribution and sales teams',
+                                    'zh-CN': '促销、渠道与销售团队支出'},
+    'withdrawn_declared_budgets': {'en': 'the unused part of the declared budgets',
+                                   'zh-CN': '已申报预算中未动用的部分'},
     'rd_commitments_exceed_budget': {
         'en': 'R&D commitments of {committed} exceed the R&D budget of {budget}. Platform development counts against the R&D budget.',
         'zh-CN': '研发承诺 {committed} 超过研发预算 {budget}。平台开发计入研发预算。',
