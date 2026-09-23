@@ -62,7 +62,58 @@ test('nothing committed is still a row, at zero', () => {
 
 test('the row is shown, not summed: unallocated is still the server figure', () => {
   render(<BudgetBar budgets={budgets()} />);
+  expect(screen.getByText(/budget\.committed_of_cash.*\$7\.7M/)).toBeInTheDocument();
+});
+
+/**
+ * W-CE2-09 (second walkthrough). The Summary showed two round totals and the
+ * line below them was unformatted: `Unallocated: $-12553689`, where every
+ * other figure on the page is `$28.5M`-style. The formatter tested only
+ * `n >= 1e6`, so a negative fell through to `toFixed(0)`.
+ */
+test('a negative figure is formatted like every other figure on the page', () => {
+  render(<BudgetBar budgets={budgets({ unallocated: -12553689 })} />);
+  const text = document.body.textContent;
+  expect(text).toContain('$-12.6M');
+  expect(text).not.toContain('-12553689');
+});
+
+test('a negative thousands figure is formatted too', () => {
+  render(<BudgetBar budgets={budgets({ unallocated: -45000 })} />);
+  expect(document.body.textContent).toContain('$-45K');
+});
+
+/**
+ * W-CE2-09, the other half: one total per concept. The panel now states the
+ * authoritative committed total -- the same figure the lock blocker quotes,
+ * from `rd_costs.budget_assessment` -- beside the cash it is committed
+ * against, so "unallocated" can no longer read as headroom on its own.
+ */
+test('the panel states the one authoritative total, against cash', () => {
+  render(<BudgetBar budgets={budgets({
+    committed_total: 38000000, total_available: 25446311, unallocated: -12553689,
+  })} />);
+  const text = document.body.textContent;
+  expect(text).toContain('budget.committed_of_cash');
+  expect(text).toContain('$38.0M');
+  expect(text).toContain('$25.4M');
+  expect(text).toContain('$-12.6M');
+});
+
+test('an older server without the committed total falls back to the plain line', () => {
+  render(<BudgetBar budgets={budgets({ committed_total: undefined })} />);
   expect(screen.getByText(/budget\.unallocated.*\$7\.7M/)).toBeInTheDocument();
+});
+
+test('both budget sentences exist in both catalogues and name their own concept', () => {
+  expect(en.budget.committed_of_cash).toBeTruthy();
+  expect(zh.budget.committed_of_cash).toBeTruthy();
+  // The banner compares the declared budget lines with the operating budget;
+  // it must not call that figure the round's total spending, because the
+  // blocker on the same screen quotes a different, larger total.
+  expect(en.budget.over_budget).not.toMatch(/total spending/i);
+  expect(en.budget.over_budget).toMatch(/operating budget/i);
+  expect(zh.budget.over_budget).not.toContain('总支出');
 });
 
 test('the label exists in both catalogues, worded as the income statement line', () => {

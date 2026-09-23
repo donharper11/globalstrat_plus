@@ -346,9 +346,10 @@ class LanguagePreferenceView(APIView):
 
     def get(self, request):
         enrollment = self._get_enrollment(request)
-        if not enrollment:
-            return Response({'language': 'en'})
-        return Response({'language': enrollment.language or 'en'})
+        if enrollment and enrollment.language:
+            return Response({'language': enrollment.language})
+        stored = self._get_preference(request)
+        return Response({'language': stored.language if stored else 'en'})
 
     def put(self, request):
         language = request.data.get('language', 'en')
@@ -359,7 +360,23 @@ class LanguagePreferenceView(APIView):
         if enrollment:
             enrollment.language = language
             enrollment.save(update_fields=['language'])
+        # W-CE2-08: an instructor created from the console has no enrolment, so
+        # before this the switch in the console header changed nothing on the
+        # server and the AI Coach stayed English. The preference row is written
+        # for everyone, enrolled or not, so the two stores never disagree.
+        user_id = getattr(request.user, 'user_id', None)
+        if user_id:
+            from core.models.preferences import UserLanguagePreference
+            UserLanguagePreference.objects.update_or_create(
+                user_id=user_id, defaults={'language': language})
         return Response({'language': language})
+
+    def _get_preference(self, request):
+        from core.models.preferences import UserLanguagePreference
+        user_id = getattr(request.user, 'user_id', None)
+        if not user_id:
+            return None
+        return UserLanguagePreference.objects.filter(user_id=user_id).first()
 
     def _get_enrollment(self, request):
         # JWTUser exposes user_id, not id — request.user.id raised AttributeError

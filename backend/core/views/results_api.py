@@ -30,14 +30,16 @@ from core.models.decisions import DecisionSubmission
 from core.models.cc26_models import SharePriceHistory
 from core.permissions import IsInstructor
 from core.utils.operator_messages import (
-    language_for_request, lifecycle_refusal, operator_message,
-    operator_refusal,
+    language_for_request, lifecycle_refusal, localise_conflict,
+    operator_message, operator_refusal,
     submission_origin_label)
 from core.services.lifecycle import (
     LifecycleConflict, LifecyclePrecondition, lifecycle_view, operator_action)
 from core.engine.events import (
     event_narrative_for_reader, generate_event_narrative)
 from core.utils.localization import get_localized_field, get_user_language
+from core.utils.participant_messages import market_label
+from core.services import coherence_feedback
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +221,7 @@ class RoundResultsView(APIView):
                 'narrative': event_narrative_for_reader(ev, language),
                 'category': tmpl.category,
                 'severity': tmpl.severity,
-                'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',
+                'market': market_label(ev.target_market, language),
                 'response_required': tmpl.response_required if hasattr(tmpl, 'response_required') else False,
                 'team_response': None,
             })
@@ -233,7 +235,12 @@ class RoundResultsView(APIView):
             coherence = {
                 'formula_score': _dec(coh.formula_score),
                 'blended_score': _dec(coh.blended_score),
-                'breakdown': coh.breakdown or {},
+                # W-CE2-07: the stored breakdown is English -- it is a hashed
+                # field of the `coherence` manifest section, so a scoring
+                # artefact cannot follow the reader. The sentences are
+                # rendered into a copy for the response; the row is untouched.
+                'breakdown': coherence_feedback.localised_breakdown(
+                    coh.breakdown or {}, language),
             }
 
         # Strategy feature levels (includes ESG)
@@ -270,7 +277,8 @@ class RoundResultsView(APIView):
             ).order_by('id'):
                 price_adjustments.append({
                     'product_name': event.payload.get('product_name'),
-                    'market': event.payload.get('market_name'),
+                    'market': band_rules.market_name_for_reader(
+                        event.payload, msg_language),
                     'submitted_price': event.payload.get('submitted_price'),
                     'applied_price': event.payload.get('applied_price'),
                     'rule': event.payload.get('rule'),
@@ -734,7 +742,7 @@ class InstructorDashboardView(APIView):
         events = [{
             'name': get_localized_field(ev.event_template, 'name', language),
             'severity': ev.event_template.severity,
-            'market': get_localized_field(ev.target_market, 'name', language) if ev.target_market else 'Global',
+            'market': market_label(ev.target_market, language),
         } for ev in events_qs]
 
         return Response({
@@ -825,8 +833,8 @@ class InstructorAdvanceRoundView(APIView):
                     LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
                 logger.exception('Legacy advance failed for game %s', game_id)
-                action.record_fault(f'Round advance failed: {e}',
-                                    code='advance_failed')
+                action.record_fault(
+                    e, message_key='legacy_advance_failed')
                 return Response(
                     {'error': operator_message(
                         'legacy_advance_failed',
@@ -1128,6 +1136,7 @@ class InstructorOperatorEventsView(APIView):
         except (TypeError, ValueError):
             limit = 200
 
+        event_language = language_for_request(request)
         rows = list(events.order_by('-created_at', '-id')[:limit])
         return Response({
             'game_id': game.id,
@@ -1147,7 +1156,9 @@ class InstructorOperatorEventsView(APIView):
                 # to look for when reading a race after the fact.
                 'before': event.before,
                 'after': event.after,
-                'conflict': event.conflict,
+                # W-CE2-04: a fault row's sentence is rendered in the
+                # operator's language; the stored row stays English (R44).
+                'conflict': localise_conflict(event.conflict, event_language),
                 'reason': event.reason,
                 'request_id': event.request_id,
             } for event in rows],

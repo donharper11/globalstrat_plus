@@ -1,5 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+
+// The dashboard reloads several endpoints on activation, so these two drive a
+// lot of asynchronous work. Under the full suite's parallel load they exceeded
+// Jest's 5 s default and failed while passing alone; the waits themselves are
+// bounded by their own `waitFor` timeouts, so this only stops a slow machine
+// being read as a broken page.
+jest.setTimeout(30000);
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 

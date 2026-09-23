@@ -755,6 +755,27 @@ def operator_message(key, *, language='en', **values):
     return template.format(**_resolve(values, language))
 
 
+def localise_conflict(conflict, language='en'):
+    """A stored conflict as the operator reading the log reads it (W-CE2-04).
+
+    The audit row is English and stays English (R44). A row written by
+    `OperatorAction.record_fault` carries the catalogue key it was built from
+    and the technical cause, so its sentence can be rendered again for the
+    reader without changing anything stored. Every other row -- a lifecycle
+    refusal, whose values are not stored -- is returned exactly as it is.
+    """
+    if not isinstance(conflict, dict):
+        return conflict
+    key = conflict.get('message_key')
+    if not key or key not in MESSAGES or language == 'en':
+        return conflict
+    try:
+        return dict(conflict, detail=operator_message(
+            key, language=language, detail=conflict.get('cause', '')))
+    except Exception:
+        return conflict
+
+
 def operator_refusal(request, key, **values):
     """The response body for a plain (non-lifecycle) operator refusal."""
     return {

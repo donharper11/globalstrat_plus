@@ -116,3 +116,4 @@ from .competition_audit import (
 from .audit_integrity import (AuditChainEntry, AuthorizationRefusalEvent,
                               GameDeletionAuditEvent, SensitiveReadEvent)
 from .narrative_jobs import NarrativeJob
+from .preferences import UserLanguagePreference

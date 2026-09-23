@@ -74,6 +74,7 @@ from core.models.team_state import (
     TeamMarketPresence, TeamPlatform, TeamPlatformFeatureLevel, TeamProduct,
     TeamProductMarket, TeamStrategyFeatureLevel,
 )
+from core.utils.participant_messages import BASE_PLATFORM_SUFFIX_EN
 
 # Default company names used when no scenario-specific names are configured.
 DEFAULT_COMPANY_NAMES = [
@@ -209,7 +210,10 @@ def create_game(scenario, num_teams, *, name, created_by,
             team_platform = TeamPlatform.objects.create(
                 team=team,
                 platform_generation=starting_gen,
-                name=f"{team.name} Base Platform",
+                # The suffix lives in `participant_messages` so the reader
+                # that renders this generated default in Chinese (W-CE2-06)
+                # and the writer that stores it cannot drift apart.
+                name=f"{team.name} {BASE_PLATFORM_SUFFIX_EN}",
                 status='active',
                 activated_round=0,
             )

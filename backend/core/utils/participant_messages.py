@@ -705,6 +705,70 @@ MESSAGES = {
     'research_channel_hybrid': {'en': 'Hybrid', 'zh-CN': '混合渠道'},
     'research_all_markets': {'en': 'All Markets', 'zh-CN': '所有市场'},
     'research_global': {'en': 'Global', 'zh-CN': '全球'},
+    # -----------------------------------------------------------------------
+    # W-CE2-07 — the Strategic Scorecard's sentences (2026-09-23)
+    # -----------------------------------------------------------------------
+    # English byte-identical to the f-strings `engine/coherence.py` stored, so
+    # the row a replay compares is unchanged. `core/services/coherence_feedback`
+    # picks the key; a test asserts the English still matches.
+    'coherence_leverage_conservative': {
+        'en': 'Conservative leverage. Strong financial position.',
+        'zh-CN': '杠杆水平保守。财务状况稳健。',
+    },
+    'coherence_leverage_moderate': {
+        'en': 'Moderate leverage. Manageable but watch debt growth.',
+        'zh-CN': '杠杆水平适中。尚在可控范围，但需关注债务增长。',
+    },
+    'coherence_leverage_high': {
+        'en': 'High leverage. Risk of financial distress.',
+        'zh-CN': '杠杆水平过高。存在财务困境风险。',
+    },
+    'coherence_budget_no_baseline': {
+        'en': 'No operating budget baseline (first round).',
+        'zh-CN': '尚无经营预算基准（首个回合）。',
+    },
+    'coherence_budget_within': {
+        'en': 'Spending within operating budget. Good fiscal discipline.',
+        'zh-CN': '支出未超出经营预算。财务纪律良好。',
+    },
+    'coherence_budget_slightly_over': {
+        'en': 'Slightly over budget ({over}). Minor overspend.',
+        'zh-CN': '略微超出预算（{over}）。属小幅超支。',
+    },
+    'coherence_budget_over': {
+        'en': 'Over budget by {over}. Spending discipline is weak.',
+        'zh-CN': '超出预算 {over}。支出纪律薄弱。',
+    },
+    'coherence_budget_significantly_over': {
+        'en': 'Significantly over budget ({over}). Reckless spending erodes '
+              'stakeholder confidence.',
+        'zh-CN': '显著超出预算（{over}）。无节制的支出会削弱利益相关者的信心。',
+    },
+    'coherence_budget_massively_over': {
+        'en': 'Massively over budget ({over}). No spending discipline.',
+        'zh-CN': '大幅超出预算（{over}）。毫无支出纪律。',
+    },
+    'coherence_governance_tax_clear': {
+        'en': 'No governance-tax conflict detected.',
+        'zh-CN': '未发现治理与税务之间的冲突。',
+    },
+    'coherence_governance_tax_conflict': {
+        'en': 'Anti-corruption commitment conflicts with aggressive tax '
+              'optimization. Stakeholders view this as hypocritical — '
+              'coherence heavily penalized.',
+        'zh-CN': '反腐败承诺与激进的税务筹划相互冲突。利益相关者视之为言行不一，'
+                 '战略协同性因此被大幅扣分。',
+    },
+    'coherence_governance_tax_aggressive': {
+        'en': 'Aggressive tax optimization without governance commitments — '
+              'raises moderate stakeholder concerns.',
+        'zh-CN': '激进的税务筹划缺乏相应的治理承诺——引发利益相关者的中度关切。',
+    },
+    # W-CE2-06: `game_creation` names every team's starting platform
+    # "<team> Base Platform" in English and stores it. The stored name is left
+    # alone -- this is how the generated default reads to a Chinese student.
+    'platform_base_name': {'en': '{team} Base Platform',
+                           'zh-CN': '{team}基础平台'},
     'research_no_competitor': {'en': 'None', 'zh-CN': '无'},
     'research_opportunity_growing_uncaptured': {
         'en': 'Growing segment you’re not capturing. Investigate fit gaps.',
@@ -1034,6 +1098,95 @@ def language_for_team(team, request):
     except Exception:
         stated = None
     return stated if stated in SUPPORTED_LANGUAGES else language_for_request(request)
+
+
+def language_for_participant(team, request):
+    """The language of the one student a sentence is addressed to (W-CE2-05).
+
+    R43 ruled that the team's language governs what a student is told, so one
+    screen never speaks two languages. It did not settle *whose* language the
+    team's is when members differ, and `language_for_team` answers "the first
+    active enrolment's" -- which leaves the choice unreachable for every member
+    but the first. In the second walkthrough a Chinese-reading student whose
+    team-mate had enrolled first was answered in English however often they
+    chose 中文.
+
+    So a sentence addressed to **one** student -- a refusal, the answer to that
+    student's own action -- follows that student's own stated language where
+    the request identifies them. A sentence written once for the **whole team**
+    (stored narrative prose, round briefings, persona messages) keeps
+    `language_for_team`.
+
+    What is read is the student's own *enrolment*, which the in-game switch and
+    the sign-in record through `PUT /api/user/preferences/`; the request's
+    header still does not govern, as R43 decided. Where the request identifies
+    no student, where that student has no active enrolment on this team, or
+    where they state no supported language, this is exactly
+    `language_for_team` -- so when a team's members agree, nothing changes.
+    """
+    from core.models.course import Enrollment
+    from django.db import transaction
+    user = getattr(request, 'user', None)
+    user_id = getattr(user, 'id', None) or getattr(user, 'user_id', None)
+    if user_id is not None:
+        try:
+            # Savepoint for the same reason `language_for_team` takes one: a
+            # query failure must not poison the caller's transaction, and a
+            # refusal must never become a 500 over its own language.
+            with transaction.atomic():
+                stated = (Enrollment.objects
+                          .filter(user_id=user_id, team_id=team.id,
+                                  is_active=True)
+                          .exclude(language='').order_by('pk')
+                          .values_list('language', flat=True).first())
+        except Exception:
+            stated = None
+        if stated in SUPPORTED_LANGUAGES:
+            return stated
+    return language_for_team(team, request)
+
+
+# The English suffix `game_creation` gives every team's starting platform.
+# Named here so the writer and the reader cannot drift apart (W-CE2-06).
+BASE_PLATFORM_SUFFIX_EN = 'Base Platform'
+
+
+def market_label(market, language='en'):
+    """A market's name as a participant reads it, or the all-markets label.
+
+    `results_api` printed the literal 'Global' for an event with no target
+    market, on a Chinese screen as well as an English one (W-CE2-06).
+    """
+    from core.utils.localization import get_localized_field
+    if market is None:
+        return participant_message('research_global', language=language)
+    return get_localized_field(market, 'name', language)
+
+
+def platform_display_name(team_platform, language='en', *, team_name=None):
+    """A team platform's name as a participant reads it.
+
+    A name the team chose is the team's own and is never translated. The name
+    `game_creation` generates for the starting platform is not the team's: it
+    is English text the platform wrote, and it reached a Chinese Products
+    table as "… Base Platform" (W-CE2-06). Only that generated default is
+    rendered; nothing stored changes, so no game needs migrating.
+
+    `team_name` is passed by callers that already hold the team, so reading it
+    costs no extra query per product row.
+    """
+    from core.utils.localization import get_localized_field
+    name = (getattr(team_platform, 'name', '') or '').strip()
+    generation = getattr(team_platform, 'platform_generation', None)
+    if not name:
+        return get_localized_field(generation, 'name', language) if generation else ''
+    if team_name is None:
+        team = getattr(team_platform, 'team', None)
+        team_name = getattr(team, 'name', None)
+    if team_name and name == f'{team_name} {BASE_PLATFORM_SUFFIX_EN}':
+        return participant_message(
+            'platform_base_name', language=language, team=team_name)
+    return name
 
 
 def participant_message(key, *, language='en', **values):

@@ -248,10 +248,16 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
                 'analyst_game_or_team_not_found',
                 language=language_for_refusal)}, status=404)
 
-        # R43: from here on the team is known, and its language governs every
-        # sentence -- refusal and answer alike.
-        from core.utils.participant_messages import language_for_team
-        language_for_refusal = language_for_team(team, request)
+        # R43: from here on the team is known, and the team's language governs
+        # every sentence -- refusal and answer alike. W-CE2-05: R43 did not
+        # settle whose language the team's is when members differ, and reading
+        # the first enrolment's left the choice unreachable for every member
+        # but one. Every sentence this route says is addressed to the one
+        # student who pressed Ask, so it follows that student's own stated
+        # language; `language_for_participant` is `language_for_team` wherever
+        # the asker states nothing, so a team that agrees reads as before.
+        from core.utils.participant_messages import language_for_participant
+        language_for_refusal = language_for_participant(team, request)
 
         # Check RAG is enabled
         rag_enabled = get_config(game.scenario, 'rag_enabled', False, bool)
@@ -353,9 +359,11 @@ class ResearchQueryView(CompetitionDecisionWriteMixin, APIView):
 
             # Translate query for English-only embedding models (Part D4)
             from core.rag.embeddings import get_embedding, translate_query_if_needed
-            from core.utils.localization import get_team_language
-            language = get_team_language(team)
-            embedding_query = translate_query_if_needed(enhanced_query, language)
+            # The question was typed by the student who asked it, so whether it
+            # needs translating for an English-only embedding model follows
+            # that student's language, not a team-mate's (W-CE2-05).
+            embedding_query = translate_query_if_needed(
+                enhanced_query, language_for_refusal)
 
             # Generate embedding
             query_embedding = get_embedding(embedding_query)

@@ -175,19 +175,34 @@ class OperatorAction:
             self.request, self.game, self.round, self.action, before, after,
             outcome='committed', request_id=self.request_id, reason=reason or None)
 
-    def record_fault(self, detail, code='engine_failure'):
+    def record_fault(self, cause, *, message_key, code=None):
         """Audit a genuine failure without unwinding the transaction.
 
         Distinct from a refusal: the engine tried and broke. It must not raise
         out of the boundary, because the engine's own FAILED marker is written
         in this transaction and re-raising would roll it back with everything
         else. The row is written here so the attempt is still observable.
+
+        W-CE2-04: this used to store the raw exception text, and the Operator
+        Log printed it verbatim -- storage names, a Python argument and an
+        instruction addressed to a developer. It now stores the same catalogue
+        sentence the failing route returns, with the technical cause carried
+        inside it and kept separately as `cause`. The stored sentence is
+        English (R44: one record, one language); `localise_conflict` renders
+        it in the reader's language when the log is read.
         """
         from core.services.competition_audit import record_operator_event
+        from core.utils.operator_messages import operator_code, operator_message
+        cause = str(cause)
         return record_operator_event(
             self.request, self.game, self.round, self.action, self.before, {},
             outcome='rejected', request_id=self.request_id,
-            conflict={'code': code, 'detail': detail, 'status': 500})
+            conflict={'code': code or operator_code(message_key),
+                      'message_key': message_key,
+                      'detail': operator_message(
+                          message_key, language='en', detail=cause),
+                      'cause': cause,
+                      'status': 500})
 
     def rejection_record(self, error):
         """Everything needed to audit this refusal once the rollback is done.

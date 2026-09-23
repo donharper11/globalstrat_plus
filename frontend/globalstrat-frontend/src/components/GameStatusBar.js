@@ -9,8 +9,11 @@ const { Text } = Typography;
 const fmt = (v) => {
   if (v == null) return '$0';
   const n = Number(v);
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+  // W-CE2-09: magnitude decides the unit, the sign is carried. Testing
+  // `n >= 1e6` sent every negative figure to `toFixed(0)`, which is how
+  // the Summary printed `$-12553689` beside `$28.5M`.
+  if (Math.abs(n) >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (Math.abs(n) >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
 };
 

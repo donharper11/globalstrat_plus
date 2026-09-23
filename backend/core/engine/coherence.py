@@ -23,6 +23,7 @@ from core.engine.utils import (
 )
 from core.engine.llm_runner import build_language_instruction
 from core.utils.localization import get_team_language
+from core.services import coherence_feedback
 
 logger = logging.getLogger('engine')
 
@@ -468,15 +469,17 @@ def _score_financial_prudence(team, context):
     financials = getattr(context, 'financials', {}).get(team.id, {})
     d2e = float(financials.get('debt_to_equity', 0))
 
+    # W-CE2-07: the sentence is chosen by `coherence_feedback`, which the
+    # reader calls again on the numbers stored below, so one rule serves both.
+    # The English stored here is byte-identical to the f-strings it replaces.
     if d2e < 1.0:
         score = 1.0
-        feedback = 'Conservative leverage. Strong financial position.'
     elif d2e < 2.0:
         score = 0.6
-        feedback = 'Moderate leverage. Manageable but watch debt growth.'
     else:
         score = 0.2
-        feedback = 'High leverage. Risk of financial distress.'
+    feedback = coherence_feedback.feedback_text(
+        coherence_feedback.financial_prudence_key(d2e))
 
     return score, {
         'score': score,
@@ -517,26 +520,28 @@ def _score_budget_discipline(team, submission, context):
             'operating_budget': 0,
             'total_allocated': total_allocated,
             'over_pct': 0,
-            'feedback': 'No operating budget baseline (first round).',
+            'feedback': coherence_feedback.feedback_text(
+                'coherence_budget_no_baseline'),
         }
 
     over_pct = max((total_allocated - operating_budget) / operating_budget, 0)
 
     if over_pct <= 0:
         score = 1.0
-        feedback = 'Spending within operating budget. Good fiscal discipline.'
     elif over_pct <= 0.10:
         score = 0.8
-        feedback = f'Slightly over budget ({over_pct:.0%}). Minor overspend.'
     elif over_pct <= 0.25:
         score = 0.5
-        feedback = f'Over budget by {over_pct:.0%}. Spending discipline is weak.'
     elif over_pct <= 0.50:
         score = 0.3
-        feedback = f'Significantly over budget ({over_pct:.0%}). Reckless spending erodes stakeholder confidence.'
     else:
         score = 0.0
-        feedback = f'Massively over budget ({over_pct:.0%}). No spending discipline.'
+    budget_key = coherence_feedback.budget_discipline_key(
+        over_pct, operating_budget)
+    feedback = coherence_feedback.feedback_text(
+        budget_key,
+        **({'over': coherence_feedback.over_pct_text(over_pct)}
+           if budget_key in coherence_feedback.KEYS_TAKING_OVER_PCT else {}))
 
     return score, {
         'score': score,
@@ -565,7 +570,8 @@ def _score_governance_tax_consistency(team, context):
     if not structure or not structure.anti_corruption_conflict:
         return 1.0, {
             'score': 1.0,
-            'feedback': 'No governance-tax conflict detected.',
+            'feedback': coherence_feedback.feedback_text(
+                'coherence_governance_tax_clear'),
         }
 
     has_anti_corruption = TeamGovernanceCommitment.objects.filter(
@@ -577,19 +583,15 @@ def _score_governance_tax_consistency(team, context):
     if has_anti_corruption:
         return 0.0, {
             'score': 0.0,
-            'feedback': (
-                'Anti-corruption commitment conflicts with aggressive tax optimization. '
-                'Stakeholders view this as hypocritical — coherence heavily penalized.'
-            ),
+            'feedback': coherence_feedback.feedback_text(
+                'coherence_governance_tax_conflict'),
         }
 
     # Aggressive structure without anti-corruption commitment: mild concern
     return 0.7, {
         'score': 0.7,
-        'feedback': (
-            'Aggressive tax optimization without governance commitments — '
-            'raises moderate stakeholder concerns.'
-        ),
+        'feedback': coherence_feedback.feedback_text(
+            'coherence_governance_tax_aggressive'),
     }
 
 

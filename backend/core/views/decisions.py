@@ -44,7 +44,8 @@ from core.models.scenario import (
 from core.models.results_financials import RoundResultFinancials
 from core.utils.localization import get_localized_field, get_user_language
 from core.utils.participant_messages import (
-    field_label, participant_message, round_status_label,
+    field_label, participant_message, platform_display_name,
+    round_status_label,
 )
 from core.serializers.decisions import (
     DecisionSubmissionSerializer,
@@ -1726,7 +1727,8 @@ class RDContextView(APIView):
                 'id': tp.id,
                 'platform_generation_id': tp.platform_generation_id,
                 'generation_name': get_localized_field(tp.platform_generation, 'name', language),
-                'platform_name': tp.name or get_localized_field(tp.platform_generation, 'name', language),
+                'platform_name': platform_display_name(
+                    tp, language, team_name=team.name),
                 'generation_order': tp.platform_generation.generation_order,
                 'status': tp.status,
             }
@@ -2061,11 +2063,18 @@ class ProductContextView(APIView):
         # Existing products
         products = []
         for p in TeamProduct.objects.filter(team=team).select_related('team_platform__platform_generation'):
-            markets = list(
-                TeamProductMarket.objects.filter(
-                    team_product=p,
-                ).select_related('market').values('market_id', 'market__name', 'is_active')
-            )
+            # W-CE2-06: `.values('market__name')` served the English name on
+            # the Chinese Products table while the same market read 西欧 on
+            # Market Strategy. The CE scenario authors `name_zh` for every
+            # market, so this is a read that skipped `get_localized_field`.
+            markets = [
+                {'market_id': tpm.market_id,
+                 'market__name': get_localized_field(
+                     tpm.market, 'name', language),
+                 'is_active': tpm.is_active}
+                for tpm in TeamProductMarket.objects.filter(
+                    team_product=p).select_related('market')
+            ]
             # Feature levels inherited from parent platform (only features with ceiling > 0)
             feature_levels = []
             for fl in TeamPlatformFeatureLevel.objects.filter(
@@ -2092,7 +2101,8 @@ class ProductContextView(APIView):
                 'id': p.id,
                 'name': p.name,
                 'platform_id': p.team_platform_id,
-                'platform_name': p.team_platform.name or get_localized_field(p.team_platform.platform_generation, 'name', language),
+                'platform_name': platform_display_name(
+                    p.team_platform, language, team_name=team.name),
                 'positioning': p.positioning,
                 'status': p.status,
                 'markets': markets,
@@ -2165,7 +2175,8 @@ class MarketingContextView(APIView):
                 'product_id': p.id,
                 'product_name': p.name,
                 'positioning': p.positioning,
-                'platform_name': p.team_platform.name or get_localized_field(p.team_platform.platform_generation, 'name', language),
+                'platform_name': platform_display_name(
+                    p.team_platform, language, team_name=team.name),
                 'markets': markets,
                 'feature_levels': feature_levels,
             })
@@ -2639,6 +2650,11 @@ class FinanceContextView(APIView):
                         'compliance_committed': float(
                             Decimal(lines['compliance_investment'])),
                         'committed_total': float(committed_total),
+                        # W-CE2-09: the cash the committed total is committed
+                        # from, so the shared bar can state the one total and
+                        # its headroom in one sentence rather than a bare
+                        # "Unallocated". Same key the summary endpoint uses.
+                        'total_available': float(team.cash_on_hand),
                         'total_spent': total_spent,
                         'over_budget': over_budget,
                         'remaining': total_budget_available - total_spent,

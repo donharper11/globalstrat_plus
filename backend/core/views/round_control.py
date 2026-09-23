@@ -339,7 +339,7 @@ class RoundProcessView(APIView):
                 # The engine marks the round FAILED outside its own rolled-back
                 # savepoint; returning a response rather than re-raising is what
                 # lets that record — and this audit row — commit.
-                action.record_fault(f'Post-round processing failed: {e}')
+                action.record_fault(e, message_key='processing_failed')
                 return Response(
                     {'error': operator_message(
                         'processing_failed',
@@ -402,7 +402,7 @@ class RoundAdvanceView(APIView):
                     LifecycleConflict, 'advance_refused', detail=str(e))
             except Exception as e:
                 logger.exception('Advance failed for game %s', game_id)
-                action.record_fault(f'Advance failed: {e}', code='advance_failed')
+                action.record_fault(e, message_key='advance_failed')
                 return Response(
                     {'error': operator_message(
                         'advance_failed',
