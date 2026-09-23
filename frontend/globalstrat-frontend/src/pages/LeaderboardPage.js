@@ -68,7 +68,20 @@ const LeaderboardPage = () => {
     { title: t('leaderboard_page.rank'), dataIndex: 'rank', width: 60, sorter: (a, b) => a.rank - b.rank },
     {
       title: t('leaderboard_page.team'), dataIndex: 'team_name',
-      render: (v, r) => r.team_id === teamId ? <strong>{v}</strong> : v,
+      /* W-CE3-15: under R32 a company that sold nothing is placed below every
+         company that did, whatever its score, so this table can show the top
+         index in fourth place. The marker and the rule below the table are
+         the server's own sentences, rendered from R34's stored receipt in the
+         reader's language, so the standings no longer contradict the numbers
+         beside them with nothing to explain it. */
+      render: (v, r) => (
+        <span>
+          {r.team_id === teamId ? <strong>{v}</strong> : v}
+          {r.commercially_inactive && r.rank_marker && (
+            <Tag color="default" style={{ marginLeft: 6 }}>{r.rank_marker}</Tag>
+          )}
+        </span>
+      ),
     },
     { title: t('leaderboard_page.index'), dataIndex: 'performance_index', sorter: (a, b) => a.performance_index - b.performance_index,
       render: v => v?.toFixed(2) },
@@ -150,6 +163,12 @@ const LeaderboardPage = () => {
           pagination={false}
           rowClassName={(r) => r.team_id === teamId ? 'ant-table-row-selected' : ''}
         />
+        {leaderboard?.rank_rule_note && (
+          <Typography.Paragraph type="secondary"
+            style={{ fontSize: 12, marginTop: 8, marginBottom: 0 }}>
+            {leaderboard.rank_rule_note}
+          </Typography.Paragraph>
+        )}
       </PanelCard>
 
       <TrendChart

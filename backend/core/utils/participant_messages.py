@@ -183,6 +183,26 @@ MESSAGES = {
         'en': 'Your firm sold nothing in round {round}, so it did not compete this round. A firm that does not compete is placed below every firm that did, whatever its score — so your firm was ranked {rank} in this round’s standings with a performance index of {index}, below firms whose index was lower than yours. The index itself was not reduced; only the placing. Sell in at least one market next round to be ranked on your score again.',
         'zh-CN': '第 {round} 回合贵公司没有任何销售，因此本回合未参与竞争。未参与竞争的公司无论得分高低，都会排在所有参与竞争的公司之后——因此贵公司本回合排名第 {rank} 位，绩效指数为 {index}，低于绩效指数不及贵公司的其他公司。绩效指数本身并未被扣减，受影响的只是排名。下一回合请至少在一个市场实现销售，即可重新按得分排名。',
     },
+    # -----------------------------------------------------------------------
+    # W-CE3-15 — the same rule, on the screen the standings are read from
+    # -----------------------------------------------------------------------
+    # The two sentences above are addressed to the demoted team on its own
+    # results screen. The leaderboard is read by every team and by the
+    # instructor, and it is where the inversion is actually *seen*: the top
+    # score sitting in fourth place. These are the third-person half -- a row
+    # marker and the rule under the table -- so the standings never contradict
+    # the numbers beside them with nothing to explain it.
+    #
+    # They say no more than the leaderboard already publishes: the row's own
+    # revenue is on the same line. No rival's score is named (R35's standard).
+    'inactivity_rank_marker': {
+        'en': 'Did not compete',
+        'zh-CN': '未参与竞争',
+    },
+    'inactivity_rank_rule': {
+        'en': 'A company that sold nothing in a round did not compete in it, and is placed below every company that did, whatever its score. The performance index itself is not reduced; only the placing.',
+        'zh-CN': '某一回合没有任何销售的公司，即为该回合未参与竞争，无论得分高低，都会排在所有参与竞争的公司之后。绩效指数本身并未被扣减，受影响的只是排名。',
+    },
     'target_markets_required': {
         'en': 'Choose at least one target market before creating the product.',
         'zh-CN': '创建产品前，请至少选择一个目标市场。',
