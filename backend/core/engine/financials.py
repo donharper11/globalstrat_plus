@@ -16,8 +16,15 @@ _logger = logging.getLogger(__name__)
 D = Decimal
 
 
-def _calculate_subscription_rate(team, game, round_number):
-    """Calculate equity subscription rate based on investor sentiment."""
+def subscription_rate(team, game, round_number):
+    """Calculate equity subscription rate based on investor sentiment.
+
+    Public since W-CE3-02, because `services/funding_need.financing_effect`
+    has to price a raise the same way this file does: it reads the *previous*
+    round's holdings, so it is knowable while the round is still open, and the
+    affordability rule would otherwise promise a team cash the engine then
+    subscribes down.
+    """
     from core.models.cc26_models import AIInvestorHolding
     from django.db.models import Avg
 
@@ -38,6 +45,10 @@ def _calculate_subscription_rate(team, game, round_number):
         return 0.60 + (avg_satisfaction - 0.3) * 1.0
     else:
         return 0.50
+
+
+# The private name the tests and older call sites used.
+_calculate_subscription_rate = subscription_rate
 
 
 def _clamp_ratio(value, limit=D('99999')):
@@ -175,94 +186,62 @@ def generate_financial_statements(context):
             team=team, round__round_number=current_round, round__game=game,
         ).first()
 
-        new_debt = D('0')
-        debt_repayment = D('0')
-        new_equity = D('0')
-        dividend_per_share = D('0')
+        # W-CE3-02: the arithmetic below used to live here and nowhere else,
+        # which is why the affordability check the students are refused on
+        # could ignore financing entirely. It now lives in
+        # `services/funding_need.financing_effect` and both sides read it --
+        # the engine here, and the lock's affordability rule through
+        # `rd_costs.budget_assessment`. Every rule is the same rule it was:
+        #
+        #  * a team already in distress cannot raise new debt (lenders will not
+        #    extend credit to a firm with negative cash). `team.is_in_distress`
+        #    still reflects the state the team *entered* this round with, since
+        #    distress is re-evaluated further down;
+        #  * a team cannot repay more debt than it owes -- without the cap the
+        #    cash still leaves via financing_cf while total_debt is floored at
+        #    zero, so assets fall with no matching fall in liabilities or
+        #    equity and the balance sheet breaks;
+        #  * CC-26: an equity raise is subscribed at the investor-sentiment
+        #    rate, priced off the equity the team held when the round opened
+        #    (closing equity cannot price the raise that determines it -- a
+        #    rules-visible choice recorded as V2-020);
+        #  * a dividend is capped at opening cash and blocked when there is
+        #    none.
+        #
+        # The side effects -- the log lines, the refusal notice, the share
+        # issue -- stay here, where the context is.
+        from core.services.funding_need import financing_effect
+        effect = financing_effect(team, submission, round_number=current_round)
 
-        if submission:
-            try:
-                fin = submission.financing
-                if fin:
-                    new_debt = fin.new_debt
-                    debt_repayment = fin.debt_repayment
-                    new_equity = fin.new_equity
-                    dividend_per_share = fin.dividend_per_share
-            except Exception:
-                pass
-
-        # A team already in distress cannot raise new debt -- lenders will not
-        # extend credit to a firm with negative cash. The distress alert has
-        # always told students this; it was never actually enforced. Note that
-        # team.is_in_distress here still reflects the state the team *entered*
-        # this round with, since distress is re-evaluated further down.
-        if team.is_in_distress and new_debt > 0:
+        if effect['debt_refused_in_distress']:
             context.log.append(
-                f'{team.name}: new debt of ${new_debt:,.0f} refused - team is in '
+                f'{team.name}: new debt of '
+                f'${effect["requested_new_debt"]:,.0f} refused - team is in '
                 f'financial distress'
             )
-            _notify_debt_refused(context, team, new_debt)
-            new_debt = D('0')
-
-        # A team cannot repay more debt than it owes. Without this cap the cash
-        # still leaves via financing_cf while total_debt is floored at zero, so
-        # assets fall with no matching fall in liabilities or equity and the
-        # balance sheet breaks -- which is exactly what happened in the final
-        # rounds once teams had already paid their debt down.
-        outstanding = team.total_debt + new_debt
-        if debt_repayment > outstanding:
+            _notify_debt_refused(context, team, effect['requested_new_debt'])
+        if effect['debt_repayment_capped']:
             context.log.append(
-                f'{team.name}: debt repayment capped at ${outstanding:,.0f} '
-                f'(requested ${debt_repayment:,.0f})'
+                f'{team.name}: debt repayment capped at '
+                f'${effect["debt_repayment"]:,.0f} '
+                f'(requested ${effect["requested_debt_repayment"]:,.0f})'
             )
-            debt_repayment = max(outstanding, D('0'))
-
-        # CC-26: Apply investor sentiment subscription rate to equity issuance
-        if new_equity > 0:
-            subscription_rate = _calculate_subscription_rate(team, game, current_round)
-            actual_equity_raised = (new_equity * D(str(subscription_rate))).quantize(
-                D('0.01'), rounding=ROUND_HALF_UP,
-            )
-            # `total_equity` here is the *closing* figure, and it is not
-            # assigned until fifty lines further down this same loop. On the
-            # first team to raise equity that was an UnboundLocalError, and
-            # because this runs inside Phase 1 the whole round failed to
-            # resolve for every team; on later teams it silently held the
-            # previous team's balance sheet and priced one company's shares
-            # off another's. Nothing in the repository set new_equity above
-            # zero, so neither happened until GSP-CRV2-06 screened the field.
-            #
-            # Closing equity cannot price the raise that determines it, so the
-            # basis is the equity the team held when the round opened. That is
-            # a rules-visible choice and is recorded as V2-020 rather than
-            # settled here.
-            opening_equity = team.total_equity
-            share_price_est = (
-                opening_equity / max(D(str(team.shares_outstanding)), D('1'))
-                if team.shares_outstanding > 0 else D('1')
-            )
-            new_shares = int(actual_equity_raised / max(share_price_est, D('1')))
-            team.shares_outstanding += new_shares
-            new_equity = actual_equity_raised
-
-        dividends = (dividend_per_share * D(str(team.shares_outstanding))).quantize(
-            D('0.01'), rounding=ROUND_HALF_UP,
-        )
-
-        # Cap dividends at available cash (cannot pay more than we have)
-        # Compute pre-dividend cash to determine max payable
-        # Use conservative cap: dividends cannot exceed cash_opening
-        if dividends > cash_opening and cash_opening > 0:
+        if effect['dividends_capped']:
             context.log.append(
-                f'Dividend capped for {team.name}: requested ${dividends:,.0f}, '
+                f'Dividend capped for {team.name}: requested '
+                f'${effect["dividends_requested"]:,.0f}, '
                 f'capped to ${cash_opening:,.0f} (available cash)'
             )
-            dividends = cash_opening
-        elif dividends > 0 and cash_opening <= 0:
+        if effect['dividends_blocked']:
             context.log.append(
                 f'Dividend blocked for {team.name}: no cash available'
             )
-            dividends = D('0')
+
+        new_debt = effect['new_debt']
+        debt_repayment = effect['debt_repayment']
+        new_equity = effect['new_equity']
+        team.shares_outstanding = effect['shares_outstanding']
+        dividends = effect['dividends']
 
         # Inventory value
         inventory_value = D('0')

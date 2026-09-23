@@ -1056,8 +1056,16 @@ def lock_blockers_for(submission, language='en'):
                 ratio=f'{projected_debt / projected_equity:.2f}',
                 maximum=max_ratio))
         total_dividends = fin.dividend_per_share * team.shares_outstanding
-        # Simple check: dividends shouldn't exceed equity
-        if total_dividends > projected_equity:
+        # Simple check: dividends shouldn't exceed equity.
+        #
+        # W-CE3-16, repaired here because it is the same dead end decision 13
+        # rules out: for a team whose projected equity is negative this fired
+        # on a dividend of $0.00 -- "Total dividends of $0.00 exceed projected
+        # equity. Reduce the dividend." -- and there is nothing below zero to
+        # reduce it to, so the lock could not be reached however the team
+        # played. A team that is paying out nothing is not paying out more
+        # than it has.
+        if total_dividends > 0 and total_dividends > projected_equity:
             errors.append(participant_message(
                 'dividends_exceed_equity', language=language,
                 dividends=f'${total_dividends:,.2f}'))
@@ -1075,22 +1083,19 @@ def lock_blockers_for(submission, language='en'):
     except DecisionESG.DoesNotExist:
         pass
 
-    # Projected ending cash check
-    # Keep the lock response on the same cash total as the summary and
-    # Finance context.  `budget_total` omits platform development; only
-    # `committed_total` answers what this submission will actually cost.
-    projected_cash = team.cash_on_hand - Decimal(
-        assessment['committed_total'])
-    try:
-        fin = submission.financing
-        projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
-        projected_cash -= fin.dividend_per_share * team.shares_outstanding
-    except DecisionFinancing.DoesNotExist:
-        pass
-    if projected_cash < 0:
-        errors.append(participant_message(
-            'cash_negative', language=language,
-            cash=f'${projected_cash:,.2f}'))
+    # Projected ending cash used to be summed again here from the financing
+    # row, which is how the lock printed a projected-cash figure that counted
+    # the team's new debt beside an affordability refusal that did not, and
+    # told the team to "raise financing" in the same breath as a blocker
+    # raising financing could not clear (W-CE3-02).
+    #
+    # It is now `available_funds - committed_total`, computed once in
+    # `budget_assessment`, which makes it the same comparison the
+    # affordability refusal makes: projected cash is negative exactly when
+    # committed spend exceeds available funds. Two sentences for one condition
+    # is one condition described twice, so the lock states it once -- in the
+    # sentence that names what the team can change -- and the projected figure
+    # is published for the screens through the assessment instead.
 
     # CC-32A: Check mandatory communication assignments
     try:
@@ -1454,14 +1459,12 @@ class DecisionSummaryView(APIView):
             # Projected cash check
             try:
                 from core.services.rd_costs import budget_assessment
-                # The same committed total as the lock validator and the
-                # summary, so a team is not told it can afford something on one
-                # screen and refused it on another.
-                total_budget = Decimal(
-                    budget_assessment(submission, team)['committed_total'])
-                projected_cash = team.cash_on_hand - total_budget
-                projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
-                projected_cash -= fin.dividend_per_share * team.shares_outstanding
+                # The same projected figure as the lock validator, from the
+                # same assessment -- this view used to sum it again from the
+                # financing row, so the Summary and the lock could describe
+                # one condition with two different numbers (W-CE3-02).
+                projected_cash = Decimal(
+                    budget_assessment(submission, team)['projected_cash'])
                 if projected_cash < 0:
                     # Formatted exactly as the lock refusal formats it: one
                     # rule, one sentence, one rendering of the money in it.
@@ -1541,7 +1544,15 @@ class DecisionSummaryView(APIView):
                 # rows, like compliance and platform development.
                 'talent_committed': float(Decimal(assessment['talent_committed'])),
                 'plant_committed': float(Decimal(assessment['plant_committed'])),
-                'total_available': float(team.cash_on_hand),
+                # W-CE3-02: the money the lock counts, which is cash plus
+                # the financing this team has decided this round -- not cash
+                # alone. The screens gate their own offers on `unallocated`
+                # (W-CE2-02), so a narrower figure here would put them back to
+                # refusing what the lock accepts.
+                'total_available': float(Decimal(assessment['available_funds'])),
+                'cash_on_hand': float(Decimal(assessment['cash_on_hand'])),
+                'financing_decided': float(
+                    Decimal(assessment['financing_decided'])),
                 'total_allocated': float(total_allocated),
                 'platform_development_committed': float(
                     Decimal(lines['platform_development'])),
@@ -1551,7 +1562,7 @@ class DecisionSummaryView(APIView):
                 'compliance_committed': float(
                     Decimal(lines['compliance_investment'])),
                 'committed_total': float(committed_total),
-                'unallocated': float(team.cash_on_hand - committed_total),
+                'unallocated': float(Decimal(assessment['projected_cash'])),
             }
         except DecisionBudgetAllocation.DoesNotExist:
             pass
@@ -2454,15 +2465,21 @@ class StrategyContextView(APIView):
         # committed this round.
         from core.services.rd_costs import budget_assessment
         cash_on_hand = Decimal(team.cash_on_hand or 0)
+        available = cash_on_hand
         committed_total = Decimal('0')
         if sub is not None:
             assessment = budget_assessment(sub, team)
             committed_total = Decimal(assessment['committed_total'])
             cash_on_hand = Decimal(assessment['cash_on_hand'])
+            # W-CE3-02: available funds, not cash alone, so an offer this card
+            # enables is one the lock will still accept after the team has
+            # decided its financing.
+            available = Decimal(assessment['available_funds'])
         affordability = {
             'cash_on_hand': float(cash_on_hand),
+            'available_funds': float(available),
             'committed_total': float(committed_total),
-            'unallocated': float(cash_on_hand - committed_total),
+            'unallocated': float(available - committed_total),
         }
 
         # Acquisition targets
@@ -2615,13 +2632,9 @@ class FinanceContextView(APIView):
                     # this includes the legacy research line and any platform
                     # development, neither of which may silently disappear on
                     # the Finance page.
-                    projected_cash = team.cash_on_hand - committed_total
-                    try:
-                        fin = sub.financing
-                        projected_cash += fin.new_debt + fin.new_equity - fin.debt_repayment
-                        projected_cash -= fin.dividend_per_share * team.shares_outstanding
-                    except DecisionFinancing.DoesNotExist:
-                        pass
+                    # W-CE3-02: from the one assessment, which nets the
+                    # financing the way the engine will actually apply it.
+                    projected_cash = Decimal(assessment['projected_cash'])
 
                     total_spent = float(rd_spent + mkt_spent + strat_spent)
                     over_budget = total_spent > total_budget_available
@@ -2654,11 +2667,19 @@ class FinanceContextView(APIView):
                         # from, so the shared bar can state the one total and
                         # its headroom in one sentence rather than a bare
                         # "Unallocated". Same key the summary endpoint uses.
-                        'total_available': float(team.cash_on_hand),
+                        # W-CE3-02: available funds, the same figure the
+                        # lock's affordability rule compares against.
+                        'total_available': float(
+                            Decimal(assessment['available_funds'])),
+                        'cash_on_hand': float(
+                            Decimal(assessment['cash_on_hand'])),
+                        'financing_decided': float(
+                            Decimal(assessment['financing_decided'])),
                         'total_spent': total_spent,
                         'over_budget': over_budget,
                         'remaining': total_budget_available - total_spent,
-                        'unallocated': float(team.cash_on_hand - committed_total),
+                        'unallocated': float(
+                            Decimal(assessment['projected_cash'])),
                         'projected_ending_cash': float(projected_cash),
                     })
                 except DecisionBudgetAllocation.DoesNotExist:

@@ -290,9 +290,11 @@ class CommittedSpendTests(ComplianceChargeBase):
 class AffordabilityTests(ComplianceChargeBase):
     """A team cannot commit more compliance investment than it can fund.
 
-    Through the existing refusal path -- `committed_spend_exceeds_cash`, the
-    sentence the lock, the Decision Summary and the Finance context already
-    share (V2-057) -- rather than a new rule or a new sentence.
+    Through the existing refusal path -- the affordability sentence the lock,
+    the Decision Summary and the Finance context already share (V2-057) --
+    rather than a new rule or a new sentence. W-CE3-02 reworded that sentence
+    and widened what it compares against; the compliance amount reaches it the
+    same way it always did, and this test asks it for the amount by name.
     """
 
     def commit_unaffordable(self):
@@ -306,9 +308,14 @@ class AffordabilityTests(ComplianceChargeBase):
 
     def expected_refusal(self, language):
         return participant_message(
-            'committed_spend_exceeds_cash', language=language,
-            committed=f'${UNAFFORDABLE:,.2f}', cash=f'${OPENING_CASH:,.2f}',
-            platform='$0.00')
+            'committed_spend_exceeds_available_funds', language=language,
+            committed=f'${UNAFFORDABLE:,.2f}',
+            available=f'${OPENING_CASH:,.2f}',
+            cash=f'${OPENING_CASH:,.2f}',
+            financing='$0.00',
+            shortfall=f'${UNAFFORDABLE - OPENING_CASH:,.2f}',
+            line=participant_message('committed_compliance', language=language),
+            amount=f'${UNAFFORDABLE:,.2f}')
 
     def test_the_lock_is_refused_and_nothing_is_locked(self):
         self.commit_unaffordable()

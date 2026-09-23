@@ -121,7 +121,7 @@ class DeadlineDoesNotExecuteWhatTheLockRefusesTests(DeadlineAffordabilityBase):
         blockers = lock_blockers_for(
             self.submissions[self.team.id], language='en')
 
-        self.assertTrue(any('exceeds available cash' in b for b in blockers),
+        self.assertTrue(any('exceeds available funds' in b for b in blockers),
                         blockers)
 
     def test_the_acquisition_is_not_fulfilled_and_nothing_is_charged(self):

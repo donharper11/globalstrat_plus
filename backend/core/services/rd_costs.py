@@ -380,6 +380,53 @@ def committed_outlay(submission, team=None):
     return lines
 
 
+# The committed lines a team can still reduce from a screen while the round is
+# open. `research_purchases` and `org_transition` are deliberately absent: the
+# report is already delivered and the structure already switched, so naming
+# either would tell a team to change something it cannot change, which is the
+# defect W-CE3-02 is about.
+REDUCIBLE_COMMITTED_LINES = (
+    ('platform_development', 'committed_platform_development'),
+    ('plant_capex', 'committed_plant'),
+    ('compliance_investment', 'committed_compliance'),
+    ('talent', 'committed_talent'),
+)
+# The three budget lines are committed at the greater of the declaration and
+# the decisions made under them, which is exactly what `committed_total` sums,
+# so the figure the refusal quotes is the figure it is refused on.
+REDUCIBLE_BUDGET_LINES = (
+    ('rd_budget', 'rd', 'budget_rd'),
+    ('marketing_budget', 'marketing', 'budget_marketing'),
+    ('strategy_budget', 'strategy', 'budget_strategy'),
+)
+
+
+def largest_reducible_line(lines, spent):
+    """The biggest thing on this submission the team could still cut.
+
+    Decision 13: the blocker must name what a team can actually change. Before
+    W-CE3-02 it named only the two sides of a comparison the team could not
+    move -- committed spend and a negative cash balance -- so the sentence was
+    true and useless. Returns `(message_key, amount)`, or `None` when there is
+    nothing left to cut, which is itself the answer: the team's only remaining
+    move is financing.
+    """
+    candidates = [(key, Decimal(lines.get(name, ZERO) or ZERO))
+                  for name, key in REDUCIBLE_COMMITTED_LINES]
+    candidates.append(('budget_research',
+                       Decimal(lines.get('research_budget', ZERO) or ZERO)))
+    for budget_name, spent_name, key in REDUCIBLE_BUDGET_LINES:
+        candidates.append((key, max(Decimal(lines.get(budget_name, ZERO) or ZERO),
+                                    Decimal(spent.get(spent_name, ZERO) or ZERO))))
+    best = None
+    for key, amount in candidates:
+        if amount <= ZERO:
+            continue
+        if best is None or amount > best[1]:
+            best = (key, amount)
+    return best
+
+
 def budget_assessment(submission, team=None):
     """The single answer to "can this team afford what it has committed?"
 
@@ -388,7 +435,20 @@ def budget_assessment(submission, team=None):
     summed four by including `research_budget`, and none of them counted
     platform development at all. Three rules that disagree is one rule that
     does not exist.
+
+    W-CE3-02 / decision 13: what the committed total is compared with is
+    **available funds** -- cash on hand plus the financing this team has
+    decided this round -- and not cash on hand alone. Comparing with cash alone
+    made the lock unreachable for good once a team's cash went negative: no
+    spend is smaller than a negative number, and raising $30,000,000 of debt
+    did not move the figure by a cent, because the check never looked at the
+    financing row. Both figures come from `funding_need.financing_effect`,
+    which is the engine's own financing arithmetic, so the lock cannot promise
+    a team money the round then declines -- a raise refused in distress, or an
+    equity raise subscribed down, is not counted here either.
     """
+    from core.services.funding_need import available_funds
+
     team = team or submission.team
     lines = committed_outlay(submission, team)
     budget_total = (lines['rd_budget'] + lines['marketing_budget']
@@ -416,6 +476,14 @@ def budget_assessment(submission, team=None):
                  + lines['compliance_investment']
                  + lines['talent'] + lines['plant_capex'])
     cash = Decimal(getattr(team, 'cash_on_hand', ZERO) or ZERO)
+    funds, effect = available_funds(
+        team, submission,
+        round_number=submission.round.round_number if submission else None)
+    # What the financing decision adds, on its own, so the refusal can say
+    # "plus $X of financing decided this round" rather than leave a team
+    # wondering whether its raise was counted at all.
+    financing = funds - cash
+    largest = largest_reducible_line(lines, spent)
 
     rd_committed = lines['rd_investments'] + lines['platform_development']
     return {
@@ -423,7 +491,21 @@ def budget_assessment(submission, team=None):
         'budget_total': str(budget_total),
         'committed_total': str(committed),
         'cash_on_hand': str(cash),
-        'within_cash': committed <= cash,
+        'available_funds': str(funds),
+        'financing_decided': str(financing),
+        'requested_new_debt': str(effect['requested_new_debt']),
+        'new_debt': str(effect['new_debt']),
+        'debt_refused_in_distress': effect['debt_refused_in_distress'],
+        'requested_new_equity': str(effect['requested_new_equity']),
+        'new_equity': str(effect['new_equity']),
+        'dividends': str(effect['dividends']),
+        # `available_funds - committed` is the projected ending cash every
+        # screen prints, computed here once so the Summary, the Finance page
+        # and the lock cannot print three different numbers for it.
+        'projected_cash': str(funds - committed),
+        'within_cash': committed <= funds,
+        'largest_reducible_line': largest[0] if largest else None,
+        'largest_reducible_amount': str(largest[1]) if largest else '0',
         'rd_committed': str(rd_committed),
         'rd_budget': str(lines['rd_budget']),
         'within_rd_budget': rd_committed <= lines['rd_budget'],
@@ -439,17 +521,43 @@ def budget_assessment(submission, team=None):
 
 
 def describe_budget_problems(assessment, language='en'):
-    """Business-language budget refusals, in the requested UI language."""
+    """Business-language budget refusals, in the requested UI language.
+
+    W-CE3-02: the affordability refusal now names three things a team can act
+    on -- the funds it actually has, the financing it has already decided, and
+    the largest commitment it can still cut -- instead of two figures it cannot
+    move. When there is nothing left to cut, the sentence says so and names the
+    financing that would close the gap, because that is then the team's only
+    remaining move and the lock has to stay reachable (decision 13).
+    """
     from core.utils.participant_messages import participant_message
 
     problems = []
     if not assessment['within_cash']:
-        problems.append(participant_message(
-            'committed_spend_exceeds_cash', language=language,
+        shortfall = (Decimal(assessment['committed_total'])
+                     - Decimal(assessment['available_funds']))
+        common = dict(
             committed=f'${Decimal(assessment["committed_total"]):,.2f}',
+            available=f'${Decimal(assessment["available_funds"]):,.2f}',
             cash=f'${Decimal(assessment["cash_on_hand"]):,.2f}',
-            platform=f'${Decimal(assessment["lines"]["platform_development"]):,.2f}',
-        ))
+            financing=f'${Decimal(assessment["financing_decided"]):,.2f}',
+            shortfall=f'${shortfall:,.2f}',
+        )
+        if assessment.get('largest_reducible_line'):
+            problems.append(participant_message(
+                'committed_spend_exceeds_available_funds', language=language,
+                line=participant_message(
+                    assessment['largest_reducible_line'], language=language),
+                amount=f'${Decimal(assessment["largest_reducible_amount"]):,.2f}',
+                **common))
+        else:
+            problems.append(participant_message(
+                'available_funds_short_with_nothing_to_cut',
+                language=language, **common))
+        if assessment.get('debt_refused_in_distress'):
+            problems.append(participant_message(
+                'new_debt_refused_in_distress', language=language,
+                requested=f'${Decimal(assessment["requested_new_debt"]):,.2f}'))
     if not assessment['within_rd_budget']:
         problems.append(participant_message(
             'rd_commitments_exceed_budget', language=language,

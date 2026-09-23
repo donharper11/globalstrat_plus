@@ -94,13 +94,21 @@ class SummaryBlockersMatchLockTests(CommittedSpendBase):
 
     def test_projected_cash_is_checked_without_a_financing_row(self):
         """The summary used to check projected cash only inside the
-        financing branch; the lock always did."""
+        financing branch; the lock always did.
+
+        W-CE3-02 merged the two sentences that described this one condition.
+        Projected ending cash is `available_funds - committed_total`, so it is
+        negative exactly when committed spend exceeds available funds, and the
+        lock states it once -- in the sentence that names what to change. What
+        this test guards is unchanged: with no financing row at all, the
+        Summary and the lock refuse the same submission with the same words.
+        """
         self.team.cash_on_hand = D('900')
         self.team.save(update_fields=['cash_on_hand'])
         self.declare(rd=D('1000'))
         DecisionFinancing.objects.filter(submission=self.submission).delete()
 
         blockers = self.summary_blockers()
-        self.assertTrue(any(b.startswith('Projected ending cash is')
+        self.assertTrue(any('exceeds available funds of $900.00' in b
                             for b in blockers), blockers)
         self.assertEqual(blockers, self.lock_errors())

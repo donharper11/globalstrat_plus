@@ -178,12 +178,26 @@ class EquityIssuanceTests(TestCase):
         both failures at once.
         """
         import inspect
-        from core.engine import financials
-        source = inspect.getsource(financials.generate_financial_statements)
-        pricing = source.split('subscription_rate = ')[1].split('new_shares')[0]
+        from core.services import funding_need
+        # W-CE3-02 moved this arithmetic out of `generate_financial_statements`
+        # and into `funding_need.financing_effect`, so that the lock's
+        # affordability rule prices a raise exactly as the engine will. The
+        # guard follows it: the closing balance is still not in scope there at
+        # all, which is a stronger statement than the one it replaces.
+        source = inspect.getsource(funding_need.financing_effect)
+        pricing = source.split('rate = D(str(subscription_rate(')[1].split(
+            'new_shares')[0]
         self.assertNotIn('total_equity /', pricing,
                          'share pricing reads the closing equity again')
         self.assertIn('opening_equity', pricing)
+
+    def test_the_engine_does_not_keep_a_second_copy_of_the_pricing(self):
+        """One calculator: the engine reads the shared one, it does not repeat it."""
+        import inspect
+        from core.engine import financials
+        source = inspect.getsource(financials.generate_financial_statements)
+        self.assertIn('financing_effect', source)
+        self.assertNotIn('share_price_est', source)
 
     # -- the adopted rule, stated as arithmetic -----------------------------
 
