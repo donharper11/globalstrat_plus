@@ -3462,3 +3462,32 @@ Record: `completion/WALKTHROUGH_CE_3_2026-09-23.md`; evidence `evidence/walkthro
 
 **Open for the owner, accumulated:** naming the five statement charges (envelope 7 → 8); the tax structure's maintenance cost in committed spend; the deadline's withdrawal order; what language a team-wide document uses when members differ.
 
+## Fourth Consumer Electronics walkthrough, 2026-09-23 — W-CE4-01..16
+
+Record: `completion/WALKTHROUGH_CE_4_2026-09-23.md`; evidence `evidence/walkthrough-ce-4-2026-09-23/` — **8.7 MB, zero screenshots**, every row citing quoted DOM text, the API request and response, or the log line. (The branch was rewritten to its base before merging, so no image blob is in its history: the pass first produced 390 MB on disk and 146 MB committed, which the repository cannot carry.) Ten rounds, eight teams, four deciding, one in zh-CN with its language set **through the product and verified on the server** — the harness defect that made walkthrough 3's Chinese team read English. Merged at `742cc5c0`.
+
+**All twenty W-CE3 ids VERIFIED FIXED.** The ones that matter:
+
+| Verified | Evidence |
+|---|---|
+| W-CE3-01, money vanishing between rounds | Across **80 team-rounds** the worst gap between one round's closing cash and the next round's opening cash is **$0.00**; the $2M tax setup cost is inside the printed strategy-expense line. |
+| W-CE3-02 / W-CE-23, the unreachable lock | **The whole point, and it holds.** Photon Labs opened round 4 at −$2,120,650.70 and **locked it itself, from the pages**. The four playing teams pressed the lock button themselves in **nine of ten rounds**. |
+| W-CE3-03 / W-CE3-04, the statement | Printed gap **$0.00** and charge-in-no-served-field **$0.00**, across all 80 team-rounds. |
+| W-CE3-15, the leaderboard inversion | Round 8 reproduced the exact shape — index 46.64 ranked sixth, below 33.08 — and the row now carries *Did not compete* with the rule beneath the table. |
+| W-CE3-11, W-CE3-08, W-CE3-14, W-CE3-19/20 | Briefing fully Chinese; **100 of 100** coach alerts Chinese for a Chinese reader; Gen 3 listed with *"Generation 2 must be active, met: false"*; exports fixed. |
+
+**New defects.** Three P0, and in the first two **the console shows the operator nothing at all** — no toast, no modal, no line; the Operator Log says only `process_round · rejected`.
+
+| ID | Sev | What the user sees | Status |
+|---|---|---|---|
+| W-CE4-01 | **P0** | A partnership dissolving raises `TypeError: ActiveModifier() got unexpected keyword arguments` (`alliance_engine.py:392`); **500 on every attempt**, recurs for ever, the game cannot pass that round. | Open — assigned `walk-ce4-round-stoppers` |
+| W-CE4-02 | **P0** | A round every team locked refuses to score — *N equity raise(s) exceed the funding shortfall* — nine team-rounds across rounds 5, 6, 8 and 9, always by $150,000. **Caused by integrator decision 14:** the close reduces what a draft commits and leaves the equity raise sized against what it removed. | Open — assigned |
+| W-CE4-10 | **P0** | The debt-to-equity ceiling is the wrong way round for a company with negative equity: a team is refused for **raising the equity it was told to raise**, while $10M more borrowing is accepted, and the ratio is served as `null`. | Open — assigned `walk-ce4-equity-and-screens` |
+| W-CE4-03 | P1 | The equity a team is told to raise is refused by a different rule quoting a different figure — "a four-attempt path through the financing advice". | Open — assigned |
+| W-CE4-06 | P1 | The Leaderboard opens on Round 0, where nobody has played and every team reads 55.00. | Open — assigned |
+| W-CE4-04/05, 08, 11, 07, 09, 12–16 | P1/P2 | Two shortfall figures; a box that keeps a refused number; a cap in cents on a control stepping in millions; half-Chinese alerts on an English console; **the stored language preference never read back, so a Chinese player gets an English screen on a fresh browser**; a raw `**Quarter 3 Results**` heading; a `99999.00` sentinel shown as a figure; a renamed team's stale platform name. | Open — assigned |
+
+**Verdict, in the auditor's words:** "**No — a full game cannot be played start to finish with no intervention.** Ten rounds were played and the game *was* finished from the console, but four of ten rounds refused to score until an operator reopened them and edited a team's financing, and one needed a database change." On what a player sees: "**The money is now right on every line of every statement of every round.**"
+
+**Not drivable, recorded:** the plant-collision refusal and acquisition withdrawal (every target was bought by round 7); a refused marketing row naming its product (no undecided rows left); round 8 without a database intervention; rounds 5/6/8/9 without an operator reopening them; Phase 2 from a real model; an analyst answer; marking a heat from the console.
+
