@@ -164,7 +164,211 @@ stack, in the language(s) it was found in. Screenshots are under
 
 ## (c) The game, round by round
 
-*(filled in below as the run proceeds)*
+**The game.** Course `CE26` *Global Strategy Practicum* → section `CE26-A`
+*Heat A* → game **CE 2026 Heat A**, scenario *Consumer Electronics 2026*,
+**8 teams**, 27 students on the roster, every one of them created from the
+console by the instructor. Teams 1–4 played every round; teams 5–8 made no
+decision in any round and were resolved by the deadline each time, which is a
+path worth having on record. **Team 3, Meridian Tech, played in Simplified
+Chinese** — its first enrolment states English and its second states Chinese,
+which is the condition W-CE2-05 was found in.
+
+| team | home market | profile | plays |
+|---|---|---|---|
+| 1 Aurora Devices | Africa (**set by hand from the console**) | The Innovator | EN, the edge-case profile |
+| 2 Nova Circuit | South America | The Brand Builder | EN |
+| 3 Meridian Tech | North America | The Workhorse | **zh-CN** |
+| 4 Solaris Consumer | Africa | The Green Pioneer | EN |
+| 5–8 | APAC / APAC / AFR / EU | — | no decisions, deadline-closed every round |
+
+### Part 1 — the instructor builds the game (EN) — `records/instructor-setup-en.json`
+
+26 checks passed, none failed. Course and section created and selected; the
+game created with 8 teams (*Game "CE 2026 Heat A" created with 8 teams.*);
+`roster.csv` uploaded with the outcome announced on the panel and staying
+there (*Added 27 student(s) to the roster. File: roster.csv*); 26 students
+assigned and the **sixth member of a full team refused in business language**
+(*No students were assigned — Titan Micro already has 5 members, the maximum
+this section allows. Choose another team, or raise the team size limit.*);
+**team 1's home market set by hand to Africa** and saved as `AFR`; the game
+activated with the console staying on *Game Control*; **the round-1 deadline
+set from the same card with no page refresh** (W-CE2-10); the deadline
+extended 25 → 26 Sep; paused and resumed; an operator event injected; the
+Operator Log read; every password issued in bulk; the Team Overview
+drill-down opened on the decisions; a grading rubric created, grades
+calculated, **a category score overridden** (*Aurora Devices: Performance
+Index score overridden.*) and three CSVs exported.
+
+### Rounds 1–6
+
+Every round was resolved **from the console**, and the three paths were all
+used: *Close round now → Run post-round processing → Advance* (round 1),
+*Close & process now* with a written reason (rounds 2, 3, 5, 6) and the
+**Game Lifecycle › Advance Round** override with a written reason and four
+pending teams (round 4). Every round reached `processed`; rounds 1–4 and 6
+reached `FULLY_COMPLETE`, round 5 `RESULTS_AVAILABLE` then `FULLY_COMPLETE`.
+**No round failed, and there was no 5xx anywhere in the walkthrough.**
+
+| round | how it was resolved | who locked | phase 1 | standings (rank team index) |
+|---|---|---|---|---|
+| 1 | Close → process → advance | all four playing teams locked from the screen | 3.84 s | 1 Meridian Tech 57.91 · 2 Nova Circuit 55.29 · 3 Aurora Devices 54.54 · 4 Solaris Consumer 54.42 · 5 Helix Digital 49.98 · 6 Apex Devices 49.93 · 7 Lumen Devices 49.91 · 8 Zenith Hardware 49.88 |
+| 2 | Close & process now (reason) | all four locked | 4.39 s | 1 Meridian Tech 60.59 · 2 Nova Circuit 55.11 · 3 Solaris Consumer 53.57 · 4 Aurora Devices 53.14 · 5 Helix Digital 44.98 · 6 Apex Devices 44.88 · 7 Lumen Devices 44.85 · 8 Zenith Hardware 44.78 |
+| 3 | Close & process now (reason) | teams 3 and 4 locked; 1 and 2 deadline-closed with drafts the lock refused | 4.55 s | 1 Meridian Tech 62.51 · 2 Nova Circuit 53.71 · 3 Solaris Consumer 53.56 · 4 Aurora Devices 53.29 · 5 Helix Digital 39.98 · 6 Apex Devices 39.83 · 7 Lumen Devices 39.79 · 8 Zenith Hardware 39.69 |
+| 4 | **Game Lifecycle › Advance Round** (reason), four teams pending | **none** — every playing team refused for cash | — | 1 Meridian Tech 63.95 · 2 Nova Circuit 53.84 · 3 Solaris Consumer 52.97 · 4 Aurora Devices 52.77 · 5 Helix Digital 34.97 · 6 Apex Devices 34.76 · 7 Lumen Devices 34.71 · 8 Zenith Hardware 34.57 |
+| 5 | Close & process now (reason) | **none** | 4.82 s | 1 Meridian Tech 65.34 · 2 Nova Circuit 53.90 · 3 Aurora Devices 52.27 · 4 Solaris Consumer 51.53 · 5 Helix Digital 29.96 · 6 Lumen Devices 29.62 · 7 Zenith Hardware 29.44 · 8 Apex Devices 28.77 |
+| 6 | Close & process now (reason) | **none** | 4.45 s | 1 Nova Circuit 54.59 · 2 Aurora Devices 52.86 · 3 Solaris Consumer 52.83 · 4 Meridian Tech 60.34 · 5 Helix Digital 24.95 · 6 Lumen Devices 24.53 · 7 Zenith Hardware 24.31 · 8 Apex Devices 23.69 |
+
+**What was decided, at least once each.** Budget allocation (and an
+over-allocation flagged on screen); a **typed** loan, repayment and dividend,
+each stored as typed; a tax-structure switch; R&D (the platform modal opened
+and refused for budget every round — W-CE-19, deferred calibration); a new
+product and a product retired end-of-round; the marketing mix with an
+in-band price, an **out-of-band price kept and adjusted at close**, and a
+**blank price**; a market entry; a **plant build**; a **partnership**;
+**compliance investment** (round 2 on); **talent** headcount, training and
+staff allocation; **ESG** investment and a governance commitment; an
+**organisation-structure switch**; an **acquisition** completed (round 2) and
+another **withheld at the deadline** (round 3); a **board memo** over the word
+limit and then within it, evaluated; a **bought research report**; **analyst
+questions refused visibly and charged nothing**; an **autosave refused while
+an operator held the game lock**, shown with a retry and landing afterwards;
+and, at round 5, the **customs classification** on the Logistics page, which
+that page locks until round 5.
+
+### The money, per team per round
+
+`opening cash + revenue − charges = closing cash` is checked two ways in
+`records/check-round<N>.json`. The identity the platform publishes —
+`cash_opening + operating + investing + financing = cash_closing` — **closes
+to the cent on all eight teams in all six rounds, every time**. Two other
+things do not, and both are new defects:
+
+* the **opening cash of a round is not always the closing cash of the round
+  before** (W-CE3-01), and
+* the **income statement on the screen does not add up** (W-CE3-03/04).
+
+
+#### Round 1
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | $48,000,000 | $189,672 | $11,778,540 | $32,511,132 | yes | **no, short by $2,083,250** |
+| Nova Circuit | $48,000,000 | $664,020 | $11,962,141 | $26,801,879 | yes | **no, short by $2,802,670** |
+| Meridian Tech | $48,000,000 | $2,100,000 | $11,145,050 | $23,054,950 | yes | **no, short by $2,520,000** |
+| Solaris Consumer | $48,000,000 | $180,320 | $11,820,060 | $32,460,260 | yes | **no, short by $2,007,600** |
+| Apex Devices | $50,000,000 | $0 | $1,010,000 | $48,990,000 | yes | **no, short by $360,000** |
+| Zenith Hardware | $50,000,000 | $0 | $1,250,000 | $48,750,000 | yes | **no, short by $600,000** |
+| Helix Digital | $50,000,000 | $0 | $650,000 | $49,350,000 | yes | yes |
+| Lumen Devices | $50,000,000 | $0 | $1,070,000 | $48,930,000 | yes | **no, short by $420,000** |
+
+#### Round 2
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | $32,511,132 | $283,500 | $23,771,000 | $13,523,632 | yes | **no, short by $2,154,575** |
+| Nova Circuit | $26,801,879 | $670,496 | $12,685,185 | $19,287,191 | yes | **no, short by $2,585,520** |
+| Meridian Tech | $23,054,950 | $2,601,760 | $11,860,103 | $18,296,607 | yes | **no, short by $2,220,000** |
+| Solaris Consumer | $32,460,260 | $211,680 | $12,605,000 | $24,566,940 | yes | **no, short by $1,911,600** |
+| Apex Devices | $48,990,000 | $0 | $1,010,000 | $47,980,000 | yes | **no, short by $360,000** |
+| Zenith Hardware | $48,750,000 | $0 | $1,250,000 | $47,500,000 | yes | **no, short by $600,000** |
+| Helix Digital | $49,350,000 | $0 | $650,000 | $48,700,000 | yes | yes |
+| Lumen Devices | $48,930,000 | $0 | $1,070,000 | $47,860,000 | yes | **no, short by $420,000** |
+
+#### Round 3
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | $11,523,632 | $1,047,133 | $15,139,034 | −$6,468,269 | **no, −$2,000,000** | **no, short by $2,780,400** |
+| Nova Circuit | $19,287,191 | $472,500 | $31,691,015 | −$7,431,324 | yes | **no, short by $2,523,900** |
+| Meridian Tech | $16,296,607 | $2,576,000 | $15,973,720 | $6,998,887 | **no, −$2,000,000** | **no, short by $2,740,000** |
+| Solaris Consumer | $22,566,940 | $973,258 | $16,505,798 | $11,134,400 | **no, −$2,000,000** | **no, short by $2,250,000** |
+| Apex Devices | $47,980,000 | $0 | $1,010,000 | $46,970,000 | yes | **no, short by $360,000** |
+| Zenith Hardware | $47,500,000 | $0 | $1,250,000 | $46,250,000 | yes | **no, short by $600,000** |
+| Helix Digital | $48,700,000 | $0 | $650,000 | $48,050,000 | yes | yes |
+| Lumen Devices | $47,860,000 | $0 | $1,070,000 | $46,790,000 | yes | **no, short by $420,000** |
+
+#### Round 4
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | −$6,468,269 | $1,009,372 | $15,688,671 | −$21,147,568 | yes | **no, short by $2,535,600** |
+| Nova Circuit | −$9,431,324 | $1,350,405 | $11,458,872 | −$19,939,791 | **no, −$2,000,000** | **no, short by $2,533,000** |
+| Meridian Tech | $6,998,887 | $2,550,240 | $14,768,507 | −$719,380 | yes | **no, short by $2,478,000** |
+| Solaris Consumer | $11,134,400 | $948,444 | $15,313,053 | $1,269,791 | yes | **no, short by $2,043,200** |
+| Apex Devices | $46,970,000 | $0 | $1,010,000 | $45,960,000 | yes | **no, short by $360,000** |
+| Zenith Hardware | $46,250,000 | $0 | $1,250,000 | $45,000,000 | yes | **no, short by $600,000** |
+| Helix Digital | $48,050,000 | $0 | $650,000 | $47,400,000 | yes | yes |
+| Lumen Devices | $46,790,000 | $0 | $1,070,000 | $45,720,000 | yes | **no, short by $420,000** |
+
+#### Round 5
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | −$23,147,568 | $1,018,192 | $13,864,516 | −$36,393,892 | **no, −$2,000,000** | **no, short by $2,802,880** |
+| Nova Circuit | −$19,939,791 | $1,354,500 | $12,124,565 | −$30,709,856 | yes | **no, short by $2,028,540** |
+| Meridian Tech | −$2,719,380 | $2,576,000 | $14,251,200 | −$14,794,580 | **no, −$2,000,000** | **no, short by $3,032,200** |
+| Solaris Consumer | −$730,209 | $957,264 | $13,223,938 | −$13,516,883 | **no, −$2,000,000** | **no, short by $2,514,880** |
+| Apex Devices | $45,960,000 | $0 | $1,010,000 | $44,710,000 | yes | **no, short by $600,000** |
+| Zenith Hardware | $45,000,000 | $0 | $1,250,000 | $43,750,000 | yes | **no, short by $600,000** |
+| Helix Digital | $47,400,000 | $0 | $650,000 | $46,750,000 | yes | yes |
+| Lumen Devices | $45,720,000 | $0 | $1,070,000 | $44,530,000 | yes | **no, short by $540,000** |
+
+#### Round 6
+
+| team | opening cash | revenue | charges on the statement | closing cash | opening == last closing | the statement adds up |
+|---|---|---|---|---|---|---|
+| Aurora Devices | −$36,393,892 | $1,499,400 | $14,036,982 | −$49,051,474 | yes | **no, short by $2,425,592** |
+| Nova Circuit | −$32,709,856 | $1,499,400 | $11,958,782 | −$43,689,238 | **no, −$2,000,000** | **no, short by $2,476,686** |
+| Meridian Tech | −$14,794,580 | $0 | $14,120,000 | −$29,034,580 | yes | **no, short by $2,620,980** |
+| Solaris Consumer | −$13,516,883 | $1,499,400 | $14,332,732 | −$26,350,215 | yes | **no, short by $1,962,392** |
+| Apex Devices | $44,710,000 | $0 | $1,010,000 | $43,580,000 | yes | **no, short by $480,000** |
+| Zenith Hardware | $43,750,000 | $0 | $1,250,000 | $42,380,000 | yes | **no, short by $720,000** |
+| Helix Digital | $46,750,000 | $0 | $650,000 | $46,100,000 | yes | yes |
+| Lumen Devices | $44,530,000 | $0 | $1,070,000 | $43,460,000 | yes | **no, short by $420,000** |
+
+
+**Reading the rounds.** Rounds 1 and 2 are ordinary: every team locks, the
+numbers agree, the only exception is the statement that will not add up. From
+round 3 the game changes shape. Three teams open round 3 exactly $2,000,000
+below the cash their round-2 statement closed at (W-CE3-01). Aurora Devices
+and Nova Circuit are deadline-closed with drafts the lock refused and close
+the round at −$6,468,269 and −$7,431,324. From round 4 **no team locks
+again**: the affordability blocker compares committed spend — which includes
+$4,000,000 of payroll and $6,000,000 of standing commitments no screen can
+reduce — with cash that is now negative, and raising financing does not move
+it (W-CE3-02). Rounds 4, 5 and 6 are therefore resolved by the operator with
+every playing team pending, and the four teams end round 6 at −$49.1M,
+−$43.7M, −$29.0M and −$26.4M.
+
+**The cross-checks that did pass, every round:** the leaderboard is ordered
+by performance index with ranks 1..8 (rounds 1–5; round 6 is the R32
+inactivity case, W-CE3-15); the index on a team's Round Results equals the
+leaderboard's; the statement's revenue equals the results' revenue; every
+statement carries its research and compliance rows (R47); and gross profit
+equals revenue minus COGS.
+
+### Console and network, the whole walkthrough
+
+`harness/records_summary.py` over every record: **815+ screens**, **5,779+ API
+calls**, 528 driver checks passed.
+
+* **No 5xx of any kind**, on any route, in any round — against walkthrough 2's
+  one 500 that stopped a round dead.
+* **No JavaScript exception and no `pageerror` on any screen in either
+  language.**
+* Console errors, excluding the harness's own aborted Google-Fonts requests:
+  **50**, every one the browser's line for a non-2xx response — 42 × 400,
+  6 × 409, 2 × 404 (one of which is the harness's own probe of `/api/grades/`,
+  a route that does not exist).
+* Every 4xx is accounted for: analyst refusals (deliberate, shown, nothing
+  charged), `409 lifecycle_in_progress` (deliberate, shown, retried), the
+  plant-collision refusals this pass drove on purpose, cash refusals for
+  research purchases and organisation switches (each shown with its figures),
+  the lock refusals, and the two end-game refusals.
+* **Leak scans:** no raw catalogue key, no `undefined`, no `NaN`, no
+  `[object Object]` and no exception text on any screen in either language.
+  The English word *None* still appears in authored copy (*IP Exposure: None*),
+  as in both earlier passes.
 
 ---
 
