@@ -43,7 +43,17 @@ function formatRemaining(seconds, t) {
  * one primary button at a time rather than a row of buttons that may not
  * apply.
  */
-export default function RoundControlCard({ gameId, onChanged }) {
+/**
+ * `reloadKey` is anything about the game the card's own state depends on but
+ * cannot see change: the dashboard passes the game's status and round, so
+ * that activating a game (setup -> active, round 0 -> round 1) makes the
+ * card re-read instead of holding the pre-activation round (W-CE2-10). The
+ * card sends the round it is showing as `expected_round_number`, so a stale
+ * card made the operator's next action -- Set deadline, Close, anything --
+ * refuse 409 "the game has moved to round 1; this request was for round 0",
+ * every time, until the page was reloaded by hand.
+ */
+export default function RoundControlCard({ gameId, onChanged, reloadKey }) {
   const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -73,7 +83,9 @@ export default function RoundControlCard({ gameId, onChanged }) {
 
   useEffect(() => {
     load();
-  }, [load]);
+    // `reloadKey` is deliberately a dependency: see the note on the props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [load, reloadKey]);
 
   // Poll while a round is mid-processing so the console reflects progress.
   useEffect(() => {
