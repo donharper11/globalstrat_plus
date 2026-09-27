@@ -725,9 +725,41 @@ def research(page):
     buy = page.locator('button', has_text=T('market_research.buy_report'))
     if buy.count():
         R.observe('buy_label', buy.first.text_content())
-        buy.first.click(); page.wait_for_timeout(4000)
-        R.observe('buy_toast', toast(page, 10))
-        R.step('research: report bought and delivered', 'pass' if page.locator('button', has_text=T('market_research.buy_report')).count() == 0 else 'fail', R.record['observed'].get('buy_toast'))
+        refused_before = len(R.record['refused'])
+        buy.first.click()
+        # AntD's business-language error message normally expires before the
+        # old four-second sleep. Capture it while visible, then classify the
+        # recorded response. A late-round team may legitimately be unable to
+        # add a $50k report after its other committed spend; that is a tested
+        # financing-distress refusal, not a failed delivery.
+        R.observe('buy_toast', toast(page, 20))
+        page.wait_for_timeout(1000)
+        still_locked = page.locator(
+            'button', has_text=T('market_research.buy_report')).count() > 0
+        purchase_refusals = [
+            row for row in R.record['refused'][refused_before:]
+            if '/research/reports/' in row.get('url', '')
+            and '/purchase/' in row.get('url', '')
+        ]
+        refusal_text = ' '.join(str(row.get('body') or '')
+                                for row in purchase_refusals)
+        affordability_refusal = (
+            still_locked
+            and any(row.get('status') == 400 for row in purchase_refusals)
+            and 'committed spend' in refusal_text
+            and 'available cash' in refusal_text
+        )
+        delivered = not still_locked
+        R.observe('research_purchase_result', {
+            'delivered': delivered,
+            'affordability_refusal': affordability_refusal,
+            'toast': R.record['observed'].get('buy_toast'),
+            'responses': purchase_refusals,
+        })
+        R.step('research: report delivered or affordability refusal explained',
+               'pass' if delivered or affordability_refusal else 'fail',
+               json.dumps(R.record['observed']['research_purchase_result'],
+                          ensure_ascii=False)[:700])
         R.screen(page, '%s-r%d-81-research-bought' % (P, ROUND))
     else:
         R.step('research: paywall offered on the segments report', 'observed', 'report already available')
