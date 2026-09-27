@@ -16,6 +16,7 @@ from core.engine.preference_engine import (
 )
 from core.models.scenario import Scenario, ScenarioConfig
 from core.services.funding_need import _sales_rep_cost
+from core.views import research_reports
 
 
 class SalesStaffDistributionTests(TestCase):
@@ -87,6 +88,18 @@ class SalesStaffDistributionTests(TestCase):
             ),
             0.98,
         )
+
+    def test_research_preview_and_engine_share_the_reach_calculator(self):
+        self.assertIs(research_reports.distribution_reach, distribution_reach)
+        preview_reach = round(research_reports.distribution_reach(
+            self.scenario, 'hybrid', 17), 2)
+        decision = SimpleNamespace(
+            distribution_strategy='hybrid', sales_team_count=17,
+        )
+        engine_reach = _derive_distribution_coverage(
+            None, None, None, None, decision, self.scenario, 0.0, 20.0,
+        ) / 20.0
+        self.assertAlmostEqual(preview_reach, round(engine_reach, 2))
 
     def test_negative_staffing_cannot_reduce_base_reach(self):
         self.assertEqual(
