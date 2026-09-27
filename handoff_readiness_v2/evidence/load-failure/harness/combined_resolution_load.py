@@ -10,6 +10,7 @@ import argparse
 import datetime as dt
 import json
 import multiprocessing
+import os
 import pathlib
 import statistics
 import subprocess
@@ -23,9 +24,7 @@ REPO = EVIDENCE.parents[2]
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(EVIDENCE.parent / 'adversarial-balance' / 'harness'))
 import driver  # noqa: E402
-import inventory_run as R  # noqa: E402
 import reconcile  # noqa: E402
-import stack  # noqa: E402
 
 
 PROFILES = {
@@ -238,6 +237,7 @@ def summarize(shards):
 
 
 def shell_json(database, marker, code, timeout=900):
+    import inventory_run as R
     output = R.manage(database, 'shell', '-c', code, timeout=timeout)
     if marker not in output.stdout:
         raise RuntimeError((output.stdout[-3000:] + output.stderr[-3000:]).strip())
@@ -262,6 +262,11 @@ def select_cohort(identities, sessions, teams=24):
 
 
 def run(profile, think_time=(0.3, 0.8)):
+    if not os.environ.get('DB_PASSWORD'):
+        raise SystemExit(
+            'DB_PASSWORD is required for a disposable load run; use '
+            'backend/scripts/run-load-postgres.')
+    import stack
     spec = PROFILES[profile]
     revision = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=REPO,
                               capture_output=True, text=True).stdout.strip()

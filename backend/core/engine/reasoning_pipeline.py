@@ -144,7 +144,7 @@ def _build_coherence_input(game, team, submission, context):
         )
         for tp in TeamProduct.objects.filter(
             team=team, status='active',
-        ).select_related('team_platform')
+        ).select_related('team_platform').order_by('id')
     ]
 
     # Market presences
@@ -157,7 +157,7 @@ def _build_coherence_input(game, team, submission, context):
         )
         for mp in TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).select_related('market', 'entry_mode')
+        ).select_related('market', 'entry_mode').order_by('id')
     ]
 
     # Budget
@@ -176,7 +176,9 @@ def _build_coherence_input(game, team, submission, context):
     # Marketing decisions
     marketing_decisions = []
     if submission:
-        for md in submission.marketing_decisions.all().select_related('team_product', 'market'):
+        for md in (submission.marketing_decisions.all()
+                   .select_related('team_product', 'market')
+                   .order_by('team_product_id', 'market_id', 'id')):
             marketing_decisions.append(MarketingInfo(
                 product_name=md.team_product.name,
                 market_name=md.market.name,
@@ -187,7 +189,8 @@ def _build_coherence_input(game, team, submission, context):
     # Market entries
     entries = []
     if submission:
-        for me in submission.market_entries.all().select_related('market'):
+        for me in (submission.market_entries.all().select_related('market')
+                   .order_by('market_id', 'id')):
             entries.append(MarketEntryInfo(
                 market_name=me.market.name,
                 action=me.action,
@@ -215,7 +218,7 @@ def _build_coherence_input(game, team, submission, context):
         )
         for p in TeamPlant.objects.filter(
             team=team, status='operational',
-        ).select_related('market')
+        ).select_related('market').order_by('id')
     ]
 
     # ESG
@@ -239,13 +242,13 @@ def _build_coherence_input(game, team, submission, context):
         )
         for gc in TeamGovernanceCommitment.objects.filter(
             game=game, team=team, is_active=True,
-        ).select_related('commitment_type')
+        ).select_related('commitment_type').order_by('id')
     ]
 
     # Platform devs
     platform_devs = []
     if submission:
-        for pd in submission.platform_developments.all():
+        for pd in submission.platform_developments.all().order_by('id'):
             platform_devs.append(PlatformDevInfo(
                 platform_name=pd.platform_name or '',
                 investment=float(pd.committed_cost or 0),
@@ -283,7 +286,7 @@ def _build_responsiveness_input(game, team, submission, current_round):
     events = []
     for ei in EventInstance.objects.filter(
         game=game, round_number=current_round,
-    ).select_related('event_template'):
+    ).select_related('event_template').order_by('id'):
         template = ei.event_template
         affected = [ei.target_market.name] if ei.target_market else []
         events.append(EventSignal(
@@ -296,7 +299,7 @@ def _build_responsiveness_input(game, team, submission, current_round):
     # Active modifiers
     for am in ActiveModifier.objects.filter(
         game=game, started_round__lte=current_round,
-    ).exclude(expires_round__lt=current_round):
+    ).exclude(expires_round__lt=current_round).order_by('id'):
         market_name = am.target_market.name if am.target_market else ''
         events.append(EventSignal(
             event_name=am.modifier_type or 'Modifier',
@@ -318,7 +321,7 @@ def _build_responsiveness_input(game, team, submission, current_round):
     active_markets = list(
         TeamMarketPresence.objects.filter(
             team=team, status='active',
-        ).values_list('market__name', flat=True)
+        ).order_by('id').values_list('market__name', flat=True)
     )
 
     return ResponsivenessInput(
@@ -370,11 +373,13 @@ def _detect_decision_changes(game, team, current_round):
         # Compare pricing
         curr_prices = {
             (md.team_product_id, md.market_id): float(md.retail_price)
-            for md in curr_sub.marketing_decisions.all()
+            for md in curr_sub.marketing_decisions.all().order_by(
+                'team_product_id', 'market_id', 'id')
         }
         prev_prices = {
             (md.team_product_id, md.market_id): float(md.retail_price)
-            for md in prev_sub.marketing_decisions.all()
+            for md in prev_sub.marketing_decisions.all().order_by(
+                'team_product_id', 'market_id', 'id')
         }
         for key, curr_price in curr_prices.items():
             prev_price = prev_prices.get(key)
@@ -388,7 +393,8 @@ def _detect_decision_changes(game, team, current_round):
         # Check for new sourcing changes
         curr_entries = set(
             me.market_id
-            for me in curr_sub.market_entries.filter(action='enter')
+            for me in curr_sub.market_entries.filter(
+                action='enter').order_by('market_id', 'id')
         )
         if curr_entries:
             changes.append(DecisionChange(

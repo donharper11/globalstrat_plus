@@ -144,7 +144,8 @@ EXPECTED_OUTPUT_SECTIONS = {
     # published results
     'financials', 'market_revenue', 'product_market', 'adoption',
     'product_demand', 'ai_adoption', 'demand_reconciliation', 'performance',
-    'coherence', 'resilience', 'share_price', 'leaderboard', 'esg_impact',
+    'coherence', 'reasoning_analysis', 'resilience', 'share_price',
+    'leaderboard', 'esg_impact',
     'talent_impact', 'partnership_impact', 'agent_cycle', 'instructor_alert',
 }
 

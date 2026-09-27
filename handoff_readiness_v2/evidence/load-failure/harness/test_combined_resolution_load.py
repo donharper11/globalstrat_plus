@@ -1,8 +1,10 @@
 import importlib.util
 import os
 import pathlib
+import subprocess
 import sys
 import unittest
+from unittest import mock
 
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -20,6 +22,21 @@ def load_harness():
 
 
 class SummaryDiagnosticsTests(unittest.TestCase):
+    def test_help_does_not_require_database_credentials(self):
+        env = dict(os.environ)
+        env.pop('DB_PASSWORD', None)
+        result = subprocess.run(
+            [sys.executable, str(HARNESS), '--help'],
+            cwd=HERE, env=env, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('{field,margin,smoke}', result.stdout)
+
+    def test_profile_requires_the_disposable_database_runner(self):
+        harness = load_harness()
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(SystemExit, 'run-load-postgres'):
+                harness.run('smoke')
+
     def test_reports_request_classes_phases_and_completion_times(self):
         harness = load_harness()
         shards = [{
