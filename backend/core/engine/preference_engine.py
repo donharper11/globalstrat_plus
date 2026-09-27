@@ -26,6 +26,38 @@ from core.engine.utils import (
     scenario_reference_price)
 
 
+DISTRIBUTION_BASE_REACH = {
+    'mass_retail': 0.9,
+    'selective_retail': 0.6,
+    'exclusive_retail': 0.3,
+    'direct_online': 0.5,
+    'hybrid': 0.7,
+}
+
+
+def distribution_reach(scenario, strategy, sales_team_count):
+    """Return 0..1 distribution reach from channel choice and sales staff.
+
+    Channel base reach is the theoretical reach shown in the participant
+    research report. ``distribution_investment_cap`` is authored as the
+    maximum *effective* investment needed to realise that potential. At
+    $100k per representative and the shipped $5m cap, reach therefore scales
+    through 50 representatives and then saturates. A selected channel with no
+    representatives has no realised distribution reach.
+
+    This helper is shared by resolution and the participant research preview
+    so the displayed reach is the reach the engine scores.
+    """
+    base_reach = DISTRIBUTION_BASE_REACH.get(strategy, 0.5)
+    investment_cap = max(float(get_config(
+        scenario, 'distribution_investment_cap', default=5000000.0)), 1.0)
+    rep_cost = float(get_config(
+        scenario, 'sales_rep_cost_per_round', default=100000.0))
+    effective_investment = max(float(sales_team_count or 0), 0.0) * rep_cost
+    investment_utilization = min(effective_investment / investment_cap, 1.0)
+    return clamp(base_reach * investment_utilization, 0.0, 1.0)
+
+
 def calculate_fit_scores(context):
     """
     Engine Step 5: For each team × segment × market, calculate the
@@ -395,22 +427,11 @@ def _derive_distribution_coverage(
     if not mkt_decision:
         return f_min
 
-    base_reach_map = {
-        'mass_retail': 0.9,
-        'selective_retail': 0.6,
-        'exclusive_retail': 0.3,
-        'direct_online': 0.5,
-        'hybrid': 0.7,
-    }
-    base_reach = base_reach_map.get(mkt_decision.distribution_strategy, 0.5)
-    dist_cap = get_config(scenario, 'distribution_investment_cap', default=5000000.0)
-    # Distribution investment = sales reps × cost per rep
-    rep_cost = get_config(scenario, 'sales_rep_cost_per_round', default=100000.0)
-    effective_investment = float(mkt_decision.sales_team_count) * rep_cost
-    investment_bonus = min(
-        effective_investment / max(dist_cap, 1), 0.1,
+    reach = distribution_reach(
+        scenario, mkt_decision.distribution_strategy,
+        mkt_decision.sales_team_count,
     )
-    value = (base_reach + investment_bonus) * f_max
+    value = reach * f_max
     return clamp(value, f_min, f_max)
 
 
