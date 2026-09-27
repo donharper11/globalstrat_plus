@@ -61,6 +61,14 @@ _ALERT_TEXT = {
             'This level of leverage limits future borrowing capacity and increases risk.',
             'Discuss the trade-offs of debt vs equity financing. '
             'Reference: Modigliani-Miller theorem and real-world capital structure decisions.'),
+        'leverage_no_positive_equity': (
+            '{team} has no positive equity',
+            'Total debt: ${debt:,.0f}, Equity: ${equity:,.0f}. '
+            'Interest expense: ${interest:,.0f}/round. '
+            'The debt-to-equity ratio is unavailable until equity is positive; '
+            'new borrowing is blocked in the meantime.',
+            'Discuss recapitalization and why a ratio with non-positive equity '
+            'cannot be interpreted as ordinary leverage.'),
         'revenue_decline': (
             '{team} revenue declined {pct:.1f}% this round',
             'Revenue: ${revenue:,.0f} (was ${previous:,.0f}). '
@@ -140,6 +148,12 @@ _ALERT_TEXT = {
             '这一杠杆水平会限制未来的借款能力并增加风险。',
             '讨论债务融资与股权融资的权衡。'
             '参考：莫迪利安尼-米勒定理及现实中的资本结构决策。'),
+        'leverage_no_positive_equity': (
+            '{team} 的权益不是正数',
+            '总负债：${debt:,.0f}，权益：${equity:,.0f}。'
+            '利息支出：每回合 ${interest:,.0f}。'
+            '权益恢复为正数之前，债务权益比不可用；在此期间无法新增借款。',
+            '讨论资本重组，以及为什么权益不是正数时的比率不能作为普通杠杆指标解读。'),
         'revenue_decline': (
             '{team} 本回合收入下降 {pct:.1f}%',
             '收入：${revenue:,.0f}（上回合为 ${previous:,.0f}）。'
@@ -243,6 +257,21 @@ def _alert_parts(language, key, localized_values=None, **values):
     return title, detail, note, context
 
 
+def _leverage_alert_parts(language, team, debt, equity, interest, ratio):
+    """Render a leverage concern without exposing the 99999 DB sentinel."""
+    if equity <= 0:
+        if debt > 0:
+            return _alert_parts(
+                language, 'leverage_no_positive_equity', team=team,
+                debt=debt, equity=equity, interest=interest)
+        return None
+    if ratio > 1.5:
+        return _alert_parts(
+            language, 'leverage', team=team, ratio=ratio,
+            debt=debt, equity=equity, interest=interest)
+    return None
+
+
 def reader_text(alert, language):
     """(title, detail, teaching_note) for `alert`, as `language` reads it.
 
@@ -257,18 +286,28 @@ def reader_text(alert, language):
     stored = (alert.title, alert.detail, alert.teaching_note)
     context = getattr(alert, 'render_context', None) or {}
     key = context.get('key')
-    if not key or language == context.get('language'):
+    stored_values = context.get('values') or {}
+    try:
+        legacy_nonpositive_leverage = (
+            key == 'leverage'
+            and float(stored_values.get('equity', 1)) <= 0
+        )
+    except (TypeError, ValueError):
+        legacy_nonpositive_leverage = False
+    if not key or (language == context.get('language')
+                   and not legacy_nonpositive_leverage):
         return stored
     try:
-        values = dict(context.get('values') or {})
+        values = dict(stored_values)
         for name, translations in (context.get('localized_values') or {}).items():
             if not isinstance(translations, dict):
                 continue
             values[name] = (translations.get(language)
                             or translations.get('en')
                             or values.get(name))
-        title, detail, note = _alert_text(
-            language, key, **values)
+        render_key = ('leverage_no_positive_equity'
+                      if legacy_nonpositive_leverage else key)
+        title, detail, note = _alert_text(language, render_key, **values)
     except Exception:
         return stored
     # A teaching note a model wrote is Phase-2 prose of its own and is not
@@ -335,12 +374,13 @@ def generate_post_round_alerts(game, round_number):
 
         # Excessive debt
         de_ratio = float(financials.debt_to_equity) if financials.debt_to_equity else 0
-        if de_ratio > 1.5:
+        leverage_parts = _leverage_alert_parts(
+            language, team.name, financials.total_debt,
+            financials.total_equity, financials.interest_expense, de_ratio)
+        if leverage_parts:
             alerts.append(_create_alert(
                 game, team, round_number, 'financial', 'concern',
-                *_alert_parts(language, 'leverage', team=team.name, ratio=de_ratio,
-                             debt=financials.total_debt, equity=financials.total_equity,
-                             interest=financials.interest_expense)))
+                *leverage_parts))
 
         # Revenue declining
         if prev_financials and prev_financials.total_revenue > 0:

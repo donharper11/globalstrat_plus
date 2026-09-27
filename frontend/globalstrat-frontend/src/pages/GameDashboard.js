@@ -30,6 +30,7 @@ import ReasoningOverviewCard from '../components/reasoning/ReasoningOverviewCard
 import ReasoningDimensionFeedback from '../components/reasoning/ReasoningDimensionFeedback';
 import ReasoningTrendChart from '../components/reasoning/ReasoningTrendChart';
 import { getStudentReasoning, getStudentReasoningHistory } from '../api/reasoning';
+import { briefingDisplayText } from '../briefingText';
 
 const { Title, Text } = Typography;
 
@@ -900,9 +901,10 @@ const GameDashboard = () => {
 
     // Replace fund name occurrences in text with clickable spans
     const _renderBriefingText = (text) => {
-      if (!text || FUND_NAMES.length === 0) return text;
+      const displayText = briefingDisplayText(text);
+      if (!displayText || FUND_NAMES.length === 0) return displayText;
       const regex = new RegExp(`(${FUND_NAMES.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'g');
-      const parts = text.split(regex);
+      const parts = displayText.split(regex);
       return parts.map((part, i) => {
         const fp = investorFundProfileMap[part];
         if (fp) {
@@ -1156,7 +1158,7 @@ const GameDashboard = () => {
             </div>
 
             <Card size="small" style={{ marginBottom: 16, background: '#f6ffed', border: '1px solid #b7eb8f' }}>
-              <Text style={{ fontSize: 14, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{briefing.executive_summary}</Text>
+              <Text style={{ fontSize: 14, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{briefingDisplayText(briefing.executive_summary)}</Text>
             </Card>
 
             {(briefing.risk_alerts || []).length > 0 && (

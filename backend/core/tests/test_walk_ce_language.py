@@ -502,11 +502,13 @@ class NarrativeFallbackLanguageTests(WalkCEBase):
         english = _build_briefing_fields(self.game, 1, self.team)
         self.assertEqual(
             english['executive_summary'],
-            '**Quarter 1 Results**\n\nRevenue: $0. Net income: $0. Cash position: $0.'
+            'Quarter 1 Results\n\nRevenue: $0. Net income: $0. Cash position: $0.'
             '\n\nCash position below $1M — financial distress risk.')
+        self.assertNotIn('**', english['executive_summary'])
         self._team_speaks('zh-CN')
         chinese = _build_briefing_fields(self.game, 1, self.team)
         self.assertTrue(has_cjk(chinese['executive_summary']), chinese)
+        self.assertNotIn('**', chinese['executive_summary'])
         self.assertIsNone(LATIN_WORD.search(chinese['executive_summary']), chinese)
         for item in chinese['strategic_recommendations']['items']:
             self.assertTrue(has_cjk(item), item)

@@ -828,6 +828,67 @@ class AStoredAlertCanBeSaidAgain(SimpleTestCase):
         self.assertNotIn('North America', title)
 
 
+class ALeverageAlertDoesNotExposeItsStorageSentinel(SimpleTestCase):
+    def alert(self, language, equity):
+        from core.engine.instructor_alerts import _leverage_alert_parts
+
+        return _leverage_alert_parts(
+            language, 'Nova Circuit', debt=17000000, equity=equity,
+            interest=1020000, ratio=99999)
+
+    def test_english_names_the_condition_in_words(self):
+        title, detail, _note, context = self.alert('en', -415575)
+
+        self.assertEqual(title, 'Nova Circuit has no positive equity')
+        self.assertIn('ratio is unavailable until equity is positive', detail)
+        self.assertNotIn('99999', title + detail)
+        self.assertEqual(context['key'], 'leverage_no_positive_equity')
+
+    def test_chinese_names_the_condition_in_words(self):
+        title, detail, _note, context = self.alert('zh-CN', 0)
+
+        self.assertIn('权益不是正数', title)
+        self.assertIn('债务权益比不可用', detail)
+        self.assertNotIn('99999', title + detail)
+        self.assertEqual(context['key'], 'leverage_no_positive_equity')
+
+    def test_an_ordinary_high_ratio_keeps_the_numeric_alert(self):
+        from core.engine.instructor_alerts import _leverage_alert_parts
+
+        title, _detail, _note, context = _leverage_alert_parts(
+            'en', 'Nova Circuit', debt=4500000, equity=2000000,
+            interest=270000, ratio=2.25)
+
+        self.assertIn('2.25', title)
+        self.assertEqual(context['key'], 'leverage')
+
+    def test_no_debt_means_no_leverage_alert(self):
+        from core.engine.instructor_alerts import _leverage_alert_parts
+
+        self.assertIsNone(_leverage_alert_parts(
+            'en', 'Nova Circuit', debt=0, equity=-415575,
+            interest=0, ratio=99999))
+
+    def test_a_stored_legacy_sentinel_is_repaired_at_read_time(self):
+        from core.engine.instructor_alerts import (
+            _alert_text, reader_text, render_context)
+        from core.models.cc21_models import InstructorAlert
+
+        values = {
+            'team': 'Nova Circuit', 'ratio': 99999,
+            'debt': 17000000, 'equity': -415575, 'interest': 1020000,
+        }
+        title, detail, note = _alert_text('en', 'leverage', **values)
+        alert = InstructorAlert(
+            title=title, detail=detail, teaching_note=note,
+            render_context=render_context('en', 'leverage', **values))
+
+        rendered = reader_text(alert, 'en')
+
+        self.assertIn('no positive equity', rendered[0])
+        self.assertNotIn('99999', ' '.join(rendered))
+
+
 class TheAlertRenderContextIsOutsideEveryHash(SimpleTestCase):
     """The field is a rendering input, not a computed outcome. It is
     excluded from both sections that claim `InstructorAlert`, with a reason,
