@@ -12,15 +12,14 @@ import App from './App';
  *
  * What is worth asserting here is what the resolution failure hid: that the
  * router mounts, the default route resolves, and the login screen renders.
- * Deliberately structural — i18n is not initialised under test, so every label
- * is a translation key and asserting on visible text would test the fixture.
+ * The shared authentication bootstrap now initialises i18n as part of mounting
+ * the app, so the assertion checks the default English label as well as the
+ * route and form structure.
  */
 test('mounts, resolves the default route and renders the login screen', () => {
-  const { container } = render(<App />);
+  render(<App />);
 
-  expect(container.querySelector('input#username')).toBeInTheDocument();
-  expect(container.querySelector('input[type="password"]')).toBeInTheDocument();
-  // `/login/i` would match the demo button too — both labels are raw i18n
-  // keys under test (`login.log_in`, `login.try_demo`).
-  expect(screen.getByRole('button', { name: 'login.log_in' })).toBeInTheDocument();
+  expect(screen.getByRole('textbox', { name: 'Username' })).toBeInTheDocument();
+  expect(screen.getByLabelText('Password')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Log In' })).toBeInTheDocument();
 });

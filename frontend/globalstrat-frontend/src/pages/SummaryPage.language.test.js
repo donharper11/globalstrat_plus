@@ -12,6 +12,7 @@ import { OPTIONAL_SENTENCE, summaryPayload } from './SummaryPage.test';
  */
 
 jest.mock('react-i18next', () => ({
+  initReactI18next: { type: '3rdParty', init: () => {} },
   useTranslation: () => ({
     t: (key, values) => (values ? `${key} ${JSON.stringify(values)}` : key),
   }),
@@ -32,14 +33,17 @@ jest.mock('../components/BudgetBar', () => () => null);
 
 test('a Chinese reader is shown nothing written in English in the component', async () => {
   getDecisionSummary.mockResolvedValue(summaryPayload());
-  const { container } = render(<SummaryPage />);
+  render(<SummaryPage />);
   await screen.findByText('summary_page.title');
-  const text = container.textContent.split(OPTIONAL_SENTENCE).join(' ');
   // Three or more English words in a row: a sentence, not a key or a number.
-  expect(text.match(/\b[A-Za-z]+(?: [A-Za-z]+){2,}\b/g) || []).toEqual([]);
+  expect(screen.queryAllByText((content) => (
+    /\b[A-Za-z]+(?: [A-Za-z]+){2,}\b/.test(
+      content.split(OPTIONAL_SENTENCE).join(' ')
+    )
+  ))).toEqual([]);
   ['Sourcing', 'Logistics', 'Trade Finance', 'Inventory', 'Not started',
     'Complete', 'Fix in', 'to complete this requirement', 'draft work saved',
     'Finish the blocked items'].forEach((literal) => {
-    expect(text).not.toContain(literal);
+    expect(screen.queryAllByText((content) => content.includes(literal))).toEqual([]);
   });
 });
