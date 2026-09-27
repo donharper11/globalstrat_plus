@@ -20,6 +20,11 @@ REPO = HERE.parents[2]
 BACKEND = REPO / 'backend'
 HARNESS = REPO / 'handoff_readiness_v2' / 'evidence' / 'adversarial-balance' / 'harness'
 MARKER = '---STAGE1-RUNTIME-JSON---'
+SCENARIOS = {
+    'consumer_electronics_2026': 'Consumer Electronics 2026',
+    'clean_energy_tech_2026': 'Clean Energy Technology 2026',
+    'media_entertainment_2026': 'Global Media & Entertainment 2026',
+}
 
 LEGACY_TABLES = r'''
 from django.apps import apps
@@ -59,7 +64,7 @@ from core.models.scenario import Scenario
 from core.engine.advance_round import _run_phase_1, advance_to_next_round
 from django.utils import timezone
 
-scenario = Scenario.objects.get(name='Consumer Electronics 2026')
+scenario = Scenario.objects.get(name={scenario_name!r})
 # Company names are drawn by an unseeded random.shuffle, so without this the
 # roster differs between runs.  Names do not affect any outcome -- profiles are
 # assigned by team creation index -- but pinning them makes a run reproducible
@@ -256,6 +261,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=pathlib.Path,
                         default=HERE / 'stage1_runtime_replay.json')
+    parser.add_argument('--scenario', choices=tuple(SCENARIOS),
+                        default='consumer_electronics_2026',
+                        help='shipped scenario slug to resolve')
     parser.add_argument('--rounds', type=int, default=10,
                         help='number of sequential rounds to resolve (1-10)')
     parser.add_argument('--home-markets', default='',
@@ -294,6 +302,7 @@ def main():
                 raise RuntimeError(result.stderr[-3000:])
         result = run(database, 'shell', '-c', BODY.format(
             harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
+            scenario_name=SCENARIOS[options.scenario],
             home_markets=options.home_markets,
             adaptive_production=options.adaptive_production, teams=options.teams,
             policy=options.policy, name_seed=options.name_seed,

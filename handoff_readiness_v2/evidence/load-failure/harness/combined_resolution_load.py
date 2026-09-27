@@ -7,6 +7,7 @@ only for a frozen candidate, while ``smoke`` proves the harness against an
 isolated generated PostgreSQL stack during development.
 """
 import argparse
+import datetime as dt
 import json
 import multiprocessing
 import pathlib
@@ -164,12 +165,48 @@ def summarize(shards):
                  for sample in interactive)
     business = sum(sample['status'] is not None and 400 <= sample['status'] < 500
                    for sample in interactive)
+
+    def latency_summary(rows):
+        values = [sample['ms'] for sample in rows]
+        distribution = {}
+        for sample in rows:
+            key = (str(sample['status']) if sample['status'] is not None
+                   else 'transport-failure')
+            distribution[key] = distribution.get(key, 0) + 1
+        return {
+            'requests': len(rows),
+            'p50_ms': _pct(values, 50),
+            'p95_ms': _pct(values, 95),
+            'max_ms': round(max(values), 1) if values else None,
+            'status_distribution': distribution,
+        }
+
+    endpoints = {
+        'refresh': 'GET decision summary',
+        'save': 'PATCH budget decision',
+        'lock': 'POST decision lock',
+    }
+    by_kind = {
+        kind: latency_summary([
+            sample for sample in interactive if sample['kind'] == kind])
+        for kind in endpoints
+        if any(sample['kind'] == kind for sample in interactive)
+    }
     by_phase = {}
     for phase in ('steady', 'deadline-burst', 'resolution'):
-        rows = [sample['ms'] for sample in interactive if sample['phase'] == phase]
+        phase_rows = [sample for sample in interactive
+                      if sample['phase'] == phase]
+        rows = [sample['ms'] for sample in phase_rows]
         if rows:
-            by_phase[phase] = {'requests': len(rows), 'p95_ms': _pct(rows, 95),
-                               'max_ms': round(max(rows), 1)}
+            by_phase[phase] = {
+                **latency_summary(phase_rows),
+                'request_mix': {
+                    kind: sum(sample['kind'] == kind for sample in phase_rows)
+                    for kind in endpoints
+                    if any(sample['kind'] == kind for sample in phase_rows)
+                },
+            }
+    slowest = sorted(interactive, key=lambda sample: -sample['ms'])[:15]
     return {
         'sessions_authenticated': sum(shard['authenticated'] for shard in shards),
         'login_failures': [failure for shard in shards
@@ -177,7 +214,18 @@ def summarize(shards):
         'interactive_requests': len(interactive),
         'latency_ms': {'p50': _pct(latency, 50), 'p95': _pct(latency, 95),
                        'max': round(max(latency), 1) if latency else None},
+        'endpoint_classes': endpoints,
+        'request_class_latency': by_kind,
         'phase_latency': by_phase,
+        'slowest_requests': [{
+            'kind': sample['kind'],
+            'endpoint_class': endpoints[sample['kind']],
+            'phase': sample['phase'],
+            'status': sample['status'],
+            'ms': round(sample['ms'], 1),
+            'completed_at_utc': dt.datetime.fromtimestamp(
+                sample['at'], tz=dt.timezone.utc).isoformat(),
+        } for sample in slowest],
         'status_distribution': statuses,
         'transport_failures': transport,
         'server_errors': server,
@@ -257,9 +305,12 @@ def run(profile, think_time=(0.3, 0.8)):
                 for shard in shards])
             ready.wait(timeout=600)
             timing.deadline = time.time() + spec['duration']
-            timing.resolution_end = timing.deadline + spec['resolution_window']
             start.wait(timeout=600)
             final_ready.wait(timeout=spec['duration'] + 120)
+            # Start the Phase-1 overlap window when the deadline burst has
+            # actually assembled. A slow request before the deadline must not
+            # consume the window and silently leave `resolution` unmeasured.
+            timing.resolution_end = time.time() + spec['resolution_window']
             resolution = {}
             control = threading.Thread(
                 target=request_resolution,

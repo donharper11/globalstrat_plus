@@ -33,6 +33,23 @@ POLICIES = (
     'production_plus_25',
     'sales_team_plus_50',
 )
+SCENARIOS = {
+    'consumer_electronics_2026': {
+        'name': 'Consumer Electronics 2026',
+        'filename': 'consumer_electronics_2026.yaml',
+        'home_market': 'NA',
+    },
+    'clean_energy_tech_2026': {
+        'name': 'Clean Energy Technology 2026',
+        'filename': 'clean_energy_tech_2026.yaml',
+        'home_market': 'na',
+    },
+    'media_entertainment_2026': {
+        'name': 'Global Media & Entertainment 2026',
+        'filename': 'media_entertainment_2026.yaml',
+        'home_market': 'na',
+    },
+}
 
 
 def _float(value):
@@ -44,10 +61,11 @@ def _sha256(path):
 
 
 def _run_replay(output, *, teams, rounds, policy='baseline', name_seed=None,
-                home_markets='NA'):
+                home_markets='NA', scenario='consumer_electronics_2026'):
     command = [
         sys.executable, str(RUNTIME_REPLAY), '--output', str(output),
         '--teams', str(teams), '--rounds', str(rounds),
+        '--scenario', scenario,
         '--home-markets', home_markets,
         '--adaptive-production', '--policy', policy,
     ]
@@ -170,6 +188,9 @@ def _profile_trajectory(payload, rounds):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--rounds', type=int, default=10)
+    parser.add_argument('--scenario', choices=tuple(SCENARIOS),
+                        default='consumer_electronics_2026',
+                        help='shipped scenario slug to measure')
     parser.add_argument('--field-sizes', type=int, nargs='+', default=FIELD_SIZES)
     parser.add_argument('--output', type=pathlib.Path, default=DEFAULT_OUTPUT)
     parser.add_argument('--smoke', action='store_true',
@@ -180,16 +201,19 @@ def main():
     parser.add_argument('--baseline-only', action='store_true',
                         help='run only the field-size baselines, no policy '
                              'variations (used for the R28 per-profile table)')
-    parser.add_argument('--home-markets', default='NA',
+    parser.add_argument('--home-markets', default=None,
                         help='comma-separated home-market assignment for the '
-                             'teams, in order (default: NA for every team, '
-                             'which is the measured baseline). Use it to '
+                             'teams, in order (default: the selected scenario\'s '
+                             'North America code for every team). Use it to '
                              'measure what spreading home markets does.')
     options = parser.parse_args()
     if not 1 <= options.rounds <= 10:
         raise SystemExit('--rounds must be between 1 and 10')
     if not options.field_sizes or any(size < 1 for size in options.field_sizes):
         raise SystemExit('--field-sizes must contain positive team counts')
+
+    scenario = SCENARIOS[options.scenario]
+    home_markets = options.home_markets or scenario['home_market']
 
     required = ('DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD')
     absent = [key for key in required if not os.environ.get(key)]
@@ -217,7 +241,8 @@ def main():
             payload, command = _run_replay(tempdir / f'field-{size}.json', teams=size,
                                            rounds=options.rounds,
                                            name_seed=options.name_seed,
-                                           home_markets=options.home_markets)
+                                           home_markets=home_markets,
+                                           scenario=options.scenario)
             _assert_integrity(payload, teams=size, rounds=options.rounds)
             field_runs[size] = payload
             commands.append(command)
@@ -235,7 +260,8 @@ def main():
             payload, command = _run_replay(tempdir / f'{policy}.json', teams=baseline_size,
                                            rounds=options.rounds, policy=policy,
                                            name_seed=options.name_seed,
-                                           home_markets=options.home_markets)
+                                           home_markets=home_markets,
+                                           scenario=options.scenario)
             _assert_integrity(payload, teams=baseline_size, rounds=options.rounds)
             observed = _team_final(payload, 0, options.rounds)
             sensitivity_runs[policy] = {
@@ -258,9 +284,9 @@ def main():
                               capture_output=True, check=True).stdout.strip()
     report = {
         'method': {
-            'scenario': 'Consumer Electronics 2026',
+            'scenario': scenario['name'],
             'rounds': options.rounds,
-            'home_market_assignment': options.home_markets,
+            'home_market_assignment': home_markets,
             'baseline_policy': 'documented competent baseline with 10% adaptive production',
             'ai_diffusion_rule': 'Fix A only: AI take is recorded but is excluded from Bass N',
             'measurement_rule': 'No scenario, profile, market, AI, price, production, or scoring dial is retuned.',
@@ -271,7 +297,8 @@ def main():
         'provenance': {
             'code_revision': revision,
             'runtime_replay_sha256': _sha256(RUNTIME_REPLAY),
-            'scenario_sha256': _sha256(REPO / 'backend/scenarios/consumer_electronics_2026.yaml'),
+            'scenario_sha256': _sha256(
+                REPO / 'backend/scenarios' / scenario['filename']),
             'commands': commands,
         },
         'field_size_saturation': {
