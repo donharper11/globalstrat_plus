@@ -78,5 +78,17 @@ class LeaderboardContractTests(unittest.TestCase):
         self.assertFalse(result['active_then_inactive'])
 
 
+class AntdTabTraversalTests(unittest.TestCase):
+    def test_overproduction_uses_direct_tabs_and_the_normal_overflow_menu(self):
+        driver = (HERE / 'drive_overproduction.py').read_text()
+        self.assertIn(':scope > .ant-tabs-nav [role="tab"]', driver)
+        self.assertIn('.ant-tabs-nav-more:visible', driver)
+        self.assertIn('.ant-tabs-dropdown:visible', driver)
+        self.assertIn('if tab.is_visible():', driver)
+        self.assertNotIn(
+            "page.locator('.ant-tabs > .ant-tabs-nav .ant-tabs-tab')",
+            driver)
+
+
 if __name__ == '__main__':
     unittest.main()

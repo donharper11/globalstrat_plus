@@ -49,6 +49,51 @@ def rows(page):
             for r in (d.get('marketing_decisions') or [])}
 
 
+def tab_labels(tabs_root):
+    """Return only this Tabs component's labels, never nested product tabs."""
+    tabs = tabs_root.locator(
+        ':scope > .ant-tabs-nav [role="tab"]')
+    return [(tabs.nth(i).inner_text() or '').strip()
+            for i in range(tabs.count())]
+
+
+def select_tab(page, tabs_root, label):
+    """Select an AntD tab through its visible tab or normal overflow menu."""
+    tabs = tabs_root.locator(
+        ':scope > .ant-tabs-nav [role="tab"]')
+    matches = tabs.filter(has_text=label)
+    if matches.count() != 1:
+        raise AssertionError(
+            'expected one direct tab %r, found %d among %r'
+            % (label, matches.count(), tab_labels(tabs_root)))
+
+    tab = matches.first
+    if tab.is_visible():
+        tab.click()
+    else:
+        more = tabs_root.locator(
+            ':scope > .ant-tabs-nav .ant-tabs-nav-more:visible')
+        if more.count() != 1:
+            raise AssertionError(
+                'tab %r is hidden and the AntD overflow control is unavailable'
+                % label)
+        more.click()
+        page.wait_for_timeout(400)
+        menu = page.locator('.ant-tabs-dropdown:visible')
+        choice = menu.get_by_role('menuitem', name=label, exact=True)
+        if choice.count() != 1 or not choice.first.is_visible():
+            raise AssertionError(
+                'tab %r is hidden but not offered by the visible overflow menu'
+                % label)
+        choice.first.click()
+
+    page.wait_for_timeout(600)
+    active = tabs_root.locator(
+        ':scope > .ant-tabs-nav .ant-tabs-tab-active')
+    if active.count() != 1 or label not in (active.first.inner_text() or ''):
+        raise AssertionError('tab %r did not become active' % label)
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -73,18 +118,23 @@ def main():
                   wait_until='domcontentloaded')
         page.wait_for_timeout(6000)
         R.observe('before', list(rows(page).values()))
-        market_tabs = page.locator('.ant-tabs > .ant-tabs-nav .ant-tabs-tab')
-        n_markets = market_tabs.count()
-        R.observe('market_tabs', n_markets)
+        outer_tabs = page.locator('.ant-tabs').first
+        market_labels = tab_labels(outer_tabs)
+        R.observe('market_tabs', market_labels)
         touched = 0
-        for i in range(max(n_markets, 1)):
-            if n_markets:
-                market_tabs.nth(i).click()
+        for market_label in market_labels or [None]:
+            if market_label is not None:
+                select_tab(page, outer_tabs, market_label)
                 page.wait_for_timeout(2500)
-            inner = pane(page).locator('.ant-tabs-tab')
-            for j in range(max(inner.count(), 1)):
-                if inner.count():
-                    inner.nth(j).click()
+            market_pane = outer_tabs.locator(
+                ':scope > .ant-tabs-content-holder > .ant-tabs-content '
+                '> .ant-tabs-tabpane-active')
+            inner_tabs = market_pane.locator(':scope > .ant-tabs').first
+            product_labels = (tab_labels(inner_tabs)
+                              if inner_tabs.count() else [])
+            for product_label in product_labels or [None]:
+                if product_label is not None:
+                    select_tab(page, inner_tabs, product_label)
                     page.wait_for_timeout(1500)
                 nums = pane(page).locator('.ant-input-number-input')
                 if nums.count() < 2:
