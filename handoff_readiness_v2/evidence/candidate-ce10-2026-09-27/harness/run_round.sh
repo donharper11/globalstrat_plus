@@ -27,6 +27,11 @@ fi
 
 for spec in "en 1" "en 2" "zh-CN 3" "en 4"; do
   set -- $spec
+  # Complete every required product-market row first. Its promotion spend can
+  # change both a category budget and total affordability, so Summary must be
+  # read and corrected only after this preparation step.
+  timeout 900 python3 lock_round.py "$1" "$2" "$ROUND" prepare \
+    > "runtime/prepare-t$2-r$ROUND.log" 2>&1
   timeout 1200 python3 follow_the_blocker.py "$1" "$2" "$ROUND" \
     > "runtime/blocker-t$2-r$ROUND.log" 2>&1
   timeout 900 python3 lock_round.py "$1" "$2" "$ROUND" \

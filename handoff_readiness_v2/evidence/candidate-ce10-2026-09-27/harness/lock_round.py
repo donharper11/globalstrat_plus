@@ -1,6 +1,6 @@
 """Finish a team's round: complete every marketing row, then lock.
 
-lock_round.py <lang> <team-index> <round>
+lock_round.py <lang> <team-index> <round> [prepare]
 
 `student_play.py` drives the interesting paths (edge cases, refusals); a team
 that created a product or entered a market during the round is then left with
@@ -19,6 +19,7 @@ from walk import (BASE, Recorder, api, modal_text, pick_select, set_number,
 LANG = sys.argv[1]
 TEAM_IX = int(sys.argv[2])
 ROUND = int(sys.argv[3])
+MODE = sys.argv[4] if len(sys.argv) > 4 else 'lock'
 SCRATCH = pathlib.Path(__file__).resolve().parent
 G = json.loads((SCRATCH / 'game.json').read_text())
 GID = G['game_id']
@@ -205,6 +206,18 @@ def main():
             R.step('round %d already locked for this team' % ROUND, 'observed')
             browser.close(); return R.finish()
         complete_marketing(page)
+        if MODE == 'prepare':
+            s = api(page, 'GET', DEC + 'summary/')['body'] or {}
+            R.observe('summary_after_marketing', {
+                k: s.get(k) for k in ('can_lock', 'lock_blockers',
+                                      'budget_summary')
+            })
+            R.step('marketing completion is followed by a fresh Summary read',
+                   'pass', json.dumps(
+                       R.record['observed']['summary_after_marketing'],
+                       ensure_ascii=False)[:500])
+            browser.close()
+            return R.finish()
         set_budget(page)
 
         page.goto(BASE + '/games/%d/teams/%d/decisions/summary' % (GID, TID),

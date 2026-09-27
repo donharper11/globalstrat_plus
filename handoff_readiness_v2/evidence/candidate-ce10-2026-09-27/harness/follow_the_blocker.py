@@ -98,7 +98,11 @@ def financial_blockers_cleared(blockers, budget_summary):
     ratio_blocked = any(('debt-to-equity' in blocker)
                         or ('资产负债率' in blocker)
                         for blocker in blockers)
-    return committed <= available + 0.01 and not ratio_blocked
+    budget_blocked = any(('budget' in blocker.lower())
+                         or ('预算' in blocker)
+                         for blocker in blockers)
+    return (committed <= available + 0.01
+            and not ratio_blocked and not budget_blocked)
 
 
 def clear_financing(page):
@@ -184,16 +188,22 @@ def main():
                 step['shortfall_after_clearing_debt'] = shortfall
             nums = pane(page).locator('.ant-input-number-input')
             if nums.count() >= 4 and shortfall > 0:
+                existing_equity = float(
+                    (((api(page, 'GET', DEC)['body'] or {}).get('financing')
+                      or {}).get('new_equity')) or 0)
+                equity_target = existing_equity + shortfall
                 # A round figure is what a player types first; the box itself
-                # steps in millions. Both are recorded, and the exact
-                # shortfall is tried second, because the financing route caps
-                # an equity raise at the shortfall to the cent (V2-024).
-                rounded = to_million(shortfall)
+                # steps in millions. Both are recorded, and the exact total
+                # equity target is tried second, because the financing route
+                # caps a raise at the funding shortfall to the cent (V2-024).
+                rounded = to_million(equity_target)
                 set_number(page, nums.nth(2), rounded)
                 page.wait_for_timeout(3000)
                 stored = ((api(page, 'GET', DEC)['body'] or {}).get('financing')
                           or {}).get('new_equity')
                 step['round_figure_typed'] = rounded
+                step['existing_equity'] = existing_equity
+                step['equity_target'] = equity_target
                 step['round_figure_box'] = nums.nth(2).input_value()
                 step['round_figure_stored'] = stored
                 step['refusal_on_screen'] = [
@@ -203,7 +213,7 @@ def main():
                          % (TEAM_IX, ROUND, attempt),
                          'a round $%dM typed into the equity box' % (rounded // 1000000))
                 if float(stored or 0) < rounded:
-                    exact = math.floor(shortfall * 100) / 100.0
+                    exact = math.floor(equity_target * 100) / 100.0
                     set_number(page, nums.nth(2), exact)
                     page.wait_for_timeout(3000)
                     step['exact_typed'] = exact
