@@ -268,6 +268,34 @@ def _resize_equity_to_funding_need(submission):
     return (before, after)
 
 
+def _resize_debt_to_ceiling(submission, team):
+    """W-CE4-10: a deadline cannot make an invalid debt request legal.
+
+    The ordinary lock refuses unsupported new borrowing, but deadline close
+    freezes a draft without running the full lock validator. Resize only the
+    incremental debt that the shared ceiling assessment rejects, before the
+    affordability pass decides how much of the draft can remain. The change
+    is audited and announced just like the deadline's other substitutions.
+    """
+    from core.models.decisions import DecisionFinancing
+    from core.services.debt_ceiling import assess as assess_debt_ceiling
+
+    financing = DecisionFinancing.objects.filter(
+        submission=submission).first()
+    if financing is None or not financing.new_debt:
+        return None
+    assessment = assess_debt_ceiling(team, financing)
+    if not assessment['blocks_new_debt']:
+        return None
+    before = D(str(financing.new_debt))
+    after = min(before, assessment['maximum_new_debt'])
+    if after >= before:
+        return None
+    financing.new_debt = after
+    financing.save(update_fields=['new_debt'])
+    return (before, after)
+
+
 _STEPS = {
     'plant_builds': lambda s, t: _withdraw_plant_builds(s),
     'platform_developments': lambda s, t: _withdraw_platform_developments(s),
@@ -299,7 +327,12 @@ def bring_draft_within_available_funds(game, round_obj):
             continue
 
         fits, assessment = _fits(submission, team)
-        if fits:
+        debt = _resize_debt_to_ceiling(submission, team)
+        if debt is not None:
+            # Re-read the one affordability answer after removing money the
+            # ceiling will not let this draft borrow.
+            fits, assessment = _fits(submission, team)
+        if fits and debt is None:
             continue
 
         before = {
@@ -325,7 +358,7 @@ def bring_draft_within_available_funds(game, round_obj):
             if fits:
                 break
 
-        if not withdrawn:
+        if not withdrawn and debt is None:
             continue
 
         record = {
@@ -340,6 +373,9 @@ def bring_draft_within_available_funds(game, round_obj):
         if equity is not None:
             record['equity_resized'] = {'from': str(equity[0]),
                                         'to': str(equity[1])}
+        if debt is not None:
+            record['new_debt_resized'] = {'from': str(debt[0]),
+                                          'to': str(debt[1])}
         applied.append(record)
         _record(game, team, round_obj, submission, record)
         _notify(game, team, round_obj, record)
@@ -349,9 +385,11 @@ def bring_draft_within_available_funds(game, round_obj):
 def _record(game, team, round_obj, submission, record):
     from core.models import DecisionAuditEvent
 
+    action = ('deadline_withdrew_commitments' if record['withdrawn']
+              else 'deadline_adjusted_financing')
     DecisionAuditEvent.objects.create(
         game=game, team=team, round=round_obj, user=None,
-        action='deadline_withdrew_commitments',
+        action=action,
         endpoint='engine:close_round', payload=record)
 
 
@@ -374,16 +412,25 @@ def _notify(game, team, round_obj, record):
     from core.utils.participant_messages import participant_message
 
     language = get_team_language(team)
-    steps = '; '.join(
-        participant_message(_STEP_MESSAGE_KEY[entry['step']], language=language)
-        for entry in record['withdrawn'])
-    notify_team(
-        game.id, team, round_obj.round_number,
-        participant_message(
-            'deadline_withdrew_commitments', language=language,
-            committed=f'${D(record["before"]["committed_total"]):,.2f}',
-            available=f'${D(record["before"]["available_funds"]):,.2f}',
-            withdrawn=steps))
+    if record['withdrawn']:
+        steps = '; '.join(
+            participant_message(
+                _STEP_MESSAGE_KEY[entry['step']], language=language)
+            for entry in record['withdrawn'])
+        notify_team(
+            game.id, team, round_obj.round_number,
+            participant_message(
+                'deadline_withdrew_commitments', language=language,
+                committed=f'${D(record["before"]["committed_total"]):,.2f}',
+                available=f'${D(record["before"]["available_funds"]):,.2f}',
+                withdrawn=steps))
+    if record.get('new_debt_resized'):
+        notify_team(
+            game.id, team, round_obj.round_number,
+            participant_message(
+                'deadline_resized_debt', language=language,
+                requested=f'${D(record["new_debt_resized"]["from"]):,.2f}',
+                allowed=f'${D(record["new_debt_resized"]["to"]):,.2f}'))
     # W-CE4-02: a resized raise is a change to the team's own financing
     # decision, so it is said separately rather than folded into the list of
     # things that were withdrawn -- the money was not withdrawn, the request

@@ -8,6 +8,10 @@ walkthrough figures and exercise the shared lock/engine/context rule.
 """
 from decimal import Decimal as D
 
+from core.models import DecisionAuditEvent
+from core.services.deadline_affordability import (
+    bring_draft_within_available_funds,
+)
 from core.services.debt_ceiling import assess as assess_debt_ceiling
 from core.tests.test_lock_always_reachable import LockReachableBase
 
@@ -71,6 +75,25 @@ class NegativeEquityDebtCeilingTests(LockReachableBase):
 
         self.assertFalse(assessment['blocks_new_debt'])
         self.assertEqual(assessment['projected_debt'], D('16000000'))
+
+    def test_deadline_close_cannot_bypass_the_ceiling_with_an_unlocked_draft(self):
+        self.set_balance_sheet()
+        self.finance(new_debt=D('10000000'))
+
+        records = bring_draft_within_available_funds(
+            self.game, self.round)
+
+        self.submission.financing.refresh_from_db()
+        self.assertEqual(self.submission.financing.new_debt, D('0'))
+        self.assertEqual(records[0]['new_debt_resized'], {
+            'from': '10000000.00', 'to': '0.00',
+        })
+        event = DecisionAuditEvent.objects.get(
+            game=self.game, team=self.team,
+            action='deadline_adjusted_financing')
+        self.assertEqual(event.payload['new_debt_resized'], {
+            'from': '10000000.00', 'to': '0.00',
+        })
 
     def test_the_refusal_is_actionable_in_chinese(self):
         self.set_balance_sheet()

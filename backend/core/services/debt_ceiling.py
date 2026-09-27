@@ -67,6 +67,13 @@ def assess(team, financing=None, *, max_ratio=None):
 
     max_total_debt = max(opening_equity, D('0')) * maximum
     available_credit = max(max_total_debt - opening_debt, D('0'))
+    # A company already above the cap is not forced to cure the entire
+    # inherited position in one round. It may roll over repaid debt, but may
+    # not increase the total until projected equity supports it.
+    projected_supported_debt = max(projected_equity, D('0')) * maximum
+    grandfathered_debt = max(opening_debt, projected_supported_debt)
+    maximum_new_debt = max(
+        grandfathered_debt - opening_debt + requested_repayment, D('0'))
 
     return {
         'max_ratio': maximum,
@@ -85,4 +92,5 @@ def assess(team, financing=None, *, max_ratio=None):
         'blocks_new_debt': blocks_new_debt,
         'max_total_debt': max_total_debt,
         'available_credit': available_credit,
+        'maximum_new_debt': maximum_new_debt,
     }

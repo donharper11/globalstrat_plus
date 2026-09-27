@@ -953,6 +953,10 @@ MESSAGES = {
         'en': 'Because those commitments were withdrawn, the new equity of {requested} was larger than the funding shortfall it was raised to cover. The raise was reduced to {allowed}, which is the most this round can finance with equity. Equity may finance a genuine current-round shortfall; it may not create surplus cash or fund dividends.',
         'zh-CN': '由于上述承诺已撤回，原定 {requested} 的新增股权已超出其所要弥补的资金缺口。该笔融资已下调至 {allowed}，这是本回合可用股权融资的上限。股权可用于弥补本回合真实存在的资金缺口，但不得用于形成多余现金或发放股利。',
     },
+    'deadline_resized_debt': {
+        'en': 'The deadline reduced requested new debt from {requested} to {allowed} because the projected balance sheet cannot support more borrowing under the debt-to-equity ceiling. The remaining draft was then checked against available funds.',
+        'zh-CN': '由于预计资产负债表在债务权益比上限下无法支持更多借款，截止时间处理将新增债务申请从 {requested} 下调至 {allowed}。随后，系统按可用资金重新检查了其余决策。',
+    },
     'withdrawn_plant_builds': {'en': 'plant construction',
                                'zh-CN': '工厂建设'},
     'withdrawn_platform_developments': {'en': 'platform development requests',
