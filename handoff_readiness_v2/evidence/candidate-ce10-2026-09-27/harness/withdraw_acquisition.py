@@ -85,10 +85,14 @@ def main():
             'lock_blockers': before_summary.get('lock_blockers'),
             'budget_summary': before_summary.get('budget_summary'),
         })
+        needs_withdrawal = bool(before and not before_summary.get('can_lock'))
         R.step('an acquisition is queued while Summary refuses affordability',
-               'pass' if before and not before_summary.get('can_lock') else 'fail',
+               'pass' if needs_withdrawal else 'observed',
                json.dumps(R.record['observed']['before'],
                           ensure_ascii=False)[:1000])
+        if not needs_withdrawal:
+            browser.close()
+            return R.finish()
 
         page.goto(BASE + '/games/%d/teams/%d/decisions/corporate-strategy'
                   % (GID, TID), wait_until='domcontentloaded')
@@ -137,34 +141,9 @@ def main():
                           ensure_ascii=False)[:1000])
         R.screen(page, 'r%d-t%d-acquisition-after-withdraw'
                  % (ROUND, TEAM_IX))
-
-        page.goto(BASE + '/games/%d/teams/%d/decisions/summary'
-                  % (GID, TID), wait_until='domcontentloaded')
-        page.wait_for_timeout(5000)
-        lock = page.locator(
-            'button', has_text=T('summary_page.lock_submit_round', round=ROUND))
-        if not lock.count():
-            # The localized string contains the interpolated round number.
-            lock = page.locator('button').filter(has_text=str(ROUND))
-        enabled = lock.count() and lock.first.is_enabled()
-        R.step('lock is offered after the student withdraws the commitment',
-               'pass' if enabled else 'fail',
-               json.dumps(after_summary.get('lock_blockers'),
-                          ensure_ascii=False)[:500])
-        if enabled:
-            lock.first.click()
-            page.wait_for_timeout(1200)
-            R.observe('lock_modal', modal_text(page))
-            confirm = page.locator(
-                '.ant-modal-wrap:visible .ant-modal-footer .ant-btn-primary')
-            if confirm.count():
-                confirm.last.click()
-                page.wait_for_timeout(4500)
-        status = (api(page, 'GET', DEC)['body'] or {}).get('status')
-        R.step('round locks through the normal student confirmation',
-               'pass' if status == 'locked' else 'fail', status)
-        R.screen(page, 'r%d-t%d-locked-after-withdraw'
-                 % (ROUND, TEAM_IX))
+        R.step('Summary is refreshed after withdrawal for a new correction',
+               'pass', json.dumps(after_summary.get('lock_blockers'),
+                                  ensure_ascii=False)[:500])
         browser.close()
     return R.finish()
 

@@ -11,10 +11,15 @@ class CorrectionOrderTests(unittest.TestCase):
         script = (HERE / 'run_round.sh').read_text()
         prepare = script.index('lock_round.py "$1" "$2" "$ROUND" prepare')
         affordability = script.index('follow_the_blocker.py "$1" "$2" "$ROUND"')
+        withdrawal = script.index('withdraw_acquisition.py "$1" "$2" "$ROUND"')
+        refreshed_affordability = script.index(
+            'follow_the_blocker.py "$1" "$2" "$ROUND"', affordability + 1)
         final_lock = script.index(
-            'lock_round.py "$1" "$2" "$ROUND" \\\n', affordability)
+            'lock_round.py "$1" "$2" "$ROUND" \\\n', refreshed_affordability)
         self.assertLess(prepare, affordability)
-        self.assertLess(affordability, final_lock)
+        self.assertLess(affordability, withdrawal)
+        self.assertLess(withdrawal, refreshed_affordability)
+        self.assertLess(refreshed_affordability, final_lock)
 
     def test_prepare_mode_reads_summary_without_trying_to_lock(self):
         driver = (HERE / 'lock_round.py').read_text()
