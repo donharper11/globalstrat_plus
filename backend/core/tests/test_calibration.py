@@ -105,7 +105,8 @@ class ScenarioPreferenceValidationTests(TestCase):
 
         self.assertEqual(len(profiles), 8)
         self.assertEqual(Counter(product[1] for product in products), {
-            'mainstream': 15,
+            'budget': 1,
+            'mainstream': 14,
             'premium': 1,
         })
         self.assertEqual(len({
@@ -123,6 +124,7 @@ class ScenarioPreferenceValidationTests(TestCase):
         }), 8)
 
         price_bands = {
+            'budget': (D('100'), D('300')),
             'mainstream': (D('250'), D('550')),
             'premium': (D('500'), D('900')),
         }
