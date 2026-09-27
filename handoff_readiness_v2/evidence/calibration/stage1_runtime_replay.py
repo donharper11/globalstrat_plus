@@ -168,21 +168,25 @@ for expected_round in range(1, {rounds} + 1):
                 baseline_staff = marketing.sales_team_count
                 prior_payload = None
                 if expected_round > 1:
-                    prior_result = RoundResultProductMarket.objects.get(
+                    prior_result = RoundResultProductMarket.objects.filter(
                         game=game, round_number=expected_round - 1, team=team,
                         team_product=marketing.team_product,
-                        market=marketing.market)
-                    prior_demands = RoundResultProductDemand.objects.filter(
-                        game=game, round_number=expected_round - 1, team=team,
-                        team_product=marketing.team_product,
-                        market=marketing.market)
-                    prior_payload = {{
-                        'produced': float(prior_result.units_produced),
-                        'sold': float(prior_result.units_sold),
-                        'unsold': float(prior_result.units_unsold),
-                        'lost_demand': sum(
-                            float(row.lost_demand) for row in prior_demands),
-                    }}
+                        market=marketing.market).first()
+                    if prior_result is None:
+                        prior_payload = {{'available': False}}
+                    else:
+                        prior_demands = RoundResultProductDemand.objects.filter(
+                            game=game, round_number=expected_round - 1, team=team,
+                            team_product=marketing.team_product,
+                            market=marketing.market)
+                        prior_payload = {{
+                            'available': True,
+                            'produced': float(prior_result.units_produced),
+                            'sold': float(prior_result.units_sold),
+                            'unsold': float(prior_result.units_unsold),
+                            'lost_demand': sum(
+                                float(row.lost_demand) for row in prior_demands),
+                        }}
                 finances = {{
                     'cash': float(prior_financials.cash_closing)
                             if prior_financials else 0.0,

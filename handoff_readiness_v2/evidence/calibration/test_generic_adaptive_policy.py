@@ -56,6 +56,13 @@ class GenericAdaptivePolicyTests(unittest.TestCase):
         self.assertEqual(result['price_factor'], 1.02)
         self.assertEqual(result['sales_staff'], 10)
 
+    def test_missing_prior_result_keeps_the_baseline_decision(self):
+        result = self.decision(prior={'available': False})
+        self.assertEqual(result['production_volume'], 100)
+        self.assertEqual(result['price_factor'], 1.0)
+        self.assertEqual(result['sales_staff'], 10)
+        self.assertEqual(result['signal'], 'prior_result_unavailable')
+
     def test_inventory_response_cuts_output_and_adds_bounded_staff(self):
         result = self.decision(prior={
             'produced': 100, 'sold': 70, 'unsold': 30, 'lost_demand': 10,

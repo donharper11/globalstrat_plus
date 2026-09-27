@@ -78,6 +78,17 @@ def decide(*, baseline_volume, baseline_price, baseline_staff, prior,
             'buffer': p['initial_production_factor'],
             'financial_guard': False,
         }
+    if not prior.get('available', True):
+        return {
+            'production_volume': max(1, int(baseline_volume)),
+            'price_factor': 1.0,
+            'sales_staff': int(baseline_staff),
+            'signal': 'prior_result_unavailable',
+            'sell_through': None,
+            'lost_demand': None,
+            'buffer': 1.0,
+            'financial_guard': False,
+        }
 
     produced = max(float(prior['produced']), 1.0)
     sold = max(float(prior['sold']), 0.0)
