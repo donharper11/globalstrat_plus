@@ -9,6 +9,7 @@ game.json for the later drivers.
 import json
 import sys
 import time
+from datetime import datetime, timedelta, timezone
 
 from walk import (BASE, EVIDENCE, SCRATCH, Recorder, api, body_text,
                   click_tab, fx, modal_text, pick_select, popconfirm_ok,
@@ -241,6 +242,43 @@ def control(page, GID, resumed):
     st0 = api(page, 'GET', '/api/games/%s/round-control/' % GID)
     already_active = st0['status'] == 200 and st0['body'].get('game_status') in ('active', 'paused')
     if not already_active:
+        # ---- schedule before activation ----------------------------------
+        # Deadlines are part of the candidate fixture, so never inherit a
+        # date from an older walkthrough.  Build them relative to this run
+        # and refuse to activate unless every playable round is in the future.
+        click_tab(page, 'Game Control'); page.wait_for_timeout(3000)
+        qs = page.locator('.ant-card', has_text='Quick Schedule').last
+        schedule_start = datetime.now(timezone.utc) + timedelta(days=1)
+        qs.locator('input[type="datetime-local"]').first.fill(
+            schedule_start.strftime('%Y-%m-%dT%H:%M'))
+        page.wait_for_timeout(400)
+        qs.locator('button', has_text='Generate & Save').first.click()
+        R.observe('schedule_toast', toast(page))
+        page.wait_for_timeout(3000)
+        sched = api(page, 'GET', '/api/games/%s/round-schedule/' % GID)
+        rounds = [r for r in ((sched['body'] or {}).get('rounds') or [])
+                  if r.get('round_number', 0) > 0]
+        checked_at = datetime.now(timezone.utc)
+        future_deadlines = []
+        for round_row in rounds:
+            raw = round_row.get('deadline')
+            try:
+                parsed = datetime.fromisoformat(raw.replace('Z', '+00:00')) if raw else None
+            except ValueError:
+                parsed = None
+            future_deadlines.append(bool(parsed and parsed > checked_at))
+        schedule_safe = len(rounds) == 10 and all(future_deadlines)
+        R.observe('schedule_guard', {
+            'checked_at': checked_at.isoformat(),
+            'rounds': [(r.get('round_number'), r.get('deadline')) for r in rounds],
+        })
+        R.step('all 10 playable round deadlines are future before activation',
+               'pass' if schedule_safe else 'fail',
+               json.dumps(R.record['observed']['schedule_guard']))
+        R.screen(page, 'i12-schedule-before-activation')
+        if not schedule_safe:
+            raise RuntimeError('refusing to activate: one or more round deadlines are not future')
+
         # ---- activate ----------------------------------------------------
         A(page).locator('button', has_text='Activate Game').first.click()
         page.wait_for_timeout(1000)
@@ -261,28 +299,17 @@ def control(page, GID, resumed):
         click_tab(page, 'Game Control'); page.wait_for_timeout(3000)
         R.screen(page, 'i12b-game-control-active')
 
-        # ---- schedule ------------------------------------------------------
-        qs = page.locator('.ant-card', has_text='Quick Schedule').last   # innermost: the outer Round Schedule card also matches
-        qs.locator('input[type="datetime-local"]').first.fill('2026-09-22T18:00')
-        page.wait_for_timeout(400)
-        qs.locator('button', has_text='Generate & Save').first.click()
-        R.observe('schedule_toast', toast(page))
-        page.wait_for_timeout(3000)
-        sched = api(page, 'GET', '/api/games/%s/round-schedule/' % GID)
-        rounds = (sched['body'] or {}).get('rounds') or []
-        R.step('round schedule generated and saved for every playable round',
-               'pass' if rounds and all(r.get('deadline') for r in rounds if r.get('round_number', 0) > 0) else 'fail',
-               R.record['observed'].get('schedule_toast'))
-        R.screen(page, 'i13-round-schedule')
-
         # ---- round 1 deadline via the round console ------------------------
+        past_deadline = datetime.now(timezone.utc) - timedelta(hours=1)
+        past_deadline_ui = past_deadline.strftime('%Y-%m-%d %H:%M:%S')
+        past_deadline_prefix = past_deadline.strftime('%Y-%m-%dT%H:%M')
         rcc = card(page, 'Round control')
         btn = rcc.locator('button', has_text='deadline').first
         btn.click(); page.wait_for_timeout(1200)
         R.observe('deadline_modal', modal_text(page))
         picker_in = page.locator('.ant-modal-content .ant-picker input').first
         picker_in.click(); page.keyboard.press('Control+a')
-        page.keyboard.type('2026-09-25 18:00:00'); page.keyboard.press('Enter')
+        page.keyboard.type(past_deadline_ui); page.keyboard.press('Enter')
         page.wait_for_timeout(600)
         R.screen(page, 'i14-set-deadline-modal')
         page.locator('.ant-modal-footer .ant-btn-primary').last.click()
@@ -290,9 +317,9 @@ def control(page, GID, resumed):
         page.wait_for_timeout(3000)
         rc = api(page, 'GET', '/api/games/%s/round-control/' % GID)
         dl = (rc['body'].get('round') or {}).get('deadline')
-        R.step('round 1 deadline set from the console', 'pass' if dl and dl.startswith('2026-09-25') else 'fail', 'deadline=%s toast=%r' % (dl, R.record['observed'].get('deadline_toast')))
+        R.step('round 1 deadline set from the console', 'pass' if dl and dl.startswith(past_deadline_prefix) else 'fail', 'deadline=%s toast=%r' % (dl, R.record['observed'].get('deadline_toast')))
 
-        if not (dl and dl.startswith('2026-09-25')):
+        if not (dl and dl.startswith(past_deadline_prefix)):
             # Walkthrough 2: the refusal named a stale round. Reload the console
             # (what the refusal tells the instructor to do) and repeat, so the
             # record says whether the control works at all or only after a refresh.
@@ -304,7 +331,7 @@ def control(page, GID, resumed):
             b2.click(); page.wait_for_timeout(1500)
             pk = page.locator('.ant-modal-wrap:visible .ant-picker input').first
             pk.click(); page.keyboard.press('Control+a')
-            page.keyboard.type('2026-09-25 18:00:00'); page.keyboard.press('Enter')
+            page.keyboard.type(past_deadline_ui); page.keyboard.press('Enter')
             page.wait_for_timeout(600)
             vmodal(page).locator('.ant-modal-footer .ant-btn-primary').last.click()
             R.observe('deadline_toast_after_refresh', toast(page))
@@ -313,7 +340,7 @@ def control(page, GID, resumed):
             dl3 = (rc3['body'].get('round') or {}).get('deadline')
             R.observe('deadline_after_refresh', dl3)
             R.step('round 1 deadline set from the console after a page refresh',
-                   'pass' if dl3 and dl3.startswith('2026-09-25') else 'fail',
+                   'pass' if dl3 and dl3.startswith(past_deadline_prefix) else 'fail',
                    'deadline=%s toast=%r' % (dl3, R.record['observed'].get('deadline_toast_after_refresh')))
             dl = dl3
         tab_now = page.locator('.ant-tabs-tab-active').first.text_content() if page.locator('.ant-tabs-tab-active').count() else None
@@ -333,7 +360,15 @@ def control(page, GID, resumed):
         R.observe('extend_result_modal', err)
         rc2 = api(page, 'GET', '/api/games/%s/round-control/' % GID)
         dl2 = (rc2['body'].get('round') or {}).get('deadline')
-        R.step('extend deadline moved the round 1 deadline', 'pass' if dl2 and dl2 != dl else 'fail', 'before=%s after=%s modal=%r' % (dl, dl2, err))
+        extended_future = False
+        try:
+            extended_future = bool(dl2 and datetime.fromisoformat(
+                dl2.replace('Z', '+00:00')) > datetime.now(timezone.utc))
+        except ValueError:
+            pass
+        R.step('extend deadline moved round 1 back into the future',
+               'pass' if dl2 and dl2 != dl and extended_future else 'fail',
+               'before=%s after=%s modal=%r' % (dl, dl2, err))
         if err and 'Error' in err:
             page.keyboard.press('Escape'); page.wait_for_timeout(500)
             okb = page.locator('.ant-modal-confirm-btns .ant-btn-primary')
