@@ -1037,24 +1037,25 @@ def lock_blockers_for(submission, language='en'):
     # Financing: debt ceiling
     try:
         fin = submission.financing
-        max_ratio = Decimal('2.0')
-        cfg = ScenarioConfig.objects.filter(
-            scenario=scenario, config_key='max_debt_to_equity_ratio',
-        ).first()
-        if cfg:
-            max_ratio = Decimal(cfg.config_value)
-        projected_debt = team.total_debt + fin.new_debt - fin.debt_repayment
         if fin.debt_repayment > team.total_debt:
             errors.append(participant_message(
                 'debt_repayment_exceeds_debt', language=language,
                 repayment=f'${fin.debt_repayment:,.2f}',
                 debt=f'${team.total_debt:,.2f}'))
-        projected_equity = team.total_equity + fin.new_equity
-        if projected_equity > 0 and projected_debt / projected_equity > max_ratio:
+        from core.services.debt_ceiling import assess as assess_debt_ceiling
+        ceiling = assess_debt_ceiling(team, fin)
+        if ceiling['blocks_new_debt'] and ceiling['nonpositive_equity']:
+            errors.append(participant_message(
+                'new_debt_refused_by_ceiling', language=language,
+                requested=f'${fin.new_debt:,.2f}',
+                equity=f'${ceiling["projected_equity"]:,.2f}',
+                maximum=ceiling['max_ratio']))
+        elif ceiling['blocks_new_debt']:
             errors.append(participant_message(
                 'debt_ratio_exceeded', language=language,
-                ratio=f'{projected_debt / projected_equity:.2f}',
-                maximum=max_ratio))
+                ratio=f'{ceiling["projected_ratio"]:.2f}',
+                maximum=ceiling['max_ratio']))
+        projected_equity = ceiling['projected_equity']
         total_dividends = fin.dividend_per_share * team.shares_outstanding
         # Simple check: dividends shouldn't exceed equity.
         #
@@ -2708,9 +2709,6 @@ class FinanceContextView(APIView):
                 except DecisionBudgetAllocation.DoesNotExist:
                     pass
 
-        # Key ratios
-        debt_to_equity = float(team.total_debt / team.total_equity) if team.total_equity > 0 else None
-
         # Capital management data (CC-19)
         try:
             interest_rate = float(ScenarioConfig.objects.get(
@@ -2718,16 +2716,6 @@ class FinanceContextView(APIView):
             ).config_value)
         except ScenarioConfig.DoesNotExist:
             interest_rate = 0.06
-        try:
-            max_de_ratio = float(ScenarioConfig.objects.get(
-                scenario=game.scenario, config_key='max_debt_to_equity_ratio',
-            ).config_value)
-        except ScenarioConfig.DoesNotExist:
-            max_de_ratio = 2.0
-
-        equity_val = float(team.total_equity) if team.total_equity > 0 else 0
-        max_total_debt = equity_val * max_de_ratio
-        available_credit = max(max_total_debt - float(team.total_debt), 0)
         interest_per_round = float(team.total_debt) * interest_rate
         # Last round financials for share price and net income
         last_fin = RoundResultFinancials.objects.filter(
@@ -2738,36 +2726,59 @@ class FinanceContextView(APIView):
 
         # Current financing decisions
         financing_draft = None
+        financing_row = None
         if rnd:
             sub_fin = DecisionSubmission.objects.filter(team=team, round=rnd).first()
             if sub_fin:
                 try:
-                    fin = sub_fin.financing
+                    financing_row = sub_fin.financing
                     financing_draft = {
-                        'new_debt': float(fin.new_debt),
-                        'debt_repayment': float(fin.debt_repayment),
-                        'new_equity': float(fin.new_equity),
-                        'dividend_per_share': float(fin.dividend_per_share),
+                        'new_debt': float(financing_row.new_debt),
+                        'debt_repayment': float(financing_row.debt_repayment),
+                        'new_equity': float(financing_row.new_equity),
+                        'dividend_per_share': float(
+                            financing_row.dividend_per_share),
                     }
                 except DecisionFinancing.DoesNotExist:
                     pass
 
+        # W-CE4-10: the context and lock publish the same current/projected
+        # ratios. A non-positive denominator is a risk state, not ratio 0.
+        from core.services.debt_ceiling import assess as assess_debt_ceiling
+        ceiling = assess_debt_ceiling(team, financing_row)
+        debt_to_equity = ceiling['current_ratio']
+        projected_debt_to_equity = ceiling['projected_ratio']
+
         capital = {
             'interest_rate': interest_rate,
-            'max_de_ratio': max_de_ratio,
-            'max_total_debt': max_total_debt,
-            'available_credit': available_credit,
+            'max_de_ratio': float(ceiling['max_ratio']),
+            'max_total_debt': float(ceiling['max_total_debt']),
+            'available_credit': float(ceiling['available_credit']),
             'interest_per_round': interest_per_round,
             'share_price': share_price,
             'last_net_income': last_net_income,
             'financing_draft': financing_draft,
+            'projected_total_debt': float(ceiling['projected_debt']),
+            'projected_total_equity': float(ceiling['projected_equity']),
+            'projected_debt_to_equity': (
+                float(projected_debt_to_equity)
+                if projected_debt_to_equity is not None else None),
+            'projected_ratio_status': (
+                'available' if projected_debt_to_equity is not None
+                else 'nonpositive_equity'),
+            'blocks_new_debt': ceiling['blocks_new_debt'],
         }
 
         return Response({
             'financial': financial,
             'budget_status': budget_status,
             'key_ratios': {
-                'debt_to_equity': debt_to_equity,
+                'debt_to_equity': (
+                    float(debt_to_equity)
+                    if debt_to_equity is not None else None),
+                'debt_to_equity_status': (
+                    'available' if debt_to_equity is not None
+                    else 'nonpositive_equity'),
             },
             'capital': capital,
         })

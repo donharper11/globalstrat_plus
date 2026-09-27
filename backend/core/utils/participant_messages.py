@@ -895,6 +895,10 @@ MESSAGES = {
         'en': 'The projected debt-to-equity ratio of {ratio} exceeds the maximum of {maximum}. Adjust financing.',
         'zh-CN': '预计资产负债率 {ratio} 超过上限 {maximum}。请调整融资。',
     },
+    'new_debt_refused_by_ceiling': {
+        'en': 'New debt of {requested} is not available: projected equity of {equity} cannot support additional borrowing under the {maximum} debt-to-equity ceiling. Raise equity or repay debt instead.',
+        'zh-CN': '无法新增债务 {requested}：预计股东权益为 {equity}，在债务权益比上限 {maximum} 下无法支持额外借款。请改为增加股权或偿还债务。',
+    },
     'dividends_exceed_equity': {
         'en': 'Total dividends of {dividends} exceed projected equity. Reduce the dividend.',
         'zh-CN': '股利总额 {dividends} 超过预计股东权益。请降低每股股利。',
