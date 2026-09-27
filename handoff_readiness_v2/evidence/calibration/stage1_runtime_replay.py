@@ -14,6 +14,8 @@ import pathlib
 import subprocess
 import sys
 
+from generic_adaptive_policy import normalize_policy
+
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[2]
@@ -92,6 +94,8 @@ from django.core.management import call_command
 
 sys.path.insert(0, {harness!r})
 import baseline as BASE
+sys.path.insert(0, {calibration!r})
+import generic_adaptive_policy as GAP
 
 if not DjangoUser.objects.filter(is_superuser=True).exists():
     DjangoUser.objects.create_superuser('stage1-owner', 'stage1@example.com', 'x')
@@ -125,7 +129,9 @@ team_rounds = []
 product_rounds = []
 product_demand_rounds = []
 decision_rounds = []
+adaptive_policy_trace = []
 policy_spec = json.loads({policy_spec_json!r})
+adaptive_policy = json.loads({adaptive_policy_json!r})
 
 for expected_round in range(1, {rounds} + 1):
     assert game.current_round == expected_round, (game.current_round, expected_round)
@@ -148,6 +154,65 @@ for expected_round in range(1, {rounds} + 1):
                         1, math.ceil(float(prior.units_sold) * 1.10))
                     marketing.demand_estimate = int(marketing.production_volume * 1.20)
                     marketing.save(update_fields=['production_volume', 'demand_estimate'])
+        if team.id == teams[{subject_team_index}].id and adaptive_policy:
+            from core.models.decisions import DecisionMarketing
+            subject_marketing = (DecisionMarketing.objects.filter(submission=sub)
+                                 .order_by('team_product_id', 'market_id'))
+            prior_financials = None
+            if expected_round > 1:
+                prior_financials = RoundResultFinancials.objects.get(
+                    game=game, round_number=expected_round - 1, team=team)
+            for marketing in subject_marketing:
+                baseline_volume = marketing.production_volume
+                baseline_price = marketing.retail_price
+                baseline_staff = marketing.sales_team_count
+                prior_payload = None
+                if expected_round > 1:
+                    prior_result = RoundResultProductMarket.objects.get(
+                        game=game, round_number=expected_round - 1, team=team,
+                        team_product=marketing.team_product,
+                        market=marketing.market)
+                    prior_demands = RoundResultProductDemand.objects.filter(
+                        game=game, round_number=expected_round - 1, team=team,
+                        team_product=marketing.team_product,
+                        market=marketing.market)
+                    prior_payload = {{
+                        'produced': float(prior_result.units_produced),
+                        'sold': float(prior_result.units_sold),
+                        'unsold': float(prior_result.units_unsold),
+                        'lost_demand': sum(
+                            float(row.lost_demand) for row in prior_demands),
+                    }}
+                finances = {{
+                    'cash': float(prior_financials.cash_closing)
+                            if prior_financials else 0.0,
+                    'debt_to_equity': float(prior_financials.debt_to_equity)
+                                      if prior_financials else 0.0,
+                }}
+                feedback = GAP.decide(
+                    baseline_volume=baseline_volume,
+                    baseline_price=baseline_price,
+                    baseline_staff=baseline_staff,
+                    prior=prior_payload,
+                    finances=finances,
+                    parameters=adaptive_policy)
+                marketing.production_volume = feedback['production_volume']
+                marketing.demand_estimate = int(
+                    marketing.production_volume * 1.20)
+                marketing.retail_price = baseline_price * Decimal(
+                    str(feedback['price_factor']))
+                marketing.sales_team_count = feedback['sales_staff']
+                marketing.save()
+                adaptive_policy_trace.append({{
+                    'round': expected_round,
+                    'team': team.name,
+                    'starter_profile': team.firm_starter_profile.profile_name,
+                    'product': marketing.team_product.name,
+                    'market': marketing.market.code,
+                    'prior': prior_payload,
+                    'prior_finances': finances,
+                    'decision': feedback,
+                }})
         if team.id == teams[{subject_team_index}].id and policy_spec:
             from core.models.decisions import (DecisionESG, DecisionFinancing,
                                                DecisionMarketing)
@@ -319,6 +384,7 @@ print(json.dumps({{
     'teams_requested': {teams},
     'policy': {policy!r},
     'policy_spec': policy_spec,
+    'adaptive_policy': adaptive_policy,
     'subject_team_index': {subject_team_index},
     'adaptive_production': {adaptive_production!r},
     'teams': [{{'name': team.name, 'starter_profile': team.firm_starter_profile.profile_name}}
@@ -328,6 +394,7 @@ print(json.dumps({{
     'product_rounds': product_rounds,
     'product_demand_rounds': product_demand_rounds,
     'decision_rounds': decision_rounds,
+    'adaptive_policy_trace': adaptive_policy_trace,
 }}, default=str, sort_keys=True))
 '''
 
@@ -375,6 +442,9 @@ def main():
     parser.add_argument('--policy-spec-json', default='',
                         help='generic measurement-only policy JSON; mutually '
                              'exclusive with a non-baseline legacy --policy')
+    parser.add_argument('--adaptive-policy-json', default='',
+                        help='scenario-agnostic feedback-policy JSON applied '
+                             'only to the subject team')
     parser.add_argument('--subject-team-index', type=int, default=0,
                         help='zero-based team index for a policy variation')
     parser.add_argument('--adaptive-production', action='store_true',
@@ -394,11 +464,19 @@ def main():
         raise SystemExit('--subject-team-index must identify a requested team')
     if options.policy_spec_json and options.policy != 'baseline':
         raise SystemExit('--policy-spec-json cannot be combined with a non-baseline --policy')
+    if options.adaptive_policy_json and (options.policy_spec_json
+                                         or options.policy != 'baseline'):
+        raise SystemExit('--adaptive-policy-json cannot be combined with a fixed policy')
     try:
         policy_spec = (parse_policy_spec(options.policy_spec_json)
                        if options.policy_spec_json
                        else LEGACY_POLICY_SPECS[options.policy])
     except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    try:
+        adaptive_policy = (normalize_policy(json.loads(options.adaptive_policy_json))
+                           if options.adaptive_policy_json else {})
+    except (ValueError, json.JSONDecodeError) as exc:
         raise SystemExit(str(exc)) from exc
     stamp = dt.datetime.now(dt.timezone.utc).strftime('%Y%m%d%H%M%S')
     database = f'gsp_crv211_stage1_{stamp}_{os.getpid()}'
@@ -410,12 +488,14 @@ def main():
             if result.returncode:
                 raise RuntimeError(result.stderr[-3000:])
         result = run(database, 'shell', '-c', BODY.format(
-            harness=str(HARNESS), marker=MARKER, rounds=options.rounds,
+            harness=str(HARNESS), calibration=str(HERE), marker=MARKER,
+            rounds=options.rounds,
             scenario_name=SCENARIOS[options.scenario],
             home_markets=options.home_markets,
             adaptive_production=options.adaptive_production, teams=options.teams,
             policy=options.policy, name_seed=options.name_seed,
             policy_spec_json=json.dumps(policy_spec, sort_keys=True),
+            adaptive_policy_json=json.dumps(adaptive_policy, sort_keys=True),
             subject_team_index=options.subject_team_index), timeout=3600)
         if result.returncode or MARKER not in result.stdout:
             raise RuntimeError(result.stderr[-5000:] + result.stdout[-5000:])
