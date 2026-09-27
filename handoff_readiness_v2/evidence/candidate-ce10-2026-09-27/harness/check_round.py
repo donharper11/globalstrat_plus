@@ -11,6 +11,7 @@ import re
 import sys
 
 from apicall import call, login
+from leaderboard_contract import validate_leaderboard
 
 SCRATCH = pathlib.Path(__file__).resolve().parent
 RECORDS = SCRATCH.parent / 'records'
@@ -38,11 +39,19 @@ out['leaderboard'] = lb
 entries = (lb.get('rankings') or lb.get('leaderboard') or lb.get('teams') or lb.get('entries') or []) if isinstance(lb, dict) else lb
 out['leaderboard_entries'] = entries
 if entries:
-    ranked = sorted(entries, key=lambda e: -(num(e.get('performance_index')) or 0))
-    order_ok = all((num(entries[i].get('performance_index')) or 0) >= (num(entries[i + 1].get('performance_index')) or 0) for i in range(len(entries) - 1))
-    ranks = [e.get('rank') for e in entries]
-    check('leaderboard is ordered by performance index and ranks are 1..n', order_ok and ranks == list(range(1, len(entries) + 1)),
-          [(e.get('team_name'), e.get('rank'), e.get('performance_index')) for e in entries])
+    leaderboard_contract = validate_leaderboard(
+        entries, lb.get('rank_rule_note') if isinstance(lb, dict) else None)
+    check(
+        'leaderboard follows score order with marked R32 inactivity demotions',
+        all(leaderboard_contract.values()),
+        {'rows': [(e.get('team_name'), e.get('rank'),
+                   e.get('performance_index'),
+                   e.get('commercially_inactive'), e.get('rank_marker'))
+                  for e in entries],
+         'contract': leaderboard_contract,
+         'rank_rule_note': (lb.get('rank_rule_note')
+                            if isinstance(lb, dict) else None)},
+    )
 else:
     check('leaderboard has entries', False, str(lb)[:300])
 

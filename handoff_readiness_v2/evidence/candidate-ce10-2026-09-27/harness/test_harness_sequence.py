@@ -2,6 +2,8 @@
 import pathlib
 import unittest
 
+from leaderboard_contract import validate_leaderboard
+
 
 HERE = pathlib.Path(__file__).resolve().parent
 
@@ -35,6 +37,45 @@ class CorrectionOrderTests(unittest.TestCase):
         driver = (HERE / 'follow_the_blocker.py').read_text()
         self.assertIn('equity_target = existing_equity + shortfall', driver)
         self.assertIn("'budget' in blocker.lower()", driver)
+
+
+class LeaderboardContractTests(unittest.TestCase):
+    def test_r32_inactivity_demotion_is_a_valid_published_order(self):
+        rows = [
+            {'rank': 1, 'performance_index': 64.77,
+             'commercially_inactive': False, 'rank_marker': None},
+            {'rank': 2, 'performance_index': 52.82,
+             'commercially_inactive': False, 'rank_marker': None},
+            {'rank': 3, 'performance_index': 47.59,
+             'commercially_inactive': False, 'rank_marker': None},
+            {'rank': 4, 'performance_index': 53.24,
+             'commercially_inactive': True,
+             'rank_marker': 'Did not compete'},
+        ]
+        result = validate_leaderboard(rows, 'Inactive firms rank last.')
+        self.assertTrue(all(result.values()), result)
+
+    def test_unmarked_or_unexplained_demotion_is_rejected(self):
+        rows = [
+            {'rank': 1, 'performance_index': 50,
+             'commercially_inactive': False, 'rank_marker': None},
+            {'rank': 2, 'performance_index': 60,
+             'commercially_inactive': True, 'rank_marker': None},
+        ]
+        result = validate_leaderboard(rows, None)
+        self.assertFalse(result['inactivity_markers_correct'])
+        self.assertFalse(result['rank_rule_explained'])
+
+    def test_an_inactive_row_cannot_precede_an_active_row(self):
+        rows = [
+            {'rank': 1, 'performance_index': 60,
+             'commercially_inactive': True,
+             'rank_marker': 'Did not compete'},
+            {'rank': 2, 'performance_index': 50,
+             'commercially_inactive': False, 'rank_marker': None},
+        ]
+        result = validate_leaderboard(rows, 'Inactive firms rank last.')
+        self.assertFalse(result['active_then_inactive'])
 
 
 if __name__ == '__main__':
