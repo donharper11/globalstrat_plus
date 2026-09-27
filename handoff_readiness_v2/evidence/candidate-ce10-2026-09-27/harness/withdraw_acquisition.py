@@ -11,7 +11,8 @@ import json
 import pathlib
 import sys
 
-from walk import (BASE, Recorder, api, modal_text, sign_in, sync_playwright)
+from walk import (BASE, Recorder, api, modal_text, sign_in, sync_playwright,
+                  visible_text)
 
 
 LANG = sys.argv[1]
@@ -94,6 +95,16 @@ def main():
         reached = tab(page, T('corporate_strategy.ma'))
         R.step('M&A decisions are reachable from Corporate Strategy',
                'pass' if reached else 'fail')
+        R.observe('ma_draft', (api(page, 'GET', DEC)['body'] or {}).get(
+            'acquisitions'))
+        R.observe('ma_context', api(
+            page, 'GET', '/api/games/%d/teams/%d/context/strategy/'
+            % (GID, TID))['body'])
+        R.observe('ma_buttons', [
+            (page.locator('button').nth(i).text_content() or '').strip()
+            for i in range(page.locator('button').count())
+        ])
+        R.observe('ma_text', visible_text(page)[-5000:])
         withdraw = page.locator('button', has_text=T('corporate_strategy.withdraw'))
         offered = withdraw.count() and withdraw.first.is_enabled()
         R.step('the queued acquisition offers a Withdraw action',
