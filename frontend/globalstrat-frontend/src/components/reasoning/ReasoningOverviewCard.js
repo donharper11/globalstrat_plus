@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Tag, Typography, Space, Row, Col, Progress } from 'antd';
+import { Card, Tag, Typography, Space, Row, Col } from 'antd';
 import {
   CheckCircleOutlined,
   ExclamationCircleOutlined,
@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const BAND_CONFIG = {
   strong: { color: '#52c41a', icon: <CheckCircleOutlined />, bg: '#f6ffed' },

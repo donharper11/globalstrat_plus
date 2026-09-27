@@ -25,4 +25,5 @@ module having to import the whole manifest machinery.
 #         its own line on the income statement: a new hashed field on the
 #         `financials` output section, so every round resolved after this
 #         hashes bytes the v6 definition did not contain.
-MANIFEST_SCHEMA_VERSION = 7
+# 7 -> 8: reasoning_analysis -- deterministic reasoning-quality scores (dims 1-3).
+MANIFEST_SCHEMA_VERSION = 8

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Collapse, Tag, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 const { Text, Paragraph } = Typography;
 
@@ -24,7 +23,6 @@ const BAND_LABELS = {
 };
 
 const ReasoningDimensionFeedback = ({ dimensions, narrative, language = 'en' }) => {
-  const { t } = useTranslation();
   const lang = language === 'zh-CN' ? 'zh' : 'en';
 
   if (!dimensions) return null;

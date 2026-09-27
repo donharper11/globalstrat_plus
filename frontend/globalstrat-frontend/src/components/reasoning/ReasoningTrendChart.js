@@ -1,8 +1,6 @@
 import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
-import { Typography, Empty } from 'antd';
 
-const { Text } = Typography;
 
 const BAND_VALUES = {
   strong: 3,

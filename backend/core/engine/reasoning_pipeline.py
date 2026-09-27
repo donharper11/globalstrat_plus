@@ -140,11 +140,11 @@ def _build_coherence_input(game, team, submission, context):
         ProductInfo(
             name=tp.name,
             positioning=tp.positioning or 'mainstream',
-            platform_name=tp.platform.name if tp.platform else '',
+            platform_name=tp.team_platform.name if tp.team_platform else '',
         )
         for tp in TeamProduct.objects.filter(
-            team=team, is_active=True,
-        ).select_related('platform')
+            team=team, status='active',
+        ).select_related('team_platform')
     ]
 
     # Market presences
@@ -245,10 +245,10 @@ def _build_coherence_input(game, team, submission, context):
     # Platform devs
     platform_devs = []
     if submission:
-        for pd in submission.platform_developments.all().select_related('team_platform'):
+        for pd in submission.platform_developments.all():
             platform_devs.append(PlatformDevInfo(
-                platform_name=pd.team_platform.name if pd.team_platform else '',
-                investment=float(pd.calculated_cost or 0),
+                platform_name=pd.platform_name or '',
+                investment=float(pd.committed_cost or 0),
             ))
 
     # Financial state — query from round results
@@ -426,7 +426,7 @@ def _build_trajectory_input(game, team, current_round):
         ).count()  # Current state — simplified for now
 
         num_products = TeamProduct.objects.filter(
-            team=team, is_active=True,
+            team=team, status='active',
         ).count()
 
         new_entries = 0

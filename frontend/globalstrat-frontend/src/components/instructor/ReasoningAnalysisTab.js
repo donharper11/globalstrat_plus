@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  Card, Table, Tag, Select, Space, Typography, Row, Col,
+  Card, Table, Tag, Space, Typography,
   Button, Tabs, Empty, Spin, message,
 } from 'antd';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend,
+  ResponsiveContainer, Tooltip, Legend,
 } from 'recharts';
 import { DownloadOutlined } from '@ant-design/icons';
 import {
   getInstructorReasoningAllTeams,
-  getInstructorReasoningTeam,
   getInstructorReasoningComparison,
   getInstructorReasoningAggregate,
   exportReasoningCsv,
 } from '../../api/reasoning';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 const BAND_COLORS = {
   strong: '#52c41a',
@@ -222,7 +222,8 @@ const ReasoningAggregate = ({ gameId }) => {
 };
 
 const ReasoningAnalysisTab = ({ gameId }) => {
-  const [selectedRound, setSelectedRound] = useState(null);
+  const [selectedRound] = useState(null);
+  const { t } = useTranslation();
 
   const handleExport = async () => {
     try {
@@ -236,7 +237,7 @@ const ReasoningAnalysisTab = ({ gameId }) => {
       link.remove();
       message.success('CSV exported');
     } catch (e) {
-      message.error('Export failed');
+      message.error(t('instructor.export_failed', 'Export failed'));
     }
   };
 

@@ -262,12 +262,8 @@ def _extract_reasoning_quality(team_id, instance_id):
     if not analyses.exists():
         return ZERO
 
-    # Check if game is in competition mode
-    from core.models.core import Game
-    game = Game.objects.filter(id=game_id).first()
-    competition_mode = (
-        game and hasattr(game, "competition_mode") and game.competition_mode
-    )
+    # Check if game is in competition mode (R40: via SimulationInstance settings)
+    competition_mode = _instance_is_competition(instance_id)
 
     if competition_mode:
         # R40-safe: use only deterministic score
