@@ -5,6 +5,7 @@ growth compounds, invisible AI share is published but does not alter Fix A's
 diffusion rule, and malformed stakeholder preferences cannot be loaded.
 """
 import copy
+from collections import Counter
 from decimal import Decimal as D
 from pathlib import Path
 from unittest.mock import patch
@@ -88,6 +89,47 @@ class ScenarioPreferenceValidationTests(TestCase):
             self._scenario('consumer_electronics_2026.yaml'))
         self.assertTrue(any('ai_features' in warning and 'unreachable on Gen 1' in warning
                             for warning in warnings))
+
+    def test_consumer_starter_balance_removes_tier_extremes_not_identity(self):
+        """The CE balance repair removes its score-bearing tier extremes only.
+
+        Profiles remain genuinely different on every authored axis that the
+        repair deliberately leaves in play.  Starting prices also stay inside
+        the declared positioning bands, so balance does not create an
+        incoherent round-zero briefing.
+        """
+        profiles = self._scenario(
+            'consumer_electronics_2026.yaml')['starter_profiles']
+        products = [product for profile in profiles
+                    for product in profile['products']]
+
+        self.assertEqual(len(profiles), 8)
+        self.assertEqual(Counter(product[1] for product in products), {
+            'mainstream': 15,
+            'premium': 1,
+        })
+        self.assertEqual(len({
+            tuple(sorted(profile['platforms']['alpha'].items()))
+            for profile in profiles
+        }), 8)
+        self.assertEqual(len({
+            (profile['starting_debt'], profile['starting_revenue'])
+            for profile in profiles
+        }), 8)
+        self.assertEqual(len({
+            tuple((product[2], product[4], product[5])
+                  for product in profile['products'])
+            for profile in profiles
+        }), 8)
+
+        price_bands = {
+            'mainstream': (D('250'), D('550')),
+            'premium': (D('500'), D('900')),
+        }
+        for product in products:
+            low, high = price_bands[product[1]]
+            self.assertLessEqual(low, D(product[2]), product[0])
+            self.assertLessEqual(D(product[2]), high, product[0])
 
 
 class CalibrationDemandAccountingTests(TestCase):

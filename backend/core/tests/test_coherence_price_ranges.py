@@ -114,9 +114,9 @@ class _ScenarioFixture(TestCase):
         _config_cache.clear()
         return Scenario.objects.order_by('-id').first()
 
-    def _game(self, scenario):
+    def _game(self, scenario, teams=3):
         name = f'coherence-range-fixture-{scenario.id}'
-        call_command('initialize_game', scenario=scenario.id, teams=3,
+        call_command('initialize_game', scenario=scenario.id, teams=teams,
                      name=name, stdout=io.StringIO())
         game = Game.objects.filter(name=name).order_by('-id').first()
         return game, Round.objects.get(game=game, round_number=1)
@@ -249,7 +249,11 @@ class ConsumerElectronicsUnchangedTests(_ScenarioFixture):
 
     def test_component_is_identical_to_the_function_it_replaced(self):
         scenario = self._load(CONSUMER_ELECTRONICS)
-        game, round_one = self._game(scenario)
+        # Exercise the full starter field: the calibration repair deliberately
+        # removes score-bearing tier extremes from seven profiles while the
+        # eighth retains a premium product.  A three-team prefix no longer
+        # spans more than one tier, but the production field still does.
+        game, round_one = self._game(scenario, teams=8)
         positionings = set()
         compared = 0
         for team in Team.objects.filter(game=game).order_by('id'):
@@ -270,7 +274,7 @@ class ConsumerElectronicsUnchangedTests(_ScenarioFixture):
                                  json.dumps(old, sort_keys=True))
                 compared += 1
         self.assertGreater(len(positionings), 1)
-        self.assertEqual(compared, 3 * (len(self.PRICES) + 1))
+        self.assertEqual(compared, 8 * (len(self.PRICES) + 1))
 
     def test_every_tier_is_identical_not_only_the_tiers_starters_use(self):
         scenario = self._load(CONSUMER_ELECTRONICS)

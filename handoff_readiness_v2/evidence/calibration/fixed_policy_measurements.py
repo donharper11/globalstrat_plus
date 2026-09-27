@@ -204,6 +204,8 @@ def main():
     parser.add_argument('--baseline-only', action='store_true',
                         help='run only the field-size baselines, no policy '
                              'variations (used for the R28 per-profile table)')
+    parser.add_argument('--policies', nargs='+', choices=POLICIES, default=None,
+                        help='run only these policy sensitivities (default: all)')
     parser.add_argument('--subject-team-index', type=int, default=0,
                         help='zero-based team whose decisions policy probes '
                              'vary (default: 0)')
@@ -234,6 +236,8 @@ def main():
         policies = ()
     elif options.smoke:
         policies = ('price_plus_10',)
+    elif options.policies is not None:
+        policies = tuple(dict.fromkeys(options.policies))
     else:
         policies = POLICIES
     baseline_size = 8 if 8 in field_sizes else field_sizes[0]
