@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Typography, Table, Tag, Empty } from 'antd';
+import { Typography, Table, Tag, Empty } from 'antd';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
@@ -9,8 +9,6 @@ import { getLeaderboard, getLeaderboardHistory } from '../api/results';
 import RoundSelector from '../components/RoundSelector';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PanelCard, PageHeader } from '../components/design-system';
-
-const { Title } = Typography;
 
 const fmt = (v) => {
   if (v == null) return '$0';
@@ -25,14 +23,21 @@ const COLORS = ['#1890ff', '#52c41a', '#faad14', '#f5222d', '#722ed1', '#13c2c2'
 const LeaderboardPage = () => {
   const { t } = useTranslation();
   const { gameId, teamId, currentRound, roundStatus } = useGame();
-  const latestProcessed = roundStatus === 'processed' ? currentRound : Math.max((currentRound || 1) - 1, 0);
-  const [selectedRound, setSelectedRound] = useState(latestProcessed);
+  // GameContext is populated after the first render. Treat an absent round as
+  // unknown, not as Round 1: the old fallback captured Round 0 in state and
+  // never advanced the selector when the real game arrived (W-CE4-06).
+  const latestProcessed = currentRound == null
+    ? -1
+    : roundStatus === 'processed'
+      ? currentRound
+      : Math.max(currentRound - 1, 0);
+  const [selectedRound, setSelectedRound] = useState(null);
   const [leaderboard, setLeaderboard] = useState(null);
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async (rnd) => {
-    if (!gameId || rnd < 0) { setLoading(false); return; }
+    if (!gameId || !Number.isInteger(rnd) || rnd < 0) { setLoading(false); return; }
     setLoading(true);
     try {
       const [resL, resH] = await Promise.all([
@@ -46,12 +51,12 @@ const LeaderboardPage = () => {
   }, [gameId]);
 
   useEffect(() => {
-    if (latestProcessed >= 0 && selectedRound < 0) setSelectedRound(latestProcessed);
+    if (latestProcessed >= 0 && selectedRound === null) setSelectedRound(latestProcessed);
   }, [latestProcessed, selectedRound]);
 
   useEffect(() => { loadData(selectedRound); }, [selectedRound, loadData]);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading || selectedRound === null) return <LoadingSpinner />;
 
   if (latestProcessed < 0) {
     return (
@@ -115,7 +120,6 @@ const LeaderboardPage = () => {
   const teamNames = (history?.teams || []).map(t => t.team_name);
 
   const TrendChart = ({ data, title, formatter }) => {
-    const { t } = useTranslation();
     return (
     <PanelCard headerColor="results" title={title.toUpperCase()} style={{ marginTop: 16 }}>
       <ResponsiveContainer width="100%" height={300}>

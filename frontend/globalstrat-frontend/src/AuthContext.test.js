@@ -1,5 +1,11 @@
-import { syncLanguagePreference } from './AuthContext';
+import { applySessionLanguage, syncLanguagePreference } from './AuthContext';
 import { setLanguagePreference } from './api/auth';
+
+const mockChangeLanguage = jest.fn();
+
+jest.mock('./i18n', () => ({
+  changeLanguage: (...args) => mockChangeLanguage(...args),
+}));
 
 /**
  * W-CE-15. The language chosen on the login page (`localStorage.gs_language`,
@@ -41,4 +47,27 @@ test('a value the platform does not support is never sent', () => {
   localStorage.setItem('gs_language', 'fr');
   expect(syncLanguagePreference({ language: 'en' })).toBeNull();
   expect(setLanguagePreference).not.toHaveBeenCalled();
+});
+
+test('a fresh browser adopts the language stored on the enrolment', () => {
+  expect(applySessionLanguage({ language: 'zh-CN' })).toBe('zh-CN');
+
+  expect(localStorage.getItem('gs_language')).toBe('zh-CN');
+  expect(mockChangeLanguage).toHaveBeenCalledWith('zh-CN');
+  expect(setLanguagePreference).not.toHaveBeenCalled();
+});
+
+test('an explicit browser choice still wins and is sent to the server', () => {
+  localStorage.setItem('gs_language', 'en');
+
+  expect(applySessionLanguage({ language: 'zh-CN' })).toBe('en');
+  expect(mockChangeLanguage).toHaveBeenCalledWith('en');
+  expect(setLanguagePreference).toHaveBeenCalledWith('en');
+});
+
+test('an unsupported server preference safely falls back to English', () => {
+  expect(applySessionLanguage({ language: 'fr' })).toBe('en');
+
+  expect(localStorage.getItem('gs_language')).toBe('en');
+  expect(mockChangeLanguage).toHaveBeenCalledWith('en');
 });

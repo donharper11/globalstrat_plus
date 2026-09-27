@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import FinancePage from './FinancePage';
+import FinancePage, { projectedDebtToEquity } from './FinancePage';
 import { getFinanceContext, patchDecision, getTaxStructureContext } from '../api/decisions';
 
 /**
@@ -152,4 +152,68 @@ test('every financing input on the tab keeps its focus across a keystroke', asyn
     expect(document.contains(box)).toBe(true);
     expect(box).toHaveFocus();
   }
+});
+
+test('a refused equity raise reverts the box to the value actually stored', async () => {
+  patchDecision.mockRejectedValue({
+    response: {
+      data: {
+        detail: 'New equity exceeds the current-round funding shortfall.',
+        funding_assessment: {
+          new_debt: '5000000.00',
+          maximum_new_equity: '6968269.34',
+          requested_new_equity: '12000000.00',
+        },
+      },
+    },
+  });
+  await openCapitalTab();
+  const equity = screen.getByRole('spinbutton', { name: 'finance.amount_to_raise' });
+
+  equity.focus();
+  fireEvent.keyDown(equity, { key: 'Backspace' });
+  fireEvent.input(equity, { target: { value: '' } });
+  fireEvent.keyUp(equity, { key: 'Backspace' });
+  pressKeys(equity, '12000000');
+
+  await waitFor(() => expect(patchDecision).toHaveBeenCalled());
+  await waitFor(() => expect(getFinanceContext.mock.calls.length).toBeGreaterThanOrEqual(2));
+  await waitFor(() => {
+    const storedEquity = screen.getByRole('spinbutton', { name: 'finance.amount_to_raise' });
+    expect(storedEquity).toHaveValue('$ 0');
+  });
+  expect(screen.getAllByText(/finance.equity_after_refused_debt/).length).toBeGreaterThan(0);
+});
+
+test('nonpositive equity is explicit and never presented as a zero ratio', async () => {
+  const distressed = financeContext();
+  distressed.data.financial.total_debt = 10000000;
+  distressed.data.financial.total_equity = -5000000;
+  distressed.data.key_ratios = {
+    debt_to_equity: null,
+    debt_to_equity_status: 'equity_not_positive',
+  };
+  distressed.data.capital.max_total_debt = 0;
+  distressed.data.capital.available_credit = 0;
+  distressed.data.capital.blocks_new_debt = true;
+  getFinanceContext.mockResolvedValue(distressed);
+
+  await openCapitalTab();
+
+  expect(screen.getByText('finance.ratio_unavailable_nonpositive_equity')).toBeInTheDocument();
+  expect(screen.getByText('finance.new_debt_blocked_nonpositive_equity')).toBeInTheDocument();
+  expect(screen.getByText(/finance.based_on_equity_limit/)).toHaveTextContent('"max":"$0"');
+});
+
+test('projected debt-to-equity includes both this-round debt and equity', () => {
+  expect(projectedDebtToEquity(10000000, -5000000, {
+    new_debt: 2000000,
+    debt_repayment: 1000000,
+    new_equity: 20000000,
+  })).toBeCloseTo(11 / 15);
+  expect(projectedDebtToEquity(10000000, -5000000, {
+    new_debt: 0,
+    debt_repayment: 0,
+    new_equity: 4000000,
+  })).toBeNull();
 });

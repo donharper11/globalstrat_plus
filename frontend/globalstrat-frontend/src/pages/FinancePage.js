@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { Card, Typography, InputNumber, Input, Row, Col, Tag, Statistic, Alert, Progress, Divider, Tabs } from 'antd';
+import { Card, Typography, InputNumber, Input, Row, Col, Tag, Alert, Divider, Tabs } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useGame } from '../contexts/GameContext';
 import { useDecisions } from '../contexts/DecisionContext';
@@ -13,7 +13,7 @@ import TeamActivityBanner from '../components/TeamActivityBanner';
 import { DECISION_INPUT_LIMITS, boundTo } from '../decisionInputLimits';
 import { reportUnpublishedFailure } from '../api/saveFailures';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const fmt = (v) => {
   if (v == null) return '$0';
@@ -69,11 +69,29 @@ const parseMoneyInput = (value) => {
   return Number.isFinite(numeric) ? numeric * multiplier : 0;
 };
 
+const financingFromContext = (data) => {
+  const stored = data?.capital?.financing_draft || {};
+  return {
+    new_debt: Number(stored.new_debt || 0),
+    debt_repayment: Number(stored.debt_repayment || 0),
+    new_equity: Number(stored.new_equity || 0),
+    dividend_per_share: Number(stored.dividend_per_share || 0),
+  };
+};
+
 const ratioColor = (val, greenMax, yellowMax) => {
   const n = Number(val);
   if (n <= greenMax) return 'green';
   if (n <= yellowMax) return 'orange';
   return 'red';
+};
+
+export const projectedDebtToEquity = (debt, equity, financing) => {
+  const projectedDebt = Number(debt || 0)
+    + Number(financing?.new_debt || 0)
+    - Number(financing?.debt_repayment || 0);
+  const projectedEquity = Number(equity || 0) + Number(financing?.new_equity || 0);
+  return projectedEquity > 0 ? projectedDebt / projectedEquity : null;
 };
 
 const FinancePage = () => {
@@ -91,8 +109,10 @@ const FinancePage = () => {
   const [financing, setFinancing] = useState({
     new_debt: 0, debt_repayment: 0, new_equity: 0, dividend_per_share: 0,
   });
+  const [financingRevision, setFinancingRevision] = useState(0);
   const budgetSaveTimer = useRef(null);
   const financingSaveTimer = useRef(null);
+  const financingRequest = useRef(0);
   const [taxData, setTaxData] = useState(null);
   const [selectedStructure, setSelectedStructure] = useState('direct');
   const [taxSaving, setTaxSaving] = useState(false);
@@ -108,7 +128,7 @@ const FinancePage = () => {
         marketing_budget: Number(ba.marketing_budget || ba.marketing_allocated || 0),
         strategy_budget: Number(ba.strategy_budget || ba.strategy_allocated || 0),
       });
-      const fd = draft?.financing || res.data?.capital?.financing_draft || {};
+      const fd = draft?.financing || financingFromContext(res.data);
       setFinancing({
         new_debt: Number(fd.new_debt || 0),
         debt_repayment: Number(fd.debt_repayment || 0),
@@ -165,6 +185,8 @@ const FinancePage = () => {
 
   const autoSaveFinancing = useCallback((nextFinancing) => {
     clearTimeout(financingSaveTimer.current);
+    const requestId = financingRequest.current + 1;
+    financingRequest.current = requestId;
     setSaveState({ status: 'pending', message: t('finance.unsaved_financing') });
     financingSaveTimer.current = setTimeout(async () => {
       if (!gameId || !teamId || !currentRound || locked) return;
@@ -175,11 +197,37 @@ const FinancePage = () => {
           financing: nextFinancing,
         });
         await refreshBudgets();
-        setSaveState({ status: 'saved', message: t('finance.financing_saved') });
+        if (requestId === financingRequest.current) {
+          setSaveState({ status: 'saved', message: t('finance.financing_saved') });
+        }
       } catch (error) {
-        setSaveState({ status: 'error', message: saveErrorMessage(error, t('finance.financing_save_failed')) });
+        // A newer edit is already pending. Its response owns the box and the
+        // status; an older refusal must not roll it back underneath the user.
+        if (requestId !== financingRequest.current) return;
+        let message = saveErrorMessage(error, t('finance.financing_save_failed'));
+        const assessment = error?.response?.data?.funding_assessment;
+        if (Number(assessment?.new_debt || 0) > 0) {
+          message = `${message} ${t('finance.equity_after_refused_debt')}`;
+        }
+
+        // W-CE4-04: a failed transactional save leaves the server unchanged.
+        // Re-read that source of truth so the box cannot continue displaying
+        // money which the round does not have.
+        try {
+          const res = await getFinanceContext(gameId, teamId);
+          if (requestId !== financingRequest.current) return;
+          setContext(res.data);
+          setFinancing(financingFromContext(res.data));
+          // rc-input-number retains its own in-progress text while focused;
+          // remount after a refusal so the visible text follows stored state.
+          setFinancingRevision(revision => revision + 1);
+          await refreshBudgets();
+        } catch {
+          // Keep the original, actionable refusal visible if refresh fails.
+        }
+        setSaveState({ status: 'error', message });
       } finally {
-        setSaving(false);
+        if (requestId === financingRequest.current) setSaving(false);
       }
     }, 700);
   }, [gameId, teamId, currentRound, locked, refreshBudgets, t]);
@@ -229,7 +277,8 @@ const FinancePage = () => {
 
     // Debt impact
     const newTotalDebt = debt + financing.new_debt - financing.debt_repayment;
-    const newDE = equity > 0 ? newTotalDebt / equity : 0;
+    const projectedEquity = equity + financing.new_equity;
+    const newDE = projectedDebtToEquity(debt, equity, financing);
     const newInterest = newTotalDebt * rate;
     const oldInterest = debt * rate;
 
@@ -254,7 +303,7 @@ const FinancePage = () => {
     const divConservativeReaction = payoutRatio > 0.10 ? 'positive' : 'neutral';
 
     return {
-      newTotalDebt, newDE, newInterest, oldInterest, maxDE,
+      newTotalDebt, projectedEquity, newDE, newInterest, oldInterest, maxDE,
       newSharesIssued, totalShares, dilutionPct, oldEPS, newEPS,
       totalDividend, payoutRatio, cashAfterDividend,
       debtGrowthReaction, debtConservativeReaction,
@@ -272,6 +321,15 @@ const FinancePage = () => {
   const budgetStatus = context.budget_status || {};
   const ratios = context.key_ratios || {};
   const cap = context.capital || {};
+  const currentDERatio = ratios.debt_to_equity;
+  const hasCurrentDERatio = currentDERatio !== null && currentDERatio !== undefined
+    && Number.isFinite(Number(currentDERatio));
+  const ratioUnavailable = t('finance.ratio_unavailable_nonpositive_equity');
+  const projectedRatioDisplay = impacts.newDE == null
+    ? ratioUnavailable
+    : impacts.newDE.toFixed(2);
+  const maxTotalDebt = Number(cap.max_total_debt
+    ?? Math.max(Number(financial.total_equity || 0), 0) * Number(cap.max_de_ratio || 2));
 
   const totalAllocated = budgetAllocation.rd_budget + budgetAllocation.marketing_budget +
     budgetAllocation.strategy_budget;
@@ -367,17 +425,25 @@ const FinancePage = () => {
     <div>
       {/* Raise Debt */}
       <PanelCard headerColor="financial" title={t('finance.raise_debt')}>
+        {cap.blocks_new_debt && (
+          <WarningBanner
+            message={t('finance.new_debt_blocked_nonpositive_equity')}
+            type="error"
+            style={{ marginBottom: 12 }}
+          />
+        )}
         <div style={{ marginBottom: 12 }}>
           <Text type="secondary">{t('finance.available_credit')}: </Text>
           <Text strong>{fmt(impacts.availableCredit)}</Text>
           <Text type="secondary" style={{ fontSize: 11, display: 'block' }}>
-            {t('finance.based_on_equity_limit', { ratio: cap.max_de_ratio, max: fmt(Number(financial.total_equity || 0) * (cap.max_de_ratio || 2)), debt: fmt(financial.total_debt) })}
+            {t('finance.based_on_equity_limit', { ratio: cap.max_de_ratio, max: fmt(maxTotalDebt), debt: fmt(financial.total_debt) })}
           </Text>
         </div>
         <Row gutter={16}>
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.loan_amount')}</Text>
             <InputNumber
+              key={`new-debt-${financingRevision}`}
               min={0} max={DECISION_INPUT_LIMITS.new_debt} step={1000000}
               value={financing.new_debt} disabled={locked}
               formatter={formatMoneyInput}
@@ -396,10 +462,14 @@ const FinancePage = () => {
               <Col span={12}><Text strong>{fmt(impacts.newInterest)}</Text> <Text type="secondary">(was {fmt(impacts.oldInterest)})</Text></Col>
               <Col span={12}><Text type="secondary">{t('finance.new_de_ratio')}:</Text></Col>
               <Col span={12}>
-                <Tag color={ratioColor(impacts.newDE, 1.0, 2.0)}>
-                  {impacts.newDE.toFixed(2)}
-                </Tag>
-                <Text type="secondary">(was {Number(ratios.debt_to_equity || 0).toFixed(2)})</Text>
+                {impacts.newDE == null ? (
+                  <Text type="secondary">{projectedRatioDisplay}</Text>
+                ) : (
+                  <Tag color={ratioColor(impacts.newDE, 1.0, 2.0)}>
+                    {projectedRatioDisplay}
+                  </Tag>
+                )}
+                <Text type="secondary"> ({t('finance.was')} {hasCurrentDERatio ? Number(currentDERatio).toFixed(2) : ratioUnavailable})</Text>
               </Col>
             </Row>
             <Divider style={{ margin: '8px 0' }} />
@@ -419,6 +489,7 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.repayment_amount')}</Text>
             <InputNumber
+              key={`debt-repayment-${financingRevision}`}
               min={0} max={Number(financial.total_debt || 0)} step={1000000}
               value={financing.debt_repayment} disabled={locked}
               formatter={formatMoneyInput}
@@ -436,7 +507,9 @@ const FinancePage = () => {
                 </div>
                 <div>
                   <Text type="secondary">{t('finance.de_after_repayment')}: </Text>
-                  <Tag color={ratioColor(impacts.newDE, 1.0, 2.0)}>{impacts.newDE.toFixed(2)}</Tag>
+                  {impacts.newDE == null
+                    ? <Text type="secondary">{projectedRatioDisplay}</Text>
+                    : <Tag color={ratioColor(impacts.newDE, 1.0, 2.0)}>{projectedRatioDisplay}</Tag>}
                 </div>
               </div>
             </Col>
@@ -455,6 +528,8 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.amount_to_raise')}</Text>
             <InputNumber
+              key={`new-equity-${financingRevision}`}
+              aria-label={t('finance.amount_to_raise')}
               min={0} max={DECISION_INPUT_LIMITS.new_equity} step={1000000}
               value={financing.new_equity} disabled={locked}
               formatter={formatMoneyInput}
@@ -473,6 +548,12 @@ const FinancePage = () => {
               <Col span={12}><Text>{impacts.totalShares.toLocaleString()}</Text></Col>
               <Col span={12}><Text type="secondary">{t('finance.dilution')}:</Text></Col>
               <Col span={12}><Tag color={impacts.dilutionPct > 0.2 ? 'red' : 'orange'}>{(impacts.dilutionPct * 100).toFixed(1)}%</Tag></Col>
+              <Col span={12}><Text type="secondary">{t('finance.projected_de_ratio')}:</Text></Col>
+              <Col span={12}>
+                {impacts.newDE == null
+                  ? <Text type="secondary">{projectedRatioDisplay}</Text>
+                  : <Tag color={ratioColor(impacts.newDE, 1.0, 2.0)}>{projectedRatioDisplay}</Tag>}
+              </Col>
               <Col span={12}><Text type="secondary">{t('finance.new_eps')}:</Text></Col>
               <Col span={12}><Text>${impacts.newEPS.toFixed(2)} <Text type="secondary">(was ${impacts.oldEPS.toFixed(2)})</Text></Text></Col>
             </Row>
@@ -493,6 +574,7 @@ const FinancePage = () => {
           <Col xs={24} md={8}>
             <Text style={{ display: 'block', marginBottom: 4 }}>{t('finance.dividend_per_share')}</Text>
             <InputNumber
+              key={`dividend-${financingRevision}`}
               min={0} max={DECISION_INPUT_LIMITS.dividend_per_share} step={0.50}
               value={financing.dividend_per_share} disabled={locked}
               formatter={formatMoneyInput}
@@ -753,8 +835,10 @@ const FinancePage = () => {
         { label: t('finance.cash_on_hand').toUpperCase(), value: fmt(financial.cash_on_hand), size: 'large' },
         { label: t('finance.total_debt').toUpperCase(), value: fmt(financial.total_debt), size: 'large' },
         { label: t('finance.total_equity').toUpperCase(), value: fmt(financial.total_equity), size: 'large' },
-        { label: t('finance.debt_equity').toUpperCase(), value: Number(ratios.debt_to_equity || 0).toFixed(2), size: 'large',
-          status: Number(ratios.debt_to_equity || 0) < 1 ? 'positive' : Number(ratios.debt_to_equity || 0) < 2 ? 'warning' : 'negative' },
+        { label: t('finance.debt_equity').toUpperCase(),
+          value: hasCurrentDERatio ? Number(currentDERatio).toFixed(2) : ratioUnavailable,
+          size: hasCurrentDERatio ? 'large' : 'small',
+          status: !hasCurrentDERatio ? 'warning' : Number(currentDERatio) < 1 ? 'positive' : Number(currentDERatio) < 2 ? 'warning' : 'negative' },
       ]} />
 
       <Tabs className="ds-colored-tabs" items={tabItems} defaultActiveKey="budget" />

@@ -19,7 +19,11 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: 'gs_language',
-      caches: ['localStorage'],
+      // LanguageSwitcher and AuthContext write deliberate choices. Do not
+      // cache a navigator fallback here: on a fresh browser that would look
+      // like an explicit English choice and mask a zh-CN preference already
+      // stored on the enrolment (W-CE4-11).
+      caches: [],
     },
   });
 

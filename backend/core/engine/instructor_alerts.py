@@ -230,10 +230,17 @@ def render_context(language, key, **values):
                        for name, value in values.items()}}
 
 
-def _alert_parts(language, key, **values):
+def _alert_parts(language, key, localized_values=None, **values):
     """(title, detail, teaching_note, render_context) for `key`."""
     title, detail, note = _alert_text(language, key, **values)
-    return title, detail, note, render_context(language, key, **values)
+    context = render_context(language, key, **values)
+    if localized_values:
+        # Some interpolation values are catalogue names rather than authored
+        # names. Keep both renderings so a later reader does not receive an
+        # English sentence containing Chinese market/mode names, or vice
+        # versa (W-CE4-08). This remains presentation context only.
+        context['localized_values'] = localized_values
+    return title, detail, note, context
 
 
 def reader_text(alert, language):
@@ -244,11 +251,8 @@ def reader_text(alert, language):
     this table no longer holds -- so a panel never loses an alert to this.
     The stored row is never written.
 
-    Known limit, recorded rather than hidden: a value that is itself a name
-    resolved at write time (a market, an entry mode, a product) stays in the
-    language it was written in. Those are `market_entry` and
-    `overproduction`; every other alert interpolates only numbers and the
-    team's own name.
+    Catalogue-backed interpolation values carry both language renderings in
+    `localized_values`; authored names (team and product names) are preserved.
     """
     stored = (alert.title, alert.detail, alert.teaching_note)
     context = getattr(alert, 'render_context', None) or {}
@@ -256,8 +260,15 @@ def reader_text(alert, language):
     if not key or language == context.get('language'):
         return stored
     try:
+        values = dict(context.get('values') or {})
+        for name, translations in (context.get('localized_values') or {}).items():
+            if not isinstance(translations, dict):
+                continue
+            values[name] = (translations.get(language)
+                            or translations.get('en')
+                            or values.get(name))
         title, detail, note = _alert_text(
-            language, key, **(context.get('values') or {}))
+            language, key, **values)
     except Exception:
         return stored
     # A teaching note a model wrote is Phase-2 prose of its own and is not
@@ -403,15 +414,27 @@ def generate_post_round_alerts(game, round_number):
         ).select_related('market', 'entry_mode')).order_by('market__code', 'action')
         for entry in new_entries:
             market = entry.market
-            mode_name = (get_localized_field(entry.entry_mode, 'name', language)
-                         if entry.entry_mode else _alert_text(language, 'unknown_mode'))
+            market_names = {
+                lang: get_localized_field(market, 'name', lang)
+                for lang in ('en', 'zh-CN')
+            }
+            mode_names = {
+                lang: (get_localized_field(entry.entry_mode, 'name', lang)
+                       if entry.entry_mode
+                       else _alert_text(lang, 'unknown_mode'))
+                for lang in ('en', 'zh-CN')
+            }
             growth_rate = float(market.growth_rate_base) * 100 if hasattr(market, 'growth_rate_base') else 0
             tariff_rate = float(market.tariff_rate) * 100 if hasattr(market, 'tariff_rate') else 0
             alerts.append(_create_alert(
                 game, team, round_number, 'notable_move', 'info',
                 *_alert_parts(language, 'market_entry', team=team.name,
-                             market=get_localized_field(market, 'name', language),
-                             mode=mode_name, investment=entry.initial_investment,
+                             localized_values={
+                                 'market': market_names,
+                                 'mode': mode_names,
+                             },
+                             market=market_names[language],
+                             mode=mode_names[language], investment=entry.initial_investment,
                              growth=growth_rate, tariff=tariff_rate)))
 
     # Save all alerts
@@ -437,11 +460,16 @@ def generate_pre_lock_alerts(game, team, submission):
         ).first()
         if prev_result and prev_result.units_sold > 0:
             if mktg.production_volume > float(prev_result.units_sold) * 2:
+                market_names = {
+                    lang: get_localized_field(mktg.market, 'name', lang)
+                    for lang in ('en', 'zh-CN')
+                }
                 alerts.append(_create_alert(
                     game, team, game.current_round, 'financial', 'watch',
                     *_alert_parts(language, 'overproduction', team=team.name,
+                                 localized_values={'market': market_names},
                                  product=mktg.team_product.name,
-                                 market=get_localized_field(mktg.market, 'name', language),
+                                 market=market_names[language],
                                  volume=mktg.production_volume,
                                  sold=int(prev_result.units_sold))))
 

@@ -789,6 +789,44 @@ class AStoredAlertCanBeSaidAgain(SimpleTestCase):
         json.dumps(context)  # raises if a Decimal survived
         self.assertEqual(context['values']['cash'], -6468269.0)
 
+    def market_entry_alert(self, language):
+        from core.engine.instructor_alerts import _alert_parts
+        from core.models.cc21_models import InstructorAlert
+
+        names = {
+            'market': {'en': 'North America', 'zh-CN': '北美'},
+            'mode': {
+                'en': 'Export from Home Market',
+                'zh-CN': '从母国市场出口',
+            },
+        }
+        title, detail, note, context = _alert_parts(
+            language, 'market_entry', localized_values=names,
+            team='Nova Circuit', market=names['market'][language],
+            mode=names['mode'][language], investment=1000000,
+            growth=4, tariff=5)
+        return InstructorAlert(
+            title=title, detail=detail, teaching_note=note,
+            render_context=context)
+
+    def test_localized_values_are_rendered_again_for_an_english_reader(self):
+        title, detail, _note = self.read(
+            self.market_entry_alert('zh-CN'), 'en')
+
+        self.assertEqual(
+            title,
+            'Nova Circuit entered North America via Export from Home Market')
+        self.assertIn('This market has 4% growth rate', detail)
+        self.assertNotIn('北美', title)
+
+    def test_localized_values_are_rendered_again_for_a_chinese_reader(self):
+        title, detail, _note = self.read(
+            self.market_entry_alert('en'), 'zh-CN')
+
+        self.assertEqual(title, 'Nova Circuit 通过从母国市场出口进入了北美')
+        self.assertIn('该市场增长率为 4%', detail)
+        self.assertNotIn('North America', title)
+
 
 class TheAlertRenderContextIsOutsideEveryHash(SimpleTestCase):
     """The field is a rendering input, not a computed outcome. It is

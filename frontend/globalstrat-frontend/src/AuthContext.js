@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getCurrentUser, setLanguagePreference } from './api/auth';
+import i18n from './i18n';
 
 const SUPPORTED_LANGUAGES = ['en', 'zh-CN'];
 
@@ -25,6 +26,29 @@ export const syncLanguagePreference = (userData) => {
   if ((userData?.language || 'en') === chosen) return null;
   setLanguagePreference(chosen).catch(() => {});
   return chosen;
+};
+
+/**
+ * Make the signed-in session use one language in the chrome and on the
+ * server. A browser choice wins when one exists (the login-page contract);
+ * otherwise the preference already stored on the enrolment seeds this fresh
+ * browser. Previously the latter was never read into i18next, leaving a
+ * Chinese enrolment with English chrome and Chinese server prose (W-CE4-11).
+ */
+export const applySessionLanguage = (userData) => {
+  const chosen = syncLanguagePreference(userData);
+  const serverLanguage = SUPPORTED_LANGUAGES.includes(userData?.language)
+    ? userData.language
+    : 'en';
+  const language = chosen || serverLanguage;
+
+  try {
+    localStorage.setItem('gs_language', language);
+  } catch {
+    // A blocked localStorage must not prevent a valid sign-in.
+  }
+  i18n.changeLanguage(language);
+  return language;
 };
 
 const AuthContext = createContext(null);
@@ -54,6 +78,8 @@ export const AuthProvider = ({ children }) => {
             const userData = res.data;
             // Preserve demo flag across refreshes
             if (parsed.is_demo) userData.is_demo = true;
+            const language = applySessionLanguage(userData);
+            userData.language = language;
             localStorage.setItem('gs_user', JSON.stringify(userData));
             setUser(userData);
           })
@@ -74,8 +100,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    const chosen = syncLanguagePreference(userData);
-    const stored = chosen ? { ...userData, language: chosen } : userData;
+    const language = applySessionLanguage(userData);
+    const stored = { ...userData, language };
     localStorage.setItem('gs_user', JSON.stringify(stored));
     setUser(stored);
   };
