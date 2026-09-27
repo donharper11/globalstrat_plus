@@ -14,6 +14,9 @@ from core.models.cc_reasoning import (
 )
 from core.views.decisions import IsTeamMember
 from core.permissions import IsInstructor
+from core.utils.participant_messages import (
+    language_for_participant, participant_message,
+)
 
 
 class StudentReasoningView(APIView):
@@ -34,9 +37,11 @@ class StudentReasoningView(APIView):
         ).first()
 
         if not analysis:
+            language = language_for_participant(team, request)
             return Response({
                 'available': False,
-                'message': 'Reasoning analysis not yet available for this round.',
+                'message': participant_message(
+                    'reasoning_not_available', language=language),
             })
 
         # Student view: bands + qualitative feedback only, no raw scores

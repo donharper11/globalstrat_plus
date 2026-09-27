@@ -426,9 +426,10 @@ class OwnLineTests(ComplianceChargeBase):
     """The owner's amendment: its own line on the income statement.
 
     A column of its own on `RoundResultFinancials`, no longer carried inside
-    `strategy_expense`; the envelope moves to schema version 7 because the
-    hashed `financials` section gains a field; and every statement a student
-    reads publishes the line.
+    `strategy_expense`; the envelope moved to schema version 7 because the
+    hashed `financials` section gained a field. Current v8 retains that field
+    and adds reasoning analysis; every statement a student reads publishes the
+    compliance line.
     """
 
     def resolve(self):
@@ -456,10 +457,12 @@ class OwnLineTests(ComplianceChargeBase):
         self.assertEqual(control.net_income - mine.net_income, INVESTMENT)
         self.assertEqual(control.cash_closing - mine.cash_closing, INVESTMENT)
 
-    def test_the_envelope_is_version_7_and_hashes_the_column(self):
+    def test_the_current_v8_envelope_still_hashes_the_v7_column(self):
         from core.services.manifest_schema import build_schema_inventory
         from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
-        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
+        # compliance_expense introduced v7; the current v8 envelope adds
+        # reasoning analysis without removing that previously hashed line.
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 8)
         financials = build_schema_inventory()['output']['financials']
         self.assertIn('compliance_expense', financials['hashed'])
         self.assertNotIn('compliance_expense', financials['dropped'])

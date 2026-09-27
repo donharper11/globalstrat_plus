@@ -127,9 +127,12 @@ class RuntimeConfigurationTests(SimpleTestCase):
 class RecordedOutsideTheHashTests(TestCase):
     """It is on the manifest row, and in none of the three hashed envelopes."""
 
-    def test_the_envelope_version_did_not_move(self):
+    def test_runtime_provenance_does_not_move_the_current_v8_envelope(self):
         from core.services.manifest_version import MANIFEST_SCHEMA_VERSION
-        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
+        # Runtime provenance remains outside every hash. Version 8 is current
+        # because reasoning_analysis was added to the deterministic envelope,
+        # not because any runtime setting entered it.
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 8)
 
     def test_the_fingerprint_carries_the_configuration_digest(self):
         from core.services.resolution_manifest import environment_fingerprint

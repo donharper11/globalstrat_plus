@@ -17,8 +17,9 @@ residual, `other_operating_expense`, computed from the served figures, plus
 hedge result below operating income.
 
 Naming the five individually needs five columns on `financials`, which is a
-hashed section with no exclusions: that moves `MANIFEST_SCHEMA_VERSION` from 7
-to 8 and is a decision for the owner, not a side effect of a presentation
+hashed section with no exclusions: under the current reasoning-analysis v8
+envelope, that would move `MANIFEST_SCHEMA_VERSION` from 8 to 9 and is a
+decision for the owner, not a side effect of a presentation
 repair. It is stopped here and recorded in the completion report.
 """
 from decimal import Decimal as D
@@ -180,4 +181,6 @@ class TheHashedSectionIsUnchangedTests(ServedStatementBase):
 
         self.assertNotIn('depreciation', names)
         self.assertNotIn('other_operating_expense', names)
-        self.assertEqual(MANIFEST_SCHEMA_VERSION, 7)
+        # This served-only repair did not move the envelope beyond the current
+        # v8 reasoning-analysis definition.
+        self.assertEqual(MANIFEST_SCHEMA_VERSION, 8)

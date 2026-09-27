@@ -133,6 +133,10 @@ def communication_criterion_label(criterion, language='en'):
 
 
 MESSAGES = {
+    'reasoning_not_available': {
+        'en': 'Strategic reasoning analysis will be available after this round is processed.',
+        'zh-CN': '本回合处理完成后即可查看战略推理分析。',
+    },
     'non_negative': {
         'en': '{field} cannot be negative. Enter zero or a positive value.',
         'zh-CN': '{field}不能为负数。请输入零或正数。',

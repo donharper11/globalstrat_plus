@@ -187,6 +187,33 @@ class StudentAPITests(TestCase):
         if 'feedback' in data:
             self.assertIsInstance(data['feedback'], dict)
 
+    def test_unavailable_message_is_english_for_an_english_student(self):
+        Enrollment.objects.filter(
+            user_id=self.student.user_id, team_id=self.team.id,
+        ).update(language='en')
+        url = (f'/api/games/{self.game.id}/teams/{self.team.id}/rounds/'
+               '99/reasoning/')
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {
+            'available': False,
+            'message': ('Strategic reasoning analysis will be available after '
+                        'this round is processed.'),
+        })
+
+    def test_unavailable_message_is_chinese_for_a_chinese_student(self):
+        Enrollment.objects.filter(
+            user_id=self.student.user_id, team_id=self.team.id,
+        ).update(language='zh-CN')
+        url = (f'/api/games/{self.game.id}/teams/{self.team.id}/rounds/'
+               '99/reasoning/')
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {
+            'available': False,
+            'message': '本回合处理完成后即可查看战略推理分析。',
+        })
+
     def test_history_endpoint(self):
         _create_analysis(self.game, self.team, 2)
         url = f'/api/games/{self.game.id}/teams/{self.team.id}/reasoning/history/'
